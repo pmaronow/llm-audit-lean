@@ -1,0 +1,1503 @@
+{
+  "counts": {
+    "counterexample_proved": 6,
+    "proved": 69,
+    "results": 75,
+    "targets": 10
+  },
+  "overview": {
+    "areas": [
+      "causal-identification",
+      "interference-and-networks",
+      "randomization-inference"
+    ],
+    "caveats": [
+      "Assignment-based unbiasedness uses a finite law of distinct binary assignment vectors with positive masses; arbitrary interference and dependence on assignments outside the window are retained.",
+      "Uniformity of local score arrangements does not itself make the full assignment vector conditionally uniform; the latter is an additional hypothesis of the result retaining the printed target.",
+      "The corrected local-score theorem allows an arbitrary joint law outside the window, including continuous scores, subject to outside subjects remaining outside almost surely; it and the assignment-based unbiasedness theorem are separate declarations.",
+      "The counterexamples read the no-ties condition for distinct subjects: the literal printed condition includes a subject paired with itself and cannot hold in a nonempty window.",
+      "The counterexample to the printed formal probability clauses does not satisfy the intended uniform-local-permutation assumption stated in words.",
+      "The direct-effect comparison treats the population as one group and averages over window subjects; the attribution of the formal definitions to Hudgens and Halloran is a source interpretation outside Lean."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P014.t1_counterexample",
+        "target_ids": [
+          "P014-T1"
+        ],
+        "what": "The printed unbiasedness claim uses unweighted averages over assignment support; Lean proves a four-subject example with equiprobable local score arrangements in which the estimator expectation is $0$ and the printed target is $-1/18$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P014.t5_counterexample",
+        "target_ids": [
+          "P014-T5"
+        ],
+        "what": "The printed formal probability clauses are said to imply equiprobable local permutations; Lean proves a six-row score law satisfying those clauses in which one local arrangement has probability $2/3$ rather than $1/6$, so this implication fails."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P014.t9_hudgens_halloran_comparison",
+        "target_ids": [
+          "P014-T9"
+        ],
+        "what": "The printed unweighted target is described as equivalent to the Hudgens–Halloran average direct effect; Lean proves an interference example in which that average is $1/12$, the printed target equals neither sign of it, and the estimator's bias for the printed target is $1/36$."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P014.weighted_unbiasedness",
+        "target_ids": [
+          "P014-T2"
+        ],
+        "what": "For a window of $n$ subjects with a fixed treated count $0<m<n$ and each subject's treatment probability $m/n$, the difference in means is unbiased for the average probability-weighted conditional treated-minus-control contrast under arbitrary interference and outside assignments."
+      },
+      {
+        "lean_name": "AronowAudit.P014.printed_unbiasedness_under_U",
+        "target_ids": [
+          "P014-T3"
+        ],
+        "what": "With the same fixed arm sizes and equal treatment probabilities, adding uniformity of the full assignment law conditional on each local subject's own treatment makes the difference in means unbiased for the printed unweighted target."
+      },
+      {
+        "lean_name": "AronowAudit.P014.corrected_local_randomization",
+        "target_ids": [
+          "P014-T6"
+        ],
+        "what": "Uniform permutations of distinct fixed scores among $n$ local subjects, with exactly $m$ nonnegative scores and outside subjects almost surely outside the window, give fixed local membership and treated count, treatment probabilities $m/n$, a fixed empirical score distribution, and zero tie probability for distinct local subjects."
+      },
+      {
+        "lean_name": "AronowAudit.P014.corrected_target_hh_sign",
+        "target_ids": [
+          "P014-T10"
+        ],
+        "what": "For a nonempty window with positive own-treatment probabilities for both arms, the probability-weighted treated-minus-control target equals the negative of the average direct effect defined with the Hudgens–Halloran control-minus-treatment convention."
+      }
+    ],
+    "overview": "The work considers regression discontinuity under interference through random permutations of running-variable values in a window around the cutoff. The Lean development distinguishes the printed unweighted potential-outcome target from the probability-weighted conditional target for which the difference in means is unbiased. It formalizes a corrected local randomization law, an alternative unbiasedness result under conditional uniformity, and finite counterexamples to the printed unbiasedness and direct-effect equivalence claims.",
+    "work_id": "P014"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.armCounts_add",
+          "line": 151,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.armMass_as_prob",
+          "line": 1541,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.armMasses_add",
+          "line": 161,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.expect_map",
+          "line": 62,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.expectation_fixed_counts",
+          "line": 173,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.mem_map_support_iff",
+          "line": 1593,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.moment_identity",
+          "line": 204,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.prob_map",
+          "line": 1533,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.weighted_unbiasedness",
+          "line": 213,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is the corrected result of P014-E001. Let $\\mathbf{Z}$ have any law on $\\{0,1\\}^N$, with $p(\\mathbf{z})=\\Pr(\\mathbf{Z}=\\mathbf{z})$, let the potential outcomes $y_i(\\mathbf{z})$ be arbitrary real functions of the whole assignment vector, and let $S$ be a set of $n$ subjects. For $i\\in S$ and $a\\in\\{0,1\\}$, the probability-weighted average is $\\overline{Y}_i(a)=\\frac{\\sum_{\\mathbf{z}\\in\\operatorname{Supp}(\\mathbf{Z})}p(\\mathbf{z})\\,y_i(\\mathbf{z})\\,\\mathrm{I}(z_i=a)}{\\sum_{\\mathbf{z}\\in\\operatorname{Supp}(\\mathbf{Z})}p(\\mathbf{z})\\,\\mathrm{I}(z_i=a)} .$ Let $m$ be an integer such that $0<m<n$, and suppose that $\\sum_{i\\in S}z_i=m$ for every $\\mathbf{z}\\in\\operatorname{Supp}(\\mathbf{Z})$ and that $\\Pr(Z_i=1)=m/n$ for every $i\\in S$. The statement asserts that $\\mathrm{E}[\\hat\\tau]=\\frac1n\\sum_{i\\in S}\\bigl[\\overline{Y}_i(1)-\\overline{Y}_i(0)\\bigr]=\\frac1n\\Biggl[\\sum_{i\\in S}\\overline{Y}_i(1)-\\sum_{i\\in S}\\overline{Y}_i(0)\\Biggr],$ where $\\hat\\tau$ is the difference in means over $S$. Nothing is assumed about the assignments of the subjects outside $S$. Eight supporting statements give the steps of the derivation and elementary facts about the law of a function of a random element, here $\\mathbf{Z}$ as a function of $\\mathbf{X}$. Among them are the identity $\\mathrm{E}[y_i(\\mathbf{Z})\\,\\mathrm{I}(Z_i=a)]=\\Pr(Z_i=a)\\,\\overline{Y}_i(a)$ for $\\Pr(Z_i=a)>0$, the form of $\\mathrm{E}[\\hat\\tau]$ when the number of treated subjects in $S$ is fixed, and the fact that the denominator of $\\overline{Y}_i(a)$ is $\\Pr(Z_i=a)$. The law of $\\mathbf{Z}$ is represented by a finite set of distinct assignment vectors with positive probabilities that sum to one, and expectations are weighted sums over this set. The main statement takes the two conditions on $\\mathbf{Z}$ as hypotheses. That they follow from the local randomization assumption, as corrected in P014-E002, is asserted in the Lean statement for that assumption, and the two are not combined in a single statement.",
+        "headline": "The individual average potential outcome, the target $\\tau$ and the unbiasedness of the difference-in-means estimator, as corrected",
+        "location": "p. 131 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.bracketed_contrast",
+          "line": 145,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "The corrected display of P014-N004 is a definition, and the Lean statement is the identity that relates it to the later display for $\\mathrm{E}[\\hat\\tau]$. Let $S$ be a finite nonempty set of subjects with $n=|S|$, and let $\\overline{Y}_i(1)$ and $\\overline{Y}_i(0)$ be arbitrary real numbers for $i\\in S$. The statement asserts that $\\frac1n\\sum_{i\\in S}\\bigl[\\overline{Y}_i(1)-\\overline{Y}_i(0)\\bigr]=\\frac1n\\Biggl[\\sum_{i\\in S}\\overline{Y}_i(1)-\\sum_{i\\in S}\\overline{Y}_i(0)\\Biggr].$ The left side is the bracketed $\\tau$, with $S=\\{i:X_i\\in W_0\\}$ and $n=N_0$, and the right side is that of the display for $\\mathrm{E}[\\hat\\tau]$. The identity is stated for arbitrary real numbers. It therefore applies both to the printed averages and to the probability-weighted averages, and it asserts nothing about unbiasedness. The unbracketed display has no separate Lean transcription.",
+        "headline": "The display that defines the target $\\tau$, as corrected",
+        "location": "p. 131 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T3",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.arm_nonempty_of_mass_ne_zero",
+          "line": 666,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.assignment_matching_iff",
+          "line": 1459,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.assignment_permutation_count",
+          "line": 1552,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.assignment_permutation_fiber_count",
+          "line": 1480,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.assignment_permutation_mass",
+          "line": 1444,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.assignment_permutation_propensity",
+          "line": 1564,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.assignment_with_count_obtainable",
+          "line": 1507,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.conditional_uniform_necessary",
+          "line": 749,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.conditional_uniform_of_full_uniform",
+          "line": 642,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.constant_arm_means",
+          "line": 674,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.fixed_outside_uniform_assignments",
+          "line": 1604,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.map_mass_zero_off_support",
+          "line": 1578,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.matching_permutation_count",
+          "line": 1429,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.means_equal_of_conditional_uniform",
+          "line": 261,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.means_equal_without_interference",
+          "line": 705,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.printed_unbiasedness_no_interference",
+          "line": 719,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.printed_unbiasedness_under_U",
+          "line": 278,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the alternative correction of P014-E001, which keeps the printed $\\overline{Y}_i(z)$. As in the corrected result, the law of $\\mathbf{Z}$ and the potential outcomes are arbitrary, and $S$ is a set of $n$ subjects. The two hypotheses of that result are that exactly $m$ of the subjects in $S$ are treated at every $\\mathbf{z}\\in\\operatorname{Supp}(\\mathbf{Z})$, where $0<m<n$, and that $\\Pr(Z_i=1)=m/n$ for every $i\\in S$. Let (U) be the condition that, for every $i\\in S$ and $a\\in\\{0,1\\}$, the conditional law of $\\mathbf{Z}$ given $Z_i=a$ is uniform on the vectors $\\mathbf{z}\\in\\operatorname{Supp}(\\mathbf{Z})$ such that $z_i=a$. Two statements assert that under (U) the printed $\\overline{Y}_i(a)$ equals the probability-weighted average for all potential outcomes, and that under (U) and the two hypotheses the identity printed on p. 131 holds: $\\mathrm{E}[\\hat\\tau]=\\frac1n\\sum_{i\\in S}\\bigl[\\overline{Y}_i(1)-\\overline{Y}_i(0)\\bigr].$ A third asserts that (U) holds when $\\mathbf{Z}$ is uniform on $\\operatorname{Supp}(\\mathbf{Z})$. Two more assert that, if $y_i(\\mathbf{z})$ depends on $\\mathbf{z}$ only through $z_i$ for every $i\\in S$, then the two averages agree whenever $\\Pr(Z_i=a)>0$, and the printed identity holds under the two hypotheses, without (U). A sixth is a converse. It asserts that, if the two averages of a subject $i$ under a treatment $a$ agree for all potential outcomes, then the conditional law of $\\mathbf{Z}$ given $Z_i=a$ is uniform on its support. The seventh supposes that the local randomization assumption holds as corrected in P014-E002 and that $Z_j$ is constant with probability one for every $j\\notin S$. It asserts that $\\operatorname{Supp}(\\mathbf{Z})$ has $\\binom{n}{m}$ points, each of which is produced by $m!\\,(n-m)!$ arrangements and has probability $1/\\binom{n}{m}$, and that the two hypotheses, (U) and the printed identity hold. Ten supporting statements concern treatment arms, constant outcomes and arrangement counts. The law of $\\mathbf{Z}$ enters the seventh statement as a finite law that is assumed to give the probability of every event $\\{\\mathbf{Z}=\\mathbf{z}\\}$, and the statement does not construct this law.",
+        "headline": "The unbiasedness of the difference-in-means estimator for the printed target $\\tau$, under an added condition on the law of $\\mathbf{Z}$",
+        "location": "p. 131 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T7",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.corrected_no_ties_witnesses",
+          "line": 1129,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.no_ties_diagonal_general",
+          "line": 1075,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.no_ties_quantifier_decomposition",
+          "line": 1373,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.printed_no_ties_iff_empty",
+          "line": 306,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "Let $S$ be the set of subjects in the window; in the Lean statements it may be any finite set of subjects. The corrected condition of P014-E003, that $\\Pr(X_i=X_j)=0$ for all distinct $i,j\\in S$, is an assumption and not a result. There are four Lean statements about this condition and about the condition as printed. Two of them assert that the printed condition, in which $j=i$ is allowed, holds if and only if $S$ is empty. The first of the two is for a running variable with finitely many values, and the second for real random variables on an arbitrary probability space. The third asserts that the printed condition is equivalent to the corrected condition together with $\\Pr(X_i=X_i)=0$ for every $i\\in S$. The fourth asserts that the corrected condition holds, with three subjects in the window, in the first example of P014-E001, the counterexample of P014-E002 and the example of P014-N002. That the corrected condition follows from the local randomization assumption, as corrected in P014-E002, is part of the Lean statement for that assumption. The third statement is written for an arbitrary measure, which is broader than the setting of the paper. The step from $0<\\sum_{i:X_i\\in W_0}Z_i<N_0$ to a nonempty $S$ is not stated separately, and the statements do not concern whether the condition is “without loss of generality”.",
+        "headline": "The no-ties condition, as corrected",
+        "location": "p. 130 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T4",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_Refutations.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.Refutations.printed_unbiasedness_intended_local_refuted",
+          "line": 117,
+          "module": "AronowAudit.P014.P014_Refutations",
+          "status": "counterexample_proved",
+          "target_id": "P014-T4",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_Refutations.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.Refutations.printed_unbiasedness_refuted",
+          "line": 108,
+          "module": "AronowAudit.P014.P014_Refutations",
+          "status": "counterexample_proved",
+          "target_id": "P014-T4",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "Two Lean definitions transcribe universally quantified versions of the result of p. 131 as printed, with the unweighted $\\overline{Y}_i(z)$. The two Lean statements disprove these claims. In each claim the asserted equality, for arbitrary potential outcomes, is $\\mathrm{E}[\\hat\\tau]=\\frac{1}{N_0}\\Biggl[\\sum_{i:X_i\\in W_0}\\overline{Y}_i(1)-\\sum_{i:X_i\\in W_0}\\overline{Y}_i(0)\\Biggr].$ The hypotheses in the first claim are the clauses of the local randomization assumption as printed on p. 130, among them the clause that every support point of the full vector $\\mathbf{X}$ has probability $1/N_0!$. The second claim adds the conclusion that the sentence draws from these clauses, namely that every arrangement of $N_0$ distinct values among the subjects in the window has probability $1/N_0!$. These are the claims that the first example of P014-E001 contradicts, and that example and the two corrections have their own Lean statements. The definitions depart from the printed text in four ways. The no-ties condition is read for distinct subjects (P014-E003), since the printed condition is impossible for a nonempty window. The second definition writes the right side with the bracketed summand of P014-N004. The vector $\\mathbf{X}$ takes finitely many values, which the printed clause on its probabilities implies. Under the first definition a subject in the window may receive one of the two treatments with probability zero. The printed $\\overline{Y}_i(z)$ is then undefined, and it is zero in Lean, where a quotient whose denominator is zero equals zero. The sentence of the Introduction that announces the result has no separate statement.",
+        "headline": "The unbiasedness of the difference-in-means estimator for the average direct effect $\\tau$, as printed",
+        "location": "p. 131 (PDF p. 4); assumptions on p. 130 (PDF p. 3); Introduction, p. 129 (PDF p. 2)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.all_local_permutations_equiprobable",
+          "line": 1118,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.rows_exhaust_permutations",
+          "line": 1098,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.score_rows_are_permutations",
+          "line": 1108,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.sum_three_window",
+          "line": 347,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.t1_arithmetic",
+          "line": 498,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.t1_counterexample",
+          "line": 532,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "counterexample_proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.witness_counts_propensities",
+          "line": 480,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.witness_local_arrangements",
+          "line": 397,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.witness_masses",
+          "line": 470,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.witness_printed_local",
+          "line": 412,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.witness_support",
+          "line": 460,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T1",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the first example of P014-E001. Let $N=4$ and $b=2$, let $(X_1,X_2,X_3)$ be a uniformly random arrangement of $-2$, $-1$ and $1$, and set $X_4=3$ if $(X_1,X_2,X_3)=(-2,-1,1)$ and $X_4=-3$ otherwise. The potential outcomes are $y_1(\\mathbf{z})=y_2(\\mathbf{z})=y_3(\\mathbf{z})=z_4$ and $y_4(\\mathbf{z})=0$. The main statement asserts that this law satisfies every clause of the local randomization assumption as printed on p. 130, where the no-ties condition is read for distinct subjects (P014-E003). It asserts further that the six arrangements in the window are distinct and have probability $1/6$ each, and that $\\mathrm{E}[\\hat\\tau]=0,\\qquad \\tau=-\\frac{1}{18},$ where $\\tau$ is the target built from the printed $\\overline{Y}_i(z)$. Ten supporting statements give the parts of the computation. They assert that $\\operatorname{Supp}(\\mathbf{Z})$ consists of the four vectors $(0,0,1,0)$, $(0,0,1,1)$, $(0,1,0,0)$ and $(1,0,0,0)$, with probabilities $1/6$, $1/6$, $1/3$ and $1/3$, and that each subject in the window is treated with probability $1/3$. They assert also that exactly one subject in the window is treated at each of these vectors, that $\\hat\\tau=0$ at each of the six vectors of the running variable, and that the probability-weighted target is $0$. In the Lean statements the running variable takes each of six vectors with probability $1/6$, and $\\operatorname{Supp}(\\mathbf{Z})$ is the set of distinct assignment vectors that the threshold rule produces from them, each counted once. The second example of the finding, in which $\\tau=4/3$ and $\\mathrm{E}[\\hat\\tau]=1$, is not formalized.",
+        "headline": "A counterexample to the unbiasedness of the difference-in-means estimator for the target $\\tau$, as printed",
+        "location": "p. 131 (PDF p. 4); the local randomization assumption is on p. 130 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T9",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.comparison_printed_local",
+          "line": 436,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T9",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.t9_counterexample",
+          "line": 617,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "counterexample_proved",
+          "target_id": "P014-T9",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.t9_hudgens_halloran_comparison",
+          "line": 850,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "counterexample_proved",
+          "target_id": "P014-T9",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.witness_threshold",
+          "line": 390,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T9",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the example of P014-N002. Let $N=4$ and $b=1$, let $(X_1,X_2,X_3)$ be a uniformly random arrangement of $-1$, $-1/2$ and $1/2$, and set $X_4=2$ if $(X_1,X_2,X_3)=(-1,-1/2,1/2)$ and $X_4=-2$ otherwise. The potential outcomes are $y_1(\\mathbf{z})=z_4$ and zero for the other subjects. For the individual average potential outcome of Hudgens and Halloran the statements take $m_i(s)=\\sum_{\\mathbf{u}}y_i(s,\\mathbf{u})\\Pr(\\mathbf{Z}_{-i}=\\mathbf{u}\\mid Z_i=s)$, where $\\mathbf{u}$ ranges over the assignments of the other three subjects, and for their individual direct effect $d_i=m_i(0)-m_i(1)$. Two statements assert that the example satisfies every clause printed on p. 130, where the no-ties condition is read for distinct subjects (P014-E003), and that its assignment vectors are those of the first example of P014-E001. Two more assert that the printed $\\overline{Y}_1(0)$ is $1/3$ while the probability-weighted average is $1/4$, and that $\\tau=-\\frac19,\\qquad \\frac13\\sum_{i=1}^{3}d_i=\\frac{1}{12},\\qquad \\mathrm{E}[\\hat\\tau]=-\\frac{1}{12},$ where $\\tau$ is the printed target. They assert that $\\tau$ equals neither the average of the $d_i$ nor its negative, and that $\\mathrm{E}[\\hat\\tau]-\\tau=1/36$. That the six arrangements in the window have probability $1/6$ each is asserted in the Lean statements for the example of P014-E001, which cover both examples. That $m_i$ and $d_i$ are the definitions of Hudgens and Halloran rests on my reading of their paper and is not part of the formal statements. The second part of the example, in which the assignment of subject 4 is fixed at control, is not formalized.",
+        "headline": "A counterexample to the equivalence of the target $\\tau$ with the average direct effect of Hudgens and Halloran (2008), as printed",
+        "location": "p. 129 (PDF p. 2); p. 131 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.defective_printed_local",
+          "line": 557,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T5",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.t5_counterexample",
+          "line": 582,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "counterexample_proved",
+          "target_id": "P014-T5",
+          "target_kind": "counterexample",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample of P014-E002. Let $N=4$ and $b=2$, and let $\\mathbf{X}$ take each of the six vectors $(1,-1,-2,3),\\quad (-1,1,-2,3),\\quad (-1,-2,1,3),\\quad (-1,-2,1,4),\\quad (-1,-2,1,5),\\quad (-1,-2,1,6)$ with probability $1/6$. The first statement asserts that this law satisfies every clause printed on p. 130, where the no-ties condition is read for distinct subjects (P014-E003). In particular, the subjects in the window are 1, 2 and 3 at every support point, and every support point has probability $1/6=1/N_0!$. The second statement asserts in addition that the arrangement $(-1,-2,1)$ has probability $2/3$, which is not $1/6$, and that subjects 1, 2 and 3 are treated with probabilities $1/6$, $1/6$ and $2/3$. It asserts also that, for $y_1(\\mathbf{z})=z_1$ and all other potential outcomes equal to zero, $\\mathrm{E}[\\hat\\tau]=1/6$ while the printed target is $\\tau=1/3$. The probabilities of the other five arrangements are not stated. The example contradicts the implication that the sentence draws from its clauses. It does not satisfy the assumption that the sentence states in words, which is a uniformly random arrangement, and the statements assert nothing about that assumption. The counting argument of the finding belongs to the Lean statements for the corrected assumption.",
+        "headline": "A counterexample to the implication, in the local randomization assumption as printed, that all permutations of the running variable values within the window are equiprobable",
+        "location": "p. 130 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.conditional_full_average_eq_weighted",
+          "line": 1361,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.corrected_target_hh_sign",
+          "line": 816,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.estimator_hh_sign",
+          "line": 831,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.hhMean_eq_weighted",
+          "line": 800,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.withOwn_others",
+          "line": 773,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give the formal content of the corrected claim of P014-N002. Let $\\mathbf{Z}$ have any law on $\\{0,1\\}^N$. For a subject $i$ and $s\\in\\{0,1\\}$, let $m_i(s)=\\sum_{\\mathbf{u}}y_i(s,\\mathbf{u})\\Pr(\\mathbf{Z}_{-i}=\\mathbf{u}\\mid Z_i=s),\\qquad d_i=m_i(0)-m_i(1),$ where $\\mathbf{u}$ ranges over the assignments of the other $N-1$ subjects and $y_i(s,\\mathbf{u})$ is the potential outcome of subject $i$ under own treatment $s$ and assignments $\\mathbf{u}$ of the others. These stand for the individual average potential outcome and the individual direct effect of Hudgens and Halloran. Two statements assert that, whenever $\\Pr(Z_i=s)>0$, $m_i(s)=\\sum_{\\mathbf{z}\\in\\operatorname{Supp}(\\mathbf{Z}):\\,z_i=s}y_i(\\mathbf{z})\\Pr(\\mathbf{Z}=\\mathbf{z}\\mid Z_i=s)=\\overline{Y}_i(s),$ where $\\overline{Y}_i(s)$ is the probability-weighted average of P014-E001. A third asserts that, for a nonempty set $S$ of $n$ subjects such that $0<\\Pr(Z_i=1)<1$ for every $i\\in S$, $\\frac1n\\sum_{i\\in S}\\bigl[\\overline{Y}_i(1)-\\overline{Y}_i(0)\\bigr]=-\\frac1n\\sum_{i\\in S}d_i .$ A fourth asserts that $\\mathrm{E}[\\hat\\tau]=-n^{-1}\\sum_{i\\in S}d_i$ under the hypotheses of the corrected result of P014-E001: exactly $m$ subjects in $S$ are treated at every $\\mathbf{z}\\in\\operatorname{Supp}(\\mathbf{Z})$, where $0<m<n$, and $\\Pr(Z_i=1)=m/n$ for every $i\\in S$. A supporting statement asserts that an assignment vector is recovered from the treatment of subject $i$ and the assignments of the other subjects. In the paper of Hudgens and Halloran the subjects are nested in groups, and here the population is a single group and the average is over the subjects in $S$. That $m_i$ and $d_i$ are their definitions rests on my reading of their paper and is not part of the formal statements. That the printed target does not have this property is the subject of the counterexample, which has its own Lean statements.",
+        "headline": "The equivalence of the target $\\tau$ with the average direct effect of Hudgens and Halloran (2008), as corrected",
+        "location": "p. 129 (PDF p. 2); p. 131 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P014-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.ae_event_of_probability_one",
+          "line": 1137,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.ae_not_of_probability_zero",
+          "line": 1146,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.corrected_law_allows_outside_randomness",
+          "line": 1048,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.corrected_local_randomization",
+          "line": 1219,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.extended_law_support_and_outside",
+          "line": 1926,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.extended_scores_injective",
+          "line": 1915,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.factorial_propensity_ratio",
+          "line": 1202,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.injective_local_iff_reconstructible",
+          "line": 1337,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.map_mass_of_injective",
+          "line": 1771,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.map_support_card_of_injective",
+          "line": 1907,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.outside_function_gives_discrete_full_law",
+          "line": 1816,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.permutation_count",
+          "line": 914,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.permutation_no_ties",
+          "line": 969,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.probability_from_uniform_partition",
+          "line": 1171,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.uniform_finite_support_card",
+          "line": 1783,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.uniform_joint_iff_injective_local",
+          "line": 991,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.uniform_joint_support_card",
+          "line": 1797,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.uniform_partition_covers",
+          "line": 1156,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.uniform_permutation_average",
+          "line": 926,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P014/P014_LocalRandomization.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P014.uniform_permutation_propensity",
+          "line": 959,
+          "module": "AronowAudit.P014.P014_LocalRandomization",
+          "status": "proved",
+          "target_id": "P014-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P014"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement contains the corrected assumption of P014-E002 and its consequences, for real random variables on an arbitrary probability space. Let $b>0$, let $S$ be a set of $n\\ge2$ subjects, and let $v_1,\\ldots,v_n\\in W_0$ be distinct values such that exactly $m$ of them are nonnegative, where $0<m<n$. Suppose that $\\Pr(X_i\\in W_0)$ is $1$ for $i\\in S$ and $0$ for $i\\notin S$, and that $\\Pr(\\mathbf{X}_S=a)=1/n!$ for every arrangement $a$ of $v_1,\\ldots,v_n$ among the subjects in $S$. The statement asserts that, with probability one, $\\sum_{i\\in S}Z_i=m$, the set of subjects in the window is $S$, and the empirical distribution function of the values in the window is that of $v_1,\\ldots,v_n$. It asserts further that, for every $i\\in S$ and all distinct $i,j\\in S$, $\\Pr(Z_i=1)=\\frac{m\\,(n-1)!}{n!}=\\frac mn,\\qquad \\Pr(Z_i=0)=\\frac{n-m}{n},\\qquad \\Pr(X_i=X_j)=0 .$ The joint law of the running variables outside the window is restricted only by $\\Pr(X_i\\in W_0)=0$, and it need not be discrete. Four statements concern the printed clause on the full vector. Suppose that $\\mathbf{X}$ takes finitely many values and that $\\mathbf{X}_S$ takes each of its $k$ values with probability $1/k$. Three of the four assert that every support point of $\\mathbf{X}$ then has probability $1/k$ if and only if $\\mathbf{X}$ is a function of $\\mathbf{X}_S$ on the support, and that $\\mathbf{X}$ has $k$ support points in that case. The fourth is a converse under the corrected assumption: if the values outside the window are a function of $\\mathbf{X}_S$ with probability one, then $\\mathbf{X}$ has exactly $n!$ support points, each of probability $1/n!$. Three statements formalize the example of the finding in which $X_4$ is independent of the arrangement. They assert that each of the six arrangements has probability $1/6$ and that $\\mathbf{X}$ has twelve support points, of probabilities $1/18$ and $1/9$. The remaining twelve statements are supporting facts on uniformly random permutations and on finite families of events of equal probability. The equivalence on the printed clause is written for any random element with finitely many values and any function of it, which is broader than the case of $\\mathbf{X}$ and $\\mathbf{X}_S$.",
+        "headline": "The local randomization assumption, as corrected",
+        "location": "p. 130 (PDF p. 3)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "P. M. Aronow",
+      "Nicole E. Basta",
+      "M. Elizabeth Halloran"
+    ],
+    "citation": "P. M. Aronow, Nicole E. Basta, and M. Elizabeth Halloran (2017). The Regression Discontinuity Design under Interference: A Local Randomization-Based Approach. Observational Studies.",
+    "doi": "10.1353/obs.2017.0001",
+    "title": "The Regression Discontinuity Design under Interference: A Local Randomization-Based Approach",
+    "type": "Journal article",
+    "venue": "Observational Studies",
+    "year": "2017"
+  },
+  "work_id": "P014"
+}

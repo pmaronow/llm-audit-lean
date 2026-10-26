@@ -1,0 +1,1038 @@
+{
+  "counts": {
+    "counterexample_proved": 4,
+    "proved": 43,
+    "results": 47,
+    "targets": 12
+  },
+  "overview": {
+    "areas": [
+      "regression-and-variance-estimation",
+      "asymptotic-statistics",
+      "causal-identification"
+    ],
+    "caveats": [
+      "The exact coarsened identity quantifies over every normal-equation solution, including cases with nonunique nuisance coefficients from empty bins; ties at zero may carry either binary party indicator.",
+      "The polynomial error theorem assumes margins supported on $[-1,1]$, conditional mean $\\alpha+\\beta I[X\\ge0]+h(X)$, and a positive definite moment matrix; its selected declaration covers the population clauses, with separate finite-sample statements. Here $r_J$ is the residual of the party-win indicator after projection on $1,X,\\ldots,X^J$.",
+      "The corrected consistency theorem assumes a fixed margin law supported on $[-1,1]$, no atom at zero, domination of a positive multiple of Lebesgue measure near zero, $h$ Lipschitz on $[-1,1]$ with $h(0)=0$, finite outcome second moment, and bounded local conditional variance; bandwidths satisfy $k_N>0$, $k_N\\to0$ and $Nk_N\\to\\infty$.",
+      "Fixed-degree OLS converges to its population coefficient, which may differ from the cutoff jump; simultaneous equivalence with RD requires the explicit degree and smallest-eigenvalue rate condition.",
+      "The continuity counterexample concerns population coefficients for one fixed uniform margin law and does not by itself negate the full sampling proposition; its bounded continuous witness is existential and is not Lipschitz.",
+      "Nonzero distant-outcome weights do not preclude convergence of both estimators to a common cutoff target; the statistical statements do not establish a causal interpretation of that target or verify the empirical table."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P023.degree7_counterexample",
+        "target_ids": [
+          "P023-T2"
+        ],
+        "what": "The printed sole-reliance-on-close-elections claim extends to polynomial controls; Lean proves a full-rank sixteen-election degree-7 example in which changing one distant outcome by $1/100$ changes the polynomial coefficient by $7/6428$ while leaving close-window outcomes, RD, and coarsened-regression coefficients unchanged."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P023.Wave1.corrected_proposition2_proof",
+        "target_ids": [
+          "P023-T8"
+        ],
+        "what": "Printed Proposition 2 asserts that polynomial OLS approximates shrinking-window RD under weak regularity and sufficiently large degree. Under the explicit Lipschitz, local-law, moment and iid sampling conditions, with $k_N>0$, $k_N\\to0$ and $Nk_N\\to\\infty$, the corrected theorem gives an $O(J^{-1/2})$ population coefficient error bound and convergence in probability of polynomial OLS minus RD to zero when $J_N\\to\\infty$ and $(J_N+2)^2/(N\\lambda_{J_N}^3)\\to0$, where $\\lambda_J$ is the smallest regression moment eigenvalue."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P023.printed_coarsened_proposition1",
+        "target_ids": [
+          "P023-T11"
+        ],
+        "what": "For two-party election data, bandwidth $0<k<1$, and an election strictly on each side of the cutoff inside the window, every OLS solution in the printed intercept, party-win, and bin-indicator design has party-win coefficient equal to the rectangular-window difference in means."
+      },
+      {
+        "lean_name": "AronowAudit.P023.Wave1.corrected_population_bias_proof",
+        "target_ids": [
+          "P023-T7"
+        ],
+        "what": "For margins $X$ supported on $[-1,1]$, conditional mean $E[Y\\mid X]=\\alpha+\\beta I[X\\ge0]+h(X)$, finite outcome second moment, bounded measurable $h$, and degree $J\\ge1$ with a positive definite regression moment matrix, the population party-win coefficient $b_J$ satisfies $b_J-\\beta=E[r_J(h-p)]/v_J$ and $|b_J-\\beta|$ is bounded by both $E|r_J|\\,\\|h-p\\|_\\infty/v_J$ and $\\|h-p\\|_2/\\sqrt{v_J}$ for every polynomial $p$ of degree at most $J$, where $v_J=E[r_J^2]$."
+      },
+      {
+        "lean_name": "AronowAudit.P023.Wave1.continuity_only_counterexample_proof",
+        "target_ids": [
+          "P023-T6"
+        ],
+        "what": "For uniform margins on $[-1,1]$, there exists a continuous $h$ with $h(0)=0$ and $|h|\\le1/12$ such that the population polynomial coefficients for mean $1/2+h$ diverge to positive infinity along increasing degrees, while the shrinking-window population RD contrast tends to zero."
+      }
+    ],
+    "overview": "The work relates regressions of party incumbency outcomes on election margins to close-election regression discontinuity estimates. The Lean development proves the exact coarsened-regression identity of Proposition 1, derives residual-weighted polynomial coefficient error bounds, and proves a corrected version of Proposition 2 under explicit quantitative assumptions. It also gives finite examples of distant-outcome dependence and a population example showing that continuity alone need not make polynomial coefficients approach the cutoff jump.",
+    "work_id": "P023"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.linear_counterexample",
+          "line": 811,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P023-T1",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement proves the first example of P023-E001: six elections have the margins $-3/4$, $-1/4$, $-1/400$, $1/400$, $1/4$, $3/4$, the bandwidth is $k=1/200$, and the outcomes are $y_i=1/2+\\mathit{DemWin}_i/10+\\mathit{DemVot}_i/20$. The vector $y'$ equals $y$ except at the margin $3/4$, where it is larger by $1/100$. The statement asserts that Condition 1 holds, that the regressors $1$, $\\mathit{DemWin}$ and $\\mathit{DemVot}$ of equation (2) with $J=1$ have full column rank, and that $y$ satisfies equation (2) exactly with $\\beta=1/10$. It asserts that the coefficient on $\\mathit{DemWin}$ equals $\\sum_iw_iz_i$ for every outcome vector $z$, with the six weights of the finding, and that $\\hat\\beta_{OLS2}(y)=\\frac{1}{10},\\qquad\\hat\\beta_{OLS2}(y')=\\frac{1371721}{13920200},\\qquad\\hat\\tau_{RD}(y)=\\hat\\tau_{RD}(y')=\\frac{401}{4000}.$ For the regression of Condition 2 it asserts that $J=200$, that the elections lie in the bins $25$, $75$, $100$, $100$, $125$ and $175$, and that the coefficient on $\\mathit{DemWin}$ equals $401/4000$ in every least-squares solution, for $y$ and for $y'$; it also asserts that $y$ and $y'$ agree on $U_b$ and concludes that $\\hat\\beta_{OLS2}$, with the margins held fixed, is not a function of the outcomes in $U_b$ alone. This is the reading of “rely solely on data from close elections” in the finding; least squares is represented by the normal equations. The regression of Condition 2 is written with one intercept per bin, which has the same fitted values as the printed intercept and bin indicators, and empty bins are allowed. The statement has the scope of the example, and it adds that all outcomes lie strictly between $0$ and $1$.",
+        "headline": "A counterexample to the statement of Sections 1 and 3.2 that the estimates of a regression rely solely on data from close elections, with a linear control",
+        "location": "p. 3 (PDF p. 3) and p. 7 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T2",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.degree7_counterexample",
+          "line": 973,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P023-T2",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement proves the second example of P023-E001, with the degree of row (c) of Table 1: sixteen elections have the margins $\\pm1/8,\\pm2/8,\\ldots,\\pm1$, the bandwidth is $k=1/5$, and the outcomes are $y_i=1/2+\\mathit{DemWin}_i/10+\\mathit{DemVot}_i/20+\\mathit{DemVot}_i^7/100$. The vector $y'$ equals $y$ except at the margin $1$, where $33/50$ is replaced by $67/100$. The statement asserts that Condition 1 holds, that the nine regressors of equation (2) with $J=7$ have full column rank, and that $y$ satisfies equation (2) exactly with $\\beta=1/10$. It asserts that the coefficient on $\\mathit{DemWin}$ equals $\\sum_iw_iz_i$ for every outcome vector $z$, with the sixteen weights of the finding, that none of these weights is zero, and that $\\hat\\beta_{OLS2}(y)=\\frac{1}{10},\\qquad\\hat\\beta_{OLS2}(y')=\\frac{3249}{32140},\\qquad\\hat\\tau_{RD}(y)=\\hat\\tau_{RD}(y')=\\frac{11796481}{104857600}.$ For the regression of Condition 2 it asserts that $J=4$, that the five bins contain $4$, $3$, $2$, $3$ and $4$ elections, and that the coefficient on $\\mathit{DemWin}$ equals the RD estimate in every least-squares solution, for $y$ and for $y'$. Only the elections at $\\pm1/8$ lie in $U_b$; the statement asserts that $y$ and $y'$ agree on $U_b$ and concludes that $\\hat\\beta_{OLS2}$, with the margins held fixed, is not a function of the outcomes in $U_b$ alone. Least squares is represented by the normal equations, and the regression of Condition 2 is written with one intercept per bin, which has the same fitted values as the printed intercept and bin indicators. The statement has the scope of the example, and it adds that all outcomes lie strictly between $0$ and $1$.",
+        "headline": "A counterexample to the statement of Sections 1 and 3.2 that the estimates of a regression rely solely on data from close elections, with a degree-7 control",
+        "location": "p. 3 (PDF p. 3) and p. 7 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T3",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GLP023B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.uniform_common_target_distant_information_proof",
+          "line": 812,
+          "module": "AronowAudit.P023.Wave1.Gap.GLP023B1",
+          "status": "proved",
+          "target_id": "P023-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.coarsened_ols_printed_equivalence",
+          "line": 1409,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.corrected_coarsened_weights",
+          "line": 1444,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.corrected_finite_conditional_moments",
+          "line": 2356,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.corrected_finite_nonlocality",
+          "line": 1782,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.corrected_finite_polynomial_weights",
+          "line": 1629,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Review.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.polynomial_rd_shared_consistency",
+          "line": 56,
+          "module": "AronowAudit.P023.P023_Review",
+          "status": "proved",
+          "target_id": "P023-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "Seven proved Lean statements give finite-sample identities, population calculations and a shared-consistency implication in the correction of P023-E001, for finitely many elections with margins $x_i\\in[-1,1]$, binary win indicators $d_i$ agreeing with their signs away from ties, and arbitrary outcomes $y_i$. Write $U_b=\\{i:-k<x_i\\le k\\}$. For $0<k<1$ and positive close-window winner and loser counts $n_1,n_0$, two assert that every coefficient on $\\mathit{DemWin}$ in the regression of Condition 2 equals the degree-zero, rectangular-kernel RD estimate $\\hat\\tau_{RD}=\\sum_iw^c_iy_i$, with weights $1/n_1$ for close wins, $-1/n_0$ for close losses and $0$ elsewhere, and that per-bin intercepts give the same possible coefficients as the printed regressors. For equation (2) with $J\\ge1$ and full column rank, another takes the least-squares residual $r$ of $d$ on $1,x,\\ldots,x^J$ and asserts that $\\sum_ir_i^2>0,\\quad w_i=\\frac{r_i}{\\sum_jr_j^2},\\quad \\hat\\beta_{OLS2}=\\sum_iw_iy_i,\\quad\\sum_iw_i=0,\\quad \\sum_iw_ix_i^j=0\\ (1\\le j\\le J),\\quad\\sum_iw_id_i=1,$ with a change of $\\delta$ in $y_i$ changing the coefficient by $w_i\\delta$. Under the same degree and rank assumptions, with $0<k<1$ and both win indicators present, another asserts at most $J$ distinct negative and $J$ distinct positive margins with zero weight; more than $2J$ distinct nonzero margins outside $U_b$ permit a one-election outcome change that alters polynomial OLS, preserves RD and preserves any coarsened coefficients when both close-window counts are positive. Under the same degree and rank assumptions and at fixed margins, another takes integrable random outcomes under a probability law with means $\\alpha+\\beta d_i+h(x_i)$ and asserts $E[\\hat\\beta_{OLS2}]-\\beta=\\frac{\\sum_ir_ih(x_i)}{\\sum_ir_i^2},\\qquad \\operatorname{Var}(\\hat\\beta_{OLS2})=\\sum_iw_i^2E[u_i^2],$ where the bias is zero for a polynomial of degree at most $J$ agreeing with $h$ at every observed margin and the variance formula requires square-integrable, uncorrelated errors $u_i=y_i-E[y_i]$. For uniform margins, another asserts the projections $q_J$ of $D=I[X\\ge0]$ on $1,X,\\ldots,X^J$: $q_1(x)=\\frac12+\\frac34x,\\qquad q_7(x)=\\frac12+\\frac{11025x-40425x^3+63063x^5-32175x^7}{4096}.$ Writing $r_J=D-q_J$ and $v_J=E[r_J^2]$, it asserts $v_1=1/16$, $v_7=1225/65536$, $r_1(9/10)/v_1=-14/5$, $r_7(9/10)/v_7=-20283449/6125000$, and shares $1/8$ and $572158921/10276044800$ of $v_J$ contributed by $|X|\\ge1/2$. For conditional means $1/2+D/10+X/20$ and $1/2+D/10+X/20+X^7/100$, respectively, it asserts population OLS coefficients $1/10$ and window differences $1/10+k/20$ and $1/10+k/20+k^7/400$ for $0<k\\le1$, tending to $1/10$ as $k\\to0$. Causal interpretation is not proved here, and sample RD consistency belongs to the corrected Proposition 2. The seventh gives the shared-consistency implication for the actual polynomial OLS and RD definitions: if both converge in probability to the same $\\beta$, their difference converges in probability to zero. Its supporting finite bound is $\\Pr(|A_N-B_N|>\\epsilon)\\le\\Pr(|A_N-\\beta|>\\epsilon/2)+\\Pr(|B_N-\\beta|>\\epsilon/2)$ for every $\\epsilon>0$, without independence. The two sampling-consistency claims are explicit hypotheses; exact mean specification alone is not substituted for them. Distant weights do not refute that convergence or remove concerns arising from a shared causal cutoff target and its identifying assumptions.",
+        "headline": "The statements of Sections 1 and 3.2 on the data used by regressions on all elections, as corrected",
+        "location": "p. 3 (PDF p. 3) and p. 7 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T4",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GLP023B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.sigmoid_counterexample_proof",
+          "line": 1282,
+          "module": "AronowAudit.P023.Wave1.Gap.GLP023B1",
+          "status": "proved",
+          "target_id": "P023-T4",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GP023B1b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.sigmoid_fit_criterion_proof",
+          "line": 1187,
+          "module": "AronowAudit.P023.Wave1.Gap.GP023B1b",
+          "status": "proved",
+          "target_id": "P023-T4",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GP023B1b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.sigmoid_sample_separation_proof",
+          "line": 1999,
+          "module": "AronowAudit.P023.Wave1.Gap.GP023B1b",
+          "status": "proved",
+          "target_id": "P023-T4",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GP023B2b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.uniform_residual_symmetry_proof",
+          "line": 365,
+          "module": "AronowAudit.P023.Wave1.Gap.GP023B2b",
+          "status": "proved",
+          "target_id": "P023-T4",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.sigmoid_rational_certificates",
+          "line": 2193,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T4",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "Five Lean statements prove the example of P023-E002 with uniform $X$ on $[-1,1]$, $D=I[X\\ge0]$ and $Y=1/2+h_\\eta(X)+U$, where $h_\\eta(x)=a\\operatorname{clip}(x/\\eta,-1,1)$ and $U=\\pm1/10$ independently with equal probability. I write $r_J$ for the residual of $D$ on $1,X,\\ldots,X^J$, $v_J=E[r_J^2]$ and $b_J$ for the population coefficient on $D$; for $a>0$ and $0<\\eta\\le1$, the main statement asserts that $h_\\eta$ is continuous and $a/\\eta$-Lipschitz and that the population window difference is $ak/\\eta$ for $0<k\\le\\eta$. It asserts $b_J=2a-\\frac{a}{v_J}\\int_0^{\\eta}r_J(x)\\Bigl(1-\\frac{x}{\\eta}\\Bigr)\\,dx\\quad(J\\ge1),\\qquad b_1=2a(1-\\eta)^2,$ with $b_J\\to2a$ as $\\eta\\to0$ for each fixed $J$. At $a=1/20$ and $\\eta=1/10000$, it asserts $b_1=99980001/1000000000$, an exact rational $b_7$ close to $0.09993$, and $7/20\\le Y\\le13/20$ almost surely. The second statement bounds the least mean squared error at every $J\\ge1$ between $1/100$ and $1/100+a^2\\eta/3$, bounds its possible improvement by any measurable predictor with finite mean squared error by $a^2\\eta/3$ (here $1/12{,}000{,}000$), and states a polynomial formula for $b_7$ in $\\eta$ at $a=1/20$. The third asserts that an i.i.d. sample from this numerical law with positive bandwidths $k_N\\to0$ and $Nk_N\\to\\infty$ has $\\hat\\beta_{OLS2}\\to b_1$ or $b_7$ in probability at the respective fixed degrees, while $\\hat\\tau_{RD}\\to0$. The fourth is arithmetic alone and asserts the values obtained by numerical substitution in the two coefficient expressions and $a^2\\eta/3$; the fifth asserts that $r_J$ is odd away from $0$ for $J\\ge1$ and states $r_1,r_7$ for $x>0$. The projections and coefficients are defined by population normal equations; the example concerns the Remark’s test of fit and Appendix B’s inference, while its Lipschitz $h_\\eta$ is compatible with Proposition 2 at a sufficiently large degree.",
+        "headline": "A counterexample to the test of fit in the Remark to Proposition 2, read with Appendix B",
+        "location": "p. 7 (PDF p. 7) and p. 10 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GLP023B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.clustered_counterexample_proof",
+          "line": 809,
+          "module": "AronowAudit.P023.Wave1.Gap.GLP023B2",
+          "status": "proved",
+          "target_id": "P023-T5",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GP023B2b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.clustered_fit_bound_proof",
+          "line": 644,
+          "module": "AronowAudit.P023.Wave1.Gap.GP023B2b",
+          "status": "proved",
+          "target_id": "P023-T5",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.clustered_bias_rational_certificate",
+          "line": 2184,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T5",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements prove the example of P023-E002 in which the margins concentrate near $\\pm1/2$, for every $0<d\\le1/2$, where the finding takes $d=1/1000$; the margin $X$ has the density $\\rho(x)=\\frac{q}{2}+\\frac{1-q}{2}\\bigl(t_{1/2}(x)+t_{-1/2}(x)\\bigr),\\qquad t_c(x)=\\frac{\\max(w-|x-c|,0)}{w^2},$ on $[-1,1]$, with $w=d/2$ and $q=d^4$, and $Y=1/2+h(X)+U$, where $U=\\pm1/10$ with equal probability, independently of $X$. The function $h$ is odd, continuous and piecewise linear: it equals $x-1/2$ for $|x-1/2|\\le d/2$, returns linearly to $0$ at $x=1/2\\pm d$, and vanishes on the rest of $[0,1]$. The main statement asserts that $\\rho$ is a continuous probability density such that $\\rho\\ge d^4/2$, that $h$ is Lipschitz with constant $1$ and $\\sup|h|=d/2$, and that the population difference in means within every bandwidth $0<k<1/2-d$ is $0$. For the coefficient $b_1$ on $D=I[X\\ge0]$ in the population regression (2) with $J=1$ it asserts that $b_1=-\\frac{1-d^4+6d^5}{1-d^4+2d^2},$ together with the six moments from which this value follows. At $d=1/1000$ it asserts that $b_1=-499999999999503/500000999999500$ and $799/2000\\le Y\\le1201/2000$; it also asserts that $b_1\\to-1$ as $d\\to0$ and concludes that no constant $C$ satisfies $|b_1|\\le C\\sup|h|$ for all $d$, while the jump at the threshold is $0$. The second statement asserts that no measurable predictor with finite mean squared error improves on the constant $1/2$ by more than $d^2/4$, and asserts the same for the least mean squared error over the regressors of equation (2), at each degree $J\\ge1$. The third is arithmetic alone and asserts that the ratio of moments that defines $b_1$ takes the stated value at $d=1/1000$; the coefficient $b_1$ is defined as a solution of the population normal equations. The law of the margin depends on $d$, so that the statements concern the step of Appendix B and not Proposition 2 for one law and a growing degree; the variant of the finding with a degree-7 control is not proved.",
+        "headline": "A counterexample to the step from the conditional mean to the coefficient in Appendix B",
+        "location": "p. 10 (PDF p. 10); Proposition 2 and its Remark, p. 7 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T6",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/ContinuityCounterexampleTailC.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.continuity_only_counterexample_proof",
+          "line": 10,
+          "module": "AronowAudit.P023.Wave1.ContinuityCounterexampleTailC",
+          "status": "proved",
+          "target_id": "P023-T6",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.central_binomial_wallis_bounds",
+          "line": 2569,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T6",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.gliding_hump_finite_inequality",
+          "line": 2214,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T6",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.uniform_law_normalized",
+          "line": 2204,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T6",
+          "target_kind": "counterexample",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "Four Lean statements concern the example of P023-E002 in which continuity alone fails for one fixed law: the margin $X$ is uniform on $[-1,1]$, $D=I[X\\ge0]$, and the conditional mean of the outcome is $1/2+h(X)$. I write $r_J$ for the residual of $D$ after projection on $1,X,\\ldots,X^J$, and I set $v_J=E[r_J^2]$, $\\kappa_J=E|r_J|/v_J$ and $T_Jh=E[r_Jh(X)]/v_J$; the main statement asserts that $\\kappa_J\\to\\infty$ as $J\\to\\infty$, that $\\kappa_J-(4/\\pi)\\log J$ is bounded for large $J$, and that $\\kappa_J$ is the supremum of $T_Jh$ over the continuous functions $h$ on $[-1,1]$ such that $h(0)=0$ and $|h|\\le1$. It asserts that there exist a continuous function $h$ such that $h(0)=0$ and $|h|\\le1/12$ and degrees $J_1<J_2<\\cdots$ such that $T_{J_m}h\\ge m/4$ for all $m\\ge1$. For this $h$ it asserts that the coefficient $b_J$ on $D$ in the population regression (2) equals $T_Jh$ for all $J\\ge1$, that $b_{J_m}\\to\\infty$, and that $b_J$ does not converge to the jump $\\beta=0$; it asserts also that the population difference in means within bandwidth $k$ tends to $0$ as $k\\to0$ and that $h$ is not Lipschitz. The function $h$ is asserted to exist and is not given by a formula; three supporting statements are steps of the construction. The first is the inequality $4^{-m}\\kappa/2-4^{-m}\\kappa/3\\ge m$ for $\\kappa\\ge6m4^m$. The second asserts that the uniform law has total mass $1$ and is carried by $[-1,1]$; the third is the bound $1/(\\pi(n+1/2))\\le c_n^2\\le1/(\\pi n)$ for $c_n=\\binom{2n}{n}4^{-n}$ and $n\\ge1$. The statements read “sufficiently large” in Proposition 2 as a condition on the limit of $b_J$ for one law of the margin, and they concern the population coefficient and not a sample.",
+        "headline": "A counterexample to Proposition 2 under the continuity assumptions of Appendix B",
+        "location": "p. 7 (PDF p. 7) and p. 10 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T7",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GLP023B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.corrected_population_bias_proof",
+          "line": 409,
+          "module": "AronowAudit.P023.Wave1.Gap.GLP023B3",
+          "status": "proved",
+          "target_id": "P023-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GLP023B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.uniform_residual_constants_proof",
+          "line": 1477,
+          "module": "AronowAudit.P023.Wave1.Gap.GLP023B3",
+          "status": "proved",
+          "target_id": "P023-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.finite_conditional_bias",
+          "line": 2275,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.residual_amplification_lower_bound",
+          "line": 2126,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.residual_bias_integral_identity",
+          "line": 2027,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.residual_rms_error_bound",
+          "line": 2075,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.residual_uniform_error_bound",
+          "line": 2053,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "Seven Lean statements cover the corrected step of P023-E002: let the margin $X$ take values in $[-1,1]$, let $D=I[X\\ge0]$, and suppose that $E[Y^2]<\\infty$ and $E[Y\\mid X]=\\alpha+\\beta D+h(X)$ with $h$ bounded and measurable. For $J\\ge1$ with the second-moment matrix of $(1,D,X,\\ldots,X^J)$ positive definite, I write $r_J$ for the residual of $D$ after projection on $1,X,\\ldots,X^J$, $b_J$ for the coefficient on $D$ in the population regression (2), and I set $v_J=E[r_J^2]$ and $\\kappa_J=E|r_J|/v_J$. The main statement asserts that $v_J>0$ and that $b_J-\\beta=\\frac{E[r_J\\,(h(X)-p(X))]}{v_J},\\qquad|b_J-\\beta|\\le\\kappa_J\\sup_{x\\in[-1,1]}|h(x)-p(x)|,\\qquad|b_J-\\beta|\\le\\frac{\\|h-p\\|_2}{\\sqrt{v_J}}$ for every polynomial $p$ of degree at most $J$, where $\\|h-p\\|_2^2=E[(h(X)-p(X))^2]$; it also asserts that $\\kappa_J\\ge2$, that $b_J=\\beta$ when $h$ is almost surely equal to such a polynomial, and that $|b_J-\\beta|\\le t$ if and only if $|E[r_Jh(X)]|\\le tv_J$, for all $t>0$. The second statement asserts the constants for margins uniform on $[-1,1]$: these are $v_J=c_n^2/4$ with $c_n=\\binom{2n}{n}4^{-n}$ and $n=\\lfloor(J+1)/2\\rfloor$, the values $v_1=1/16$, $\\kappa_1=10/3$ and $v_7=1225/65536$, and the bounds $4.7642006857252250<\\kappa_7<4.7642006857252260$. The third is the form for a sample with fixed margins $x_i$, indicators $d_i=I[x_i\\ge0]$ and regressors of full column rank: if the outcomes have means $\\alpha+\\beta d_i+h(x_i)$, it asserts that $E[\\hat\\beta_{OLS2}]-\\beta=\\sum_ir_ih(x_i)/\\sum_ir_i^2$, where $r$ is the least-squares residual of $d$ on $1,x,\\ldots,x^J$. Four supporting statements assert the identity, the two bounds and the inequality $\\kappa_J\\ge2$ for integrals of an arbitrary function $r$; they take the moment conditions $\\int r=0$, $\\int rD=v$ and $\\int rp=0$ as hypotheses where these are needed, and they do not assert them of the residual $r_J$. The projection of $D$ and the coefficient $b_J$ are defined as solutions of the population normal equations, and the conditional mean is characterized by $E[t(X)Y]=E[t(X)(\\alpha+\\beta D+h(X))]$ for every bounded measurable $t$. In the third statement the law of the outcomes at fixed margins stands for conditioning on the margins.",
+        "headline": "The step from the conditional mean to the coefficient in Appendix B and the Remark to Proposition 2, as corrected",
+        "location": "p. 10 (PDF p. 10) and p. 7 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GLP023B4c.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.corrected_proposition2_proof",
+          "line": 2996,
+          "module": "AronowAudit.P023.Wave1.Gap.GLP023B4c",
+          "status": "proved",
+          "target_id": "P023-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/DensityComparisonTailC.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.density_residual_comparison_proof",
+          "line": 147,
+          "module": "AronowAudit.P023.Wave1.DensityComparisonTailC",
+          "status": "proved",
+          "target_id": "P023-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GLP023B4c.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.iid_regression_matrix_bounds_proof",
+          "line": 3066,
+          "module": "AronowAudit.P023.Wave1.Gap.GLP023B4c",
+          "status": "proved",
+          "target_id": "P023-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/Gap/GLP023B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.jackson_kernel_approximation_proof",
+          "line": 580,
+          "module": "AronowAudit.P023.Wave1.Gap.GLP023B4",
+          "status": "proved",
+          "target_id": "P023-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.central_binomial_lower_bound",
+          "line": 2540,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.iid_window_count_bound",
+          "line": 2763,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.repaired_population_rd_limit",
+          "line": 2729,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.repaired_rate_from_finite_bounds",
+          "line": 2154,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.repaired_rd_finite_bounds",
+          "line": 2621,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement expresses the corrected proposition of P023-E002 for i.i.d. observations $(X,Y)$ with $E[Y^2]<\\infty$ and margins supported on $[-1,1]$, with no atom at $0$ and $P(X\\in A)\\ge c\\,|A|$ for every Borel $A\\subseteq[-\\delta,\\delta]$, where $c>0$ and $0<\\delta\\le1$. The conditional mean is $\\alpha+\\beta I[x\\ge0]+h(x)$ with $h(0)=0$ and an $L$-Lipschitz $h$ on $[-1,1]$; the conditional variance is bounded on $[-\\delta,\\delta]$, and positive bandwidths satisfy $k_N\\to0$ and $Nk_N\\to\\infty$. Writing $v_J$ for the second moment of the residual of $D=I[X\\ge0]$ on $1,X,\\ldots,X^J$ and $b_J$ for the population coefficient on $D$, it asserts positive definite regressor moments at every $J\\ge1$, $v_J\\ge c\\delta/(4(J+1))$, a polynomial $p_J$ of degree at most $J$ with $p_J(0)=0$ and $\\sup|h-p_J|\\le4KL/(J+1)$, and $|b_J-\\beta|\\le\\frac{8KL}{\\sqrt{c\\,\\delta\\,(J+1)}},\\qquad K=\\frac{3(1+\\pi^4)}{4\\pi}.$ It asserts $\\hat\\beta_{OLS2}\\to b_J$ in probability for each fixed $J$, $|\\tau_k-\\beta|\\le2Lk$ for the population window difference at $0<k\\le\\delta$, and $\\hat\\tau_{RD}\\to\\beta$ in probability. For every $\\epsilon>0$, it asserts that all sufficiently large fixed $J$ have $|b_J-\\beta|<\\epsilon$ and $\\hat\\beta_{OLS2}-\\hat\\tau_{RD}\\to b_J-\\beta$ in probability; for $J_N\\to\\infty$ with $(J_N+2)^2/(N\\lambda_{J_N}^3)\\to0$, it asserts convergence of that difference to zero and existence of such degree sequences, where $\\lambda_J$ is the smallest regressor-moment eigenvalue. Eight supporting statements assert the rate deduction, $c_n^2\\ge1/(4n)$ for $c_n=\\binom{2n}{n}4^{-n}$ and $n\\ge1$, the density comparison $v_J\\ge2c\\delta v_J^{\\mathrm{unif}}$, and Jackson approximation within $KL/s$ at degree $2s-2$ for $s\\ge1$; the population RD bound and limit and the count bound $P(n_s<Np/2)\\le4/(Np)$ for $N\\ge1$ and side probability $p>0$; and the sample moment-matrix bounds for growing degrees. Empty-side means are set to zero, and sample coefficients with collinear regressors are selected from the least-squares solutions. The Lean hypotheses explicitly require $\\delta\\le1$, positivity of every $k_N$, and a variance bound on the density interval, whereas the finding states the variance bound on a neighbourhood of $0$.",
+        "headline": "Proposition 2, as corrected",
+        "location": "p. 7 (PDF p. 7); proof in Appendix B, p. 10 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T9",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.corrected_appendix_pairs",
+          "line": 1942,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is the display as corrected in P023-N004, under the hypotheses of Proposition 1. The data are a finite set of pairs $it$ of a region and an election, with margins in $[-1,1]$, a binary $\\mathit{DemWin}$ that agrees with the sign of the margin, and arbitrary outcomes. Let $0<k<1$, and let Condition 1 hold. The variables $\\ddot{\\mathit{DemWin}}_{it}$ and $\\ddot{\\mathit{DV}}_{i(t+1)}$ are obtained by subtracting the mean over the bin of Condition 2 that contains the pair $it$. The statement asserts that every pair lies in exactly one of the bins $j=0,\\ldots,J$, that the central bin is $U_b$, and that $\\ddot{\\mathit{DemWin}}_{it}=0$ for every pair outside $U_b$. It asserts that $\\sum_{it\\in U_b}\\ddot{\\mathit{DemWin}}_{it}^{2}>0$ and that $\\hat\\beta_{OLS}=\\Bigl(\\sum_{it\\in U_b}\\ddot{\\mathit{DemWin}}_{it}^{2}\\Bigr)^{-1}\\Bigl(\\sum_{it\\in U_b}\\ddot{\\mathit{DemWin}}_{it}\\,\\ddot{\\mathit{DV}}_{i(t+1)}\\Bigr)$ for the coefficient on $\\mathit{DemWin}$ in every least-squares solution of the regression of Condition 2. Both sums run over the pairs in $U_b$, since the observations are indexed by pairs. The mean of a bin is taken only for a bin that contains an observation, so that the factor $|\\tilde U_j|^{-1}$ of an empty bin does not occur, as in the reading of P023-E006.",
+        "headline": "The display after “Therefore,” in Appendix A, as corrected",
+        "location": "p. 9 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T10",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.coarsened_localization",
+          "line": 677,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T10",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.printed_polynomial_localization_refuted",
+          "line": 701,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P023-T10",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements express the printed claim about the use of data, in the reading of P023-E001: an estimate relies solely on data from close elections if, with the margins and win indicators held fixed, it takes the same value at any two outcome vectors that agree on $U_b=\\{it:-k<\\mathit{DemVot}_{it}\\le k\\}$. The first statement concerns the polynomial regression of equation (2) and is the negation of the following claim: for every number of elections, every degree $J$ and every bandwidth $0<k<1$, for two-party data with margins in $[-1,1]$, if Condition 1 holds, the regressors of equation (2) have full column rank, and equation (2) takes values strictly between $0$ and $1$ at every election for some coefficients, then $\\hat\\beta_{OLS2}$ relies solely on data from close elections. This bounded-fit hypothesis is existential; it does not restrict the outcome pairs in the definition of sole reliance. The six elections of the finding, with a linear control, satisfy the hypotheses of this claim. The second statement concerns the regression of Condition 2, again for $0<k<1$ and two-party data with margins in $[-1,1]$ and binary win indicators agreeing with their signs away from ties. If $U_b$ contains at least one Democratic win and at least one Democratic loss, it asserts that two outcome vectors that agree on $U_b$ have the same coefficient on $\\mathit{DemWin}$, in every least-squares solution. This count requirement is weaker than Condition 1: it need not include a strictly interior election on each side of zero, since a zero-margin tie may be assigned either win indicator and the upper endpoint $k$ is included. These statements address exclusive use of close-election outcomes. They do not prove the common cutoff target, convergence of the estimates' difference to zero in probability under exact specification and requisite shared consistency, or causal interpretation. Nonzero distant weights do not refute that conditional convergence or establish different causal bias or external validity; concerns arising from the shared cutoff target and its identifying assumptions can remain. The first sentence of Section 5, which says that OLS “may” rely solely on data from close elections, has no separate statement, and the second statement supplies such a case.",
+        "headline": "The statements of Sections 1, 3.2 and 5 that the estimates of a regression rely solely on data from close elections",
+        "location": "p. 3 (PDF p. 3); p. 7 (PDF p. 7); p. 8 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T11",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.printed_coarsened_proposition1",
+          "line": 1350,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T11",
+          "target_kind": "headline_result",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.proposition1",
+          "line": 657,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T11",
+          "target_kind": "headline_result",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements express the proposition: the data are finitely many elections with margins in $[-1,1]$, a binary $\\mathit{DemWin}$ equal to $1$ for a positive margin and to $0$ for a negative one, and arbitrary real outcomes. For $0<k<1$ and under Condition 1, the statements assert that $\\hat\\beta_{OLS}=\\frac{\\sum_{it\\in U_b}\\mathit{DemWin}_{it}\\,\\mathit{DV}_{i(t+1)}}{\\sum_{it\\in U_b}\\mathit{DemWin}_{it}}-\\frac{\\sum_{it\\in U_b}(1-\\mathit{DemWin}_{it})\\,\\mathit{DV}_{i(t+1)}}{\\sum_{it\\in U_b}(1-\\mathit{DemWin}_{it})},$ where $U_b=\\{it:-k<\\mathit{DemVot}_{it}\\le k\\}$ and the right-hand side is the estimate $\\hat\\tau_{RD}$ of Condition 3. In the first statement the regression of Condition 2 has one intercept for each of the $J+1$ bins, with $J=2\\lceil(1-k)/(2k)\\rceil$ and the reference bin of Appendix A. In the second it has the printed regressors, which are an intercept, $\\mathit{DemWin}$ and $X_1,\\ldots,X_J$. In both, $\\hat\\beta_{OLS}$ is the coefficient on $\\mathit{DemWin}$ in an arbitrary solution of the normal equations. The statements therefore hold when some bins are empty and the other coefficients are not unique. The margin and $k$ are proportions, as in the reading of P023-N001, and an election with margin $0$ may have either value of $\\mathit{DemWin}$. No model of the outcomes is assumed; the statements are not narrower than the printed proposition.",
+        "headline": "Proposition 1",
+        "location": "p. 6 (PDF p. 6); Conditions 1–3 on p. 5 (PDF p. 5); proof in Appendix A, p. 9 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P023-T12",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/Wave1/PrintedPropositionTwoRefutedTailC.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.Wave1.printed_proposition2_refuted",
+          "line": 166,
+          "module": "AronowAudit.P023.Wave1.PrintedPropositionTwoRefutedTailC",
+          "status": "counterexample_proved",
+          "target_id": "P023-T12",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.appendix_rewriting",
+          "line": 1151,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T12",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.appendix_smooth_continuous",
+          "line": 2425,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T12",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.appendix_smooth_zero",
+          "line": 1158,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T12",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P023"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P023/P023_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P023.weierstrass_without_constant",
+          "line": 2469,
+          "module": "AronowAudit.P023.P023_Audit",
+          "status": "proved",
+          "target_id": "P023-T12",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P023"
+        }
+      ],
+      "text": {
+        "body": "The printed proposition does not define “weak regularity conditions”, “sufficiently large” or $\\approx$, and the main Lean statement negates the following universal reading of them. The observations are i.i.d. with $E[Y^2]<\\infty$ and margins in $[-1,1]$; the conditional mean is $g(x)$ for $x<0$ and $f(x)$ for $x\\ge0$, with $g$ continuous on $[-1,0)$, a finite left limit $\\alpha$ at $0$, and $f$ continuous on $[0,1]$, and I set $\\beta=f(0)-\\alpha$. The hypotheses require positive definite moments of $(1,D,X,\\ldots,X^J)$ at every $J\\ge1$, no margin atom at $0$, positive probability on every open interval in some neighbourhood of $0$, bounded conditional variance near $0$, positive bandwidths $k_N\\to0$ with $Nk_N\\to\\infty$, and expected counts tending to infinity on each side of the window. With $b_J$ the population coefficient on $D=I[X\\ge0]$ in equation (2), the universal claim being negated asserts $\\hat\\tau_{RD}\\to\\beta$ in probability and, for every $\\epsilon>0$, a $J_0$ such that each fixed $J\\ge J_0$ with $J\\ge1$ has $\\hat\\beta_{OLS2}-\\hat\\tau_{RD}\\to b_J-\\beta$ in probability and $|b_J-\\beta|<\\epsilon$. There is no Lipschitz hypothesis. The refutation uses the uniform-margin example of P023-E002: one continuous $h$ whose population coefficients do not converge to the jump, together with an i.i.d. sample and bandwidths satisfying every stated premise. Four further statements assert the Appendix B rewriting as $\\alpha+\\beta I[x\\ge0]+h(x)$ with the printed $h$, the identity $h(0)=0$, continuity of $h$ on $[-1,1]$, and uniform approximation of continuous $h$ vanishing at $0$ by polynomials without constant term. The rewriting and the identity at $0$ require no continuity assumptions, while the continuity statement includes the finite left limit of $g$. The step “$E[u\\mid \\mathit{DemVot}]\\approx0$ and therefore $E[\\hat\\beta_{OLS2}]\\approx\\beta$” and the Remark’s test of fit are outside these statements.",
+        "headline": "Proposition 2, with its Remark and the proof in Appendix B",
+        "location": "p. 7 (PDF p. 7); equation (2) on p. 6 (PDF p. 6); Appendix B, p. 10 (PDF p. 10)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "P. M. Aronow",
+      "David R. Mayhew",
+      "Winston Lin"
+    ],
+    "citation": "P. M. Aronow, David R. Mayhew, and Winston Lin (2014). A Note on Close Elections and Regression Analysis of the Party Incumbency Advantage. Statistics, Politics and Policy 5(1–2):1–11.",
+    "doi": "10.1515/spp-2014-0003",
+    "title": "A Note on Close Elections and Regression Analysis of the Party Incumbency Advantage",
+    "type": "Journal article",
+    "venue": "Statistics, Politics and Policy",
+    "year": "2014"
+  },
+  "work_id": "P023"
+}

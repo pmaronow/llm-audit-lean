@@ -1,0 +1,2619 @@
+{
+  "counts": {
+    "counterexample_proved": 10,
+    "proved": 114,
+    "results": 124,
+    "targets": 30
+  },
+  "overview": {
+    "areas": [
+      "randomization-inference",
+      "causal-identification",
+      "optimization-and-computation"
+    ],
+    "caveats": [
+      "Potential outcomes and receipt decisions are fixed; the probability law is uniform over all subsets of the prescribed treatment-arm size, and exclusion is encoded by making outcomes depend on receipt alone.",
+      "Adjusted regressions use a fixed residual-sum-of-squares minimizer on singular arms; finite sharp-null coverage includes this deterministic extension, while the IV identity explicitly assumes the required matrices are invertible.",
+      "The corrected Theorems 1 and 2 give asymptotic coverage lower bounds. Corrected Remark 3 additionally establishes nominal limiting coverage and equality of the worst-case liminf for the unadjusted method when an admissible strictly increasing sequence has constant effects and positive baseline variance. The lower-bound limit filters exclude sizes with empty parameter classes; a bounded admissible size set gives a vacuous asymptotic case.",
+      "The algorithm theorem concerns the corrected index pairing, initialization and squared critical-value formulas; it assumes common-data regularity with positive variance denominators for every real parameter, and full-rank arm designs in the adjusted branch.",
+      "Finite coverage for the full randomization distribution and algorithmic correctness for a fixed finite collection of simulated assignments are separate results; neither statement alone certifies the replication software."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P002.negative_delta_counterexample",
+        "target_ids": [
+          "P002-T1"
+        ],
+        "what": "The printed Lemma 5 and bound (E.10) use $1-\\delta$ for every $\\delta<1$; an admissible 12-unit population with $\\delta=-1/2$ has actual randomization variances $5/396$ and $36/55$, both strictly below those bounds."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P002.Wave1.corrected_lemma5_proof",
+        "target_ids": [
+          "P002-T2"
+        ],
+        "what": "The printed Lemma 5 variance lower bound uses $1-\\delta$; replacing that factor by $1-\\max\\{\\delta,0\\}$ gives a valid bound for every population in the same parameter class $\\Theta_n$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P002.Wave1.corrected_E10_proof",
+        "target_ids": [
+          "P002-T2"
+        ],
+        "what": "The printed oracle variance bound (E.10) uses $1-\\delta$; replacing that factor by $1-\\max\\{\\delta,0\\}$ gives a valid finite-population bound under the same $\\Xi_n$ assumptions with positive covariate dimension."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P002.theorem1_sharpness_counterexample",
+        "target_ids": [
+          "P002-T4"
+        ],
+        "what": "The printed Theorem 1 asserts a worst-case coverage limit equal to $1-\\alpha$; for $(\\delta,r,A)=(0,1/4,1/2)$ the nonempty admissible class has coverage infimum exactly one at every $n\\ge2$, so its limit differs from $1-\\alpha$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P002.Wave1.corrected_theorem1_proof",
+        "target_ids": [
+          "P002-T5"
+        ],
+        "what": "In place of the printed Theorem 1 coverage-limit equality, the corrected theorem proves a worst-case coverage limit inferior of at least $1-\\alpha$, along sizes with nonempty $\\Theta_n$, under its stated balance and moment assumptions."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P002.Wave1.corrected_theorem2_proof",
+        "target_ids": [
+          "P002-T5"
+        ],
+        "what": "In place of the printed Theorem 2 coverage-limit equality, the corrected regression-adjusted theorem proves a worst-case coverage limit inferior of at least $1-\\alpha$, along sizes with nonempty $\\Xi_n$, for fixed positive covariate dimension and the stated balance, moment and Gram-matrix assumptions."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P002.constant_effect_coverage",
+        "target_ids": [
+          "P002-T25"
+        ],
+        "what": "Under complete randomization, exclusion, monotone receipt, a nonempty complier set and a constant additive receipt effect, both full-distribution confidence sets cover the LATE with probability at least $1-\\alpha$ for $0<\\alpha<1$."
+      },
+      {
+        "lean_name": "AronowAudit.P002.Wave1.adjusted_wald_equals_IV_proof",
+        "target_ids": [
+          "P002-T26"
+        ],
+        "what": "With centered covariates, invertible arm Gram, instrument Gram and IV cross matrices, and a nonzero adjusted receipt contrast, the coefficient on receipt in the interacted IV regression equals the adjusted Wald ratio."
+      },
+      {
+        "lean_name": "AronowAudit.P002.Wave1.quantile_index_interval_paper",
+        "target_ids": [
+          "P002-T27"
+        ],
+        "what": "For $M\\ge1$ simulated Anderson–Rubin curves and $0<\\alpha<1$, with the observed and simulated curves regular and generated from common data, the Monte Carlo quantile-index set is constant on every nonempty open interval containing no intersection of distinct simulated curves and is included in the index set at each finite endpoint."
+      },
+      {
+        "lean_name": "AronowAudit.P002.Wave1.algorithm_correctness_paper",
+        "target_ids": [
+          "P002-T28"
+        ],
+        "what": "For $M\\ge1$ simulated Anderson–Rubin curves and $0<\\alpha<1$, with the observed and simulated curves regular and generated from common data, complete finite intersection lists exist. Algorithm 1 has a terminating run for every such list, and Algorithm 2 does when the list is nonempty; every run returns the Monte Carlo confidence set. For an empty list, comparison with any curve in the quantile-index set at any parameter value gives the same confidence set."
+      }
+    ],
+    "overview": "The work constructs confidence sets for the local average treatment effect by inverting studentized Anderson–Rubin randomization tests, with and without covariate adjustment. The Lean development covers finite-sample validity under constant additive effects, corrected asymptotic coverage lower bounds, regression and variance identities, and correctness of corrected algorithms for computing Monte Carlo confidence sets. Counterexamples distinguish failures of printed variance bounds and coverage equalities from the lower-bound coverage conclusions.",
+    "work_id": "P002"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GLP0021B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.negative_delta_sequence_proof",
+          "line": 513,
+          "module": "AronowAudit.P002.Wave1.Gap.GLP0021B1",
+          "status": "proved",
+          "target_id": "P002-T1",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.negative_delta_AMGM_failure",
+          "line": 868,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T1",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.negative_delta_assignments",
+          "line": 733,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T1",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.negative_delta_counterexample",
+          "line": 781,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P002-T1",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.negative_delta_population_ols",
+          "line": 738,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T1",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.rawTau_sum",
+          "line": 767,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T1",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.sum_complement_eq",
+          "line": 759,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T1",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample of P002-E002. The population has $n=12$ units, $n_1=2$ and one covariate. Every unit is a complier with $y_i(1)=y_i(0)=y_i$, and the four pairs $(x_i,y_i)=(-1,-1),(-1,1),(1,-1),(1,1)$ each occur three times. The main statement asserts that this model satisfies Assumptions 1–4 with $(\\delta,r,A)=(-1/2,1/6,2)$ and Assumptions 1, 2, 4 and 5 with $(\\delta,\\tilde\\varepsilon,A,B,r)=(-1/2,1/2,2,2,1/6)$, that $\\bar\\beta=0$, and that there are 66 assignments. It asserts further that $S_1^2(0)=S_0^2(0)=25/1188$, $\\operatorname{var}\\bigl(\\widehat\\tau(0)\\bigr)=\\frac{5}{396},\\qquad\\operatorname{var}\\bigl(\\tilde\\tau_{\\mathrm{adj}}(0)\\bigr)=\\frac{36}{55},$ and that each variance is strictly smaller than the right-hand side printed for it, in Lemma 5 and in (E.10) respectively. A second statement concerns the population in which the four pairs are repeated $3m$ times, so that $n=12m$ and $n_1=2m$, for every $m\\ge1$. It asserts that the same assumptions hold with the same constants, that the two variances are $5/\\{36(12m-1)\\}$ and $36/\\{5(12m-1)\\}$, and that each right-hand side as printed equals $13/12$ times the corresponding variance. Of the five supporting statements, one is the arithmetic of the step from (C.3) to (C.4) in the example, whose two sides are $12/11$ and $-36/55$. One lists the 66 assignments, and one says that the population regression coefficients are zero. The other two are identities for the sum of a vector over the treated units and over the control units. An assignment is represented by its set of treated units, and complete randomization is the uniform distribution on the sets of $n_1$ units. The variances are exact averages over these sets, and no variance formula is substituted for them.",
+        "headline": "A counterexample to Lemma 5 and to Lemma 16, claim 1, display (E.10), as printed",
+        "location": "Supplement, Lemma 5 and steps (C.3)–(C.8), pp. 23–24 (PDF pp. 3–4); Lemma 16, claim 1, bound (E.10), and its proof, pp. 34–35 (PDF pp. 14–15)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0021B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_E10_proof",
+          "line": 680,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0021B2",
+          "status": "proved",
+          "target_id": "P002-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GLP0021B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_lemma5_proof",
+          "line": 699,
+          "module": "AronowAudit.P002.Wave1.Gap.GLP0021B1",
+          "status": "proved",
+          "target_id": "P002-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_variance_algebra",
+          "line": 694,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.group_variance_second_moment",
+          "line": 1362,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements contain the corrected bounds of P002-E002, with $\\delta_+=\\max\\{\\delta,0\\}$. The first asserts that, for every model that satisfies Assumptions 1–4 with constants $\\delta<1$, $r\\in(0,1/2]$ and $A>0$, $\\operatorname{var}\\bigl(\\widehat\\tau(\\bar\\beta)\\bigr)\\ge(1-\\delta_+)\\left(\\frac{n_0}{nn_1}S_1^2(\\bar\\beta)+\\frac{n_1}{nn_0}S_0^2(\\bar\\beta)\\right).$ The second asserts the bound (E.10) with $1-\\delta_+$ in place of $1-\\delta$, for every model with $k\\ge1$ covariates that satisfies Assumptions 1, 2, 4 and 5 with constants $\\delta<1$, $r\\in(0,1/2]$ and $\\tilde\\varepsilon,A,B>0$. Each bound is stated for one model at its own local average treatment effect $\\bar\\beta$, which is the $\\beta_n=\\bar\\beta(\\theta_n)$ of the two lemmas. A bound that holds for every model holds along every sequence and every subsequence. The parameter spaces are those of Theorems 1 and 2 for every $\\delta<1$, so that no model with negative $\\delta$ is excluded and only the factor in the bound changes. The variance on the left is the exact variance over the assignments, of $\\widehat\\tau$ in the first statement and of the infeasible statistic $\\tilde\\tau_{\\mathrm{adj}}$ of (D.4) in the second. Two supporting statements give steps of the proofs. The first is the scalar inequality behind (C.4) and behind its analogue in the proof of (E.10): for $n_0,n_1>0$, $a,b\\ge0$ and $C\\ge-\\delta ab$, $(1-\\delta_+)\\left(\\frac{n_0}{(n_0+n_1)n_1}a^2+\\frac{n_1}{(n_0+n_1)n_0}b^2\\right)\\le\\frac{a^2}{n_1}+\\frac{b^2}{n_0}-\\frac{a^2+b^2-2C}{n_0+n_1}.$ The second is the inequality (C.7): the variance of a vector within a group of at least two units is at most its mean square about any constant, where both have the divisor $|\\mathcal C|-1$. In the Lean statements the complier variances and the complier covariance of Assumption 3(i) are zero when there is a single complier. The eigenvalue condition of Assumption 5(v) is written as $v'(n^{-1}\\sum_ix_ix_i')v\\ge\\tilde\\varepsilon\\|v\\|_2^2$ for every $v$.",
+        "headline": "Lemma 5 and Lemma 16, claim 1, display (E.10), as corrected",
+        "location": "Supplement, pp. 23–24 (PDF pp. 3–4) and pp. 34–35 (PDF pp. 14–15)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T3",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_ConfidenceCompletion.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.ConfidenceFollowup.printed_E10_refuted",
+          "line": 39,
+          "module": "AronowAudit.P002.P002_ConfidenceCompletion",
+          "status": "counterexample_proved",
+          "target_id": "P002-T3",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_ConfidenceCompletion.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.ConfidenceFollowup.printed_lemma5_refuted",
+          "line": 20,
+          "module": "AronowAudit.P002.P002_ConfidenceCompletion",
+          "status": "counterexample_proved",
+          "target_id": "P002-T3",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements negate the universal finite bounds printed in Lemma 5 and (E.10), with the factor $1-\\delta$. Lemma 5 claims that, for every model that satisfies Assumptions 1–4 with constants $\\delta<1$, $r\\in(0,1/2]$ and $A>0$, $\\operatorname{var}\\bigl(\\widehat\\tau(\\bar\\beta)\\bigr)\\ge(1-\\delta)\\left(\\frac{n_0}{nn_1}S_1^2(\\bar\\beta)+\\frac{n_1}{nn_0}S_0^2(\\bar\\beta)\\right).$ The printed (E.10) bound makes the analogous assertion, for every model with $k\\ge1$ covariates that satisfies Assumptions 1, 2, 4 and 5 with constants $\\delta<1$, $r\\in(0,1/2]$ and $\\tilde\\varepsilon,A,B>0$. Negative values of $\\delta$ are admitted, as in Theorems 1 and 2. These are the statements that the population of 12 units in P002-E002 contradicts, and the counterexample and the corrected bounds have their own Lean statements. The printed and corrected finite bounds use the same hypotheses and representation of the paper’s objects, and differ only in the factor. For $0\\le\\delta<1$ the printed and the corrected statements coincide. Lemma 16 is stated in the Supplement for the subsequences of a sequence of models. The Lean negation of (E.10) concerns the universal bound over finite models; a sequence or subsequence assertion is separate. The printed proofs, steps (C.3)–(C.8) and the proof of (E.10), have no statement of their own.",
+        "headline": "Lemma 5 and Lemma 16, claim 1, display (E.10), as printed",
+        "location": "Supplement, pp. 23–24 (PDF pp. 3–4) and pp. 34–35 (PDF pp. 14–15)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T4",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GLP0022B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.theorem2_sharpness_counterexample_proof",
+          "line": 51,
+          "module": "AronowAudit.P002.Wave1.Gap.GLP0022B1",
+          "status": "proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.collapse_moments",
+          "line": 1510,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.degenerate_model_admissible",
+          "line": 1658,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.fourth_moment_CS",
+          "line": 1523,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.half_moment_collapse",
+          "line": 1531,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.observedW_constant",
+          "line": 1588,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.rawTau_constant",
+          "line": 1597,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.theorem1_sharpness_counterexample",
+          "line": 1697,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.theta_half_moment_constant",
+          "line": 1570,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.theta_half_moment_coverage",
+          "line": 1629,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T4",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements formalize the counterexamples of P002-E001, for every $\\alpha\\in(0,1)$. The first takes $(\\delta,r,A)=(0,1/4,1/2)$. It asserts that, for every $n\\ge2$ and every real $\\beta$, the model in which all units are compliers, $y_i(0)=0$, $y_i(1)=\\beta$ and $n_1=\\lfloor n/2\\rfloor$ belongs to $\\Theta_n(0,1/4,1/2)$ and has $\\bar\\beta=\\beta$. It asserts that every model in $\\Theta_n(0,1/4,1/2)$ has coverage $1$ at its $\\bar\\beta$, so that the nested infimum of Theorem 1 equals $1$ for every $n\\ge2$ and does not converge to $1-\\alpha$. The second takes $k=1$ and $(\\delta,\\tilde\\varepsilon,A,B,r)=(0,1/4,4,1/2,1/4)$. It asserts that the same models with the covariate $x_i=(2i-n-1)/n$ belong to $\\Xi_n$, that every model in $\\Xi_n$ has coverage at least $\\max\\{0,1-1548/(n-1)\\}$ for the set $I^{\\mathrm{adj},*}_{1-\\alpha}(Z)$, and that the nested infimum of Theorem 2 tends to $1$ and not to $1-\\alpha$. Eight supporting statements give the steps of the first counterexample. Three contain the moment argument. With $S_2=\\sum_iv_i^2$ and $S_4=\\sum_iv_i^4$, they are the inequality $S_2^2\\le nS_4$, the implication that $S_2=0$ whenever $n\\ge2$, $S_2^2\\le nS_4$ and $16(n-1)^2S_4\\le nS_2^2$, and the conclusion that $v=0$ whenever $n\\ge2$ and $\\{S_4/n\\}^{1/4}\\le(1/2)\\{S_2/(n-1)\\}^{1/2}$. The others state that the exhibited model belongs to the class, that $w_i(1)$ and $w_i(0)$ equal one constant in every model of the class, that $Y_i-\\bar\\beta D_i$ is then constant and $\\widehat\\tau(\\bar\\beta)=0$ for every assignment, and that coverage is $1$. Coverage is the exact probability over the assignments that $|\\Delta(\\bar\\beta)|\\le\\eta^*_{1-\\alpha}(\\bar\\beta,Z)$, with $0/0=0$ in the statistic as on p. 23 of the Supplement. Two conventions are added where the paper is silent. An inner infimum over an empty set of models is $+\\infty$, and in an arm whose regression is rank deficient the fitted coefficients are a fixed least-squares solution. The models exhibited have a constant additive effect, which is the case of the last sentence of Remark 3, and the remark has no statement of its own. For a statement giving a counterexample, “Proved” means that the counterexample is proved.",
+        "headline": "A counterexample to the equality in Theorem 1, Theorem 2 and Remark 3, as printed",
+        "location": "Theorem 1 and Remark 3, p. 8 (PDF p. 8); Theorem 2, p. 11 (PDF p. 11); last step of the proof of Theorem 1, Supplement, p. 31 (PDF p. 11)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T5",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0022B2b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_remark3_sharpness_proof",
+          "line": 709,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0022B2b",
+          "status": "proved",
+          "target_id": "P002-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GLP0022B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_theorem1_proof",
+          "line": 1152,
+          "module": "AronowAudit.P002.Wave1.Gap.GLP0022B2",
+          "status": "proved",
+          "target_id": "P002-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/Theorem2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_theorem2_proof",
+          "line": 193,
+          "module": "AronowAudit.P002.Wave1.Gap.Theorem2",
+          "status": "proved",
+          "target_id": "P002-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements contain the corrections of P002-E001. The first is the corrected Theorem 1: for $\\alpha\\in(0,1)$, $\\delta<1$, $r\\in(0,1/2]$ and $A>0$, $\\liminf_{n\\to\\infty}\\,\\inf_{\\beta\\in\\mathbb R}\\,\\inf_{\\{\\theta\\in\\Theta_n(\\delta,r,A):\\,\\bar\\beta(\\theta)=\\beta\\}}\\mathbb P_\\theta\\{\\beta\\in I^*_{1-\\alpha}(Z)\\}\\ge1-\\alpha,$ where the limit inferior is taken along the sample sizes $n$ for which $\\Theta_n(\\delta,r,A)$ is nonempty. The second is the corrected Theorem 2 in the same form, for $k\\ge1$ covariates, constants $\\tilde\\varepsilon,A,B>0$, the parameter space $\\Xi_n(k,\\delta,\\tilde\\varepsilon,A,B,r)$ and the set $I^{\\mathrm{adj},*}_{1-\\alpha}(Z)$. Neither statement supposes that these sample sizes are unbounded, as the corrected theorems do. When they are bounded, the limit inferior is $+\\infty$ by convention, and the inequality then says nothing. The third statement is a sufficient condition for equality in Theorem 1, in the sense of the corrected Remark 3. Its hypotheses are an increasing sequence of sample sizes and, at each of them, a model in $\\Theta_n(\\delta,r,A)$ with a constant additive effect such that the outcomes $y_i(0)$ have positive variance. The effect may differ from one model to the next. The statement asserts that the coverage of these models tends to $1-\\alpha$, and that the limit inferior above equals $1-\\alpha$. It concerns the theory without covariates only, and no condition for equality in Theorem 2 is stated. Coverage is the exact probability over the assignments. The nested infimum takes values in $[0,\\infty]$, and an inner infimum over an empty set of models is $+\\infty$.",
+        "headline": "Theorem 1, Theorem 2 and Remark 3, as corrected",
+        "location": "Theorem 1 and Remark 3, p. 8 (PDF p. 8); Theorem 2, p. 11 (PDF p. 11); proofs in the Supplement, Sections C–E, pp. 23–42 (PDF pp. 3–22)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T6",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GLP0022B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.feasible_variance_counterexample_proof",
+          "line": 1042,
+          "module": "AronowAudit.P002.Wave1.Gap.GLP0022B3",
+          "status": "proved",
+          "target_id": "P002-T6",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the counterexample of P002-E003, with $k=1$ and $(\\delta,\\tilde\\varepsilon,A,B,r)=(0,1/4,16,5,1/3)$. For every even $n=2m\\ge8$ it takes the population of the finding, with $\\eta_n=2^{-n^2}$ and $n_1=n_0=m$. It asserts that this model belongs to $\\Xi_n$, that $\\bar\\beta=0$, and that the regression in each arm has full rank for every assignment. For every original assignment $Z$ it asserts that $\\operatorname{var}^*\\bigl(\\widehat\\tau^*_{\\mathrm{adj}}(0)\\bigr)\\ge8\\cdot2^{2n^2-n},\\qquad0\\le\\widehat\\sigma^2_{\\mathrm{adj},*}(0)<\\frac5n\\quad\\text{for every reassignment},$ and that $\\mathbb P^*\\left(\\left|\\frac{\\widehat\\sigma^2_{\\mathrm{adj},*}(0)}{\\operatorname{var}^*\\bigl(\\widehat\\tau^*_{\\mathrm{adj}}(0)\\bigr)}-1\\right|\\ge\\frac12\\right)=1 .$ It asserts also that this probability tends to $1$ as $n\\to\\infty$ along the even integers. The last part concerns odd $n\\ge9$. The model with $n$ values of the covariate equally spaced in $[-1,1]$, outcomes $y_i(0)=y_i(1)=(x_i^2-n^{-1}\\sum_lx_l^2)/10$, all units compliers and $n_1=\\lfloor n/2\\rfloor$ belongs to $\\Xi_n$ with the same constants. The even sizes are then a subsequence of a sequence of models in $\\Xi_n$, as Lemma 20 requires. Under reassignment the observed values $Y_i-\\beta_nD_i$ are held fixed, and $\\operatorname{var}^*$ and $\\mathbb P^*$ are exact averages over the reassignments. The conclusions hold for every original assignment, so the failure is not confined to a set of probability zero. For a statement giving a counterexample, “Proved” means that the counterexample is proved.",
+        "headline": "A counterexample to Lemma 20, claim 4, display (E.61), as printed",
+        "location": "Supplement, p. 42 (PDF p. 22)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T7",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/DecisionLemma20.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_lemma20_proof",
+          "line": 1654,
+          "module": "AronowAudit.P002.Wave1.Gap.DecisionLemma20",
+          "status": "proved",
+          "target_id": "P002-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0022B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.oracle_variances_proof",
+          "line": 207,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0022B3",
+          "status": "proved",
+          "target_id": "P002-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.ols_minimizer_exists",
+          "line": 242,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.ols_minimizer_fullrank",
+          "line": 547,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is Lemma 20 with the denominator of (E.61) corrected as in P002-E003, and it contains all four claims of the lemma. It concerns an increasing sequence of sample sizes, a model in $\\Xi_n(k,\\delta,\\tilde\\varepsilon,A,B,r)$ at each size, with $k\\ge1$ and the constants of Theorem 2, and assignments defined on one probability space, each with the law of complete randomization. For every subsequence it asserts that, almost surely, the limits (E.58), (E.59) and (E.60) hold and, for every $\\kappa>0$, $\\lim_{k\\to\\infty}\\mathbb P^*\\left(\\left|\\frac{\\widehat\\sigma^2_{\\mathrm{adj},*}(\\beta_{n_k})}{\\operatorname{var}^*\\bigl(\\tilde\\tau^*_{\\mathrm{adj}}(\\beta_{n_k})\\bigr)}-1\\right|\\ge\\kappa\\right)=0 .$ The statement departs from the corrected lemma in two respects. It supposes that the population residuals $\\varepsilon_i(1,\\beta_n)$ and $\\varepsilon_i(0,\\beta_n)$ have positive variance at every size. The Supplement supposes throughout its proofs that the variances $\\sigma^2_{w(a)}$ are positive, and it says that similar comments apply with covariates (p. 23). The lemma does not state such a condition, so that the Lean statement covers fewer models. The statement also places no condition on the joint law of the assignments at different sample sizes. The Supplement takes them to be mutually independent (p. 27), so that on this point the statement asserts more than the lemma. Under reassignment the observed values $Y_i-\\beta_nD_i$ are held fixed, $\\tilde\\tau^*_{\\mathrm{adj}}$ uses the coefficients of the regression on the full population, and $\\mathbb P(|\\mathcal Z|\\ge x)$ is the standard normal probability. Three supporting statements are exact. A least-squares problem on any set of units has a minimizer, and when the set is nonempty and its design matrix has full rank the solution of the normal equations is one. The third contains the variance formulas (D.5) and (D.6), for centred covariates and a design matrix of full rank on the whole population.",
+        "headline": "Lemma 20, claim 4, display (E.61), as corrected",
+        "location": "Supplement, p. 42 (PDF p. 22)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T8",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.intercept_eigenvalue_counterexample",
+          "line": 979,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P002-T8",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the counterexample of P002-E010 in its smallest case: $n=2$, one covariate with the values $2$ and $-2$, and $\\tilde\\varepsilon=2$. It asserts that $\\sum_ix_i=0$, that $n^{-1}\\sum_ix_i^4=16$, and that $n^{-1}\\sum_i(x_ib)^2\\ge2b^2$ for every real $b$. These are Assumption 5(iii), Assumption 5(iv) with $A=16$, and Assumption 5(v). For $v=(1,0)'$, the vector with weight on the intercept only, it asserts that $v'\\Bigl(\\frac1n\\sum_{i=1}^n\\tilde x_i\\tilde x_i'\\Bigr)v=1<2=\\tilde\\varepsilon\\,\\|v\\|_2^2 .$ The eigenvalue condition of Assumption 5(v) is written as a lower bound on the quadratic form, which is equivalent for a symmetric matrix. The statement contradicts the step from Assumption 5(v) to the lower bound $\\tilde\\varepsilon$ for the matrix that includes the intercept. It is not a counterexample to Lemma 19, and the printed display is asymptotic. The finding takes any even $n$ with alternating values, and the Lean statement takes $n=2$ only.",
+        "headline": "A counterexample to the eigenvalue bound in the proof of Lemma 19, as printed",
+        "location": "Supplement, proof of Lemma 19, p. 42 (PDF p. 22), first display; Assumption 5(v), p. 11 (PDF p. 11)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T9",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/E61Eigenvalue.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_E61_eigenvalue_paper",
+          "line": 25,
+          "module": "AronowAudit.P002.Wave1.E61Eigenvalue",
+          "status": "proved",
+          "target_id": "P002-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_augmented_gram",
+          "line": 995,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_gram_perturbation",
+          "line": 1128,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_min_eigenvalue",
+          "line": 1083,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.leastRayleigh_lower",
+          "line": 1043,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements cover the correction of P002-E010. Two are exact statements about an array of covariates with $n\\ge1$ rows such that $\\sum_ix_i=0$. The first supposes that $b'(n^{-1}\\sum_ix_ix_i')b\\ge e\\|b\\|_2^2$ for every $b\\in\\mathbb R^k$ and some real $e$. It asserts that $n^{-1}\\sum_i\\tilde x_i\\tilde x_i'$ is block diagonal with blocks $1$ and $n^{-1}\\sum_ix_ix_i'$, and that $v'\\Bigl(\\frac1n\\sum_{i=1}^n\\tilde x_i\\tilde x_i'\\Bigr)v\\ge\\min\\{1,e\\}\\,\\|v\\|_2^2\\qquad\\text{for every }v\\in\\mathbb R^{k+1}.$ The second asserts, for $k\\ge1$, that the smallest eigenvalue of $n^{-1}\\sum_i\\tilde x_i\\tilde x_i'$ equals $\\min\\{1,\\lambda_{\\min}\\}$, where $\\lambda_{\\min}$ is the smallest eigenvalue of $n^{-1}\\sum_ix_ix_i'$. A smallest eigenvalue is here the infimum of the quadratic form over unit vectors. The third statement is the corrected display. It concerns an increasing sequence of sample sizes, a model in $\\Xi_n(k,\\delta,\\tilde\\varepsilon,A,B,r)$ at each size, with $k\\ge1$ and the constants of Theorem 2, and assignments on one probability space, each with the law of complete randomization. Let $\\widehat\\psi(a,\\beta_n)$ be fitted in arm $a$ and $\\psi^*(\\beta_n)$ on all units, both to the observed values $Y_i-\\beta_nD_i$. For every subsequence the statement asserts that, almost surely, there exists a sequence $\\rho_j\\to0$ such that, for all large $j$ and both arms, the quadratic form on the left of the display is at least $(\\min\\{1,\\tilde\\varepsilon\\}+\\rho_j)\\,\\|\\widehat\\psi(a,\\beta_n)-\\psi^*(\\beta_n)\\|_2^2$. The sequence $\\rho_j$ makes the term $o_{a.s.}(1)$ explicit. The assignments at different sample sizes are mutually independent, expressed as factorization of every finite intersection of assignment events. This matches the coupling specified in the Supplement (p. 27). Two supporting statements complete the step. If the quadratic form of a matrix differs from that of $G$ by at most $\\rho\\|b\\|_2^2$, and that of $G$ is at least $\\min\\{1,e\\}\\|b\\|_2^2$, then it is at least $(\\min\\{1,e\\}-\\rho)\\|b\\|_2^2$. The other is the inequality $b'(n^{-1}\\sum_ix_ix_i')b\\ge\\lambda_{\\min}\\|b\\|_2^2$.",
+        "headline": "The eigenvalue bound in the proof of Lemma 19, as corrected",
+        "location": "Supplement, proof of Lemma 19, p. 42 (PDF p. 22), first display"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T10",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.centring_assignments",
+          "line": 897,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T10",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.centring_counterexample",
+          "line": 902,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P002-T10",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the example of P002-E004: $n=4$, $n_1=2$, all units compliers, $y(0)=(-1,-1,1,1)$ and $y(1)=y(0)+2$. It asserts that this model satisfies Assumptions 1–4 with $(\\delta,r,A)=(0,1/2,1)$ and that $\\bar\\beta=2$. For the assignment that treats the first two units, it asserts that the left side of the identity before (C.17) is $0$ and that the right side with the printed sign is $-24$. It asserts further that, with the printed sign, $E\\Bigl[\\Bigl(\\frac1{n_1}\\sum_{i=1}^nZ_i\\bigl(y_i(d_i(1))-\\beta_nd_i(1)\\bigr)-\\mu_{y(d(1))}-\\beta_n\\mu_{d(1)}\\Bigr)^2\\Bigr]=\\frac{49}{3},\\qquad\\frac{n_0}{n_1n(n-1)}\\sum_{i=1}^nv_i^2(1)=\\frac13 ,$ so that the first equality of (C.17) fails before the division by $S_1^2(\\beta_n)$. The expectation is the exact average over the six assignments, which a supporting statement lists. The value $49/3$ is not in the finding. It agrees with the excess $4\\beta_n^2\\mu_{d(1)}^2=16$ that the finding gives in general.",
+        "headline": "A counterexample to the identity before (C.17) and to the first equality of (C.17), as printed",
+        "location": "Supplement, proof of Lemma 7, p. 26 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T11",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0021B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_C17_proof",
+          "line": 131,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0021B1",
+          "status": "proved",
+          "target_id": "P002-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0021B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_C17_rate_proof",
+          "line": 188,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0021B1",
+          "status": "proved",
+          "target_id": "P002-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0021B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.sample_mean_variance_proof",
+          "line": 262,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0021B1",
+          "status": "proved",
+          "target_id": "P002-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_C17_identity",
+          "line": 1337,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.groupMean_congr",
+          "line": 1330,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.groupMean_sub_smul",
+          "line": 290,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.mean_sub_smul",
+          "line": 296,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.square_centering",
+          "line": 875,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements cover the corrected displays of P002-E004. The first is the identity before (C.17) with the corrected sign, $\\frac1{n_1}\\sum_{i=1}^nZ_i\\widehat v_i^2(1)=\\frac1{n_1}\\sum_{i=1}^nZ_iv_i^2(1)-\\Bigl(\\frac1{n_1}\\sum_{i=1}^nZ_i\\bigl(y_i(d_i(1))-\\beta d_i(1)\\bigr)-\\mu_{y(d(1))}+\\beta\\mu_{d(1)}\\Bigr)^2,$ for every $n\\ge2$, every $1\\le n_1\\le n-1$, every assignment and every real $\\beta$ in place of $\\beta_n$. The second repeats this identity and adds the first equality of (C.17) before the division by $S_1^2(\\beta_n)$: the expectation of the squared bracket equals $n_0\\{n_1n(n-1)\\}^{-1}\\sum_iv_i^2(1)$. The third is the rate at the end of (C.17). For an increasing sequence of sample sizes and models in $\\Theta_n(\\delta,r,A)$ such that $S_1^2(\\beta_n)>0$, it asserts that the left side of (C.17) is $O(n_0/(n_1n))$ and tends to zero. The condition $S_1^2(\\beta_n)>0$ is not printed with the display. It makes the quotient meaningful, and the Supplement supposes throughout its proofs that the variances are positive (p. 23). The first two statements are slightly more general than the displays, since they hold for every $\\beta$ and use none of Assumptions 2–4. Five supporting statements give the steps. For a nonempty set $S$ of units with mean $\\bar q_S$ and any constant $c$, the mean of $(q_i-\\bar q_S)^2$ over $S$ equals the mean of $(q_i-c)^2$ minus $(\\bar q_S-c)^2$. For a fixed vector $q$ with treated mean $\\bar q_1$, the variance formula $E[(\\bar q_1-\\mu_q)^2]=n_0\\{n_1n(n-1)\\}^{-1}\\sum_i(q_i-\\mu_q)^2$ holds. The other three are elementary properties of the means over an arm and over the population.",
+        "headline": "The identity before (C.17) and display (C.17), as corrected",
+        "location": "Supplement, proof of Lemma 7, p. 26 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T12",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.C31_assignments",
+          "line": 937,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T12",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.C31_counterexample",
+          "line": 943,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P002-T12",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the example of P002-E005: $n=8$, $n_1=n_0=4$, $\\beta_n=0$, observed outcomes $(-1,-1,-1,-1,1,1,1,1)$, and the assignment that treats the first four units. The outcomes come from a model in which all units are compliers and $y_i(1)=y_i(0)$. The statement asserts that this model satisfies Assumptions 1–4 with $(\\delta,r,A)=(0,1/2,1)$ and that $\\bar\\beta=0$. It asserts further that $\\operatorname{var}^*\\bigl(\\widehat\\tau^*(0)\\bigr)=\\frac1{28},\\qquad\\frac{\\pi^2(1-\\pi)^2}{n-1}\\cdot\\frac{n_0n_1}{n}\\,\\Delta_n^2=\\frac1{14},$ where $\\Delta_n$ is the difference between the two arm means of $Y_i-\\beta_nD_i$, so that the first inequality of (C.31) fails. The variance is the exact variance over the 70 reassignments of four units, while the observed outcomes are held fixed. A supporting statement lists these reassignments. The statement concerns the first inequality of (C.31) only. The second relation holds up to a constant and is asymptotic, and no statement about it is included.",
+        "headline": "A counterexample to display (C.31), as printed",
+        "location": "Supplement, proof of Lemma 11, p. 29 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T13",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0021B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_C31_proof",
+          "line": 399,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0021B1",
+          "status": "proved",
+          "target_id": "P002-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0021B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.randomization_moments_proof",
+          "line": 447,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0021B1",
+          "status": "proved",
+          "target_id": "P002-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.assignment_inclusion_count",
+          "line": 574,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement contains the corrected display of P002-E005 in an exact form. Let $n\\ge2$ and $1\\le n_1\\le n-1$, let $q$ be a real vector in place of the observed values $Y_i-\\beta_nD_i$, and let $\\Delta_n$ be the difference between the means of $q$ in the two arms of an assignment. The statement asserts that $\\operatorname{var}^*(\\widehat\\tau^*)\\ge\\frac{\\pi^2(1-\\pi)^2}{n-1}\\,\\Delta_n^2\\qquad\\text{and}\\qquad\\operatorname{var}^*(\\widehat\\tau^*)\\ge\\frac{r^2(1-r)^2}{n}\\,\\Delta_n^2,$ the second for every $r\\in(0,1/2]$ such that $rn\\le n_1\\le(1-r)n$. The first inequality is the first relation of the corrected (C.31). The second replaces the relation $\\gtrsim$ by an inequality with the explicit constant $r^2(1-r)^2$, which Assumption 4 supplies, so that it is a statement for each $n$. Since $q$ is arbitrary, the statement is slightly more general than the display. Two supporting statements give the tools of the proof. The number of assignments that contain a given set $R$ of at most $n_1$ units is $\\binom{n-|R|}{n_1-|R|}$. Under reassignment, for a fixed vector $q$ with variance $\\sigma_q^2$, the statistic $\\widehat\\tau^*$ has mean zero and variance $\\pi^2(1-\\pi)^2\\sigma_q^2(1/n_1+1/n_0)$, which is (C.25)–(C.26).",
+        "headline": "Display (C.31), as corrected",
+        "location": "Supplement, proof of Lemma 11, p. 29 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T14",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0021B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.missing_square_counterexample_proof",
+          "line": 533,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0021B2",
+          "status": "proved",
+          "target_id": "P002-T14",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the example of P002-E006 for every even $n\\ge4$: $n_1=n_0=n/2$, all units compliers with $y_i(1)=y_i(0)$, half of the outcomes equal to $-1$ and half equal to $1$. It asserts that this model satisfies Assumptions 1–4 with $(\\delta,r,A)=(0,1/2,1)$ and that $\\bar\\beta=0$. For every original assignment it asserts that $\\operatorname{var}^*(\\widehat\\tau^*(0))=1/\\{4(n-1)\\}$, $\\mathbb P^*\\left(\\left|\\frac{\\widehat\\sigma^*(0)}{\\operatorname{var}^*(\\widehat\\tau^*(0))}-1\\right|\\ge\\frac12\\right)=1 \\qquad\\text{and}\\qquad \\mathbb P^*\\left(\\left|\\frac{\\widehat\\sigma^{*2}(0)}{\\operatorname{var}^*(\\widehat\\tau^*(0))}-1\\right|\\ge\\kappa\\right)\\le\\frac2{n\\kappa}\\quad\\text{for every }\\kappa>0 .$ The first probability is that of Lemma 12 as printed, with the standard deviation in the numerator, and the second is that of the corrected lemma. The statement asserts also that the first probability tends to $1$ as $n\\to\\infty$ along the even integers. The finding reports the first probability for $n=8,32,128,512$, and the Lean statement asserts that it equals $1$ for every even $n\\ge4$. The probabilities are exact proportions of the reassignments, while the observed outcomes are held fixed. The conclusions hold for every original assignment, so the failure is not confined to a set of probability zero. For a statement giving a counterexample, “Proved” means that the counterexample is proved.",
+        "headline": "A counterexample to Lemma 12, as printed",
+        "location": "Supplement, p. 30 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T15",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/DecisionLemma12.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_lemma12_proof",
+          "line": 846,
+          "module": "AronowAudit.P002.Wave1.Gap.DecisionLemma12",
+          "status": "proved",
+          "target_id": "P002-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.zero_response_ratio_failure",
+          "line": 1614,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is Lemma 12 with the squared numerator of P002-E006. It concerns an increasing sequence of sample sizes, a model in $\\Theta_n(\\delta,r,A)$ at each size, with $\\delta<1$, $r\\in(0,1/2]$ and $A>0$, and assignments defined on one probability space, each with the law of complete randomization. For every subsequence it asserts that, almost surely, for every $\\kappa>0$, $\\mathbb P^*\\left(\\left|\\frac{\\widehat\\sigma^{*2}(\\beta_{n_k})}{\\operatorname{var}^*(\\widehat\\tau^*(\\beta_{n_k}))}-1\\right|\\ge\\kappa\\right)\\longrightarrow0\\qquad\\text{as }k\\to\\infty .$ The statement departs from the corrected lemma in two respects. It supposes that $\\sigma^2_{w(1)}$ and $\\sigma^2_{w(0)}$ are positive at every size. The Supplement supposes this throughout its proofs (p. 23), but the lemma does not state it, so that the Lean statement covers fewer models. The statement also places no condition on the joint law of the assignments at different sample sizes. The Supplement takes them to be mutually independent (p. 27), so that on this point the statement asserts more than the lemma. Under reassignment the observed values $Y_i-\\beta_nD_i$ are held fixed, and $\\mathbb P^*$ and $\\operatorname{var}^*$ are exact averages over the reassignments. A supporting statement shows why the quotient needs a positive-variance condition. When the observed values are all zero, $\\operatorname{var}^*(\\widehat\\tau^*)=0$ and the quotient is $0/0$, which is $0$ in Lean, so that the probability at $\\kappa=1/2$ equals $1$.",
+        "headline": "Lemma 12, as corrected",
+        "location": "Supplement, p. 30 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T16",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.coordinate_example_admissible",
+          "line": 1181,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T16",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.coordinate_population_ols",
+          "line": 1156,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T16",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.maximum_counterexample",
+          "line": 1220,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P002-T16",
+          "target_kind": "counterexample",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the example of P002-E007: $n=4$, $k=2$ and the covariate rows $(1,0)$, $(-1,0)$, $(0,1)$ and $(0,-1)$. It asserts that the rows sum to zero, that $n^{-1}\\sum_ix_{si}^4=1/2$ for each coordinate $s$, that $n^{-1}\\sum_ix_ix_i'$ is one half of the identity matrix, and that $\\max_{i\\in[n]}\\|\\tilde x_i\\|_2^2=2,\\qquad1+\\sum_{s=1}^k\\max_{i\\in[n]}|x_{si}|^2=3 .$ It asserts also that these covariates belong to a model of the parameter space of Theorem 2. With all units compliers, $y_i(1)=y_i(0)$, outcomes $(1,1,-1,-1)$ and $n_1=2$, Assumptions 1, 2, 4 and 5 hold with $(\\delta,\\tilde\\varepsilon,A,B,r)=(0,1/2,1,1,1/2)$. The finding gives the covariates only, and the outcomes are added so that the example is a model in $\\Xi_n$. Two supporting statements say that this model belongs to $\\Xi_n$ and that its population regression coefficients are zero.",
+        "headline": "A counterexample to the middle equality of display (E.14), as printed",
+        "location": "Supplement, proof of Lemma 16, p. 35 (PDF p. 15)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T17",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_E14",
+          "line": 1260,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_E14_order",
+          "line": 1299,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.le_maximum",
+          "line": 1203,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.maximum_le",
+          "line": 1208,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements cover the corrected display of P002-E007. The first asserts, for every $n\\ge1$, every $k$, every $A\\ge0$ and every array of covariates such that $n^{-1}\\sum_ix_{si}^4\\le A$ for each coordinate $s$, that $\\max_{i\\in[n]}|x_{si}|\\le(An)^{1/4},\\qquad\\max_{i\\in[n]}\\|\\tilde x_i\\|_2^2\\le1+\\sum_{s=1}^k\\max_{i\\in[n]}|x_{si}|^2\\le1+k(An)^{1/2}.$ The explicit bound $1+k(An)^{1/2}$ stands for the relation $\\lesssim n^{1/2}$ of the display. The second statement is the order relation itself. For fixed $k$ and $A$ and a sequence of arrays, one for each $n\\ge1$, that satisfy the bound on the fourth moments, it asserts that $\\max_i\\|\\tilde x_i\\|_2^2=O(n^{1/2})$. Both statements use Assumption 5(iv) only, and they allow $A=0$, which the paper excludes. Two supporting statements are elementary properties of the maximum of a finite array: each entry is at most the maximum, and a nonnegative number that bounds every entry bounds the maximum.",
+        "headline": "Display (E.14), as corrected",
+        "location": "Supplement, proof of Lemma 16, p. 35 (PDF p. 15)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T18",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_E21_E23",
+          "line": 1393,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_adjusted_difference",
+          "line": 362,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.dot_xCirc",
+          "line": 1388,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.observedW_control",
+          "line": 1325,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.observedW_treated",
+          "line": 1321,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.score_congr",
+          "line": 1381,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements contain the corrected identities of P002-E008, in the form in which the left-hand side is kept as printed and the right-hand sides are negated. The first asserts, for every model with covariates, every real $\\beta$ in place of $\\beta_n$ and every assignment, that $\\widehat\\tau_{\\mathrm{adj}}(\\beta)-\\tilde\\tau_{\\mathrm{adj}}(\\beta)=-\\frac1{n_1}\\sum_{i=1}^nZ_ix_i'\\bigl(\\widehat\\gamma(1,\\beta)-\\gamma(1,\\beta)\\bigr)+\\frac1{n_0}\\sum_{i=1}^n(1-Z_i)x_i'\\bigl(\\widehat\\gamma(0,\\beta)-\\gamma(0,\\beta)\\bigr).$ The second asserts (E.21)–(E.23) with a minus sign before the treated term (E.22) and a plus sign before the control term (E.23). It holds for every assignment such that $\\sum_iZ_i\\tilde x_i\\tilde x_i'$ and $\\sum_i(1-Z_i)\\tilde x_i\\tilde x_i'$ are invertible. Both are exact identities for a fixed population and a fixed assignment, and neither uses an assumption on the population. The first also holds without a rank condition for arbitrary treated sets, with the actual arm sizes as divisors. When a design matrix is singular, the fitted coefficients in the Lean statements are a fixed least-squares solution, a case that the paper leaves undefined, and the identity holds for it as well. Four supporting statements give elementary facts. The product $x_i^{\\circ\\prime}c$ is the slope part of $\\tilde x_i'c$. A treated unit reveals $w_i(1,\\beta)$ and a control unit reveals $w_i(0,\\beta)$. The vector $n_a^{-1}\\sum_{i\\in\\mathcal T(a)}\\tilde x_iq_i$ depends only on the values of $q$ in the arm.",
+        "headline": "The display before (E.21) and displays (E.21)–(E.23), as corrected",
+        "location": "Supplement, proof of Lemma 17, p. 36 (PDF p. 16)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T19",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_E41_cross_term",
+          "line": 405,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.gram_quadratic",
+          "line": 494,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.ols_error",
+          "line": 395,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.residual_sum_squares_identity",
+          "line": 507,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.score_dot",
+          "line": 421,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.score_of_dot",
+          "line": 478,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.score_residual",
+          "line": 375,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement contains the two corrected displays of P002-E009 as exact identities. Let $G=n_a^{-1}\\sum_{i\\in\\mathcal T(a)}\\tilde x_i\\tilde x_i'$ be invertible, let $q$ be the vector that is regressed in the arm, let $\\widehat\\psi$ be its least-squares coefficients, let $c$ be any coefficient vector, and let $h=n_a^{-1}\\sum_{i\\in\\mathcal T(a)}\\tilde x_i(q_i-\\tilde x_i'c)$. The statement asserts that $c-\\widehat\\psi=-G^{-1}h,\\qquad-2h'(\\widehat\\psi-c)=-2h'G^{-1}h .$ Let $q_i=w_i(a,\\beta_n)$ and let $c$ be the population coefficients, so that $q_i-\\tilde x_i'c=\\varepsilon_i(a,\\beta_n)$. Then the first identity is the corrected (E.41), and the second is the corrected value of the cross term (E.39). The statement is more general than the displays, since the arm may be any set of units and $q$ and $c$ are arbitrary. It holds whenever $G$ is invertible. The words “asymptotically almost surely” of the Supplement concern this invertibility and are not part of the statement. Six supporting statements give the algebra. Among them are the identity $\\widehat\\psi-c=G^{-1}h$ of (E.2)–(E.3), the equality of $c'Gc$ with the mean of $(\\tilde x_i'c)^2$ over the arm, and the identity $\\frac1{n_a}\\sum_{i\\in\\mathcal T(a)}\\bigl(q_i-\\tilde x_i'\\widehat\\psi\\bigr)^2=\\frac1{n_a}\\sum_{i\\in\\mathcal T(a)}\\bigl(q_i-\\tilde x_i'c\\bigr)^2-h'G^{-1}h$ for a nonempty arm. The other three are linear identities for the vector $n_a^{-1}\\sum_{i\\in\\mathcal T(a)}\\tilde x_iq_i$.",
+        "headline": "Display (E.41) and the display after (E.46), as corrected",
+        "location": "Supplement, proof of Lemma 18: display (E.41), p. 39 (PDF p. 19); the display after (E.46), p. 40 (PDF p. 20)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T20",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GLP0021B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_E29_proof",
+          "line": 643,
+          "module": "AronowAudit.P002.Wave1.Gap.GLP0021B2",
+          "status": "proved",
+          "target_id": "P002-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_oracle_expansion",
+          "line": 1450,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.groupMean_add_const",
+          "line": 1441,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.mean_w_equal_at_late",
+          "line": 470,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.ols_normal_equations",
+          "line": 1423,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.population_intercept_mean",
+          "line": 1430,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.sum_w_difference",
+          "line": 448,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.w_difference_compliers",
+          "line": 435,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements cover the corrected displays of P002-N009. The first is the corrected (E.29). It concerns an increasing sequence of sample sizes and a model in $\\Xi_n(k,\\delta,\\tilde\\varepsilon,A,B,r)$ at each size, with $k\\ge1$ and the constants of Theorem 2. For every $\\kappa>0$ it asserts that the probability that the left side of (E.29), with $(1-Z_i)$ in the leading sum, is at least $\\kappa$ in absolute value tends to zero. The second is the last line of the corrected expansion. It concerns a model with centred covariates, monotone compliance, at least one complier and an invertible matrix $\\sum_i\\tilde x_i\\tilde x_i'$. For every assignment it asserts that $\\varphi(1,\\bar\\beta)=\\varphi(0,\\bar\\beta)$ and that $\\tilde\\tau_{\\mathrm{adj}}(\\bar\\beta)=\\frac1{n_1}\\sum_{i=1}^nZ_i\\varepsilon_i(1,\\bar\\beta)-\\frac1{n_0}\\sum_{i=1}^n(1-Z_i)\\varepsilon_i(0,\\bar\\beta).$ The intermediate lines of the expansion have no statement of their own. The first statement adds no hypothesis of positive variance. When $\\operatorname{var}(\\tilde\\tau_{\\mathrm{adj}}(\\beta_n))=0$ the left side of (E.29) is $0$ in Lean, where division by zero gives zero, and the paper does not define the expression in that case. Six supporting statements give the steps of the second. The means of $w_i(1,\\bar\\beta)$ and of $w_i(0,\\bar\\beta)$ over the population are equal, since $\\sum_i\\{w_i(1,\\beta)-w_i(0,\\beta)\\}=|\\mathcal C|(\\bar\\beta-\\beta)$ and the difference $w_i(1,\\beta)-w_i(0,\\beta)$ vanishes outside the compliers. For centred covariates the population intercept is the mean of the regressed vector. The other two are the normal equations of least squares and the effect of adding a constant on a mean over an arm.",
+        "headline": "Display (E.29) and the expansion of $\\tilde\\tau_{\\mathrm{adj}}(\\beta_n)$ that follows it, as corrected",
+        "location": "Supplement, proof of Lemma 17, p. 37 (PDF p. 17)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T21",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/RepairT21Unconditional.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_theorem7_limsup",
+          "line": 10,
+          "module": "AronowAudit.P002.Wave1.Gap.RepairT21Unconditional",
+          "status": "proved",
+          "target_id": "P002-T21",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is Theorem 7 with $\\Xi_n$ in place of $\\Theta_n$ and the inner limit replaced by a limit superior, as in P002-E013. Fix $k\\ge1$, $\\delta<1$, $r\\in(0,1/2]$, $\\tilde\\varepsilon,A,B>0$ and $\\alpha\\in(0,1)$, and set $T_n(\\kappa)=\\sup_{\\beta\\in\\mathbb R}\\ \\sup_{\\{\\theta\\in\\Xi_n:\\,\\bar\\beta(\\theta)=\\beta\\}}\\mathbb P_\\theta\\bigl(\\lvert\\Delta_{\\mathrm{adj}}(\\beta)\\rvert>z_{1-\\alpha/2}-\\kappa\\bigr).$ The statement asserts that the ordinary right-hand limit $\\lim_{\\kappa\\to0^+}\\limsup_{n\\to\\infty}T_n(\\kappa)$ exists and is at most $\\alpha$. The index $n$ runs over all natural population sizes, with the supremum equal to zero when the class is empty. It does not assert that $T_n(\\kappa)$ has an ordinary limit as $n\\to\\infty$. Three conventions are added for cases that the paper does not address. A supremum over an empty set of models is $0$. When $z_{1-\\alpha/2}-\\kappa<0$ the event has probability $1$. In an arm whose regression is rank deficient the fitted coefficients are a fixed least-squares solution. The probability is the exact probability over the assignments, and the statistic takes values in $[0,\\infty]$ with $0/0=0$.",
+        "headline": "Theorem 7, display (E.36), as corrected",
+        "location": "Supplement, p. 39 (PDF p. 19)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T22",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Algorithm2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.algorithm2_paper",
+          "line": 21,
+          "module": "AronowAudit.P002.Wave1.Algorithm2",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.adjustedSigma2_affine",
+          "line": 2211,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.adjusted_ar_bridge",
+          "line": 2270,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.adjusted_coefficients_formula",
+          "line": 2236,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.data_ar_nonvacuous",
+          "line": 2334,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.fitted_residual_linear",
+          "line": 2194,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.rawSigma2_affine",
+          "line": 2158,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.rawTau_linear",
+          "line": 2150,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.raw_ar_bridge",
+          "line": 2259,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.raw_coefficients_formula",
+          "line": 2173,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.sum_affine_square",
+          "line": 2135,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is Theorem 3 for Algorithm 2, and for Algorithm 4, with the interval-index pairs $([e_{k-1},e_k],m_k)$ as Step 4 records them, which is the correction of P002-E011. The observed squared AR function and the $M$ simulated ones are computed from one data set: a population with monotone compliance and at least one complier, an observed assignment, and $M$ simulated assignments. They are the ratios of quadratics (15)–(16), or (F.1)–(F.2) with centred covariates and arm regressions of full rank, and every variance polynomial is positive on the real line (Assumption 6 or 7). When the set $\\mathcal J$ of intersections is nonempty and $0<\\alpha<1$, the statement asserts that a terminating run of Steps 3 and 4 exists. For every run, whatever admissible indices are chosen, it asserts that the number $n_I$ of recorded pairs is at most $|\\mathcal J|+1$ and that the recorded intervals cover $\\mathbb R$. It asserts also that the right endpoints $e_k$ increase strictly and that each is an element of $\\mathcal J$ or $+\\infty$. The last three assertions are that $m_k\\in\\mathcal I(\\beta)$ for every real $\\beta\\in[e_{k-1},e_k]$, that $\\mathrm{CS}_k=\\widehat I^*_{1-\\alpha}(Z)\\cap[e_{k-1},e_k]$, and that $\\bigcup_{k=1}^{n_I}\\mathrm{CS}_k=\\widehat I^*_{1-\\alpha}(Z)$. A run is a finite list of pairs that obeys the rules of Steps 3 and 4, including the branch in which no later intersection exists and $m_{k+1}\\in\\mathcal I(e_k+1)$. The set $\\mathcal J$ is taken as given: a complete sorted list of the points at which two of the simulated AR functions are equal without being identical. Ten supporting statements accompany it. Nine connect the ratios of quadratics with the statistics. For arbitrary real vectors $Y$ and $D$, and full-rank arms in the adjusted case, they state that $\\widehat\\tau^2$ and $\\widehat\\sigma^2$ at $Y-\\beta D$, and their regression-adjusted versions, are the numerator and the denominator polynomials of (15)–(16) and of (F.1)–(F.2), and that the square root of the ratio is the absolute AR statistic wherever the variance estimate is positive. The last exhibits a data set of four units with two simulated assignments that satisfies every hypothesis and whose two AR functions intersect at $\\beta=-1$.",
+        "headline": "Step 5 of Algorithm 2, Steps 3 and 5 of Algorithm 4, and the proof of Theorem 3 for Algorithm 2, as corrected",
+        "location": "Algorithm 2, p. 16 (PDF p. 16); Supplement, Algorithm 4, p. 44 (PDF p. 24), and Section H.2, last paragraph, p. 45 (PDF p. 25)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T23",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/H1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.H1_paper",
+          "line": 16,
+          "module": "AronowAudit.P002.Wave1.H1",
+          "status": "proved",
+          "target_id": "P002-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0022B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.corrected_H1_AR_proof",
+          "line": 198,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0022B1",
+          "status": "proved",
+          "target_id": "P002-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Two proved statements give the corrected (H.1) of P002-E012, which is Theorem 3 for Algorithm 1 on each interval. The observed squared AR function and the $M$ simulated ones are computed from one data set, an observed assignment and $M$ simulated assignments. They are the ratios of quadratics (15)–(16), or (F.1)–(F.2) with centred covariates and arm regressions of full rank, and every variance polynomial is positive on the real line (Assumption 6 or 7). Suppose that there is at least one intersection, let $0<\\alpha<1$, and let $m_i$ be any index that Step 3 of Algorithm 1 may select for the interval $[\\beta_i,\\beta_{i+1}]$, $i=0,\\ldots,K$. The statement asserts that, for every $i$ and every real $\\beta\\in[\\beta_i,\\beta_{i+1}]$, $m_i\\in\\mathcal I(\\beta),\\qquad\\Delta^{*2}_{m_i}(\\beta)=\\bigl[\\widehat\\eta^*_{1-\\alpha}(\\beta,Z)\\bigr]^2,$ and that $\\mathrm{CS}_i=\\mathrm{CS}^*\\cap[\\beta_i,\\beta_{i+1}]$. These are the equalities of the corrected (H.1). The critical value $\\widehat\\eta^*_{1-\\alpha}(\\beta,Z)$ is the quantile (13) of the absolute values $|\\Delta^*_m(\\beta)|$, which are the square roots of the squared AR functions, and $\\mathrm{CS}^*$ is the set (14), or (F.4) with covariates. The equality of the union over $i$ with $\\mathrm{CS}^*$ belongs to the Lean statement of Theorem 3. The second statement gives the same conclusions for ratios of quadratics with nonnegative numerator polynomials and positive denominator polynomials, computed from one data set. Both statements require positive variance polynomials.",
+        "headline": "Display (H.1), as corrected",
+        "location": "Supplement, Section H.2, p. 45 (PDF p. 25)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T24",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.adjustedWith_linear",
+          "line": 319,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.corrected_I1_I2",
+          "line": 335,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.ols_linear",
+          "line": 312,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.score_linear",
+          "line": 302,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement contains the displays of Section I with the symbols of Remark 4, which is the part of P002-E014 that changes a displayed identity. Let $N_y$ and $N_d$ be the numerator and the denominator of (12), and suppose that the design matrices of the two arms are invertible. For arbitrary real vectors $Y$ and $D$ and every real $\\beta$, the statement asserts that the coefficients fitted to $Y-\\beta D$ in each arm are those fitted to $Y$ minus $\\beta$ times those fitted to $D$, which contains (I.1). It asserts that $\\widehat\\tau_{\\mathrm{adj}}(\\beta)=N_y-\\beta N_d ,$ which is (I.2), and that $\\widehat\\tau_{\\mathrm{adj}}(N_y/N_d)=0$ when $N_d\\ne0$, which is the conclusion drawn after (I.2). The statement is slightly more general than the displays. It holds for any vectors $Y$ and $D$ and any set of treated units, and the linearity is stated for the whole coefficient vector, intercept included. Three supporting statements give the linearity in the outcome of the least-squares coefficients for a design matrix of full rank, of the vector $n_a^{-1}\\sum_{i\\in\\mathcal T(a)}\\tilde x_iq_i$, and of the difference of arm means with the slopes subtracted. The other parts of the finding have no statement here. The corrected cross-references have no formal content; the variance-bound correction in (E.10) has separate Lean statements.",
+        "headline": "Displays (I.1) and (I.2), as corrected",
+        "location": "Supplement, Section I: display (I.1), p. 45 (PDF p. 25); display (I.2) and the display after it, p. 46 (PDF p. 26)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T25",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.assignment_marginal",
+          "line": 583,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.constant_effect_adjusted_outcomes",
+          "line": 1788,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.constant_effect_coverage",
+          "line": 1819,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.expectation_const",
+          "line": 638,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.expectation_div",
+          "line": 624,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.expectation_mul",
+          "line": 617,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.expectation_sub",
+          "line": 611,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.expectation_sum",
+          "line": 631,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.quantile_valid",
+          "line": 1799,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.tau_expectation",
+          "line": 650,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.tau_mean_zero",
+          "line": 686,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T25",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The paper states this result in prose, with a reference to Imbens & Rosenbaum (2005), and gives it no number. Two Lean statements contain it in the following form. Suppose that $y_i(1)=y_i(0)+\\beta$ for every unit $i$. The first asserts that $Y_i-\\beta D_i=y_i(0)$ for every unit and every assignment. The second takes $n\\ge2$, $1\\le n_1\\le n-1$, monotone compliance, at least one complier, arbitrary covariates $x_i\\in\\mathbb R^k$ and $\\alpha\\in(0,1)$. It asserts that $\\bar\\beta=\\beta$ and that $\\mathbb P\\{\\beta\\in I^*_{1-\\alpha}(Z)\\}\\ge1-\\alpha,\\qquad\\mathbb P\\{\\beta\\in I^{\\mathrm{adj},*}_{1-\\alpha}(Z)\\}\\ge1-\\alpha .$ “Finite-sample valid” is thus read as coverage at least $1-\\alpha$ for every $n$. Equality is not asserted, and coverage can exceed $1-\\alpha$ because the randomization distribution is discrete. The sets are (7) and (11), which use all assignments, and not the Monte Carlo set (14). Coverage is the exact proportion of the assignments under which the set contains $\\beta$. For the set (11) the paper does not define the regression in an arm whose design matrix is rank deficient. The Lean statement uses a fixed least-squares solution there, and the bound holds with this rule. Of the nine supporting statements, the main one says that a statistic $g$ with values in $[0,\\infty]$ is at most its quantile (6) with probability at least $1-\\alpha$. Three give the probability $n_1/n$ that a unit is treated, the expectation $\\pi(1-\\pi)(\\mu_{w(1)}-\\mu_{w(0)})$ of $\\widehat\\tau(\\beta)$, and its value zero at $\\bar\\beta$, which is Lemma 3 of the Supplement. The other five are elementary properties of the expectation over the assignments.",
+        "headline": "Finite-sample validity of the confidence sets (7) and (11) under a constant additive treatment effect",
+        "location": "Section 3.3, p. 6 (PDF p. 6); Section 4.4, p. 10 (PDF p. 10); see also Section 3.1, pp. 4–5 (PDF pp. 4–5), and Remark 2, p. 7 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T26",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0022B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.adjusted_wald_equals_IV_proof",
+          "line": 335,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0022B1",
+          "status": "proved",
+          "target_id": "P002-T26",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.adjusted_wald_in_set",
+          "line": 1842,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T26",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements cover the two algebraic claims of Remark 4. Let $N_y$ and $N_d$ be the numerator and the denominator of (12). The first statement supposes that the design matrices of the two arms are invertible and that $N_d\\ne0$, and it takes $\\alpha\\in(0,1)$. It asserts that $\\widehat\\tau_{\\mathrm{adj}}(\\beta)=N_y-\\beta N_d$ for every real $\\beta$, that $\\widehat\\tau_{\\mathrm{adj}}$ and $\\Delta_{\\mathrm{adj}}$ vanish at $\\widehat\\beta^{\\mathrm{adj}}_{\\mathrm{Wald}}=N_y/N_d$, and that $|\\Delta_{\\mathrm{adj}}|$ is there at most the critical value of (11), so that the estimator belongs to $I^{\\mathrm{adj},*}_{1-\\alpha}(Z)$. The second concerns the instrumental variable regression with regressors $\\tilde X_i=(D_i,1,Z_ix_i',(1-Z_i)x_i')'$ and instruments $\\tilde W_i=(Z_i,1,Z_ix_i',(1-Z_i)x_i')'$. Suppose in addition that the covariates are centred and that $\\sum_i\\tilde W_i\\tilde X_i'$ and $\\sum_i\\tilde W_i\\tilde W_i'$ are invertible. The statement asserts that the first coefficient $\\widehat\\alpha_{1,\\mathrm{IV}}$ of $(n^{-1}\\sum_i\\tilde W_i\\tilde X_i')^{-1}n^{-1}\\sum_i\\tilde W_iY_i$ satisfies $N_d\\,\\widehat\\alpha_{1,\\mathrm{IV}}=N_y$, and that it equals $\\widehat\\beta^{\\mathrm{adj}}_{\\mathrm{Wald}}$. Both statements are written for arbitrary real vectors $Y$ and $D$. The first holds for any set of treated units, and the second for an assignment with $n_1$ treated units. In the Lean statements $N_y$ and $N_d$ are computed from the arm regressions of (8) applied to $Y$ and to $D$, whose slopes are those of the interacted regressions of Remark 4. The statistic $\\Delta_{\\mathrm{adj}}$ vanishes at the Wald estimator also when the variance estimate is zero, by the convention $0/0=0$. The first sentence of Remark 4, that the set is generally a finite union of intervals, is descriptive and has no Lean statement.",
+        "headline": "Remark 4: the regression-adjusted Wald estimator (12)",
+        "location": "Remark 4 and equation (12), p. 10 (PDF p. 10); algebra in the Supplement, Section I, pp. 45–47 (PDF pp. 25–27)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T27",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0022B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.quantile_index_interval_AR_proof",
+          "line": 432,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0022B1",
+          "status": "proved",
+          "target_id": "P002-T27",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/QuantileIndexInterval.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.quantile_index_interval_paper",
+          "line": 14,
+          "module": "AronowAudit.P002.Wave1.QuantileIndexInterval",
+          "status": "proved",
+          "target_id": "P002-T27",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.arFamily_regular",
+          "line": 2409,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T27",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.arFunction_continuous",
+          "line": 2396,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T27",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.paperAR_regular",
+          "line": 2316,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T27",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.quantile_index_rank",
+          "line": 1932,
+          "module": "AronowAudit.P002.P002_Audit",
+          "status": "proved",
+          "target_id": "P002-T27",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is Lemma 1 as printed, with its four parts. The squared AR functions of the $M$ simulated assignments are the ratios of quadratics (16), or (F.2) with covariates, computed from one data set and $M$ simulated assignments, and every variance polynomial is positive on the real line (Assumption 6 or 7). Let $M\\ge1$, $-\\infty\\le\\beta_1<\\beta_2\\le\\infty$ and $0<\\alpha<1$, and suppose that the AR functions have no intersection in $(\\beta_1,\\beta_2)$. The statement asserts that $\\mathcal I(\\beta)$ is the same for all $\\beta\\in(\\beta_1,\\beta_2)$. It asserts that this set is contained in $\\mathcal I(\\beta_1)\\cap\\mathcal I(\\beta_2)$ when both endpoints are finite, in $\\mathcal I(\\beta_2)$ when $\\beta_1=-\\infty$ and $\\beta_2$ is finite, and in $\\mathcal I(\\beta_1)$ when $\\beta_2=\\infty$ and $\\beta_1$ is finite. The index set is $\\mathcal I(\\beta)=\\{m:|\\Delta^*_m(\\beta)|=\\widehat\\eta^*_{1-\\alpha}(\\beta,Z)\\}$ of (17). The critical value of (13) is the smallest of the $M$ values $|\\Delta^*_s(\\beta)|$ such that at least $(1-\\alpha)M$ of them are at most it. An intersection is a point where two distinct functions are equal, so that identical functions do not count, as in Remark 7. The observed AR function of the same data set must also have a positive variance polynomial, as Assumption 6 or 7 requires, although the conclusions concern only the simulated functions. Five supporting statements accompany it. One gives the same four conclusions for ratios of quadratics from one data set, with nonnegative numerators, positive denominators and no intersection in the interval. It also requires a positive denominator for the observed AR function. One characterizes the index set by ranks: $m\\in\\mathcal I(\\beta)$ exactly when at least $(1-\\alpha)M$ of the values $|\\Delta^*_s(\\beta)|$ are at most $|\\Delta^*_m(\\beta)|$ and fewer than $(1-\\alpha)M$ are strictly smaller. The other three say that ratios of quadratics with nonnegative numerators and positive denominators are continuous and nonnegative, and that two distinct such ratios are equal at finitely many points.",
+        "headline": "Lemma 1",
+        "location": "p. 14 (PDF p. 14); proof in the Supplement, Section H.1, p. 45 (PDF p. 25)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T28",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/AlgorithmCorrectness.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.algorithm_correctness_paper",
+          "line": 25,
+          "module": "AronowAudit.P002.Wave1.AlgorithmCorrectness",
+          "status": "proved",
+          "target_id": "P002-T28",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is Theorem 3, with Algorithms 2 and 4 read in the indexing of P002-E011, in which Step 5 processes the pairs as Step 4 records them. The observed squared AR function and the $M$ simulated ones are computed from one data set, an observed assignment and $M$ simulated assignments. They are the ratios of quadratics (15)–(16) without covariates, or (F.1)–(F.2) with centred covariates and arm regressions of full rank, and Assumption 6, respectively Assumption 7, holds. For $M\\ge1$ and $0<\\alpha<1$ the statement asserts correctness together with existence of the required lists and runs. For every run of Algorithm 1 or 3, that is, for the intervals between consecutive intersections with any admissible choice of the indices in Step 3, the returned union equals the set (14), respectively (F.4). The same holds for every run of Algorithm 2 or 4. When there is no intersection among the simulated AR functions, the set $\\{\\beta:\\Delta^2(\\beta)\\le\\Delta^{*2}_m(\\beta)\\}$ equals (14), respectively (F.4), for every real $\\beta_0$ and every $m\\in\\mathcal I(\\beta_0)$, which is the branch of Step 1. One statement covers both halves of the theorem, since the algorithms act on the AR functions only. An algorithm is represented by the relation between the list of intersections and the lists of interval-index pairs that its steps allow. The statement also asserts that a complete finite sorted list of intersections exists, that every such list admits a run of Algorithm 1 or 3, and that every nonempty such list admits a finite terminating run of Algorithm 2 or 4. The words “Assumption 6 in the Supplementary Material” of the theorem give a wrong location (P002-E014) and have no formal content.",
+        "headline": "Theorem 3",
+        "location": "p. 17 (PDF p. 17); Algorithms 1 and 2, pp. 15–16 (PDF pp. 15–16); Algorithms 3 and 4, Supplement, p. 44 (PDF p. 24); proof in the Supplement, Section H.2, p. 45 (PDF p. 25)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T29",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/P002_ConfidenceCompletion.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.ConfidenceFollowup.printed_theorem1_refuted",
+          "line": 55,
+          "module": "AronowAudit.P002.P002_ConfidenceCompletion",
+          "status": "counterexample_proved",
+          "target_id": "P002-T29",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/Gap/GP0022B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.neyman_variance_proof",
+          "line": 251,
+          "module": "AronowAudit.P002.Wave1.Gap.GP0022B2",
+          "status": "proved",
+          "target_id": "P002-T29",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The paper’s Theorem 1 asserts the universal nominal-limit formula: for every $\\alpha\\in(0,1)$, $\\delta<1$, $r\\in(0,1/2]$ and $A>0$, $\\lim_{n\\to\\infty}\\,\\inf_{\\beta\\in\\mathbb R}\\,\\inf_{\\{\\theta\\in\\Theta_n(\\delta,r,A):\\,\\bar\\beta(\\theta)=\\beta\\}}\\mathbb P_\\theta\\{\\beta\\in I^*_{1-\\alpha}(Z)\\}=1-\\alpha .$ The main Lean statement asserts the negation of this universal formula. At $(\\delta,r,A,\\alpha)=(0,1/4,1/2,1/2)$, every admissible model has coverage $1$ for every $n\\ge2$, and the class is nonempty at every such size and every real $\\beta$. The nested infimum therefore tends to $1$ rather than $1/2$. This is the first counterexample of P002-E001; it leaves the corrected coverage lower bound untouched. The counterexample and the corrected theorem also have their own Lean statements. The parameter space consists of the populations of $n$ units, with $n\\ge2$ and $1\\le n_1\\le n-1$, that satisfy Assumption 2, have at least one complier, and satisfy Assumptions 3 and 4 with the given constants. Assumption 1 holds by construction, since an outcome depends on the treatment received and not on the assignment. Coverage is the exact probability over the assignments, and the statistic uses the convention $0/0=0$ of p. 23 of the Supplement. The theorem does not say how the inner infimum is read when no model in $\\Theta_n$ has $\\bar\\beta=\\beta$. In the Lean statement it is then $+\\infty$, so that such $\\beta$ do not affect the outer infimum. Remark 3 has no statement of its own here. A supporting statement is Lemma 2 of the Supplement: for every real $\\beta$, $\\operatorname{var}\\bigl(\\widehat\\tau(\\beta)\\bigr)=\\frac{S_1^2(\\beta)}{n_1}+\\frac{S_0^2(\\beta)}{n_0}-\\frac{S_{10}^2(\\beta)}{n},$ where the left side is the exact variance over the assignments.",
+        "headline": "Theorem 1, as printed",
+        "location": "p. 8 (PDF p. 8); proof in the Supplement, Section C, pp. 23–31 (PDF pp. 3–11)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P002-T30",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P002/Wave1/PrintedTheorem2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P002.Wave1.printed_theorem2_refuted",
+          "line": 21,
+          "module": "AronowAudit.P002.Wave1.PrintedTheorem2",
+          "status": "counterexample_proved",
+          "target_id": "P002-T30",
+          "target_kind": "headline_result",
+          "work_id": "P002"
+        }
+      ],
+      "text": {
+        "body": "The paper’s Theorem 2 asserts the universal nominal-limit formula: for every $k\\ge1$, $\\alpha\\in(0,1)$, $r\\in(0,1/2]$, $\\delta<1$ and $\\tilde\\varepsilon,A,B>0$, $\\lim_{n\\to\\infty}\\,\\inf_{\\beta\\in\\mathbb R}\\,\\inf_{\\{\\theta\\in\\Xi_n(k,\\delta,\\tilde\\varepsilon,A,B,r):\\,\\bar\\beta(\\theta)=\\beta\\}}\\mathbb P_\\theta\\{\\beta\\in I^{\\mathrm{adj},*}_{1-\\alpha}(Z)\\}=1-\\alpha .$ The Lean statement asserts the negation of this universal formula. At $(k,\\delta,\\tilde\\varepsilon,A,B,r,\\alpha)=(1,0,1/4,4,1/2,1/4,1/2)$, the class is nonempty for every $n\\ge2$ and every real $\\beta$, and the nested coverage infimum tends to $1$ rather than $1/2$. This is the second counterexample of P002-E001; it leaves the corrected asymptotic coverage lower bound untouched. The counterexample and the corrected theorem also have their own Lean statements. The parameter space consists of the populations of $n$ units with $k$ covariates that satisfy Assumptions 1, 2, 4 and 5 with the given constants and have at least one complier. The eigenvalue condition of Assumption 5(v) is written as $v'(n^{-1}\\sum_ix_ix_i')v\\ge\\tilde\\varepsilon\\|v\\|_2^2$ for every $v$, and $k\\in\\mathbb N$ is read as $k\\ge1$. Coverage is the exact probability over the assignments. Two conventions are added where the paper is silent. An inner infimum over an empty set of models is $+\\infty$, and in an arm whose regression is rank deficient the fitted coefficients are a fixed least-squares solution.",
+        "headline": "Theorem 2, as printed",
+        "location": "p. 11 (PDF p. 11); proof in the Supplement, Sections D–E, pp. 31–42 (PDF pp. 11–22)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "2404.18786",
+    "authors": [
+      "P. M. Aronow",
+      "Haoge Chang",
+      "Patrick Lopatto"
+    ],
+    "citation": "P. M. Aronow, Haoge Chang, and Patrick Lopatto (2026). Randomization-based confidence sets for the local average treatment effect. Biometrika 113(2):asag010.",
+    "doi": "10.1093/biomet/asag010",
+    "title": "Randomization-based confidence sets for the local average treatment effect",
+    "type": "Journal article",
+    "venue": "Biometrika",
+    "year": "2026"
+  },
+  "work_id": "P002"
+}

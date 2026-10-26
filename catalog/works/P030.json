@@ -1,0 +1,1886 @@
+{
+  "counts": {
+    "counterexample_proved": 7,
+    "proved": 86,
+    "results": 93,
+    "targets": 15
+  },
+  "overview": {
+    "areas": [
+      "randomization-inference",
+      "interference-and-networks",
+      "experimental-design-and-estimation"
+    ],
+    "caveats": [
+      "The one-tailed theorem assumes that the actual conditional law, including conditioning induced by fixed-subset selection, is uniform; it does not derive uniformity for every way of selecting that subset or justify Monte Carlo approximation of the reference distribution.",
+      "Exactness means conditional Type I error at most the nominal level, with equality at attainable one-tailed p-values; discreteness does not give equality at every nominal level.",
+      "The ten-unit no-effect counterexample is a separate potential-outcome schedule with the same reference law as Table 1; the paper's own illustrative data-generating process has interference.",
+      "The corrected Spearman theorem uses average ranks for ties and nonconstant input vectors, which ensure positive rank variances; its moment-divisor invariance holds for every positive divisor.",
+      "The two-tailed counterexamples do not establish changes in the reported simulation rates or the application's one-tailed result."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P030.five_unit_counterexample",
+        "target_ids": [
+          "P030-T1"
+        ],
+        "what": "The printed two-tailed exactness claim fails in a five-unit experiment with no effects of any kind and a defined Spearman statistic: for every $0<\\alpha<1$, the printed rule rejects with probability one, while the corrected inclusive-tail rule rejects with probability zero."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P030.ten_unit_counterexample",
+        "target_ids": [
+          "P030-T2"
+        ],
+        "what": "Against the printed two-tailed exactness claim, a ten-unit no-effect population realizes Table 1’s nonconstant reference law conditional on the fixed units being untreated, with six equiprobable assignments and conditional rejection probability $1/2$ under the printed rule and zero under the corrected rule for $0<\\alpha\\le2/3$, exceeding the nominal level at $\\alpha=1/20$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P030.corrected_two_tailed_valid",
+        "target_ids": [
+          "P030-T3"
+        ],
+        "what": "Replacing the printed rule's upper-side condition on the lower tail by an inclusive upper-tail probability below $\\alpha/2$ gives rejection probability at most $\\alpha$ for every finite probability law and $0<\\alpha<1$, retaining ties."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P030.statistic_invariance_counterexample",
+        "target_ids": [
+          "P030-T5"
+        ],
+        "what": "Contrary to the implication used in printed Equation (1), a no-effect, no-interference schedule can keep fixed-unit outcomes invariant while producing distinct statistics on the same conditional assignment set and an observed lower-tail p-value of $1/3$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P030.corrected_outcome_null",
+        "target_ids": [
+          "P030-T6"
+        ],
+        "what": "Replacing Equation (1)’s statistic-invariance null by invariance of the fixed units’ outcomes makes observed-data imputation reproduce each conditional-assignment statistic and its null distribution under uniform conditional assignment, and no interference implies this corrected outcome null."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P030.corrected_spearman",
+        "target_ids": [
+          "P030-T9"
+        ],
+        "what": "The printed rank-correlation denominator needs a square root, and for nonconstant vectors the corrected average-rank correlation lies in $[-1,1]$ and has absolute value one exactly when the centered rank vectors are nonzero scalar multiples, replacing the unqualified monotonicity claim."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P030.one_tailed_randomization_valid",
+        "target_ids": [
+          "P030-T12"
+        ],
+        "what": "Under no interference or the weaker fixed-outcome null and a uniform nonempty conditional assignment law, the assignment-counted one-tailed p-value is super-uniform, with rejection probability equal to each attainable p-value and otherwise to the largest attainable value at or below the cutoff, including zero."
+      },
+      {
+        "lean_name": "AronowAudit.P030.proximal_exposure_expectations",
+        "target_ids": [
+          "P030-T13"
+        ],
+        "what": "For complete randomization of $M$ among $N\\ge2$ units and a fixed self-excluding neighborhood of size $K_i$, expected treated-neighbor counts are $K_iM/N$, $K_i(M-1)/(N-1)$ given treatment, and $K_iM/(N-1)$ given control, with the conditional formulas restricted to positive-probability conditioning events."
+      },
+      {
+        "lean_name": "AronowAudit.P030.worked_table_result",
+        "target_ids": [
+          "P030-T14"
+        ],
+        "what": "The six Table 1 rank correlations have the stated exact radical values and printed roundings, are all negative, and give an observed correlation of $-3/\\sqrt{10}$ with assignment-counted lower-tail p-value $1/3$."
+      }
+    ],
+    "overview": "The work develops conditional randomization tests for interference by holding selected units' treatments fixed and comparing a statistic over the remaining assignments. The Lean development proves one-tailed validity, complete-randomization exposure expectations, and the worked example's reference calculation. It also gives counterexamples to the printed two-tailed rule and statistic-invariance null, together with corrected testing and rank-correlation statements; additional targets concern the distance kernel, sample-count arithmetic, and the fixed-subset size recommendation.",
+    "work_id": "P030"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.five_correlations",
+          "line": 193,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T1",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.five_design",
+          "line": 209,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T1",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.five_distances",
+          "line": 181,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T1",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.five_no_effects",
+          "line": 176,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T1",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.five_rank_certificate",
+          "line": 1799,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T1",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.five_unit_counterexample",
+          "line": 236,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P030-T1",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement describes the first example of P030-E001. Five units lie on a line at the positions $0,4,8,-1,-2$. The first three units are fixed, and $\\Omega$ consists of the two assignments that treat exactly one of the other two units. The outcome of unit $i$ is $c_i$ under every binary assignment of the five units, where $c=(0,1,2,0,0)$. The statement asserts that $H_{0'}$ and $H_{0''}$ hold, that no fixed unit is treated under either assignment, and that $\\Omega'=\\Omega$. It asserts that under both assignments neither vector of ranks is constant, that $\\rho=1$, and that $\\Pr(t_0\\le t)=\\Pr(t_0\\ge t)=1$, where a probability is a proportion of the two assignments. For every $0<\\alpha<1$ it asserts that the printed rule rejects with probability $1$, and that the rule that rejects when $\\Pr(t_0\\le t)<\\alpha/2$ or $\\Pr(t_0\\ge t)<\\alpha/2$ rejects with probability $0$. Supporting statements assert that $D_{\\mathit{nearest}}$ is $(1,5,9)$ under one assignment and $(2,6,10)$ under the other, and that these vectors and $Y_{\\mathit{fixed}}$ all have the ranks $(1,2,3)$. Here $D_{\\mathit{nearest}}$ is the least distance from a fixed unit to a treated unit outside the fixed subset, and $\\rho$ is the Pearson correlation of average ranks, with the square root in its denominator.",
+        "headline": "A counterexample with five units to the two-tailed rule after Equation (2) and to the sentence “This procedure is an exact, distribution-free test”, as printed",
+        "location": "p. 7 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T2",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.table_rejection_probabilities",
+          "line": 711,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T2",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.table_tail_probabilities",
+          "line": 697,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T2",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.ten_actual_conditional_size",
+          "line": 1764,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T2",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.ten_null_reference_value",
+          "line": 1757,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T2",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.ten_null_statistic_value",
+          "line": 1752,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T2",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.ten_unit_counterexample",
+          "line": 805,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P030-T2",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements describe the third example of P030-E001. Ten units lie at the positions $1,\\ldots,10$, exactly one unit is treated, the units $1,8,9,10$ are fixed, and the outcome of unit $i$ is $b_i$ under every binary assignment, where $b=(1,2,2,2,2,3,2,3,2,1)$. The main statement asserts that $H_{0'}$ and $H_{0''}$ hold, and that conditioning on $Z_{\\mathit{fixed}}=(0,0,0,0)$, an event of probability $3/5$, leaves the six assignments that treat one of the units $2,\\ldots,7$. It asserts that $Y_{\\mathit{fixed}}=(1,3,2,1)$, that no vector of ranks is constant, and that the six values of the statistic are $-\\frac{1}{\\sqrt{90}},\\quad -\\frac{1}{\\sqrt{90}},\\quad -\\frac{1}{\\sqrt{90}},\\quad -\\frac{5}{6},\\quad -\\frac{3}{\\sqrt{10}},\\quad -\\frac{3}{\\sqrt{10}} .$ For every $0<\\alpha\\le 2/3$ it asserts that the printed rule rejects with probability $1/2$, and that the rule that rejects when $p_L<\\alpha/2$ or $p_U<\\alpha/2$ rejects with probability $0$. A second statement asserts that $p_L=\\Pr(t_0\\le t)$ is $1,1,1,1/2,1/3,1/3$ and $p_U=\\Pr(t_0\\ge t)$ is $1/2,1/2,1/2,2/3,1,1$ under the six assignments. Two further statements assert that, for every assignment in $\\Omega'$, the statistic computed from the outcomes and the reference value computed from the observed $Y_{\\mathit{fixed}}$ equal the value displayed above. A last statement asserts that the two rules reject with the same probabilities as before when $p_L$ and $p_U$ are computed from the observed data over $\\Omega'$. A probability over $\\Omega'$ is a proportion of its six assignments, and the statements for the worked example assert that each has conditional probability $(1/10)/(6/10)=1/6$. The population is not that of the article’s example, in which the outcomes depend on the treatment of adjacent units.",
+        "headline": "A counterexample to the two-tailed rule after Equation (2), as printed: the reference distribution of Table 1 in a population without interference",
+        "location": "p. 7 (PDF p. 5); Table 1 and the example on p. 9 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T3",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.conventional_two_tailed_valid",
+          "line": 409,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.corrected_reject_subset_printed",
+          "line": 382,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.corrected_two_tailed_valid",
+          "line": 366,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.lowerTail_mono",
+          "line": 320,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.lower_tail_valid",
+          "line": 326,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.probability_le_one",
+          "line": 298,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.probability_mono",
+          "line": 284,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.probability_nonneg",
+          "line": 276,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.probability_true",
+          "line": 294,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.probability_union_le",
+          "line": 355,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.tail_identity",
+          "line": 304,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.twoTailP_event",
+          "line": 396,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.upper_tail_valid",
+          "line": 348,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "In the Lean statements, the conditional distribution of the assignment $Z$ is a finite set with nonnegative masses that sum to one, and the statistic is an arbitrary real function $f$ on that set. For real $x$, let $p_L(x)=\\Pr(f(Z)\\le x)$ and $p_U(x)=\\Pr(f(Z)\\ge x)$, so that every assignment is counted and tied values keep their probability. The main statement asserts that, for every $0<\\alpha<1$, $\\Pr\\bigl(p_L(f(Z))<\\alpha/2\\ \\text{ or }\\ p_U(f(Z))<\\alpha/2\\bigr)\\le\\alpha .$ This is the rule with strict endpoints in the corrected passage of P030-E001. Two statements concern the rule with $p_2=\\min\\{1,2\\min(p_L,p_U)\\}$ in that passage: for $0<\\alpha<1$, the inequality $p_2\\le\\alpha$ holds exactly when $p_L\\le\\alpha/2$ or $p_U\\le\\alpha/2$, and $\\Pr(p_2\\le\\alpha)\\le\\alpha$. Further statements contain the steps of the derivation: the identity $p_U(x)=1-p_L(x)+\\Pr(f(Z)=x)$, the bounds $\\Pr(p_L(f(Z))\\le u)\\le u$ and $\\Pr(p_U(f(Z))\\le u)\\le u$, the union bound, and elementary properties of probabilities. Another asserts that every rejection by the rule with strict endpoints is a rejection by the printed rule. The statements are broader than the corrected passage in several respects: the distribution need not be uniform, and the two bounds are stated for every $u\\ge 0$. The comparison with the printed rule holds for every real $\\alpha$, and the equivalence for $p_2$ for arbitrary real numbers in place of $p_L$ and $p_U$. They do not assert that the reference values are the values of the statistic when there is no interference, which belongs to the corrected Equation (1).",
+        "headline": "The two-tailed rule after Equation (2), as corrected",
+        "location": "p. 7 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T4",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.printed_two_tailed_claim_false",
+          "line": 878,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P030-T4",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "The article gives this claim no formal statement. I read “exact” as follows: if there is no interference, then the rule rejects with conditional probability at most $\\alpha$. The Lean formulation quantifies over every number of units, every finite set $\\Omega$ of binary assignments, every fixed subset, and every pattern of treatments of the fixed units for which $\\Omega'$ is nonempty. It quantifies also over all potential outcomes that satisfy $H_{0''}$, every statistic that is a real function of $Y_{\\mathit{fixed}}$ and the assignment, and every $\\alpha\\in[0,1]$. The assignments in $\\Omega'$ are equally likely. For each realized assignment, $p$ is the proportion of assignments in $\\Omega'$ whose reference value, computed from the observed $Y_{\\mathit{fixed}}$, is at most the observed statistic. The claim is that the rule “reject unless $\\alpha/2\\le p\\le 1-\\alpha/2$” rejects with probability at most $\\alpha$. The Lean statement is the negation of this claim. The first example of P030-E001, with the Spearman statistic of the article and $\\alpha=1/20$, contradicts it. The statement does not address the validity of Equation (2) as a one-tailed $p$ value.",
+        "headline": "Equation (2) and the two-tailed rule, with the sentence “This procedure is an exact, distribution-free test for detecting interference between units”, as printed",
+        "location": "p. 7 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.constant_statistic_p_one",
+          "line": 829,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T5",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.statistic_invariance_counterexample",
+          "line": 843,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P030-T5",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement uses the population of P030-E002. Ten units lie at the positions $1,\\ldots,10$, exactly one unit is treated, the units $1,8,9,10$ are fixed, and the outcome of unit $i$ is $b_i$ under every binary assignment, where $b=(1,2,2,2,2,3,2,3,2,1)$. The statement asserts that $H_{0'}$ and $H_{0''}$ hold, and that the outcomes of the fixed units are the same under the six assignments of $\\Omega'$. It asserts that the assignments that treat unit 2 and unit 5 belong to $\\Omega'$ and that their statistics differ. The equality $t_Z=t_{Z'}$ of Equation (1) therefore fails in a population without interference. The statement asserts also that $p=1/3$ at the assignment that treats unit 7, which is the article’s $0.333$. The statistic is the Spearman correlation between $Y_{\\mathit{fixed}}=(1,3,2,1)$ and $D_{\\mathit{nearest}}$, and the statements for the worked example assert its exact values at the two assignments, $-1/\\sqrt{90}$ and $-5/6$. A second statement is general: if a statistic takes the same value at every element of a nonempty finite set, then at each element the proportion of elements whose value is at most its own is $1$. This is the value $p=1$ that Equation (1), as printed, would impose on Equation (2). The second statement is conditional and does not say that the procedure of the article returns $p=1$.",
+        "headline": "A counterexample to Equation (1), as printed",
+        "location": "p. 7 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.corrected_outcome_null",
+          "line": 473,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "In the Lean statement, $\\Omega$ is a finite set of binary assignments, the potential outcomes $Y_{i,Z}$ are real numbers, and $Z^{\\mathit{obs}}\\in\\Omega$ is the realized assignment. The set $\\Omega'$ consists of the assignments in $\\Omega$ that agree with $Z^{\\mathit{obs}}$ on the fixed units. The corrected hypothesis of P030-E002 is $H_0:Y_{i,Z}=Y_{i,Z'}$ for every $i$ with $S_i=1$ and all $Z,Z'\\in\\Omega'$. The statistic is $t_Z=g(Y_{\\mathit{fixed},Z},Z)$ for an arbitrary real function $g$, and the reference value of $Z$ is $t_0(Z)=g(Y_{\\mathit{fixed},Z^{\\mathit{obs}}},Z)$. The statement asserts that $H_{0''}$ implies $H_0$. It asserts that under $H_0$, for every $Z\\in\\Omega'$, the vector $Y_{\\mathit{fixed},Z}$ equals the observed $Y_{\\mathit{fixed}}$ and $t_0(Z)=t_Z$, and that for every real $x$ $\\frac{|\\{Z\\in\\Omega':t_0(Z)\\le x\\}|}{|\\Omega'|}=\\frac{|\\{Z\\in\\Omega':t_Z\\le x\\}|}{|\\Omega'|} .$ The right side is $\\Pr(t_Z\\le x)$ when the assignments in $\\Omega'$ are equally likely. The statement is written with the two counts, and equal probability is not a separate hypothesis. The function $g$ may depend on the whole assignment; on $\\Omega'$ this is the same as dependence on $Z_{\\mathit{variant}}$, and pretreatment characteristics are part of $g$. The last sentence of the corrected passage, that the values $t_Z$ need not be equal, is not part of this statement. That assertion is the counterexample to Equation (1), as printed.",
+        "headline": "Equation (1), as corrected",
+        "location": "p. 7 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T7",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.conditional_preserves_treatments",
+          "line": 438,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.direct_effects_no_interference",
+          "line": 465,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.fixed_dependence_implies_interference",
+          "line": 456,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.no_effects_implies_no_interference",
+          "line": 203,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.no_interference_fixed",
+          "line": 447,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements use the two conditions as corrected in P030-N001: the prime is on the assignment, and $Z_i=Z'_i$ compares the treatment of one unit under two assignments. An assignment is a vector of $N$ binary treatments, $\\Omega$ is a finite set of assignments, and the potential outcome $Y_{i,Z}$ is a real function of the unit and of the whole assignment. For a pattern $a$ of treatments, $\\Omega'$ is the set of all $Z\\in\\Omega$ such that $Z_i=a_i$ for every fixed unit $i$. The first of five statements asserts that any two assignments in $\\Omega'$ give every fixed unit the same treatment. The second asserts that, if $H_{0''}$ holds, then $Y_{i,Z}=Y_{i,Z'}$ for every fixed unit $i$ and all $Z,Z'\\in\\Omega'$. The third is the same implication in its other form: if the outcome of a fixed unit differs between two assignments in $\\Omega'$, then $H_{0''}$ is false. The fourth asserts that outcomes $Y_{i,Z}=c_i+\\tau_iZ_i$, with arbitrary real $c_i$ and $\\tau_i$, satisfy $H_{0''}$. The fifth asserts that $H_{0'}$ implies $H_{0''}$. The statements do not require $a$ to agree with an assignment in $\\Omega$ on the fixed units, and they hold also when $\\Omega'$ is empty. They concern the potential outcomes and not the test: they do not say that a rejection by the test shows interference.",
+        "headline": "The definition of $\\Omega'$ and the null hypothesis $H_{0''}$, as corrected, with the consequence that dependence of $Y_{\\mathit{fixed}}$ on $Z_{\\mathit{variant}}$ over $\\Omega'$ contradicts $H_{0''}$",
+        "location": "p. 6 (PDF p. 4); introduction, pp. 5–6 (PDF pp. 3–4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T8",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.printed_formula_counterexample",
+          "line": 984,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P030-T8",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.printed_ordering_counterexample",
+          "line": 1005,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P030-T8",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.weak_monotonicity_counterexample",
+          "line": 1026,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P030-T8",
+          "target_kind": "counterexample",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements concern the passage of P030-E004: two concern the printed formula, and one the sentence that follows it. In each, the average rank of a value is the number of smaller values plus $(e+1)/2$, where $e$ is the number of values equal to it, itself included. The printed expression is the covariance of the ranks divided by the product of their variances, where the covariance and the variances divide by the same number $m$. The first statement takes the six rows of Table 1, with $Y_{\\mathit{fixed}}=(1,3,2,1)$. It asserts that the printed expression equals $-4/45,-4/45,-4/45,-20/27,-4/5,-4/5$ for $m=4$ and $-1/15,-1/15,-1/15,-5/9,-3/5,-3/5$ for $m=3$. It asserts also that neither $-4/5$ nor $-3/5$ equals $-3/\\sqrt{10}$, the correlation in the last row. The second statement takes $D_A=(1,2,1,1)$ and $D_B=(0,2,1,1)$ with the same $Y_{\\mathit{fixed}}$ and $m=4$. It asserts that the correlations are $\\sqrt{6}/3$ and $5/6$, that the printed expression equals $8/9$ and $20/27$, and that $\\sqrt{6}/3<5/6$ while $8/9>20/27$. The third statement takes $D=(1,2,3)$ and $Y=(0,0,1)$, and it asserts that $Y$ is nondecreasing in $D$ and that $\\rho=\\sqrt{3}/2$, which is neither $1$ nor $-1$. In the second statement $D_A$ and $D_B$ are vectors of numbers and are not derived from positions of units, and no statement concerns the simulations of the article. The third statement does not contradict the printed sentence if “monotone” is read as strictly monotone.",
+        "headline": "Counterexamples to the formula for $\\rho$ and to the sentence “$\\rho$ has a perfect correlation coefficient (of 1 or -1) whenever $D_{\\mathit{nearest}}$ has a monotone relationship with $Y_{\\mathit{fixed}}$”, as printed",
+        "location": "p. 8 (PDF p. 6); Table 1 on p. 9 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T9",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.average_rank_strict",
+          "line": 1085,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.average_rank_sum",
+          "line": 1071,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.average_rank_weight",
+          "line": 1056,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.corrected_spearman",
+          "line": 1263,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.nonconstant_rank_variance",
+          "line": 1104,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.rank_order_preserving",
+          "line": 1214,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.rank_order_reversing",
+          "line": 1234,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.rank_residual_squares",
+          "line": 1150,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.rank_weight_pair",
+          "line": 1063,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.spearman_bounds",
+          "line": 1124,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.spearman_divisor",
+          "line": 1137,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.spearman_perfect_implies_proportional",
+          "line": 1161,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.spearman_proportional",
+          "line": 1187,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "In the main Lean statement, $a$ and $b$ are vectors in $\\mathbb{R}^n$, neither of them constant, and $\\tilde r(a)$ and $\\tilde r(b)$ are their average ranks minus $(n+1)/2$. The statistic of P030-E004, as corrected, is $\\rho(a,b)=\\frac{\\sum_k\\tilde r(a)_k\\,\\tilde r(b)_k}{\\sqrt{\\sum_k\\tilde r(a)_k^2\\,\\sum_k\\tilde r(b)_k^2}} .$ The statement asserts that the average ranks of each vector sum to $n(n+1)/2$ and that both sums of squares in the denominator are positive, so that $\\rho$ is defined. It asserts that $\\rho$ equals the covariance of the ranks divided by the square root of the product of their variances, whatever positive number divides the covariance and the variances, and that $-1\\le\\rho\\le 1$. It asserts that $|\\rho|=1$ if and only if there exists a real $c\\ne 0$ such that $\\tilde r(a)=c\\,\\tilde r(b)$, with $\\rho=1$ if $c>0$ and $\\rho=-1$ if $c<0$. It asserts also that $\\rho=1$ if $a_k<a_l$ exactly when $b_k<b_l$ for all $k$ and $l$, and that $\\rho=-1$ if $a_k<a_l$ exactly when $b_k>b_l$. Twelve supporting statements contain the steps, for example that $a_k<a_l$ implies a strict inequality between the two average ranks. The main statement is broader than the corrected passage in the divisor, which is any positive number and not only $n$ or $n-1$. The counterexample to the sentence on perfect correlation has a relationship that is monotone but not strictly monotone and does not give $|\\rho|=1$. The statements for the worked example assert that the six rows of Table 1 follow this formula.",
+        "headline": "The formula for $\\rho$ and the sentence on perfect correlation, as corrected",
+        "location": "p. 8 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.exponential_finite_at_zero",
+          "line": 1371,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.inverse_square_decay",
+          "line": 1329,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.inverse_square_not_exponential",
+          "line": 1339,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.inverse_square_self_term_undefined",
+          "line": 1305,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.inverse_square_sums_defined",
+          "line": 1320,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.inverse_square_unbounded",
+          "line": 1358,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements concern the function $k(d)=1/(1.5d)^2$ and the sums of P030-E006 as corrected, $\\Theta_i=\\sum_{j\\ne i}Z_jk(d_{ij})$ and $\\Psi_i=\\sum_{j\\ne i}k(d_{ij})$. One statement is about the printed summand at $j=i$: if $d_{ii}=0$, then its numerator $(1-\\delta_{ii})Z_i$ and its denominator $(1.5d_{ii})^2$ are both zero, and the quotient has no value. A second statement asserts that every denominator in the corrected sums is nonzero if $d_{ij}>0$ for all $i\\ne j$. A third asserts that $k(d)=4/(9d^2)$ and $k(2d)/k(d)=1/4$ for every $d>0$, and that $k(2/3)=1$, $k(1)=4/9$ and $k(2)=1/9$. The remaining three compare $k$ with an exponential decay. They assert that there do not exist real $A$ and $c$ such that $k(d)=A\\exp(-cd)$ for all $d>0$, and that if $B>0$ and $0<d<2/(3\\sqrt{B})$, then $k(d)>B$. They assert also that every function of the form $A\\exp(-cd)$ tends to $A$ as $d$ tends to $0$ from above. In Lean a quotient with denominator $0$ is $0$, which would hide the first point, and the first statement therefore uses a quotient that is defined only for a nonzero denominator. The distances are an arbitrary array of real numbers with the stated zero or positive entries, which is broader than Euclidean distances between distinct points. The normalization of $\\Theta$ and $\\Psi$ to mean one is not part of the statements, and no detection rate is asserted. The change of name in the text and in Figure 2 is not a mathematical statement.",
+        "headline": "The third distance-decay model of the simulations, which the article calls the “exponential model”, as corrected",
+        "location": "p. 10 (PDF p. 8); the name recurs on p. 11 (PDF p. 9) and in Figure 2, p. 12 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T11",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.printed_sample_counts_inconsistent",
+          "line": 1387,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.sample_count_arithmetic",
+          "line": 1408,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.sample_count_reconciliations",
+          "line": 1396,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.sample_partition_count",
+          "line": 1379,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "Four Lean statements contain the arithmetic of P030-E008. The first asserts that if a finite set $U$ is the union of pairwise disjoint sets $F$, $C$ and $T$, then $|U|=|F|+|C|+|T|$. The second asserts that no such sets have $|U|=344{,}056$, $|F|=114{,}629$, $|C|=191{,}228$ and $|T|=38{,}198$. The third concerns quadruples $(N,N_{\\mathit{fixed}},N_{\\mathit{control}},N_{\\mathit{treatment}})$ of natural numbers. It asserts that a quadruple satisfies $N=N_{\\mathit{fixed}}+N_{\\mathit{control}}+N_{\\mathit{treatment}}$ and differs from the printed quadruple in exactly one entry if and only if that entry is $N=344{,}055,\\qquad N_{\\mathit{fixed}}=114{,}630,\\qquad N_{\\mathit{control}}=191{,}229\\qquad\\text{or}\\qquad N_{\\mathit{treatment}}=38{,}199 .$ The fourth asserts that $114{,}629+191{,}228+38{,}198=344{,}055$, that $344{,}055\\ne 344{,}056$, and that $344{,}056-191{,}228-38{,}198=114{,}630$. The sets $F$, $C$ and $T$ stand for the voters of the fixed subset, of the control group and of the neighbors treatment. The statements do not say which printed entry is wrong, or that exactly one is, and they do not involve the voter data.",
+        "headline": "The sample counts of the application, “To summarize, $N = 344{,}056$, $N_{\\mathit{fixed}} = 114{,}629$, $N_{\\mathit{control}} = 191{,}228$, and $N_{\\mathit{treatment}} = 38{,}198$”, as corrected",
+        "location": "p. 13 (PDF p. 11)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T12",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.attainable_exactness",
+          "line": 511,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T12",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.exact_rejection_max",
+          "line": 521,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T12",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.one_tailed_randomization_valid",
+          "line": 558,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T12",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.uniformLaw_probability",
+          "line": 430,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T12",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.uniform_point_probability",
+          "line": 1691,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T12",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "The article states no theorem for Equation (2), and the Lean statement is the following reading of it. Let $\\Omega$ be a finite set of binary assignments, let $a$ be a pattern of treatments such that $\\Omega'=\\{z\\in\\Omega:z_i=a_i\\text{ for every fixed unit }i\\}$ is nonempty, and let $Z$ be uniformly distributed on $\\Omega'$. Suppose that $H_{0''}$ holds, with the condition $Z_i=Z'_i$ of P030-N001, or only that the outcomes of the fixed units do not vary over $\\Omega'$. Let $t_z=g(Y_{\\mathit{fixed},z},z)$ for an arbitrary real function $g$, and let $p(z)=|\\{z'\\in\\Omega':t_{z'}\\le t_z\\}|/|\\Omega'|$. The statement asserts that the reference value at $w\\in\\Omega'$, computed from $Y_{\\mathit{fixed}}$ under any assignment of $\\Omega'$, equals $t_w$, and that $p(z)=\\Pr(t_Z\\le t_z)$. It asserts that $\\Pr\\bigl(p(Z)\\le u\\bigr)\\le u\\quad\\text{for every }u\\in[0,1].$ It asserts also that $\\Pr(p(Z)\\le p(z))=p(z)$ for every $z\\in\\Omega'$, and that for every real $u$ the probability $\\Pr(p(Z)\\le u)$ is the largest element of $\\{0\\}\\cup\\{p(z):z\\in\\Omega',\\ p(z)\\le u\\}$. Direct effects of the treatment and ties among the values of the statistic are allowed. The statement assumes a uniform distribution on $\\Omega'$ and does not derive it from a design or from a way of choosing the fixed subset, or cover the approximation of $T_0$ by random sampling of assignments. Two supporting statements give the last two assertions for an arbitrary finite distribution, and two others identify a probability under the uniform distribution with a proportion of the assignments.",
+        "headline": "Equation (2): the one-tailed $p$ value, and the “exact significance level” of the abstract",
+        "location": "p. 7 (PDF p. 5); abstract, p. 3 (PDF p. 1); the worked count on p. 10 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T13",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.complete_nonempty",
+          "line": 1468,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.complete_swap_mem",
+          "line": 1454,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.complete_treatment_mean",
+          "line": 1507,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.conditioned_complete_nonempty",
+          "line": 1519,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.conditioned_treatment_mean",
+          "line": 1540,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.exposure_mean_from_marginals",
+          "line": 1432,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.exposure_mean_linearity",
+          "line": 1424,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.proximal_exposure_expectations",
+          "line": 1581,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.swap_units_involution",
+          "line": 1444,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.symmetric_treatment_mean",
+          "line": 1483,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.treatment_total",
+          "line": 1448,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.uniform_mean_involution",
+          "line": 1474,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T13",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "In the Lean statement, $N\\ge 2$ and $0\\le M\\le N$, and $Z$ is uniformly distributed over the binary vectors of length $N$ with exactly $M$ ones. The proximal neighbors of unit $i$ form an arbitrary set of units that does not contain $i$. Its size is $K_i$, and $P_i$ is the number of its treated units; the metric and the radius enter only through this set. An expectation is an average over the assignments, and the two conditional expectations are averages over the assignments with $Z_i=1$ and with $Z_i=0$. The statement asserts that $E(P_i)=K_iM/N$, that $E(P_i\\mid Z_i=1)=K_i(M-1)/(N-1)$ if $M\\ge 1$, and that $E(P_i\\mid Z_i=0)=K_iM/(N-1)$ if $M\\le N-1$. The two conditions on $M$ are not printed; under them the conditioning events are possible. The statement asserts three consequences, of which the article gives the first two in words only and does not print the third. If $M\\ge 1$ and $K_i<K_j$, then $E(P_i)<E(P_j)$. If $1\\le M\\le N-1$ and $K_i\\ge 1$, then $E(P_i\\mid Z_i=1)<E(P_i)<E(P_i\\mid Z_i=0)$. If $1\\le M\\le N-1$, then $\\frac{M}{N}\\,E(P_i\\mid Z_i=1)+\\frac{N-M}{N}\\,E(P_i\\mid Z_i=0)=E(P_i).$ Supporting statements obtain the probabilities $M/N$, $(M-1)/(N-1)$ and $M/(N-1)$ that another unit is treated from the invariance of the design under the exchange of two units; these probabilities are not assumed.",
+        "headline": "The expected number of proximal treated units: $E(P_i)=K_iM/N$, $E(P_i|Z_i=1)=K_i(M-1)/(N-1)$ and $E(P_i|Z_i=0)=K_iM/(N-1)$",
+        "location": "p. 5 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T14",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.example_observed_outcomes",
+          "line": 931,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.example_observed_statistic_and_p",
+          "line": 1787,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.example_reference_rho",
+          "line": 1778,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.nearest_single_treated",
+          "line": 589,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.table_correlations",
+          "line": 665,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.table_distances",
+          "line": 639,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.table_enumeration_probability",
+          "line": 1708,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.table_rounding",
+          "line": 942,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.table_value_order",
+          "line": 650,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.table_y_vector",
+          "line": 636,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.ten_assignment_probabilities",
+          "line": 1724,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.ten_design",
+          "line": 729,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.uniformProbability_image",
+          "line": 794,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.worked_table_result",
+          "line": 963,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T14",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "Ten units lie at the positions $1,\\ldots,10$, $\\Psi_i$ is the number of units at distance $1$ from unit $i$, $\\Theta_i$ is the number of treated units at distance $1$, and $Y_i=\\Psi_i+\\Theta_i$. One statement asserts that, when unit 7 is treated, $\\Psi=(1,2,2,2,2,2,2,2,2,1)$, $\\Theta=(0,0,0,0,0,1,0,1,0,0)$ and $Y=(1,2,2,2,2,3,2,3,2,1)$, and that $Y_{\\mathit{fixed}}=(1,3,2,1)$ for the fixed units $1,8,9,10$. Others assert that $\\Omega$ has ten assignments, each of probability $1/10$, and that the event $Z_{\\mathit{fixed}}=(0,0,0,0)$ has probability $3/5$ and leaves six assignments, each of conditional probability $1/6$. They assert also that $D_{\\mathit{nearest}}$ takes the six values printed in Table 1. The main statement asserts that the six values of $\\rho_0$, computed with $Y_{\\mathit{fixed}}$ held at $(1,3,2,1)$, are $-\\frac{1}{\\sqrt{90}},\\quad -\\frac{1}{\\sqrt{90}},\\quad -\\frac{1}{\\sqrt{90}},\\quad -\\frac{5}{6},\\quad -\\frac{3}{\\sqrt{10}},\\quad -\\frac{3}{\\sqrt{10}} ,$ and that each differs from the printed $-0.105$, $-0.833$ or $-0.949$ by less than $0.0005$. It asserts that all six are negative and that exactly two are at most the observed $\\rho=-3/\\sqrt{10}$, so that $p=1/3$. Two further statements start from the outcome model of the example, in which the outcomes depend on the treatment of adjacent units. They assert that the reference values computed from its observed $Y_{\\mathit{fixed}}$ are the six values above, that the observed statistic is $-3/\\sqrt{10}$, and that $p=1/3$ over $\\Omega'$. Here $D_{\\mathit{nearest}}$ is the least distance from a fixed unit to a treated unit outside the fixed subset, and $\\rho_0$ is the Pearson correlation of average ranks, with the square root in its denominator.",
+        "headline": "A Simple Example and Table 1",
+        "location": "pp. 9–10 (PDF pp. 7–8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P030-T15",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.half_controls_maximizers",
+          "line": 1653,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T15",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P030/P030_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P030.half_controls_square",
+          "line": 1649,
+          "module": "AronowAudit.P030.P030_Audit",
+          "status": "proved",
+          "target_id": "P030-T15",
+          "target_kind": "headline_result",
+          "work_id": "P030"
+        }
+      ],
+      "text": {
+        "body": "In the Lean statements there are $M\\ge 1$ treated units and $C\\ge 1$ control units, and the fixed subset consists of $f$ control units, where $0\\le f\\le C$. Then $N_{\\mathit{fixed}}=f$, $N_{Z=0,\\mathit{variant}}=C-f$ and $N_{Z=1,\\mathit{variant}}=M$, and the objective of Equation (3) is $f(C-f)M$. The main statement has two parts. If $C=2k$, then $f$ maximizes the objective over the integers $0,\\ldots,C$ if and only if $f=k$. If $C=2k+1$, then $f$ maximizes it if and only if $f=k$ or $f=k+1$. A second statement asserts that $f(C-f)=C^2/4-(f-C/2)^2$ for all real $C$ and $f$. The counts are integers in the Lean statements, which changes nothing in the stated range. The three counts enter only through $f$, $C-f$ and $M$, and no random choice of the fixed units is represented. Only the objective of Equation (3) is maximized, and nothing is asserted about the power of the test.",
+        "headline": "Equation (3), the rule of thumb for $N_{\\mathit{fixed}}$: for a random sample of control units it selects half of the control units",
+        "location": "pp. 8–9 (PDF pp. 6–7)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "P. M. Aronow"
+    ],
+    "citation": "P. M. Aronow (2012). A General Method for Detecting Interference Between Units in Randomized Experiments. Sociological Methods and Research 41(1):3–16.",
+    "doi": "10.1177/0049124112437535",
+    "title": "A General Method for Detecting Interference Between Units in Randomized Experiments",
+    "type": "Journal article",
+    "venue": "Sociological Methods and Research",
+    "year": "2012"
+  },
+  "work_id": "P030"
+}

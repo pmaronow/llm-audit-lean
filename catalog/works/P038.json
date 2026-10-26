@@ -1,0 +1,78 @@
+{
+  "counts": {
+    "counterexample_proved": 0,
+    "proved": 1,
+    "results": 1,
+    "targets": 1
+  },
+  "overview": {
+    "areas": [
+      "probability"
+    ],
+    "caveats": [
+      "The reference window includes $m$ Tuesdays on each side and excludes election day, giving $2m$ reference observations. Tails use strict inequalities outside the election-day relative risk and its reciprocal.",
+      "The two-tail count and the more specific figure reading with tail weeks minus 14 and plus 7 are hypotheses, not formalized measurements of the image or conclusions from the final fatality data.",
+      "Under that specific tail-week hypothesis, the theorem also checks the 12-Tuesday value and shows that counting election day as an extra tail point cannot reconcile both printed window values.",
+      "Decimals denote exact rational values and two-decimal rounding uses the half-open interval $[v-1/200,v+1/200)$. The conditional correction leaves open whether the footnote or the figure needs revision."
+    ],
+    "corrections": [
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P038.corrected_election_hours_window",
+        "target_ids": [
+          "P038-T1"
+        ],
+        "what": "Footnote 2 prints an election-hours p-value of $0.06$ for 50 reference Tuesdays; if exactly two reference relative risks lie outside the figure's dashed lines, Lean proves the value is $2/50 = 0.04$, whereas a value equal to or rounding to $0.06$ requires exactly three such reference points."
+      }
+    ],
+    "key_results": [],
+    "overview": "The paper compares driving-fatality relative risks on presidential election days with an empirical reference distribution from surrounding Tuesdays. The sole Lean target formalizes a conditional counting and rounding correction for the election-hours robustness p-value using 25 Tuesdays on each side. It does not reconstruct the fatality data or establish which published output, the figure or footnote, reflects the final analysis.",
+    "work_id": "P038"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P038-T1",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P038/P038_EmpiricalNullCorrection.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P038.corrected_election_hours_window",
+          "line": 217,
+          "module": "AronowAudit.P038.P038_EmpiricalNullCorrection",
+          "status": "proved",
+          "target_id": "P038-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P038"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement gives the arithmetic behind the correction in P038-N005. Let $R>0$ be the election-day relative risk (RR), and let $r_w$ be the reference RR $w$ weeks after election day, with $w<0$ before it. Lean represents the reference RRs by a real-valued function on all integers, assuming positivity for $1\\le|w|\\le25$ in the calculation from $k_{25}=2$ and for $1\\le|w|\\le100$ in the remaining assertions involving RRs; it does not compute RRs from fatality counts. I write $k_m$ for the number of weeks $w$ with $1\\le|w|\\le m$ such that $r_w<\\min(R,1/R)$ or $r_w>\\max(R,1/R)$. I use strict inequalities for the caption’s “outside” rule; the paper does not specify how ties are treated. The $P$ value for $m$ Tuesdays on each side is $P_m=k_m/(2m)$; I read the 12, 25 and 50 Tuesdays of footnote 2 as counts on each side, following the Methods’ convention of 100 Tuesdays on each side giving 200 reference RRs (see P038-N004). The statement asserts that if $k_{25}=2$, then $P_{25}=2/50=0.04$, which is $1/50$ less than the printed 0.06. It asserts that $P_{25}$ equals or rounds to 0.06 if and only if $k_{25}=3$, and equals or rounds to 0.04 if and only if $k_{25}=2$, and that $k_m\\le k_n$ for $1\\le m\\le n\\le100$. If the weeks counted in $k_{25}$ are exactly $-14$ and $+7$, then $P_{12}=1/24$ rounds to the printed 0.04, while $P_{25}=0.04$ does not round to 0.06. Under the same hypothesis, counting election day as one more extreme observation instead gives $(k_m+1)/(2m+1)$: $2/25=0.08$ for 12 Tuesdays, which does not round to 0.04, and $3/51$ for 25 Tuesdays, which rounds to 0.06, so neither way of counting gives both printed values. Each decimal denotes an exact rational number, and $x$ rounds to $v$ when $v-1/200\\le x<v+1/200$; the paper does not state a rounding rule. The count $k_{25}=2$ and the weeks $-14$ and $+7$, which I read from the published figure, remain hypotheses: the statement does not assert this reading or say which output reflects the final data.",
+        "headline": "Footnote 2, the election-hours $P$ value for 25 Tuesdays, as corrected from Fig. 1",
+        "location": "Footnote 2, third sentence, first value, p. 3 (PDF p. 3); Fig. 1, election-hours panel, and its caption, p. 2 (PDF p. 2); the $P$ value is defined in the Methods, p. 2 (PDF p. 2)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "Fan Zhang",
+      "P. M. Aronow"
+    ],
+    "citation": "Fan Zhang and P. M. Aronow (2016). Driving Fatalities on US Presidential Election Days: A Reanalysis. BMC Research Notes 9:341.",
+    "doi": "10.1186/s13104-016-2148-6",
+    "title": "Driving Fatalities on US Presidential Election Days: A Reanalysis",
+    "type": "Journal article",
+    "venue": "BMC Research Notes",
+    "year": "2016"
+  },
+  "work_id": "P038"
+}

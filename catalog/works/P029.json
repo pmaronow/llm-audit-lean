@@ -1,0 +1,2746 @@
+{
+  "counts": {
+    "counterexample_proved": 23,
+    "proved": 111,
+    "results": 134,
+    "targets": 26
+  },
+  "overview": {
+    "areas": [
+      "causal-identification",
+      "asymptotic-statistics",
+      "experimental-design-and-estimation"
+    ],
+    "caveats": [
+      "The IV model builds exclusion and SUTVA into observed treatment and outcome definitions, assumes random assignment independent of covariates and potential variables, excludes defiers almost surely and requires observed relevance and nondegenerate assignment.",
+      "The consistency theorems require uniform accuracy over all fitted scores in the sample, a sufficient condition stronger than unspecified pointwise score consistency; they do not prove consistency of a particular maximum-likelihood algorithm. The separate Winsorization consistency theorem in P029-T16 assumes finitely many covariate values and its stated overlap, quantile and score conditions.",
+      "Covariates in the general consistency results range over a second-countable Borel space, including finite-dimensional real vectors; conditional means and scores are specified by measurable versions, with latent-ignorability equalities and overlap bounds imposed on the topological support of the covariate law.",
+      "Sample ratios are defined on empty arms and zero empirical first stages by Lean's division convention; these events are asymptotically negligible under the consistency hypotheses, and the exact constant-score identity also holds on that extension.",
+      "The saturated-score counterexample admits boundary receipt probabilities in the model closure; it does not claim that finite probit coefficients attain those boundaries.",
+      "The package counterexample concerns exact likelihood minimizers, not optimizer output or bootstrap uncertainty; the ordered-probability parameterization does not separately formalize its analytic equivalence to saturated probit coefficients, and source clipping is omitted with both displayed optima strictly inside the clipping limits."
+    ],
+    "corrections": [
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P029.corrected_ignorability_incomparability",
+        "target_ids": [
+          "P029-T2"
+        ],
+        "what": "Against the printed assertion that latent ignorability is less restrictive than received-treatment ignorability, Lean constructs two populations satisfying all five IV assumptions, one satisfying each ignorability condition while violating the other."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P029.marginal_independence_counterexample",
+        "target_ids": [
+          "P029-T3",
+          "P029-T4"
+        ],
+        "what": "The printed heterogeneous-effect sufficiency sentence fails under marginal independence of effects and the full compliance type: Lean gives an IV population with overlap in which that independence holds but latent ignorability fails and the true-score ICSW population ratio is $7/16$ rather than the average effect $1/2$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P029.conditional_independence_counterexample",
+        "target_ids": [
+          "P029-T3",
+          "P029-T4"
+        ],
+        "what": "The same printed sentence also fails under independence of effects and the full compliance type conditional on covariates: Lean gives a population satisfying that condition and latent ignorability whose unweighted IV ratio is $5/8$ while its average effect and true-score ICSW ratio are $1/2$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P029.saturated_ml_bias_full_counterexample",
+        "target_ids": [
+          "P029-T13"
+        ],
+        "what": "Against the printed unbiasedness claim for saturated compliance-score estimation, Lean gives a population satisfying the IV assumptions, latent ignorability and overlap whose maximum-likelihood score over the closed receipt-probability parameter space has expectation $9/16$ with one observation per arm, exceeding the true score $1/2$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P029.winsorization_cutoff_counterexample",
+        "target_ids": [
+          "P029-T15"
+        ],
+        "what": "Footnote 6 claims that the Winsorization cutoff tends to zero for fixed tuning parameter, but Lean gives a valid constant-score population in which every cutoff remains $1/2$ and Winsorization leaves both scores and sample Wald ratios unchanged."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P029.Wave1.nested_bernoulli_package_weighted_fit_counterexample",
+        "target_ids": [
+          "P029-T23"
+        ],
+        "what": "Against the package's claim to fit the compliance model with observation weights, Lean gives a sample in the nested Bernoulli model, parameterized by ordered interior receipt probabilities, for which an exact minimizer of the package objective is not a minimizer of the observation-weighted negative log likelihood."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P029.Wave1.late_identity_paper_scope",
+        "target_ids": [
+          "P029-T25"
+        ],
+        "what": "On an arbitrary probability space satisfying the five IV assumptions with integrable potential outcomes, the observed receipt difference equals complier probability, the observed outcome difference equals the complier-weighted effect, and their Wald ratio equals LATE."
+      },
+      {
+        "lean_name": "AronowAudit.P029.Wave1.icsw_consistency_proof",
+        "target_ids": [
+          "P029-T26"
+        ],
+        "what": "With iid IV observations, integrable potential outcomes, overlap bounded away from zero, latent ignorability and measurable fitted scores that lie in $(0,1]$ almost surely and whose maximum in-sample error tends to zero in probability, the ICSW estimator converges in probability to the average treatment effect."
+      },
+      {
+        "lean_name": "AronowAudit.P029.Wave1.icsw_complier_effect_limit_proof",
+        "target_ids": [
+          "P029-T27"
+        ],
+        "what": "Under the same sampling, moment, overlap and fitted-score regularity without requiring latent ignorability, ICSW converges in probability to the conditional complier effect averaged over the population covariate distribution."
+      },
+      {
+        "lean_name": "AronowAudit.P029.constant_scores_equal_iv",
+        "target_ids": [
+          "P029-T27"
+        ],
+        "what": "If every fitted compliance score equals the same positive constant, the sample ICSW ratio equals the unweighted sample Wald ratio exactly."
+      }
+    ],
+    "overview": "The paper develops inverse compliance score weighting (ICSW) to identify and estimate an average treatment effect with a binary instrument and binary treatment. The Lean development covers the population LATE identity, ICSW consistency under explicit sufficient regularity, its limit without the latent-ignorability assumption, and exact estimator identities. Counterexamples and corrected statements address comparisons of ignorability assumptions, heterogeneous-effect sufficiency claims, saturated score estimation, Winsorization, likelihood weighting and additional simulation and application claims.",
+    "work_id": "P029"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.ignorability_counterexample",
+          "line": 197,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T1",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.potential_pair_independent_of_receipt",
+          "line": 2402,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T1",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement describes a population with one covariate profile in which the two displayed equalities of the typical ignorability assumption hold and Assumption 1 fails. A unit is a complier, an always-taker or a never-taker with probabilities $1/2$, $1/4$ and $1/4$, and $Z$ is independent of the type with $\\Pr(Z=1)=1/2$. Every unit has $Y_0=0$, and $Y_1=1$ for a complier and $Y_1=0$ for the other units. The statement asserts that the five IV assumptions and the two ignorability equalities hold, and that half of the treated units and half of the untreated units are compliers. It asserts that $\\mathrm{E}(Y_1-Y_0)=\\frac{1}{2},\\qquad \\mathrm{E}(Y_1-Y_0\\mid D_1>D_0)=1 ,$ and with one covariate profile Assumption 1 is the equality of these two values. The statement asserts also that the compliance score is $1/2$, and that the right side of equation (3) equals $1$ with and without the weights $1/P_C$. A second statement asserts that the pair $(Y_0,Y_1)$ is independent of $D$ in this population, which is stronger than the two equalities. The population is a law on the six pairs of a type and an assignment, and every expectation is a finite sum. Each unit carries fixed values of $D_0$, $D_1$, $Y_0$ and $Y_1$, which is how the exclusion restriction and the stable unit treatment value assumption are represented.",
+        "headline": "A counterexample to the sentence “Assumption 1 is less restrictive than the typical ignorability assumption” of Section 3.4, as printed",
+        "location": "p. 499 (PDF p. 8), paragraph after Assumption 1"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B2b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.one_sided_ignorability_implication_proof",
+          "line": 279,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B2b",
+          "status": "proved",
+          "target_id": "P029-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.baseline_selection_counterexample",
+          "line": 230,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.corrected_ignorability_incomparability",
+          "line": 2380,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The comparison as corrected in P029-E003 says that the two assumptions are not ordered in general and that the typical ignorability assumption implies Assumption 1 under one-sided noncompliance. The first Lean statement takes the types and the assignment of the counterexample to the printed sentence, with $Y_0=1$ for an always-taker, $Y_0=0$ for the other units and $Y_1=Y_0+1$. It asserts that the five IV assumptions and Assumption 1 hold and that $\\mathrm{E}(Y_0\\mid D=1)=\\frac{1}{2},\\qquad \\mathrm{E}(Y_0\\mid D=0)=0,\\qquad \\mathrm{E}(Y_1\\mid D=1)=\\frac{3}{2},\\qquad \\mathrm{E}(Y_1\\mid D=0)=1,$ so that both ignorability equalities fail. The second statement joins the two populations: in one the equalities hold and Assumption 1 fails, and in the other Assumption 1 holds and the equalities fail. In the third statement, $(\\mathbf{X},D_0,D_1,Y_0,Y_1,Z)$ are arbitrary random variables that satisfy the five IV assumptions, with $Y_0$ and $Y_1$ integrable and $D_0=0$ almost surely. For every covariate value $\\mathbf{x}$ such that $\\Pr(\\mathbf{X}=\\mathbf{x})>0$ and $\\Pr(D_1>D_0\\mid\\mathbf{X}=\\mathbf{x})>0$, it asserts that the two ignorability equalities at $\\mathbf{x}$ imply Assumption 1 at $\\mathbf{x}$. A conditional mean given $\\mathbf{X}=\\mathbf{x}$ is the integral over that event divided by its probability. The third statement therefore covers covariate values of positive probability and not a covariate with a density. Its hypotheses include the absence of defiers and the relevance of the instrument, which here follow from the other hypotheses.",
+        "headline": "Section 3.4, the comparison of Assumption 1 with the typical ignorability assumption, as corrected",
+        "location": "p. 499 (PDF p. 8), paragraph after Assumption 1"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.conditional_independence_counterexample",
+          "line": 351,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T3",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.conditional_witness_not_marginally_independent",
+          "line": 2413,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T3",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.marginal_independence_counterexample",
+          "line": 297,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T3",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.marginal_witness_nested_probabilities",
+          "line": 2423,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T3",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements describe the two populations of P029-E004, one for each reading of “independent”. Both have a binary covariate $X$, a complier indicator $C$, an effect $\\tau\\in\\{0,1\\}$ with $Y_0=0$ and $Y_1=\\tau$, and an assignment $Z$ that is independent of the other variables with $\\Pr(Z=1)=1/2$. A unit that is not a complier is an always-taker or a never-taker with probability $1/2$ each. The limits of 2SLS and of ICSW are represented by the right side of equation (3), computed from the observed variables without weights and with the weights $1/P_C(X)$. In the first population the statement asserts that the five IV assumptions hold, that $\\tau$ is independent of the pair $(D_0,D_1)$, and that $P_C(0)=2/5$ and $P_C(1)=2/3$. It asserts that $\\mathrm{E}(\\tau\\mid X=x)$ and $\\mathrm{E}(\\tau\\mid D_1>D_0,X=x)$ are $2/5$ and $1/4$ at $x=0$ and $2/3$ and $3/4$ at $x=1$, that the ATE and the unweighted ratio are $1/2$, and that the weighted ratio is $7/16$. In the second population the statement asserts that $\\tau$ is independent of $(D_0,D_1)$ given $X$ and that Assumption 1 holds, with $P_C(0)=1/4$ and $P_C(1)=3/4$. It asserts that the ATE and the weighted ratio are $1/2$ and that the unweighted ratio is $5/8$. A further statement asserts that the nested probabilities of equations (5) and (6) in the first population are $7/10$ and $3/7$ at $x=0$ and $5/6$ and $1/5$ at $x=1$. Another asserts that in the second population $\\tau$ is not independent of $(D_0,D_1)$ without conditioning on $X$. The statements concern population values, and the convergence of the two estimators to these values is not part of them.",
+        "headline": "Counterexamples to the sentence “even if treatment effects are heterogeneous, but still statistically independent of compliance, Assumption 1 would necessarily be satisfied, and both 2SLS and ICSW would be consistent for the ATE” of Section 3.4, as printed",
+        "location": "p. 499 (PDF p. 8), last sentence of the paragraph beginning “We can describe sufficient conditions for and consequences of Assumption 1”"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.corrected_weighted_limits_proof",
+          "line": 372,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B4",
+          "status": "proved",
+          "target_id": "P029-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.joint_independence_suffices_proof",
+          "line": 621,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B4",
+          "status": "proved",
+          "target_id": "P029-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.conditional_independence_counterexample",
+          "line": 351,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.marginal_independence_counterexample",
+          "line": 297,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.profile_covariance_gap",
+          "line": 2236,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.profile_inverse_score_cancellation",
+          "line": 2215,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "In the main Lean statement, $(\\mathbf{X},D_0,D_1,Y_0,Y_1,Z)$ are random variables on a probability space that satisfy the five IV assumptions, with integrable $Y_0$ and $Y_1$, where $\\mathbf{X}$ takes finitely many values and $P_C(\\mathbf{x})=\\Pr(D_1>D_0\\mid\\mathbf{X}=\\mathbf{x})>0$ for every $\\mathbf{x}$ such that $f(\\mathbf{x})=\\Pr(\\mathbf{X}=\\mathbf{x})>0$. Let $C=\\mathbf{1}\\{D_1>D_0\\}$, $\\tau=Y_1-Y_0$ and $\\mu(\\mathbf{x})=\\mathrm{E}(\\tau\\mid C=1,\\mathbf{X}=\\mathbf{x})$. For a positive weight $w(\\mathbf{X})$, let $\\theta_w$ denote the right side of equation (3) with every observation weighted by $w(\\mathbf{X})$. The statement asserts that $\\theta_w=\\frac{\\mathrm{E}[w(\\mathbf{X})C\\tau]}{\\mathrm{E}[w(\\mathbf{X})C]},\\qquad \\theta_1=\\mathrm{E}(\\tau\\mid C=1),\\qquad \\theta_{1/P_C}=\\sum_{\\mathbf{x}}f(\\mathbf{x})\\mu(\\mathbf{x}),\\qquad \\theta_1-\\theta_{1/P_C}=\\frac{\\operatorname{Cov}\\{P_C(\\mathbf{X}),\\mu(\\mathbf{X})\\}}{\\Pr(C=1)} .$ It asserts also that $\\theta_1=\\mathrm{E}(\\tau)$ if $\\mathrm{E}(\\tau\\mid C=1)=\\mathrm{E}(\\tau)$, and that $\\theta_{1/P_C}=\\mathrm{E}(\\tau)$ if Assumption 1 holds at every $\\mathbf{x}$ such that $f(\\mathbf{x})>0$. A second statement asserts that both premises hold, and with them both conclusions, if $\\tau$ is independent of $(C,\\mathbf{X})$ or $C$ is independent of $(\\tau,\\mathbf{X})$. In each of the two populations of P029-E004 one premise holds and the conclusion for the other estimator fails. Two further statements contain the algebra for a finite set of covariate profiles: the scores cancel term by term under the weights $1/P_C$, and the difference of the two ratios is the covariance divided by $\\sum_{\\mathbf{x}}f(\\mathbf{x})P_C(\\mathbf{x})$. The statements are identities between population values; the auxiliary cancellation permits rates above $1$, and the covariance identity requires only a nonzero denominator. The restriction to a covariate with finitely many values is that of the derivation in the finding.",
+        "headline": "Section 3.4, the sufficient condition for heterogeneous treatment effects, as corrected",
+        "location": "p. 499 (PDF p. 8), last sentence of the paragraph beginning “We can describe sufficient conditions for and consequences of Assumption 1”; the limits are those of the displays on p. 499 and of Appendix equations (10) and (13), p. 504 (PDF p. 13)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.homogeneous_rmse_counterexample",
+          "line": 1018,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T5",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.normal_equation_exact_recovery",
+          "line": 998,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T5",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.rmse_design_determinant",
+          "line": 992,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T5",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.rmse_design_gram",
+          "line": 982,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T5",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.rmse_positive_weight_recovery",
+          "line": 1040,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T5",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.rmse_witness_admissible",
+          "line": 2450,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T5",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.rmse_witness_outcomes",
+          "line": 1005,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T5",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The statements give the two inputs of P029-E011, each with $n=500$ units in $50$ identical blocks of ten. In each block the observed covariates take five values, each once with $Z_i=0$ and once with $Z_i=1$. Every unit is a complier with $D_i=Z_i$ and treatment effect $5$, and its latent covariates are $(1/5,0,0)$, so that the benchmark that the code subtracts is $B=6$. Let $Q$ be the matrix with rows $(1,Z_i,W1_i,W2_i,W3_i)$, where $W1_i$, $W2_i$ and $W3_i$ are the observed covariates. The main statement asserts the entries of $Q^{\\mathsf T}Q$, that the outcomes of the two inputs are $5+5Z_i$ and $5+6Z_i$, and that the normal equations return the coefficient vectors $(5,5,0,0,0)$ and $(5,6,0,0,0)$. It asserts that the squared errors about $B$ and about $5$ are $1$ and $0$ for the first input and $0$ and $1$ for the second. Further statements assert that $\\det Q^{\\mathsf T}Q=3906250000$, and that for all positive weights the weighted normal equations with outcome $Qb$ return $b$. They assert also that the covariate values lie in $(-1,1)$, that the corrected thresholds make every unit a complier, and that $250$ units have $Z_i=1$. The 2SLS estimate is represented by the solution of the normal equations, which is the 2SLS coefficient because the regressors and the instruments coincide. The R code is not an object of the statements, and no entry of Table A3 is asserted. The two inputs are single points of the support of the design, and the statements say nothing about their probability.",
+        "headline": "A counterexample to the RMSEs of supplement Table A3 and of the “Noise (Homogeneous)” panel of Figure A3, as computed by the replication code",
+        "location": "Supplement, p. A2 (design), p. A5 (description of the RMSE tables), p. A6 (Figure A3) and p. A7 (Table A3); replication files, Simulations Misspecification Noise 6-20.R, lines 125–135, and Sim-Display Misspec.R, lines 60–70"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B5.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.heterogeneous_benchmark_moments_proof",
+          "line": 124,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B5",
+          "status": "proved",
+          "target_id": "P029-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.expected_mse_discrepancy",
+          "line": 908,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.finite_expected_mse_discrepancy",
+          "line": 893,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.finite_run_mse_discrepancy",
+          "line": 883,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.homogeneous_population_effect",
+          "line": 857,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.homogeneous_rmse_rule",
+          "line": 872,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.homogeneous_sample_effect",
+          "line": 850,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.squared_error_discrepancy",
+          "line": 878,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.uniform_covariate_moments",
+          "line": 938,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the scoring rule as corrected in P029-E011 and its exact relation to the coded one. They assert none of the corrected entries, which are simulation output. If $Y_{1i}=Y_{0i}+5$ for every unit, then the average effect of every nonempty sample is $5$, and on any probability space $\\mathrm{E}(Y_1-Y_0)=5$ and $\\mathrm{E}(Y_1-Y_0\\mid D_1>D_0)=5$ when the compliers have positive probability. One statement writes the corrected RMSE over $R=2{,}500$ simulated datasets as $\\bigl(R^{-1}\\sum_r(t_r-5)^2\\bigr)^{1/2}$. For the coded benchmark $B=n^{-1}\\sum_i5(1+X1_i+X2_i+X3_i)$, one statement asserts that a variable with the uniform distribution on $(-1,1)$ has mean $0$ and second moment $1/3$. Another asserts that $\\mathrm{E}(B)=5$ and $\\operatorname{Var}(B)=25/n$ when the $3n$ covariates are independent with that distribution. For all real $t$ and $B$, $(t-B)^2-(t-5)^2=(B-5)^2-2(t-5)(B-5),$ and the same identity holds for the averages over any finite run. If $\\mathrm{E}(B)=5$, then $\\mathrm{E}(t-B)^2-\\mathrm{E}(t-5)^2=\\operatorname{Var}(B)-2\\operatorname{Cov}(t,B)$, both for a law on finitely many points and for square-integrable $t$ and $B$ on any probability space. The uniform distribution is the normalized Lebesgue measure on $(-1,1)$.",
+        "headline": "Supplement Table A3 and the “Noise (Homogeneous)” panel of Figure A3, with the RMSE about the constant effect $5$, as corrected",
+        "location": "Supplement, pp. A2 and A5–A7; replication files, Simulations Misspecification Noise 6-20.R, lines 125–135, and Sim-Display Misspec.R, lines 60–70"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T7",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.bootstrap_first_step_derivative",
+          "line": 828,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T7",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.bootstrap_refit_ratio",
+          "line": 2470,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T7",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.inside_log_minimizers",
+          "line": 533,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T7",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.inside_log_weights_identity",
+          "line": 522,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T7",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.two_sided_weight_counterexample",
+          "line": 811,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T7",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.weighted_score_counterexample",
+          "line": 789,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T7",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.zero_weight_infinite_contribution",
+          "line": 556,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T7",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.zero_weight_objective_infinite",
+          "line": 563,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T7",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements concern the objective of the two-sided fit in the package, $Q_{\\mathrm{pkg}}(\\theta;w)=-\\sum_i\\log\\{L_i(\\theta)w_i\\}$, and the examples of P029-E016. Two statements assert that $Q_{\\mathrm{pkg}}(\\theta;w)=Q_{\\mathrm{pkg}}(\\theta;\\mathbf{1})-\\sum_i\\log w_i$ for all positive weights, and that $\\theta$ minimizes $Q_{\\mathrm{pkg}}(\\cdot\\,;w)$ if and only if it minimizes the unweighted negative log likelihood. Two statements assert that a weight $w_i=0$ makes the term $-\\log\\{L_i(\\theta)w_i\\}$ equal to $+\\infty$, and the objective with it, where $-\\log0=+\\infty$ as in R. For the one-sided example with 16 observations, a statement asserts that the weighted IV estimate is $3/2$ with the prescribed scores $(1/4,3/4)$ and $17/10$ with the prescribed scores $(9/12,27/28)$. For the two-sided example, a statement asserts that the receipt probabilities $(1/4,1/2,1/4,3/4)$ and $(3/4,9/10,3/4,27/28)$ both satisfy the order restriction of the nested model. It asserts also that the unweighted likelihood at the second divided by its value at the first is $729/1500625<1$, and that the compliance scores of the second are $(3/20,3/14)$. When the weight of one observation is changed to $t>0$, the estimate is $3/2$ with the scores held fixed and $(t+11)/(t+7)$ with the scores refitted, and the derivative of the latter at $t=1$ is $-1/16$. In these statements $L_i(\\theta)$ is any family of positive likelihood contributions, and the R code is not an object of the statements. That the scores named are the maximizers of their likelihoods rests on the statement on saturated cells in the corrected fit, and the behaviour of a numerical optimizer is not asserted.",
+        "headline": "Counterexamples to the fit of the compliance score with observation weights, and to the bootstrap, in the R package icsw, version 1.0.0",
+        "location": "R package icsw, version 1.0.0: R/compliance.score.R, lines 43–48 and 81–92, R/icsw.tsls.R, lines 28–37, and the help page of icsw.tsls; the recommendation that the package implements is in Section 3.3, p. 498 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.bootstrap_refit_ratio",
+          "line": 2470,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.constant_weight_minimizers",
+          "line": 766,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.corrected_objective_zero_unit",
+          "line": 583,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.integer_weight_replication",
+          "line": 591,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.saturated_weighted_objective_minimum",
+          "line": 680,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.two_sided_weight_counterexample",
+          "line": 811,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.weighted_cell_strict_concavity",
+          "line": 650,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.weighted_cell_unique_max",
+          "line": 606,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.weighted_score_counterexample",
+          "line": 789,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements concern the corrected objective $Q_{\\mathrm{w}}(\\theta;w)=-\\sum_iw_i\\log L_i(\\theta)$, the weighted negative log likelihood, which is also the correction of P029-E014. Two statements assert that an observation of weight zero contributes $0$, that $Q_{\\mathrm{w}}$ with unit weights is the unweighted negative log likelihood, and that $\\exp\\{-Q_{\\mathrm{w}}(\\theta;w)\\}=\\prod_iL_i(\\theta)^{w_i}$ for nonnegative integer weights. For $S>0$ and $F>0$, two statements assert that the function $q\\mapsto S\\log q+F\\log(1-q)$ is strictly concave on $(0,1)$ and has the unique maximizer $q=S/(S+F)$. A third concerns a model with a free probability $q_c\\in(0,1)$ for each cell $c$. It asserts that $Q_{\\mathrm{w}}$ has the unique minimizer $q_c=S_c/(S_c+F_c)$, where $S_c$ and $F_c$ are the sums of the weights of the observations in the cell such that $D=1$ and $D=0$, both assumed positive. One statement asserts that $Q_{\\mathrm{w}}$ and the objective of the package have the same minimizers when all weights equal one positive constant. The three examples of P029-E016 are stated with the values that the corrected objective gives: the scores $(3/4,27/28)$ and the estimate $17/10$, the receipt probabilities $(3/4,9/10,3/4,27/28)$ with scores $(3/20,3/14)$, and the estimate $(t+11)/(t+7)$. In the general objective identities $L_i(\\theta)$ is any family of positive likelihood contributions, and the corrected R code is not an object of the statements. In the statement on cells the probability of each cell is free, and the statement does not say that a probit optimizer reaches the minimizer.",
+        "headline": "The fit of the compliance score with observation weights in the R package icsw, version 1.0.0, as corrected",
+        "location": "R package icsw, version 1.0.0: R/compliance.score.R, lines 43–47 and 91; replication files, icsw.R, lines 49–50"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T9",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.canvass_assignment_supported",
+          "line": 1210,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T9",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.canvass_cell_conditional_mean",
+          "line": 1132,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T9",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.canvass_cell_expectation",
+          "line": 1097,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T9",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.canvass_cell_probability",
+          "line": 1110,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T9",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.racial_completion_counterexample",
+          "line": 1156,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T9",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.racial_raw_code_preservation",
+          "line": 1226,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T9",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement describes the two complete populations of P029-N004 for the $18{,}933$ records of the canvassing study. They agree with every recorded race label, contact and outcome, and the association between compliance and race has opposite signs in them. The records enter through nine counts, which are taken from the replication data and are not derived in Lean. The Raleigh records with the race code W are $602$ contacted, $768$ assigned and not contacted and $2514$ controls. The corresponding counts are $160$, $155$ and $461$ for the other Raleigh records, and $1789$, $5247$ and $7237$ for the records outside Raleigh, whose race label is blank. In both populations $D_0=0$ and $D_1$ is the recorded contact, so that the compliers are the $2551$ contacted records, and $Y_0=Y_1$ is the recorded outcome, whatever its value. In the first population every record with a blank race label is non-white, and in the second every such record is white. The statement asserts that the white records number $3884$ and $18157$, with $602$ and $2391$ compliers among them. It asserts that the difference $\\mathrm{E}(C\\mid W=1)-\\mathrm{E}(C\\mid W=0)$ is $\\frac{744791}{29225158}>0\\quad\\text{in the first population and}\\quad-\\frac{131213}{1761229}<0\\quad\\text{in the second.}$ Further statements assert that sums over the records equal sums over the nine cells weighted by their counts, that both populations keep every recorded race code, and that the recorded assignment has positive probability under independent assignment with any probability in $(0,1)$. The statements assert that the recorded data are compatible with either sign, and they do not say which sign holds in the actual population. That a control record is not a complier is a choice made for the example.",
+        "headline": "A counterexample to the inference of Section 4.1, drawn from the correlations of supplement Table A7, that compliers are more likely to identify as white",
+        "location": "p. 501 (PDF p. 10), last paragraph; supplement Table A7, p. A11 (supplement PDF p. 11)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.grouped_covariance_decomposition_proof",
+          "line": 107,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B1",
+          "status": "proved",
+          "target_id": "P029-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.binary_count_sign_identity",
+          "line": 1247,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.binary_population_count_sign",
+          "line": 1294,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.canvass_assignment_supported",
+          "line": 1210,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.racial_completion_counterexample",
+          "line": 1156,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.raleigh_recorded_comparison",
+          "line": 1269,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the exact content of the description as corrected in P029-N004, namely what the recorded race labels determine and what they do not. Let $C$ and $W$ be binary variables on a finite population of $N$ units, and let $n_C$, $n_W$ and $n_{11}$ be the numbers of units such that $C=1$, $W=1$ and $C=W=1$. If $0<n_W<N$ and $0<n_C<N$, a statement asserts that $\\operatorname{Cov}(C,W)=\\frac{Nn_{11}-n_Cn_W}{N^2},\\qquad \\mathrm{E}(C\\mid W=1)-\\mathrm{E}(C\\mid W=0)=\\frac{Nn_{11}-n_Cn_W}{n_W(N-n_W)},$ with the corresponding formula for $\\mathrm{E}(W\\mid C=1)-\\mathrm{E}(W\\mid C=0)$, and that each difference is positive if and only if $Nn_{11}>n_Cn_W$. A companion statement states the same algebra for real numbers in place of counts. For the Raleigh records assigned to treatment, a statement asserts that $\\frac{602}{1370}-\\frac{160}{315}=-\\frac{2957}{43155}<0,\\qquad \\frac{602}{1370}-\\frac{155}{308}=-\\frac{13467}{210980}<0 ,$ the second with the records whose race code is unknown left out. The two populations of the counterexample have $Nn_{11}-n_Cn_W=1489582$ and $-1049704$, so that the recorded data do not determine the sign over the six cities. A statement asserts that the covariance of two variables on a finite population is the sum of a term within groups and a term between group means. It asserts also that the first term comes from one group alone if the second variable is constant within every other group. All moments have the denominator $N$. A supporting statement shows that the recorded assignment has positive probability under independent assignment with any assignment probability in $(0,1)$. The counts are taken from the replication data, and the sentences of the corrected text about estimated compliance scores are not included in these statements, since they depend on a fitted probit.",
+        "headline": "Section 4.1, the description of the compliers, as corrected",
+        "location": "p. 501 (PDF p. 10), last paragraph; supplement Table A7, p. A11 (supplement PDF p. 11)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T11",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sem_defier_counterexample",
+          "line": 1448,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T11",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sem_dependence_counterexample",
+          "line": 1499,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T11",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements describe the first two populations of P029-E002, in which the SEM conditions of Section 2.1 hold and one of the five IV assumptions fails. Neither has covariates. The SEM conditions are stated for the population: $Y=\\beta_0+\\beta_1D+u$ with the same $\\beta_1$ for every unit, $D=\\gamma_0+\\gamma_1Z+e$ with $\\mathrm{E}(e\\mid Z)=0$, $\\operatorname{Corr}(Z,u)=0$ with positive variances of $Z$ and $u$, and $\\operatorname{Cov}(Z,D)\\neq0$. In the first population a unit is a complier with probability $3/4$ and a defier with probability $1/4$, and $Z$ is independent of the type with $\\Pr(Z=1)=1/4$. The outcomes are $Y_0=u$ and $Y_1=u+1$, with $u=3/4$ for a defier and $u=-1/4$ for a complier. The statement asserts that $Y=D+u$ and $D=1/4+Z/2+e$, that $Z$ is independent of $(D_0,D_1,Y_0,Y_1)$, that $\\operatorname{Var}(Z)=\\operatorname{Var}(u)=3/16$, $\\operatorname{Corr}(Z,u)=0$ and $\\operatorname{Cov}(Z,D)=\\operatorname{Cov}(D,u)=3/32$, and that $\\Pr(D_0>D_1)=1/4$. In the second population $U$ is uniform on $\\{-2,-1,1,2\\}$, and $Z=\\mathbf{1}\\{|U|=2\\}$, $D_0=\\mathbf{1}\\{U>0\\}$, $D_1=1$, $Y_0=U$ and $Y_1=U+1$. The statement asserts that $Y=D+U$ and $D=1/2+Z/2+e$, that $\\mathrm{E}(U\\mid Z)=0$, $\\operatorname{Var}(Z)=1/4$, $\\operatorname{Var}(U)=5/2$, $\\operatorname{Corr}(Z,U)=0$, $\\operatorname{Cov}(Z,D)=1/8$ and $\\operatorname{Cov}(D,U)=1/4$, that there are no defiers, and that $Z$ is not independent of $Y_0$. The article states its SEM conditions as limits of sample quantities. The Lean statements concern the population moments to which those quantities converge under independent sampling, and they contain no limit theorem.",
+        "headline": "Counterexamples to the sentence “these assumptions are considerably weaker than (and subsumed by) those of the SEM framework” of Section 2.2, as printed",
+        "location": "p. 495 (PDF p. 4), last sentence of the paragraph that lists the five IV assumptions; the SEM conditions are on pp. 493–494 (PDF pp. 2–3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T12",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.heterogeneous_iv_counterexample",
+          "line": 1546,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sem_defier_counterexample",
+          "line": 1448,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sem_dependence_counterexample",
+          "line": 1499,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sem_forces_constant_effect",
+          "line": 1532,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The sentence as corrected in P029-E002 says that the two sets of assumptions are distinct and that neither contains the other, and four Lean statements cover it. The first half, that the SEM conditions do not imply the five IV assumptions, is the content of the two populations of the counterexample. One has defiers with probability $1/4$, and in the other $Z$ is not independent of $Y_0$. A third statement asserts that the causal reading of equation (1) forces a constant effect. If $Y_{di}=\\beta_0+\\beta_1d+\\lambda_1Q_{1i}+\\cdots+\\lambda_KQ_{Ki}+u_i$ for $d\\in\\{0,1\\}$ and every unit $i$, with the covariates and $u_i$ the same for both values of $d$, then $Y_{1i}-Y_{0i}=\\beta_1$ for every unit. A fourth statement describes a population in which the five IV assumptions hold and the effect is not constant. Every unit is a complier with $Y_0=0$, the outcome $Y_1$ equals $1$ or $2$ with probability $1/2$ each, and $Z$ is independent of $Y_1$ with $\\Pr(Z=1)=1/2$. The statement asserts that there exists no $\\beta_1$ equal to the effect of every unit, and that the ATE and the right side of equation (3) both equal $3/2$. The conclusion that neither set of assumptions implies the other is the conjunction of these statements and is not stated separately. As in the counterexample, the SEM conditions are stated with population moments.",
+        "headline": "Section 2.2, the comparison of the five IV assumptions with the SEM assumptions, as corrected",
+        "location": "p. 495 (PDF p. 4), last sentence of the paragraph that lists the five IV assumptions"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T13",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.constant_score_counterexample_law",
+          "line": 1736,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T13",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.five_per_arm_bias_counterexample",
+          "line": 1642,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T13",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.saturated_ml_bias_full_counterexample",
+          "line": 2547,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T13",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.saturated_unbiasedness_counterexample",
+          "line": 1615,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T13",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.two_observation_ml_maxima",
+          "line": 1594,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T13",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The statements give the example of P029-E005, a single covariate stratum with one unit observed in each assignment arm. A unit is an always-taker, a complier or a never-taker with probabilities $1/4$, $1/2$ and $1/4$. The receipt probabilities are then $3/4$ in the arm $Z=1$ and $1/4$ in the arm $Z=0$, and the compliance score is $1/2$. The saturated model is represented by the pair $(p,q)$ of receipt probabilities of the two arms, with $p=P_{A,C}$ and $q=P_{A,C}P_{A|A,C}$, and the likelihood (7) is maximized over the closed region $0\\le q\\le p\\le1$, with $0^0=1$. For each of the four possible samples $(d_1,d_0)$, one statement asserts that the fit, which is $(0,0)$, $(1/2,1/2)$, $(1,0)$ or $(1,1)$, lies in the region and that no point of the region has a larger likelihood. A second asserts that the fitted score $p-q$ equals $1$ for the sample $(1,0)$ and $0$ otherwise, that its expectation is $9/16$, and that the difference $d_1-d_0$ has expectation $1/2$. Two more concern the population of types, with a treatment effect of $1$ for every unit. They assert that the five IV assumptions and Assumption 1 hold in it, and one of them joins the facts above to it. A last statement concerns five units in each arm with receipt probabilities $1/2$ and $3/10$: the score $\\max(k_1/5-k_0/5,0)$ has expectation $15659/64000$ against a compliance score of $1/5$. Boundary fits are admitted, as in the finding, since with one unit in each arm no probit model with finite coefficients attains the maximum. The statements for one unit in each arm assert that the fits are maximizers and not that they are unique. In the statement for five units the score is given by its formula, and the derivation of the formula from the likelihood belongs to the corrected statement.",
+        "headline": "A counterexample to the last sentence of Assumption 2, “$\\hat{P}_{Ci}$ will be unbiased for the conditional probability of compliance”, as printed",
+        "location": "p. 500 (PDF p. 9), Assumption 2; the estimator is defined in Section 3.1, pp. 496–497 (PDF pp. 5–6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T14",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.one_sided_saturated_unbiasedness_proof",
+          "line": 275,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B1",
+          "status": "proved",
+          "target_id": "P029-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.saturated_binomial_bias_bound_proof",
+          "line": 444,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B1",
+          "status": "proved",
+          "target_id": "P029-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [
+            {
+              "hypothesis": "AronowAudit.Literature.VanEedenOrderedBinomialMLE",
+              "source": "C. van Eeden, \"Maximum likelihood estimation of ordered probabilities\", Proc. KNAW Ser. A 59 = Indagationes Math. 18 (1956), Theorem I, p. 445"
+            }
+          ],
+          "file": "AronowAudit/P029/Wave1/Cond/CondP027P029Proofs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.saturated_ml_characterization_conditional",
+          "line": 92,
+          "module": "AronowAudit.P029.Wave1.Cond.CondP027P029Proofs",
+          "status": "proved",
+          "target_id": "P029-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B2b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.saturated_score_consistency_proof",
+          "line": 36,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B2b",
+          "status": "proved",
+          "target_id": "P029-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.nested_receipt_parameters",
+          "line": 2004,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.positive_part_bias_identity",
+          "line": 1662,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.positive_part_error_bound",
+          "line": 1651,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the correction of P029-E005. They concern one covariate stratum with $n_1\\ge1$ units in the arm $Z=1$ and $n_0\\ge1$ units in the arm $Z=0$, of which $k_1$ and $k_0$ receive treatment, and $r_z=k_z/n_z$. The saturated likelihood is $L(p,q)=p^{k_1}(1-p)^{n_1-k_1}q^{k_0}(1-q)^{n_0-k_0}$ on the region $0\\le q\\le p\\le1$, with $0^0=1$, where $p=P_{A,C}$ and $q=P_{A,C}P_{A|A,C}$. The sixth statement assumes a result from van Eeden on maximum likelihood for ordered binomial probabilities, which is not proved in Lean. Under this assumption, it asserts that $L$ has a unique maximizer on this region. Under this hypothesis, the maximizer is $(r_1,r_0)$ if $r_0\\le r_1$ and the pooled rate $p=q=(k_1+k_0)/(n_1+n_0)$ otherwise, so that the fitted score is $\\hat c=\\max(r_1-r_0,0)$. For independent binomial counts with receipt probabilities $0\\le p_0\\le p_1\\le1$ and $c=p_1-p_0$, the fifth statement asserts that $\\mathrm{E}(\\hat c)-c=\\mathrm{E}[\\max(r_0-r_1,0)]\\ge0,\\qquad \\Pr(|\\hat c-c|>\\delta)\\le\\frac{1}{\\delta^2}\\left(\\frac{p_1(1-p_1)}{n_1}+\\frac{p_0(1-p_0)}{n_0}\\right)\\ \\text{for all }\\delta>0,$ with a strictly positive bias if $p_0>0$ and $p_1<1$. The seventh asserts that $\\Pr(|\\hat c-c|>\\delta)\\to0$ as $n_1$ and $n_0$ tend to infinity, and the second asserts that $k_0=0$ almost surely, $\\hat c=r_1$ and $\\mathrm{E}(\\hat c)=p_1$ if $p_0=0$. Three supporting statements give the identity $\\mathrm{E}\\max(T,0)-\\mathrm{E}(T)=\\mathrm{E}\\max(-T,0)$, the inequality $|\\max(t,0)-c|\\le|t-c|$ for $c\\ge0$, and the nested parameters $P_{A,C}=p$ and $P_{A|A,C}=q/p$ of a pair such that $0<q<p<1$. In the statements on bias and consistency $\\hat c$ is the formula $\\max(r_1-r_0,0)$ applied to the counts, and its link with the likelihood is the sixth statement, conditional on the same literature hypothesis. The maximum is taken over the closure of the model, since a probit with finite coefficients does not attain boundary values. Assumption 2 also mentions models whose number of parameters grows with $n$, and their consistency is not covered.",
+        "headline": "Assumption 2, last sentence, as corrected",
+        "location": "p. 500 (PDF p. 9), Assumption 2; p. 496 (PDF p. 5), Section 3.1, third paragraph (“strata means under saturation”)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T15",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.constant_quantile",
+          "line": 1701,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T15",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.constant_score_counterexample_law",
+          "line": 1736,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T15",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.cutoff_not_zero",
+          "line": 1720,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T15",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.winsorization_cutoff_counterexample",
+          "line": 2521,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P029-T15",
+          "target_kind": "counterexample",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The statements give the example of P029-E006 with the exact compliance scores. The population has one covariate profile, a unit is an always-taker, a complier or a never-taker with probabilities $1/4$, $1/2$ and $1/4$, and $Z$ is independent of the type with $\\Pr(Z=1)=1/2$. Every unit has $Y_0=0$ and $Y_1=1$. The main statement asserts that the five IV assumptions and Assumption 1 hold and that the compliance score is $1/2$. It asserts that the ATE and the right side of equation (3) with the constant weight $2$ both equal $1$. For every sample size and every level in $[0,1]$, it asserts that the quantile of a sample of scores all equal to $1/2$ is $1/2$, so that the cut-off $c=1/2$ does not tend to $0$. It asserts also that Winsorizing these scores at $1/2$ leaves the estimator of Section 3.3 unchanged in every sample, with division by zero interpreted as zero. Supporting statements assert the facts about the population separately, that a constant sample has no other quantile, and that no score lies strictly below the cut-off. The quantile is the interpolated sample quantile that the application scripts use. The scores in the statements are the exact scores and not maximum-likelihood estimates, and the limit of the cut-off computed from estimated scores, which the finding also derives, is not included in these statements. The example contradicts the reason given in the footnote and not its conclusion.",
+        "headline": "A counterexample to the reason given in footnote 6, “because $c \\to 0$ as $n \\to \\infty$”, as printed",
+        "location": "p. 498 (PDF p. 7), footnote 6"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T16",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GLP029B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.winsorization_corrected_limit_proof",
+          "line": 429,
+          "module": "AronowAudit.P029.Wave1.Gap.GLP029B1",
+          "status": "proved",
+          "target_id": "P029-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.bounded_weighted_mean_change",
+          "line": 1853,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.inverse_score_accuracy",
+          "line": 1889,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.outcome_tail_weight_bound",
+          "line": 1912,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.quantile_changed_fraction_tends_zero",
+          "line": 1810,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.quantile_count_and_lower_bound",
+          "line": 1763,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.ratio_perturbation",
+          "line": 1953,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.weight_change_bound",
+          "line": 1836,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the justification as corrected in P029-E006. Let $s_1,\\dots,s_n$ be real numbers such that $s_i\\ge b$ for all $i$, and let $c$ be their interpolated sample quantile at a level $\\lambda\\in(0,1)$, the rule of the application scripts. One statement asserts that the number of $i$ such that $s_i<c$ is at most $1+(n-1)\\lambda$, so that their fraction is at most $\\lambda+1/n$, and that $c\\ge b$. A second asserts that this fraction tends to $0$ if $\\lambda=n^{-\\alpha}$ for a fixed $\\alpha>0$, for every sequence of samples. For $b>0$, further statements assert that $0\\le1/s_i-1/\\max(s_i,c)\\le b^{-1}\\mathbf{1}\\{s_i<c\\}$, and that the change in $n^{-1}\\sum_i V_i/s_i$ under Winsorization, for $|V_i|\\le K$, is at most $K/b$ times the fraction of scores below $c$. Three more state a bound of the same kind for unbounded outcomes truncated at a level $M$, the bound $|1/s-1/p|\\le2r/\\epsilon^2$ for $p>\\epsilon$ and $|s-p|\\le r<\\epsilon/2$, and the identity for the difference of two ratios. The statement on the limit takes draws that are independent and identically distributed and satisfy the five IV assumptions, a covariate with finitely many values, Assumption 3 and integrable outcomes. The estimated scores lie in $(0,1]$ and satisfy $\\max_{i\\le n}|\\hat P_{Ci}-P_{Ci}|\\to0$ in probability, and the cut-off is the quantile above at the level $n^{-\\alpha}$. The statement asserts that the difference between the Winsorized estimator and the original one tends to $0$ in probability, and that both converge in probability to $\\sum_{\\mathbf{x}}f(\\mathbf{x})\\mathrm{E}(Y_1-Y_0\\mid D_1>D_0,\\mathbf{X}=\\mathbf{x})$, which is $\\mathrm{E}(Y_1-Y_0)$ under Assumption 1. Uniform consistency of the scores is one sufficient form of the regularity conditions that the article does not list, and it is stronger than consistency of each score. The statements do not assert that the two estimators have the same first-order distribution.",
+        "headline": "Footnote 6, the asymptotic justification of Winsorization, as corrected",
+        "location": "p. 498 (PDF p. 7), footnote 6"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T17",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.one_sided_likelihood_reduction",
+          "line": 1966,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.one_sided_unit_likelihood",
+          "line": 1959,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.printed_one_sided_factor_countercheck",
+          "line": 1981,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements cover the display as corrected in P029-E008, in which the two Bernoulli factors are multiplied. Let $\\pi_i=F(\\theta\\mathbf{x}_i)$. The first asserts that setting $P_{A|A,C,i}=0$ and $P_{A,C,i}=\\pi_i$ in the unit likelihood of equation (7) gives $(\\pi_iZ_i)^{D_i}(1-\\pi_iZ_i)^{1-D_i}$. The second asserts that, if $D_i=0$ for every unit such that $Z_i=0$, then $\\prod_{i=1}^{n}(\\pi_iZ_i)^{D_i}(1-\\pi_iZ_i)^{1-D_i}=\\prod_{i:\\,Z_i=1}\\pi_i^{D_i}(1-\\pi_i)^{1-D_i},$ and the right side is the likelihood of a binomial regression on the units assigned to treatment. The third checks the display as printed at $\\pi_i=3/4$ and $Z_i=1$. The sum of the two factors is $7/4$ if $D_i=1$ and $5/4$ if $D_i=0$, where the product is $3/4$ and $1/4$. The exponents are natural numbers, so that $0^0=1$, and $\\pi_i$ may be any real number in the first two statements. The identity of the second statement implies that the two likelihoods have the same maximizers in $\\theta$, and this consequence is not stated separately. The general remark of the finding, that every printed factor is at least $1$, is not included in these statements.",
+        "headline": "Footnote 3, the likelihood under one-sided noncompliance, as corrected",
+        "location": "p. 497 (PDF p. 6), footnote 3; equation (7) is on the same page"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T18",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B2b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.corrected_nested_receipt_model_proof",
+          "line": 141,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B2b",
+          "status": "proved",
+          "target_id": "P029-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.compliance_type_partition",
+          "line": 2015,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.corrected_equation_nine_integrand",
+          "line": 2023,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.nested_probability_range",
+          "line": 1989,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.nested_receipt_parameters",
+          "line": 2004,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.receipt_conditioning_countercheck",
+          "line": 2438,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The corrections of P029-E009 to the article are changes of notation, and the Lean statements cover the mathematics behind them. In the main statement, $(\\mathbf{X},D_0,D_1,Z)$ are random variables on a probability space such that $\\Pr(D_0>D_1)=0$ and $Z$ is independent of $(\\mathbf{X},D_0,D_1)$ with $0<\\Pr(Z=1)<1$. It fixes a covariate value $\\mathbf{x}$ such that $\\Pr(\\mathbf{X}=\\mathbf{x})>0$ and $\\Pr(D_1=1\\mid\\mathbf{X}=\\mathbf{x})>0$. The probabilities of equations (5) and (6) are $P_{A,C}=\\Pr(D_1=1\\mid\\mathbf{X}=\\mathbf{x})$ and $P_{A|A,C}=\\Pr(D_0=1\\mid D_1=1,\\mathbf{X}=\\mathbf{x})$, where the event that a unit is a complier or an always-taker is written as $D_1=1$. The statement asserts that $P_{A,C}P_{A|A,C}=\\Pr(D_0=1\\mid\\mathbf{X}=\\mathbf{x})$, that $P_{A,C}(1-P_{A|A,C})=\\Pr(D_1>D_0\\mid\\mathbf{X}=\\mathbf{x})$, and that for $z\\in\\{0,1\\}$ $\\Pr(D=1\\mid\\mathbf{X}=\\mathbf{x},Z=z)=\\Pr(D_1>D_0\\mid\\mathbf{X}=\\mathbf{x})\\,z+\\Pr(D_0=1\\mid\\mathbf{X}=\\mathbf{x})=P_{A,C}(1-P_{A|A,C})\\,z+P_{A,C}P_{A|A,C} .$ A second statement asserts that a unit that is not a defier has $D_1=1$ exactly when it is a complier or has $D_0=1$, and that it is never both. A third is the example for the left side as printed. With no always-takers, compliance probability $1/2$ and $\\Pr(Z=1)=1/2$, the probability $\\Pr(D=1\\mid\\mathbf{X}=\\mathbf{x})$ is $1/4$, while the right side is $0$ or $1/2$. Two statements assert that $P_{A,C}(1-P_{A|A,C})z+P_{A,C}P_{A|A,C}$ lies in $(0,1)$ if both $P_{A,C}$ and $P_{A|A,C}$ do, and that every pair of receipt probabilities such that $0<q<p<1$ arises from $P_{A,C}=p$ and $P_{A|A,C}=q/p$. For equation (9), a statement asserts the cancellation $(P\\mu)/P=\\mu$ for $P>0$, which is the step from the corrected integrand to equation (10). The main statement is for a covariate value of positive probability. The corrected definition of $P_{C,i}$ and the weight with a single hat are notation and have no statement of their own.",
+        "headline": "The second definition of the compliance score and the first display of p. 497 in Section 3.1, and equation (9) of the Appendix, as corrected",
+        "location": "p. 496 (PDF p. 5), sentence after equation (6); p. 497 (PDF p. 6), first display and the sentence after it; p. 504 (PDF p. 13), equation (9) and the display after equation (14)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T19",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.corrected_simulation_types",
+          "line": 2048,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.printed_simulation_equation_failure",
+          "line": 2064,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.simulation_outcome_identity",
+          "line": 2076,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "In the recipe as corrected in P029-E009, $AC_i$ is the indicator that a first latent index is positive, $A_i$ is $AC_i$ times the indicator that a second latent index is positive, $C_i=AC_i-A_i$ and $D_i=C_iZ_i+A_i$. Three Lean statements cover its consequences. The first holds for all real values of the two indices and for $Z_i\\in\\{0,1\\}$. It asserts that $AC_i$, $A_i$, $C_i$ and $D_i$ take the values $0$ or $1$, that $A_i\\le AC_i$ and $A_iC_i=0$, and that the potential treatments $D_i(z)=C_iz+A_i$ satisfy $D_i(1)-D_i(0)=C_i\\ge0$. It asserts also that $D_i(0)=1$ exactly when $A_i=1$, that $D_i(0)=0$ and $D_i(1)=1$ exactly when $C_i=1$, and that $D_i(0)=D_i(1)=0$ exactly when $AC_i=0$. The second statement concerns the equation $D_i=D_iZ_i+A_i$ as printed. It has no solution if $Z_i=1$ and $A_i=1$, both $D_i=0$ and $D_i=1$ solve it if $Z_i=1$ and $A_i=0$, and it reduces to $D_i=A_i$ if $Z_i=0$. The third asserts that $Y_{0i}+\\tau_iD_i=Y_{0i}+D_i\\{(Y_{0i}+\\tau_i)-Y_{0i}\\}$, so that the printed outcome equation gives the observed outcome with $Y_{1i}=Y_{0i}+\\tau_i$. The latent indices are arbitrary real numbers in these statements. Both designs are covered, since they differ only in the indices, and the distributions of the covariates, the coefficients and the disturbances play no part. Two conventions of the design are not included in these statements: the normal draws have standard deviation $3$ (P029-A001), and assignment is balanced.",
+        "headline": "Supplement, “Baseline Data Generating Process” and “Heterogeneous Treatment Effects, Model is Incorrect”, as corrected",
+        "location": "Supplement, p. A1 (lines for $AC_i$, $A_i$, $C_i$ and $D_i$) and p. A2 (lines for $AC_i$ and $A_i$)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T20",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/IgnorabilityAllProfiles.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.printed_ignorability_ordering_all_profiles_refuted",
+          "line": 16,
+          "module": "AronowAudit.P029.Wave1.IgnorabilityAllProfiles",
+          "status": "counterexample_proved",
+          "target_id": "P029-T20",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/IgnorabilityOrdering.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.printed_ignorability_ordering_refuted",
+          "line": 16,
+          "module": "AronowAudit.P029.Wave1.IgnorabilityOrdering",
+          "status": "counterexample_proved",
+          "target_id": "P029-T20",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.baseline_selection_counterexample",
+          "line": 230,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T20",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The sentence is read as two claims. Under the five IV assumptions, the two ignorability equalities of the display, taken at a covariate profile, imply Assumption 1 at that profile, and Assumption 1 can hold when the equalities fail. The first claim is false in general, as the counterexample to this sentence shows, and P029-E003 corrects it. Two Lean statements negate the universal forward implication. One negates the claim that, for every law satisfying the five IV assumptions and every covariate value $\\mathbf{x}$ such that $\\Pr(\\mathbf{X}=\\mathbf{x})>0$ and $\\Pr(D_1>D_0\\mid\\mathbf{X}=\\mathbf{x})>0$, the equalities at $\\mathbf{x}$ imply $\\mathrm{E}(Y_1-Y_0\\mid\\mathbf{X}=\\mathbf{x})=\\mathrm{E}(Y_1-Y_0\\mid D_1>D_0,\\mathbf{X}=\\mathbf{x})$. The claim tested in this form concerns fewer profiles than the printed sentence, which speaks of all $\\mathbf{x}\\in\\mathrm{Supp}(\\mathbf{X})$. The other negates the corresponding universal implication over covariate distributions and conditional probability distributions for the units, with profiles ranging over every $\\mathbf{x}$ in the support of a covariate distribution on a second-countable Borel space, including values of probability zero, provided that the outcomes are integrable and compliance has positive probability under the conditional law at $\\mathbf{x}$. There the population is built from the distribution of $\\mathbf{X}$, a conditional law of the unit given $\\mathbf{X}=\\mathbf{x}$ and an independent assignment, and the equalities and Assumption 1 are stated under that conditional law. At each support profile the conditional law is concentrated on units with that profile, and the population so obtained satisfies the five IV assumptions. A counterexample at one supported profile suffices for each negation; neither statement asserts failure for every population or every profile. A third statement covers the second claim: in the second population of the finding, Assumption 1 holds and both equalities fail.",
+        "headline": "Section 3.4, the sentence “Assumption 1 is less restrictive than the typical ignorability assumption”, as printed",
+        "location": "p. 499 (PDF p. 8), Assumption 1 and the following paragraph"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T21",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B2b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.constant_effect_population_limits_proof",
+          "line": 564,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B2b",
+          "status": "proved",
+          "target_id": "P029-T21",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/ConditionalSufficiency.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.printed_conditional_sufficiency_refuted",
+          "line": 19,
+          "module": "AronowAudit.P029.Wave1.ConditionalSufficiency",
+          "status": "counterexample_proved",
+          "target_id": "P029-T21",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/MarginalSufficiency.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.printed_marginal_sufficiency_refuted",
+          "line": 17,
+          "module": "AronowAudit.P029.Wave1.MarginalSufficiency",
+          "status": "counterexample_proved",
+          "target_id": "P029-T21",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements write the claims of the paragraph in terms of population values, with $\\theta_1$ the right side of equation (3) and $\\theta_{1/P_C}$ the same ratio under the weights $1/P_C(\\mathbf{X})$. The first concerns a constant effect. Suppose that $Y_1-Y_0=\\tau$ for every unit, that the five IV assumptions hold with integrable potential outcomes and that the compliance scores are bounded below by some $\\epsilon>0$. The statement asserts that $\\mathrm{E}(Y_1-Y_0\\mid\\mathbf{X}=\\mathbf{x})=\\mathrm{E}(Y_1-Y_0\\mid D_1>D_0,\\mathbf{X}=\\mathbf{x})=\\tau$ at every covariate value $\\mathbf{x}$ such that $\\Pr(\\mathbf{X}=\\mathbf{x})>0$ and $\\Pr(D_1>D_0\\mid\\mathbf{X}=\\mathbf{x})>0$, that Assumption 1 holds, and that $\\theta_1=\\theta_{1/P_C}=\\tau$. The other two statements negate the universal sufficiency claims in the last sentence under its two readings, with the same IV and integrability assumptions, for a covariate with finitely many values and positive compliance scores at each profile of positive probability. In one, $Y_1-Y_0$ is independent of the complier indicator. In the other, $Y_1-Y_0$ is independent of $(D_0,D_1)$ given $\\mathbf{X}=\\mathbf{x}$, for every $\\mathbf{x}$ such that $\\Pr(\\mathbf{X}=\\mathbf{x})>0$. Each negates the claim that its independence premise always implies the joint conclusion that Assumption 1 holds at every such $\\mathbf{x}$ and that $\\theta_1=\\theta_{1/P_C}=\\mathrm{E}(Y_1-Y_0)$. Both readings are false, by the two populations of P029-E004, and the corrected condition has its own statements. Consistency of the estimators is represented by these population values, and their convergence is the subject of the statements for the consistency result.",
+        "headline": "Section 3.4, the paragraph on sufficient conditions for Assumption 1, as printed",
+        "location": "p. 499 (PDF p. 8), paragraph beginning “We can describe sufficient conditions for and consequences of Assumption 1”"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T22",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.homogeneous_rmse_rule",
+          "line": 872,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T22",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The entries of Table A3 are Monte Carlo output, and no Lean statement asserts any of them. For a design in which $\\tau_i=5$ for every unit, the RMSE of an estimator over $R=2{,}500$ simulated datasets is $\\Bigl(\\frac{1}{R}\\sum_{r=1}^{R}(t_r-5)^2\\Bigr)^{1/2},$ where $t_r$ is the estimate in the simulated dataset $r$. One Lean statement writes this rule, with $R=2500$ and the constant target $5$. It is a statement about the definition of the summary and not about the numbers in the table. By P029-E011, the replication code computes a different quantity, and the statements for the counterexample and for the corrected rule cover the difference.",
+        "headline": "Supplement Table A3, “Noise (Homogeneous)”, and the design on which it reports, as printed",
+        "location": "Supplement, p. A2 (design), p. A5 (text), p. A6 (Figure A3, panel “Noise (Homogeneous)”) and p. A7 (Table A3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T23",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/FidP029.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.nested_bernoulli_package_weighted_fit_counterexample",
+          "line": 20,
+          "module": "AronowAudit.P029.Wave1.Gap.FidP029",
+          "status": "counterexample_proved",
+          "target_id": "P029-T23",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The sentence of the article is a recommendation and is correct, and no Lean statement concerns it. I read the package help page, with its argument weights, as saying that the compliance model is fitted with the observation weights supplied, and so is refitted in each bootstrap replicate. For the package’s two-sided criterion, the statement specifies a sample in the nested Bernoulli model of equation (7). There are sixteen observations, four in each cell $(X,Z)=(0,0),(0,1),(1,0),(1,1)$, with respectively $1,2,1,3$ successes. Each success has weight $9$ and each failure weight $1$. The parameter space consists of receipt probabilities satisfying $0<q(x,0)<q(x,1)<1$ for each $x$. These have the nested representation $P_{A,C}(x)=q(x,1)$ and $P_{A\\mid A,C}(x)=q(x,0)/q(x,1)$. The statement asserts that the feasible vector $q=(1/4,1/2,1/4,3/4)$ is an exact global minimizer of the package objective $-\\sum_i\\log\\{L_i(q)w_i\\}$ and is not a minimizer of the observation-weighted objective $-\\sum_iw_i\\log L_i(q)$ over the same parameter space. It is a counterexample within the model to the package weight-handling claim associated with P029-E016. It concerns exact minimizers; it makes no assertion about numerical optimizer output or the article’s bootstrap recommendation. Thus the example disproves the claim that, for every sample in the nested model and every set of positive observation weights, every exact minimizer of the package objective is an observation-weighted minimizer.",
+        "headline": "Section 3.3, the recommendation to bootstrap “the entire process”, and its implementation in the R package icsw, version 1.0.0",
+        "location": "p. 498 (PDF p. 7), Section 3.3, last paragraph; R package icsw, version 1.0.0: the help page of icsw.tsls, R/compliance.score.R, lines 43–48 and 88–91, R/icsw.tsls.R, lines 28–37, and R/icsw.tsls.fit.R, lines 8 and 21–24"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T25",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/LateIdentity.lean",
+          "highlight_ids": [
+            "H056"
+          ],
+          "lean_name": "AronowAudit.P029.Wave1.late_identity_paper_scope",
+          "line": 18,
+          "module": "AronowAudit.P029.Wave1.LateIdentity",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GLP029B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.late_identity_proof",
+          "line": 25,
+          "module": "AronowAudit.P029.Wave1.Gap.GLP029B2",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/RandomizedProbability.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.randomized_probability_independent",
+          "line": 15,
+          "module": "AronowAudit.P029.Wave1.RandomizedProbability",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.bernoulli_measure_probability",
+          "line": 474,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.bivariate_ratio_algebra",
+          "line": 2160,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.gender_worked_example",
+          "line": 2200,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.randomized_conditional_mean",
+          "line": 2486,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.randomized_valid",
+          "line": 140,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sample_arm_unweighted_raw",
+          "line": 2142,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sample_cross_raw",
+          "line": 2131,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sample_wald_bivariate_2sls",
+          "line": 2175,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.unit_itt_identities",
+          "line": 2508,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T25",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is equation (3) for random variables $(D_0,D_1,Y_0,Y_1,Z)$ on an arbitrary probability space that satisfy the five IV assumptions, with $Y_0$ and $Y_1$ integrable. It asserts that $\\mathrm{E}(D\\mid Z=1)-\\mathrm{E}(D\\mid Z=0)=\\Pr(D_1>D_0)$, that $\\mathrm{E}(Y\\mid Z=1)-\\mathrm{E}(Y\\mid Z=0)=\\mathrm{E}[(Y_1-Y_0)\\mathbf{1}\\{D_1>D_0\\}]=\\Pr(D_1>D_0)\\,\\mathrm{E}(Y_1-Y_0\\mid D_1>D_0),$ and that the ratio of the two differences is $\\mathrm{E}(Y_1-Y_0\\mid D_1>D_0)$. The exclusion restriction and the stable unit treatment value assumption are rendered by $D=D_0+Z(D_1-D_0)$ and $Y=Y_0+D(Y_1-Y_0)$, the absence of defiers by $\\Pr(D_0>D_1)=0$, and relevance by $\\mathrm{E}(D\\mid Z=1)\\neq\\mathrm{E}(D\\mid Z=0)$. Random assignment is rendered by independence of $Z$ from the covariates, potential treatments and potential outcomes, with $0<\\Pr(Z=1)<1$. A second statement asserts the same identities on an arbitrary probability space under the same five IV assumptions. Let $D(z)$ and $Y(z)$ be the treatment received and the outcome of a unit under the assignment $z$. Supporting statements give the identities $D(1)-D(0)=\\mathbf{1}\\{D_1>D_0\\}$ and $Y(1)-Y(0)=\\mathbf{1}\\{D_1>D_0\\}(Y_1-Y_0)$ for a unit that is not a defier. Three statements describe independent assignment: normalization of a finite joint law, conditional means within its assignment arms, and independence and arm probabilities on an arbitrary probability space. Another states that a Bernoulli law is a probability measure for assignment probabilities in $[0,1]$. For equation (4), a statement asserts that, in every sample with both arms nonempty and a nonzero denominator, $\\hat\\tau_{\\mathrm{LATE}}=\\frac{\\sum_i(Z_i-\\bar Z)(Y_i-\\bar Y)}{\\sum_i(Z_i-\\bar Z)(D_i-\\bar D)} ,$ and three statements give the algebra of the sums behind this identity. The right side is the 2SLS coefficient written as a ratio of covariances, and no matrix definition of 2SLS appears. For the example, a statement asserts that the three expressions displayed there equal $1/2$, $2/17$ and $1/2$, and that $0.115\\le2/17<0.125$, so that $2/17$ rounds to the printed $0.12$.",
+        "headline": "Equation (3), equation (4) as the bivariate 2SLS estimator, and the worked example of Section 3.2",
+        "location": "p. 495 (PDF p. 4), equations (3) and (4); pp. 497–498 (PDF pp. 6–7), the example"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T26",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B3b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.appendix_population_identities_proof",
+          "line": 268,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B3b",
+          "status": "proved",
+          "target_id": "P029-T26",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B3b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.icsw_consistency_proof",
+          "line": 703,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B3b",
+          "status": "proved",
+          "target_id": "P029-T26",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.appendix_finite_identities",
+          "line": 2247,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T26",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.profile_inverse_score_cancellation",
+          "line": 2215,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T26",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sample_arm_scale",
+          "line": 2093,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T26",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sample_wald_scale",
+          "line": 2111,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T26",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "The data are independent and identically distributed draws of $(\\mathbf{X},D_0,D_1,Y_0,Y_1,Z)$ that satisfy the five IV assumptions, with $Y_0$ and $Y_1$ integrable. The covariate $\\mathbf{X}$ may have any distribution on a Euclidean space, or more generally on a second-countable Borel space, so that a density is not required. Assumptions 1 and 3 are imposed at every point of the support of $\\mathbf{X}$, with $\\mathrm{E}(Y_1-Y_0\\mid\\mathbf{X})$ and the compliance score given by versions of the conditional expectations. Assumption 2 is rendered by estimated scores in $(0,1]$ such that $\\max_{i\\le n}|\\hat P_{Ci}-P_{Ci}|\\to0$ in probability. The statement asserts that $\\hat\\tau_{\\mathrm{ATE}}\\to_p\\mathrm{E}(Y_1-Y_0)$. The article does not list its regularity conditions or say in which sense Assumption 2 is meant, and the uniform condition is my sufficient reading of them, stronger than consistency of each score. A second statement contains the population identities of the Appendix, in the notation as corrected in P029-E009, for exact scores bounded below by some $\\epsilon>0$. These are equations (8) and (12), the weighted numerator $\\mathrm{E}[\\mu(\\mathbf{X})]/\\overline{w_c}$ of equation (10), the weighted denominator $1/\\overline{w_c}$ of equation (13), and their ratio, which is $\\mathrm{E}(Y_1-Y_0)$ under Assumption 1 as in equation (14). Here $\\mu(\\mathbf{x})=\\mathrm{E}(Y_1-Y_0\\mid D_1>D_0,\\mathbf{X}=\\mathbf{x})$ and $\\overline{w_c}=\\mathrm{E}[1/P_C(\\mathbf{X})]$, and the numerator and the denominator are stated for the weighted means of the observed $Y$ and $D$ in the two arms, a link that the Appendix does not print. Further statements assert the same cancellations for a finite set of covariate profiles, and the invariance of the estimator of Section 3.3 when all weights are multiplied by a positive constant; in the sample algebra, division by zero is defined as zero.",
+        "headline": "Consistency of ICSW for the ATE under Assumptions 1–3: Section 3.4, opening sentences, and the Appendix, equations (8)–(14)",
+        "location": "p. 498 (PDF p. 7), Section 3.4, first paragraph; pp. 504–505 (PDF pp. 13–14), Appendix"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P029-T27",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GP029B3b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.complier_covariate_distribution_proof",
+          "line": 818,
+          "module": "AronowAudit.P029.Wave1.Gap.GP029B3b",
+          "status": "proved",
+          "target_id": "P029-T27",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/Wave1/Gap/GLP029B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.Wave1.icsw_complier_effect_limit_proof",
+          "line": 41,
+          "module": "AronowAudit.P029.Wave1.Gap.GLP029B2",
+          "status": "proved",
+          "target_id": "P029-T27",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.complier_profile_bayes",
+          "line": 2274,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T27",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.constant_scores_equal_iv",
+          "line": 2120,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T27",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.profile_inverse_score_cancellation",
+          "line": 2215,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T27",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P029/P029_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P029.sample_wald_scale",
+          "line": 2111,
+          "module": "AronowAudit.P029.P029_Audit",
+          "status": "proved",
+          "target_id": "P029-T27",
+          "target_kind": "headline_result",
+          "work_id": "P029"
+        }
+      ],
+      "text": {
+        "body": "For the first display, a statement assumes the five IV assumptions and $\\Pr(D_1>D_0)>0$. It asserts that the distribution of $\\mathbf{X}$ among compliers has density $\\Pr(D_1>D_0\\mid\\mathbf{X}=\\mathbf{x})/\\Pr(D_1>D_0)$ with respect to the distribution of $\\mathbf{X}$, and that the LATE is the integral of $\\mathrm{E}(Y_1-Y_0\\mid D_1>D_0,\\mathbf{X}=\\mathbf{x})$ against the distribution among compliers. This is the printed identity with $g(\\mathbf{x})=\\Pr(D_1>D_0\\mid\\mathbf{X}=\\mathbf{x})f(\\mathbf{x})/\\Pr(D_1>D_0)$, stated for measures, so that $\\mathbf{X}$ need not have a density $f$. For the second display, a statement takes the same draws and the same regularity conditions as the consistency result, without Assumption 1, and asserts that $\\hat\\tau_{\\mathrm{ATE}}\\to_p\\mathrm{E}\\bigl[\\mathrm{E}(Y_1-Y_0\\mid D_1>D_0,\\mathbf{X})\\bigr] .$ As in the consistency result, Assumption 2 is rendered by $\\max_{i\\le n}|\\hat P_{Ci}-P_{Ci}|\\to0$ in probability, a sufficient condition that the article does not state. For the last sentence of the passage, a statement asserts that, if every estimated compliance score is the same positive number, then the estimator of Section 3.3 equals $\\hat\\tau_{\\mathrm{LATE}}$ of equation (4) in every sample where the ratios are defined; Lean extends the equality to zero denominators by defining division by zero as zero. Supporting statements state Bayes' rule and the cancellation of the scores for a finite set of covariate profiles, and the invariance of the estimator when all weights are multiplied by a positive constant. The evaluative remarks of the passage (“internally valid”, “typically more sensible”) and the case of a misspecified model for the scores are not included in these statements.",
+        "headline": "Section 3.4: the LATE as an integral against the covariate density of the compliers, the limit of ICSW when Assumption 1 fails, and 2SLS as the case of ICSW with no covariates",
+        "location": "p. 499 (PDF p. 8), paragraph beginning “But what if treatment effects are heterogeneous” and the two displays; pp. 499–500 (PDF pp. 8–9), the following paragraph; Appendix equations (10) and (13), p. 504 (PDF p. 13)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "P. M. Aronow",
+      "Allison Carnegie"
+    ],
+    "citation": "P. M. Aronow and Allison Carnegie (2013). Beyond LATE: Estimation of the Average Treatment Effect with an Instrumental Variable. Political Analysis 21(4):492–506.",
+    "doi": "10.1093/pan/mpt013",
+    "title": "Beyond LATE: Estimation of the Average Treatment Effect with an Instrumental Variable",
+    "type": "Journal article",
+    "venue": "Political Analysis",
+    "year": "2013"
+  },
+  "work_id": "P029"
+}

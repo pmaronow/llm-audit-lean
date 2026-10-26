@@ -1,0 +1,118 @@
+{
+  "counts": {
+    "counterexample_proved": 0,
+    "proved": 2,
+    "results": 2,
+    "targets": 2
+  },
+  "overview": {
+    "areas": [
+      "survey-sampling",
+      "asymptotic-statistics"
+    ],
+    "caveats": [
+      "Condition 2 and the identification sums are restricted to degrees with positive population mass; no full degree-support assumption is imposed.",
+      "The identification theorem concerns a single probability law on a bounded outcome interval, finite positive degrees and a binary sampling indicator; it does not require an asymptotic sequence.",
+      "The consistency theorem assumes the same outcome and degree bounds throughout the sequence, not merely bounded support of its limit, and specifies convergence of the realized joint empirical laws of outcome, degree and sampling indicator.",
+      "Population sizes are deterministic and positive, the sample contains each marked unit at most once, and the estimator is zero for an empty sample.",
+      "No independence, random-walk or network model, or growth of population or sample size, is assumed beyond the stated empirical convergence premise. The formal sampling indicator does not encode repeated recruitment."
+    ],
+    "corrections": [],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P021.proposition_one",
+        "target_ids": [
+          "P021-T1"
+        ],
+        "what": "Under mean ignorability given degree, positive sampling probabilities on population degree support and a sampling profile known up to scale, the population mean equals the normalized inverse-profile weighted sampled conditional means, with population and observed degree supports equal and every required divisor nonzero."
+      },
+      {
+        "lean_name": "AronowAudit.P021.corollary_one",
+        "target_ids": [
+          "P021-T2"
+        ],
+        "what": "With common bounded outcome and finite positive degree supports, weak convergence in probability of the realized joint empirical laws and the limiting identification conditions with sampling probability proportional to degree imply convergence in probability of the Volz–Heckathorn estimator to the limiting population mean."
+      }
+    ],
+    "overview": "The paper studies identification of a population mean from respondent-driven samples when outcome means are ignorable given degree and sampling probabilities follow a degree profile known up to scale. The Lean development proves the inverse-profile identification formula on positive-mass degree strata and consistency of the Volz–Heckathorn estimator when that profile is proportional to degree. The consistency result makes the common support bounds, empirical convergence premise and convergence-in-probability interpretation explicit.",
+    "work_id": "P021"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P021-T1",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P021/P021_RDS.lean",
+          "highlight_ids": [
+            "H048"
+          ],
+          "lean_name": "AronowAudit.P021.proposition_one",
+          "line": 370,
+          "module": "AronowAudit.P021.P021_RDS",
+          "status": "proved",
+          "target_id": "P021-T1",
+          "target_kind": "headline_result",
+          "work_id": "P021"
+        }
+      ],
+      "text": {
+        "body": "The one Lean statement concerns one probability law $F$ of $(Y,D,S)$ on $[-B,B]\\times\\{1,\\ldots,K\\}\\times\\{0,1\\}$, and $\\mathrm{E}$ and $\\Pr$ refer to $F$. In the paper, this law is the limiting distribution. Each conditional mean or probability is the ratio of an integral under $F$ to the probability of the conditioning event. I write $A=\\{k:\\Pr[D=k]>0\\}$. The hypotheses are Condition 1 as printed and Condition 2 in the form $\\Pr[S=1\\mid D=k]=cf(k)$ for all $k\\in A$, where $c$ is a real number and $f$ is a real function. No condition is imposed on their signs. The statement asserts equation (2) with both sums over $A$: $\\mathrm{E}[Y]=\\frac{\\sum_{k\\in A}\\mathrm{E}[Y\\mid S=1,D=k]\\,\\frac{\\Pr[D=k\\mid S=1]}{f(k)}}{\\sum_{k\\in A}\\frac{\\Pr[D=k\\mid S=1]}{f(k)}}.$ It asserts also the last equality of equation (3) for all $k\\in A$, together with conclusions that the paper does not print: $\\Pr[S=1]>0$, $A=\\{k:\\Pr[D=k\\mid S=1]>0\\}$, $c\\neq 0$, $cf(k)>0$ for all $k\\in A$, and the denominator of the display equals $c/\\Pr[S=1]$. Equation (4) is not stated as printed. The paper prints the sums in (2) and (4) over $k=1,\\ldots,K$ and prints no range of $k$ in Condition 2. The Lean statement takes the sums in (2) over $A$, which is the reading of P021-N003, and the two forms are the same when $A=\\{1,\\ldots,K\\}$. It is stated for every such law $F$ and does not involve the sequence of populations and samples of Section 2. That sequence is unnecessary for the identification identity: every probability law on this compact support can occur as a weak limit of finite populations with binary sample marks.",
+        "headline": "Proposition 1, with equation (2) and its proof",
+        "location": "p. 101 (PDF p. 2)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P021-T2",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P021/P021_RDS.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P021.corollary_one",
+          "line": 673,
+          "module": "AronowAudit.P021.P021_RDS",
+          "status": "proved",
+          "target_id": "P021-T2",
+          "target_kind": "headline_result",
+          "work_id": "P021"
+        }
+      ],
+      "text": {
+        "body": "The paper does not say which empirical distribution converges in the first sentence of Section 2, in which mode it converges, or what “consistent” means. The one Lean statement fixes these as follows. For each $r$, the $r$th population has $N_r\\geq 1$ units, and unit $j$ has an outcome $y_{rj}\\in[-B,B]$, a degree $d_{rj}\\in\\{1,\\ldots,K\\}$ and an indicator $s_{rj}\\in\\{0,1\\}$, where $B$ and $K$ do not depend on $r$. These values may be random, with any dependence among them, and the sizes $N_r$ are not random. The sample consists of the units such that $s_{rj}=1$, and the estimator (1) is $\\widehat{\\mu}_{VH,r}=\\frac{\\sum_{j:\\,s_{rj}=1}y_{rj}\\,d_{rj}^{-1}}{\\sum_{j:\\,s_{rj}=1}d_{rj}^{-1}},$ with the value $0$ when the sample is empty. Let $F$ be a probability law of $(Y,D,S)$ on the same set, and suppose that it satisfies Condition 1 and satisfies Condition 2 with $f(k)=ak$, $a\\neq 0$, for the degrees $k$ such that $\\Pr[D=k]>0$. Suppose also that the joint empirical laws of the populations converge weakly to $F$ in probability. This means that, for every continuous real function $g$ on $[-B,B]\\times\\{1,\\ldots,K\\}\\times\\{0,1\\}$, the average $N_r^{-1}\\sum_{j}g(y_{rj},d_{rj},s_{rj})$ converges in probability to $\\int g\\,dF$. The statement asserts that $\\widehat{\\mu}_{VH,r}$ converges in probability to $\\mathrm{E}_F[Y]$. The paper’s sentence on bounded support, read literally, bounds only the limiting $Y$ and $D$. The Lean statement assumes the bounds for every population in the sequence, which is the reading of P021-E001, and it asserts nothing when only the limit is bounded. Each unit is in the sample at most once. The paper does not say how $S$ and the index $i$ of (1) are related when a subject is recruited more than once (p. 100), and the Lean statement does not represent repeated recruitment. It assumes no independence, no network or random-walk model, and no growth of $N_r$ or of the sample size.",
+        "headline": "Corollary 1, with the Volz–Heckathorn estimator of equation (1)",
+        "location": "p. 101 (PDF p. 2); equation (1) is on p. 100 (PDF p. 1)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "1504.03574",
+    "authors": [
+      "P. M. Aronow",
+      "Forrest W. Crawford"
+    ],
+    "citation": "P. M. Aronow and Forrest W. Crawford (2015). Nonparametric Identification for Respondent-Driven Sampling. Statistics and Probability Letters 106:100–102.",
+    "doi": "10.1016/j.spl.2015.07.003",
+    "title": "Nonparametric Identification for Respondent-Driven Sampling",
+    "type": "Journal article",
+    "venue": "Statistics and Probability Letters",
+    "year": "2015"
+  },
+  "work_id": "P021"
+}

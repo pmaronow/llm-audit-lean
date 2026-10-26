@@ -1,0 +1,126 @@
+/-
+Upstream project: StatLean.
+Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
+-/
+import Mathlib.MeasureTheory.Measure.Decomposition.RadonNikodym
+import Mathlib.MeasureTheory.Measure.Decomposition.IntegralRNDeriv
+import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+
+
+
+/-!
+Square-root density helpers for absolutely continuous measures.
+
+For a finite measure `ν ≪ μ` with `μ` σ-finite, the Radon–Nikodym derivative
+`p := ν.rnDeriv μ` is `μ`-a.e. finite. Its real square root
+`√(p.toReal)` belongs to `L²(μ)`, with squared norm `(ν univ).toReal`.
+Finiteness of `ν` is needed for this L² assertion.
+
+The retained helpers transport square-integrability and Bochner integrals
+between these measures using multiplication by the square-root density or
+the density. The a.e. strong-measurability equivalence is stated more generally
+for two σ-finite measures.
+
+These theorem-agnostic lemmas belong to the `ForMathlib` layer.
+-/
+
+open MeasureTheory Filter Topology
+open scoped ENNReal
+
+namespace AsymptoticStatistics.ForMathlib.RnDerivSqrt
+
+variable {Ω : Type*} [MeasurableSpace Ω]
+
+/-- Multiplication by the square-root density transports a.e. strong measurability. -/
+theorem aestronglyMeasurable_sqrt_rnDeriv_mul_iff {ν ξ : Measure Ω} [SigmaFinite ν] [SigmaFinite ξ]
+    (hνξ : ν ≪ ξ) (h : Ω → ℝ) :
+    AEStronglyMeasurable (fun ω => Real.sqrt (ν.rnDeriv ξ ω).toReal * h ω) ξ ↔
+      AEStronglyMeasurable h ν := by
+  have hw : Measurable (fun ω => Real.sqrt (ν.rnDeriv ξ ω).toReal) :=
+    (Measure.measurable_rnDeriv ν ξ).ennreal_toReal.sqrt
+  constructor
+  · rintro ⟨k, hk, heq⟩
+    refine ⟨fun ω => (Real.sqrt (ν.rnDeriv ξ ω).toReal)⁻¹ * k ω,
+      hw.inv.stronglyMeasurable.mul hk, ?_⟩
+    filter_upwards [hνξ.ae_le heq, Measure.rnDeriv_pos hνξ,
+      hνξ.ae_le (Measure.rnDeriv_lt_top ν ξ)] with ω hω hp ht
+    have hw0 : Real.sqrt (ν.rnDeriv ξ ω).toReal ≠ 0 :=
+      (Real.sqrt_pos.2 (ENNReal.toReal_pos hp.ne' ht.ne)).ne'
+    rw [← hω, ← mul_assoc, inv_mul_cancel₀ hw0, one_mul]
+  · rintro ⟨k, hk, heq⟩
+    refine ⟨fun ω => Real.sqrt (ν.rnDeriv ξ ω).toReal * k ω,
+      hw.stronglyMeasurable.mul hk, ?_⟩
+    have heq' : h =ᵐ[ξ.withDensity (ν.rnDeriv ξ)] k := by
+      rw [Measure.withDensity_rnDeriv_eq ν ξ hνξ]
+      exact heq
+    rw [Filter.EventuallyEq, ae_withDensity_iff (Measure.measurable_rnDeriv ν ξ)] at heq'
+    filter_upwards [heq'] with ω hω
+    by_cases hd : ν.rnDeriv ξ ω = 0
+    · simp [hd]
+    · rw [hω hd]
+
+
+/-- Pointwise identity: `√(x.toReal)² = x.toReal` since `x.toReal ≥ 0`. -/
+private lemma sqrt_rnDeriv_sq_eq (ν μ : Measure Ω) :
+    (fun ω => Real.sqrt ((ν.rnDeriv μ ω).toReal) ^ 2)
+      = fun ω => (ν.rnDeriv μ ω).toReal := by
+  funext ω; exact Real.sq_sqrt ENNReal.toReal_nonneg
+
+/-- For a finite measure `ν ≪ μ` with `μ` σ-finite, the square-root density
+`√(dν/dμ)` is in `L²(μ)`. The norm is computed in `integral_sqrt_rnDeriv_sq`. -/
+lemma memLp_sqrt_rnDeriv {ν μ : Measure Ω} [SigmaFinite μ] [IsFiniteMeasure ν]
+    (_h_ac : ν ≪ μ) :
+    MemLp (fun ω => Real.sqrt (ν.rnDeriv μ ω).toReal) 2 μ := by
+  have h_meas : AEStronglyMeasurable
+      (fun ω => Real.sqrt ((ν.rnDeriv μ ω).toReal)) μ :=
+    ((Measure.measurable_rnDeriv ν μ).ennreal_toReal.sqrt).aestronglyMeasurable
+  rw [memLp_two_iff_integrable_sq h_meas, sqrt_rnDeriv_sq_eq]
+  exact Measure.integrable_toReal_rnDeriv
+
+/-- Hellinger-type identity: the squared `L²(μ)`-norm of `√(dν/dμ)` equals
+`ν(univ)`. For `ν` a probability measure this reduces to `1`. -/
+lemma integral_sqrt_rnDeriv_sq {ν μ : Measure Ω} [SigmaFinite μ] [IsFiniteMeasure ν]
+    (h_ac : ν ≪ μ) :
+    ∫ ω, Real.sqrt (ν.rnDeriv μ ω).toReal ^ 2 ∂μ = (ν Set.univ).toReal := by
+  rw [sqrt_rnDeriv_sq_eq, Measure.integral_toReal_rnDeriv h_ac, Measure.real_def]
+
+/-- For finite `P ≪ μ` with `μ` σ-finite and `g` a.e. strongly measurable
+under `P`, `g · √(dP/dμ) ∈ L²(μ)` implies `g ∈ L²(P)`. -/
+lemma memLp_two_of_memLp_two_mul_sqrt_rnDeriv
+    {P μ : Measure Ω} [IsFiniteMeasure P] [SigmaFinite μ] (h_ac : P ≪ μ)
+    {g : Ω → ℝ} (hg_meas : AEStronglyMeasurable g P)
+    (h : MemLp (fun ω => g ω * Real.sqrt (P.rnDeriv μ ω).toReal) 2 μ) :
+    MemLp g 2 P := by
+  -- We aim for `Integrable (g²) P`, then use `memLp_two_iff_integrable_sq`.
+  rw [memLp_two_iff_integrable_sq hg_meas]
+  -- `P = μ.withDensity (P.rnDeriv μ)` since `P ≪ μ` and both σ-finite.
+  have hP : P = μ.withDensity (P.rnDeriv μ) :=
+    (Measure.withDensity_rnDeriv_eq P μ h_ac).symm
+  rw [hP, MeasureTheory.integrable_withDensity_iff
+        (Measure.measurable_rnDeriv P μ) (Measure.rnDeriv_lt_top P μ)]
+  -- Goal: `Integrable (fun x => g x ^ 2 * (P.rnDeriv μ x).toReal) μ`.
+  -- This equals `Integrable ((g · √p_0)^2) μ` pointwise, which is `MemLp.integrable_sq`
+  -- on the hypothesis `h`.
+  have h_sq := h.integrable_sq
+  -- Pointwise rewrite `(g · √p_0)^2 = g^2 · p_0.toReal`:
+  have h_eq : (fun ω => (g ω * Real.sqrt (P.rnDeriv μ ω).toReal) ^ 2)
+                = fun ω => g ω ^ 2 * (P.rnDeriv μ ω).toReal := by
+    funext ω
+    rw [mul_pow, Real.sq_sqrt ENNReal.toReal_nonneg]
+  rwa [h_eq] at h_sq
+
+/-- Integral identity: `∫ g dP = ∫ g · (dP/dμ) dμ` for finite `P ≪ μ`
+with `μ` σ-finite. The integrability of `g` under `P` is not needed for the
+equality (both sides are defined as Bochner integrals, which fall back to
+`0` when the integrand fails integrability). -/
+lemma integral_eq_integral_mul_rnDeriv_of_ac
+    {P μ : Measure Ω} [IsFiniteMeasure P] [SigmaFinite μ] (h_ac : P ≪ μ)
+    (g : Ω → ℝ) :
+    ∫ ω, g ω ∂P = ∫ ω, g ω * (P.rnDeriv μ ω).toReal ∂μ := by
+  rw [← MeasureTheory.integral_rnDeriv_smul h_ac]
+  refine integral_congr_ae (Filter.Eventually.of_forall (fun ω => ?_))
+  simp [smul_eq_mul, mul_comm]
+
+
+end AsymptoticStatistics.ForMathlib.RnDerivSqrt

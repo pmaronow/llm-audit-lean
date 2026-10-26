@@ -1,0 +1,2303 @@
+{
+  "counts": {
+    "counterexample_proved": 8,
+    "proved": 110,
+    "results": 118,
+    "targets": 13
+  },
+  "overview": {
+    "areas": [
+      "interference-and-networks",
+      "experimental-design-and-estimation",
+      "causal-identification"
+    ],
+    "caveats": [
+      "The general HT results concern a finite probability law, a fixed exposure map and fixed real exposure-specific outcomes; they permit arbitrary exposure labels and require no independence across units or positive joint probabilities.",
+      "Conservativeness of the exact-input variance functional is an expectation inequality with structural-zero adjustments, rather than a pointwise bound or a finite-sample coverage guarantee; these results concern HT, and do not establish a general Hajek guarantee.",
+      "The common-support result retains the original network, exposure mapping and assignment law while changing the target population and denominator; the absence of isolates does not by itself guarantee whole-population support.",
+      "The selected universal simulation refutation uses N=12 and a bank of R=65 distinct assignments, through the independent-observation branch; it alone makes no separate seed-reuse assertion and proves neither failure at every R nor an accuracy threshold or general invalidity of Monte Carlo approximation.",
+      "The finite counterexamples are exact enumerations with rational quantities and their real interpretation; they do not identify a historical simulated network or establish that a published numerical table cell is wrong.",
+      "The baseline formulas assume the specified software-derived generator $B_i=(k_i+q_i+k_iq_i)|G_i|+E_i$, with independent Gaussian draws conditional on the fixed graph and q counting other vertices reachable by a two-edge walk; the software provenance itself is outside Lean.",
+      "The within-community calculation assumes the edge restriction read from the generator source; it does not formalize execution or termination of the loop rejecting graphs with isolates."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P044.Wave1.printed_simulated_variance_claim_refuted",
+        "target_ids": [
+          "P044-T11"
+        ],
+        "what": "The universal reading of the printed HT conservativeness claim for finite simulated exposure probabilities is false: the twelve-unit, 65-row bank construction refutes its independent-observation branch, without adjudicating the chapter’s numerical example."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P044.star_nonidentification",
+        "target_ids": [
+          "P044-T3"
+        ],
+        "what": "The whole-population unbiasedness claim without exposure support fails on the nonisolated four-unit star with complete treat-two assignment: two schedules have identical observed data and effects 0 and $-1$, so no observed-data estimator can be unbiased for both."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P044.cycle8_smoothing_counterexample",
+        "target_ids": [
+          "P044-T7"
+        ],
+        "what": "The implemented smoothed probabilities do not guarantee the printed HT unbiasedness even with exhaustive enumeration: on the eight-cycle rotation design, the direct-plus-indirect versus no-exposure contrast has expectation $3/4$ instead of its true effect 1, and the smoothed marginals sum to $4/3$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P044.baseline_not_halfNormal",
+        "target_ids": [
+          "P044-T5"
+        ],
+        "what": "The printed absolute-standard-normal baseline description differs from the specified generator formula: for every $a\\ge0$, the law of $a|G|+E$ assigns positive probability to negative values, whereas the absolute-standard-normal law assigns none."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P044.within_community_share",
+        "target_ids": [
+          "P044-T10"
+        ],
+        "what": "The printed within-community share is 0.7; under the specified generator premise that every edge is within a community, any nonempty simple graph with no isolates has within-community share exactly 1, differing by $3/10$."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P044.exact_variance_surplus",
+        "target_ids": [
+          "P044-T2"
+        ],
+        "what": "For a finite design with fixed exposure-specific outcomes and positive marginal support for two distinct exposures at every unit, exact marginal and joint probabilities make the expected HT variance estimate minus the true HT variance equal a nonnegative sum of structural-zero squares, including ordered cross-exposure diagonal terms."
+      },
+      {
+        "lean_name": "AronowAudit.P044.ht_unbiased",
+        "target_ids": [
+          "P044-T4"
+        ],
+        "what": "With true design exposure probabilities positive for both contrasted exposures at every unit, the HT exposure means and their population contrast are unbiased."
+      },
+      {
+        "lean_name": "AronowAudit.P044.common_support_unbiased",
+        "target_ids": [
+          "P044-T4"
+        ],
+        "what": "Averaging true-probability HT contributions over the fixed nonempty subset with positive support for both exposures, using that subset’s own cardinality denominator, is unbiased for its subset contrast."
+      },
+      {
+        "lean_name": "AronowAudit.P044.complete_randomization_support",
+        "target_ids": [
+          "P044-T4"
+        ],
+        "what": "For complete assignment of $1\\le M\\le N-1$ treated units on a symmetric zero-diagonal binary network, all four exposure probabilities at a unit of degree k are positive exactly when $M\\ge2$ and $1\\le k\\le N-M-1$."
+      },
+      {
+        "lean_name": "AronowAudit.P044.exhaustive_probabilities",
+        "target_ids": [
+          "P044-T8"
+        ],
+        "what": "Under the uniform law on a nonempty assignment table, marginal and joint exposure probabilities are their respective counts divided by the number of rows, specializing to exact design probabilities for an exhaustive equally likely table."
+      },
+      {
+        "lean_name": "AronowAudit.P044.corrected_baseline_moments",
+        "target_ids": [
+          "P044-T6"
+        ],
+        "what": "For $B=a|G|+E$ with $a\\ge0$, independent $G\\sim N(0,1)$ and $E\\sim N(1,1/16)$, the baseline mean is $a\\sqrt{2/\\pi}+1$ and its variance is $a^2(1-2/\\pi)+1/16$."
+      }
+    ],
+    "overview": "The chapter presents exposure-based estimation of causal effects in randomized experiments with network spillovers. The Lean development proves support-qualified Horvitz–Thompson unbiasedness, an exact structural-zero surplus formula for its variance estimator, complete-randomization support conditions and exact-enumeration probability identities. Finite counterexamples separate these exact-input results from simulated or smoothed exposure weights, and further results describe the mathematical baseline-outcome generator and the within-community edge share under the specified generator premises.",
+    "work_id": "P044"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_all_fixed_table_counterexamples_proof",
+          "line": 242,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B1",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_complete_support_proof",
+          "line": 271,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B1",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_conditional_moments_proof",
+          "line": 304,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B1",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_exact_moments_proof",
+          "line": 322,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B1",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_exact_profile_estimates_proof",
+          "line": 376,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B1",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_exact_reduced_arithmetic_proof",
+          "line": 383,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B1",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_fixed_reduced_arithmetic_proof",
+          "line": 113,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B2",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_fixed_table_counterexamples_proof",
+          "line": 185,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B2",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_full_counts_proof",
+          "line": 202,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B2",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_joint_moments_proof",
+          "line": 324,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B3",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_observation_joint_proof",
+          "line": 357,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B3",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_observation_marginal_proof",
+          "line": 362,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B3",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_pairs_complete_proof",
+          "line": 366,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B3",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_reduced_arithmetic_proof",
+          "line": 375,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B3",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_relabeling_verified_proof",
+          "line": 387,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B3",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_retained_injective_proof",
+          "line": 15,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B4",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_retained_weights_proof",
+          "line": 114,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B4",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_structure_proof",
+          "line": 146,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B4",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Gap/GP044B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.clique_variance_counterexample_proof",
+          "line": 343,
+          "module": "AronowAudit.P044.Wave1.Gap.GP044B4",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.cliqueF_is_exposure",
+          "line": 1326,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.clique_joint_expectation",
+          "line": 1467,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.clique_observation_independent_mass",
+          "line": 1424,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.clique_pair_distinct",
+          "line": 1321,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.clique_probability_laws",
+          "line": 1999,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.count_delete_atom",
+          "line": 1388,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.peerCount_two_treated",
+          "line": 1300,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ratCast_designVariance",
+          "line": 2121,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ratCast_expect",
+          "line": 2115,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ratCast_htContrast",
+          "line": 2166,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ratCast_htMean",
+          "line": 2158,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ratCast_htTerm",
+          "line": 2149,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ratCast_joint",
+          "line": 2138,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ratCast_marginal",
+          "line": 2128,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ratCast_varianceEstimate",
+          "line": 2174,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T1",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the first exact counterexample of P044-N005, which is mine and is not in the chapter. Twelve units form three disjoint cliques of four, two units are treated by complete randomization, all potential outcomes equal 1, and the contrast is $(d_{01},d_{00})$. The exposure probabilities are simulated from 65 of the 66 assignments, and the omitted assignment is uniform among the 66. The main statement first asserts the hypotheses of the example: the 66 assignments are exactly those with two treated units, and the network is symmetric and has no isolates. Every unit has $\\pi_i(d_{01})=9/22$ and $\\pi_i(d_{00})=14/33$. With the exact probabilities, it asserts that the Horvitz–Thompson estimator has mean $0$ and that its variance and the expected variance estimate both equal $6050/11907$. With the simulated probabilities, it asserts that the expected variance estimate minus the variance, $\\mathbb{E}[\\widehat V_{HT}]-\\operatorname{Var}(\\widehat\\tau_{HT})$, equals $-\\frac{953130413}{23499020160}\\qquad\\text{and}\\qquad-\\frac{20161943}{522324075}$ when the realized assignment is independent of the simulated ones and when it is one of the 65, respectively. Here the mean and the variance are taken over the omitted assignment and the realized one together. The two variances and the two expectations of the variance estimator are given as exact fractions, which round to the values in the finding. A second statement fixes the set of simulated assignments and takes the realized assignment independent of it. It asserts that the expected variance estimate is below the variance for each of the 66 sets. Of the other 32 statements, eight say that the expectations, the variances, the probabilities and the two estimators have the same values over the rational and the real numbers. The others include the counts of assignments behind the probabilities and the moments for a fixed set of simulated assignments. The estimator, the variance estimator and the formulas for the simulated probabilities are those of the R package interference, which the chapter does not print.",
+        "headline": "A counterexample to the statement that the variance estimators are “conservative approximations to the exact variances”, for simulated exposure probabilities",
+        "location": "p. 217 (PDF p. 9); the recipe for exposure probabilities on p. 212 (PDF p. 4), p. 214 (PDF p. 6) and p. 216 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.exact_totalCovariance",
+          "line": 1609,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.exact_totalVariance",
+          "line": 1579,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.exact_variance_conservative",
+          "line": 1724,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.exact_variance_surplus",
+          "line": 1688,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_add",
+          "line": 174,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_const_mul",
+          "line": 295,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_div",
+          "line": 179,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_event",
+          "line": 185,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_ite",
+          "line": 303,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_joint_event",
+          "line": 196,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_mul_const",
+          "line": 164,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_square_sum",
+          "line": 223,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_sub",
+          "line": 169,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.expect_sum",
+          "line": 157,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.htContrast_second_moment",
+          "line": 231,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.htTerm_observed",
+          "line": 1908,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.htTerm_product_expectation",
+          "line": 208,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.htVariance_pair_expansion",
+          "line": 1636,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.joint_diagonal",
+          "line": 1568,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.joint_nonneg",
+          "line": 1559,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.joint_swap",
+          "line": 1573,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.varianceEstimate_expectation",
+          "line": 311,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.zeroSurplus_nonneg",
+          "line": 1715,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.zero_pair_algebra",
+          "line": 1708,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statements are the identity and the inequality of the corrected passage in P044-N005. The design is a probability distribution on a finite set, and the exposure of each of the $N\\ge1$ units is a function of the outcome of the randomization. The potential outcomes $y_i(d)$ are fixed real numbers. Let $\\pi_i$ and $\\pi_{ij}$ be the exact marginal and joint exposure probabilities, and let $d\\neq d'$ be two exposures such that $\\pi_i(d)>0$ and $\\pi_i(d')>0$ for every unit $i$. Let $\\widehat\\tau_{HT}(d,d')$ and $\\widehat V_{HT}(d,d')$ be the Horvitz–Thompson estimator and the variance estimator of the finding, computed with these probabilities. The first statement asserts that $\\begin{aligned} \\mathbb{E}\\bigl[\\widehat V_{HT}(d,d')\\bigr]-\\operatorname{Var}\\bigl(\\widehat\\tau_{HT}(d,d')\\bigr)={}&\\frac{1}{2N^2}\\sum_{i\\neq j:\\,\\pi_{ij}(d,d)=0}\\bigl(y_i(d)+y_j(d)\\bigr)^2\\\\ &+\\frac{1}{2N^2}\\sum_{i\\neq j:\\,\\pi_{ij}(d',d')=0}\\bigl(y_i(d')+y_j(d')\\bigr)^2\\\\ &+\\frac{1}{N^2}\\sum_{i,j:\\,\\pi_{ij}(d,d')=0}\\bigl(y_i(d)-y_j(d')\\bigr)^2 , \\end{aligned}$ where the last sum runs over all ordered pairs, including those with $i=j$. The second asserts that $\\operatorname{Var}(\\widehat\\tau_{HT}(d,d'))\\le\\mathbb{E}[\\widehat V_{HT}(d,d')]$. Neither statement assumes anything about the joint probabilities, about independence across units or about the outcomes. The other 22 statements are steps of the derivation, among them the expectation of the variance estimator for arbitrary fixed inputs and the two algebraic identities for a pair with joint probability zero. The Lean statements are broader than the corrected passage in one respect. The exposure of a unit may be any function of the outcome of the randomization, and it need not come from a network. They concern the Horvitz–Thompson estimator only. The part of the corrected passage on simulated probabilities is the subject of the counterexample and is not asserted here.",
+        "headline": "The statement that the variance estimators are “conservative approximations to the exact variances”, as corrected",
+        "location": "p. 217 (PDF p. 9); p. 213 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ratCast_tau",
+          "line": 2282,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T3",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.star_counterexample",
+          "line": 805,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "counterexample_proved",
+          "target_id": "P044-T3",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.star_design_verified",
+          "line": 2261,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T3",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.star_nonidentification",
+          "line": 840,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "counterexample_proved",
+          "target_id": "P044-T3",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample of P044-E001, which is mine and is not in the chapter. Four units form a star in which unit 1 is joined to units 2, 3 and 4, and two units are treated, uniformly over the six assignments. In the first schedule of potential outcomes, $y_i(d)=1$ for every unit and every exposure, and the second differs from it only in that $y_1(d_{00})=5$. The first statement asserts that no unit is an isolate and that the exposure probabilities are those of the table in the finding, so that $\\pi_1(d_{10})=\\pi_1(d_{00})=0$. It asserts that every observed outcome equals 1 under each assignment in both schedules, while $\\tau(d_{11},d_{00})$ is $0$ in the first schedule and $-1$ in the second. It asserts also that the contrast of the inverse-weighted averages for $d_{11}$ and $d_{00}$ has expectation $1/4$ under both schedules, so that its bias is $1/4$ in the first and $5/4$ in the second. The second statement concerns every real-valued function of the assignment, the exposures and the observed outcomes. It asserts that such a function has the same expectation under the two schedules, and that its expectation cannot be $0$ under the first and $-1$ under the second. Two supporting statements say that the six assignments are exactly those with two treated units, and that the effect computed in rational arithmetic agrees with its real value. In this contrast a term whose exposure probability is zero is dropped, because division by zero returns zero in Lean. This is the reading of the finding, in which each sum is taken over the units observed in the exposure.",
+        "headline": "A counterexample to the statement that the exposure probabilities give “unbiased Horvitz-Thompson estimators of the $\\tau(d,d')$ effects”, read with no condition on those probabilities",
+        "location": "p. 212 (PDF p. 4); related passage on p. 216 (PDF p. 8) and Note 1, p. 221 (PDF p. 13)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.common_support_unbiased",
+          "line": 398,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.complete_all_positive_iff",
+          "line": 676,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.complete_no_peer_probabilities",
+          "line": 520,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.complete_own_probability",
+          "line": 601,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.complete_probability_pos_iff",
+          "line": 587,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.complete_randomization_support",
+          "line": 769,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.complete_support_1000_100",
+          "line": 2075,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.htTerm_expectation",
+          "line": 326,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.ht_unbiased",
+          "line": 363,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.star_common_support",
+          "line": 2060,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.support_necessary",
+          "line": 1209,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.zeroPeer_subset",
+          "line": 501,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the four parts of the corrected passage in P044-E001. In the first three parts, the design is a probability distribution on a finite set, and the exposure $D_i$ of each of the $N\\ge1$ units is a function of the outcome of the randomization. The potential outcomes are fixed real numbers, the observed outcome is $Y_i=y_i(D_i)$, and $\\pi_i(d)$ is the exact probability that $D_i=d$. The first statement takes two exposures $d\\neq d'$ such that $\\pi_i(d)>0$ and $\\pi_i(d')>0$ for every unit $i$. It asserts that $\\mathbb{E}[\\mathbf{1}(D_i=d)\\,Y_i/\\pi_i(d)]=y_i(d)$ for every $i$, that both inverse-weighted averages are unbiased for the average potential outcomes, and that the Horvitz–Thompson estimator satisfies $\\mathbb{E}[\\widehat\\tau_{HT}(d,d')]=\\tau(d,d')$. The second takes a unit $j$ such that $\\pi_j(d)=0$ and changes $y_j(d)$ by $\\delta\\neq0$. It asserts that every function of the assignment, the exposures and the observed outcomes keeps its expectation, while $\\tau(d,d')$ changes by $\\delta/N$, so that no such function is unbiased under both schedules. The third concerns the set $S$ of units with $\\pi_i(d)>0$ and $\\pi_i(d')>0$, supposed nonempty. It asserts that the estimator averaged over $S$ is unbiased for the average $\\tau_S(d,d')$ of $y_i(d)-y_i(d')$ over $S$. A further statement finds $S=\\{2,3,4\\}$ and $\\tau_S(d_{11},d_{00})=0$ in the star of the finding. The fourth concerns complete randomization of $M$ of $N$ units with $1\\le M\\le N-1$, a symmetric adjacency matrix with zero diagonal, and a unit with $k$ peers. It asserts the two formulas of the finding for $\\pi_i(d_{10})$ and $\\pi_i(d_{00})$ and the identities $\\pi_i(d_{11})=M/N-\\pi_i(d_{10})$ and $\\pi_i(d_{01})=(N-M)/N-\\pi_i(d_{00})$. It asserts also that all four probabilities are positive if and only if $M\\ge2$ and $1\\le k\\le N-M-1$. Six supporting statements give steps of the first and fourth parts, and a seventh says only that the condition reads $1\\le k\\le899$ for $N=1000$ and $M=100$. In the first three parts the exposures need not come from a network, so these statements are broader than the corrected passage.",
+        "headline": "The statement on “unbiased Horvitz-Thompson estimators of the $\\tau(d,d')$ effects”, as corrected",
+        "location": "p. 212 (PDF p. 4) and p. 216 (PDF p. 8); Note 1, p. 221 (PDF p. 13)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.baseline_not_halfNormal",
+          "line": 1045,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "counterexample_proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.continuous_interval_probability",
+          "line": 2202,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.halfNormal_second_moment",
+          "line": 1738,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.negative_baseline_event",
+          "line": 1033,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.negative_baseline_rectangle",
+          "line": 1948,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.nonisolated_baseline_mean_shift",
+          "line": 2103,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.triangle_baseline_witness",
+          "line": 1019,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.triangle_cdf_rectangle_negative",
+          "line": 2289,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.triangle_moment_comparison",
+          "line": 2082,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.triangle_outcome_vectors",
+          "line": 1932,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.triangle_rectangle_cdf",
+          "line": 2217,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.triangle_two_walk_matrix",
+          "line": 2273,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T5",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements take as given the formula by which the function called on pp. 216–217 generates a baseline outcome: $B=a\\,|G|+E$ with $a=k+q+kq$. Here $k$ is the degree of the unit, and $q$ is the number of other units that a walk of two edges reaches from it. The draw $G$ is standard normal, $E$ is normal with mean $1$ and variance $1/16$, and $G$ and $E$ are independent. The correspondence between the printed call and this formula is a premise about the R package interference (P044-E002), outside the Lean statements. For the triangle, the statements assert that $k_i=q_i=2$ and $a_i=8$, and that the draws $G=(1/64,1,-1/2)$ and $E=(-3/4,1,5/4)$ give $B=(-5/8,9,21/4)$. The main statement asserts, for every $a\\ge0$, that $B$ is negative with positive probability, that $|G|$ is negative with probability zero, and that the two distributions differ. Two statements give the event behind the first assertion: if $|g|<1/(4(a+1))$ and $-1<e<-1/2$, then $a|g|+e<-1/4$, and this event has positive probability. For a vertex of the triangle, the probability of the event $|G|<1/32$, $-1<E<-1/2$ is $[\\Phi(1/32)-\\Phi(-1/32)]\\,[\\Phi(-6)-\\Phi(-8)]>0$. For the moments, the statements assert that the mean and the variance of $B$ at a vertex of the triangle exceed those of $|G|$ by $7\\sqrt{2/\\pi}+1$ and $63(1-2/\\pi)+1/16$. They assert also that, on a graph without isolates, the mean of $B_i$ exceeds $\\sqrt{2/\\pi}$ by at least $1$ for every unit. The pair $(G,E)$ is represented by the product of the two normal distributions, and the distribution of $B$ is its image under the map $(g,e)\\mapsto a|g|+e$. The statements assert nothing about the baseline outcomes that the chapter’s simulation realized.",
+        "headline": "A counterexample to the description of the baseline outcomes as draws “from an absolute standard normal distribution”",
+        "location": "p. 216 (PDF p. 8); the calls on pp. 216–217 (PDF pp. 8–9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.baseline_mean_shift",
+          "line": 1094,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.baseline_memLp",
+          "line": 1837,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.corrected_baseline_moments",
+          "line": 1813,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.dilated_effects",
+          "line": 1076,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.gaussian_halfline_moment",
+          "line": 1746,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.generated_effect_mean",
+          "line": 1847,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.generated_effect_scale",
+          "line": 1881,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.halfNormal_mean",
+          "line": 1767,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.halfNormal_population_effect",
+          "line": 2303,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.halfNormal_variance",
+          "line": 1803,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.triangle_realized_effects",
+          "line": 1544,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The correction in P044-E002 replaces a description by a definition, so the Lean statements assert what follows from the definition, and not a theorem of the chapter. The baseline outcome is $B=a\\,|G|+E$ with $a=k+q+kq$. Here $k$ is the degree of the unit, and $q$ is the number of other units that a walk of two edges reaches from it. The draw $G$ is standard normal, $E$ is normal with mean $1$ and variance $1/16$, and $G$ and $E$ are independent. The other three potential outcomes are $2B$, $3B/2$ and $5B/4$. The first statement asserts that $\\mathbb{E}[B]=a\\sqrt{2/\\pi}+1$ and $\\operatorname{Var}(B)=a^2(1-2/\\pi)+1/16$ for every $a\\ge0$. The second asserts, for arbitrary real baselines $B_1,\\dots,B_N$ with mean $\\bar B$, that $\\tau(d_{11},d_{00})=\\bar B$, $\\tau(d_{10},d_{00})=\\bar B/2$ and $\\tau(d_{01},d_{00})=\\bar B/4$. For the triangle of the finding, a further statement gives $\\bar B=109/24$ and the effects $109/24$, $109/48$ and $109/96$. On a network of $N\\ge1$ units, the generated outcomes satisfy $\\mathbb{E}[\\tau(d_{11},d_{00})]=1+\\sqrt{2/\\pi}\\,N^{-1}\\sum_ia_i$, and this is at least $1+\\sqrt{2/\\pi}$ when no unit is an isolate. If each baseline had the distribution of $|G|$, as printed, this expectation would be $\\sqrt{2/\\pi}<1$. Supporting statements give $\\mathbb{E}|G|=\\sqrt{2/\\pi}$ and $\\operatorname{Var}(|G|)=1-2/\\pi$. The draws of a network are represented by independent pairs $(G_i,E_i)$, one for each unit. That the chapter’s outcomes were produced by this formula is a fact about the R package interference and is not part of any Lean statement.",
+        "headline": "The description of the simulated potential outcomes, as corrected",
+        "location": "p. 216 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T7",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.cycle8_contrast_biases",
+          "line": 1916,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "counterexample_proved",
+          "target_id": "P044-T7",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.cycle8_profile_counts",
+          "line": 2188,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T7",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.cycle8_smoothing_counterexample",
+          "line": 905,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "counterexample_proved",
+          "target_id": "P044-T7",
+          "target_kind": "counterexample",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample of P044-E005, which is mine and is not in the chapter. Eight units form a cycle, the design is uniform on the eight rotations of the assignment $(1,1,0,1,0,0,0,0)$, and every unit has potential outcomes $(2,3/2,5/4,1)$ under $(d_{11},d_{10},d_{01},d_{00})$. All eight assignments are supplied, so that $R=8$, and $c$ denotes the number of them under which a unit has a given exposure. The main statement asserts that every unit has the exact exposure probabilities $(1/4,1/8,3/8,1/4)$ and that the returned values $(c+1)/(R+1)$ are $(1/3,2/9,4/9,1/3)$, with sum $4/3$. It asserts that, under every assignment, the inverse-weighted averages for the four exposures equal $(3/2,27/32,135/128,3/4)$ with the returned values as weights and $(2,3/2,5/4,1)$ with the exact probabilities. A second statement asserts that the three contrasts with $d_{00}$ equal $3/4$, $3/32$ and $39/128$ under every assignment, with biases $-1/4$, $-13/32$ and $7/128$. The main statement also compares the returned joint values with a returned marginal value. For unit 1 in $d_{11}$, the joint values over the four exposures of unit 2 sum to $17/72$, and the marginal value is $1/3$. The statement gives this sum and not each of the four joint values. A third statement says that each assignment treats three units and places 2, 1, 3 and 2 units in the four exposures. The returned values are defined in Lean by the formulas quoted in the finding, and all quantities are rational numbers. That the function make_exposure_prob of the R package interference computes these formulas is a fact about its source and is not part of the Lean statements.",
+        "headline": "A counterexample to “the reason why we can obtain unbiased estimates”, for the exposure probabilities that make_exposure_prob returns",
+        "location": "p. 216 (PDF p. 8); p. 212 (PDF p. 4) and p. 214 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_IndependentBank.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.IndependentBank.independent_bank_expectation",
+          "line": 100,
+          "module": "AronowAudit.P044.P044_IndependentBank",
+          "status": "proved",
+          "target_id": "P044-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.exhaustive_probabilities",
+          "line": 929,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.exhaustive_smoothing_bias",
+          "line": 1486,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.htMean_expectation",
+          "line": 342,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.smoothed_not_distribution",
+          "line": 961,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.smoothing_bias_multiplier",
+          "line": 943,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements follow the correction in P044-E005 and its derivation. Let $c_i(a)$ be the number of the $R\\ge1$ listed assignments under which unit $i$ has exposure $a$, and let $c_{ij}(a,b)$ be the number under which unit $i$ has exposure $a$ and unit $j$ has exposure $b$. The first statement asserts that, for a design that is uniform on the list, $\\pi_i(a)=c_i(a)/R$ and $\\pi_{ij}(a,b)=c_{ij}(a,b)/R$, including the case $a=b$. The second asserts, for fixed weights $w_i(a)$, an exposure $D_i$ and an observed outcome $Y_i=y_i(D_i)$ for each of the $N$ units, that $\\mathbb{E}\\Bigl[\\frac{1}{N}\\sum_{i=1}^{N}\\frac{\\mathbf{1}(D_i=a)\\,Y_i}{w_i(a)}\\Bigr]=\\frac{1}{N}\\sum_{i=1}^{N}y_i(a)\\,\\frac{\\pi_i(a)}{w_i(a)} .$ Three statements concern the returned values $q_i(a)=(c_i(a)+1)/(R+1)$ when the design is uniform on the list. The first of them asserts that $\\frac{\\pi_i(a)}{q_i(a)}-1=\\frac{c_i(a)-R}{R\\,(c_i(a)+1)},$ and that this difference is negative when $c_i(a)<R$. The other two assert that the bias of the estimate of the average potential outcome is the average over $i$ of $y_i(a)$ times this difference, and that $\\sum_aq_i(a)=(R+K)/(R+1)>1$ for $K\\ge2$ exposures. The last statement concerns the independent, with-replacement illustration. Suppose that the $R$ assignments are independent draws from the design, independent of the realized assignment, and that a unit has exposure probability $p$. On a probability space, the realized exposure indicator $D$ has the Bernoulli distribution with parameter $p$, the simulated exposure count $C$ has the binomial distribution with parameters $R,p$, and $D$ and $C$ are independent. For $0<p<1$ and $q=(C+1)/(R+1)$, the statement asserts that $D/q$ is integrable and $\\mathbb{E}[D/q]=1-(1-p)^{R+1}<1.$ The chapter draws its assignments without replacement, so this case is an illustration and not a calculation for the chapter’s example. The first statement holds also for a list with repeated assignments, and the second for any fixed weights, with division by zero defined as zero in Lean.",
+        "headline": "The recipe for exposure probabilities, as corrected",
+        "location": "p. 216 (PDF p. 8); p. 212 (PDF p. 4) and p. 214 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T9",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.exposure_cases",
+          "line": 467,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.interference_iff_not",
+          "line": 442,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.noInterference_iff_same_own",
+          "line": 449,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.peerCount_is_count",
+          "line": 1537,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.peerCount_own_independent",
+          "line": 477,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The correction in P044-E007 is to two definitions, and the Lean statements assert the properties that make the corrected text well defined. No interference is defined as $y_i(a;\\mathbf{u})=y_i(a;\\mathbf{v})$ for every unit $i$, every $a\\in\\{0,1\\}$ and all assignments $\\mathbf{u}$, $\\mathbf{v}$ of the other units. Interference is defined as the existence of $i$, $a$, $\\mathbf{u}$ and $\\mathbf{v}$ such that the two outcomes differ. The first statement asserts that interference holds if and only if no interference fails. The second asserts that no interference is equivalent to $y_i(\\mathbf{z})=y_i(\\mathbf{z}')$ for every unit $i$ and all profiles $\\mathbf{z}$, $\\mathbf{z}'$ with $z_i=z_i'$. Two statements concern the count $\\theta_i\\mathbf{z}=\\sum_j\\theta_{ij}z_j$: it is the number of units $j$ with $\\theta_{ij}=1$ and $z_j=1$, and it does not depend on $z_i$ when $\\theta_{ii}=0$. The last asserts, for each of the four exposures, that $f(\\mathbf{z},\\theta_i)=d_{ab}$ if and only if $z_i=a$ and $\\mathbf{I}(\\theta_i\\mathbf{z}>0)=b$. These four equivalences express that exactly one condition of the display holds. An assignment is represented as a function from the units to $\\{0,1\\}$. The assignments of the other units are a function on the units other than $i$, in place of a vector of length $N-1$. The statement on the display holds for every matrix with entries $0$ or $1$, whatever its diagonal, and in this it is broader than the corrected display. The remark that the printed product $\\mathbf{z}'\\theta_i$ is not defined is not formalized.",
+        "headline": "The statements of no interference and of interference and the display of the exposure mapping, as corrected",
+        "location": "p. 211 (PDF p. 3); the definition of $\\mathbf{z}$ on p. 210 (PDF p. 2)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.crossCommunity_probability_zero",
+          "line": 1109,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.no_cross_edges_on_support",
+          "line": 1979,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.returned_graph_expectations",
+          "line": 1509,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/P044_NetworkSpillovers.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.within_community_share",
+          "line": 1124,
+          "module": "AronowAudit.P044.P044_NetworkSpillovers",
+          "status": "proved",
+          "target_id": "P044-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The correction in P044-E003 rests on a premise about the generator randnet::BlockModel.Gen. With the defaults that the printed call leaves in force, vertices $i$ and $j$ are joined with probability $s\\,t_it_j$ if they belong to the same community and with probability $0$ otherwise, for a constant $s$ and degree weights $t_i$. The premise is read from the source of the generator and is not part of any Lean statement. The first statement asserts that the edge probability so defined is $0$ for two vertices of different communities. The second asserts that, if each edge between communities has probability zero under a distribution on finitely many graphs, then every graph of positive probability has all of its edges within communities. The third concerns a simple graph on $N\\ge1$ vertices in which every vertex has positive degree and every edge lies within a community. Let $M$ be its number of edges and $W$ the number of them within a community. The statement asserts that $N\\le2M$, that $M>0$ and $W=M$, and that $W/M=1$, which differs from the printed $0.7$ by $3/10$. The fourth asserts that $\\mathbb{E}[W/M]=1$ and $\\mathbb{E}[W]/\\mathbb{E}[M]=1$ for every distribution on finitely many such graphs. The graphs that the printed loop returns are represented by such a distribution. The loop itself, which rejects a graph with an isolated vertex, is not formalized, and no statement says that it stops. In the first statement, $s$ and the weights $t_i$ are arbitrary real numbers.",
+        "headline": "The statement of “an expected proportion of edges that is within a community of 0.7”, as corrected",
+        "location": "p. 214 (PDF p. 6); code on p. 215 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T11",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/SimulatedVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.printed_simulated_variance_claim_refuted",
+          "line": 32,
+          "module": "AronowAudit.P044.Wave1.SimulatedVariance",
+          "status": "counterexample_proved",
+          "target_id": "P044-T11",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The chapter displays no variance estimator and does not define “conservative”. The Lean statement is my reading of the printed sentence for the Horvitz–Thompson variance estimator of the R package interference, computed from the exposure probabilities that the package returns for $R\\ge1$ simulated assignments. The proposition being negated asserts that the variance of the estimator is at most the expected variance estimate, $\\operatorname{Var}(\\widehat\\tau_{HT}(d,d'))\\le\\mathbb{E}[\\widehat V_{HT}(d,d')]$, for every design on the assignments of $N\\ge1$ units, every adjacency matrix with zero diagonal, all real potential outcomes and every two exposures $d\\neq d'$. The $R$ simulated assignments are distinct: they are drawn from the design one after another, and a draw that repeats an earlier one is rejected. The inequality is asserted in two cases. The realized assignment is either drawn independently of the simulated ones or is the first of them, as with the seed 4224 on pp. 214 and 217. In both cases the mean and the variance are taken over the simulated assignments and the realized one together. This proposition is narrower than the printed sentence in two respects. First, it supposes that every unit has positive probability of both exposures and that the design has at least $R$ assignments of positive probability, and the chapter states neither condition. Second, it covers the Horvitz–Thompson estimator only, since the sentence gives no bound for the Hajek variance estimator that could be stated. The Lean statement negates this universal conjunction. In the twelve-unit counterexample of P044-N005, successive distinct draws give the uniform law on the omitted assignment; with an independent realized assignment, the expected variance estimate is below the variance. This independent case suffices to contradict the conjunction. This statement does not separately assert a shortfall when the realized assignment is the first simulated one.",
+        "headline": "The statement that the variance estimators are “conservative approximations to the exact variances”, as printed",
+        "location": "p. 217 (PDF p. 9); p. 213 (PDF p. 5); Conclusion, pp. 219 and 221 (PDF pp. 11 and 13)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T12",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Unbiasedness.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.printed_unbiasedness_claim_refuted",
+          "line": 14,
+          "module": "AronowAudit.P044.Wave1.Unbiasedness",
+          "status": "counterexample_proved",
+          "target_id": "P044-T12",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The chapter displays no estimator. The Lean statement is my reading of the printed sentences for the Horvitz–Thompson estimator of the R package interference, with the exact exposure probabilities as weights. The proposition being negated asserts that this estimator satisfies $\\mathbb{E}[\\widehat\\tau_{HT}(d,d')]=\\tau(d,d')$ for every design on the assignments of $N\\ge1$ units, every adjacency matrix with zero diagonal, all real potential outcomes and every two possible exposures $d\\neq d'$. An exposure is taken to be possible when at least one unit has positive probability of it. The chapter says only that $d$ and $d'$ are “two different possible exposures”. As in the printed sentences, nothing requires that every unit have positive probability of both exposures. For a unit with $\\pi_i(d)=0$, the term $\\mathbf{1}(D_i=d)\\,Y_i/\\pi_i(d)$ is dropped, because division by zero returns zero in Lean. On the other reading, the estimator is not defined for such a unit. This is the proposition that the counterexample of P044-E001 contradicts, and the corrected statement has its own Lean statements. The Lean statement negates this universal unbiasedness assertion: in the four-unit star example, the expected contrast is $1/4$ while the population contrast is $0$. It does not assert separately that the two averages of the sentence on p. 216 are unbiased. The clause on “consistent and considerably more efficient Hajek or weighted least squares estimators” is not formalized.",
+        "headline": "The statement on “unbiased Horvitz-Thompson estimators of the $\\tau(d,d')$ effects”, as printed",
+        "location": "p. 212 (PDF p. 4); p. 216 (PDF p. 8); Note 1, p. 221 (PDF p. 13)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P044-T13",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P044/Wave1/Checks/Fid2P044Contracts.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P044.Wave1.baseline_description_refuted_at_every_graph_of_pos",
+          "line": 37,
+          "module": "AronowAudit.P044.Wave1.Checks.Fid2P044Contracts",
+          "status": "counterexample_proved",
+          "target_id": "P044-T13",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P044"
+        }
+      ],
+      "text": {
+        "body": "The passage describes how the simulated outcomes were generated. A Lean definition formulates the printed claim as a proposition: for a fixed adjacency matrix with zero diagonal, every unit’s baseline $B_i=a_i|G|+E$ has the same distribution as $|G|$. Here $G$ is standard normal, $E$ is normal with mean $1$ and variance $1/16$, and the two are independent. The coefficient is $a_i=k_i+q_i+k_iq_i$, where $k_i$ is the degree of unit $i$ and $q_i$ counts other units reachable from it by a walk of two edges. The definition does not assert that the proposition is true. The single theorem listed below proves that it is false for every such graph with at least one unit. The nonempty condition matters because a statement about every unit is vacuously true when there are none. The formula for $B_i$ is the assumed formula of the package function called on pp. 216–217 (P044-E002); the theorem does not verify the R source. It concerns the baseline distribution only. The multipliers $(2,1.5,1.25)$ enter the separate statements for the corrected description. The phrase “correlated with the unit’s first- and second-order degree” is not given a mathematical definition in the chapter and is not formalized.",
+        "headline": "The description of the baseline outcomes as draws “from an absolute standard normal distribution”, as printed",
+        "location": "p. 216 (PDF p. 8); the calls on pp. 216–217 (PDF pp. 8–9)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "Stephanie Zonszein",
+      "P. M. Aronow",
+      "Cyrus Samii"
+    ],
+    "citation": "Stephanie Zonszein, P. M. Aronow, and Cyrus Samii (2025). Estimating Causal Effects in Experiments with Network Spillovers. In Handbook of Computational Social Science.",
+    "doi": "10.4337/9781802207309.00025",
+    "title": "Estimating Causal Effects in Experiments with Network Spillovers",
+    "type": "Book chapter",
+    "venue": "Handbook of Computational Social Science",
+    "year": "2025"
+  },
+  "work_id": "P044"
+}

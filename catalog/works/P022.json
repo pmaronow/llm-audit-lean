@@ -1,0 +1,1560 @@
+{
+  "counts": {
+    "counterexample_proved": 5,
+    "proved": 65,
+    "results": 70,
+    "targets": 18
+  },
+  "overview": {
+    "areas": [
+      "experimental-design-and-estimation",
+      "partial-identification-and-bounds",
+      "asymptotic-statistics"
+    ],
+    "caveats": [
+      "The design is uniform random assignment with population size $N\\ge4$, treatment and control sizes at least two, and their sum at most N; permutations encode allocations with constant multiplicity.",
+      "Conditions 1–3 include limiting allocation fractions, weak convergence of the nested potential-outcome populations and CDF convergence at limiting discontinuities; condition 4 is uniform square integrability, and the coverage result instead assumes bounded third absolute moments and nonsingularity.",
+      "The added left-limit hypothesis belongs to corrected Lemma 2; the credited proofs of Propositions 1 and 2 retain their original hypotheses and do not assume that corrected lemma.",
+      "The quantile and Appendix B results use exact real arithmetic, including a fixed $2^{-52}$ machine-epsilon constant in the printed-code specification; they do not certify floating-point R execution.",
+      "The coverage theorem proves a limit and nominal lower bound; the wording about the narrowest assured Wald interval is outside its target.",
+      "The Table 1 reduction and sharp-null numerical incompatibility depend on the stated rounding and common Wald multiplier, and the latter treats bias as the mean estimate minus true variance for the same realized simulation collection; neither theorem recovers unavailable unrounded results or determines a unique replacement bias."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P022.lemma2_counterexample",
+        "target_ids": [
+          "P022-T1"
+        ],
+        "what": "Printed Lemma 2 claims uniform CDF convergence and scaled-tail bounds from conditions 1–3, but the nested outcomes $y_{1i}=y_{0i}=-1/i$ satisfy those conditions while both population and every sampled CDF remain at uniform distance one from their point-mass limit and both scaled-tail limsups are infinite."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P022.Wave1.lemma2_corrected_explicit_proof",
+        "target_ids": [
+          "P022-T2"
+        ],
+        "what": "Printed Lemma 2 lacks control of left limits at limiting atoms; adding convergence of each marginal CDF left limit at every limiting discontinuity gives uniform convergence and both scaled-tail bounds with the explicit common integer $K(\\eta)=2\\lceil4/\\min(\\eta,1)\\rceil$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P022.equation11_counterexample",
+        "target_ids": [
+          "P022-T5"
+        ],
+        "what": "The last equality of printed equation (11) sets the sampled-CDF variance to its upper bound, but with four all-one outcomes, two treated units and threshold zero, that variance is zero while the printed bound equals $1/12$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P022.appendixB_counterexample",
+        "target_ids": [
+          "P022-T9"
+        ],
+        "what": "The printed Appendix B routine is said to compute the mathematical bound estimates, but on the four-unit all-one example its exact-arithmetic specification returns $-1/50331648$ in both modes while both mathematical estimates and the true randomization variance are zero."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P022.table1_corrected_reduction",
+        "target_ids": [
+          "P022-T11"
+        ],
+        "what": "The printed 7% nominal-variance reduction is incompatible with the Table 1 rounding bins and a common positive Wald multiplier: the reduction is between $2400/397$ and $1204000/190969$ percent, strictly between 5.5% and 6.5%, so it rounds to 6%."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P022.reported_numbers_incompatible",
+        "target_ids": [
+          "P022-T12"
+        ],
+        "what": "The quoted sharp-null bias of $-0.007$ cannot describe the same finite simulation collection as the stated rounded variance and mean-width summaries under the common Wald construction: the resulting multiplier bound and squared-mean-width inequality make their simultaneous numerical constraints inconsistent."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P022.Wave1.sharp_bounds_variance_and_all_couplings",
+        "target_ids": [
+          "P022-T13"
+        ],
+        "what": "For uniform assignment to fixed treatment and control groups of at least two units each, the difference in means is unbiased with the stated randomization variance, all couplings of the empirical marginal laws obey the sharp covariance bounds, and similarly or oppositely ordered quantiles attain the corresponding upper or lower bounds."
+      },
+      {
+        "lean_name": "AronowAudit.P022.Wave1.estimated_bound_ordering_proof",
+        "target_ids": [
+          "P022-T14"
+        ],
+        "what": "When the entire population is assigned to treatment or control, every assignment satisfies $\\widehat V_n^{b-}\\le\\widehat V_n^L\\le\\widehat V_n^H\\le\\widehat V_n^{b+}\\le\\widehat V_n^a$."
+      },
+      {
+        "lean_name": "AronowAudit.P022.Wave1.TailB_proposition1",
+        "target_ids": [
+          "P022-T15"
+        ],
+        "what": "Under the original conditions 1–4, the N-scaled population variance bounds have the printed limits and the two estimated endpoints jointly have error $o_P(1/N)$, with the required second moments and cross-product integrability for every compatible limiting law."
+      },
+      {
+        "lean_name": "AronowAudit.P022.Wave1.proposition2_proof",
+        "target_ids": [
+          "P022-T16"
+        ],
+        "what": "Under conditions 1–3 and uniformly bounded potential outcomes, both N-scaled endpoint estimation errors satisfy finite scaled-tail limsup bounds giving the printed $O(1/N)$ probability rates for every positive tolerance allocation."
+      },
+      {
+        "lean_name": "AronowAudit.P022.Wave1.TailB_corollary1_and_coverage",
+        "target_ids": [
+          "P022-T17"
+        ],
+        "what": "Under conditions 1–3, uniformly bounded third absolute moments and a limiting law not concentrated on an affine line, standardization by $\\sqrt{\\gamma\\widehat V_N^H}$ gives a standard normal limit and upper-bound Wald intervals have the stated coverage limit at least their nominal level."
+      },
+      {
+        "lean_name": "AronowAudit.P022.Wave1.appendixB_corrected_proof",
+        "target_ids": [
+          "P022-T8"
+        ],
+        "what": "For two samples of at least two real observations, retaining the original quantile-grid widths and selecting quantiles at cell midpoints computes both sharp covariance integrals and their variance-bound substitutions exactly."
+      }
+    ],
+    "overview": "The work derives sharp bounds on the randomization variance of the difference in means from the marginal potential-outcome distributions and studies estimation of those bounds. The Lean development covers the exact variance formula, sharp covariance bounds over all compatible couplings, estimator ordering, consistency, bounded-outcome tail rates and asymptotic Wald coverage. It separately refutes printed Lemma 2 and supplies its left-limit correction, verifies a corrected exact-arithmetic quantile algorithm, and proves several numerical and proof-level corrections without invalidating the main propositions.",
+    "work_id": "P022"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T11",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Numerical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.displayed_variance_reduction",
+          "line": 91,
+          "module": "AronowAudit.P022.P022_Numerical",
+          "status": "proved",
+          "target_id": "P022-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Numerical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.half_width_rounding",
+          "line": 23,
+          "module": "AronowAudit.P022.P022_Numerical",
+          "status": "proved",
+          "target_id": "P022-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Numerical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.table1_corrected_reduction",
+          "line": 53,
+          "module": "AronowAudit.P022.P022_Numerical",
+          "status": "proved",
+          "target_id": "P022-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Numerical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.table1_ratio_lower_bound",
+          "line": 33,
+          "module": "AronowAudit.P022.P022_Numerical",
+          "status": "proved",
+          "target_id": "P022-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give the calculation of P022-N003 from the numbers printed in Table 1. A real number is said to display as a number $p$ with three decimals if it lies within $1/2000$ of $p$, which allows every rule for rounding ties. Let $V_a,V_H>0$ be the two variance estimates, and suppose that the two intervals have half-widths $z\\sqrt{V_a}$ and $z\\sqrt{V_H}$ for a common $z>0$. The main statement supposes that the endpoints of the intervals display as $-1.555$, $0.192$, $-1.528$ and $0.165$, and that $V_a$ and $V_H$ display as $0.199$ and $0.186$. It asserts that the reduction $D=100(1-V_H/V_a)$ satisfies $\\frac{2400}{397}\\le D\\le\\frac{1204000}{190969},\\qquad 5.5<D<6.5 .$ Two supporting statements give the upper bound from the intervals alone: an interval whose endpoints display as $\\ell$ and $u$ has half-width within $1/2000$ of $(u-\\ell)/2$, and $0<a\\le0.874$ and $h\\ge0.846$ imply $(h/a)^2\\ge178929/190969$. A fourth statement asserts that $100(1-0.186/0.199)=1300/199$, the value obtained when the printed variances are treated as exact. The statements are conditional on the rounding and on the Wald construction with one critical value, and they do not recover the unrounded reduction. They are broader than Table 1 requires, since $z$ is any positive number and the two intervals need not share a centre.",
+        "headline": "Section 6, the “7% reduction in the nominal variance”, as corrected",
+        "location": "p. 857 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T12",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GP022B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.sharp_null_neyman_bias_proof",
+          "line": 294,
+          "module": "AronowAudit.P022.Wave1.Gap.GP022B1",
+          "status": "proved",
+          "target_id": "P022-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Numerical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.finite_sqrt_mean_squared_le_mean",
+          "line": 97,
+          "module": "AronowAudit.P022.P022_Numerical",
+          "status": "proved",
+          "target_id": "P022-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Numerical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.finite_wald_mean_width_squared_le",
+          "line": 111,
+          "module": "AronowAudit.P022.P022_Numerical",
+          "status": "proved",
+          "target_id": "P022-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Numerical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.fixed_multiplier_mean_lower",
+          "line": 155,
+          "module": "AronowAudit.P022.P022_Numerical",
+          "status": "proved",
+          "target_id": "P022-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Numerical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.reported_numbers_incompatible",
+          "line": 135,
+          "module": "AronowAudit.P022.P022_Numerical",
+          "status": "proved",
+          "target_id": "P022-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Numerical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.table1_multiplier_bound",
+          "line": 121,
+          "module": "AronowAudit.P022.P022_Numerical",
+          "status": "proved",
+          "target_id": "P022-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give the claim that the correction of P022-N005 keeps, and the calculation that removes the figure. The first asserts that, for $n=N$ and $y_{0i}=y_{1i}$ for all $i$, $\\mathrm{E}_X(\\hat V_n^{b+})\\le V_n$, where $V_n$ is the variance of $\\hat\\tau_N$ over the assignments. Two numerical statements assert, first for $c=1$ and then for every real $c$, that $\\Bigl(\\frac1M\\sum_{j=1}^Mc\\sqrt{v_j}\\Bigr)^2\\le c^2\\,\\frac1M\\sum_{j=1}^Mv_j$ for $M\\ge1$ and nonnegative $v_1,\\ldots,v_M$. Another asserts the bound on the multiplier that follows from the row of Table 1 for $\\hat V_N^{b+}$: if $q\\ge391/2000$, $0\\le d\\le867/500$ and $d^2=c^2q$, then $c^2\\le44217/2875$. The main numerical statement asserts that no real numbers $c$, $\\bar w$, $\\bar v$, $V$ and $b$ satisfy $c^2\\le44217/2875$, $\\bar v\\ge0$, $\\bar w\\ge3447/2000$, $\\bar w^2\\le c^2\\bar v$, $V\\le399/2000$, $b\\le-13/2000$ and $\\bar v=V+b$. The last asserts that, with $c=3.92$, the conditions $\\bar w\\ge1.7235$ and $\\bar w^2\\le c^2\\bar v$ imply that $\\bar v\\ge11881809/61465600>0.193$. Here $\\bar v$ and $\\bar w$ are the mean variance estimate and the mean interval width over one finite collection of simulated assignments, $V$ is the true variance and $b$ is the quoted bias. The numerical statements use rounded summaries of the same collection of simulations and the Wald construction, compare no simulated mean with an expectation, and assert no replacement for $-0.007$.",
+        "headline": "Section 6.1, Sharp Null: the bias “($-0.007$ USD$^2$)” of $\\hat V_N^{b+}$, as corrected",
+        "location": "p. 858 (PDF p. 9); Table 1 on p. 857 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_PaperDomains.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.PaperDomains.cdf_partition_bracket",
+          "line": 7,
+          "module": "AronowAudit.P022.P022_PaperDomains",
+          "status": "proved",
+          "target_id": "P022-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/TailA/Lemma2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.TailA.lemma2_corrected_final",
+          "line": 8,
+          "module": "AronowAudit.P022.Wave1.Gap.TailA.Lemma2",
+          "status": "proved",
+          "target_id": "P022-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GLP022B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.lemma2_corrected_explicit_proof",
+          "line": 624,
+          "module": "AronowAudit.P022.Wave1.Gap.GLP022B3",
+          "status": "proved",
+          "target_id": "P022-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.corrected_partition_integer_properties",
+          "line": 873,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements give the corrected lemma of P022-E001. Their hypotheses are conditions 1–3 of Proposition 1 as printed, together with the added condition that $G_N(x-)\\to G(x-)$ at every discontinuity point $x$ of $G$ and $F_N(x-)\\to F(x-)$ at every discontinuity point $x$ of $F$. The first statement asserts the conclusions as printed: $\\sup_y|G(y)-G_N(y)|\\to0$ and $\\sup_y|F(y)-F_N(y)|\\to0$, and there exist positive integers $K_1(\\eta)$ and $K_0(\\eta)$, nonincreasing in $\\eta$, such that the two bounds on $\\limsup_N N\\,\\mathrm{P}(\\cdot)$ hold for all $\\eta>0$. The second asserts the same conclusions with the explicit choice $K_1(\\eta)=K_0(\\eta)=2\\lceil4/\\min(\\eta,1)\\rceil$, and a third asserts that this integer is positive and nonincreasing in $\\eta$. The left limit $G(x-)$ is represented by the probability under $H$ that $y_1<x$, and $G_N(x-)$ by the proportion of units of $U_N$ with $y_{1i}<x$. In the first statement the integers may depend on the sequence of populations as well as on $H$, which is weaker than the printed wording. In the second they depend on $\\eta$ alone. A fourth statement gives the scalar endpoint bound used in the corrected proof on pp. 860–861, written for real numbers: if $P_a\\le P_x\\le P_b$, $A_a\\le A_x\\le A_b$ and $P_b\\le P_a+\\delta$, then $P_b-A_b-\\delta\\le P_x-A_x\\le P_a-A_a+\\delta .$ The statement includes the equality case $P_b-P_a=\\delta$.",
+        "headline": "Lemma 2, as corrected",
+        "location": "p. 860 (PDF p. 11); proof on pp. 860–861 (PDF pp. 11–12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T18",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/PrintedLemma2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.lemma2_as_printed_refuted",
+          "line": 9,
+          "module": "AronowAudit.P022.Wave1.PrintedLemma2",
+          "status": "counterexample_proved",
+          "target_id": "P022-T18",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement negates the universal form of the lemma as printed, quantified over nested population sequences, limiting laws and allocation parameters. In that universal assertion, the only hypotheses are conditions 1–3 of Proposition 1, and no condition on the left limits $G_N(y-)$ and $F_N(y-)$ is included. Its conclusions are that $\\sup_y|G(y)-G_N(y)|\\to0$ and $\\sup_y|F(y)-F_N(y)|\\to0$, and that there exist positive integers $K_1(\\eta)$ and $K_0(\\eta)$, nonincreasing in $\\eta$, such that, for all $\\eta>0$, $\\begin{aligned} \\limsup_N\\Bigl\\{N\\,\\mathrm{P}\\Bigl(\\sup_y|G(y)-\\hat G_N(y)|\\ge\\eta\\Bigr)\\Bigr\\}&\\le\\frac{(1-\\theta\\rho)K_1(\\eta)}{\\theta\\rho\\,\\eta^2},\\\\ \\limsup_N\\Bigl\\{N\\,\\mathrm{P}\\Bigl(\\sup_y|F(y)-\\hat F_N(y)|\\ge\\eta\\Bigr)\\Bigr\\}&\\le\\frac{\\{1-\\theta(1-\\rho)\\}K_0(\\eta)}{\\theta(1-\\rho)\\,\\eta^2}. \\end{aligned}$ This is the statement that P022-E001 shows to be false, and a counterexample to it and the corrected lemma have their own Lean statements. The probabilities multiplied by $N$ take values in $[0,\\infty]$, which allows an infinite limit superior. As in the first statement of the corrected lemma, the integers may depend on the sequence of populations as well as on $H$, which is weaker than the printed wording. That counterexample contradicts this weaker form as well.",
+        "headline": "Lemma 2",
+        "location": "p. 860 (PDF p. 11); proof on pp. 860–861 (PDF pp. 11–12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T3",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/TailA/BoundedAsymptotic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.TailA.bounded_direct_asymptotic_final",
+          "line": 10,
+          "module": "AronowAudit.P022.Wave1.Gap.TailA.BoundedAsymptotic",
+          "status": "proved",
+          "target_id": "P022-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GLP022B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.bounded_direct_finite_proof",
+          "line": 703,
+          "module": "AronowAudit.P022.Wave1.Gap.GLP022B3",
+          "status": "proved",
+          "target_id": "P022-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.finite_squared_markov",
+          "line": 953,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give the bound that replaces the uses of Lemma 2 in the proof of Proposition 2 (see P022-E001). Lemma 2 needs convergence of the left limits $G_N(x-)$ and $F_N(x-)$ to $G(x-)$ and $F(x-)$ at jumps of the limiting distribution functions; P022-T1 gives a counterexample under the printed hypotheses, and P022-T2 states the corrected lemma. For one population and one design, suppose $|y_{1i}|\\le C$ and $|y_{0i}|\\le C$ for all $i$, and let $c>0$ be such that $m\\ge cN$, $n-m\\ge cN$ and $N\\ge2/c$. Define $D_1=\\int_{-C}^{C}|\\hat G_N(x)-G_N(x)|\\,dx$ and $D_0=\\int_{-C}^{C}|\\hat F_N(x)-F_N(x)|\\,dx$. The first statement asserts that $\\mathrm{E}_X(D_1^2)\\le C^2(N-m)/\\{(N-1)m\\}\\le C^2/(cN)$, with the analogous bounds for $D_0$, and that $\\mathrm{E}_X\\{(D_1+D_0)^2\\}\\le4C^2/(cN)$. It asserts further that, for $B\\in\\{H,L\\}$ and every assignment, $N|\\hat V_N^B-V_N^B|\\le\\Bigl(\\frac{16}{c}+8\\Bigr)C(D_1+D_0)+\\frac{8C^2}{c^2N},$ and that, for every $\\varepsilon>0$ such that $N\\ge16C^2/(c^2\\varepsilon)$, $\\mathrm{P}\\bigl\\{N|\\hat V_N^B-V_N^B|\\ge\\varepsilon\\bigr\\}\\le\\frac{16\\,(16/c+8)^2\\,C^4}{cN\\varepsilon^2}.$ For a nested sequence satisfying condition 1 of Proposition 1, with outcomes bounded by $C$, the second statement asserts that $\\limsup_N N\\,\\mathrm{P}\\{N|\\hat V_N^B-V_N^B|\\ge\\varepsilon\\}\\le16\\,(16/c+8)^2C^4/(c\\varepsilon^2)$ for all $\\varepsilon>0$ and all $0<c<\\min\\{\\theta\\rho,\\theta(1-\\rho)\\}$. Conditions 2 and 3, the limits $G$, $F$ and $H$, and Lemma 2 do not appear in it. A third statement is the inequality $\\mathrm{P}(|f|\\ge\\varepsilon)\\le\\mathrm{E}_X(f^2)/\\varepsilon^2$ for $\\varepsilon>0$ and a real function $f$ of the assignment. The sampled distribution functions are compared with those of the current population $U_N$, as in the corrected text.",
+        "headline": "Proof of Proposition 2, the steps that apply Lemma 2, as corrected: a direct bound for bounded outcomes",
+        "location": "pp. 867–869 (PDF pp. 18–20); statement of Proposition 2 on p. 863 (PDF p. 14)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GP022B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.cdf_variance_corrected_proof",
+          "line": 117,
+          "module": "AronowAudit.P022.Wave1.Gap.GP022B2",
+          "status": "proved",
+          "target_id": "P022-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.bernoulli_variance_bound",
+          "line": 695,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.finite_variance_second_moment",
+          "line": 895,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.indicator_population_variance",
+          "line": 912,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.sampled_cdfs_unbiased",
+          "line": 1225,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement asserts equations (11) and (12) with the correction of P022-E005. For every population, every design and every real $y$, it asserts that $\\mathrm{E}_X\\hat G_N(y)=G_N(y)$ and $\\mathrm{E}_X\\hat F_N(y)=F_N(y)$, and that $\\operatorname{Var}_X\\hat G_N(y)=\\frac{N-m}{(N-1)m}\\,G_N(y)\\{1-G_N(y)\\}\\le\\frac{N-m}{4(N-1)m}.$ It asserts the same identity and bound for $\\hat F_N$, with $n-m$ and $F_N$ in place of $m$ and $G_N$. The expectation and the variance are averages over all assignments, and they are defined without reference to the formula. Four supporting statements give parts of the argument. The first asserts that $p(1-p)\\le1/4$ for every real $p$, with equality if and only if $p=1/2$. The second asserts that a finite population variance equals the mean of the squares minus the square of the mean, and the third that $\\sigma_N^2(I\\{y_1\\le y\\})=G_N(y)\\{1-G_N(y)\\}$. The fourth asserts the two identities for the expectations by themselves.",
+        "headline": "Equation (11) in the proof of Lemma 2, as corrected, with equation (12)",
+        "location": "p. 861 (PDF p. 12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.design_constant",
+          "line": 294,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T5",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.equation11_counterexample",
+          "line": 305,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "counterexample_proved",
+          "target_id": "P022-T5",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.finiteMean_const",
+          "line": 287,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T5",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give the counterexample of P022-E005 with explicit outcomes: $N=n=4$, $m=2$, $y_{1i}=y_{0i}=1$ for the four units, and $y=0$. The main statement asserts that $G_N(0)=0$ and $\\sigma_N^2(I\\{y_1\\le0\\})=0$, that $\\hat G_N(0)=0$ for every assignment, and that $\\operatorname{Var}_X\\hat G_N(0)=0$. It also asserts that the last member of (11) is $(4-2)/(4\\cdot3\\cdot2)=1/12$, which is not $0$. Two supporting statements assert that the mean of a constant over a nonempty population is that constant, and that a constant function of the assignment has expectation equal to the constant and variance zero. An assignment is represented by an ordering of the four units, in which the first two are treated and the last two are controls. Each of the six assignments of the paper then has the same probability. The main statement does not assert the general remark that, for $m<N$, equality holds in (11) if and only if $G_N(y)=1/2$. The criterion that $p(1-p)=1/4$ if and only if $p=1/2$ is among the statements for the corrected equation.",
+        "headline": "A counterexample to the last relation of equation (11) as printed",
+        "location": "p. 861 (PDF p. 12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GLP022B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.appendixB_corrected_proof",
+          "line": 1001,
+          "module": "AronowAudit.P022.Wave1.Gap.GLP022B4",
+          "status": "proved",
+          "target_id": "P022-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.centered_quadrature",
+          "line": 939,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "For all real outcomes, with $m\\ge2$ treated units and $k=n-m\\ge2$ controls, the main Lean statement asserts that the corrected computation of P022-E002 returns the estimates of equations (8)–(9). Let $0=p_0<\\cdots<p_P=1$ be the partition of (8), with midpoints $u_r=(p_{r-1}+p_r)/2$, and let $Q_t$, $Q_c^H$ and $Q_c^L$ be the quantile functions of the correction. The statement asserts that $\\lceil mu\\rceil=\\lceil mp_r\\rceil$ and $\\lceil ku\\rceil=\\lceil kp_r\\rceil$ for every $u$ in the interior of the $r$th cell, with the corresponding identity for the reversed control order. It asserts that the widths $p_r-p_{r-1}$ sum to $1$, and that the weighted sums of $Q_t(u_r)$ and of $Q_c^B(u_r)$ are the sample means $\\bar y_t$ and $\\bar y_c$. It then asserts that $\\sum_{r=1}^P(p_r-p_{r-1})\\bigl(Q_t(u_r)-\\bar y_t\\bigr)\\bigl(Q_c^B(u_r)-\\bar y_c\\bigr)=\\hat\\sigma_N^B(y_1,y_0),\\qquad B\\in\\{H,L\\},$ and that substituting this covariance into (9) gives $\\hat V_N^B$. The last part asserts that the weights $w_{ij}$ of the correction have sums $1/m$ over $j$ and $1/k$ over $i$, and that the double sum of $w_{ij}$ times the centered products equals $\\hat\\sigma_N^B(y_1,y_0)$. A supporting statement is the algebraic step: if weights $w_r$ sum to $1$, $\\sum_rw_rx_r=\\mu$ and $\\sum_rw_ry_r=\\nu$, then $\\sum_rw_r(x_r-\\mu)(y_r-\\nu)=\\sum_rw_rx_ry_r-\\mu\\nu$. The computation uses exact real arithmetic and keeps tied outcomes, with the identity for every natural $N$ (without $N\\ge n$) broader than the paper’s setting; R execution and floating-point rounding are not represented.",
+        "headline": "Appendix B, the function sharp.var: partition points and integration weights, as corrected",
+        "location": "p. 869 (PDF p. 20); equations (8)–(9) on p. 854 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T9",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GP022B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.appendixB_general_discrepancy_proof",
+          "line": 354,
+          "module": "AronowAudit.P022.Wave1.Gap.GP022B3",
+          "status": "proved",
+          "target_id": "P022-T9",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.appendixB_counterexample",
+          "line": 426,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "counterexample_proved",
+          "target_id": "P022-T9",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.partition_two",
+          "line": 374,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T9",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.quantile_two_ones",
+          "line": 391,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T9",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.sharp_covariance_two_ones",
+          "line": 403,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T9",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give the counterexample of P022-E002 and the general formula for the discrepancy. The printed function is represented by the formula that it computes in exact real arithmetic, with $e=2^{-26}$ for $\\sqrt{\\texttt{.Machine\\$double.eps}}$ and with the two lines of FPvar joined. In this formula the partition points $p_j$ of (8) are replaced by $q_0=e$ and $q_j=p_j-e$ for $j\\ge1$; the points select the order statistics, and their differences $q_j-q_{j-1}$ are the weights. For $N=n=4$, $m=2$ and all outcomes equal to $1$, the main statement asserts that the variance of $\\hat\\tau_N$ over the assignments is $0$, that $\\hat V_N^H=\\hat V_N^L=0$ by (8)–(9), and that the printed formula gives $-1/50331648$ for both bounds. Three supporting statements assert that the partition for $m=n-m=2$ is $(0,1/2,1)$, that the quantile function of the sample $(1,1)$ equals $1$ on $[0,1]$, and that both covariance bounds (8) vanish for two such samples. For $m\\ge2$, $k=n-m\\ge2$ and $N\\ge n$, when every cell of the partition is wider than $2e$, a further statement asserts that the printed formula minus $\\hat V_N^H$ equals $-4e\\,a_1b_1/(N-1)$, and that the printed formula minus $\\hat V_N^L$ equals $-4e\\,a_1b_k/(N-1)$. Here $a_1$ is the smallest treatment outcome, and $b_1$ and $b_k$ are the smallest and the largest control outcomes. The statements concern this formula and not the execution of the code in R, and floating-point rounding is outside their scope.",
+        "headline": "A counterexample to Appendix B, the function sharp.var, as printed",
+        "location": "p. 869 (PDF p. 20); equations (8)–(9) on p. 854 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/FixedArm.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.fixed_arm_variance_limit_eventually",
+          "line": 13,
+          "module": "AronowAudit.P022.Wave1.FixedArm",
+          "status": "proved",
+          "target_id": "P022-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.fixed_sample_identity",
+          "line": 456,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.fixed_sample_infinite_limit",
+          "line": 475,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.independent_means_remainder",
+          "line": 506,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give the limit on which the correction of P022-E003 rests. Let $s_1^2$ and $s_0^2$ be the sample variances of the observed outcomes with denominators $m-1$ and $k-1$, where $k=n-m$. The first statement asserts that, for $m\\ge2$, $k\\ge2$, every $N\\ge n$ and $B\\in\\{H,L\\}$, $\\hat V_N^B=\\Bigl(\\frac1m-\\frac1N\\Bigr)s_1^2+\\Bigl(\\frac1k-\\frac1N\\Bigr)s_0^2+\\frac{2\\hat\\sigma_N^B(y_1,y_0)}{N-1}.$ The second asserts that, with the observed outcomes fixed, $\\hat V_N^B\\to s_1^2/m+s_0^2/k$ as $N\\to\\infty$ for both bounds, which is the value that the corrected function returns for an infinite population. An algebraic statement, for $m,k\\ge1$ and $N\\ge2$, asserts that the right side of (2), with arbitrary real $v_1$, $v_0$ and $c$ in place of the variances and covariance, minus $(v_1/m+v_0/k)$ equals $\\{2c-(1-1/m)v_1-(1-1/k)v_0\\}/(N-1)$, without requiring $N\\ge n$. The last asserts that $V_N-\\{\\sigma_N^2(y_1)/m+\\sigma_N^2(y_0)/k\\}\\to0$ along a nested sequence of populations with eventually fixed arm sizes and uniformly bounded variances, where $V_N$ is the variance of $\\hat\\tau_N$ over the assignments. The statements give the mathematical limit only: the values Inf and NaN of R, and the behaviour of the function called with N=Inf, are not represented. The last statement requires the arm sizes to equal fixed $m$ and $k$ only for all sufficiently large $N$. Its sequence starts at $N=4$, with earlier designs allowed to differ, so every fixed $m,k\\ge2$ is permitted.",
+        "headline": "The infinite-population case ($N=\\infty$) of the estimator, as corrected",
+        "location": "p. 850 (PDF p. 1); p. 852 (PDF p. 3); Appendix B, p. 869 (PDF p. 20)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T13",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/SharpBounds.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.sharp_bounds_variance_and_all_couplings",
+          "line": 24,
+          "module": "AronowAudit.P022.Wave1.SharpBounds",
+          "status": "proved",
+          "target_id": "P022-T13",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.difference_in_means_unbiased",
+          "line": 1216,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T13",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.finite_covariance_cauchy",
+          "line": 925,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T13",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.observed_means_unbiased",
+          "line": 1198,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T13",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.permutation_eval_mean",
+          "line": 1172,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T13",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement combines two parts. The first, for a population of $N\\ge4$ units and uniform assignment to treatment and control groups of fixed sizes $m,k\\ge2$ with $m+k\\le N$, asserts that $\\mathrm{E}_X(\\hat\\tau_N)=\\tau_N$ and that the variance of $\\hat\\tau_N$ over the assignments equals the right side of (2). It then asserts that, when the values of $y_1$ and the values of $y_0$ are rearranged among the $N$ units in any way, the covariance lies in $[\\sigma_N^L(y_1,y_0),\\sigma_N^H(y_1,y_0)]$ and the variance of $\\hat\\tau_N$ lies in $[V_N^L,V_N^H]$. It asserts last that the pairing of the sorted values of $y_1$ with the sorted values of $y_0$ attains $V_N^H$, and that the pairing in opposite order attains $V_N^L$. Here $V_N$ is defined as a variance over the assignments and not by formula (2), so that (2) is part of what is asserted. This first part ranges only over pairings of the $N$ values, the joint distributions that a population of $N$ units can have, and is narrower than Lemma 1, which concerns all joint distributions with marginals $G_N$ and $F_N$. The second part asserts the covariance part in the lemma’s printed generality: every joint distribution on $\\mathbb{R}^2$ with marginals $G_N$ and $F_N$ has covariance between $\\sigma_N^L(y_1,y_0)$ and $\\sigma_N^H(y_1,y_0)$, and the two bounds are attained by the distributions of $\\{G_N^{-1}(U),F_N^{-1}(U)\\}$ and $\\{G_N^{-1}(U),F_N^{-1}(1-U)\\}$, where $U$ is uniform on $[0,1]$. Four supporting statements assert that $|\\sigma_N(v,w)|\\le\\{\\sigma_N^2(v)\\sigma_N^2(w)\\}^{1/2}$, that the outcome at a fixed position of a random ordering has mean $\\mu_N(y)$, that the two observed means are unbiased, and that $\\mathrm{E}_X(\\hat\\tau_N)=\\tau_N$.",
+        "headline": "Lemma 1 (Hoeffding) and the sharpness of the interval $[V_N^L,V_N^H]$, with equation (2)",
+        "location": "p. 853 (PDF p. 4); equation (2) on p. 851 (PDF p. 2); proof of Lemma 1 on pp. 859–860 (PDF pp. 10–11)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T14",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GP022B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.estimated_bound_ordering_proof",
+          "line": 657,
+          "module": "AronowAudit.P022.Wave1.Gap.GP022B1",
+          "status": "proved",
+          "target_id": "P022-T14",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.sqrt_product_le_arithmetic",
+          "line": 1245,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T14",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that, when $n=N$, for every population and every assignment, $\\hat V_n^{b-}\\le\\hat V_n^L\\le\\hat V_n^H\\le\\hat V_n^{b+}\\le\\hat V_n^a .$ The estimators $\\hat V_n^a$ and $\\hat V_n^{b\\pm}$ are (4) and (6), and $\\hat V_n^H$ and $\\hat V_n^L$ are (9) with (8), each with the finite-population corrections of the paper. The case $n=N$ is the one in which (4) and (6) are defined, although the sentence writes the subscript $N$. The chain contains the two inequalities of the sentence. It adds $\\hat V_n^L\\le\\hat V_n^H$ and $\\hat V_n^{b+}\\le\\hat V_n^a$; the second follows from the arithmetic–geometric mean inequality used on p. 852. A supporting statement asserts that $2\\sqrt{AB}\\le A+B$ for $A,B\\ge0$. The words “often smaller” in the Introduction are not a mathematical statement, and they are not covered.",
+        "headline": "Section 3, the sentence after equation (9): $\\hat V_N^H$ is never greater than $\\hat V_N^{b+}$, and $\\hat V_N^L$ is never smaller than $\\hat V_N^{b-}$",
+        "location": "p. 854 (PDF p. 5); (4) and (6) on pp. 852–853 (PDF pp. 3–4); Introduction, p. 850 (PDF p. 1)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T15",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/TailBBoundConsistency.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.TailB_proposition1",
+          "line": 523,
+          "module": "AronowAudit.P022.Wave1.Gap.TailBBoundConsistency",
+          "status": "proved",
+          "target_id": "P022-T15",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement transcribes the proposition as printed, under conditions 1–4. It asserts that every bivariate distribution $h$ with marginals $G$ and $F$ has finite moments up to second order, and that $y_1y_0$ is integrable under $h$. It asserts that $NV_N^H$ and $NV_N^L$ converge to the two printed limits, in which the supremum and the infimum of $\\operatorname{Cov}_h(y_1,y_0)$ are taken over all such $h$. It asserts that $\\max\\bigl\\{N|\\hat V_N^H-V_N^H|,\\ N|\\hat V_N^L-V_N^L|\\bigr\\}\\to0$ in probability, which is the reading of $o_P(1/N)$. The nested sequence of populations is represented by two fixed sequences of outcomes, of which $U_N$ takes the first $N$ terms for $N=4,5,\\ldots$, and each $U_N$ has its own design and its own random assignment. The limit $H$ is a Borel probability measure on $\\mathbb{R}^2$, and weak convergence is the convergence of the averages of every bounded continuous function. The statement keeps condition 3 as a hypothesis, although the argument given in P022-E001 does not use it. No condition on left limits is added.",
+        "headline": "Proposition 1",
+        "location": "p. 855 (PDF p. 6); proof on pp. 862–863 (PDF pp. 13–14)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T16",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GP022B1b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.proposition2_proof",
+          "line": 999,
+          "module": "AronowAudit.P022.Wave1.Gap.GP022B1b",
+          "status": "proved",
+          "target_id": "P022-T16",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement transcribes the proposition as printed, with the $\\mathcal{O}$ bounds read as in the last displays of its proof. For given $H$, $\\theta$, $\\rho$ and $C\\ge0$, it asserts that there exist nonnegative functions $\\kappa_1$, $\\kappa_2$ and $\\kappa_3$ with the following property. For every nested sequence of populations that satisfies conditions 1–3 with $|y_{1i}|\\le C$ and $|y_{0i}|\\le C$, and for all $\\varepsilon_1,\\varepsilon_2,\\varepsilon_3>0$ with sum $\\varepsilon$, $\\begin{aligned} \\limsup_N N\\,\\mathrm{P}\\bigl(N|\\hat V_N^H-V_N^H|\\ge\\varepsilon\\bigr)&\\le C^4\\kappa_1(\\varepsilon_1),\\\\ \\limsup_N N\\,\\mathrm{P}\\bigl(N|\\hat V_N^L-V_N^L|\\ge\\varepsilon\\bigr)&\\le C^4\\bigl\\{1/\\varepsilon_1^2+\\kappa_2(\\varepsilon_2)+\\kappa_3(\\varepsilon_3)\\bigr\\}. \\end{aligned}$ These bounds imply the rate $\\mathcal{O}(1/N)$ of Remark 3. The unspecified constant of the printed $\\mathcal{O}$ is absorbed into the functions $\\kappa_1$, $\\kappa_2$ and $\\kappa_3$. The functions are chosen before the sequence of populations, so that they may depend on $H$, $\\theta$, $\\rho$ and $C$ but not otherwise on the outcomes. The hypotheses are those printed. No condition on left limits is added, and Lemma 2 is not assumed. The populations and the weak convergence are represented as in the statement of Proposition 1.",
+        "headline": "Proposition 2, with Remark 3",
+        "location": "p. 863 (PDF p. 14); Remark 3 on p. 856 (PDF p. 7); proof on pp. 863–869 (PDF pp. 14–20)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T17",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/TailBCorollaryCoverage.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.TailB_corollary1_and_coverage",
+          "line": 199,
+          "module": "AronowAudit.P022.Wave1.Gap.TailBCorollaryCoverage",
+          "status": "proved",
+          "target_id": "P022-T17",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.allocation_coefficient_product",
+          "line": 1254,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T17",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.third_moment_tail_bound",
+          "line": 969,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T17",
+          "target_kind": "headline_result",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement transcribes the corollary and the coverage limit behind Remark 4. Its hypotheses are conditions 1–3, a uniform bound on the third absolute moments of $y_1$ and $y_0$, and that $H$ is not concentrated on a line, which is the reading of “the support of $H$ is nonsingular”. It asserts that $NV_N$ converges to the limit obtained from (2), that $0<\\gamma\\le1$, and that $(\\hat\\tau_N-\\tau_N)/(\\gamma\\hat V_N^H)^{1/2}$ converges weakly to the standard normal distribution. It asserts further that, for all $0<\\alpha<1$, $\\mathrm{P}\\bigl\\{|\\hat\\tau_N-\\tau_N|\\le z_{1-\\alpha/2}(\\hat V_N^H)^{1/2}\\bigr\\}\\to2\\Phi\\bigl(z_{1-\\alpha/2}/\\sqrt{\\gamma}\\bigr)-1\\ge1-\\alpha .$ Here $\\gamma$ is the ratio of the limit of $NV_N$ to the first limit of Proposition 1. The central limit theorem of Freedman, which the paper cites, is not taken as an assumption, so that the normal limit is part of what is asserted. Two supporting statements assert that $N^{-1}\\sum_{i:y_i^2\\ge\\beta}y_i^2\\le\\beta^{-1/2}N^{-1}\\sum_i|y_i|^3$ for $\\beta>0$, and that the product of the two coefficients of Proposition 1 equals $1+(1-\\theta)/\\{\\theta^2\\rho(1-\\rho)\\}\\ge1$. By the first of them, the bound on the third moments implies condition 4. The main statement is narrower than Remark 4: it does not assert that the interval is asymptotically the narrowest Wald-type interval assured to have at least the nominal coverage.",
+        "headline": "Corollary 1, with Remark 4",
+        "location": "p. 856 (PDF p. 7); Remark 4 on p. 857 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.empirical_cdf_bounds",
+          "line": 603,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.lemma2_counterexample",
+          "line": 849,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "counterexample_proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.origin_cdf",
+          "line": 613,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.origin_cdf_continuous_off_atom",
+          "line": 794,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.reciprocal_allocation_limit",
+          "line": 762,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.reciprocal_atom_values",
+          "line": 709,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.reciprocal_below_threshold",
+          "line": 649,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.reciprocal_conditions123",
+          "line": 811,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.reciprocal_finite_errors",
+          "line": 666,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.reciprocal_outcome_limit",
+          "line": 727,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.reciprocal_tail_diverges",
+          "line": 828,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.reciprocal_weak_limit",
+          "line": 734,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.zero_atom_distance",
+          "line": 621,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T1",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give a counterexample to Lemma 2 under conditions 1–3 of Proposition 1 (see P022-E001). Conditions 1–3 do not require $G_N(x-)\\to G(x-)$ and $F_N(x-)\\to F(x-)$ at jumps of the limiting distribution functions. Unit $i$ has outcomes $y_{1i}=y_{0i}=-1/i$, the population $U_N$ consists of the first $N$ units for $N\\ge4$, with $n=N$ and $m=\\lfloor N/2\\rfloor$, and $H$ is the point mass at $(0,0)$, so that $G(y)=F(y)=I(y\\ge0)$. The main statement asserts that conditions 1–3 hold with $\\theta=1$ and $\\rho=1/2$, and that, for every $N\\ge4$ and every assignment, $\\sup_y|G(y)-G_N(y)|=\\sup_y|F(y)-F_N(y)|=\\sup_y|G(y)-\\hat G_N(y)|=\\sup_y|F(y)-\\hat F_N(y)|=1 .$ It also asserts that $\\limsup_N N\\,\\mathrm{P}(\\sup_y|G(y)-\\hat G_N(y)|\\ge1/2)=\\infty$, that the same holds for $F$ and $\\hat F_N$, and that the conclusions of Lemma 2 fail for this sequence. The supporting statements assert the parts of the argument: each of the first $N$ outcomes lies below $t_N=-1/(2N)$, $H_N$ converges weakly to $H$ (represented by convergence of the averages of every bounded continuous function), $m/N\\to1/2$, and $G$ and $F$ are continuous away from $0$. One of them asserts that $G_N(0)=G_N(0-)=1$ while $G(0-)=0$, which is where the step on p. 861 fails. A random assignment is represented by a uniformly random ordering of the units, in which the first $m$ are treated and the next $n-m$ are controls. This counterexample has a one-point limit distribution; the displayed counterexample of P022-E001, whose limit distribution has four points, has no Lean statement.",
+        "headline": "A counterexample to Lemma 2 as printed",
+        "location": "p. 860 (PDF p. 11); proof on pp. 860–861 (PDF pp. 11–12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GP022B2b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.proposition2_corrected_finite_proof",
+          "line": 463,
+          "module": "AronowAudit.P022.Wave1.Gap.GP022B2b",
+          "status": "proved",
+          "target_id": "P022-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GP022B3b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.proposition2_corrected_limit_proof",
+          "line": 678,
+          "module": "AronowAudit.P022.Wave1.Gap.GP022B3b",
+          "status": "proved",
+          "target_id": "P022-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.corrected_allocation_sum",
+          "line": 1040,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.seven_term_budget",
+          "line": 1061,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.seven_total_abs_le",
+          "line": 1049,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give the corrected argument of P022-E006. I write $T_1,\\ldots,T_7$ for the seven terms of the decomposition on p. 864, which reads $N(\\hat V_N^H-V_N^H)=T_1-T_2+T_3-T_4+T_5-T_6+T_7$. The first asserts that, if $\\nu_1+\\cdots+\\nu_8=\\varepsilon_1/2$, then the tolerances $(\\nu_1,\\nu_2,\\nu_3,\\nu_4,\\nu_5+\\nu_6,\\nu_7+\\nu_8,\\varepsilon_1/2)$ sum to $\\varepsilon_1$. The second asserts that the signed sum of seven real numbers is at most $\\sum_j|T_j|$ in absolute value. The third asserts that, if $a_1,\\ldots,a_7>0$ sum to at most $\\varepsilon$ and the signed sum is at least $\\varepsilon$ in absolute value, then $|T_j|\\ge a_j$ for some $j$. For one population with outcomes bounded by $C\\ge0$, a fourth statement asserts the decomposition for every assignment, the bound $\\mathrm{P}(N|\\hat V_N^H-V_N^H|\\ge\\varepsilon)\\le\\sum_j\\mathrm{P}(|T_j|\\ge a_j)$ for such tolerances, and $|T_7|\\le\\frac{8NC^2}{N-1}\\max\\Bigl\\{\\sup_y|\\hat G_N(y)-G_N(y)|,\\ \\sup_y|\\hat F_N(y)-F_N(y)|\\Bigr\\},$ with the corresponding inclusion of events for all tolerances $x>0$. For $C>0$, the fifth statement assumes conditions 1–3, the bound $C$ and the conclusions of Lemma 2, and asserts equation (23) with tolerance $\\varepsilon_1/2$, where $C^4\\kappa_1(\\varepsilon_1)$ is the sum of the two bounds of Lemma 2 at $\\eta=\\varepsilon_1/(16C^2)-\\xi$, for $0<\\xi<\\varepsilon_1/(16C^2)$. It then asserts the concluding display with $V_N^H$ for all $\\varepsilon>\\varepsilon_1$, on the hypothesis that the bounds (17)–(22) hold, and these six bounds are not themselves asserted.",
+        "headline": "Proof of Proposition 2: the tolerance of the last term, equation (23) and the concluding display for $\\hat V_N^H$, as corrected",
+        "location": "pp. 865 and 867–868 (PDF pp. 16 and 18–19); statement of Proposition 2 on p. 863 (PDF p. 14)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P022-T7",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/Wave1/Gap/GLP022B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.Wave1.proposition2_printed_counterexample_proof",
+          "line": 379,
+          "module": "AronowAudit.P022.Wave1.Gap.GLP022B4",
+          "status": "proved",
+          "target_id": "P022-T7",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.equation23_counterexample",
+          "line": 1136,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "counterexample_proved",
+          "target_id": "P022-T7",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P022/P022_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P022.zero_tolerance_tail",
+          "line": 1117,
+          "module": "AronowAudit.P022.P022_Variance",
+          "status": "proved",
+          "target_id": "P022-T7",
+          "target_kind": "counterexample",
+          "work_id": "P022"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement covers the two failures described in P022-E006. The outcomes $(y_{1i},y_{0i})$ run through the cycle $(0,0),(0,1),(1,0),(1,1)$, the population $U_N$ consists of the first $N$ units, $n=N$, $m=\\lfloor N/2\\rfloor$ and $C=1$. The statement asserts that conditions 1–3 hold with $\\theta=1$, $\\rho=1/2$ and $H$ the uniform distribution on the four points, that the left limits converge as the corrected Lemma 2 requires, and that the outcomes are bounded by $1$. It then asserts that the left side of (23) is infinite when the tolerance $1-\\varepsilon_1$ is $0$, and that, for every $0<\\varepsilon<1/2$, $\\limsup_N N\\,\\mathrm{P}\\bigl(N|\\hat V_N^H-V_N|\\ge\\varepsilon\\bigr)=\\infty$ along the population sizes $N$ divisible by $4$. A second statement asserts that, for every sequence of populations and every real function $f$ of the assignment, the event $\\{|f|\\ge0\\}$ has probability one, and that $N$ times this probability has limit superior $\\infty$. A third asserts, for the population in which every outcome is $0$, that conditions 1–3 hold with $H$ the point mass at $(0,0)$, that the outcomes are bounded by $1$, and that the left side of (23) with tolerance $0$ is infinite. This third statement uses a different population from the one in the correction, and it concerns the tolerance only and not the display with $V_N$. The choice $\\varepsilon=3$ and $\\varepsilon_1=\\varepsilon_2=\\varepsilon_3=1$ enters the statements only through the tolerance $1-1=0$, and the statements do not include the clause that the right side $C^4\\kappa_1(1)$ of (23) is finite.",
+        "headline": "A counterexample to equation (23) and to the concluding display for $\\hat V_N^H$ as printed",
+        "location": "p. 868 (PDF p. 19); statement of Proposition 2 on p. 863 (PDF p. 14)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "1405.6555",
+    "authors": [
+      "P. M. Aronow",
+      "Donald P. Green",
+      "Donald K. K. Lee"
+    ],
+    "citation": "P. M. Aronow, Donald P. Green, and Donald K. K. Lee (2014). Sharp bounds on the variance in randomized experiments. Annals of Statistics 42(3):850–871.",
+    "doi": "10.1214/13-aos1200",
+    "title": "Sharp bounds on the variance in randomized experiments",
+    "type": "Journal article",
+    "venue": "Annals of Statistics",
+    "year": "2014"
+  },
+  "work_id": "P022"
+}

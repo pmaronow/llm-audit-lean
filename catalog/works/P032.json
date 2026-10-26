@@ -1,0 +1,2461 @@
+{
+  "counts": {
+    "counterexample_proved": 11,
+    "proved": 118,
+    "results": 129,
+    "targets": 12
+  },
+  "overview": {
+    "areas": [
+      "regression-and-variance-estimation",
+      "interference-and-networks",
+      "foundations"
+    ],
+    "caveats": [
+      "Dyads are unordered pairs of distinct members; a member-cluster component places observations not containing that member in singleton clusters, and all decomposition components must use common scores, bread, observations and scaling.",
+      "The sign-condition theorem is an algebraic identity for arbitrary matrices and vectors; its OLS interpretation uses the separately proved bridge for a fixed full-rank design with centered square-integrable errors, and concerns population variances rather than residual estimates.",
+      "The bounded counterexamples refute universal claims and do not determine the sign of omitted weighted covariances in the reanalyzed studies; the development also supplies distinct residual-expectation and replicated-block limit counterexamples.",
+      "The Cox and logit examples are exact mathematical constructions with computed scores and bread; they do not assert what Stata returns or recompute the affected historical studies.",
+      "The general multiple-imputation repair assumes common fits, fixed component factors and samples, and an inactive PSD adjustment: remove the factors and form the dyadic variance within each imputation, then add Rubin's between-imputation term once."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P032.printed_population_claim_false",
+        "target_ids": [
+          "P032-T5"
+        ],
+        "what": "The printed assertion that dyadic restriction still underestimates uncertainty with dependence between non-incident dyads is false under both the universal weak and strict population-variance readings formalized in Lean."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P032.variance_sign_conditions",
+        "target_ids": [
+          "P032-T2"
+        ],
+        "what": "The printed unconditional lower-bound claim requires a sign condition: for any real matrix and contrast-weight vector, Lean proves the dyadically restricted quadratic form is at most the full form exactly when the ordered sum of omitted weighted entries is nonnegative, with strict inequalities determined by its sign."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P032.cox_substitution_counterexample",
+        "target_ids": [
+          "P032-T3"
+        ],
+        "what": "The implementation's substitution of id-clustered subtraction for the decomposition's record-level subtraction fails in an exact Cox example, where Lean proves the direct dyadic variance is $5/144$ and the id-substituted value is $23/432$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P032.positive_diagonal_counterexample",
+        "target_ids": [
+          "P032-T6"
+        ],
+        "what": "The software's documented positive-semidefinite guarantee fails for a diagonal-gated adjustment: Lean gives a ten-dyad OLS variance matrix with positive diagonal, negative determinant and a negative contrast variance that the gate leaves unchanged."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P032.positive_part_psd",
+        "target_ids": [
+          "P032-T7"
+        ],
+        "what": "In place of the diagonal-gated guarantee, Lean proves that taking the spectral positive part of any real symmetric matrix always returns a positive-semidefinite matrix."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P032.mi_pooling_counterexample",
+        "target_ids": [
+          "P032-T8"
+        ],
+        "what": "Undoing finite-sample factors after Rubin pooling does not in general recover the Rubin-pooled dyadic variance: in the exact five-imputation logit example, Lean proves the pooled-first procedure is smaller than the within-imputation construction by $(27/1300)(\\log 3)^2$."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P032.headline_decomposition",
+        "target_ids": [
+          "P032-T11"
+        ],
+        "what": "For a full-rank OLS design with two distinct unordered members per dyad and all $N$ members represented, the residual dyadic sandwich equals the sum of member-cluster sandwiches minus the repeated-dyad sandwich minus $(N-2)$ times the record-level sandwich, using common bread and no hidden finite-sample factors."
+      },
+      {
+        "lean_name": "AronowAudit.P032.toy_variance_identity",
+        "target_ids": [
+          "P032-T12"
+        ],
+        "what": "For two square-integrable dyadic outcomes, the variance of their average is one quarter of the sum of their variances plus one half of their covariance."
+      }
+    ],
+    "overview": "The paper studies dyadic clustering robust variance estimation and its use in reanalyses of international-relations studies. The Lean development proves the variance decomposition and supporting covariance identities, characterizes when omitting covariance between non-incident dyads gives a lower population variance, and supplies counterexamples to unconditional lower-bound claims. Further exact results examine record-level versus id-clustered subtraction, positive-semidefinite adjustment and the order of variance adjustment and multiple-imputation pooling.",
+    "work_id": "P032"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [
+            "H025"
+          ],
+          "lean_name": "AronowAudit.P032.corrected_decomposition",
+          "line": 139,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [
+            "H025"
+          ],
+          "lean_name": "AronowAudit.P032.decomposition_coefficient",
+          "line": 104,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.dyad_intersection_cases",
+          "line": 84,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.id_cross_products",
+          "line": 220,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.id_substitution_cross_discrepancy",
+          "line": 1929,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [
+            "H025"
+          ],
+          "lean_name": "AronowAudit.P032.id_substitution_discrepancy",
+          "line": 167,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.singleton_id_covariance",
+          "line": 236,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the corrected statement of P032-N004. Let each observation $r$ have an unordered dyad $d_r$ of two distinct members of a finite set of $N$ members, and let $z_r$ be an arbitrary vector. With $\\widehat V_0$, $\\widehat V_D$ and $\\widehat V_{c,i}$ defined from the $z_r$ as in the finding, the main statement asserts that $\\sum_{i=1}^{N}\\widehat V_{c,i}-\\widehat V_D-(N-2)\\widehat V_0=\\sum_{r,s:\\,d_r\\cap d_s\\ne\\varnothing}z_rz_s^\\top .$ A companion statement gives the count behind the identity. The product $z_rz_s^\\top$ has coefficient $N-1-(N-2)=1$ if $r=s$, $2-1=1$ if $r\\ne s$ and $d_r=d_s$, $1$ if the dyads differ and share a member, and $0$ if they share none. For any matrix $W$ and any real $\\alpha$, a further statement asserts that subtracting $(N-2)\\alpha W$ in place of $(N-2)\\widehat V_0$ returns $\\widehat V_r+(N-2)(\\widehat V_0-\\alpha W)$. For ids $g_r$ and $\\widehat V_{\\mathrm{id}}=\\sum_{r,s:\\,g_r=g_s}z_rz_s^\\top$, the statements assert that subtracting $(N-2)\\widehat V_{\\mathrm{id}}$ returns $\\widehat V_r-(N-2)\\sum_{r\\ne s:\\,g_r=g_s}z_rz_s^\\top$, and that $\\widehat V_{\\mathrm{id}}=\\widehat V_0$ when every id has a single observation. Nothing ties the $z_r$ to an estimator, so the identity holds for any fit in which all components use the same scores and the same bread matrix. The set of members may contain members that occur in no observation, as the corrected finding explicitly permits; each such member contributes the record-level matrix $\\widehat V_0$. No statement concerns what Stata returns.",
+        "headline": "The decomposition on p. 191 with the conditions under which it is an identity, and its value when an id-clustered matrix is subtracted",
+        "location": "p. 191 (PDF p. 6), display for $\\widehat V_r$ and the sentence that defines its terms; dcr.ado, lines 108–119 and 163–190"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.all_contrasts_lower_bound_iff",
+          "line": 416,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.bread_symmetric",
+          "line": 271,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.centered_linear_variance",
+          "line": 367,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.dyadic_restriction_symmetric",
+          "line": 304,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_ols_variance",
+          "line": 2088,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.ols_contrast_error",
+          "line": 322,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.ols_contrast_variance",
+          "line": 390,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.omitted_sandwich_psd_iff",
+          "line": 447,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.omitted_sign_not_determined",
+          "line": 1920,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.quadratic_eq_dot",
+          "line": 275,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.quadratic_sub",
+          "line": 298,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.sandwich_hermitian",
+          "line": 314,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.sandwich_quadratic",
+          "line": 288,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.variance_difference",
+          "line": 182,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.variance_sign_conditions",
+          "line": 196,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the condition in the corrected text of P032-E001. Let $X$ be a fixed design matrix such that $X^TX$ is invertible, and let $Y=X\\beta+u$, where the errors are random variables with mean zero and finite variances. Fix a vector $c$, and set $h=X(X^TX)^{-1}c$ and $\\Omega=\\mathbb{E}[uu^T]$. Let $d_r$ be the dyad of observation $r$, an unordered set of two distinct members, and let $\\Omega_D$ be $\\Omega$ with the entry $(r,s)$ set to zero whenever $d_r$ and $d_s$ share no member, as in Table 4. The statements assert that $c^T\\widehat\\beta-c^T\\beta=h^Tu$, that $\\operatorname{Var}(c^T\\widehat\\beta)=h^T\\Omega h=c^TV_{sandwich}c$ for the matrix $V_{sandwich}$ of p. 189, and that $h^T\\Omega h-h^T\\Omega_Dh=\\Delta,\\qquad \\Delta=\\sum_{(r,s):\\,d_r\\cap d_s=\\varnothing}h_rh_s\\Omega_{rs}.$ They assert that $h^T\\Omega_Dh\\le h^T\\Omega h$ if and only if $\\Delta\\ge0$, that the inequality is strict if and only if $\\Delta>0$, and that $h^T\\Omega_Dh>h^T\\Omega h$ if and only if $\\Delta<0$. They assert further that the weak inequality holds for every $c$ if and only if $(X^TX)^{-1}X^T(\\Omega-\\Omega_D)X(X^TX)^{-1}$ is positive semidefinite, and that this holds if and only if $X^T(\\Omega-\\Omega_D)X$ is positive semidefinite. A last statement asserts that $\\Delta$ equals $-1/4$, $-1/4$ and $1/4$ in Examples 1, 2 and 3 of that finding, so that its sign is fixed neither by positive definiteness of $\\Omega$ nor by a positive omitted covariance. The identity for $\\Delta$, the sign conditions and the equivalence between the two conditions of positive semidefiniteness are stated for arbitrary real matrices in place of $\\Omega$, and the first two for arbitrary vectors in place of $h$, which is broader than the corrected text. The equivalence involving every $c$ requires the matrix in place of $\\Omega$ to be symmetric. A separate statement connects them to the variance of the least-squares contrast. The statements compare the population values and assert nothing about estimates computed from residuals.",
+        "headline": "The statements of pp. 187, 191 and 196 on dependence between non-incident dyads, as corrected",
+        "location": "p. 187 (PDF p. 2), paragraph beginning “Note, however”; p. 191 (PDF p. 6), paragraph beginning “Note that the above approach”; p. 196 (PDF p. 11), Conclusion, first and third paragraphs"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T11",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.headline_decomposition",
+          "line": 338,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T11",
+          "target_kind": "headline_result",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that $\\widehat V_r=\\sum_{i=1}^{N}\\widehat V_{c,i}-\\widehat V_D-(N-2)\\widehat V_0$ for every design matrix $X$ such that $X^TX$ is invertible, every vector $Y$ of outcomes and every assignment of a dyad to each observation. A dyad is an unordered set of two distinct members, and $N$ is the number of members, each of which occurs in some observation. Each matrix is the plug-in estimator $(X^TX)^{-1}X^T\\widehat\\Omega X(X^TX)^{-1}$ of p. 189, without a finite-sample factor. Here $\\widehat\\Omega_{rs}=\\widehat u_r\\widehat u_s$ for the pairs of observations that are kept and $\\widehat\\Omega_{rs}=0$ otherwise, and $\\widehat u$ is the vector of least-squares residuals. The pairs kept are those whose dyads share a member for $\\widehat V_r$, those with the same dyad for $\\widehat V_D$, and the pairs such that $r=s$ for $\\widehat V_0$. For $\\widehat V_{c,i}$ they are the pairs whose dyads both contain member $i$, together with the pairs such that $r=s$ for each observation whose dyad does not contain $i$. The paper does not define $N$ beside the display or say how $\\widehat V_{c,i}$ treats the remaining observations. The Lean statement uses the reading of P032-N005, with two distinct members in each dyad (P032-N003). The statement is for least squares, the model of p. 189, and the version for arbitrary scores is the corrected statement of P032-N004. The eigenvalue step of footnote 3 and the sentence on square roots are not part of the statement.",
+        "headline": "The decomposition of the DCR variance estimator (unnumbered display, Section 3)",
+        "location": "pp. 190–191 (PDF pp. 5–6): the sentence beginning “More specifically” at the foot of p. 190, the display on p. 191 and the sentence that defines its terms, with footnotes 2 and 3"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T7",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.gated_psd_iff",
+          "line": 540,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.positive_part_fixed_iff",
+          "line": 1821,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.positive_part_one_positive",
+          "line": 2288,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.positive_part_psd",
+          "line": 529,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.psd_two_by_two_iff",
+          "line": 548,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.spectral_clip_fixed_iff",
+          "line": 502,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.spectral_clip_one_positive",
+          "line": 2270,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.spectral_clip_psd",
+          "line": 480,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.spectral_clip_quadratic",
+          "line": 488,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.ten_eigenvalue_signs",
+          "line": 2322,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.ten_eigenvalues_identified",
+          "line": 2333,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.ten_positive_part_rank_one",
+          "line": 2364,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the corrected option of P032-E005. For $V=Q\\operatorname{diag}(\\lambda_1,\\dots,\\lambda_k)Q^\\top$ and $V_+=Q\\operatorname{diag}\\bigl(\\max\\{\\lambda_1,0\\},\\dots,\\max\\{\\lambda_k,0\\}\\bigr)Q^\\top$, they assert that $V_+$ is positive semidefinite and that $c^\\top V_+c=\\sum_j\\max\\{\\lambda_j,0\\}\\,(q_j^\\top c)^2$ for every vector $c$, where $q_j$ is the $j$-th column of $Q$. When $Q$ is orthogonal, they assert that $V_+=V$ if and only if $V$ is positive semidefinite. The rule of the two packages applies the eigenvalue step only if a diagonal entry of $V$ is negative. The statements assert that its result is positive semidefinite if and only if $V$ has a negative diagonal entry or is already positive semidefinite. A symmetric $2\\times2$ matrix with diagonal entries $a,d\\ge0$ and off-diagonal entry $b$ is asserted to be positive semidefinite if and only if $ad\\ge b^2$. For the matrix $V$ of the example in the finding, with trace $\\tau$ and determinant $\\delta$, the statements assert that the eigenvalues are $\\tfrac12\\bigl(\\tau\\pm\\sqrt{\\tau^2-4\\delta}\\bigr)$, one negative and one positive. They assert that $V_+$ is the positive eigenvalue times $qq^\\top$ for a unit eigenvector $q$, that it has rank one and that it differs from $V$. The eigenvalue step is stated both for a given factorization of $V$ and for the eigendecomposition that the spectral theorem provides for a symmetric matrix. The first assertion and the formula for $c^\\top V_+c$ are stated for any square matrix $Q$, which is broader than the corrected option. No statement concerns the R or Stata code.",
+        "headline": "The positive-semidefinite option that footnote 3 describes, as corrected",
+        "location": "p. 191 (PDF p. 6), footnote 3; R/dyad_funcs.R, lines 70 and 155; dcr.ado, lines 246–281"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T12",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.toy_shared_country_covariance",
+          "line": 620,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T12",
+          "target_kind": "headline_result",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.toy_sign_cases",
+          "line": 649,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T12",
+          "target_kind": "headline_result",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.toy_variance_identity",
+          "line": 607,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T12",
+          "target_kind": "headline_result",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The two displays are covered by three Lean statements. Let $\\widehat\\mu=\\tfrac12(Y_{US,UK}+Y_{US,FR})$ and $\\mathrm{V}_{naive}=\\tfrac14(\\mathrm{V}[Y_{US,UK}]+\\mathrm{V}[Y_{US,FR}])$. The first statement asserts that $\\mathrm{V}[\\widehat\\mu]=\\mathrm{V}_{naive}+\\tfrac12\\operatorname{Cov}[Y_{US,UK},Y_{US,FR}]$ for any two outcomes with finite variances, with no assumption of independence. The second takes $Y_{US,UK}=aX_{US}+bX_{UK}+U_{US,UK}$ and $Y_{US,FR}=cX_{US}+dX_{FR}+U_{US,FR}$, where the five variables $X_{US}$, $X_{UK}$, $X_{FR}$, $U_{US,UK}$ and $U_{US,FR}$ have finite variances and are pairwise uncorrelated. It asserts that $\\operatorname{Cov}[Y_{US,UK},Y_{US,FR}]=ac\\,\\mathrm{V}[X_{US}]$. The third asserts under the same conditions that $\\mathrm{V}[\\widehat\\mu]=\\mathrm{V}_{naive}+\\frac{ac}{2}\\mathrm{V}[X_{US}],$ that $\\mathrm{V}_{naive}<\\mathrm{V}[\\widehat\\mu]$ if $ac>0$ and $\\mathrm{V}[X_{US}]>0$, that $\\mathrm{V}_{naive}>\\mathrm{V}[\\widehat\\mu]$ if $ac<0$ and $\\mathrm{V}[X_{US}]>0$, and that the two are equal if $ac=0$ or $\\mathrm{V}[X_{US}]=0$. The paper assumes that “the $X$ and the $U$ are independent, and all $X$ are pairwise-independent”. For the additive covariance formula and its consequences, I additionally assume $\\operatorname{Cov}[U_{US,UK},U_{US,FR}]=0$, which the printed text does not explicitly state. Pairwise uncorrelatedness weakens the stated independence requirements for the other pairs, but these results are conditional on that additional condition. The first variance identity requires no independence. They also make explicit the condition $\\mathrm{V}[X_{US}]>0$, which the sentence on $a$ and $c$ of the same sign needs. The case of opposite signs is not stated in the paper.",
+        "headline": "The variance of the average of two dyadic outcomes that share a member (two unnumbered displays, Section 2.1)",
+        "location": "pp. 188–189 (PDF pp. 3–4), Section 2.1, from “This clustering structure affects statistical inference” to the end of the section"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.block_covariances_positive_definite",
+          "line": 1994,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.block_eigenbasis_certificates",
+          "line": 1902,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.block_matrix_quadratic",
+          "line": 2963,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.block_matrix_record_restriction",
+          "line": 2979,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.block_matrix_restriction",
+          "line": 2970,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.bounded_pair_sampling_models",
+          "line": 2109,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.constant_quadratic",
+          "line": 2988,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.fair_sign_moments",
+          "line": 2734,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_expectation_quadratic",
+          "line": 2850,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_expectation_sum",
+          "line": 2842,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_law_atom",
+          "line": 2710,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_law_composed_integral",
+          "line": 2259,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_law_composed_memLp",
+          "line": 2438,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_law_identDistrib",
+          "line": 2428,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_law_iid_exists",
+          "line": 3175,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_law_integral",
+          "line": 1740,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_law_map",
+          "line": 2243,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_law_probability",
+          "line": 1730,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.finite_law_variance",
+          "line": 1752,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_block_counterexample",
+          "line": 927,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_block_moments",
+          "line": 908,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_block_statistics",
+          "line": 2418,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_expected_gap_arithmetic",
+          "line": 1651,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_omega_square_certificate",
+          "line": 920,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_replicated_centering",
+          "line": 2188,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_replicated_finite",
+          "line": 2551,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_replicated_limit",
+          "line": 2656,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_replicated_moments",
+          "line": 2491,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_replicated_ratio_ae",
+          "line": 2625,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_replicated_ratio_formula",
+          "line": 2600,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.four_residual_expectation_counterexample",
+          "line": 1616,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.iid_block_covariance",
+          "line": 2921,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.iid_finite_statistic_integral",
+          "line": 2476,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.iid_finite_statistic_strong_law",
+          "line": 2577,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.iid_finite_statistic_variance",
+          "line": 2449,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.intercept_counterexample",
+          "line": 772,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.intercept_dcr_centering",
+          "line": 1557,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.intercept_fit_certificate",
+          "line": 1766,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.lifted_intersection",
+          "line": 2143,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.linear_covariance_identity",
+          "line": 2791,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.pair_eigenbasis_certificate",
+          "line": 2396,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.pair_error_moments",
+          "line": 721,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.pair_omega_positive_definite",
+          "line": 738,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.replicated_pattern",
+          "line": 2164,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.replicated_quadratic",
+          "line": 2180,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.replicated_row_sum",
+          "line": 2172,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_block_variances",
+          "line": 953,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_errors_bounded",
+          "line": 2904,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_expected_gap_arithmetic",
+          "line": 1685,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_loading_gram_certificate",
+          "line": 2803,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_loading_identity",
+          "line": 2782,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_omega_square_certificate",
+          "line": 972,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_replicated_centering",
+          "line": 2219,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_replicated_finite",
+          "line": 3093,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_replicated_limit",
+          "line": 3143,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_replicated_moments",
+          "line": 3027,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_replicated_population_values",
+          "line": 2999,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_scaled_estimator_formula",
+          "line": 3076,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_sign_error_moments",
+          "line": 2812,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_sign_measure_product",
+          "line": 2719,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.six_sign_statistics",
+          "line": 2870,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.slope_and_sign_control",
+          "line": 802,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.sum_squares_positive",
+          "line": 1983,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T1",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements give Examples 1 to 5 of P032-E001 as exact least-squares models. In the notation of that finding, they compare the true variance $V=h^T\\Omega h$ of a coefficient with the population dyadic sandwich value $V_D=h^T\\Omega_Dh$. For two observations on dyads with no common member, they assert that $V=1/4$ and $V_D=1/2$ for the intercept when the covariance of the two errors is $-1/2$, and for the slope on $x=(-1,1)^T$ when it is $1/2$. For the intercept with covariance $1/2$, they assert that $V=3/4$ and $V_D=1/2$. For the intercept in Example 5, on the dyads $\\{A,B\\}$, $\\{A,C\\}$, $\\{D,E\\}$ and $\\{D,F\\}$, they assert that $V=3/16$ and $V_D=5/16$. For the intercept in Example 4, on the six dyads among four members, they assert that $V=1/6$ and $V_D=1/4$, and that the value under the naive restriction of Table 2 is also $1/6$. For $m$ independent copies of Example 5 or of Example 4 on disjoint sets of members, let $\\widehat V_r$ be the DCR variance estimator, computed from least-squares residuals without a small-sample factor. The statements assert that $\\mathbb{E}[\\widehat V_r]=\\frac{10m-3}{32m^2},\\quad \\operatorname{Var}(\\widehat\\beta)=\\frac{3}{16m}\\qquad\\text{and}\\qquad \\mathbb{E}[\\widehat V_r]=\\frac{3}{2n}-\\frac{5}{n^2},\\quad \\operatorname{Var}(\\widehat\\beta)=\\frac{1}{n}\\quad(n=6m)$ for Example 5 and for Example 4 respectively, so that the expectation exceeds the variance for every $m\\ge1$ in the first case and exactly when $m\\ge2$ in the second. They also assert that $\\widehat V_r/\\operatorname{Var}(\\widehat\\beta)$ converges in probability to $5/3$ for Example 5 and that $n\\widehat V_r$ converges almost surely to $3/2$ for Example 4. Each error distribution is explicit, on finitely many points, with mean zero and a covariance matrix that is positive definite. A separate statement asserts that there exists a probability space that carries the independent copies. The Lean statements have the scope of the examples and say nothing about the sign of the sum of the omitted weighted covariances in any of the 22 reanalyzed studies.",
+        "headline": "Counterexamples to the statement on p. 187 that DCRSEs “will still underestimate uncertainty” under dependence between non-incident dyads",
+        "location": "p. 187 (PDF p. 2), paragraph beginning “Note, however”; p. 191 (PDF p. 6), paragraph beginning “Note that the above approach”; p. 196 (PDF p. 11), Conclusion, first and third paragraphs"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T5",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.printed_expectation_claim_false",
+          "line": 1840,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T5",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.printed_population_claim_false",
+          "line": 856,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T5",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.printed_ratio_limit_claim_false",
+          "line": 3193,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T5",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements refute four readings of the prose claim on p. 187. The first form says that $h^T\\Omega_Dh\\le h^T\\Omega h$, in the notation of P032-E001, for every design $X$ of full column rank, every vector $c$ and every positive semidefinite matrix $\\Omega$ with a nonzero entry for some pair of observations whose dyads share no member. The second form has a strict inequality. The third says that $\\mathbb{E}[c^T\\widehat V_rc]\\le\\operatorname{Var}(c^T\\widehat\\beta)$ for every such design and all errors with mean zero, finite variances and a nonzero covariance for some such pair. Here $\\widehat V_r$ is computed from least-squares residuals without a small-sample factor. The fourth concerns sequences of such models in which the number of observations tends to infinity and $\\operatorname{Var}(c^T\\widehat\\beta)$ is eventually positive. It says that if $c^T\\widehat V_rc/\\operatorname{Var}(c^T\\widehat\\beta)$ converges in probability to a constant $L$, then $L\\le1$. The first statement refutes the first two forms; the other two statements refute the third and fourth forms, respectively. These use Example 1 of that finding for the first two, Example 5 for the third, where the expectation is $7/32$ and the variance is $3/16$, and the independent copies of Example 5 for the fourth, where $L=5/3$. The sentence “may be even more severe” on p. 196, the expectation of a larger variance on p. 191 and the description of the reanalysis as a lower bound have no formal statement.",
+        "headline": "The statement on p. 187 that DCRSEs “will still underestimate uncertainty” under dependence between non-incident dyads, as printed",
+        "location": "p. 187 (PDF p. 2), paragraph beginning “Note, however”; p. 191 (PDF p. 6), paragraph beginning “Note that the above approach”; p. 196 (PDF p. 11), Conclusion, first and third paragraphs"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.cox_components",
+          "line": 1100,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T3",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.cox_exact_risk_sets",
+          "line": 2013,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T3",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.cox_id_is_repeated_dyad",
+          "line": 2026,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T3",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.cox_risk_score_certificate",
+          "line": 1047,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T3",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.cox_subject_score_totals",
+          "line": 2018,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T3",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.cox_substitution_counterexample",
+          "line": 1112,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T3",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.cox_unique_fit",
+          "line": 1059,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T3",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements take the survival example of P032-N004, which has ten observations of six subjects on four dyad members, one covariate and Breslow ties. They assert that the risk sets at times 1 and 2 are the observations $\\{1,2,3,5,7,9\\}$ and $\\{4,6,8,10\\}$ of the table in the finding, each with two events and covariate mean $0$. They assert that the partial log-likelihood is $-2\\log(6\\cosh\\beta)-2\\log(2\\cosh3\\beta+2\\cosh\\beta)$, that it is uniquely maximized at $\\widehat\\beta=0$, that the information is $12$, and that the scores of the ten observations are those listed in the finding. For the components without finite-sample factors and $N=4$, they assert that $\\widehat V_0=19/432$, $\\widehat V_{\\mathrm{id}}=\\widehat V_D=5/144$ and $\\sum_i\\widehat V_{c,i}=17/108$. With these values the main statement asserts that $\\sum_{i}\\widehat V_{c,i}-\\widehat V_D-2\\widehat V_0=\\frac{5}{144},\\qquad \\sum_{i}\\widehat V_{c,i}-\\widehat V_D-2\\widehat V_{\\mathrm{id}}=\\frac{23}{432},\\qquad \\sum_{i}\\widehat V_{c,i}-\\widehat V_D-2\\alpha\\widehat V_{\\mathrm{id}}=\\frac{103}{2160},$ where $\\alpha=(9/10)(6/5)=27/25$, and that the three values are positive. It also asserts that $5/144$ equals $1/144$ times the sum of the products of the scores over all ordered pairs of observations whose dyads share a member. The risk sets, the scores and the information are computed from the intervals, the covariate and the status of each observation, with status 2 treated as censoring. That the ids and the repeated dyads give the same clusters is asserted for this example only. The statements have the scope of the example and assert nothing about what Stata returns for vce(robust) or about the 13 survival models.",
+        "headline": "A counterexample to the decomposition on p. 191 with the id-clustered matrix in place of $\\widehat V_0$",
+        "location": "p. 191 (PDF p. 6), display for $\\widehat V_r$ and definition of $\\widehat V_0$; dcr.ado, lines 163–190; 1_reanalysis_stata.do, lines 319–334 and 347–418; Supplementary Table A.2, supplement p. A3, rows Efrat and Newman (2016) and Weisiger (2016)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T6",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.positive_diagonal_counterexample",
+          "line": 1203,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T6",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.ten_meat_decomposition",
+          "line": 2036,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T6",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.ten_ols_certificate",
+          "line": 1153,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T6",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.ten_variance_certificate",
+          "line": 1184,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T6",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.ten_variance_hermitian",
+          "line": 1813,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T6",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements take the least-squares example of P032-E005, which has one observation on each of the ten dyads among five members. They assert the values of $X^\\top X$, of its inverse, of $\\widehat\\beta=(5/13,\\,1/13)$ and of the residuals $\\widehat u$, and that $X^\\top\\widehat u=0$. They assert that the sum of the products of the scores $\\widehat u_k(1,x_k)^\\top$ over the ordered pairs of observations whose dyads share a member is $M=\\frac{1}{169}\\begin{pmatrix}1984&-1108\\\\-1108&50\\end{pmatrix}.$ They assert that the decomposition of p. 191 with $N=5$ gives the same matrix, and that $(X^\\top X)^{-1}M(X^\\top X)^{-1}$ is the matrix $\\widehat V_r$ of the finding. The main statement asserts that both diagonal entries of $\\widehat V_r$ are positive, that $\\det\\widehat V_r=-70529/308915776$, that $c^\\top\\widehat V_rc=-237755/3655808$ for $c=(1,6)$, and that $\\widehat V_r$ is not positive semidefinite. It asserts further that the rule of the two packages returns $\\widehat V_r$ unchanged, and that $c^\\top(\\tfrac54\\widehat V_r)c=-1188775/14623232$, where $5/4$ is the small-sample factor $N/(N-1)$, which is optional. The rule is represented as the function that replaces the negative eigenvalues of a symmetric matrix by zero if some diagonal entry is negative and returns the matrix unchanged otherwise. The statements have the scope of the example. They concern this rule as a mathematical operation and assert nothing about a run of the R or Stata code.",
+        "headline": "A counterexample to the documented guarantee of the positive-semidefinite option that footnote 3 describes",
+        "location": "p. 191 (PDF p. 6), footnote 3; R package dcr, R/dyad_funcs.R, lines 70 and 155, and the help entry for posdef; dcr.ado, lines 246–281, and the help entry for psd"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T9",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.asylike_coefficient_gap",
+          "line": 1326,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.dcr_weights_sum",
+          "line": 1315,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.rubin_pooling_gap",
+          "line": 1270,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.rubin_unadjusted_commutes",
+          "line": 1945,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the algebra of the corrected procedure of P032-N012. Let $M\\ge2$ be the number of imputations, let the components $j$ have real weights $s_j$ and nonzero factors $a_j$, and let $U_{jm}$ be a symmetric matrix for each component $j$ and each imputation $m$. Let $Q=(1+1/M)B$, where $B$ is the between-imputation covariance of the estimates $b_1,\\dots,b_M$, and set $\\bar U_j=M^{-1}\\sum_mU_{jm}$, $T_j=\\bar U_j/a_j+Q$, $T_{\\mathrm{code}}=\\sum_js_ja_jT_j$ and $T_*=M^{-1}\\sum_m\\sum_js_jU_{jm}+Q$. The main statement asserts that $T_{\\mathrm{code}}=\\sum_js_j\\bar U_j+cQ,\\qquad T_*=\\sum_js_j\\bar U_j+Q,\\qquad T_{\\mathrm{code}}-T_*=(c-1)\\Bigl(1+\\frac1M\\Bigr)B,$ where $c=\\sum_js_ja_j$, and that $T_{\\mathrm{code}}+(1-c)(1+1/M)B=T_*$. Further statements assert that the weights $s_i=1$, $s_D=-1$ and $s_0=-(K-2)$ of the decomposition sum to one, that $T_{\\mathrm{code}}=T_*$ when every $a_j$ equals $1$ and the weights sum to one, and that $c-1=-\\sum_{i=1}^{K}\\frac{1}{G_i}+\\frac{1}{G_D}+\\frac{K-2}{n}$ for the factors $a_i=1-1/G_i$, $a_D=1-1/G_D$ and $a_0=1-1/n$. Here $K$ is the number of dyad members, $n$ is the number of observations, and $G_i$ and $G_D$ are the numbers of clusters in the component of member $i$ and in the repeated-dyad component. The setting is that of the finding, in which the sample, the clusters and the factors are the same in every imputation, every component has the same $B$, and no eigenvalue adjustment is made. The conditions $M\\ge2$ and symmetry of the $U_{jm}$ are stated, although the identities hold without them. The formula for $c-1$ is stated for arbitrary real $G_i$, $G_D$ and $n$, with division by zero defined as zero. The direct sum for a same-country dyad that is observed more than once and the eigenvalue adjustment of footnote 3 are parts of the corrected procedure that have no formal statement.",
+        "headline": "The DCR variance under multiple imputation, as corrected",
+        "location": "Replication files: 1_reanalysis_stata.do, lines 1373–1385, and dcr.ado, lines 125–238. The decomposition used is the display on p. 191 (PDF p. 6)."
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T8",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.mi_between_certificate",
+          "line": 1416,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T8",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.mi_completed_data_certificate",
+          "line": 1365,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T8",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.mi_partition_counts",
+          "line": 2051,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T8",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.mi_pooling_counterexample",
+          "line": 1446,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "counterexample_proved",
+          "target_id": "P032-T8",
+          "target_kind": "counterexample",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements take the example of P032-N012, which has 24 observations, four on each of the six dyads among four members, an intercept-only logit and five imputations. Three imputations complete the data to 12 successes and two to 18. For the two kinds of imputation the statements assert that the fitted probabilities are $1/2$ and $3/4$, the estimates $0$ and $\\log3$, and the information $6$ and $9/2$. They assert the value of every component of the decomposition without finite-sample factors, and that the DCR variances are $2/9$ and $8/81$, with average $14/81$ over the five imputations. They assert that the between-imputation variance is $B=3(\\log3)^2/10$ and that $Q=(1+1/M)B=9(\\log3)^2/25$ for $M=5$. The main statement asserts that $T_*=\\frac{14}{81}+\\frac{9}{25}(\\log3)^2,\\qquad T_{\\mathrm{code}}=\\frac{14}{81}+\\frac{441}{1300}(\\log3)^2,\\qquad T_{\\mathrm{code}}-T_*=-\\frac{27}{1300}(\\log3)^2<0,$ that $c=49/52$, and that both variances are positive. Here $T_*$ is the DCR variance computed within each imputation and then pooled, and $T_{\\mathrm{code}}=\\sum_js_ja_jT_j$ is the formula derived from the code in the finding. In the notation of the finding, $T_j=\\bar U_j/a_j+Q$ and $c=\\sum_js_ja_j$, and the factors are $a_i=12/13$, $a_D=5/6$ and $a_0=23/24$. The logit fit is entered in closed form, without an assertion that it maximizes the likelihood. The estimate is $\\log(p/(1-p))$ for the sample mean $p$, the score of an observation is $y_r-p$, and the information is $np(1-p)$. The statements have the scope of the example and assert nothing about a run of Stata or about the three models of Schneider and Tobin (2020).",
+        "headline": "A counterexample to the removal of finite-sample factors from covariance matrices that are already pooled over the imputations",
+        "location": "Replication files: 1_reanalysis_stata.do, lines 1312 and 1373–1385, and dcr.ado, lines 125–238. The results enter Supplementary Table A.2, row Schneider and Tobin (2020), supplement p. A3. The article prints no statement on multiple imputation, and the decomposition used is the display on p. 191 (PDF p. 6)."
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P032-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.rounding_consistent_iff_rational",
+          "line": 2059,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.study_neighboring_counts",
+          "line": 1534,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.study_threshold_counts",
+          "line": 1523,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.study_unique_integer_recovery",
+          "line": 1505,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P032/P032_Dyadic.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P032.study_unique_rational_recovery",
+          "line": 2075,
+          "module": "AronowAudit.P032.P032_Dyadic",
+          "status": "proved",
+          "target_id": "P032-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P032"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements are exact arithmetic on the 22 rows of Supplementary Table A.2 as printed. For study $i$ let $n_i$ be the number of KEVs and $r_i$ the printed entry of the column Sig.$\\to$Insig. Two statements, one using integer arithmetic and one using rational proportions, assert that in every row exactly one integer $k_i$ such that $0\\le k_i\\le n_i$ satisfies $|k_i/n_i-r_i|\\le1/2000$, so that the printed proportion determines the number of KEVs that lose significance. A third asserts that $2k_i\\ge n_i$ holds for exactly four rows, namely Colgan (2014) with $8/9$, Efrat and Newman (2016) with $2/4$, Fang, Johnson, and Leeds (2014) with $1/1$ and Weisiger (2016) with $17/28$, and that these are the rows such that $r_i\\ge0.5$. It also asserts that $2k_i>n_i$ holds for exactly three rows, the four above without Efrat and Newman (2016). A fourth asserts the neighbouring counts: there are 22 rows, $\\sum_in_i=691$, seven rows have $k_i=0$, 18 rows have an Avg. SER above 1, and the smallest and largest Avg. SER are $0.898$ and $4.158$. The printed proportions and ratios are entered as whole numbers of thousandths, and a separate statement asserts that the tolerance in integers is equivalent to the inequality above. The rows are data transcribed from the page, so the statements concern the counts in the printed table and not the estimates or $p$-values behind it. The spelling correction of P032-E002 has no formal statement.",
+        "headline": "The sentence of Section 4.1 on the studies in which half or more of the KEVs become insignificant, as corrected",
+        "location": "p. 196 (PDF p. 11), Section 4.1, paragraph beginning “For individual studies”; Supplementary Table A.2, supplement p. A3 (PDF p. 3), columns KEVs, Sig.$\\to$Insig. and Avg. SER"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "2109.03774",
+    "authors": [
+      "Jacob Carlson",
+      "Trevor Incerti",
+      "P. M. Aronow"
+    ],
+    "citation": "Jacob Carlson, Trevor Incerti, and P. M. Aronow (2024). Dyadic Clustering in International Relations. Political Analysis 32(2):186–198.",
+    "doi": "10.1017/pan.2023.26",
+    "title": "Dyadic Clustering in International Relations",
+    "type": "Journal article",
+    "venue": "Political Analysis",
+    "year": "2024"
+  },
+  "work_id": "P032"
+}

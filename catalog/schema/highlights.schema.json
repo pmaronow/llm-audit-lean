@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "items": {
+    "additionalProperties": false,
+    "properties": {
+      "areas": {
+        "items": {
+          "enum": [
+            "probability",
+            "asymptotic-statistics",
+            "randomization-inference",
+            "experimental-design-and-estimation",
+            "survey-sampling",
+            "interference-and-networks",
+            "causal-identification",
+            "partial-identification-and-bounds",
+            "regression-and-variance-estimation",
+            "resampling",
+            "optimization-and-computation",
+            "foundations"
+          ],
+          "type": "string"
+        },
+        "type": "array",
+        "uniqueItems": true
+      },
+      "association": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "enum": [
+              "helper",
+              "proved",
+              "counterexample_proved"
+            ],
+            "type": "string"
+          },
+          "target_ids": {
+            "items": {
+              "pattern": "^P[0-9]{3}-T[0-9]+$",
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "work_ids": {
+            "items": {
+              "pattern": "^P[0-9]{3}$",
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "status",
+          "work_ids",
+          "target_ids"
+        ],
+        "type": "object"
+      },
+      "conditional_on": {
+        "items": {
+          "additionalProperties": false,
+          "properties": {
+            "hypothesis": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "hypothesis",
+            "source"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "declaration": {
+        "additionalProperties": false,
+        "properties": {
+          "axioms": {
+            "items": {
+              "enum": [
+                "Classical.choice",
+                "Quot.sound",
+                "propext"
+              ],
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "file": {
+            "pattern": "^AronowAudit/.+\\.lean$",
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "lean_name": {
+            "type": "string"
+          },
+          "line": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "module": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "lean_name",
+          "module",
+          "file",
+          "line",
+          "axioms",
+          "kind"
+        ],
+        "type": "object"
+      },
+      "group": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "id": {
+        "pattern": "^H[0-9]{3}$",
+        "type": "string"
+      },
+      "mathlib_relation": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "notes": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "rank": {
+        "maximum": 25,
+        "minimum": 1,
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "related_declarations": {
+        "items": {
+          "additionalProperties": false,
+          "properties": {
+            "axioms": {
+              "items": {
+                "enum": [
+                  "Classical.choice",
+                  "Quot.sound",
+                  "propext"
+                ],
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": true
+            },
+            "file": {
+              "pattern": "^AronowAudit/.+\\.lean$",
+              "type": "string"
+            },
+            "lean_name": {
+              "type": "string"
+            },
+            "line": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "module": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "lean_name",
+            "module",
+            "file",
+            "line",
+            "axioms",
+            "role"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "section": {
+        "enum": [
+          "top_25",
+          "reusable_libraries",
+          "counterexamples",
+          "mathlib_candidates",
+          "further_useful"
+        ],
+        "type": "string"
+      },
+      "sections": {
+        "items": {
+          "enum": [
+            "top_25",
+            "reusable_libraries",
+            "counterexamples",
+            "mathlib_candidates",
+            "further_useful"
+          ],
+          "type": "string"
+        },
+        "minItems": 1,
+        "type": "array",
+        "uniqueItems": true
+      },
+      "statement": {
+        "type": "string"
+      },
+      "summary": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "use": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "sections",
+      "section",
+      "rank",
+      "group",
+      "title",
+      "areas",
+      "summary",
+      "statement",
+      "use",
+      "mathlib_relation",
+      "declaration",
+      "related_declarations",
+      "association",
+      "conditional_on",
+      "notes"
+    ],
+    "type": "object"
+  },
+  "title": "llm-audit-lean highlights",
+  "type": "array"
+}

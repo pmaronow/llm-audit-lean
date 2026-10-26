@@ -1,0 +1,115 @@
+/-
+Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
+Copyright (c) 2026 Jiyuan Tan. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jiyuan Tan
+-/
+
+module
+public import Mathlib.Probability.Distributions.Gaussian.Basic
+public import Mathlib.Probability.Distributions.Gaussian.Fernique
+public import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Independence
+public import Mathlib.Probability.Moments.CovarianceBilin
+public import Mathlib.Probability.Independence.Basic
+public import Mathlib.Probability.Distributions.Gaussian.Multivariate
+
+/-! # Standard Gaussian measures
+
+This file develops the coordinate-product representation of the standard Gaussian measure on a
+finite-dimensional real inner-product space. It also identifies the law of the squared norm with
+the sum of squared independent one-dimensional standard Gaussians.
+-/
+
+@[expose] public section
+
+open MeasureTheory ProbabilityTheory InnerProductSpace WithLp
+open scoped RealInnerProductSpace
+
+namespace Causalean.Mathlib
+
+attribute [local instance] Fintype.ofFinite
+
+section CompatibilityCoordinateModels
+
+variable (E : Type*) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+
+/-- For every [real normed inner-product space](hyp:E), the [coordinate product Gaussian
+measure](goal) is the product of independent standard normal laws, with one real-valued coordinate
+for every element of the finite index set whose size is the space's real rank.
+
+The product measure of independent standard normal laws, with one real-valued coordinate
+for each dimension of a finite-dimensional real inner-product space. -/
+noncomputable def piGaussian : Measure (Fin (Module.finrank ℝ E) → ℝ) :=
+  Measure.pi (fun _ : Fin (Module.finrank ℝ E) => gaussianReal 0 1)
+
+end CompatibilityCoordinateModels
+
+/-- The standard Gaussian measure on a finite-dimensional real inner-product space. -/
+noncomputable def stdGaussian (E : Type*) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] : Measure E :=
+  ProbabilityTheory.stdGaussian E
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+
+/-- For every [real normed inner-product space](hyp:E), [the coordinate product of independent one-dimensional standard Gaussian laws is a probability measure](goal). -/
+instance isProbabilityMeasure_piGaussian : IsProbabilityMeasure (piGaussian E) := by
+  unfold piGaussian
+  infer_instance
+
+/-- For every [real normed inner-product space](hyp:E), [the coordinate product of independent one-dimensional standard Gaussian laws is a Gaussian probability law](goal). -/
+instance isGaussian_piGaussian : IsGaussian (piGaussian E) := by
+  have hIndep : iIndepFun (fun (i : Fin (Module.finrank ℝ E))
+      (ω : Fin (Module.finrank ℝ E) → ℝ) => ω i) (piGaussian E) :=
+    iIndepFun_pi (X := fun _ => (id : ℝ → ℝ)) (fun _ => aemeasurable_id)
+  have hLaw : ∀ i, HasGaussianLaw
+      (fun ω : Fin (Module.finrank ℝ E) → ℝ => ω i) (piGaussian E) := by
+    intro i
+    classical
+    have hmap : (piGaussian E).map (fun ω => ω i) = gaussianReal 0 1 := by
+      unfold piGaussian
+      rw [show (fun ω : Fin (Module.finrank ℝ E) → ℝ => ω i)
+          = Function.eval i from rfl, Measure.pi_map_eval]
+      simp
+    refine ⟨(measurable_pi_apply i).aemeasurable, ?_⟩
+    rw [hmap]
+    infer_instance
+  have hJoint : IsGaussian
+      ((piGaussian E).map (fun ω => (fun i => ω i :
+        Fin (Module.finrank ℝ E) → ℝ))) :=
+    (hIndep.hasGaussianLaw hLaw).isGaussian_map
+  simpa using hJoint
+
+
+/-- The standard Gaussian measure is a probability measure. -/
+instance isProbabilityMeasure_stdGaussian : IsProbabilityMeasure (stdGaussian E) := by
+  change IsProbabilityMeasure (ProbabilityTheory.stdGaussian E)
+  infer_instance
+
+/-- The standard Gaussian measure is Gaussian. -/
+instance isGaussian_stdGaussian : IsGaussian (stdGaussian E) := by
+  change IsGaussian (ProbabilityTheory.stdGaussian E)
+  infer_instance
+
+/-- **Product-of-1-D-Gaussians model for the squared norm.** [The law of the squared norm
+under the standard Gaussian measure on `E` equals the law of the sum of squared
+coordinates under a product of `finrank ℝ E` independent standard real Gaussians](goal).
+
+This exposes the explicit product structure needed to prove atomlessness of the χ² law. -/
+theorem stdGaussian_map_normSq_eq_pi :
+    (stdGaussian E).map (fun x => ‖x‖ ^ 2)
+      = (Measure.pi (fun _ : Fin (Module.finrank ℝ E) => gaussianReal 0 1)).map
+          (fun w => ∑ i, (w i) ^ 2) := by
+  rw [stdGaussian,
+    ProbabilityTheory.stdGaussian_eq_map_pi_orthonormalBasis (stdOrthonormalBasis ℝ E),
+    Measure.map_map (by fun_prop) (by fun_prop)]
+  refine Measure.map_congr (ae_of_all _ fun w => ?_)
+  simp only [Function.comp_apply]
+  rw [← (stdOrthonormalBasis ℝ E).equiv_apply_euclideanSpace (toLp 2 w),
+    LinearIsometryEquiv.norm_map, EuclideanSpace.norm_eq,
+    Real.sq_sqrt (Finset.sum_nonneg fun i _ => by positivity)]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Real.norm_eq_abs, sq_abs]
+
+end Causalean.Mathlib

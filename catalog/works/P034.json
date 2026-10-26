@@ -1,0 +1,237 @@
+{
+  "counts": {
+    "counterexample_proved": 2,
+    "proved": 3,
+    "results": 5,
+    "targets": 5
+  },
+  "overview": {
+    "areas": [
+      "causal-identification",
+      "regression-and-variance-estimation",
+      "experimental-design-and-estimation"
+    ],
+    "caveats": [
+      "The missingness witnesses are constructed finite probability models and a possible sample represented by cell counts; they do not establish bias in any estimate from the actual survey.",
+      "The general identification theorem assumes treatment independent of the joint potential outcomes, potential completions, and pretreatment covariates, and separately assumes each potential completion independent of both potential outcomes and covariates with positive completion probability.",
+      "The complete-case theorem concerns population moments; every normal-equation solution has the identified treatment coefficient, while unique existence additionally requires a nonsingular Gram matrix, and no confidence-interval coverage is asserted.",
+      "The factorial formula is read from the released code, while the tables print no model or false coefficient-equals-average identity; the witness clarifies ambiguous labels and refutes none of the 18 printed estimates or bounds.",
+      "Factorial contrasts hold covariates fixed and concern the algebra of the fitted regression; the Lean identities allow all real factor values and averaging weights, with the binary experiment included as a special case.",
+      "The Table OA3 percentages use a count-over-column-total reading and exact rational arithmetic; counts are response slots rather than participants, and no rounding tie occurs."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P034.missingness_counterexample",
+        "target_ids": [
+          "P034-T1"
+        ],
+        "what": "The pre-analysis plan’s inference from equal completion rates to random missingness fails in a randomized finite model with completion rate $1/2$ in each arm, zero treatment effect, and complete-case contrast and adjusted OLS coefficient $12/25$, with the same observed-data law as an independent-completion model having effect $12/25$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P034.corrected_complete_case_identification",
+        "target_ids": [
+          "P034-T2"
+        ],
+        "what": "In place of inferring identification from equal completion rates, randomized treatment with overlap and positive potential completion independent of the joint potential outcomes and covariates, together with measurability and finite second moments, identifies completed-arm means and every complete-case population OLS treatment coefficient with their population targets."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P034.factorial_counterexample",
+        "target_ids": [
+          "P034-T3"
+        ],
+        "what": "The tables’ treatment-effect labels omit the reference conditions; against an averaged-effect reading, a four-cell construction with outcomes $(0,0,0,2)$ has unique saturated coefficients $(0,0,0,2)$, so both main coefficients are zero while both equally weighted factor contrasts are one."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P034.corrected_factorial_contrasts",
+        "target_ids": [
+          "P034-T4"
+        ],
+        "what": "The corrected labels identify reference-condition contrasts in $m(w,v,z)=a+bw+cv+dwv+\\gamma^{\\mathsf T}z$: the information coefficient is $b$ at real video and the deepfake coefficient is $c$ without information, while weighted averages are $b+qd$ and $c+pd$ and equal those coefficients exactly when $qd=0$ and $pd=0$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P034.corrected_oa3_table",
+        "target_ids": [
+          "P034-T5"
+        ],
+        "what": "Using the printed counts and rounding count-over-column-total percentages to one decimal, Table OA3’s Total entries $9.3\\%$ and $0.9\\%$ become $9.2\\%$ and $0.8\\%$, and all 39 corrected category percentages and all row and column count sums agree."
+      }
+    ],
+    "key_results": [],
+    "overview": "This empirical work studies the consequences of informing voters about deepfakes in two survey experiments. The Lean coverage is limited to the assumptions behind complete-case analysis, the interpretation of coefficients in a factorial regression with interaction, and the arithmetic of two descriptive percentages. The development proves constructed counterexamples, a population identification theorem under explicit independence conditions, and exact percentage corrections.",
+    "work_id": "P034"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P034-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P034/P034_Attrition.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P034.missingness_counterexample",
+          "line": 349,
+          "module": "AronowAudit.P034.P034_Attrition",
+          "status": "counterexample_proved",
+          "target_id": "P034-T1",
+          "target_kind": "counterexample",
+          "work_id": "P034"
+        }
+      ],
+      "text": {
+        "body": "The plan concludes from the absence of differential attrition that missingness occurs at random. The Lean statement gives a model in which this conclusion fails. The model is the first case of the counterexample in P034-E017, with $a=37/50$ and $b=13/50$; it is my construction and is not in the paper. The statement asserts the following. In the model, $T$ is independent of $(Y(0),Y(1),R(0),R(1),X)$, the effect is zero for every unit, and the completion rate is $1/2$ in each arm. Within each arm and each value of $X$, the probability of completion is $37/50$ or $13/50$ according to the value of $Y$. The complete-case means of $Y$ are $13/50$ in the control arm and $37/50$ in the treated arm, and the normal equations of the complete-case regression of $Y$ on $(1,T,X)$ have the unique solution $(13/50,\\,12/25,\\,0)$. In the sample of 400 units that the table of P034-E017 gives for this case, every observed cell has positive probability under the model, Pearson’s statistic for completion by arm is $0$ with $p$-value $1$, and the complete-case coefficients are the same as in the model. Finally, the observed data have the same law under a second process such that completion is independent of the potential outcomes, the covariate and the treatment, and such that the average effect is $12/25$. Both processes are written as rational point masses on a finite set, the sample is given by the counts of its cells, and the $p$-value is taken from the chi-squared distribution with one degree of freedom. The statement concerns these fixed constructions only: it does not cover the second case of that table, and it asserts nothing about the data of Study 2 or about bias in any estimate of the paper.",
+        "headline": "A counterexample to the rule for missing data in the amended pre-analysis plan for Study 2 (Section 8)",
+        "location": "Amended pre-analysis plan for Study 2, Section 8 (Missing Data), second paragraph (PDF pp. 5–6 of the plan, whose pages are not numbered); notes to Figure OA2a, Appendix p. 9, and to Figure OA3, Appendix p. 18"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P034-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P034/P034_Attrition.lean",
+          "highlight_ids": [
+            "H044"
+          ],
+          "lean_name": "AronowAudit.P034.corrected_complete_case_identification",
+          "line": 936,
+          "module": "AronowAudit.P034.P034_Attrition",
+          "status": "proved",
+          "target_id": "P034-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P034"
+        }
+      ],
+      "text": {
+        "body": "The corrected rule gives an example of a separate identifying condition for the complete-case analysis, and the Lean statement asserts that this condition suffices. On an arbitrary probability space, let $T\\in\\{0,1\\}$ be the treatment, let $Y(0)$ and $Y(1)$ be real potential outcomes, let $R(0),R(1)\\in\\{0,1\\}$ be the potential completion indicators, and let $X\\in\\mathbb{R}^k$ be a vector of pretreatment covariates. The outcomes and the covariates have finite second moments, and I write $Y=Y(T)$, $R=R(T)$ and $\\tau=\\mathbb{E}[Y(1)-Y(0)]$. Suppose that (i) $T$ is independent of $(Y(0),Y(1),R(0),R(1),X)$ and $0<P(T=1)<1$, and that (ii) for each $t\\in\\{0,1\\}$, $R(t)$ is independent of $(Y(0),Y(1),X)$ and $P(R(t)=1)>0$. The statement asserts for $t=0,1$ that $P(T=t,R=1)=P(T=t)\\,P(R(t)=1)>0$, that $\\mathbb{E}[Y\\mid T=t,R=1]=\\mathbb{E}[Y(t)]$, and that the law of $X$ given $\\{T=t,R=1\\}$ is the law of $X$. It asserts also that every solution of the normal equations of the complete-case regression of $Y$ on $(1,T,X)$ has coefficient $\\tau$ on $T$, and that there exists exactly one solution if the matrix of these equations is nonsingular. A last part concerns the model of the counterexample to the printed rule. In that model (i) holds and both completion rates are $1/2$, while $R(0)$ is not independent of $Y(0)$, $\\tau=0$, and the normal equations have a solution with coefficient $12/25$ on $T$. The statement has the same scope as the corrected statement in P034-E017, and it is not restricted to finite sample spaces. It concerns population quantities only: standard errors, the coverage of intervals and the instructions of the corrected rule on what to report are not part of it.",
+        "headline": "The rule for missing data in the amended pre-analysis plan for Study 2 (Section 8), as corrected",
+        "location": "Amended pre-analysis plan for Study 2, Section 8 (Missing Data), second paragraph (PDF p. 5 of the plan, whose pages are not numbered); notes to Figure OA2a, Appendix p. 9, and to Figure OA3, Appendix p. 18"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P034-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P034/P034_Contrasts.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P034.factorial_counterexample",
+          "line": 108,
+          "module": "AronowAudit.P034.P034_Contrasts",
+          "status": "counterexample_proved",
+          "target_id": "P034-T3",
+          "target_kind": "counterexample",
+          "work_id": "P034"
+        }
+      ],
+      "text": {
+        "body": "The first rows of Tables OA5 and OA6, labelled “Information Treatment Effect” and “Deepfake Treatment Effect”, report the coefficient on one treatment in a model that contains both treatments and their product. The labels would be complete if such a coefficient always equalled the effect of that treatment averaged over the other treatment. The Lean statement gives an example in which the two differ, namely the example of P034-A001, which is mine and is not in the paper. Let $w$ and $v$ indicate the information treatment and the deepfake video, and let the four cell means be $\\mu(0,0)=\\mu(1,0)=\\mu(0,1)=0$ and $\\mu(1,1)=2$. The statement asserts that $\\mu(w,v)=a+bw+cv+dwv$ holds in all four cells if and only if $(a,b,c,d)=(0,0,0,2)$. In particular, the coefficients on $w$ and on $v$ are $0$. It asserts also that $\\mu(1,0)-\\mu(0,0)=0$ and $\\tfrac12\\bigl[\\mu(1,0)-\\mu(0,0)\\bigr]+\\tfrac12\\bigl[\\mu(1,1)-\\mu(0,1)\\bigr]=1,$ and the same two equalities with the roles of $w$ and $v$ exchanged. The fit is stated as the exact fit to the four cell means, without covariates, and not as a least-squares problem for four observations. The tables do not print the identity that the example contradicts, and the example contradicts none of their 18 entries.",
+        "headline": "A counterexample to reading the first rows of Tables OA5 and OA6 as effects averaged over the other treatment",
+        "location": "Appendix, Table OA5, p. 13, and Table OA6, p. 14 (the same PDF pages of the Appendix)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P034-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P034/P034_Contrasts.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P034.corrected_factorial_contrasts",
+          "line": 46,
+          "module": "AronowAudit.P034.P034_Contrasts",
+          "status": "proved",
+          "target_id": "P034-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P034"
+        }
+      ],
+      "text": {
+        "body": "The corrected labels of P034-A001 say that Table OA5 reports the effect of the information treatment for the real video and that Table OA6 reports the effect of the deepfake without the information treatment. The Lean statement asserts the algebra behind these labels. Let $m(w,v,z)=a+bw+cv+dwv+\\gamma^{\\mathsf T}z$, where $a$, $b$, $c$ and $d$ are arbitrary real numbers and $\\gamma$ and $z$ are arbitrary vectors in $\\mathbb{R}^k$. The statement asserts that $m(1,v,z)-m(0,v,z)=b+dv,\\qquad m(w,1,z)-m(w,0,z)=c+dw,$ so that the first contrast is $b$ at $v=0$ and $b+d$ at $v=1$, and the second is $c$ at $w=0$ and $c+d$ at $w=1$. It asserts that the first contrast, averaged with weight $q$ on $v=1$ and $1-q$ on $v=0$, is $b+qd$, and that the second, averaged with weight $p$ on $w=1$ and $1-p$ on $w=0$, is $c+pd$. It asserts finally that $b+qd=b$ if and only if $qd=0$, that for $q>0$ the equality holds if and only if $d=0$, and the same for $c+pd$ and $p$. The displayed identities are stated for all real $v$ and $w$, and the averages for all real $q$ and $p$. This is broader than the corrected labels need, since the indicators take the values $0$ and $1$ and the weights lie between $0$ and $1$. The paper prints no model for these tables, and the function $m$ is read from the replication programs. The statement does not assert that the programs fit this function, and it does not concern the 18 printed entries or their bounds.",
+        "headline": "The titles, row labels and notes of Tables OA5 and OA6, as corrected",
+        "location": "Appendix, Table OA5, p. 13, and Table OA6, p. 14 (the same PDF pages of the Appendix)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P034-T5",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P034/P034_Rounding.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P034.corrected_oa3_table",
+          "line": 46,
+          "module": "AronowAudit.P034.P034_Rounding",
+          "status": "proved",
+          "target_id": "P034-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P034"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts the arithmetic of Table OA3 with the two cells corrected in P034-N010, on the counts as printed on p. 11 of the Appendix. Each percentage is read as $100$ times the count in its cell divided by the count at the foot of its column. A number $r$ with one decimal place is the rounding of $x$ if $r-1/20\\le x<r+1/20$. The statement asserts that $100\\cdot 534/5775=712/77$ and that $9.15\\le 712/77<9.25$, so that the percentage for “Subjective Evaluation of Character” rounds to $9.2$ and not to $9.3$. It asserts that $100\\cdot 49/5775=28/33$ and that $0.75\\le 28/33<0.85$, so that the percentage for “Stance on Other Policies” rounds to $0.8$ and not to $0.9$. It asserts further that, with these two cells corrected, each of the 39 entries in the 13 rows of categories is the rounding of the percentage formed from its count and its column total. In every row the total count is the sum of the counts of the two conditions, and the three columns of counts sum to the printed totals 2,898, 2,877 and 5,775. The paper does not say how the percentages are formed, and the rule above is my reading. This rule agrees with the other 37 printed percentages, and no cell lies at a tie. The statement also contains the identity $5775=3\\times 1925$, three response slots for each of the 1,925 participants, which the correction does not need.",
+        "headline": "Table OA3, column “Total”, as corrected",
+        "location": "Appendix, Table OA3, p. 11 (PDF p. 11 of the Appendix)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "John Ternovski",
+      "Joshua Kalla",
+      "P. M. Aronow"
+    ],
+    "citation": "John Ternovski, Joshua Kalla, and P. M. Aronow (2022). The Negative Consequences of Informing Voters about Deepfakes: Evidence from Two Survey Experiments. Journal of Online Trust and Safety 1(2).",
+    "doi": "10.54501/jots.v1i2.28",
+    "title": "The Negative Consequences of Informing Voters about Deepfakes: Evidence from Two Survey Experiments",
+    "type": "Journal article",
+    "venue": "Journal of Online Trust and Safety",
+    "year": "2022"
+  },
+  "work_id": "P034"
+}

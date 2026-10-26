@@ -1,0 +1,2204 @@
+{
+  "counts": {
+    "counterexample_proved": 27,
+    "proved": 71,
+    "results": 98,
+    "targets": 32
+  },
+  "overview": {
+    "areas": [
+      "interference-and-networks",
+      "experimental-design-and-estimation",
+      "randomization-inference"
+    ],
+    "caveats": [
+      "The exposure HT and variance results assume fixed real exposure-specific potential outcomes, a correctly specified mapping, positive exact marginals for the exposures concerned, and exact joint probabilities; an empty realized exposure cell contributes zero to an HT total and does not license dropping assignments.",
+      "The structural-zero surplus uses ordered pairs, including diagonal pairs in the cross-exposure term; its nonnegative squares explain conservativeness in expectation, rather than a pointwise upper bound on variance.",
+      "The separate twelve-unit three-clique example shows that substituting probabilities from 65 of 66 assignments need not preserve an exact finite-simulation conservativeness guarantee; it does not refute the chapter’s exact-probability theorem or supply a general Monte Carlo approximation theorem.",
+      "The singleton-arm and corrected direct-variance results use independent within-group assignments across groups and independent of the uniform first-stage selection. The singleton-arm result concerns the coded rule that drops undefined sample-variance terms; the corrected direct-variance domain requires at least two observations in each arm and is unavailable in the three-member toy groups.",
+      "The selected code-based witnesses assume the stated mapping or estimator formula; agreement with package source is separate from these Lean statements, and a coding example alone does not refute a numerical simulation table.",
+      "The missing-tie witness averages over genuine Hajek ratios with all relevant exposure cells nonempty; the contagion result is an algebraic decomposition and does not establish identification of its components from observed data."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P045.bernoulli_ratio_counterexample",
+        "target_ids": [
+          "P045-T1"
+        ],
+        "what": "The printed Bernoulli within-arm ratio unbiasedness claim fails under interference: in the explicit two-group four-member construction, both marginal direct-effect targets are zero but every defined direct estimate is $-1$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P045.singleton_variance_counterexample",
+        "target_ids": [
+          "P045-T3"
+        ],
+        "what": "The toy variance calculation need not be unbiased under additive effects after singleton-arm terms are dropped: in the six-group three-member construction, the true direct-estimator variance is $1/2$ and the expected computed variance is $1/3$ for either treatment count."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P045.full_neighborhood_counterexample",
+        "target_ids": [
+          "P045-T5"
+        ],
+        "what": "The package’s complement of all-treated is not its documented all-control exposure: in a two-unit fair-assignment linear-outcome example, the coded HT contrast has expectation $4/3$ instead of the all-versus-none effect $2$, while the corrected all-control event gives $2$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P045.nonmonotone_hajek_counterexample",
+        "target_ids": [
+          "P045-T8"
+        ],
+        "what": "The printed claim that bias increases with the proportion of mismeasured ties is not universal: on the specified ten-unit network with positive spillovers and one treated unit, absolute Hajek bias strictly decreases as zero, one, and two undirected ties are uniformly deleted."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P045.naive_denominator_counterexample",
+        "target_ids": [
+          "P045-T12"
+        ],
+        "what": "The printed equality replacing own-treatment denominators by exposure-specific denominators fails on every assignment of a two-treated ten-cycle example, with the two sides having expectations $11/9$ and $3$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P045.pooling_population_counterexample",
+        "target_ids": [
+          "P045-T14"
+        ],
+        "what": "The printed sum of two subclass means differs from the required pooled mean: an explicit 450-unit tract construction yields treated and control pooled means $13/6$ and $4/3$, versus $17/4$ and $21/8$ from the printed expression."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P045.ht_unbiased_headline",
+        "target_ids": [
+          "P045-T30"
+        ],
+        "what": "For any finite assignment design and correctly specified finite exposure mapping, positive exact exposure probabilities give unbiased Horvitz–Thompson totals and, when both exposures have positive probabilities for every unit, unbiased population exposure contrasts."
+      },
+      {
+        "lean_name": "AronowAudit.P045.ExposureVariance.exact_variance_surplus",
+        "target_ids": [
+          "P045-T33"
+        ],
+        "what": "For two distinct supported exposures under a finite design, the expectation of the adjusted HT contrast variance estimator minus the true randomization variance equals the structural-zero square surplus computed from exact joint exposure probabilities."
+      },
+      {
+        "lean_name": "AronowAudit.P045.epsilon_net_correction",
+        "target_ids": [
+          "P045-T21"
+        ],
+        "what": "For every finite undirected graph and integer $\\epsilon\\ge1$, a corrected net with pairwise centre distances at least $\\epsilon$ and coverage within $\\epsilon-1$ hops exists, and valid completed greedy runs produce such nets."
+      },
+      {
+        "lean_name": "AronowAudit.P045.contagion_decomposition",
+        "target_ids": [
+          "P045-T31"
+        ],
+        "what": "For a positive finite population of households with a binary mediator and real recipient outcomes, the indirect effect equals contagion at treatment one plus other mechanisms at zero, and also contagion at zero plus other mechanisms at one."
+      }
+    ],
+    "overview": "This chapter reviews exposure mappings, Horvitz–Thompson and Hajek estimators, two-stage designs under partial interference, graph clustering, and contagion decompositions. The Lean development proves exact-probability exposure-estimation identities, the structural-zero variance surplus, corrected graph-net construction, and the household contagion decomposition. It also supplies finite counterexamples and repairs for Bernoulli arm ratios, singleton-arm variance calculations, exposure coding, missing-tie bias, and printed estimator decompositions; a separate example tests a stronger finite-simulation variance guarantee rather than refuting the chapter’s contextual exact-probability result.",
+    "work_id": "P045"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.bernoulli_count_counterexample",
+          "line": 580,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T1",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.bernoulli_direct_failure",
+          "line": 728,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T1",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.bernoulli_direct_failure_means",
+          "line": 691,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T1",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.bernoulli_ratio_counterexample",
+          "line": 823,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T1",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample of P045-E001, which is mine and is not in the chapter. Two groups of four units have outcomes $y_{ig}(\\mathbf{z})=\\sum_{j\\neq i}z_j$. One group, chosen with probability $1/2$, has saturation $\\psi=1/2$ and the other has $\\phi=1/4$, and each unit is then treated independently with the probability of its group. The design is represented by explicit weights on the $2\\cdot16\\cdot16=512$ outcomes of the two stages, and each conditional expectation is taken on the event that the estimator concerned is defined. The main statement asserts that the weights sum to one and that $y_{ig}(1;p)=y_{ig}(0;p)=3p$ for every unit and every $p\\in(0,1)$. It asserts that $\\widehat{\\tau}^{D}(\\psi)$ and $\\widehat{\\tau}^{D}(\\phi)$ equal $-1$ on every outcome on which they are defined, and that these events have probabilities $7/8$ and $87/128$. It asserts that $\\widehat{\\tau}^{I}$ and $\\widehat{\\tau}^{To}$ are each defined with probability $3825/4096$ and have conditional expectations $224/255$ and $37/255$. It asserts also that $\\widehat{\\tau}^{O}$ has expectation $3/4$ over all outcomes. A second statement gives the conditional expectations of the arm means, $17/15$ and $28/15$ at $\\psi$ and $81/175$ and $84/85$ at $\\phi$. It states them for the binomial distribution of the number of treated units in a group. The main statement asserts that this distribution and the sixteen assignments of a group give the same conditional expectations. Two further statements repeat parts of the main one, namely that both direct effects are $0$ and that each direct estimator has conditional expectation $-1$.",
+        "headline": "A counterexample to the unbiasedness of the arm means $\\widehat{y}_g(z;\\psi)$ and of $\\widehat{\\tau}^{D}$, $\\widehat{\\tau}^{I}$ and $\\widehat{\\tau}^{To}$ under Bernoulli assignment",
+        "location": "Section 16.5.1, p. 310 (PDF p. 22); definitions on pp. 308–309 (PDF pp. 20–21)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.bernoulli_group_ht_unbiased",
+          "line": 976,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.co_members_group_ht_expectation",
+          "line": 1031,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.co_members_group_ht_formula",
+          "line": 1002,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.cr_group_arm_unbiased",
+          "line": 1363,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.marginal_estimator_correction",
+          "line": 1441,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.overall_group_unbiased",
+          "line": 1496,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.selected_mean_expect",
+          "line": 1233,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the parts of the corrected passage in P045-E001. A group has $n\\ge1$ units, and the outcome of a unit is an arbitrary real function of the assignment of its group, so that only partial interference is imposed. Let $y_{ig}(z;p)$ be the expected outcome of unit $i$ given $Z_{ig}=z$ when the units are treated independently with probability $p\\in(0,1)$. The first part asserts that $\\mathbb{E}[\\mathbf{I}(Z_{ig}=z)\\,Y_{ig}]=p^{z}(1-p)^{1-z}\\,y_{ig}(z;p)$, and that the Horvitz–Thompson mean of the correction has expectation $n^{-1}\\sum_{i}y_{ig}(z;p)$ over all assignments. The second part concerns one saturation, where a set of $C$ of the $G$ groups is chosen uniformly, with $1\\le C\\le G$, and the assignment within each group has an arbitrary distribution. The within-group assignments are independent across groups and independent of the first-stage selection. It asserts that the mean of a group statistic over the chosen groups has expectation equal to the average over all $G$ groups of the expectations of that statistic. The third part asserts that, under complete random assignment with $k$ treated units, $0<k<n$, the arm mean $\\widehat{y}_g(z;\\psi)$ is unbiased for the average over units of the expected outcome given $Z_{ig}=z$ under that design. The fourth part asserts that the mean outcome of all units in a group has expectation $n^{-1}\\sum_i\\mathbb{E}[y_{ig}(\\mathbf{Z}_g)]$ under every distribution of the assignment. For the four-unit groups of the counterexample, the statements assert that both Horvitz–Thompson means have expectation $3p$. They assert also that, with exactly $k\\in\\{1,2,3\\}$ treated units, the direct effect defined for that design is $-1$, while it is $0$ under Bernoulli assignment with probability $k/4$. One statement joins these parts, and six supporting statements give single parts and the formulas for the two Horvitz–Thompson means in the counterexample. The Lean statements do not assert the unbiasedness of the direct, indirect, total and overall contrasts separately. It follows from the parts above by linearity of the expectation.",
+        "headline": "The unbiasedness statements of Section 16.5.1 for the estimators of the marginal effects, as corrected",
+        "location": "Section 16.5.1, p. 310 (PDF p. 22)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.identical_group_selected_moments",
+          "line": 1756,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T3",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.singleton_group_finite_moments",
+          "line": 1814,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T3",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.singleton_variance_counterexample",
+          "line": 1853,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T3",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.three_unit_affine_moments",
+          "line": 1833,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T3",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample of P045-N008, which is mine and is not in the chapter. The design is the toy design of p. 310, taken at one saturation. Three of six groups of three units are chosen uniformly, and in each group $m$ units are treated by complete random assignment, with $m=2$ at $\\psi$ and $m=1$ at $\\phi$. The within-group assignments are independent across groups and independent of the first-stage selection. The three groups that are not chosen do not enter the estimator of a direct effect, and their assignment at the other saturation is not represented. The variance estimator is defined in Lean by the formula that the function estimates_hierarchical of the package computes, in which an arm with one unit contributes no term. The main statement takes baseline outcomes $x=(1,2,3)$ in every group, with $y_{ig}(1;s)=x_i+1$ and $y_{ig}(0;s)=x_i$. It asserts that the estimator of the direct effect has expectation $1$ and variance $1/2$, and that the variance estimator has expectation $1/3$, for $m=1$ and for $m=2$. With the multipliers of p. 310 applied to these baselines, it asserts variance $9/8$ and expected variance estimate $43/48$ at $\\psi$, and $8/9$ and $19/36$ at $\\phi$. For $y_{ig}(1;\\psi)=x_i$ and $y_{ig}(0;\\psi)=0$ it asserts variance $1/18$ and expected variance estimate $1/9$, so that the bias can also be upward. Three supporting statements give the moments within one group, the two-stage moments for $G$ groups with a common schedule of outcomes, and the moments within one group for outcomes of the form $\\alpha x_i+u$. That this function computes the formula is a fact about its source and it is not part of any Lean statement.",
+        "headline": "A counterexample to “their proposed variance estimators are unbiased if unit causal effects are additive”, for the direct-effect variances of the toy example",
+        "location": "Section 16.5.1, p. 310 (PDF p. 22) and p. 311 (PDF p. 23)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/Wave1/Gap/GLP041P042P045P045B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.Wave1.direct_variance_correction_proof",
+          "line": 485,
+          "module": "AronowAudit.P045.Wave1.Gap.GLP041P042P045P045B2",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P041/Wave1/Gap/GP041P042P045B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.Wave1.singleton_drop_bias_proof",
+          "line": 369,
+          "module": "AronowAudit.P041.Wave1.Gap.GP041P042P045B2",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P041/Wave1/Gap/GP041P042P045B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.Wave1.singleton_drop_dilated_bias_proof",
+          "line": 387,
+          "module": "AronowAudit.P041.Wave1.Gap.GP041P042P045B2",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.direct_group_cr_unbiased",
+          "line": 1905,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.pop_var_nonnegative",
+          "line": 1580,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.pop_var_scale",
+          "line": 1623,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.pop_var_zero_iff_constant",
+          "line": 1591,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.selected_direct_cr_unbiased",
+          "line": 1952,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.singleton_sample_variance_undefined",
+          "line": 1967,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.toy_required_direct_variance_undefined",
+          "line": 1560,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements follow the derivation of the bias in P045-N008, at one saturation. A set of $C$ of the $G$ groups is chosen uniformly, with $2\\le C\\le G$, and in group $g$, of size $n_g$, a uniformly chosen set of $m_g$ units is treated. The within-group assignments are independent across groups and independent of the first-stage selection. The potential outcomes under treatment and under control are arbitrary real numbers. Let $\\theta_g$ be the difference of their means in group $g$, let $S^2_\\theta$ be the variance of the $\\theta_g$ with divisor $G-1$, and let $S^2_{\\delta,g}$ be the variance of the unit effects in group $g$ with divisor $n_g-1$. The main statement assumes that $2\\le m_g\\le n_g-2$ for every group. It asserts the formula of the finding for the variance $V_g$ of the difference in means in group $g$. It asserts that the estimator $\\widehat\\tau$ of the direct effect is unbiased for the average of the $\\theta_g$, and that the variance estimator $\\widehat V$ satisfies $\\operatorname{Var}(\\widehat\\tau)=\\frac{1-C/G}{C}\\,S^2_\\theta+\\frac{1}{CG}\\sum_{g=1}^{G}V_g,\\qquad \\mathbb{E}[\\widehat V]-\\operatorname{Var}(\\widehat\\tau)=\\frac{1}{G^2}\\sum_{g=1}^{G}\\frac{S^2_{\\delta,g}}{n_g}\\ \\ge\\ 0 ,$ with equality in the last relation if and only if the unit effects are constant within every group. A second statement asserts the two formulas of the finding for the bias when every group has three units and the term of an arm with one unit is omitted, for $m_g=2$ and for $m_g=1$. A third specializes them to the multipliers of p. 310. With $S^2_{x,g}$ the variance of the baseline outcomes in group $g$, it asserts that the biases are $-(11/8)\\,G^{-2}\\sum_gS^2_{x,g}$ and $-(13/6)\\,G^{-2}\\sum_gS^2_{x,g}$, and that both are negative when the baseline outcomes vary within some group. Among seven supporting statements, one asserts that, in the toy design, the estimator that requires both sample variances of every group is undefined on every assignment, whatever the outcomes. An undefined sample variance is represented by an absent value. The variance estimator is the formula that the function estimates_hierarchical of the package computes, since the chapter does not print one.",
+        "headline": "The property of the variance estimator for a direct effect, as corrected",
+        "location": "Section 16.5.1, p. 310 (PDF p. 22); toy example, pp. 310–311 (PDF pp. 22–23)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.full_neighborhood_counterexample",
+          "line": 2018,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T5",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the counterexample of P045-E011, which is mine and is not in the chapter. Two units are joined by one tie, so that the closed neighborhood of each unit is $\\{1,2\\}$. For a unit $i$, let $b_i$ be the size of its closed neighborhood and $s_i$ the number of treated units in it. The indicator of the function as written is represented by the condition $s_i<b_i$, and the documented condition by $s_i=0$. The statement asserts that, under the assignment $\\mathbf{z}=(1,0)$, both units satisfy $s_i<b_i$ and neither satisfies $s_i=0$. With the two units treated independently with probability $1/2$, it asserts that the events $s_i=b_i$, $s_i<b_i$ and $s_i=0$ have probabilities $1/4$, $3/4$ and $1/4$. For the outcomes $Y_i(\\mathbf{z})=1+z_1+z_2$, it asserts that the average difference between the outcomes with both units treated and with neither treated is $2$. It asserts that the Horvitz–Thompson contrast built on the events $s_i=b_i$ and $s_i<b_i$ takes the values $-4/3$, $-8/3$, $-8/3$ and $12$ on the four assignments and has expectation $4/3$. It asserts also that the contrast built on $s_i=b_i$ and $s_i=0$ has expectation $2$. For the threshold outcomes $Y_i(\\mathbf{z})=1+2\\,\\mathbf{I}(z_1=z_2=1)$, it asserts that both contrasts have expectation $2$. That the package function returns the indicator of $s_i<b_i$ is a fact about its source and it is not part of the Lean statement.",
+        "headline": "A counterexample to the description of “All Control” in the package’s full-neighborhood exposure mapping (Section 16.4.6, the estimand $\\tau(d_{\\mathbf{1}},d_{\\mathbf{0}})$)",
+        "location": "Section 16.4.6, p. 305 (PDF p. 17); R package interference, file R/make_exposure_map_AS.R, lines 104–121"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.event_ht_conditional",
+          "line": 233,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.full_neighborhood_events",
+          "line": 2050,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.full_neighborhood_ht_correction",
+          "line": 2141,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements follow the derivation and the correction in P045-E011. The network is undirected and has no loops. For a unit $i$, the closed neighborhood $B_i$ consists of $i$ and its neighbors, $b_i$ is its size, and $s_i(\\mathbf{z})$ is the number of its treated members. The first statement asserts that $s_i=b_i$ if and only if every member of $B_i$ is treated, that $s_i=0$ if and only if no member is treated, and that $s_i<b_i$ if and only if some member is untreated. It asserts that the conditions $s_i<b_i$ and $s_i=0$ agree for every assignment if and only if $b_i=1$. It asserts also that $s_i$ is the $i$th entry of $\\mathbf{z}'(A+I)$ and $b_i$ the $i$th row sum of $A+I$, where $A$ is the adjacency matrix. These are the quantities that the function computes. The second statement takes outcomes such that $Y_i(\\mathbf{z})=Y_i(\\mathbf{1})$ when $s_i=b_i$ and $Y_i(\\mathbf{z})=Y_i(\\mathbf{0})$ when $s_i=0$, and a design such that both events have positive probability for every unit. It asserts that the Horvitz–Thompson contrast built on these two events, with their exact probabilities, has expectation $\\tau(\\mathbf{1},\\mathbf{0})$. For the contrast built on $s_i=b_i$ and $s_i<b_i$, it asserts the expectation $\\frac{1}{N}\\sum_{i=1}^{N}\\Bigl(Y_i(\\mathbf{1})-\\mathbb{E}\\bigl[Y_i(\\mathbf{Z})\\mid s_i(\\mathbf{Z})<b_i\\bigr]\\Bigr),$ which equals $\\tau(\\mathbf{1},\\mathbf{0})$ if $Y_i(\\mathbf{z})=Y_i(\\mathbf{0})$ for every assignment such that $s_i<b_i$. A third statement is the identity $\\mathbb{E}[\\mathbf{I}(E)\\,Y/\\Pr(E)]=\\mathbb{E}[Y\\mid E]$ that these expectations use. The corrected line of code is not an object of the Lean statements, which concern the two conditions that it computes.",
+        "headline": "The two conditions of full neighborhood exposure (Section 16.4.6), as corrected in the package",
+        "location": "Section 16.4.6, p. 305 (PDF p. 17); R package interference, file R/make_exposure_map_AS.R, lines 112–121"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T7",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.faulty_copy_counterexample",
+          "line": 2221,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T7",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.faulty_copy_full_counterexample",
+          "line": 2336,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T7",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample for the code in P045-E012, which is mine and is not in the chapter. The cells above the diagonal and the cells below it are listed column by column. The last line of both functions is represented by the map that gives the $k$th cell below the diagonal the value of the $k$th cell above it. The main statement asserts that, for a matrix with four rows, the cells above the diagonal are listed as $(1,2),(1,3),(2,3),(1,4),(2,4),(3,4)$ and those below as $(2,1),(3,1),(4,1),(3,2),(4,2),(4,3)$. It asserts that, for every $n\\ge4$, the third cells of the two lists are $(2,3)$ and $(4,1)$, and that for $n\\le3$ each cell below the diagonal receives the value of its transpose. It asserts that, of the $64$ symmetric matrices on four units with entries 0 and 1 and zero diagonal, exactly $32$ are sent to a matrix that is not symmetric. Let $A$ be the matrix of the network whose only tie joins units 1 and 4, and let $B$ be its image. The statement asserts that unit 1 has exposure $d_{01}$ under $A$ and $d_{00}$ under $B$ when unit 4 alone is treated, and that unit 2 has $d_{00}$ under $A$ and $d_{01}$ under $B$ when unit 3 alone is treated. Here the number of treated peers of unit $i$ is $\\sum_jz_jM_{ji}$ for the matrix $M$ supplied, as in the package. A last clause represents removal of the tie with probability $q\\in[0,1)$ by a draw that returns the empty network with probability $q$ and $B$ otherwise, and asserts that $B$ is returned with probability $1-q$. A second statement gives the entries $B_{14}=1$, $B_{41}=0$, $B_{32}=1$ and $B_{23}=0$. That R lists the cells in this order, and that both functions end with this line, are facts about R and about the package, and they are not part of the Lean statements.",
+        "headline": "A counterexample to the package’s functions for removing and adding ties (Section 16.4.4, “a network that is randomly missing varying proportions of ties”)",
+        "location": "Section 16.4.4, p. 303 (PDF p. 15), and Figure 16.5, p. 304 (PDF p. 16); R package interference, file R/functions.R, lines 36 and 55"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T8",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.deletion_domain_certificate",
+          "line": 2735,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T8",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.nonmonotone_hajek_counterexample",
+          "line": 2769,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T8",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.one_deletion_bias_bounds",
+          "line": 2678,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T8",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.two_deletion_bias_bounds",
+          "line": 2688,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T8",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.zero_deletion_hajek_counterexample",
+          "line": 2624,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T8",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the last example of P045-E012, which is mine and is not in the chapter. The true network is the network of ten units printed on p. 295, entered as its adjacency matrix. One unit is treated, chosen uniformly, and the baseline outcome is $5/2$ for unit 2 and $1$ for the other units, with the multipliers of p. 298. The measured network lacks a uniformly chosen set of $r$ of the 20 ties, for $r=0,1,2$, and the outcomes follow the true network. Let $\\beta_r$ be the mean of $\\widehat{\\tau_H}(d_{01},d_{00})$ over the $10\\binom{20}{r}$ equally likely cases, minus $\\tau(d_{01},d_{00})=23/80$. The main statement asserts that $\\beta_0=\\frac{890121037}{44498644960},\\qquad \\frac{1}{50}<\\beta_0<\\frac{1}{49},\\qquad \\frac{9}{1000}<\\beta_1<\\frac{1}{100},\\qquad -\\frac{1}{800}<\\beta_2<-\\frac{1}{900},$ so that $|\\beta_2|<|\\beta_1|<|\\beta_0|$ and $\\beta_0\\neq0$. It asserts also that every unit keeps between one and six measured neighbors in each case. Four supporting statements give the case $r=0$, the bounds for $r=1$ and for $r=2$, and the fact that in each case some unit has measured exposure $d_{01}$ and some unit has $d_{00}$. The Hajek contrast enters these statements through its closed form when one unit $t$ is treated. This form is a ratio over the measured neighbors of $t$ minus a ratio over the other untreated units, with weights $1/m_i$ and $1/(9-m_i)$, where $m_i$ is the number of measured neighbors of unit $i$. No Lean statement derives this form from the general formula of p. 299.",
+        "headline": "A counterexample to “the bias of the estimator will increase with the proportion of mismeasured ties” read as a general claim, in which the Hajek contrast is also biased with no missing ties",
+        "location": "Section 16.4.4, p. 303 (PDF p. 15); network of p. 295 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T9",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.corrected_copy_monotone",
+          "line": 2386,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.corrected_copy_symmetric",
+          "line": 2239,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.deletion_exposure_inclusions",
+          "line": 2432,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.hajek_bias_correction",
+          "line": 2797,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.missing_ties_ht_bias",
+          "line": 2457,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements describe the corrected code and the corrected sentences of P045-E012. The corrected copy is represented by the map that writes $M_{ji}$ to each cell $(i,j)$ below the diagonal and leaves the other cells unchanged. The first statement asserts that its result is symmetric for every real matrix. The second takes a symmetric matrix $A$ with entries 0 and 1 and zero diagonal, and edited entries $U_{ij}\\in\\{0,1\\}$ for $i<j$. It asserts that the result $C$ satisfies $0\\le C_{ij}\\le A_{ij}$ if $U_{ij}\\le A_{ij}$ for all $i<j$, that $A_{ij}\\le C_{ij}\\le1$ off the diagonal if $U_{ij}\\ge A_{ij}$ for all $i<j$, and that $C=A$ if no entry was edited. The third concerns a measured network whose ties are all ties of the true network, with $D_i$ and $\\widetilde D_i$ the true and the measured exposure of unit $i$. It asserts, for every assignment, that $\\widetilde D_i=d_{01}$ implies $D_i=d_{01}$ and $\\widetilde D_i=d_{11}$ implies $D_i=d_{11}$, while $\\widetilde D_i=d_{00}$ implies $D_i\\in\\{d_{00},d_{01}\\}$ and $\\widetilde D_i=d_{10}$ implies $D_i\\in\\{d_{10},d_{11}\\}$. The fourth takes any design such that $\\widetilde D_i=d_{00}$ and $\\widetilde D_i=d_{01}$ have positive probability for every unit, and sets $c_i=\\Pr(D_i=d_{01}\\mid\\widetilde D_i=d_{00})$. It asserts that the Horvitz–Thompson contrast for $\\tau(d_{01},d_{00})$, computed from the measured exposures with their exact probabilities, has bias $-\\frac{1}{N}\\sum_{i=1}^{N}c_i\\,\\bigl[y_i(d_{01})-y_i(d_{00})\\bigr],$ which is at most zero when $y_i(d_{01})\\ge y_i(d_{00})$ for every unit. The fifth asserts, for the ten-unit example of the finding, that the bias of $\\widehat{\\tau_H}(d_{01},d_{00})$ is nonzero with no tie missing and is smaller in absolute value with one tie missing. The example supports qualifying the general sentence on p. 303; the clarification of the description of Figure 16.5 also rests on the chapter’s own statement on p. 299 that the Hajek estimator has a finite-sample bias. The identity for the bias is stated for the Horvitz–Thompson estimator only.",
+        "headline": "Section 16.4.4 on missing ties and the package’s functions for removing and adding ties, as corrected",
+        "location": "Section 16.4.4, p. 303 (PDF p. 15); R package interference, file R/functions.R, lines 36 and 55"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T10",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/Wave1/Gap/GLP041P042P045P045B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.Wave1.cluster_sampler_counterexample_proof",
+          "line": 510,
+          "module": "AronowAudit.P045.Wave1.Gap.GLP041P042P045P045B1",
+          "status": "proved",
+          "target_id": "P045-T10",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.four_path_marking_certificate",
+          "line": 3076,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T10",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.four_path_repeat_trace_mass",
+          "line": 3097,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T10",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.four_path_repeat_trace_sum",
+          "line": 3147,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T10",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.singleton_draw_bad_trace",
+          "line": 3158,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T10",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample of P045-E013, which is mine and is not in the chapter. Four units form the path $1$–$2$–$3$–$4$, and each cluster is treated independently with probability $1/2$. The sampler is represented by its sequence of draws. A draw is uniform on the unmarked units, except that, in the sampler as written, a draw with a single unmarked unit $u$ remaining is uniform on $\\{1,\\dots,u\\}$. The probability of a final set of centers is the sum of the probabilities of all finite sequences of draws that end with every unit marked and leave that set. Each unit joins a nearest center, and a tie goes to the center with the smaller index. The main statement asserts that the sampler as written ends with the centers $\\{1,2\\}$, $\\{1,3\\}$, $\\{1,4\\}$, $\\{2\\}$ and $\\{3\\}$ with probabilities $1/12$, $1/12$, $1/3$, $1/4$ and $1/4$, and that two centers are closer than three hops with probability $1/6$. It asserts the probabilities $3/8$, $5/48$, $1/48$, $1/48$, $5/48$ and $3/8$ for the treatment vectors $0000$, $0011$, $0111$, $1000$, $1100$ and $1111$, and $0$ for every other vector. For the corrected sampler it asserts the centers $\\{1,4\\}$, $\\{2\\}$ and $\\{3\\}$ with probabilities $1/2$, $1/4$ and $1/4$, and the probabilities $3/8$, $1/8$, $0$, $0$, $1/8$ and $3/8$ for the same six vectors. A second statement asserts that the draws $1$ and then $2$ end the loop with probability $1/16$ and leave two centers at distance one. Three supporting statements give the units marked after the first draws, the probability $(1/4)^{r+2}$ that unit 1 is drawn $r+1$ times and then a unit $j\\neq1$, and the sum $1/12$ of these probabilities over $r\\ge0$. That R’s sample draws from $1,\\dots,u$ when it is given the single number $u$ is a fact about R and is not part of the Lean statements.",
+        "headline": "A counterexample to the package’s sampler for “three-net clustering” (Section 16.4.6 and Table 16.3)",
+        "location": "Section 16.4.6, p. 305 (PDF p. 17); R package interference, file R/make_tr_vec_bernoulli.R, lines 76–82 and 122–128"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T11",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.greedy_three_net_correction",
+          "line": 3181,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is the derivation for the corrected sampler in P045-E013. The network is any finite undirected graph on $n\\ge1$ units, and the distance between two units is the number of hops, taken to be infinite between units in different components. A set of centers marks every unit within two hops of one of them. The statement concerns every sequence of centers such that each center is unmarked when it is chosen, whatever the rule of choice. It asserts that such a sequence has no repeated center and at most $n$ centers, and that its centers are pairwise at least three hops apart. It asserts that, once every unit is marked, every unit that is not a center is within two hops of a center. It asserts also that each choice of an unmarked unit strictly reduces the number of unmarked units, and that there exists a sequence that marks every unit. The statement involves no probabilities. The distribution of the centers and of the treatment vector on the path of four units, under a uniform choice among the unmarked units, is part of the Lean statement for the counterexample. That the corrected lines of code draw from the unmarked units is a fact about R and is not part of the Lean statement.",
+        "headline": "The package’s 3-net sampler, as corrected",
+        "location": "Section 16.4.6, p. 305 (PDF p. 17); R package interference, file R/make_tr_vec_bernoulli.R, lines 77 and 123"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T12",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.naive_denominator_counterexample",
+          "line": 3345,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T12",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the counterexample of P045-E002, which is mine and is not in the chapter. Ten units form a cycle, exactly two units are treated, and the 45 assignments are equally likely. Every unit has $y_i(d_{11})=2$, $y_i(d_{10})=1$, $y_i(d_{01})=1$ and $y_i(d_{00})=0$. Let $L$ be the first line of the printed display, with $\\pi_i=1/5$, and let $R$ be the printed second line. The statement asserts that $\\pi_i(d_{11})=2/45$, $\\pi_i(d_{10})=7/45$, $\\pi_i(d_{01})=1/3$ and $\\pi_i(d_{00})=7/15$ for every unit. It asserts that $L=2$ and $R=9$ on the 10 assignments that treat two adjacent units, that $L=1$ and $R=9/7$ on the other 35, and that $L\\neq R$ on all 45. It asserts that $\\mathbb{E}[L]=11/9$ and $\\mathbb{E}[R]=3$, that $\\widehat{\\mu_{HT}}(d_{11})$ has expectation $2$, and that $\\mathbb{E}[L]-\\mu(d_{11})=-7/9$. The assignments are represented by the 45 pairs of treated units, and each exposure probability is the proportion of pairs that give the exposure. The value $\\pi_i=1/5$ is entered as a number in the definition of $L$. The statement concerns this example only. That the corrected equality holds on every assignment is the subject of the Lean statements for the corrected display.",
+        "headline": "A counterexample to the second equality in the display for $\\widehat{\\mu_{HT,None}}(\\mathbf{1})$",
+        "location": "Section 16.4.3, p. 301 (PDF p. 13)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T13",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.naive_bias_correction",
+          "line": 3412,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.naive_expansion_correct",
+          "line": 3399,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.spillover_cancellation_instance",
+          "line": 3519,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the corrected display and the corrected sentence of P045-E002. The exposures are those of the mapping of p. 294, and the outcome of unit $i$ is $y_i(D_i)$. The first statement asserts, for every assignment, that $N^{-1}\\sum_i\\mathbf{I}(Z_i=1)\\,Y_i/\\pi_i$ equals the corrected second line, in which both denominators are $\\pi_i$. The second takes an undirected network without loops and any design such that $\\pi_i=\\Pr[Z_i=1]>0$ for every unit. It asserts that $\\pi_i=\\pi_i(d_{11})+\\pi_i(d_{10})$ and that $\\mathbb{E}\\bigl[\\widehat{\\mu_{HT,None}}(\\mathbf{1})\\bigr]-\\mu(d_{11})=-\\frac{1}{N}\\sum_{i=1}^{N}\\frac{\\pi_i(d_{10})}{\\pi_i}\\,\\bigl[y_i(d_{11})-y_i(d_{10})\\bigr].$ It asserts that this bias is at most zero if $y_i(d_{11})\\ge y_i(d_{10})$ for every unit, and that it is then negative if and only if some unit has $\\pi_i(d_{10})>0$ and $y_i(d_{11})>y_i(d_{10})$. With the inequalities reversed, it asserts that the bias is at least zero. It asserts also that the printed second line has expectation $\\mu(d_{11})+\\mu(d_{10})$ when $\\pi_i(d_{11})$ and $\\pi_i(d_{10})$ are positive for every unit. The third statement is the example of P045-E016, in which two units are joined by one tie and treated independently with probability $1/2$. It asserts that the estimator takes the values $0$, $2$, $1$ and $3$ on the four assignments and has expectation $3/2=\\mu(d_{11})$, although $y_i(d_{11})\\neq y_i(d_{10})$ for both units. The bias is stated relative to $\\mu(d_{11})$, and the Lean statements do not assert that $\\mu(\\mathbf{1})=\\mu(d_{11})$ when every unit has a direct peer.",
+        "headline": "The expansion of $\\widehat{\\mu_{HT,None}}(\\mathbf{1})$ and the sentence on its bias, as corrected",
+        "location": "Section 16.4.3, p. 301 (PDF p. 13); lead-in on p. 300 (PDF p. 12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T14",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.pooling_counterexample",
+          "line": 3540,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T14",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.pooling_empty_subclass",
+          "line": 3678,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T14",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.pooling_population_counterexample",
+          "line": 3628,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T14",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the example of P045-E003, which is mine and is not in the chapter. Among the groups with saturation $\\psi$, let $a$ be the number of groups whose tract partner has saturation $\\psi$ and $b$ the number whose partner has $\\phi$. Let $A$ and $B$ be the sums of the group means over these two sets. The estimator of p. 310 is $(A+B)/(a+b)$, and the printed display is $A/a+B/b$. The first statement asserts that, for $a=2$ and $b=1$, the two expressions are $13/6$ and $17/4$ for treated units, where $A=9/2$ and $B=2$, and $4/3$ and $21/8$ for untreated units, where $A=11/4$ and $B=5/4$. It asserts also the identity of the finding for the difference of the two expressions, for all $a,b\\ge1$. The second statement supplies a population with these group means. Six groups of 75 units form three tracts, groups 1, 2 and 3 have saturation $\\psi$, and 50 units are treated in each of them and 25 in each of the others. The outcome of a unit depends on its own treatment and on the number of treated units in its tract, with the multipliers of the finding and every baseline outcome equal to $1$. The statement asserts that the arm means are $9/4$ and $11/8$ in groups 1 and 2, and $2$ and $5/4$ in group 3. The third statement asserts that 8 of the 20 choices of the three groups with saturation $\\psi$ have $a=0$, and that the printed expression is then undefined while the pooled one equals $B/3$. An undefined ratio is represented by an absent value.",
+        "headline": "A counterexample to the display for $\\widehat{y}(z;\\psi)$ in Section 16.5.2",
+        "location": "Section 16.5.2, p. 312 (PDF p. 24); the estimator is defined on p. 310 (PDF p. 22)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T15",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/Wave1/Gap/FidP045.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.Wave1.tract_mixture_bias_identified",
+          "line": 315,
+          "module": "AronowAudit.P045.Wave1.Gap.FidP045",
+          "status": "proved",
+          "target_id": "P045-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.pooled_ratio_correction",
+          "line": 3698,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.tract_partition",
+          "line": 3718,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the corrected display of P045-E003 and an example of its bias. Among the groups with saturation $\\psi$, let $a$ count those with a $\\psi$ partner and $b$ those with a $\\phi$ partner, and let $A$ and $B$ be the corresponding sums of group arm means. The corrected pooled mean is $(A+B)/(a+b)$ when $a+b>0$; when both subclasses occur it is their share-weighted mixture, and when $a=0$ it is $B/b$. The partner subclasses partition the selected groups and their sums. The baseline-one tract example has six groups of 75 units in three paired tracts. Its design chooses three groups uniformly for saturation $\\psi$, then independently treats exactly 50 units in each selected group and 25 in each other group. For every first-stage choice and every second-stage assignment with these counts, all included arms are nonempty and the direct estimator of p. 310 is $(a/3)(7/8)+((3-a)/3)(3/4)$. The $\\psi\\psi$ unit potential outcomes are the conditional means of the same tract outcome schedule under complete randomization to 50 treated units in both groups of a tract, conditional on the focal unit’s treatment. They are $9/4$ and $11/8$, so the equal-tract direct target is $7/8$. The expected subclass shares are $2/5$ and $3/5$; the actual two-stage direct estimator has expectation $4/5$ and bias $-3/40$ relative to that target. These values describe this constructed population, rather than a universal assertion that every violation of group-level partial interference produces bias.",
+        "headline": "The display for $\\widehat{y}(z;\\psi)$ in Section 16.5.2, as corrected",
+        "location": "Section 16.5.2, p. 312 (PDF p. 24); setting on p. 311 (PDF p. 23)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T16",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.empty_cell_counterexample",
+          "line": 3873,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T16",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the counterexample of P045-E004, which is mine and is not in the chapter. The network is the network of ten units printed on p. 295, two units are treated, and the 45 assignments are equally likely. Every unit has potential outcomes $(2,3/2,5/4,1)$ under $(d_{11},d_{10},d_{01},d_{00})$. The statement asserts that a unit with $g_i$ neighbors has $\\pi_i(d_{11})=\\frac{g_i}{45},\\qquad \\pi_i(d_{10})=\\frac{9-g_i}{45},\\qquad \\pi_i(d_{00})=\\frac{1}{45}\\binom{9-g_i}{2},\\qquad \\pi_i(d_{01})=\\frac{1}{45}\\Bigl[36-\\binom{9-g_i}{2}\\Bigr],$ and that all four are positive. For the printed assignment, which treats units 6 and 9, it asserts that no unit has exposure $d_{11}$ and that units 1 and 2 alone have $d_{00}$. It asserts that the Horvitz–Thompson totals for $d_{11}$ and $d_{00}$ are then $0$ and $15/2$, and that $\\widehat{\\tau_{HT}}(d_{11},d_{00})=-3/4$. It asserts that some unit has exposure $d_{11}$ on 20 assignments, and that both $d_{11}$ and $d_{00}$ are received by some unit on 19. It asserts that the total for $d_{11}$ has mean $20$ over all 45 assignments and $45$ over the 20. It asserts also that the contrast has mean $1$ over all 45 assignments, $651/200$ over the 20 and $1227/380$ over the 19. An empty total is a sum with no terms and equals zero. The outcomes are those of the counterexample, with every baseline outcome equal to $1$, and not the simulated outcomes of the chapter’s example.",
+        "headline": "A counterexample to “we cannot compute $\\widehat{\\tau_{HT}}(d_{11},d_{00})$”",
+        "location": "Section 16.4.2, p. 298 (PDF p. 10); definition on p. 297 (PDF p. 9); network on p. 295 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T17",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.empty_hajek",
+          "line": 332,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.empty_ht_total",
+          "line": 321,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.nonempty_ht_conditional",
+          "line": 3928,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the general part of the corrected passage in P045-E004. The design is a probability distribution on the assignments, the exposure $D_i$ of a unit is a function of the assignment with values in a finite set, and $Y_i=y_i(D_i)$. The first statement takes two exposures $d_k$ and $d_l$ such that $\\pi_i(d_k)>0$ and $\\pi_i(d_l)>0$ for every unit, and an assignment under which no unit has exposure $d_k$. It asserts that $\\widehat{y^T_{HT}}(d_k)=0$ and that $\\widehat{\\tau_{HT}}(d_k,d_l)=-\\widehat{y^T_{HT}}(d_l)/N$. The second asserts that the Hajek mean of an exposure that no unit receives is undefined, where the undefined value is represented by an absent value. The third is stated for the four exposures of p. 294 and assumes that $\\pi_i(d_k)>0$ for every unit and that some unit receives $d_k$ with positive probability. It asserts that $\\mathbb{E}\\bigl[\\widehat{y^T_{HT}}(d_k)\\,\\big|\\,\\text{some unit has exposure } d_k\\bigr]=\\frac{\\sum_{i=1}^{N}y_i(d_k)}{\\Pr(\\text{some unit has exposure } d_k)} .$ That the total is unbiased over all assignments is a separate Lean statement, for the claim of p. 297. The value $-13.27099$ of the corrected output is not stated in Lean. It is a floating-point result that the package returns for the simulated outcomes of the example; that computation is not represented in these Lean statements.",
+        "headline": "The sentence on $\\widehat{\\tau_{HT}}(d_{11},d_{00})$ in the example of Section 16.4.2, as corrected",
+        "location": "Section 16.4.2, p. 298 (PDF p. 10); definition on p. 297 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T18",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.coordinate_removal_correct",
+          "line": 3958,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.coordinate_removal_instance",
+          "line": 3994,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.reindexed_outcome_unique",
+          "line": 3980,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The correction in P045-E008 is to a definition, so the Lean statements assert what the corrected definition implies, and not a theorem of the chapter. An assignment is a vector of $N\\ge1$ entries 0 or 1, and $\\mathbf{z}_{-i}$ is defined by deleting the $i$th entry. The first statement asserts that the $j$th entry of $\\mathbf{z}_{-i}$ is $z_j$ for $j<i$ and $z_{j+1}$ for $j\\ge i$. It asserts that $\\mathbf{z}_{-i}=\\mathbf{z}'_{-i}$ when $\\mathbf{z}$ and $\\mathbf{z}'$ differ at most in entry $i$, and that the map $\\mathbf{z}\\mapsto(z_i,\\mathbf{z}_{-i})$ is a bijection from $\\{0,1\\}^N$ onto $\\{0,1\\}\\times\\{0,1\\}^{N-1}$. The second asserts that, for every real function $y_i$ on $\\{0,1\\}^N$, there exists exactly one function $f$ such that $f(z_i,\\mathbf{z}_{-i})=y_i(\\mathbf{z})$ for every $\\mathbf{z}$. This is the sense in which $y_i(\\mathbf{z})$ can be written as $y_i(z_i;\\mathbf{z}_{-i})$ on p. 292. The third is the example of the finding: for $N=4$ and $i=3$, the vector $\\mathbf{z}_{-3}$ is $(z_1,z_2,z_4)'$. The cases $i=1$ and $i=N$ are included in the first statement.",
+        "headline": "The definition of $\\mathbf{z}_{-i}$, as corrected",
+        "location": "Section 16.3, p. 292 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T19",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.fixed_count_peers_correct",
+          "line": 4002,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T19",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is the derivation in P045-E009. A group has $n_g\\ge2$ units, the saturation $\\psi$ lies strictly between 0 and 1, and $K=\\psi n_g$ is an integer. The assignment of the group is any vector of entries 0 and 1 with exactly $K$ treated units. The statement asserts that, for every unit $i$, $\\sum_{j\\neq i}z_j=K-z_i .$ For a treated unit it asserts that this number is $\\psi n_g-1$, and that the printed $\\psi(n_g-1)$ exceeds it by $1-\\psi>0$. For a control unit it asserts that the number is $\\psi n_g$. The statement holds for each such assignment and involves no probabilities. The example of the finding, with $n_g=3$ and $\\psi=2/3$, is not stated separately.",
+        "headline": "The number of treated group members other than $i$ under complete random assignment, as corrected",
+        "location": "Section 16.5.1, p. 310 (PDF p. 22); the sentence begins on p. 309 (PDF p. 21)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T20",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.within_hops_counterexample",
+          "line": 3219,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T20",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the example of P045-E010, which is mine and is not in the chapter. The network is a path with nine vertices, the distance between two vertices is the number of hops, and $\\epsilon=3$. The statement asserts that no set of vertices has all its members within three hops of each other and every vertex outside it within two hops of a member. It asserts that exactly 13 sets have their members pairwise at least three hops apart and every vertex outside them within two hops of a member. With the vertices numbered from 0 to 8, it asserts that these sets are $\\{1,6\\}$, $\\{2,6\\}$, $\\{2,7\\}$, $\\{0,3,6\\}$, $\\{0,3,7\\}$, $\\{0,3,8\\}$, $\\{0,4,7\\}$, $\\{0,4,8\\}$, $\\{0,5,8\\}$, $\\{1,4,7\\}$, $\\{1,4,8\\}$, $\\{1,5,8\\}$ and $\\{2,5,8\\}$. The statement ranges over all 512 sets of vertices, the empty set included, where the finding counts the 511 nonempty ones. The empty set fails the second condition in both cases, so the two counts agree. The printed phrase combines “at least” and “within”, and the statement addresses only the reading in which “within” is an upper bound.",
+        "headline": "A counterexample to the definition of $\\epsilon$-net clustering as printed, with “within $\\epsilon$ hops of each other” read as an upper bound",
+        "location": "Section 16.4.6, p. 305 (PDF p. 17)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T21",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.epsilon_net_correction",
+          "line": 3194,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T21",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The correction in P045-E010 is to a definition, so the Lean statement asserts properties of the corrected definition, and not a theorem of the chapter. The network is any finite undirected graph, the distance between two units is the number of hops, taken to be infinite between units in different components, and $\\epsilon\\ge1$ is an integer. A set $S$ of units is an $\\epsilon$-net if its members are pairwise at least $\\epsilon$ hops apart and every unit outside $S$ is within $\\epsilon-1$ hops of a member. The statement asserts that a set with the first property has the second if and only if no unit outside it can be added to it without violating the first. It concerns also every sequence of units such that each unit is more than $\\epsilon-1$ hops from all the earlier ones. It asserts that such a sequence has no repetition and at most as many terms as the graph has units, and that its terms are pairwise at least $\\epsilon$ hops apart. It asserts that the terms form an $\\epsilon$-net once every unit is within $\\epsilon-1$ hops of one of them, that there exists a sequence for which this holds, and that every finite graph has an $\\epsilon$-net. The 13 nets of the path with nine vertices are part of the Lean statement for the counterexample. The step that forms clusters by assigning each unit to a nearest member of the set is not stated on p. 305, and it is not part of this statement.",
+        "headline": "The definition of $\\epsilon$-net clustering, as corrected",
+        "location": "Section 16.4.6, p. 305 (PDF p. 17)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T22",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.mean_se_counterexample",
+          "line": 4265,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T22",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.mean_se_finite_obstruction",
+          "line": 4154,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T22",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.sign_mean_chebyshev",
+          "line": 4133,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T22",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.sign_mean_finite_moments",
+          "line": 4065,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T22",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample of P045-N002, which is mine and does not involve the chapter’s estimators. Let $X_1,\\dots,X_N$ be independent signs, each equal to $1$ or $-1$ with probability $1/2$, and let $T_N$ be their mean. Let $B=3/2$ if $X_1=1$ and $B=1/2$ if $X_1=-1$, and let $\\widehat V_N=B^2/N$. The main statement asserts, for every $N\\ge1$, that $\\mathbb{E}[T_N]=0$, that $\\operatorname{Var}(T_N)=1/N$, and that $\\Pr(|T_N|>\\varepsilon)\\le1/(N\\varepsilon^2)$ for every $\\varepsilon>0$. It asserts that $\\mathbb{E}\\bigl[\\sqrt{\\widehat V_N}\\bigr]=1/\\sqrt N$, that $\\mathbb{E}[\\widehat V_N]-1/N=1/(4N)$, and that $\\Pr\\bigl(\\,\\bigl|N\\widehat V_N-1\\bigr|>1/2\\,\\bigr)=1,\\qquad \\bigl|\\widehat V_N-1/N\\bigr|\\le\\frac{5}{4N}.$ It asserts three limits as $N\\to\\infty$: $T_N$ converges to $0$ in probability, $N\\widehat V_N$ does not converge to $1$ in probability, and $\\widehat V_N-1/N$ converges to $0$ in probability. The signs are represented by vectors of $N$ entries, each vector with weight $2^{-N}$, so that the sample space changes with $N$. Convergence in probability means that, for every $\\varepsilon>0$, the probability of a deviation larger than $\\varepsilon$ tends to zero. Three supporting statements give the two moments of $T_N$, the bound on $\\Pr(|T_N|>\\varepsilon)$, and the assertions about $\\widehat V_N$ for a fixed $N$.",
+        "headline": "A counterexample to the inference in “the variance estimator is consistent, given that the mean of the standard error estimate approaches the empirical standard deviation”",
+        "location": "Section 16.4.2, p. 299 (PDF p. 11); Table 16.1, p. 300 (PDF p. 12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T23",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.absolute_variance_consistency",
+          "line": 4305,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.mean_square_bound",
+          "line": 4363,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.nonvanishing_variance_counterexample",
+          "line": 4342,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "counterexample_proved",
+          "target_id": "P045-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.table_standard_error_comparison",
+          "line": 4294,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the arithmetic of the corrected sentence in P045-N002, and three facts about what agreement between a mean standard error and a standard deviation implies. The first statement takes the six ratios of Mean SE to SD in Table 16.1 as exact fractions of the printed entries. It asserts that the four ratios for $\\tau(d_{11},d_{00})$ and $\\tau(d_{01},d_{00})$ are within $0.071$ of one, and that the two for $\\tau(d_{10},d_{00})$ satisfy $0.244<473/380-1<0.245$ and $0.164<2509/2155-1<0.165$. The second takes a sequence of finite designs with estimators $T_N$ and variance estimates $\\widehat V_N\\ge0$ such that $V_N=\\operatorname{Var}(T_N)>0$. It asserts that, if $V_N\\to0$ and $\\mathbb{E}\\bigl[\\sqrt{\\widehat V_N}\\bigr]-\\sqrt{V_N}\\to0$, then $\\widehat V_N-V_N\\to0$ in probability. The third takes $T_N=X_1$, a single sign equal to $1$ or $-1$ with probability $1/2$, and $\\widehat V_N=B^2$, where $B=3/2$ if $X_1=1$ and $B=1/2$ otherwise. It asserts that $V_N=1$ and $\\mathbb{E}\\bigl[\\sqrt{\\widehat V_N}\\bigr]=1$, while $|\\widehat V_N-1|>1/2$ with probability one. The condition $V_N\\to0$ of the second statement cannot be dropped. The fourth asserts that the square of a mean of nonnegative numbers is at most the mean of their squares. The square of a mean standard error is then at most the mean of the variance estimates. That agreement of the mean standard error with the standard deviation at every $N$ does not imply $\\widehat V_N/V_N\\to1$ is the Lean statement for the counterexample. The statements assert nothing about the chapter’s two variance estimators, neither that they are consistent nor that they are not.",
+        "headline": "The closing sentence of Section 16.4.2 on the variance estimator, as corrected",
+        "location": "Section 16.4.2, p. 299 (PDF p. 11); Table 16.1, p. 300 (PDF p. 12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T24",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.dilated_effect_labels",
+          "line": 4420,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.total_direct_indirect_identity",
+          "line": 4395,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The correction in P045-E014 exchanges two labels of a figure. The Lean statements assert the order of the two estimands, which fixes the labels, and nothing about the figure itself. There are $G$ groups with arbitrary sizes, and the baseline outcomes $b_{ig}=y_{ig}(0,\\phi)$ are arbitrary real numbers. The outcome model of p. 310 sets $y_{ig}(1,\\psi)=2b_{ig}$, $y_{ig}(1,\\phi)=\\tfrac32b_{ig}$ and $y_{ig}(0,\\psi)=\\tfrac54b_{ig}$. Let $\\bar b$ be the average over groups of the group means of the baseline outcomes. The first statement asserts that $\\tau^{D}(\\psi)=\\tfrac34\\bar b,\\qquad \\tau^{D}(\\phi)=\\tfrac12\\bar b,\\qquad \\tau^{I}(\\psi,\\phi)=\\tfrac14\\bar b,\\qquad \\tau^{To}(\\psi,\\phi)=\\bar b,\\qquad \\tau^{O}(\\psi,\\phi)=\\tfrac{7}{12}\\bar b .$ It asserts that $\\tau^{D}(\\phi)/\\tau^{D}(\\psi)=2/3$ and $\\tau^{D}(\\phi)<\\tau^{D}(\\psi)$ when $\\bar b>0$, and that $\\tau^{To}(\\psi,\\phi)-\\tau^{I}(\\psi,\\phi)\\neq\\tau^{D}(\\phi)$ when $\\bar b\\neq0$. The second statement is the identity $\\tau^{To}(\\psi,\\phi)=\\tau^{D}(\\psi)+\\tau^{I}(\\psi,\\phi)$ for arbitrary marginal potential outcomes. For the overall effect, the marginal outcome at saturation $s$ is taken to be $s\\,y_{ig}(1,s)+(1-s)\\,y_{ig}(0,s)$, with $\\psi=2/3$ and $\\phi=1/3$. The statements do not derive this mixture from complete random assignment. The positions of the dashed lines, which I measured from the drawing, are not part of any Lean statement.",
+        "headline": "The labels of the first two columns of Figure 16.6, as corrected",
+        "location": "Figure 16.6, p. 312 (PDF p. 24); outcome model on p. 310 (PDF p. 22)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T25",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/Wave1/BernoulliUnbiasedness.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.Wave1.bernoulli_unbiasedness_as_printed_refuted",
+          "line": 17,
+          "module": "AronowAudit.P045.Wave1.BernoulliUnbiasedness",
+          "status": "counterexample_proved",
+          "target_id": "P045-T25",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement refutes the conjunction of the claims of the paragraph as printed, without the changes of the correction in P045-E001. In the first part of that conjunction, a group has $n\\ge1$ units with arbitrary outcomes $y_{ig}(\\mathbf{z})$, and the units are treated independently with probability $p\\in(0,1)$. The printed claim is that the arm mean $\\widehat{y}_g(z;p)$, conditional on the arm being nonempty, has expectation $n^{-1}\\sum_iy_{ig}(z;p)$. In the second part of the conjunction, each of $G$ groups receives saturation $\\psi$ or $\\phi$, both in $(0,1)$, under an arbitrary distribution of the first stage. The units of a group are then treated independently with the probability of their group. The words “conditional on the denominators of these estimators being nonzero” are read as conditioning on the event that the estimator concerned is defined, when this event has positive probability. The printed claims are that $\\widehat{y}(z;\\psi)$ and $\\widehat{y}(z;\\phi)$, and with them $\\widehat{\\tau}^{D}$, $\\widehat{\\tau}^{I}$ and $\\widehat{\\tau}^{To}$, have conditional expectations equal to the population quantities of p. 309. They include the claim that $\\widehat{\\tau}^{O}(\\psi,\\phi)$ is unbiased for the overall effect, conditional on each saturation having at least one group. The first stage is not restricted to a uniform choice of a fixed number of groups, since the printed paragraph states no such condition. The within-group counterexample of P045-E001 contradicts the first component, which suffices to refute the conjunction. This statement does not separately negate every population-mean or effect identity; the overall-effect result under a uniform first stage is retained in the correction.",
+        "headline": "The estimators of Section 16.5.1 and their unbiasedness under Bernoulli assignment, as printed",
+        "location": "Section 16.5.1, p. 310 (PDF p. 22)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T26",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/Wave1/DirectVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.Wave1.direct_variance_as_printed_refuted",
+          "line": 16,
+          "module": "AronowAudit.P045.Wave1.DirectVariance",
+          "status": "counterexample_proved",
+          "target_id": "P045-T26",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement refutes the conjunction of the printed properties for the variance estimator of a direct effect, without the condition that the correction in P045-N008 adds. A set of $C$ of the $G$ groups is chosen uniformly, with $2\\le C\\le G$, and, conditional on this selection, treatment is assigned independently across groups by treating a uniformly chosen set of $m_g$ units in group $g$ of size $n_g$, where $0<m_g<n_g$. The potential outcomes under treatment and under control are arbitrary real numbers. The variance estimator is the formula that the function estimates_hierarchical of the package computes, in which an arm with one unit contributes no term. The printed guarantee states that the expectation of this estimator is at least the variance of the estimator of the direct effect. It also claims that the two are equal if there exists a constant $d$ such that the outcome under treatment equals the outcome under control plus $d$ for every unit of every group. Arms with one unit are allowed, as in the toy design, where every group of three units has such an arm. The counterexample of P045-N008 satisfies these hypotheses and contradicts both assertions. This does not contradict the corrected result requiring at least two units in each arm. The two direct-effect variances printed on p. 311, $0.71255260$ and $0.04854851$, are not stated in Lean as values of the estimator. They depend on the simulated outcomes of the example, and the chapter shows the data of six of the eighteen units only.",
+        "headline": "The property stated for the variance estimators of Hudgens and Halloran (2008) and the variance output of the toy example, as printed",
+        "location": "Section 16.5.1, p. 310 (PDF p. 22) and p. 311 (PDF p. 23)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T27",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/Wave1/AllControl.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.Wave1.all_control_as_documented_refuted",
+          "line": 16,
+          "module": "AronowAudit.P045.Wave1.AllControl",
+          "status": "counterexample_proved",
+          "target_id": "P045-T27",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The sentences of Section 16.4.6 describe the estimand and state no property of the code. The Lean statement refutes the universal claim corresponding to the description in the package’s documentation: “All Control; a unit and 100% of its first-degree neighbors are in the control condition.” The network is undirected and has no loops. For a unit $i$, let $b_i$ be the size of its closed neighborhood and $s_i(\\mathbf{z})$ the number of treated units in it. The second indicator that the function returns is represented by the condition $s_i(\\mathbf{z})<b_i$. The refuted claim is that, for every network, every assignment and every unit, this condition holds if and only if every unit in the closed neighborhood of $i$ is untreated. This is the description read as a claim about the function as written, without the correction in P045-E011. The assignment $\\mathbf{z}=(1,0)$ on two units joined by one tie, from the counterexample of that finding, contradicts it. That the function returns the indicator of $s_i<b_i$ is a fact about its source and is not part of the Lean statement.",
+        "headline": "The exposure condition “All Control” for the estimand $\\tau(d_{\\mathbf{1}},d_{\\mathbf{0}})$ of Section 16.4.6, as described in the package",
+        "location": "Section 16.4.6, pp. 304–305 (PDF pp. 16–17); R package interference, file R/make_exposure_map_AS.R, lines 104–121"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T29",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/Wave1/ClusterSampler.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.Wave1.cluster_sampler_as_documented_refuted",
+          "line": 24,
+          "module": "AronowAudit.P045.Wave1.ClusterSampler",
+          "status": "counterexample_proved",
+          "target_id": "P045-T29",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The sentences of Section 16.4.6 and the entries of Table 16.3 state no property of the code. The Lean statement refutes the conjunction of the requirements associated with the claim of the package’s documentation that the sampler assigns “treatment via 3-net clustering randomization”. The network is any finite undirected graph on $n\\ge1$ units, and each cluster is treated with probability $p\\in[0,1]$. The sampler as written is represented as in the Lean statements for the counterexample of P045-E013. A draw with a single unmarked unit $u$ remaining is uniform on $\\{1,\\dots,u\\}$, and the probability of a final set of centers is a sum over all finite sequences of draws. The claim requires that these probabilities sum to one. It also requires that, with probability one, the final centers are pairwise at least three hops apart and every other unit is within two hops of a center. Its third clause, that the treatment vector is obtained by treating the clusters of the nearest centers independently, repeats the definition of the distribution of the treatment vector and adds no claim. This is the documentation read as a claim about the sampler as written. The path of four units in P045-E013, on which two centers are at distance one with positive probability, contradicts the probability-one clause and thus the conjunction. The statement does not separately refute normalization, and the mixture clause is a defining identity. Table 16.3 is a simulation result and is not an object of the statement.",
+        "headline": "The cluster design “three-net clustering” of Section 16.4.6 and Table 16.3, as described for the package’s sampler",
+        "location": "Section 16.4.6, p. 305 (PDF p. 17); R package interference, file R/make_tr_vec_bernoulli.R, lines 57–115"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T30",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ht_unbiased_headline",
+          "line": 311,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T30",
+          "target_kind": "headline_result",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is the claim of pp. 297–298 that $y^T(d_k)$ “can be estimated without bias” and that $\\widehat{\\tau_{HT}}(d_k,d_l)$ “is unbiased when it is estimated with $\\pi_i(d_k)$”. The design is a probability distribution on $\\{0,1\\}^N$ with $N\\ge1$, and an expectation is a finite sum over it. The exposure $D_i$ of a unit is a function of the assignment with values in a finite set, the potential outcomes $y_i(d)$ are fixed real numbers, and $Y_i=y_i(D_i)$. The probabilities $\\pi_i(d)=\\Pr(D_i=d)$ are the exact ones. The statement asserts that, if $\\pi_i(d_k)>0$ for every unit, then $\\mathbb{E}\\bigl[\\widehat{y^T_{HT}}(d_k)\\bigr]=\\sum_{i=1}^{N}y_i(d_k).$ It asserts that, if also $\\pi_i(d_l)>0$ for every unit, then $\\mathbb{E}[\\widehat{\\tau_{HT}}(d_k,d_l)]=\\tau(d_k,d_l)$. The expectation is over all assignments, and the total equals zero on an assignment under which no unit has exposure $d_k$. The Lean statement is broader than the printed one in two respects. The exposure of a unit may be any function of the assignment and need not come from a network and traits $\\theta_i$. Positivity is required only for the exposures concerned, and not for all $K$ exposures. The sentence of p. 298 on the bias with estimated probabilities $\\widehat\\pi_i$ is not part of the statement.",
+        "headline": "Unbiasedness of the Horvitz–Thompson estimators $\\widehat{y^T_{HT}}(d_k)$ and $\\widehat{\\tau_{HT}}(d_k,d_l)$",
+        "location": "Section 16.4.2, p. 297 (PDF p. 9) and p. 298 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T31",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_Spillover.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.contagion_decomposition",
+          "line": 4470,
+          "module": "AronowAudit.P045.P045_Spillover",
+          "status": "proved",
+          "target_id": "P045-T31",
+          "target_kind": "headline_result",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is the decomposition printed on p. 315, with $\\theta$, $\\gamma(z)$ and $\\eta(z)$ defined by the three displays of that page. There are $N_c\\ge1$ complier households. For household $i$, the potential vote intention $y^*_{i1}$ is an arbitrary function from $\\{0,1\\}$ to $\\{0,1\\}$. The potential outcome $y_{i2}$ of the unreachable voter is an arbitrary real function of the assignment and of the vote intention. In each display the sum is taken over the difference of the two terms. The statement asserts that $\\theta=\\gamma(1)+\\eta(0)$ and that $\\theta=\\gamma(0)+\\eta(1)$. It asserts also that, if $y^*_{i1}(1)=y^*_{i1}(0)$ for a household $i$, then the summand of $\\gamma(z)$ for that household is zero for $z=0$ and for $z=1$. This is the remark that follows the definition of $\\gamma$ on p. 315. The statement is slightly broader than the printed one, since $y_{i2}$ may take any real value and need not be an indicator of turnout. The assumptions under which the two components are identified from data are not part of the statement.",
+        "headline": "The decomposition $\\theta=\\gamma(1)+\\eta(0)=\\gamma(0)+\\eta(1)$ of the indirect effect",
+        "location": "Section 16.6, p. 315 (PDF p. 27)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T32",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_all_fixed_table_counterexamples",
+          "line": 1487,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "counterexample_proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_exact_moments",
+          "line": 1077,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_exact_profile_estimates",
+          "line": 1025,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_fixed_table_counterexamples",
+          "line": 1053,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "counterexample_proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_full_counts",
+          "line": 706,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_joint_moments",
+          "line": 1419,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_probability_laws",
+          "line": 1133,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_real_variance_shortfall",
+          "line": 1635,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "counterexample_proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_relabeling_verified",
+          "line": 1240,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_retained_weights",
+          "line": 733,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_structure",
+          "line": 968,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.clique_variance_counterexample",
+          "line": 1511,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "counterexample_proved",
+          "target_id": "P045-T32",
+          "target_kind": "counterexample",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the finite-simulation counterexample of P045-N016, which is mine and is not in the chapter. It concerns a universal finite-simulation extension, rather than the chapter’s contextual exact-probability guarantee or its use of sufficiently accurate approximation. Twelve units form three disjoint cliques of four, two units are treated by complete randomization, all potential outcomes equal $1$, and the contrast is $(d_{01},d_{00})$. The exposure probabilities are simulated from 65 of the 66 assignments, and the omitted assignment is uniform among the 66. For counts in the retained bank, the marginal input is $(c_i(d)+1)/66$, the same-exposure joint input is $(c_{ij}(d,d)+\\mathbf{1}\\{i=j\\})/66$, and the cross-exposure joint input is $c_{ij}(d,e)/65$ for $d\\ne e$. The main statement first asserts the hypotheses of the example. The 66 assignments are exactly those with two treated units, the network is symmetric and has no isolates, and every unit has $\\pi_i(d_{01})=9/22$ and $\\pi_i(d_{00})=14/33$. With the exact probabilities, it asserts that the Horvitz–Thompson estimator of the contrast has mean $0$, and that its variance and the expectation of its variance estimator both equal $6050/11907$. With the simulated probabilities, it asserts that the expectation of the variance estimator minus the variance of the estimator equals $-\\frac{953130413}{23499020160}\\qquad\\text{and}\\qquad-\\frac{20161943}{522324075}$ when the realized assignment is uniform among all 66 assignments, independently of the simulated set, and when it is uniform among the 65 simulated assignments, respectively. Here the mean and the variance are over the omitted assignment and the realized one together. A second statement fixes the set of simulated assignments and takes the realized assignment uniformly from all 66 assignments. It asserts that the expectation of the variance estimator is below the variance for each of the 66 sets, by $1551761941/23499020160$ when the omitted assignment treats two units of one clique and by $72513467/2349902016$ otherwise. Ten further statements give the counts of assignments behind the probabilities, the two distributions of the pair of assignments, the values with exact probabilities, and the relabeling of the units that reduces the 66 sets to two. The computations are in rational arithmetic, and one of the ten asserts the two inequalities for the same quantities over the real numbers. The estimator, the variance estimator and the formulas for the simulated probabilities are those in the two examined versions of the R package interference; the chapter does not print these formulas. That the package computes them is a fact about its source and is not part of the Lean statements. This example does not test the chapter’s $R=10{,}000$ simulations or its maximum with the constant-effects variance estimator.",
+        "headline": "A counterexample to an exact finite-simulation extension of the nonnegative-bias guarantee in Section 16.4.2",
+        "location": "Section 16.4.2, pp. 298–299 (PDF pp. 10–11); the exposure mapping on p. 294 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P045-T33",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.exact_variance_conservative",
+          "line": 580,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T33",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.exact_variance_surplus",
+          "line": 551,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T33",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P045"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P045/P045_ExposureVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P045.ExposureVariance.ht_unbiased",
+          "line": 350,
+          "module": "AronowAudit.P045.P045_ExposureVariance",
+          "status": "proved",
+          "target_id": "P045-T33",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P045"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements are the identity and the inequality for a contrast in the derivation of P045-N016, making the chapter’s contextual exact-probability result explicit. The design is a probability distribution on a finite set, and the exposure of each of the $N\\ge1$ units is a function of the outcome of the randomization. The potential outcomes $y_i(d)$ are fixed real numbers. Let $\\pi_i$ and $\\pi_{ij}$ be the exact marginal and joint exposure probabilities, and let $d_k\\neq d_l$ be two exposures such that $\\pi_i(d_k)>0$ and $\\pi_i(d_l)>0$ for every unit $i$. The estimator $\\widehat{\\tau}_{HT}(d_k,d_l)$ and its variance estimator are computed with these probabilities, by the formulas displayed in that clarification. The first statement asserts that the expectation of the variance estimator minus $\\operatorname{Var}\\,[\\widehat{\\tau}_{HT}(d_k,d_l)]$ equals $\\begin{aligned} &\\frac{1}{2N^2}\\sum_{i\\neq j:\\,\\pi_{ij}(d_k,d_k)=0}\\bigl(y_i(d_k)+y_j(d_k)\\bigr)^2+\\frac{1}{2N^2}\\sum_{i\\neq j:\\,\\pi_{ij}(d_l,d_l)=0}\\bigl(y_i(d_l)+y_j(d_l)\\bigr)^2\\\\ &\\qquad+\\frac{1}{N^2}\\sum_{i,j:\\,\\pi_{ij}(d_k,d_l)=0}\\bigl(y_i(d_k)-y_j(d_l)\\bigr)^2 , \\end{aligned}$ where the last sum is over all ordered pairs, including those with $i=j$. The second asserts that $\\operatorname{Var}\\,[\\widehat{\\tau}_{HT}(d_k,d_l)]$ is at most the expectation of its variance estimator. A third asserts that $\\widehat{\\tau}_{HT}(d_k,d_l)$ is unbiased for $\\tau(d_k,d_l)$ under the same hypotheses. The statements are broader than the clarification in one respect. The exposure of a unit may be any function of the outcome of the randomization, and it need not come from a network. They are narrower in another. The inequality in the clarification for the variance estimator of a single total, $\\widehat{y^T}_{HT}(d_k)$, is not stated as an inequality between an expectation and a variance. The three listed statements concern the contrast and its unbiasedness; no separate variance bound for a single total is listed here. The clarification also distinguishes sufficiently accurate Monte Carlo approximation from an exact finite-simulation guarantee. These statements contain no theorem about Monte Carlo approximation; the separate counterexample concerns only an exact finite-simulation extension.",
+        "headline": "The guarantee of nonnegative bias for the variance estimators of Section 16.4.2, with its exact-probability scope explicit",
+        "location": "Section 16.4.2, pp. 298–299 (PDF pp. 10–11)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "2001.05444",
+    "authors": [
+      "P. M. Aronow",
+      "Dean Eckles",
+      "Cyrus Samii",
+      "Stephanie Zonszein"
+    ],
+    "citation": "P. M. Aronow, Dean Eckles, Cyrus Samii, and Stephanie Zonszein (2021). Spillover Effects in Experimental Data. In Advances in Experimental Political Science.",
+    "doi": "10.1017/9781108777919.021",
+    "title": "Spillover Effects in Experimental Data",
+    "type": "Book chapter",
+    "venue": "Advances in Experimental Political Science",
+    "year": "2021"
+  },
+  "work_id": "P045"
+}

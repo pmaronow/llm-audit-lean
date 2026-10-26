@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "counts": {
+      "additionalProperties": false,
+      "properties": {
+        "conditional": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "counterexample_proved": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "distinct_credited_declarations": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "highlights": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "lean_lines": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "modules": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "results": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "targets": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "targets_credited": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "targets_without_credit": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "works": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "works",
+        "targets",
+        "targets_credited",
+        "targets_without_credit",
+        "results",
+        "distinct_credited_declarations",
+        "proved",
+        "counterexample_proved",
+        "conditional",
+        "highlights",
+        "modules",
+        "lean_lines"
+      ],
+      "type": "object"
+    },
+    "files": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "path": {
+            "type": "string"
+          },
+          "records": {
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "path",
+          "bytes",
+          "records",
+          "schema"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "line_coverage": {
+      "additionalProperties": false,
+      "properties": {
+        "credited_associations": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "credited_associations_located": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "distinct_source_locations": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "highlight_declarations": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "highlight_declarations_located": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "related_highlight_declarations": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "related_highlight_declarations_located": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "credited_associations",
+        "credited_associations_located",
+        "highlight_declarations",
+        "highlight_declarations_located",
+        "related_highlight_declarations",
+        "related_highlight_declarations_located",
+        "distinct_source_locations"
+      ],
+      "type": "object"
+    },
+    "repository": {
+      "const": "https://github.com/pmaronow/llm-audit-lean"
+    },
+    "toolchain": {
+      "type": "string"
+    },
+    "vocabularies": {
+      "additionalProperties": false,
+      "properties": {
+        "areas": {
+          "const": {
+            "asymptotic-statistics": "Asymptotic statistics",
+            "causal-identification": "Causal identification",
+            "experimental-design-and-estimation": "Experimental design and estimation",
+            "foundations": "Foundations",
+            "interference-and-networks": "Interference and networks",
+            "optimization-and-computation": "Optimization and computation",
+            "partial-identification-and-bounds": "Partial identification and bounds",
+            "probability": "Probability",
+            "randomization-inference": "Randomization inference",
+            "regression-and-variance-estimation": "Regression and variance estimation",
+            "resampling": "Resampling",
+            "survey-sampling": "Survey sampling"
+          }
+        },
+        "excluded_association_statuses": {
+          "const": [
+            "not_applicable"
+          ]
+        },
+        "highlight_sections": {
+          "const": {
+            "counterexamples": "Counterexamples and corrections",
+            "further_useful": "Further useful results",
+            "mathlib_candidates": "Candidates for Mathlib",
+            "reusable_libraries": "Reusable libraries",
+            "top_25": "The most helpful results"
+          }
+        },
+        "standard_axioms": {
+          "const": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ]
+        },
+        "status_descriptions": {
+          "const": {
+            "counterexample_proved": "belongs to a refutation of the claim as recorded in its target, under its stated assumptions: proves the counterexample itself or a step of it; where the target states a specific reading of the printed text, the refutation applies to that reading",
+            "proved": "proves the component under its stated assumptions (for a corrected statement, the corrected version)"
+          }
+        },
+        "statuses": {
+          "const": [
+            "proved",
+            "counterexample_proved"
+          ]
+        },
+        "target_kinds": {
+          "const": [
+            "headline_result",
+            "result_touched_by_finding",
+            "counterexample",
+            "corrected_statement"
+          ]
+        }
+      },
+      "required": [
+        "statuses",
+        "status_descriptions",
+        "target_kinds",
+        "areas",
+        "highlight_sections",
+        "standard_axioms",
+        "excluded_association_statuses"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "repository",
+    "toolchain",
+    "counts",
+    "vocabularies",
+    "line_coverage",
+    "files"
+  ],
+  "title": "llm-audit-lean index",
+  "type": "object"
+}

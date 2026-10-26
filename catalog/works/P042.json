@@ -1,0 +1,1425 @@
+{
+  "counts": {
+    "counterexample_proved": 6,
+    "proved": 68,
+    "results": 74,
+    "targets": 6
+  },
+  "overview": {
+    "areas": [
+      "experimental-design-and-estimation",
+      "regression-and-variance-estimation",
+      "randomization-inference"
+    ],
+    "caveats": [
+      "The complete-randomization identities fix the number assigned to treatment and are narrower than the paper's general prose about random assignment with known probabilities; arbitrary fixed real outcomes include binary turnout as a special case.",
+      "The complier result is a ratio of expectations, not an assertion that the random ratio estimator is unbiased or consistent.",
+      "The pooling formulas use fixed weights derived from actual marginal variances and square-integrable estimates; they do not analyze random estimated weights, require a common effect or establish independence of the historical estimates.",
+      "The six-voter and binomial examples are constructed witnesses on the turnout-proportion scale; multiplying effects by 100 gives percentage points and preserves variance inflation factors.",
+      "The recorded-call calculations treat the deposited decimal effects and standard errors as exact inputs; interpreting their diagonal-only variance requires uncorrelated estimates, and the endpoint theorem assumes a multiplier in [1.9599, 1.96] without proving that interval contains the normal quantile or certifying 95% coverage.",
+      "The dependency counterexamples do not by themselves determine the corrected historical pooled intervals or the significance of the reported difference between mail types."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P042.six_counterexample",
+        "target_ids": [
+          "P042-T1"
+        ],
+        "what": "Against the reading that the declared precision-weighted pooling variance needs no dependence condition, Lean proves an exact six-voter shared-control example has true pooled variance $9/40$, exceeding the assigned diagonal-only variance $3/20$ by a factor of $3/2$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P042.corrected_precision_variance",
+        "target_ids": [
+          "P042-T2"
+        ],
+        "what": "The unrestricted diagonal-only variance reading of the printed pooling calculation is replaced by a covariance-aware identity: for a nonempty finite family with positive finite variances and fixed inverse-variance weights, Lean proves pooled variance equals $1/W$ plus twice the sum of weighted pairwise covariances, and equals $1/W$ exactly when that sum vanishes."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P042.robo_fixed_counterexample",
+        "target_ids": [
+          "P042-T3"
+        ],
+        "what": "Note 5 reports a pooled effect of 1.720 percentage points under the declared fixed-effects scheme, but Lean proves the inverse-variance mean of the two deposited estimates rounds to 1.866 and lies above the entire rounding bin for 1.720."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P042.robo_fixed_interval",
+        "target_ids": [
+          "P042-T4"
+        ],
+        "what": "In place of Note 5's reported interval (0.306, 3.135), Lean proves that the fixed-effects endpoint calculation using the two deposited estimates and a multiplier anywhere in [1.9599, 1.96] rounds to (0.963, 2.768) percentage points."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P042.complete_randomization_balance",
+        "target_ids": [
+          "P042-T6"
+        ],
+        "what": "Under uniform complete randomization with fixed real potential outcomes and both arms nonempty, each group's expected mean of either potential outcome equals the population mean, and the observed difference in means is unbiased for the population average effect."
+      },
+      {
+        "lean_name": "AronowAudit.P042.cace_randomization_identity",
+        "target_ids": [
+          "P042-T6"
+        ],
+        "what": "Under complete randomization, one-sided contact, exclusion and no interference with a positive complier count, the complier average causal effect equals the expected intention-to-treat contrast divided by the expected treated-arm contact rate."
+      }
+    ],
+    "overview": "This review of voter-turnout field experiments uses fixed-effects meta-analysis and contact-rate adjustments to summarize experimental effects. Its Lean development is narrower than the empirical review: it covers covariance-aware pooling formulas, constructed shared-control counterexamples, exact arithmetic for two recorded-call estimates, and expectation identities under complete randomization. The formal results do not reconstruct the historical pools' covariance matrices or establish their confidence-interval coverage.",
+    "work_id": "P042"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P042-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P041/Wave1/Gap/GP041P042P045B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.Wave1.binomial_coverage_from_arms_proof",
+          "line": 110,
+          "module": "AronowAudit.P041.Wave1.Gap.GP041P042P045B2",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_arm_moments",
+          "line": 1033,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_convolution",
+          "line": 1317,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_coverage_exact",
+          "line": 1332,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_coverage_fraction_reduced",
+          "line": 1342,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_diagonal",
+          "line": 1235,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_diagonal_radius",
+          "line": 1256,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_expectation_add",
+          "line": 1045,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_expectation_div",
+          "line": 1062,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_expectation_mul",
+          "line": 1057,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_expectation_sub",
+          "line": 1051,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_expectation_tensor",
+          "line": 1072,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_interval_thresholds",
+          "line": 1265,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_marginal_one",
+          "line": 1088,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_marginal_two",
+          "line": 1094,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_marginal_zero",
+          "line": 1082,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.binomial_shared_control_moments",
+          "line": 1101,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "counterexample_proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.covers_zero_iff_abs",
+          "line": 1249,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.exactChoose_eq",
+          "line": 995,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.six_contrast_numerators",
+          "line": 145,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.six_counterexample",
+          "line": 227,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "counterexample_proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.six_design",
+          "line": 105,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.six_integer_moments",
+          "line": 134,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.six_moments",
+          "line": 154,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.six_sharp_null",
+          "line": 101,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T1",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the two examples of P042-E001, which are mine and are not in the article. In each example $D_1$ and $D_2$ are differences in turnout between a treatment group and one common control group, and both contrasts have mean zero. The two weights are equal, and the pooled estimate is $M=(D_1+D_2)/2$. In the first example, six voters have turnout $(1,1,1,0,0,0)$ whatever they are sent, two of them are assigned to each of the three groups, and the 90 allocations are equally likely. The statements assert that $D_1$ and $D_2$ have mean $0$, variance $3/10$ and covariance $3/20$, and that $\\operatorname{Var}(M)=9/40$, which is $3/2$ times the variance $1/W=3/20$ that the pooling calculation assigns to $M$. In the second example, the numbers of people who vote in three groups of 100 are independent binomial counts $X_0$, $X_1$ and $X_2$ with probability $1/2$, and $D_j=(X_j-X_0)/100$. The statements assert that $\\operatorname{Var}(D_j)=1/200$, that $\\operatorname{Cov}(D_1,D_2)=\\operatorname{Var}(X_0/100)=1/400$, and that $\\operatorname{Var}(M)=3/800$, which is $3/2$ times $1/W=1/400$. They assert also that the interval $M\\pm(49/25)\\sqrt{1/400}$ contains zero if and only if $|X_1+X_2-2X_0|\\le 19$, and that the bound is $24$ with $\\sqrt{3/800}$ in place of $\\sqrt{1/400}$. For the coverage, one statement asserts that $0.888<K_{19}/2^{300}<0.889$ and that $K_{24}/2^{300}>0.95$, where $K_r=\\sum_{x=0}^{100}\\binom{100}{x}\\sum_{t=\\max(0,\\,2x-r)}^{\\min(200,\\,2x+r)}\\binom{200}{t}.$ A separate statement asserts that, for every integer $r\\ge0$, $K_r/2^{300}$ is the probability that $|X_1+X_2-2X_0|\\le r$, and the bounds concern the coverage of the two intervals only through it. Both examples are stated with exact rational values, on the scale of proportions where the article uses percentage points, and with the multiplier $49/25=1.96$ in place of the normal quantile. The statements assert nothing about the experiments of the article or about the coverage of its intervals.",
+        "headline": "Two counterexamples to the variance behind the pooled 95% confidence intervals of pp. 31–33",
+        "location": "p. 31 (PDF p. 7), paragraph beginning “Meta-analysis is a statistical method”; the nine pooled intervals on pp. 31–33 (PDF pp. 7–9); the control group of Gerber et al. (2008) on p. 36 (PDF p. 12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P042-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/Wave1/Gap/GLP041P042P045P042B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.Wave1.finite_population_shared_control_proof",
+          "line": 409,
+          "module": "AronowAudit.P042.Wave1.Gap.GLP041P042P045P042B1",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.arm_sample_mean_memLp",
+          "line": 743,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.arm_sample_mean_variance",
+          "line": 759,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.arm_sample_means_uncorrelated",
+          "line": 786,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.corrected_precision_variance",
+          "line": 540,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.covariance_abs_bound",
+          "line": 620,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.covariance_form_decomposition",
+          "line": 496,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.difference_variance",
+          "line": 312,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.independent_arm_shared_control",
+          "line": 825,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.pooled_difference_covariance",
+          "line": 708,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.pooled_mean",
+          "line": 275,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.pooled_rank_one_equality",
+          "line": 667,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.pooled_variance",
+          "line": 287,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.pooled_variance_upper_bound",
+          "line": 643,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.population_effect_covariance",
+          "line": 967,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.positive_covariance_inflation",
+          "line": 588,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.precision_diagonal",
+          "line": 255,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.precision_weights",
+          "line": 241,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.shared_control_correlation_from_moments",
+          "line": 802,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.shared_control_covariance",
+          "line": 301,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.three_contrast_block",
+          "line": 888,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.uncorrelated_precision_variance",
+          "line": 569,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements assert the variance formula of the correction in P042-E001, which assumes neither independence nor a common effect, together with the identities that its evidence uses. The contrasts $D_1,\\dots,D_J$ are real random variables with finite second moments, positive standard deviations $s_j$, variances $s_j^2$ and covariances $\\Sigma_{jk}$, and the weights $a_j=s_j^{-2}/W$, with $W=\\sum_i s_i^{-2}$, are fixed numbers. The statements assert that $\\operatorname{Var}\\Bigl(\\sum_j a_jD_j\\Bigr)=\\frac{1}{W}+2\\sum_{j<k}a_ja_k\\Sigma_{jk}.$ They assert that this variance equals $1/W$ if and only if the second term is zero, as it is for uncorrelated contrasts, and that it is greater than $1/W$ when no covariance is negative and at least one is positive. For two disjoint pools, the difference between the two pooled estimates has variance $b^{\\mathsf T}\\Sigma b$, where $b_j$ is the weight of contrast $j$ within its own pool, taken with a minus sign in the second pool, and is zero outside the two pools. For contrasts $A_j-C$ and $A_k-C$ between two treatment means and one control mean, the covariance is $\\operatorname{Var}(C)$ when the three means are uncorrelated, and the correlation of the two contrasts is $\\sqrt{n_jn_k/((n_j+n_0)(n_k+n_0))}$ when they are means of $n_j$, $n_k$ and $n_0$ independent observations with a common positive variance. A further statement is the bound $\\operatorname{Var}(\\sum_j a_jD_j)\\le(\\sum_j a_js_j)^2$, which is attained when $D_j-\\mathbb{E}[D_j]=s_jZ$ for one variable $Z$ of mean zero and variance one. Another gives the variance $1/W+2a^2(c_{12}+c_{13}+c_{23})$ when three contrasts of equal weight $a$, with covariances $c_{12}$, $c_{13}$ and $c_{23}$, are the only correlated ones. The last concerns a finite population of $N\\ge2$ units with fixed potential outcomes, from which three groups of fixed sizes are drawn by complete randomization. It asserts that the two contrasts with the control group, which has $n_0$ units, have covariance $S_{00}/n_0-S_{\\tau_j\\tau_k}/N$, where $S_{00}$ is the variance of the outcomes without treatment and $S_{\\tau_j\\tau_k}$ is the covariance of the two individual effects, both with divisor $N-1$. The statements are broader than the corrected text in small respects: the covariance quadratic form gives the variance for any fixed coefficients, the bound for any nonnegative weights, and the observations need only be pairwise independent. They assert nothing about the covariances of the article’s own contrasts, about the recalculated intervals of the finding, or about the coverage of a normal interval.",
+        "headline": "The variance of the pooled estimates of pp. 31–33 and of the difference between the two types of mailings on p. 31, as corrected",
+        "location": "p. 31 (PDF p. 7), paragraphs beginning “Meta-analysis is a statistical method” and “We begin our discussion with direct mail”; the nine pooled intervals on pp. 31–33 (PDF pp. 7–9); the shared control group on p. 36 (PDF p. 12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P042-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_fixed_counterexample",
+          "line": 376,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "counterexample_proved",
+          "target_id": "P042-T3",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_fixed_endpoint_counterexample",
+          "line": 441,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "counterexample_proved",
+          "target_id": "P042-T3",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_fixed_exact",
+          "line": 365,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T3",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_random_exact",
+          "line": 384,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T3",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_random_interval",
+          "line": 472,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T3",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_random_rounding",
+          "line": 403,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T3",
+          "target_kind": "counterexample",
+          "work_id": "P042"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements carry out the calculation of P042-E002 on the two estimates of the replication dataset, $x_1=2.32988$ with standard error $0.55712$ and $x_2=0.86596$ with standard error $0.81782$. These inputs are not printed in the article, and their decimals are taken as exact rational numbers. Let $v_i$ be the squared standard errors, $w_i=1/v_i$ and $V_F=1/(w_1+w_2)$. The statements assert that the fixed effects average is $\\widehat\\mu_F=\\frac{w_1x_1+w_2x_2}{w_1+w_2}=\\frac{114191974724271}{61200765425000},$ that $1.8655<\\widehat\\mu_F<1.8665$, and in particular that $\\widehat\\mu_F>1.7205$, so that it does not round to the printed $1.720$. They assert that, for every multiplier $z$ between $1.9599$ and $1.96$, the endpoint $\\widehat\\mu_F-z\\sqrt{V_F}$ is above $0.9625$ and the endpoint $\\widehat\\mu_F+z\\sqrt{V_F}$ is below $2.7685$. Neither endpoint then rounds to the printed $0.306$ or $3.135$. A second group of statements gives the DerSimonian–Laird calculation, with the heterogeneity statistic $Q=5357654416/2448030617>1$, the variance between studies $\\widehat\\tau^2=2909623799/5000000000$ and the estimate $\\widehat\\mu_R=12592252377/7319600000$. They assert that $1.7195\\le\\widehat\\mu_R<1.7205$ and that, for every $z$ in the same range, the endpoints $\\widehat\\mu_R\\pm z\\sqrt{V_R}$, with $V_R$ the variance of that calculation, lie in $[0.3055,0.3065)$ and $[3.1345,3.1355)$, so that the three numbers round to the printed ones. All of these are statements of arithmetic on fixed numbers. They do not assert that the normal quantile lies between $1.9599$ and $1.96$, and the agreement with the random-effects calculation does not show which calculation produced the printed figure.",
+        "headline": "A counterexample to the last sentence of Note 5, read with the fixed effects weighting that p. 31 declares",
+        "location": "Note 5, p. 40 (PDF p. 16), last sentence; the method is declared on p. 31 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P042-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_fixed_exact",
+          "line": 365,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_fixed_interval",
+          "line": 419,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_fixed_positive",
+          "line": 459,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_fixed_rounding",
+          "line": 397,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_random_exact",
+          "line": 384,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_random_interval",
+          "line": 472,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.robo_random_rounding",
+          "line": 403,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.sqrt_enclosure",
+          "line": 410,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P042"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements assert the figures of the corrected sentence in P042-E002. The inputs are the two estimates of the replication dataset, $2.32988$ with standard error $0.55712$ and $0.86596$ with standard error $0.81782$, taken as exact rational numbers. With $w_1$ and $w_2$ the reciprocals of the squared standard errors, $\\widehat\\mu_F$ the fixed effects average and $V_F=1/(w_1+w_2)$, the statements assert that $1.8655\\le\\widehat\\mu_F<1.8665$, so that the average rounds to $1.866$. They assert that, for every multiplier $z$ between $1.9599$ and $1.96$, $0.9625\\le\\widehat\\mu_F-z\\sqrt{V_F}<0.9635,\\qquad 2.7675\\le\\widehat\\mu_F+z\\sqrt{V_F}<2.7685,$ so that the interval rounds to $(0.963, 2.768)$. They assert also that the lower endpoint is positive for every $z$ between $0$ and $1.96$. The alternative correction, which keeps the printed figures and names their method, rests on the DerSimonian–Laird statements described under the counterexample. All of these are statements of arithmetic on fixed numbers. The number $V_F$ is the variance of the average only if the two estimates are uncorrelated, which is a condition of the correction and is not part of the Lean statements. The statements do not assert that the normal quantile lies between $1.9599$ and $1.96$, and they assert nothing about coverage.",
+        "headline": "The last sentence of Note 5, as corrected",
+        "location": "Note 5, p. 40 (PDF p. 16), last sentence"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P042-T5",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/Wave1/PrintedComparisonVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.Wave1.printed_comparison_variance_refuted",
+          "line": 17,
+          "module": "AronowAudit.P042.Wave1.PrintedComparisonVariance",
+          "status": "counterexample_proved",
+          "target_id": "P042-T5",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/Wave1/PrintedPoolingVariance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.Wave1.printed_pooling_variance_refuted",
+          "line": 17,
+          "module": "AronowAudit.P042.Wave1.PrintedPoolingVariance",
+          "status": "counterexample_proved",
+          "target_id": "P042-T5",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P042"
+        }
+      ],
+      "text": {
+        "body": "The article describes its pooling in words and prints no formula for the weights, the variance or the intervals. The two Lean statements are my reading of what the printed intervals and the comparison on p. 31 presuppose. More precisely, they negate the universal validity of the two reconstructed variance identities. The reading rests on the reproduction in P042-E001, in which each of the nine intervals is the pooled estimate plus or minus a normal multiplier times $\\sqrt{1/W}$. In the first statement, $J\\ge1$, the contrasts $D_1,\\dots,D_J$ are real random variables with finite second moments and variances $s_j^2>0$, and the fixed weights are $a_j=s_j^{-2}/W$ with $W=\\sum_i s_i^{-2}$. It asserts that the identity $\\operatorname{Var}\\Bigl(\\sum_j a_jD_j\\Bigr)=\\frac{1}{W},$ need not hold without a condition on the covariances between the contrasts. The second statement is about two nonempty disjoint pools of such contrasts with weight sums $W_N$ and $W_A$, and it asserts that the difference between the two pooled estimates need not have variance $1/W_N+1/W_A$ without a condition on the covariances. The article does not say which test lies behind “significantly different average effects”, and this is the reading of the finding. The two examples of the finding contradict the first reconstructed identity, and the corrected statement gives the condition under which that identity holds. The nine estimates and intervals are empirical figures and are not formalized.",
+        "headline": "The fixed effects pooling of p. 31 and the nine pooled 95% confidence intervals of pp. 31–33, as printed",
+        "location": "p. 31 (PDF p. 7); p. 32 (PDF p. 8); p. 33 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P042-T6",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.cace_randomization_identity",
+          "line": 1562,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.complete_group_mean",
+          "line": 1431,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.complete_inclusion_probability",
+          "line": 1404,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.complete_randomization_balance",
+          "line": 1477,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.finite_expectation_const",
+          "line": 1397,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.finite_expectation_div",
+          "line": 1391,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.finite_expectation_mul",
+          "line": 1385,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.finite_expectation_sub",
+          "line": 1372,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.finite_expectation_sum",
+          "line": 1377,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.itt_complier_identity",
+          "line": 1546,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P042/P042_Turnout.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P042.michelson_cace_example",
+          "line": 1594,
+          "module": "AronowAudit.P042.P042_Turnout",
+          "status": "proved",
+          "target_id": "P042-T6",
+          "target_kind": "headline_result",
+          "work_id": "P042"
+        }
+      ],
+      "text": {
+        "body": "The article states both in words, and the Lean statements are my reading of them. There are $N\\ge2$ subjects with fixed potential outcomes $Y_i(0)$ and $Y_i(1)$, which may be any real numbers, and every set of $m$ subjects, with $1\\le m\\le N-1$, is equally likely to be the treatment group. For the statement on p. 30, the Lean statement asserts that the mean of $Y_i(t)$ in the treatment group and its mean in the control group both have expectation $\\frac{1}{N}\\sum_iY_i(t)$, for $t=0$ and $t=1$. It asserts also that the difference between the two groups in the mean observed outcome has expectation $\\frac{1}{N}\\sum_i[Y_i(1)-Y_i(0)]$. For the formula on p. 32, each subject is a Complier or a Never-taker, a subject is contacted exactly when he or she is a Complier assigned to treatment, and turnout depends only on the subject’s own contact. This representation contains two conditions that the article does not list: nobody in the control group is contacted, and assignment affects turnout only through contact. Let $\\bar Y_T$ and $\\bar Y_C$ be the turnout rates of the subjects assigned to treatment and to control, and let $F_T$ be the fraction of the treatment group that is contacted. If there is at least one Complier, the statements assert that the effect of assignment equals the share of Compliers times the CACE, that $\\mathbb{E}[\\bar Y_T-\\bar Y_C]$ is the effect of assignment and $\\mathbb{E}[F_T]$ the share of Compliers, and that $\\mathrm{CACE}=\\frac{\\mathbb{E}[\\bar Y_T-\\bar Y_C]}{\\mathbb{E}[F_T]}.$ A further statement is the arithmetic of the example of Michelson (2006), $(9.4-7.0)/0.50=4.8$. The statements are narrower than the article in one respect: the article says only that units are “assigned at random with known probability”, and the Lean statements fix the design above. The identity is between expectations. The ratio $(\\bar Y_T-\\bar Y_C)/F_T$ that the article describes is defined with the value $0$ when nobody in the treatment group is contacted, where the printed ratio is undefined, and nothing is asserted about its bias or its consistency.",
+        "headline": "The statement on p. 30 that potential outcomes are the same in expectation under random assignment, and the contact-rate formula for the Complier average causal effect on p. 32",
+        "location": "p. 30 (PDF p. 6) with Note 2, pp. 39–40 (PDF pp. 15–16); p. 32 (PDF p. 8)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "Donald P. Green",
+      "Mary C. McGrath",
+      "P. M. Aronow"
+    ],
+    "citation": "Donald P. Green, Mary C. McGrath, and P. M. Aronow (2013). Field Experiments and the Study of Voter Turnout. Journal of Elections, Public Opinion and Parties 23(1):27–48.",
+    "doi": "10.1080/17457289.2012.728223",
+    "title": "Field Experiments and the Study of Voter Turnout",
+    "type": "Journal article",
+    "venue": "Journal of Elections, Public Opinion and Parties",
+    "year": "2013"
+  },
+  "work_id": "P042"
+}

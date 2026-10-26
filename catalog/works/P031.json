@@ -1,0 +1,453 @@
+{
+  "counts": {
+    "counterexample_proved": 3,
+    "proved": 9,
+    "results": 12,
+    "targets": 11
+  },
+  "overview": {
+    "areas": [
+      "randomization-inference",
+      "experimental-design-and-estimation",
+      "regression-and-variance-estimation"
+    ],
+    "caveats": [
+      "The finite design fixes potential outcomes and averages uniformly over all subsets of a specified treatment size; each arm must contain at least two units.",
+      "The OLS–constant-effects equality is an identity in observed outcomes and imputed potential outcomes, and does not assume that the true treatment effects are constant.",
+      "The balanced-design equivalence retains the finite-sample factor $(N-1)/(N-2)$ on the constant-effects estimate; that estimate is not generally identical to the other three without rescaling.",
+      "Conservativeness of HC2 in expectation is distinct from confidence-interval coverage and from an assignmentwise upper bound on true variance.",
+      "The large-sample refutation uses a fixed treated-arm size of two and fails through the HR/HC2 equivalence clause; it proves no separate undercoverage conclusion and does not refute a repair requiring both arms to grow and additional variance-estimator regularity.",
+      "Population variances and covariances use divisor $N$; arm sample variances use the usual group-size-minus-one divisor.",
+      "The corrected footnote's stochastic conclusions require consistency of both centered arm sample variances or uniformly bounded potential outcomes, and the ratio conclusion requires positive leading true variance; the attribution to Freedman is outside the formal statement."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P031.Wave1.printed_large_sample_contract_refuted",
+        "target_ids": [
+          "P031-T5"
+        ],
+        "what": "The printed large-sample conjunction of robust-estimator equivalence and conservative normal-interval coverage does not follow from growing population size and a standardized normal limit alone: Lean constructs a sequence with only two treated units for which HR is not first-order equivalent to HC2."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P031.printed_covariance_counterexample",
+        "target_ids": [
+          "P031-T7"
+        ],
+        "what": "The printed proof of Theorem 2 equates an imputed variance with the original potential-outcome covariance, but for $N=4$, $M=2$, $y_0=y_1=(0,2,5,9)$ and the first two units treated, both imputed variances are $5/2$ while the original covariance is $23/2$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P031.footnote_three_counterexample",
+        "target_ids": [
+          "P031-T10"
+        ],
+        "what": "Against footnote 3's explanation in terms of the control mean and average treatment effect, three population sequences share allocation fraction $1/4$, control mean zero and average effect two but have OLS-to-true-variance probability limits $1$, $4/7$ and $52/25$, and shifts of those first moments leave both variances unchanged."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P031.Wave1.footnote_three_complete",
+        "target_ids": [
+          "P031-T11"
+        ],
+        "what": "Replacing footnote 3's first-moment explanation, the corrected result derives the limits of $N\\operatorname{Var}(\\hat\\beta)$ and $N E[\\hat V_{\\mathrm{OLS}}]$ for population sizes tending to infinity, an interior limiting allocation fraction and limiting centered potential-outcome variances and covariance, and obtains the corresponding OLS probability and ratio limits with additional arm sample-variance consistency or uniformly bounded outcomes and, for the ratio, positive leading true variance."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P031.hc2_eq_neyman",
+        "target_ids": [
+          "P031-T1"
+        ],
+        "what": "For every observed real outcome vector and treatment assignment with at least two units in each arm, the HC2 treatment-coefficient variance estimate equals the Neyman variance estimate exactly."
+      },
+      {
+        "lean_name": "AronowAudit.P031.hc2_conservative",
+        "target_ids": [
+          "P031-T2"
+        ],
+        "what": "Under uniform complete randomization with at least two units in each arm and fixed real potential outcomes, the expectation of HC2 is at least the actual randomization variance of the difference in means."
+      },
+      {
+        "lean_name": "AronowAudit.P031.scaled_ols_eq_constantEffects",
+        "target_ids": [
+          "P031-T3"
+        ],
+        "what": "For every observed outcome vector and assignment with at least two units in each arm, $(N-2)/(N-1)$ times the homoskedastic OLS variance estimate equals the constant-effects variance estimate evaluated on the imputed potential outcomes."
+      },
+      {
+        "lean_name": "AronowAudit.P031.balanced_equivalences",
+        "target_ids": [
+          "P031-T4"
+        ],
+        "what": "When $N=2M$ and both arms contain at least two units, $(N-1)/(N-2)$ times the constant-effects estimate, the OLS estimate, the Neyman estimate and HC2 are equal for every observed outcome vector."
+      }
+    ],
+    "overview": "This work relates design-based variance estimators for the difference in means in a completely randomized experiment to homoskedastic and heteroskedasticity-robust regression variance estimators. The Lean development proves the finite-sample HC2–Neyman identity, conservativeness in expectation, the scaled OLS–constant-effects identity and the balanced-design equivalences. It also covers corrected proof identities, asymptotic comparisons in unbalanced designs, and counterexamples to the printed large-sample conjunction and the first-moment explanation in footnote 3.",
+    "work_id": "P031"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T1",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/P031_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.hc2_eq_neyman",
+          "line": 186,
+          "module": "AronowAudit.P031.P031_Variance",
+          "status": "proved",
+          "target_id": "P031-T1",
+          "target_kind": "headline_result",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that $\\hat V_{HC2}(\\hat\\beta)=\\hat V_N(\\hat\\beta)$ for every set of treated units such that each group contains at least two units, which is the condition $1<M<N-1$, and for every real vector $Y$ of observed outcomes. The labels of the units are fixed and the treated units form an arbitrary subset, where the paper reorders the units so that the treated ones come first. The HC2 estimate is written as the sum $\\sum_{i}w_i^2\\,\\hat e_i^2/(1-h_{ii})$, where $w_i$ is the coefficient of $Y_i$ in $\\hat\\beta$. The statement has the same scope as the printed theorem.",
+        "headline": "Theorem 1",
+        "location": "p. 367 (PDF p. 3); proof on p. 368 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T2",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/P031_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.hc2_conservative",
+          "line": 797,
+          "module": "AronowAudit.P031.P031_Variance",
+          "status": "proved",
+          "target_id": "P031-T2",
+          "target_kind": "headline_result",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that $E\\bigl[\\hat V_{HC2}(\\hat\\beta)\\bigr]\\ge V(\\hat\\beta)$ for every finite population whose potential outcomes are fixed real numbers and for every number $M$ of treated units such that $M\\ge 2$ and $N-M\\ge 2$, which is the condition $1<M<N-1$. The expectation is the average over all sets of $M$ treated units, each equally likely, as on p. 366. The variance $V(\\hat\\beta)$ is defined as the variance of the difference in means over these assignments, not as expression (3). The statement has the same scope as the printed corollary: it compares an expectation with a variance and says nothing about the coverage of confidence intervals.",
+        "headline": "Corollary 1",
+        "location": "p. 368 (PDF p. 4); supporting displays on p. 367 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T3",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/P031_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.scaled_ols_eq_constantEffects",
+          "line": 265,
+          "module": "AronowAudit.P031.P031_Variance",
+          "status": "proved",
+          "target_id": "P031-T3",
+          "target_kind": "headline_result",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that $\\frac{N-2}{N-1}\\,\\hat V_{OLS}(\\hat\\beta)=\\hat V_{CE}(\\hat\\beta)$ for every set of treated units such that $1<M<N-1$ and for every real vector of observed outcomes. Here $\\hat V_{CE}(\\hat\\beta)$ is expression (5) evaluated on the hypothesized outcomes $\\tilde y_{0i}=Y_i-X_i\\hat\\beta$ and $\\tilde y_{1i}=Y_i+(1-X_i)\\hat\\beta$, with the two variances and the covariance $\\sigma(\\tilde y_1,\\tilde y_0)$ taken with divisor $N$, and $\\hat V_{OLS}(\\hat\\beta)$ is $\\sum_{i}\\hat e_i^2/(N-2)$ times the $[2,2]$ element of $(Z'Z)^{-1}$. The statement is an identity in the observed data. Nothing is assumed about the potential outcomes, and in particular the true effects need not be constant. The statement has the same scope as the printed theorem.",
+        "headline": "Theorem 2",
+        "location": "p. 369 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T4",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/P031_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.balanced_equivalences",
+          "line": 283,
+          "module": "AronowAudit.P031.P031_Variance",
+          "status": "proved",
+          "target_id": "P031-T4",
+          "target_kind": "headline_result",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that $\\frac{N-1}{N-2}\\,\\hat V_{CE}(\\hat\\beta)=\\hat V_{OLS}(\\hat\\beta)=\\hat V_N(\\hat\\beta)=\\hat V_{HC2}(\\hat\\beta)$ for every set of $M$ treated units such that $N=2M$ and $1<M<N-1$, and for every real vector of observed outcomes. The chain is stated as its three adjacent equalities, and the factor $(N-1)/(N-2)$ on the constant-effects estimator is kept. The four estimators are represented as in the Lean statements of Theorems 1 and 2. The statement has the same scope as the printed theorem.",
+        "headline": "Theorem 3",
+        "location": "p. 369 (PDF p. 5); proof on p. 370 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T5",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/Wave1/LargeSampleRefutation.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.Wave1.printed_large_sample_contract_refuted",
+          "line": 29,
+          "module": "AronowAudit.P031.Wave1.LargeSampleRefutation",
+          "status": "counterexample_proved",
+          "target_id": "P031-T5",
+          "target_kind": "headline_result",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that there is a sequence of finite populations in the setting of Section 2 such that $N\\to\\infty$, $V(\\hat\\beta)$ is eventually positive and $(\\hat\\beta-\\beta)/\\sqrt{V(\\hat\\beta)}$ converges in distribution to a standard normal variable, but HR is not first-order equivalent to HC2. It also negates the universal implication from these hypotheses to the conjunction of HR, HC1 and HC3 being first-order equivalent to HC2 and the intervals $\\hat\\beta\\pm z\\sqrt{\\hat V}$ based on the Neyman, HC2, HR, HC1 and HC3 estimators having coverage with limit inferior at least $2\\Phi(z)-1$ for every $z>0$, where $\\Phi$ is the standard normal distribution function. The paper does not define its asymptotic terms or specify a sequence, and the definitions are mine. The bound on coverage is a bound on the limit inferior of the coverage probability, two estimators $A$ and $B$ are first-order equivalent if $\\Pr(|A-B|>\\varepsilon|B|)\\to 0$ for each $\\varepsilon>0$, and HC1 and HC3, which the paper does not define, are respectively $N/(N-2)$ times HR and the estimator with $\\hat e_i^2/(1-h_{ii})^2$ substituted for $\\hat e_i^2$. The failure of HR/HC2 equivalence negates the conjunction; the statement gives no separate undercoverage conclusion. The counterexample keeps $M=2$. The conditions stated in P031-E001, requiring $\\hat V_N(\\hat\\beta)/V(\\hat\\beta)$ to converge in probability to a finite constant $c\\ge 1$ and $M$ and $N-M$ both to tend to infinity, are not part of this statement.",
+        "headline": "The statement of Section 3 on the coverage of large-sample confidence intervals, its extension to HC2 after Corollary 1, and footnote 2",
+        "location": "p. 367 (PDF p. 3); p. 368 (PDF p. 4), including footnote 2"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T6",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/Wave1/Gap/GLP027P016P031P031B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.Wave1.ols_ce_may_be_too_small_or_large_proof",
+          "line": 335,
+          "module": "AronowAudit.P031.Wave1.Gap.GLP027P016P031P031B1",
+          "status": "proved",
+          "target_id": "P031-T6",
+          "target_kind": "headline_result",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The paper says that for $N\\ne 2M$ the OLS and constant-effects estimators may be too large or too small relative to $V(\\hat\\beta)$ and that confidence intervals based on them are not assured to be approximately correct or conservative. The Lean statement makes “may” and “not assured” assertions of existence: there exists a sequence of finite populations in the setting of Section 2, with $N\\to\\infty$ and $N\\ne 2M$ throughout, such that $N\\,V(\\hat\\beta)\\to v>0$ while $N\\hat V_{OLS}(\\hat\\beta)$ and $N\\hat V_{CE}(\\hat\\beta)$ converge in probability to a common limit $a<v$, and there exists another such sequence with $a>v$. For the first sequence it asserts further that $(\\hat\\beta-\\beta)/\\sqrt{V(\\hat\\beta)}$ converges in distribution to a standard normal variable and that, for every $z>0$, the coverage of the interval $\\hat\\beta\\pm z\\sqrt{\\hat V}$ based on either estimator tends to a limit below $2\\Phi(z)-1$, where $\\Phi$ is the standard normal distribution function. The two variances are compared after multiplication by $N$, since both tend to zero, and the paper specifies no sequence. The clause on coverage is stronger than the printed sentence, which says only that correct or conservative coverage is not assured.",
+        "headline": "The statements of Section 4 on the OLS and constant-effects estimators when $N\\ne 2M$",
+        "location": "p. 369 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T7",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/P031_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.printed_covariance_counterexample",
+          "line": 1237,
+          "module": "AronowAudit.P031.P031_Variance",
+          "status": "counterexample_proved",
+          "target_id": "P031-T7",
+          "target_kind": "counterexample",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The first sentence of the printed proof ends with the equality $\\sigma^2(\\tilde y_1)=\\sigma(y_0,y_1)$, and the Lean statement gives an instance of the setting of Section 2 in which this equality fails. Let $N=4$, $M=2$ and $y_0=y_1=(0,2,5,9)$, and suppose that the first two units are treated, which is one of the six equally likely assignments. The statement asserts that $\\hat\\beta=-6$, $\\tilde y_0=(6,8,5,9)$ and $\\tilde y_1=(0,2,-1,3)$, that $\\tilde y_{0i}=\\tilde y_{1i}-\\hat\\beta$ for every unit, and that $\\sigma^2(\\tilde y_0)=\\sigma^2(\\tilde y_1)=\\frac{5}{2},\\qquad \\sigma(y_0,y_1)=\\frac{23}{2}.$ The true effects in this instance are all zero, so the printed equality fails even when the effects are constant. The instance contradicts a step of the printed proof and not Theorem 2 (see P031-E002).",
+        "headline": "A counterexample to the first sentence of the proof of Theorem 2, as printed",
+        "location": "p. 369 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/P031_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.corrected_theorem_two_proof",
+          "line": 1292,
+          "module": "AronowAudit.P031.P031_Variance",
+          "status": "proved",
+          "target_id": "P031-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts every equality of the corrected proof, for every set of treated units such that $1<M<N-1$ and for every real vector of observed outcomes. Its clauses are that $\\tilde y_{0i}=\\tilde y_{1i}-\\hat\\beta$ for every unit, that $\\sigma^2(\\tilde y_0)=\\sigma^2(\\tilde y_1)=\\sigma(\\tilde y_0,\\tilde y_1)$, that $\\hat V_{CE}(\\hat\\beta)=\\frac{N}{N-1}\\,\\frac{N}{M(N-M)}\\,\\sigma^2(\\tilde y_0),\\qquad \\frac{\\sum_{i=1}^{N}\\hat e_i^{2}}{N}=\\frac{\\sum_{i=1}^{N}(Y_i-\\hat\\alpha-X_i\\hat\\beta)^2}{N}=\\frac{\\sum_{i=1}^{N}(\\tilde y_{0i}-\\hat\\alpha)^2}{N}=\\sigma^2(\\tilde y_0),$ and that each link of the final display of the proof holds. The two ends of that display are Theorem 2, and the corrections are those of P031-E002: the covariance is that of the hypothesized outcomes, and the residual sums carry the index $i$. No clause involves the covariance $\\sigma(y_0,y_1)$ of the original potential outcomes, and constant effects are not assumed. The statement has the same scope as the corrected proof.",
+        "headline": "The proof of Theorem 2, as corrected",
+        "location": "p. 369 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T9",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/P031_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.corrected_theorem_three_proof",
+          "line": 1342,
+          "module": "AronowAudit.P031.P031_Variance",
+          "status": "proved",
+          "target_id": "P031-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts each link of the corrected display, $\\begin{aligned} \\frac{N-1}{N-2}\\hat V_{CE}(\\hat\\beta) &=\\hat V_{OLS}(\\hat\\beta) =\\frac{\\sum_{i=1}^{N}\\hat e_i^{2}}{2(M-1)}\\,\\frac{2M}{M^{2}} =\\frac{\\dfrac{\\sum_{i=1}^{M}\\hat e_i^{2}}{M-1}}{M}+\\frac{\\dfrac{\\sum_{i=M+1}^{N}\\hat e_i^{2}}{M-1}}{M}\\\\ &=\\frac{\\hat\\sigma^2(y_1)}{M}+\\frac{\\hat\\sigma^2(y_0)}{M}=\\hat V_N(\\hat\\beta)=\\hat V_{HC2}(\\hat\\beta), \\end{aligned}$ for every set of $M$ treated units such that $N=2M$ and $1<M<N-1$, and for every real vector of observed outcomes. The corrections are those of P031-E002: the constant-effects estimator carries its hat, and the sample variances $\\hat\\sigma^2(y_1)$ and $\\hat\\sigma^2(y_0)$ replace the undefined symbols $\\hat V(y_1)$ and $\\hat V(y_0)$. In the Lean statement the sums over $i\\le M$ and $i>M$ are sums over the treated and the control units, and the sample variances are those of the observed outcomes in the two groups, with divisor $M-1$. The statement has the same scope as the corrected proof.",
+        "headline": "The proof of Theorem 3, as corrected",
+        "location": "p. 370 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T10",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/P031_Variance.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.footnote_three_counterexample",
+          "line": 2056,
+          "module": "AronowAudit.P031.P031_Variance",
+          "status": "counterexample_proved",
+          "target_id": "P031-T10",
+          "target_kind": "counterexample",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "Footnote 3 says that the asymptotic relation between $\\hat V_{OLS}(\\hat\\beta)$ and $V(\\hat\\beta)$ depends on the limiting values of the control group mean, which I read as $\\bar y_0$, and the average treatment effect. For each integer $k\\ge 2$ let $N=4k$ and $M=k$, let $z_i=-1$ for $i\\le 2k$ and $z_i=1$ for $i>2k$, and set $y_{0i}=z_i$ and $y_{1i}=az_i+2$. The main Lean statement asserts that, for $a=1$, $2$ and $1/2$, the treatment fraction is $1/4$, the control group mean $\\bar y_0$ is $0$ and the average treatment effect $\\beta$ is $2$ for every $k$, while $\\hat V_{OLS}(\\hat\\beta)/V(\\hat\\beta)$ converges in probability to $1$, $4/7$ and $52/25$. It also asserts that, in every finite population in the setting of Section 2, adding $c$ to every $y_{0i}$ and $c+d$ to every $y_{1i}$ moves $\\bar y_0$ by $c$ and $\\beta$ by $d$ and leaves $V(\\hat\\beta)$ and, for every assignment, $\\hat V_{OLS}(\\hat\\beta)$ unchanged. The statement also contains the limit in probability of $N\\hat V_{CE}(\\hat\\beta)$, which the footnote does not mention. It does not assess the attribution to Freedman (2008b, p. 190).",
+        "headline": "A counterexample to footnote 3, as printed",
+        "location": "p. 369 (PDF p. 5), footnote 3"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P031-T11",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/Wave1/FootnoteThreeComplete.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.Wave1.footnote_three_complete",
+          "line": 10,
+          "module": "AronowAudit.P031.Wave1.FootnoteThreeComplete",
+          "status": "proved",
+          "target_id": "P031-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P031"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P031/Wave1/FootnoteThreeProbability.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P031.Wave1.footnote_three_probability_complete",
+          "line": 18,
+          "module": "AronowAudit.P031.Wave1.FootnoteThreeProbability",
+          "status": "proved",
+          "target_id": "P031-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P031"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement combines the deterministic limits, conditional probability limits and exact shift identities of the corrected footnote. Its deterministic part concerns sequences of finite populations in the setting of Section 2 such that $N\\to\\infty$, $M/N\\to p\\in(0,1)$, $\\sigma^2(y_1)\\to v_1$, $\\sigma^2(y_0)\\to v_0$ and $\\sigma(y_1,y_0)\\to c_{10}$, and asserts that $N\\,V(\\hat\\beta)\\to\\frac{1-p}{p}\\,v_1+\\frac{p}{1-p}\\,v_0+2c_{10}, \\qquad N\\,E\\bigl[\\hat V_{OLS}(\\hat\\beta)\\bigr]\\to\\frac{v_1}{1-p}+\\frac{v_0}{p},$ together with the limit of $N\\bigl(E\\bigl[\\hat V_{OLS}(\\hat\\beta)\\bigr]-V(\\hat\\beta)\\bigr)$ and the limit $\\sigma^2(y_1-y_0)\\to v_1+v_0-2c_{10}$. A second Lean statement gives the same conditional probability limits as the main statement: under the additional condition that $\\hat\\sigma^2(y_1)-\\sigma^2(y_1)$ and $\\hat\\sigma^2(y_0)-\\sigma^2(y_0)$ converge to zero in probability, or that the potential outcomes are uniformly bounded along the sequence, it asserts that $N\\hat V_{OLS}(\\hat\\beta)$ converges in probability to the second limit and, when the first limit is positive, that $\\hat V_{OLS}(\\hat\\beta)/V(\\hat\\beta)$ converges in probability to the ratio of the second limit to the first. The second statement also asserts that uniform boundedness implies the stated consistency of both arm sample variances. The main statement also includes the following exact property: in every finite population in the setting of Section 2, adding $c$ to every $y_{0i}$ and $c+d$ to every $y_{1i}$ moves $\\bar y_0$ by $c$ and $\\beta$ by $d$ and leaves $V(\\hat\\beta)$ and, for every assignment, $\\hat V_{OLS}(\\hat\\beta)$ unchanged. The paper prints none of these conditions and specifies no asymptotic sequence; the first condition of the second statement is my exact form of the condition in P031-E003 that the sample second moments converge, and the attribution to Freedman (2008b, p. 190) is not part of the formal statements.",
+        "headline": "Footnote 3, as corrected",
+        "location": "p. 369 (PDF p. 5), footnote 3"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "Cyrus Samii",
+      "P. M. Aronow"
+    ],
+    "citation": "Cyrus Samii and P. M. Aronow (2012). On Equivalencies Between Design-Based and Regression-Based Variance Estimators for Randomized Experiments. Statistics and Probability Letters 82(2):365–370.",
+    "doi": "10.1016/j.spl.2011.10.024",
+    "title": "On Equivalencies Between Design-Based and Regression-Based Variance Estimators for Randomized Experiments",
+    "type": "Journal article",
+    "venue": "Statistics and Probability Letters",
+    "year": "2012"
+  },
+  "work_id": "P031"
+}

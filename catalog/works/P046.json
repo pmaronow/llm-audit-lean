@@ -1,0 +1,2352 @@
+{
+  "counts": {
+    "counterexample_proved": 2,
+    "proved": 121,
+    "results": 123,
+    "targets": 10
+  },
+  "overview": {
+    "areas": [
+      "causal-identification",
+      "asymptotic-statistics",
+      "regression-and-variance-estimation"
+    ],
+    "caveats": [
+      "The targets concern the 2025 published version. [arXiv:2108.11342v2 (2021)](https://arxiv.org/abs/2108.11342v2) is an earlier preprint: its Proposition 3 uses radius $\\sqrt{\\log(2/\\alpha)/(2n\\delta^2)}$ rather than the published random-$\\xi$ radius, and its Proposition 4 has no part (d).",
+      "The estimand is the population treated potential-outcome mean $\\mu=\\mathrm{E}[Y(1)]$; probability is over i.i.d. superpopulation samples, with an atomless real covariate, binary treatment and potential outcomes, consistency, separate conditional independence for each potential outcome, and propensities bounded strictly between $\\delta$ and $1-\\delta$.",
+      "Uniform root-n control for known propensities fixes one common $\\delta>0$ before varying the law; the observational impossibility statement instead ranges over the union of laws with law-specific positive bounds, and its proof does not establish the stronger common-delta impossibility claim.",
+      "Cross-fits are jointly measurable training-data functions of the opposite deterministic fold; the finite unbiasedness theorem requires integrable evaluated predictions, while the selected asymptotic theorems retain almost-sure fitted $L^2$ membership and fold proportions tending to one half.",
+      "Part 4(b) uses convergence of expected integrated squared error, including all-sample-size integrability, to deterministic limits that may differ across folds; part 4(d) instead uses $L^2$ convergence in probability to the true regression and imposes no nuisance convergence rate.",
+      "The normal limit at $B_H$ does not prove a canonical-gradient or semiparametric lower-bound result, local regularity, or optimality for the smaller model with known covariate distribution.",
+      "The interval counterexample establishes unconditional undercoverage at $\\alpha=10^{-7}$; the separate $\\alpha=0.05$ example refutes a conditional proof step and does not establish unconditional 95% undercoverage.",
+      "The corrected efficiency comparison uses population risk $R(g)=\\mathrm{E}[(1-\\pi(W))(Y(1)-g(W))^2/\\pi(W)]$ and empirical criterion $\\sum_{i\\in T}X_i(1-\\pi(W_i))(Y_i-g(W_i))^2/\\pi(W_i)^2$ on each opposite fold; it assumes empirical minimization, zero in the working family or its corresponding weighted $L^2$ closure, and convergence to a population risk minimizer.",
+      "Uniform generators use Lebesgue measure on $[0,1]$, whose endpoint convention agrees almost surely with the informal open-interval uniform law; the finite count certificates are connected to the actual continuous sampling law."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P046.Wave1.counterexample_proof",
+        "target_ids": [
+          "P046-T1"
+        ],
+        "what": "Printed Proposition 3 claims finite-sample $1-\\alpha$ coverage for $\\hat\\mu\\pm\\sqrt{\\xi\\log(2/\\alpha)/(2n)}$; a valid continuous-covariate study with $n=100$, $\\mu=3/5$ and $\\alpha=10^{-7}$ instead has exact strict noncoverage probability greater than $119/10^9>\\alpha$, with exactly 1946 failing count states."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P046.ConditionalExample.counterexample",
+        "target_ids": [
+          "P046-T2"
+        ],
+        "what": "The proof's population-centered conditional Hoeffding claim fails in a valid study with $\\mu=1/2$: on a covariate event of probability $2^{-100}$, the conditional tail probability for the printed radius at $\\alpha=1/20$ is one almost everywhere, exceeding $1/20$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P046.Wave1.proposition3_corrected_proof",
+        "target_ids": [
+          "P046-T3"
+        ],
+        "what": "Printed Proposition 3 uses radius $\\sqrt{\\xi\\log(2/\\alpha)/(2n)}$ for the population mean; replacing it by $(\\sqrt{\\xi}+1)\\sqrt{\\log(4/\\alpha)/(2n)}$, where $\\xi=n^{-1}\\sum_i\\pi(W_i)^{-2}$, gives population-centered tail probability at most $\\alpha$ for every positive sample size and $0<\\alpha<1$ under the standing assumptions."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P046.Wave1.regression_counterexample_proof",
+        "target_ids": [
+          "P046-T4"
+        ],
+        "what": "Printed Proposition 4(c) claims that fits with finitely many parameters obtained by empirical weighted-risk minimization are at least as asymptotically efficient as Horvitz–Thompson; a valid continuous-covariate study with balanced opposite-fold empirical minimizers and convergent predictions instead has adjusted and Horvitz–Thompson variances $169/(400n)$ and $79/(400n)$, with Gaussian limits having the corresponding variance constants."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P046.Wave1.proposition4c_corrected_proof",
+        "target_ids": [
+          "P046-T5"
+        ],
+        "what": "Printed Proposition 4(c) compares empirical weighted-risk fits with Horvitz–Thompson without requiring a zero benchmark or convergence to a population risk minimizer. The corrected theorem gives a Gaussian limit with variance no larger than Horvitz–Thompson for a fixed square-integrable family with finitely many real parameters, zero in the family or its weighted $L^2$ closure, and measurable opposite-fold empirical weighted-risk minimizers converging in $L^2(F_W)$ in probability to one deterministic population risk minimizer, with asymptotically balanced folds and almost-sure fitted $L^2$ membership."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P046.ht_unbiased",
+        "target_ids": [
+          "P046-T7"
+        ],
+        "what": "For every positive i.i.d. sample size under the stated continuous-covariate, binary-outcome, consistency, unconfoundedness and strict-positivity model, the Horvitz–Thompson estimator using the known propensity score is unbiased for $\\mu=\\mathrm{E}[Y(1)]$."
+      },
+      {
+        "lean_name": "AronowAudit.P046.proposition2_asymptotic",
+        "target_ids": [
+          "P046-T7"
+        ],
+        "what": "With known propensity scores, Horvitz–Thompson estimation is uniformly root-n tight over valid laws sharing a common positive positivity constant and, for each fixed valid law, has a centered Gaussian limit with variance $\\mathrm{E}[m(W)/\\pi(W)]-\\mu^2$."
+      },
+      {
+        "lean_name": "AronowAudit.P046.Wave1.proposition4a_proof",
+        "target_ids": [
+          "P046-T8"
+        ],
+        "what": "For every positive sample size and deterministic two-fold partition, the augmented estimator is unbiased when each fit is a measurable function of the opposite fold and every evaluated prediction is integrable, even if the working regression is misspecified."
+      },
+      {
+        "lean_name": "AronowAudit.P046.Wave1.proposition4b_proof",
+        "target_ids": [
+          "P046-T9"
+        ],
+        "what": "For a fixed valid study and asymptotically balanced folds, almost-surely square-integrable cross-fits whose integrated squared prediction errors converge to zero in training-sample expectation around deterministic square-integrable limits yield a root-n-tight augmented estimator."
+      },
+      {
+        "lean_name": "AronowAudit.P046.Wave1.proposition4d_proof",
+        "target_ids": [
+          "P046-T9"
+        ],
+        "what": "For a fixed valid study with asymptotically balanced folds and almost-surely square-integrable cross-fits converging in $L^2(F_W)$ in probability to $m$, the augmented estimator has centered Gaussian limit variance $B_H=\\mathrm{E}[m(W)(1-m(W))/\\pi(W)]+\\operatorname{Var}(m(W))$."
+      },
+      {
+        "lean_name": "AronowAudit.P046.Wave1.proposition1_proof",
+        "target_ids": [
+          "P046-T10"
+        ],
+        "what": "For every measurable estimator based only on observed data, there are fixed positive error and probability thresholds such that arbitrarily large positive sample sizes admit a valid observational law, with unknown propensity and a law-specific positivity bound, whose probability of exceeding the error threshold is at least the probability threshold."
+      }
+    ],
+    "overview": "The work contrasts nonparametric identification with uniform estimation and studies Horvitz–Thompson and cross-fitted augmented estimators when propensity scores are known. The Lean development covers an observational uniform-inconsistency statement, exact unbiasedness, common-positivity root-n control, and fixed-law normal limits under explicit nuisance-fit assumptions. It also supplies continuous-covariate counterexamples to the printed confidence interval and regression-efficiency claim, with widened-interval and benchmark-qualified corrections. The efficiency-related normal limit is proved at the numerical Hahn benchmark without a formal semiparametric lower-bound theorem.",
+    "work_id": "P046"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.certified_cut_iff_exclusion",
+          "line": 1039,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.certified_mass_exact",
+          "line": 1012,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.certified_mass_gt",
+          "line": 1018,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.certified_partition",
+          "line": 1005,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.certified_state_count",
+          "line": 1000,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.count_deviation_sq",
+          "line": 1028,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.covariate_law",
+          "line": 1152,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.cutoff_implies_squared_exclusion",
+          "line": 801,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.cutoff_state_count",
+          "line": 834,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.exact_failure_state_count",
+          "line": 1086,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.log_certified_bounds",
+          "line": 976,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.log_lt_seventeen",
+          "line": 415,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.lower_mass_exceeds_alpha",
+          "line": 430,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.measurable_generate",
+          "line": 1141,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.probability_continuity_mean",
+          "line": 1160,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.IntervalExample.score_positivity",
+          "line": 392,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GLP046B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.count_mass_bridge_proof",
+          "line": 38,
+          "module": "AronowAudit.P046.Wave1.Gap.GLP046B1",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.counterexample_proof",
+          "line": 544,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B1",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.exact_noncoverage_proof",
+          "line": 566,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B1",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.atomless_of_uniform_marginal",
+          "line": 1131,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.measurable_threshold",
+          "line": 1121,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.unitUniform_Ici",
+          "line": 1106,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.unitUniform_Iic",
+          "line": 939,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.unitUniform_Iio",
+          "line": 1361,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.unitUniform_bernE",
+          "line": 958,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.unitUniform_probability",
+          "line": 373,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.unitUniform_singleton",
+          "line": 953,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T1",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements concern the counterexample of P046-E001, with its design on $(0,1)$, $n=100$ and $\\alpha=10^{-7}$. The main statement asserts that this design satisfies the assumptions of Section 2 with $\\delta=1/200$, that $\\mu=3/5$, and that $\\Pr\\Bigl(|\\hat\\mu-\\mu|>\\sqrt{\\xi\\log(2/\\alpha)/(2n)}\\Bigr)=\\frac{N}{100^{100}}>\\frac{119}{10^{9}}>10^{-7}.$ Here $N/100^{100}$ is the sum of the multinomial probabilities $\\binom{100}{k}\\binom{k}{s}39^s21^{k-s}40^{100-k}/100^{100}$ of the pairs $(k,s)$ such that $0\\le s\\le k\\le100$ and $200(s/65-3/5)^2/\\xi_k>3363/200$. In a pair, $k$ stands for the number of units such that $W_i\\le3/5$, $s$ for the number of these units that are treated and $\\xi_k$ for the corresponding value of $\\xi$. The statement asserts further that exactly 1946 pairs satisfy $200(s/65-3/5)^2/\\xi_k>\\log(2\\cdot10^7)$, which is the inequality under which the printed interval does not contain $\\mu$. Twenty-six statements support the main one, and thirteen give the score bounds and arithmetic for the pairs. They include the bounds $1681/100<\\log(2\\cdot10^7)<3363/200$, the equivalence of the two inequalities above on the pairs, and the value of $N$, which is an integer of 194 digits. Four of them use the cutoff $17$ in place of the logarithm, for which 1928 of the 1946 pairs already have total probability above $10^{-7}$. Eleven concern the law, in which the uniform distribution on $(0,1)$ is Lebesgue measure on $[0,1]$, and they include the law of $W_i$ and the value $\\mu=3/5$. The remaining two connect the arithmetic with the law: the probability in the display equals $N/100^{100}$, and it is at least the total probability of the 1928 pairs. The main statement has the scope of the counterexample in the finding, which reports $N/100^{100}$ as $1.19792910697956\\ldots\\times10^{-7}$.",
+        "headline": "A counterexample to Proposition 3, as printed",
+        "location": "p. 7 (PDF p. 6); restated in Appendix A, p. 15 (PDF p. 14)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T2",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.conditional_event_tail",
+          "line": 1501,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.counterexample",
+          "line": 1685,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.covariate_event_mass",
+          "line": 1378,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.covariate_event_measurable",
+          "line": 1486,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.covariate_event_positive",
+          "line": 1393,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.covariate_law",
+          "line": 1188,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.event_positive",
+          "line": 466,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.measurable_generate",
+          "line": 1180,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.potential_outcome_version",
+          "line": 1474,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.printed_rhs",
+          "line": 469,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.probability_continuity_mean",
+          "line": 1196,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.radius_lt_half",
+          "line": 460,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.radius_sq_lt",
+          "line": 454,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.score_positivity",
+          "line": 451,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.study_valid",
+          "line": 1629,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.xi_value",
+          "line": 1398,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ConditionalExample.zero_potential_version",
+          "line": 1619,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.condIndepFun_congr_left",
+          "line": 1587,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.indepFun_map_iff",
+          "line": 1574,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T2",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements concern the conditional display in the proof, which bounds by $\\alpha$ the probability, given $\\mathbf{W}$, that $|\\hat\\mu-\\mu|$ is at least the printed radius (see P046-E001). The conditional mean is $n^{-1}\\sum_i\\mathrm{E}[Y_i(1)\\mid W_i]$, whereas $\\mu=\\mathrm{E}[Y_i(1)]$ is the unconditional mean. They use a simpler design than the finding does: $n=100$, $\\alpha=1/20$, $W_i$ is uniform on $(0,1)$, $\\pi(w)=9/10$ for every $w$, $Y_i(1)=\\mathbf{1}\\{W_i\\ge1/2\\}$ and $Y_i(0)=0$, so that $\\mu=1/2$ and $\\xi=100/81$. The main statement asserts that this design satisfies the assumptions of Section 2, that $\\mu=1/2$, that the event $E=\\{W_i<1/2\\text{ for every }i\\}$ has probability $2^{-100}$, and that almost surely on $E$ $\\Pr\\Bigl(|\\hat\\mu-\\mu|\\ge\\sqrt{\\xi\\log(2/\\alpha)/(2n)}\\Bigm|\\mathbf{W}\\Bigr)=1>\\frac{1}{20},$ where the conditional probability is the conditional expectation of the indicator of the event given the covariate vector. Of the eighteen supporting statements, five are arithmetic: $1/20<9/10<19/20$, the bounds $\\log(40)/162<1/4$ and $\\sqrt{\\log(40)/162}<1/2$ on the printed radius, $2^{-100}>0$, and $2\\exp(-\\log40)=1/20$ for the right-hand side of the printed display. Eleven concern the design, in which the uniform distribution on $(0,1)$ is Lebesgue measure on $[0,1]$. They include the law of $W_i$, the values $\\mu=1/2$ and $\\xi=100/81$, the probability $2^{-100}$ of $E$, the assumptions of Section 2, and the conditional probability in the display. The other two assert in general that independence is preserved under a measurable map, and conditional independence under an almost sure change of one of the variables. The statements concern one step of the proof, and they do not assert that the printed interval undercovers at this level. The propensity score of this design is constant, and the printed interval is then valid.",
+        "headline": "A counterexample to the conditional display in the proof of Proposition 3, as printed",
+        "location": "Appendix A, p. 16 (PDF p. 15)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T3",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GLP046B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.conditional_hoeffding_proof",
+          "line": 128,
+          "module": "AronowAudit.P046.Wave1.Gap.GLP046B2",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.ht_conditional_centre_proof",
+          "line": 304,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B2",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.proposition3_corrected_proof",
+          "line": 679,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B2",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.corrected_width",
+          "line": 632,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.covariate_hoeffding",
+          "line": 2014,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.iid_mean_hoeffding",
+          "line": 1943,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.muW_unbiased",
+          "line": 752,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.proposition3_known_bound",
+          "line": 2025,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.regression_mean",
+          "line": 711,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.sqrt_mean_inverse_sq_lt",
+          "line": 610,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.two_error_union_bound",
+          "line": 318,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T3",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is the corrected proposition of P046-E001: for every population that satisfies the assumptions of Section 2, every $n\\ge1$ and every $0<\\alpha<1$, $\\Pr\\Bigl(|\\hat\\mu-\\mu|\\ge(\\sqrt{\\xi}+1)\\sqrt{\\log(4/\\alpha)/(2n)}\\Bigr)\\le\\alpha.$ A population is represented by a probability law for one unit $(W,X,Y(0),Y(1))$, with $W$ real and without atoms and the other three variables binary, together with the functions $\\pi$ and $m(w)=\\mathrm{E}[Y_i(1)\\mid W_i=w]$ and the constant $\\delta$ of the positivity condition. The sample consists of $n$ independent units. Ten supporting statements follow the corrected proof, with $\\mu_{\\mathbf{W}}=n^{-1}\\sum_{i=1}^n m(W_i)$. Three give the centring identities $\\mathrm{E}[\\hat\\mu\\mid\\mathbf{W}]=\\mu_{\\mathbf{W}}$ almost surely, $\\mathrm{E}[m(W_i)]=\\mu$ and $\\mathrm{E}[\\mu_{\\mathbf{W}}]=\\mu$. Three give Hoeffding bounds for every $t\\ge0$: the two bounds of the proof, $\\Pr\\bigl(|\\hat\\mu-\\mu_{\\mathbf{W}}|\\ge t\\bigm|\\mathbf{W}\\bigr)\\le2\\exp(-2nt^2/\\xi)\\ \\text{ almost surely},\\qquad\\Pr\\bigl(|\\mu_{\\mathbf{W}}-\\mu|\\ge t\\bigr)\\le2\\exp(-2nt^2),$ and the bound $2\\exp(-2nt^2/b^2)$ for the deviation from its expectation of the mean of $n$ independent copies of a measurable variable with values almost surely in $[0,b]$, where $b>0$. One gives the union bound for two error events of probability at most $\\alpha/2$ each, and it is written for an arbitrary probability space, which is broader than the proof needs. Two bound the width: $\\sqrt{\\xi}<\\delta^{-1}$ when every score exceeds $\\delta$, and almost surely the radius is less than $(\\delta^{-1}+1)\\sqrt{\\log(4/\\alpha)/(2n)}$ and the width is at most $C/\\sqrt{n}$, where $C$ depends on the population and on $\\alpha$. The last is the alternative interval: if $b>0$ and $\\pi(W_i)\\ge b$ almost surely, then $\\Pr(|\\hat\\mu-\\mu|\\ge b^{-1}\\sqrt{\\log(2/\\alpha)/(2n)})\\le\\alpha$. The main statement has the scope of the corrected proposition.",
+        "headline": "Proposition 3, as corrected",
+        "location": "p. 7 (PDF p. 6); proof in Appendix A, pp. 15–16 (PDF pp. 14–15)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T4",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.atom_moments",
+          "line": 561,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.atom_normalization",
+          "line": 517,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.atom_variances",
+          "line": 568,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.covariate_law",
+          "line": 1238,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.empirical_minimizer",
+          "line": 531,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.fits_adjusted",
+          "line": 1297,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.fits_balanced",
+          "line": 1314,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.fits_empirical_minimizer",
+          "line": 1429,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.fits_l2_convergence",
+          "line": 1302,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.loss_increase",
+          "line": 525,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.measurable_generate",
+          "line": 1221,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.population_loss",
+          "line": 542,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.population_unique_minimum",
+          "line": 548,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.probability_continuity_mean",
+          "line": 1247,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.score_positivity",
+          "line": 520,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.upper_outcome_zero",
+          "line": 1407,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RegressionExample.zero_not_in_closure",
+          "line": 577,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B3b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.crossfit_counterexample_proof",
+          "line": 15,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B3b",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/RepairT4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.regression_counterexample_proof",
+          "line": 414,
+          "module": "AronowAudit.P046.Wave1.Gap.RepairT4",
+          "status": "proved",
+          "target_id": "P046-T4",
+          "target_kind": "counterexample",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements concern the counterexample of P046-E002, with its design on $(0,1)$, its variables $L_i$ and $Z_i$, and its working family $g_\\theta$, in which $g_*$ is the member with $\\theta=0$. The main statement takes the two folds to be the first $\\lfloor n/2\\rfloor$ units and the remaining units, so that the fraction of the units in each fold tends to $1/2$, and it takes both fits to be $g_*$. It asserts that the design satisfies the assumptions of Section 2 with $\\mu=1/20$, and that for every $n$, almost surely, $g_*$ minimizes over $\\theta$ the empirical criterion of part (c) on each training fold. It asserts further that both estimators are unbiased, that $\\operatorname{Var}(\\hat\\mu)=79/(400n)$ and $\\operatorname{Var}(\\hat\\mu_R)=169/(400n)$ for every $n\\ge1$, and that $\\sqrt{n}(\\hat\\mu-\\mu)\\Rightarrow N(0,79/400),\\qquad\\sqrt{n}(\\hat\\mu_R-\\mu)\\Rightarrow N(0,169/400).$ Its last clauses give $R(0)=3/20$, $R(g_*)=3/8$ and $\\mathrm{E}[(1-\\pi(W_i))\\pi(W_i)^{-1}g_\\theta(W_i)^2]=3/8+\\theta^2/6$ for every $\\theta$, with $R$ as in the finding. Of the seventeen supporting statements, nine are exact calculations under the law of $(L_i,Z_i,X_i)$ on its eight values. They include the minimization at $\\theta=0$ for every training set, the population criterion $3/8+\\theta^2/6$ with its unique minimum at $\\theta=0$, and the means $1/20$ and the variances $79/400$ and $169/400$ of the two summands. Four concern the law of the design, in which the uniform distribution on $(0,1)$ is Lebesgue measure on $[0,1]$, and four concern the fits, which converge to $g_*$ and minimize the empirical criterion almost surely. For measurable statistics that depend only on $(L_i,Z_i,X_i)$ under the generating map, an auxiliary integral identity equates expectations under the design with the eight-value calculations; the main statement asserts the moments for the design itself. The main statement, which a second statement repeats, has the scope of the counterexample in the finding.",
+        "headline": "A counterexample to Proposition 4(c), as printed",
+        "location": "p. 8 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T5",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GLP046B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.fixed_adjusted_variance_proof",
+          "line": 215,
+          "module": "AronowAudit.P046.Wave1.Gap.GLP046B3",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.population_weighted_criterion_proof",
+          "line": 283,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B3",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B3b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.proposition4c_corrected_proof",
+          "line": 262,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B3b",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B3b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.proposition4c_direct_proof",
+          "line": 232,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B3b",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.risk_expansion_cauchy_proof",
+          "line": 301,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B3",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.zero_benchmark_risk_proof",
+          "line": 74,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B4",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.adjusted_decomposition",
+          "line": 245,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.bern_adjusted_mean",
+          "line": 265,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.bern_adjusted_variance",
+          "line": 272,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.fitted_L2_from_membership",
+          "line": 2201,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.risk_minimizer_zero",
+          "line": 340,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "Under the assumptions of Section 2, two Lean statements give the corrected part (c) of P046-E002, and nine give the steps of its derivation. Let $m(w)=\\mathrm{E}[Y_i(1)\\mid W_i=w]$, $q(w)=(1-\\pi(w))/\\pi(w)$, $R(g)=\\mathrm{E}[q(W_i)(Y_i(1)-g(W_i))^2]$ and $V(g)=\\operatorname{Var}(Y_i(1))+R(g)$. The first main statement takes a family $\\{g_\\theta:\\theta\\in\\mathbb{R}^d\\}$ of square-integrable functions that contains the zero function, or contains functions $h_k$ such that $\\mathrm{E}[q(W_i)h_k(W_i)^2]\\to0$. It takes fits that, for almost every sample, belong to the family and minimize over it the weighted squared error on the treated units of the other fold. If both fits converge in $L^2(F_W)$, in probability, to a member $g_*$ that minimizes $R$ over the family, it asserts that $\\sqrt{n}(\\hat\\mu_R-\\mu)\\Rightarrow N(0,V(g_*)),\\qquad\\sqrt{n}(\\hat\\mu-\\mu)\\Rightarrow N(0,V(0)),\\qquad V(g_*)\\le V(0),$ which is the reading given to “at least as asymptotically efficient”. The second main statement asserts the same conclusion when both fits converge to a fixed square-integrable function $g_*$ such that $R(g_*)\\le R(0)$, with no hypothesis on a family or on minimization. In both statements each fit is a measurable function of the observed data of the other fold and is square-integrable almost surely, and the fraction of the units in each fold tends to $1/2$; the correction leaves these conditions implicit. Of the nine supporting statements, three give, for a fixed square-integrable $g$, the variance $V(g)$ of the summand of $\\hat\\mu_R$ and its excess $\\mathrm{E}[q(W_i)(m(W_i)-g(W_i))^2]$ over the bound of Hahn (1998), the population value $R(g)$ of the weighted criterion, and an expansion of $R(g)-R(0)$ with a Cauchy–Schwarz bound. Two give, for a function $g_*$ that minimizes $R$ over the family, the inequality $R(g_*)\\le R(0)$ under the hypothesis on the zero function and the inequality $V(g_*)\\le V(0)$ when the family contains the zero function. Three are algebraic identities with real inputs, allowing arbitrary scores for the decomposition and nonzero real scores for the two identities with weights $p$ and $1-p$, which need not be probabilities. The last asserts that fits which belong almost surely to a family of square-integrable functions are square-integrable almost surely, so this condition is redundant in the first main statement.",
+        "headline": "Proposition 4(c), as corrected",
+        "location": "p. 8 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T6",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/PropositionThree.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.proposition3_printed_refuted",
+          "line": 19,
+          "module": "AronowAudit.P046.Wave1.PropositionThree",
+          "status": "counterexample_proved",
+          "target_id": "P046-T6",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement negates the universal assertion in the proposition as printed, in the form in which the first line of its proof restates it: for every population that satisfies the assumptions of Section 2, every $n\\ge1$ and every $0<\\alpha<1$, $\\Pr\\Bigl(|\\hat\\mu-\\mu|\\ge\\sqrt{\\xi\\log(2/\\alpha)/(2n)}\\Bigr)\\le\\alpha.$ Thus some such population, sample size and level have the displayed probability strictly greater than $\\alpha$. The counterexample of P046-E001 gives such a failure, and the corrected proposition has its own Lean statement. A population is represented by a probability law for one unit $(W,X,Y(0),Y(1))$, with $W$ real and the other three variables binary, together with the functions $\\pi$ and $m(w)=\\mathrm{E}[Y_i(1)\\mid W_i=w]$ and a constant $\\delta>0$. The assumptions of Section 2 are written as follows: $W$ has no atoms, $\\delta<\\pi(W)<1-\\delta$ almost surely, $\\pi(W)$ and $m(W)$ are the conditional means of $X$ and $Y(1)$ given $W$, and each potential outcome is independent of $X$ given $W$. The observed outcome is defined by the consistency equation, and the sample consists of $n$ independent units. The probability is over repeated samples, with $\\xi$ random and $\\mu$ the mean of $Y(1)$ in the population. The paper states no range for $\\alpha$, and the universal assertion being refuted takes every level in $(0,1)$. The event in the display includes the case of equality, in which the closed interval still contains $\\mu$. In this the printed assertion follows the display of Appendix A, and it is stronger than a statement on the coverage of the closed interval only by this case.",
+        "headline": "Proposition 3, as printed",
+        "location": "p. 7 (PDF p. 6); proof in Appendix A, pp. 15–16 (PDF pp. 14–15)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T7",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.bern_ht_mean",
+          "line": 294,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.bern_ht_second",
+          "line": 301,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.bern_normalization",
+          "line": 261,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.conditional_xy_factorization",
+          "line": 842,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.consistency_treated",
+          "line": 233,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ht_binary_range",
+          "line": 238,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ht_chebyshev",
+          "line": 1814,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ht_sample_memLp",
+          "line": 1798,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ht_second_moment",
+          "line": 1717,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ht_unbiased",
+          "line": 931,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ht_uniform_root_n",
+          "line": 1843,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ht_unit_facts",
+          "line": 871,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ht_unit_memLp",
+          "line": 1698,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.ht_variance",
+          "line": 1764,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.iid_mean_integral",
+          "line": 723,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.iid_mean_normal",
+          "line": 1860,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.iid_mean_variance",
+          "line": 348,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.proposition2_asymptotic",
+          "line": 1917,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T7",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements give the three claims of the proposition. The first asserts that $\\mathrm{E}[\\hat\\mu]=\\mu$ for every population that satisfies the assumptions of Section 2 and every $n\\ge1$, where a population is a probability law for one unit $(W,X,Y(0),Y(1))$ and the sample consists of $n$ independent units. The second gives the two asymptotic claims, neither of which the paper defines. Uniform root-$n$ consistency is written as follows: for every $\\delta>0$ and every $\\varepsilon>0$ there exists $C>0$ such that $\\Pr(\\sqrt{n}\\,|\\hat\\mu-\\mu|>C)\\le\\varepsilon$ for every $n\\ge1$ and every population whose positivity constant is $\\delta$. Asymptotic normality is written for each fixed population: $\\sqrt{n}(\\hat\\mu-\\mu)\\Rightarrow N(0,\\sigma^2)$, where $\\sigma^2=\\mathrm{E}[m(W_i)/\\pi(W_i)]-\\mu^2$ and $m(w)=\\mathrm{E}[Y_i(1)\\mid W_i=w]$. The uniform claim is narrower than a reading with no common $\\delta$. The paper assumes positivity “for some positive $\\delta$”, and the bound that gives the uniformity depends on $\\delta$. Of the sixteen supporting statements, eight concern the summand $X_iY_i/\\pi(W_i)$ and the estimator. They give the identity $\\mathrm{E}[X_iY_i(1)\\mid W_i]=\\pi(W_i)m(W_i)$, the mean, the range and the second moment of the summand, the square-integrability of the summand and of $\\hat\\mu$, and the two bounds $\\operatorname{Var}(\\hat\\mu)=\\frac{\\mathrm{E}[m(W_i)/\\pi(W_i)]-\\mu^2}{n}\\le\\frac{1}{n\\delta},\\qquad\\Pr\\bigl(\\sqrt{n}\\,|\\hat\\mu-\\mu|>C\\bigr)\\le\\frac{1}{\\delta C^2}.$ Four are algebraic identities for binary variables, including three with weights $p$ and $1-p$ that allow real parameters outside $[0,1]$, with $p\\ne0$ in the mean and second-moment identities. Three give the mean, the variance and the central limit theorem for an average of $n$ independent copies of an integrable variable (square-integrable for the variance and normal limit), and one is the uniform claim by itself.",
+        "headline": "Proposition 2",
+        "location": "p. 6 (PDF p. 5); supporting sentence on p. 7 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T8",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.proposition4a_proof",
+          "line": 216,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B4",
+          "status": "proved",
+          "target_id": "P046-T8",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that $\\mathrm{E}[\\hat\\mu_R]=\\mu$ for every population that satisfies the assumptions of Section 2, every $n\\ge1$ and every pair of cross-fitted regressions such that each fitted value $\\hat g_{s(i)}(W_i)$ is integrable. A population is represented by a probability law for one unit $(W,X,Y(0),Y(1))$, with $W$ real and the other three variables binary, and the sample by $n$ independent units. The cross-fitting is represented by an assignment $s$ of the units to two folds and, for each fold, a fitted function that is a measurable function of the observed triples $(W_i,Y_i,X_i)$ of the other fold. No condition relates the fitted functions to the true regression function, and the statement covers misspecified models. The statement differs from the printed one in two ways. It adds the integrability of the fitted values, which the paper does not state and which the expectations in the printed proof require. It allows every assignment to folds, including folds of unequal size and empty folds, where the paper takes two groups of roughly equal size. The representation also restricts each fit to a function of the other fold’s data, with no additional randomness; the equalities of the printed proof are not stated separately.",
+        "headline": "Proposition 4(a)",
+        "location": "p. 8 (PDF p. 7); proof in Appendix A, p. 16 (PDF p. 15)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T9",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.proposition4b_proof",
+          "line": 579,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B4",
+          "status": "proved",
+          "target_id": "P046-T9",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B5.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.proposition4d_proof",
+          "line": 636,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B5",
+          "status": "proved",
+          "target_id": "P046-T9",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B5.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.remainder_chebyshev_proof",
+          "line": 643,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B5",
+          "status": "proved",
+          "target_id": "P046-T9",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GLP046B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.remainder_conditional_moments_proof",
+          "line": 331,
+          "module": "AronowAudit.P046.Wave1.Gap.GLP046B4",
+          "status": "proved",
+          "target_id": "P046-T9",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.adjusted_increment",
+          "line": 251,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T9",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.bern_conditional_variance",
+          "line": 309,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T9",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.bern_multiplier_mean",
+          "line": 280,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T9",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.bern_multiplier_second",
+          "line": 287,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T9",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.crossfit_decomposition",
+          "line": 684,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T9",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "Under the assumptions of Section 2, two Lean statements give parts (b) and (d), which the paper states by citation. The statement for part (b) assumes fixed square-integrable functions $g_0$ and $g_1$ such that $\\mathrm{E}\\|\\hat g_j-g_j\\|^2_{L^2(F_W)}\\to0$ for $j=0,1$, with the squared errors integrable over the training sample for every $n$, and it asserts that $\\sqrt{n}(\\hat\\mu_R-\\mu)$ is bounded in probability. The two limits may differ, and neither need be the true regression function $m(w)=\\mathrm{E}[Y_i(1)\\mid W_i=w]$. The statement for part (d) assumes that $\\|\\hat g_j-m\\|_{L^2(F_W)}\\to0$ in probability for $j=0,1$, and it asserts that $\\sqrt{n}(\\hat\\mu_R-\\mu)\\Rightarrow N(0,B_H),\\qquad B_H=\\mathrm{E}\\biggl[\\frac{m(W_i)(1-m(W_i))}{\\pi(W_i)}\\biggr]+\\operatorname{Var}(m(W_i)).$ Here $B_H$ is the bound of Hahn (1998) for an unrestricted covariate distribution, as in P046-E003. The statement is narrower than the printed part (d), because it does not assert that $B_H$ is the semiparametric efficiency bound. The paper does not define “convergent in mean square”, “root-$n$ consistent” or “consistent”, and the two statements fix the readings above. In both statements each fit is a measurable function of the observed data of the other fold and is square-integrable almost surely, and the fraction of the units in each fold tends to $1/2$. Of the seven supporting statements, one decomposes $\\hat\\mu_R-\\mu$ into the centred mean of the summands with $g_0$ and $g_1$ in place of the fits and one remainder $R_j$ for each evaluation fold $I_j$. Two give, almost surely conditional on the training data, mean zero for $R_j$ and a second moment of $\\sqrt{n}R_j$ bounded by $(|I_j|/(n\\delta))\\|\\hat g_j-g_j\\|^2_{L^2(F_W)}$, together with a Chebyshev bound in terms of this error. The other four are algebraic identities with real inputs, allowing arbitrary scores for the increment and nonzero real scores for the three identities with weights $p$ and $1-p$, which need not be probabilities.",
+        "headline": "Proposition 4(b) and Proposition 4(d)",
+        "location": "p. 8 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P046-T10",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.RobinsRitov.rr_prior_target",
+          "line": 2071,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T10",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.proposition1_proof",
+          "line": 97,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B2",
+          "status": "proved",
+          "target_id": "P046-T10",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GLP046B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.rr_indistinguishability_proof",
+          "line": 545,
+          "module": "AronowAudit.P046.Wave1.Gap.GLP046B1",
+          "status": "proved",
+          "target_id": "P046-T10",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/Wave1/Gap/GP046B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.Wave1.rr_laws_valid_proof",
+          "line": 627,
+          "module": "AronowAudit.P046.Wave1.Gap.GP046B1",
+          "status": "proved",
+          "target_id": "P046-T10",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.robins_ritov_collision",
+          "line": 2110,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T10",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.robins_ritov_prior_moments",
+          "line": 605,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T10",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P046/P046_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P046.robins_ritov_single_bin",
+          "line": 590,
+          "module": "AronowAudit.P046.P046_Audit",
+          "status": "proved",
+          "target_id": "P046-T10",
+          "target_kind": "headline_result",
+          "work_id": "P046"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement asserts that, for every sequence of measurable functions $\\hat\\mu_n$ of the observed sample $(W_i,Y_i,X_i)_{i\\le n}$, there exist $\\varepsilon>0$ and $c>0$ such that, for infinitely many $n$, there exists a population that satisfies the assumptions of Section 2 and has $\\Pr(|\\hat\\mu_n-\\mu|>\\varepsilon)\\ge c$. The paper does not define “uniformly consistent”; its usual reading requires $\\sup_P P(|\\hat\\mu_n-\\mu(P)|>\\varepsilon)\\to0$ for every $\\varepsilon>0$, over populations $P$ satisfying the assumptions, and the statement denies this for every estimator. A population is represented by a probability law for one unit $(W,X,Y(0),Y(1))$, with $W$ real and without atoms and the other three variables binary, and the estimator does not receive the propensity score. The statement has the scope of the printed proposition. P046-E004 concerns the abstract’s list of remedies, which names only restrictions on the propensity score. For example, with $\\mathrm{E}[Y_i(x)\\mid W_i=w]=a_x+h(w)$ for $x\\in\\{0,1\\}$, known $h(w)=\\min\\{1,\\max\\{0,w\\}\\}/4$, unknown $a_0,a_1\\in[1/4,1/2]$, and $1/4<\\pi(W_i)<3/4$, the difference of within-arm means of $Y_i-h(W_i)$ (zero for an empty arm) estimates the average treatment effect with mean squared error at most $(3/4)^n+25/[2(n+1)]$, uniformly over these laws. Thus restrictions on the outcome regression can also permit uniform consistency. Six supporting statements give a finite-bin construction for the proposition. In the construction $W_i$ is uniform on $(0,1)$, which is divided into $K$ bins of equal length, law A has $\\pi=m=1/2$, and each law B has $(\\pi,m)=(1/4,1)$ or $(\\pi,m)=(3/4,1/3)$ in each bin, with $Y_i(0)=0$ throughout. Four are finite calculations, of which two give the distribution of $(X_i,Y_i)$ in a bin type drawn with equal probabilities, which is that of law A, and the mean $2/3$ and variance $1/9$ of one bin’s value of $m$. The other two give the variance $1/(9K)$ of its average over independent bin types and the collision bound $n(n-1)/(2K)$ for $n$ independent uniform labels. Of the remaining two statements, one asserts that the laws A and B satisfy the assumptions, with means $1/2$ and the average bin value of $m$. The other asserts that law A and the equal mixture of the laws B agree on observed samples with no repeated bin, with every measurable event’s probability differing by at most $n(n-1)/(2K)$.",
+        "headline": "Proposition 1",
+        "location": "p. 6 (PDF p. 5)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "2108.11342",
+    "authors": [
+      "P. M. Aronow",
+      "James M. Robins",
+      "Theo Saarinen",
+      "Fredrik Sävje",
+      "Jasjeet Sekhon"
+    ],
+    "citation": "P. M. Aronow, James M. Robins, Theo Saarinen, Fredrik Sävje, and Jasjeet Sekhon (2025). Nonparametric identification is not enough, but randomized controlled trials are. Observational Studies 11(1):3–16.",
+    "doi": "10.1353/obs.2025.a956837",
+    "title": "Nonparametric identification is not enough, but randomized controlled trials are",
+    "type": "Commentary/article",
+    "venue": "Observational Studies",
+    "year": "2025"
+  },
+  "work_id": "P046"
+}

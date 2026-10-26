@@ -1,0 +1,1093 @@
+{
+  "counts": {
+    "counterexample_proved": 0,
+    "proved": 56,
+    "results": 56,
+    "targets": 2
+  },
+  "overview": {
+    "areas": [
+      "experimental-design-and-estimation",
+      "regression-and-variance-estimation",
+      "randomization-inference"
+    ],
+    "caveats": [
+      "The uniform complete-randomization model interprets the paper’s assignment of 94 peer-information offers among 189 missions; potential outcomes are fixed, and the other arm contains 95 missions.",
+      "The printed counts are inputs: 10 any responses in each arm and 10 versus 7 interest responses; the formalization does not verify the underlying assignments, response coding or mission-level data.",
+      "The HC2 results concern the treatment-effect coefficient of unadjusted specifications 1 and 4, not specifications 2, 3, 5 and 6 or the standard errors for the control mean.",
+      "Conservativeness is an expectation statement about the variance estimator, not an assignmentwise inequality or a claim that the expected standard error exceeds the true standard deviation; the narrower result does not refute the printed note.",
+      "The regression conditional-mean theorem separately assumes measurable regressors, integrable disturbance and covariate contribution, and zero disturbance mean conditional on the regressors."
+    ],
+    "corrections": [
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P036.corrected_model_conditional_mean",
+        "target_ids": [
+          "P036-T1"
+        ],
+        "what": "The printed definition calls $\\beta_1$ the peer-assignment indicator; with `Peers` as the indicator and $\\beta_1$ its coefficient, the corrected model and a zero conditional mean disturbance imply $E[Y\\mid Peers,X]=\\beta_0+\\beta_1 Peers+X\\gamma$ almost surely, under explicit measurability and integrability assumptions."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P036.corrected_hc2_conservativeness",
+        "target_ids": [
+          "P036-T2"
+        ],
+        "what": "The note broadly describes HC2 standard errors as conservative; the narrower statement for unadjusted specifications under complete randomization proves that expected HC2 variance exceeds the true randomization variance by $S_\\tau^2/N$, with equality exactly when unit treatment effects are constant."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P036.ols_unique_minimizer",
+        "target_ids": [
+          "P036-T1"
+        ],
+        "what": "For arbitrary real outcomes on a finite population with both arms nonempty, OLS on an intercept and the peer-assignment indicator has the unique coefficients given by the control mean and the peer-minus-control difference in means."
+      },
+      {
+        "lean_name": "AronowAudit.P036.table_any_coefficients",
+        "target_ids": [
+          "P036-T1"
+        ],
+        "what": "Using the printed arm sizes and any-response counts, the unadjusted intercept is $2/19$ and the peer coefficient is $1/893$."
+      },
+      {
+        "lean_name": "AronowAudit.P036.table_interest_coefficients",
+        "target_ids": [
+          "P036-T1"
+        ],
+        "what": "Using the printed arm sizes and interest-response counts, the unadjusted intercept is $7/95$ and the peer coefficient is $146/4465$."
+      },
+      {
+        "lean_name": "AronowAudit.P036.hc2_eq_neyman",
+        "target_ids": [
+          "P036-T2"
+        ],
+        "what": "For OLS on an intercept and a binary assignment indicator with at least two observations per arm, the treatment-coefficient HC2 sandwich variance equals the sum of the two sample variances divided by their arm sizes."
+      },
+      {
+        "lean_name": "AronowAudit.P036.complete_randomization_moments",
+        "target_ids": [
+          "P036-T2"
+        ],
+        "what": "With fixed potential outcomes and at least two units per arm under uniform complete randomization, the difference in means is unbiased, has variance $S_1^2/n_1+S_0^2/n_0-S_\\tau^2/N$, and both arm sample variances are unbiased for their population variances."
+      },
+      {
+        "lean_name": "AronowAudit.P036.table_hc2_se_rounding",
+        "target_ids": [
+          "P036-T2"
+        ],
+        "what": "The HC2 treatment-coefficient standard errors calculated from the printed binary-response counts round to 0.045 and 0.042 for specifications 1 and 4."
+      }
+    ],
+    "overview": "The empirical work compares responses to two information offers sent to 189 United Nations diplomatic missions. Its Lean development is limited to the corrected regression notation, general facts about unadjusted OLS and HC2 under complete randomization, and exact arithmetic from the printed response counts for specifications 1 and 4. It does not reproduce the covariate-adjusted or logistic regressions.",
+    "work_id": "P036"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P036-T1",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.arm_centered_sum",
+          "line": 248,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.arm_square_decomposition",
+          "line": 257,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.conditional_mean_of_model",
+          "line": 88,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.corrected_model_conditional_mean",
+          "line": 106,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.interest_is_subset",
+          "line": 231,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.ols_unique_minimizer",
+          "line": 349,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.peers_binary",
+          "line": 224,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.rss_decomposition",
+          "line": 334,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.rss_partition",
+          "line": 317,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.sum_peers",
+          "line": 241,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.table_any_coefficients",
+          "line": 389,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.table_coefficient_rounding",
+          "line": 406,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.table_interest_coefficients",
+          "line": 395,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.unadjusted_conditional_means",
+          "line": 134,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        }
+      ],
+      "text": {
+        "body": "All 14 statements below are proved. The correction in P036-E001 changes a definition: the regressor $\\mathit{Peers}$ is a function on the units with values $0$ and $1$, and $\\beta_1$ is a real number that multiplies it. Two statements concern the model on a probability space, with measurable regressors and integrable $\\varepsilon$ and $\\boldsymbol{X}\\gamma$, assumptions the paper leaves implicit. The first asserts that if $Y=\\beta_0+\\beta_1\\mathit{Peers}+\\boldsymbol{X}\\gamma+\\varepsilon$ almost surely and $E[\\varepsilon\\mid\\mathit{Peers},\\boldsymbol{X}]=0$, then $E[Y\\mid\\mathit{Peers},\\boldsymbol{X}]=\\beta_0+\\beta_1\\mathit{Peers}+\\boldsymbol{X}\\gamma$ almost surely. Under the same model and zero conditional mean assumption without covariates, the second also assumes that $0<P(\\mathit{Peers}=1)<1$ and asserts that $E[Y\\mid\\mathit{Peers}=0]=\\beta_0$ and $E[Y\\mid\\mathit{Peers}=1]-E[Y\\mid\\mathit{Peers}=0]=\\beta_1$. For the passage’s last sentence, a third statement asserts that, for real outcomes $Y_i$ on any finite set of units with both treatment groups nonempty, a pair $(b_0,b_1)$ minimizes $\\sum_i(Y_i-b_0-b_1\\mathit{Peers}_i)^2$ over all real pairs if and only if $b_0=\\bar Y_0,\\qquad b_1=\\bar Y_1-\\bar Y_0,$ where $\\bar Y_1$ and $\\bar Y_0$ are the mean outcomes of the units assigned to the peer treatment and of the other units. The paper gives no formula for the OLS estimator or for the difference in means, and I take them to be this minimizer and $\\bar Y_1-\\bar Y_0$. Three statements evaluate these formulas at the counts of Table 1, where the groups have 94 and 95 missions. They assert that $\\hat\\beta_1=1/893$ and $\\hat\\beta_0=2/19$ for any response, and that $\\hat\\beta_1=146/4465$ and $\\hat\\beta_0=7/95$ for interest response. They also assert that these values round to the entries $0.001$, $0.105$, $0.033$ and $0.074$ of specifications 1 and 4 in Table 2. Eight supporting statements give properties of the indicators and the steps toward the first three statements. The statements cover the OLS estimator only for the regression without covariates, which is the regression of specifications 1 and 4.",
+        "headline": "Section III, the regression model and the sentence that defines its terms, as corrected",
+        "location": "pp. 595–596 (PDF pp. 2–3): the display at the foot of the right column of p. 595, and the sentence that defines its terms, first paragraph below Table 2, p. 596"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P036-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.armMean_congr",
+          "line": 907,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.armSS_formula",
+          "line": 276,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.assignments_card",
+          "line": 700,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.assignments_nonempty",
+          "line": 706,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.binary_sample_variance",
+          "line": 295,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.complete_randomization_moments",
+          "line": 1191,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [
+            "H017"
+          ],
+          "lean_name": "AronowAudit.P036.corrected_hc2_conservativeness",
+          "line": 1274,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.designVariance_congr",
+          "line": 1088,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.designVariance_second_moment",
+          "line": 1056,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.designVariance_sub_const",
+          "line": 1075,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.design_complement",
+          "line": 1002,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.expected_hc2_variance",
+          "line": 1210,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.expected_peer_indicator",
+          "line": 734,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.expected_peer_pair",
+          "line": 756,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.expected_sample_mean",
+          "line": 943,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.expected_sample_total",
+          "line": 811,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.expected_sample_total_sq",
+          "line": 858,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.expected_sample_variance",
+          "line": 965,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.gram_entries",
+          "line": 473,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.gram_inverse",
+          "line": 486,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [
+            "H034"
+          ],
+          "lean_name": "AronowAudit.P036.hc2_arm_formula",
+          "line": 540,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [
+            "H017",
+            "H034"
+          ],
+          "lean_name": "AronowAudit.P036.hc2_eq_neyman",
+          "line": 564,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.leverage_by_arm",
+          "line": 521,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.matrix_ols_coefficients",
+          "line": 509,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.observed_arm_quantities",
+          "line": 925,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.pair_inclusion_count",
+          "line": 723,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.populationVariance_nonneg",
+          "line": 1237,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [
+            "H017"
+          ],
+          "lean_name": "AronowAudit.P036.populationVariance_zero_iff_constant",
+          "line": 1245,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.randomization_unbiased_effect",
+          "line": 1024,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.randomization_unbiased_variances",
+          "line": 1040,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [
+            "H017"
+          ],
+          "lean_name": "AronowAudit.P036.randomization_variance_identity",
+          "line": 1133,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.residual_by_arm",
+          "line": 530,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.sampleVariance_congr",
+          "line": 914,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.sample_total_variance",
+          "line": 1100,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.single_inclusion_count",
+          "line": 713,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.sum_linear_combination_sq",
+          "line": 1118,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.sum_peers_mul",
+          "line": 500,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.table_any_hc2",
+          "line": 608,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.table_from_binary_counts",
+          "line": 620,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.table_hc2_se_rounding",
+          "line": 640,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.table_interest_hc2",
+          "line": 613,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P036/P036_Unadjusted.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P036.weighted_pair_sum",
+          "line": 834,
+          "module": "AronowAudit.P036.P036_Unadjusted",
+          "status": "proved",
+          "target_id": "P036-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P036"
+        }
+      ],
+      "text": {
+        "body": "All 42 statements below are proved. They concern the wording proposed in P036-N003: for specifications 1 and 4, the HC2 variance estimator for the treatment effect is conservative in expectation under complete randomization. The paper has no notation for this claim, so I supply the setting, which is that of Samii and Aronow (2012). There are $N$ units with fixed real potential outcomes $Y_i(1)$ and $Y_i(0)$, and the set of treated units is uniformly distributed over the subsets of size $n_1$, where $n_1\\ge2$ and $n_0=N-n_1\\ge2$. Expectations average over these subsets; variances average squared deviations from those expectations. The paper has $N=189$, $n_1=94$ and $n_0=95$, and I read its statement that 94 missions were randomly assigned the peer treatment as complete randomization. The estimator $\\hat\\tau$ is the OLS coefficient on the treatment indicator $T_i$, the paper’s $\\mathit{Peers}$, in the regression of the observed outcome $Y_i=Y_i(T_i)$ on $D_i=(1,T_i)'$. The estimator $\\widehat V_{HC2}$ is the entry for that coefficient in the matrix $(D'D)^{-1}\\Big(\\sum_i\\frac{e_i^2}{1-h_i}D_iD_i'\\Big)(D'D)^{-1},$ where $e_i$ are the residuals and $h_i$ the leverages. Supporting statements assert that $\\hat\\tau=\\bar Y_1-\\bar Y_0$, where $\\bar Y_1$ and $\\bar Y_0$ are the treated and control means, and give the leverages $1/n_1$ and $1/n_0$. One statement asserts that, for each assignment, $\\widehat V_{HC2}=s_1^2/n_1+s_0^2/n_0$, where $s_1^2$ and $s_0^2$ are the sample variances of the two groups, with divisors $n_1-1$ and $n_0-1$. A second asserts that $E[\\hat\\tau]=\\mu_1-\\mu_0$, that $E[s_w^2]=S_w^2$ for $w\\in\\{0,1\\}$, and that $\\operatorname{Var}(\\hat\\tau)=\\frac{S_1^2}{n_1}+\\frac{S_0^2}{n_0}-\\frac{S_\\tau^2}{N},$ where $\\mu_w$ and $S_w^2$ are the mean and the variance of the $Y_i(w)$, and $S_\\tau^2$ is the variance of the effects $\\tau_i=Y_i(1)-Y_i(0)$, all three variances having divisor $N-1$. The main statement asserts that $E[\\widehat V_{HC2}]-\\operatorname{Var}(\\hat\\tau)=\\frac{S_\\tau^2}{N}\\ge0,$ with equality if and only if $\\tau_i$ is the same for every unit. Four statements concern Table 1: for binary outcomes with groups of 94 and 95, the first expresses the OLS coefficients and $\\widehat V_{HC2}$ through the numbers of responses in the two groups. The others assert that $\\widehat V_{HC2}$ equals $50039/24720919$ for any response and $1080506/618022975$ for interest response, and that the square roots of these values round to the printed standard errors $0.045$ and $0.042$. Some supporting statements use weaker or no group-size conditions. These results do not cover specifications 2, 3, 5 and 6, or the standard errors in the row “Control mean”. They do not assert that $\\widehat V_{HC2}\\ge\\operatorname{Var}(\\hat\\tau)$ for every assignment, or that $E\\big[\\widehat V_{HC2}^{1/2}\\big]\\ge\\operatorname{Var}(\\hat\\tau)^{1/2}$. They are the part of the printed sentence that the cited paper supports, and they do not show that sentence to be false.",
+        "headline": "The note to Table 2 on the HC2 standard errors, restricted to specifications 1 and 4",
+        "location": "Table 2, note, third sentence, p. 596 (PDF p. 3)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "P. M. Aronow",
+      "Molly Offer-Westort",
+      "Lauren E. Pinson",
+      "Ana C. Perez-Gea"
+    ],
+    "citation": "P. M. Aronow, Molly Offer-Westort, Lauren E. Pinson, and Ana C. Perez-Gea (2017). Information and Access to United Nations Diplomatic Missions. Applied Economics Letters 24(9):594–597.",
+    "doi": "10.1080/13504851.2016.1213359",
+    "title": "Information and Access to United Nations Diplomatic Missions",
+    "type": "Journal article",
+    "venue": "Applied Economics Letters",
+    "year": "2017"
+  },
+  "work_id": "P036"
+}

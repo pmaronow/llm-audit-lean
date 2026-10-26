@@ -1,0 +1,79 @@
+/-
+Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
+Copyright (c) 2026 Jiyuan Tan. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jiyuan Tan
+
+# Bias, mean squared error, and the bias–variance decomposition
+
+For a design-based estimator `est : Ω → ℝ` of a fixed target `μ : ℝ` (a functional of
+the finite population's potential-outcome table, hence design-independent), this file
+records the two scalar summaries of estimation error under the randomization: the *bias*
+`E[est] − μ` and the *mean squared error* `E[(est − μ)²]`.  The central fact is the
+**bias–variance decomposition** `mse = Var + bias²`, the algebraic identity that makes the
+mean squared error a function of the design alone once the estimator and target are fixed.
+This `mse`-as-functional-of-the-design is the object that the design-comparison and
+optimality layers minimize.
+-/
+
+module
+public import AronowAudit.External.Causalean.Stat.FiniteDesign.DesignCore
+
+/-! # Design-based risk summaries
+
+Bias and mean squared error summarize fixed-target estimation error under a finite design.
+
+The definitions `FiniteDesign.bias`, `FiniteDesign.mse`, and `FiniteDesign.Unbiased` describe
+estimation error for a fixed target under a finite randomization design. Supporting lemmas
+establish zero bias for unbiased estimators and nonnegativity of mean squared error and variance.
+-/
+
+@[expose] public section
+
+open scoped BigOperators
+
+
+namespace Causalean
+namespace Experimentation
+namespace DesignBased
+
+namespace FiniteDesign
+
+variable {Ω : Type*} [Fintype Ω] (D : FiniteDesign Ω)
+
+/-- For [a randomization design](hyp:D), [a real-valued estimator of the realized assignment](hyp:est),
+and [a real-valued target](hyp:μ), [the estimator's design bias](goal) is its design expectation
+minus the target. -/
+def bias (est : Ω → ℝ) (μ : ℝ) : ℝ := D.E est - μ
+
+/-- For [a randomization design](hyp:D), [a real-valued estimator of the realized assignment](hyp:est),
+and [a real-valued target](hyp:μ), [the estimator's design mean squared error](goal) is the design
+expectation of the squared difference between the estimator and the target. -/
+def mse (est : Ω → ℝ) (μ : ℝ) : ℝ := D.E (fun z => (est z - μ) ^ 2)
+
+/-- For [a randomization design](hyp:D), [a real-valued estimator of the realized assignment](hyp:est),
+and [a real-valued target](hyp:μ), [the assertion that the estimator is unbiased](goal) means that
+its design expectation equals the target. -/
+def Unbiased (est : Ω → ℝ) (μ : ℝ) : Prop := D.E est = μ
+
+
+/-- The bias of an unbiased estimator is zero. -/
+@[simp] lemma bias_of_unbiased {est : Ω → ℝ} {μ : ℝ} (h : D.Unbiased est μ) :
+    D.bias est μ = 0 := by
+  unfold bias Unbiased at *; rw [h]; ring
+
+/-- Mean squared error is nonnegative. -/
+lemma mse_nonneg (est : Ω → ℝ) (μ : ℝ) : 0 ≤ D.mse est μ :=
+  D.E_nonneg (fun _ => sq_nonneg _)
+
+/-- Variance is nonnegative (it is the mean squared error of the centered estimator). -/
+lemma Var_nonneg (X : Ω → ℝ) : 0 ≤ D.Var X := by
+  have : D.Var X = D.mse X (D.E X) := by unfold mse Var; rfl
+  rw [this]; exact D.mse_nonneg _ _
+
+
+end FiniteDesign
+
+end DesignBased
+end Experimentation
+end Causalean

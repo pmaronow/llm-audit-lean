@@ -1,0 +1,116 @@
+{
+  "counts": {
+    "counterexample_proved": 0,
+    "proved": 2,
+    "results": 2,
+    "targets": 2
+  },
+  "overview": {
+    "areas": [
+      "survey-sampling",
+      "regression-and-variance-estimation"
+    ],
+    "caveats": [
+      "Here $n$ is the unweighted group count, $W$ is its total weight and $\\hat p$ is the weighted group proportion; the first identity additionally uses the full observation count $N$.",
+      "These are audit reconstruction identities for the independent-respondent linearisation, not theorems printed in the letter; compatibility with rounded reported intervals does not independently identify the original analysis method.",
+      "Neither result establishes the inverse-variance assumptions for classical WLS standard errors, national survey-design validity, or 95% coverage.",
+      "No general inequality compares the unequal-weight survey variance with $\\hat p(1-\\hat p)/n$; the simple reduction in the first result requires equal weights.",
+      "The Lean results do not formalize the respondent-level reanalysis, validate the empirical percentages, or identify the effect of an information intervention."
+    ],
+    "corrections": [],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P054.ratio_reconstruction",
+        "target_ids": [
+          "P054-T1"
+        ],
+        "what": "For $N\\ge2$ fixed binary responses and group indicators, positive weights and a nonempty group, weighted-ratio residuals sum to zero and their normalized squared sum equals $N/(N-1)$ times the squared-weight residual variance expression, whose inner expression reduces to $\\hat p(1-\\hat p)/n$ under equal weights."
+      },
+      {
+        "lean_name": "AronowAudit.P054.classical_intercept_wls",
+        "target_ids": [
+          "P054-T2"
+        ],
+        "what": "For fixed binary responses and group indicators, positive weights and group count $n\\ge2$, weighted residual sum of squares equals $W\\hat p(1-\\hat p)$, so the classical intercept-only WLS variance is $\\hat p(1-\\hat p)/(n-1)$."
+      }
+    ],
+    "overview": "This empirical letter reports weighted survey proportions relating gun-law knowledge, policy preferences and political engagement. Its Lean development is limited to two finite algebraic reconstructions: the residual and normalization identities for a weighted-ratio variance calculation, and the classical intercept-only weighted-least-squares variance formula. The letter prints no variance formula, and these results neither identify the historical procedure nor establish survey-design coverage or a causal effect of correcting misperceptions.",
+    "work_id": "P054"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P054-T1",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P054/P054_Reconstruction.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P054.ratio_reconstruction",
+          "line": 117,
+          "module": "AronowAudit.P054.P054_Reconstruction",
+          "status": "proved",
+          "target_id": "P054-T1",
+          "target_kind": "corrected_statement",
+          "work_id": "P054"
+        }
+      ],
+      "text": {
+        "body": "The proved statement takes $N\\ge2$ fixed observations, binary group indicators $d_i$ and answers $y_i$, positive weights $w_i$, and $n=\\sum_i d_i>0$. Put $W=\\sum_i d_iw_i$, $\\hat p=\\sum_i d_iw_iy_i/W$ and $z_i=d_iw_i(y_i-\\hat p)$. It asserts $\\sum_i z_i=0$ and $\\frac{\\sum_i z_i^2/[N(N-1)]}{(W/N)^2} =\\frac{N}{N-1}\\frac{\\sum_i d_iw_i^2(y_i-\\hat p)^2}{W^2}.$ If all weights equal a positive constant, the inner ratio on the right equals $\\hat p(1-\\hat p)/n$. Positivity of $W$ is derived from the stated conditions. These are finite identities used by the conditional reconstruction. They neither identify the original procedure nor establish national survey coverage.",
+        "headline": "Conditional weighted-ratio reconstruction identities",
+        "location": "The independent-respondent linearisation in the evidence for P054-N001; the letter prints no variance formula"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P054-T2",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P054/P054_Reconstruction.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P054.classical_intercept_wls",
+          "line": 140,
+          "module": "AronowAudit.P054.P054_Reconstruction",
+          "status": "proved",
+          "target_id": "P054-T2",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P054"
+        }
+      ],
+      "text": {
+        "body": "With the preceding fixed binary data and positive weights, now require $n\\ge2$. The proved statement gives $\\sum_i d_iw_i(y_i-\\hat p)^2=W\\hat p(1-\\hat p),\\qquad \\frac{\\sum_i d_iw_i(y_i-\\hat p)^2}{(n-1)W} =\\frac{\\hat p(1-\\hat p)}{n-1} =\\frac{n}{n-1}\\frac{\\hat p(1-\\hat p)}n.$ The displayed variance uses the classical intercept-only formula. Its algebra establishes neither the inverse-variance assumptions that justify classical standard errors nor the historical use of that procedure. No general comparison of the unequal-weight survey variance with the unweighted formula is asserted.",
+        "headline": "Conditional classical intercept-only weighted-least-squares identity",
+        "location": "The classical-WLS reconstruction in the evidence for P054-N001; the letter prints no variance formula"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "P. M. Aronow",
+      "Benjamin T. Miller"
+    ],
+    "citation": "P. M. Aronow and Benjamin T. Miller (2016). Policy Misperceptions and Support for Gun Control Legislation. The Lancet 387(10015):223.",
+    "doi": "10.1016/S0140-6736(16)00042-8",
+    "title": "Policy Misperceptions and Support for Gun Control Legislation",
+    "type": "Letter",
+    "venue": "The Lancet",
+    "year": "2016"
+  },
+  "work_id": "P054"
+}

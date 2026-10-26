@@ -1,0 +1,1112 @@
+{
+  "counts": {
+    "counterexample_proved": 4,
+    "proved": 37,
+    "results": 41,
+    "targets": 23
+  },
+  "overview": {
+    "areas": [
+      "causal-identification",
+      "partial-identification-and-bounds",
+      "experimental-design-and-estimation"
+    ],
+    "caveats": [
+      "The population model builds SUTVA into observed outcomes and checks by selecting the assigned potential variables; ignorability is imposed separately for each arm's pair of potential outcome and passing status, without assuming independence of the full potential vector from assignment.",
+      "Conditional means are integrals over events divided by their probabilities; mean identities require the indicated first moments, and always-passer bounds require positive probability of that subpopulation.",
+      "Sharpness fixes the entire observed law of outcomes, passing status and assignment across compatible populations; it does not fix the always-passer probability or assert that every intermediate mean is attained.",
+      "In the branch with trimming ratio at least one, infinite sharp endpoints require the focal passer distribution to have positive mass arbitrarily far into both tails; unbounded support of all observed outcomes alone does not suffice.",
+      "The empirical overlap certificate takes aggregate counts as inputs and concerns unweighted identification bounds under strict rank trimming; it does not establish a result about weighted Figure 1, bootstrap confidence-bar overlap or sampling uncertainty.",
+      "The transport counterexample uses true pooled study propensities and exact cell masses; the selected theorem does not certify estimated regression weights or numerical optimization."
+    ],
+    "corrections": [
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P010.Wave1.proposition_one_finite_proof",
+        "target_ids": [
+          "P010-T4"
+        ],
+        "what": "Proposition 1 omits passing from the outer conditioning events in its printed finite bounds; under the corrected assumptions, trimming ratio below one, positive always-passer probability and an atomless, integrable focal passer outcome law, Lean proves the corrected passer-tail bounds valid for every compatible population and proves both endpoints attainable."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P010.Wave1.proposition_one_else_proof",
+        "target_ids": [
+          "P010-T6"
+        ],
+        "what": "Proposition 1 prints universally infinite sharp bounds when the trimming ratio is at least one; under the corrected assumptions, positive always-passer probability, atomless observed outcomes and focal passer integrability, Lean instead identifies the sharp infimum and supremum as the focal passer law's essential endpoints, with finite endpoints unattained."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P010.empirical_overlap_counterexample",
+        "target_ids": [
+          "P010-T1"
+        ],
+        "what": "Against the printed claim that all treatment bounds overlap for both outcomes, the reconstructed unweighted preference bounds using the deposited strict whole-observation trimming rule put the 90–90 interval disjoint from each other arm, precluding a common three-arm intersection."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P010.joint_independence_step_counterexample",
+        "target_ids": [
+          "P010-T7"
+        ],
+        "what": "The printed proof of Corollary 1 infers joint independence of the potential-outcome vector and passing status from assignment, but Lean gives a four-state population satisfying per-arm ignorability and common passing status in which that joint independence fails."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P010.transport_odds_counterexample",
+        "target_ids": [
+          "P010-T11"
+        ],
+        "what": "Footnote 7 uses odds $p/(1-p)$ to reweight replication subjects under its printed study coding; in an exact two-cell example with true propensities, Lean proves these odds give cell mass $27/28$ instead of the original $1/4$, while reciprocal odds recover both original cell masses."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P010.lemma_one",
+        "target_ids": [
+          "P010-T19"
+        ],
+        "what": "With SUTVA, independence of each arm's potential outcome and passing status from assignment, positive assignment probabilities and integrable focal outcomes, each observed arm mean identifies its population potential-outcome mean and their contrast identifies the average treatment effect."
+      },
+      {
+        "lean_name": "AronowAudit.P010.corollary_one",
+        "target_ids": [
+          "P010-T18"
+        ],
+        "what": "Under the paper's corrected assumptions, integrable focal outcomes and almost-sure equality of potential passing statuses across arms, the observed mean contrast among passers equals the average treatment effect among subjects who would always pass."
+      },
+      {
+        "lean_name": "AronowAudit.P010.corollary_three",
+        "target_ids": [
+          "P010-T21"
+        ],
+        "what": "There exists a two-arm population satisfying the paper's assumptions, with positive always-passer probability and observed passing independent of assignment, in which the contrast among observed passers differs from the always-passer average treatment effect."
+      },
+      {
+        "lean_name": "AronowAudit.P010.corollary_five",
+        "target_ids": [
+          "P010-T23"
+        ],
+        "what": "There exists a two-arm population with a constant real covariate satisfying covariate ignorability, positive passing rates and covariate balance conditional on passing, in which the observed passer contrast at that covariate value differs from the always-passer effect."
+      }
+    ],
+    "overview": "The paper studies treatment-effect identification after excluding subjects who fail a manipulation check, with particular attention to subjects who would pass under every treatment. The Lean development covers population identification and non-identification results, corrected sharp bounds based on outcome distributions among passers, and counterexamples to printed formulas and proof steps. It also checks an overlap claim for the unweighted empirical preference bounds and the direction of transport weights, within the recorded data and weighting conventions.",
+    "work_id": "P010"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Empirical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.empirical_overlap_counterexample",
+          "line": 131,
+          "module": "AronowAudit.P010.P010_Empirical",
+          "status": "counterexample_proved",
+          "target_id": "P010-T1",
+          "target_kind": "counterexample",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement concerns the estimated bounds of the unweighted Figure 2 for “prefer nuclear use” (see P010-N011). Let $I_1$, $I_2$ and $I_3$ denote the intervals for the treatments 90–90, 90–70 and 90–45, each from the estimated lower bound of Panel D to the estimated upper bound of Panel E. The statement asserts that $I_1\\cap I_2=\\emptyset$ and $I_1\\cap I_3=\\emptyset$. It asserts further that not every pair of the three intervals has a common point and that no point lies in all three. These two clauses contradict the two readings of the printed sentence. The intervals are computed in exact rational arithmetic from the counts of the three arms: 544, 538 and 533 subjects, 35, 182 and 40 failures, and 61, 162 and 327 passers who prefer nuclear use. The trimming rule is that of the replication code, which keeps or drops whole observations by a strict comparison at the cut-off. With this rule the intervals are $I_1=[0,61/285]$, $I_2=[87/281,27/47]$ and $I_3=[56/139,1]$. The counts are inputs taken from the replication data, and the statement does not derive them. The statement covers one figure and one outcome, which suffices against a claim about all conditions and both outcomes. It does not concern the weighted Figure 1 or the 95% bars.",
+        "headline": "A counterexample to the sentence of Section 3 that “the bounds for all treatment conditions have overlapping regions, in both outcome variables”",
+        "location": "Section 3, pp. 578–579 (PDF pp. 7–8); Figure 1, p. 577 (PDF p. 6); Figure 2, p. 585 (PDF p. 14)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Empirical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.empirical_cutoff_certificate",
+          "line": 116,
+          "module": "AronowAudit.P010.P010_Empirical",
+          "status": "proved",
+          "target_id": "P010-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Empirical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.empirical_exact_certificate",
+          "line": 67,
+          "module": "AronowAudit.P010.P010_Empirical",
+          "status": "proved",
+          "target_id": "P010-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Empirical.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.empirical_overlap_corrected",
+          "line": 159,
+          "module": "AronowAudit.P010.P010_Empirical",
+          "status": "proved",
+          "target_id": "P010-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements give the formal content of the corrected sentence of P010-N011 for the unweighted Figure 2. The inputs from the replication data are the three arm counts: 544, 538 and 533 subjects, with 35, 182 and 40 failures, and 61, 162 and 327 passers with outcome 1 for “prefer nuclear use” and 192, 188 and 324 for “approve nuclear use”. The first statement uses the replication code’s strict cut-off for whole observations and asserts that $(284,281,278)$ observations are kept in the lower tail and $(285,282,279)$ in the upper tail, giving the intervals $[0,61/285]$, $[87/281,27/47]$ and $[56/139,1]$ for preference, and $[0,64/95]$, $[113/281,2/3]$ and $[109/278,1]$ for approval. The second asserts that these counts agree with the strict comparisons of the code at every rank among the passers of an arm. The main statement asserts that $1/2$ lies in all three approval intervals and in the preference intervals for 90–70 and 90–45. The preference interval for 90–90 lies below the other two, with gaps $7654/80085$ and $7481/39615$, and the statement asserts the same separation under exact fractional trimming. Let $f_t$ be the failure rate of arm $t$, let $q=1-f_1-f_2-f_3=40739821/77997088$, and let $a_t$ be the share of arm $t$ that passes with outcome 1. Then the interval of arm $t$ is $[\\max\\{0,(a_t-\\sum_{s\\ne t}f_s)/q\\},\\min\\{1,a_t/q\\}]$, and the two gaps are $3868480/40739821$ and $7702048/40739821$. The statements do not concern the weighted Figure 1 or sampling uncertainty, and the qualitative sentences of the corrected passage have no formal counterpart.",
+        "headline": "Section 3, the sentence that “the bounds for all treatment conditions have overlapping regions, in both outcome variables”, as corrected",
+        "location": "Section 3, pp. 578–579 (PDF pp. 7–8); Figure 2, Panels D–E, p. 585 (PDF p. 14)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GLP010P033B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.Wave1.missing_passing_condition_counterexample_proof",
+          "line": 778,
+          "module": "AronowAudit.P010.Wave1.Gap.GLP010P033B3",
+          "status": "proved",
+          "target_id": "P010-T3",
+          "target_kind": "counterexample",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the counterexample of P010-E001, with $K=2$ and its two populations, which differ by the exchange of $X$ and $-X$ between the first two groups of subjects. A population is a probability law for one subject’s $(Y(1),Y(2),S(1),S(2),Z)$, with $Y=Y(Z)$ and $S=S(Z)$. The two laws are built from the densities of the example and from an independent assignment such that $\\Pr[Z=1]=1/2$. The statement asserts for both laws that Assumptions 1 to 3 hold and that $\\Pr[S(1)=S(2)=1]=1/4$. It asserts that $Y$ has no atoms, that its support is the real line, and that its absolute moments of every order are finite. These properties are stronger than the “continuous with unbounded support” of the printed hypothesis. It asserts that the passing rates are $1/2$ in arm 1 and $3/4$ in arm 2, and that the sum in the display is $1/2$ for $z=1$. It asserts that the passers of arm 1 have density $e^{-|y|}/2$, with median 0. It asserts next that $\\mathrm{E}[Y\\mid Y\\le 0,\\ Z=1]=-\\frac34,\\qquad \\mathrm{E}[Y\\mid Y\\ge 0,\\ Z=1]=\\frac34,$ and that $\\mathrm{E}[Y(1)\\mid S(1)=S(2)=1]$ equals $-1$ under one law and $1$ under the other, so that the printed interval does not contain this mean under either law. Two last clauses assert that the bounds with $S=1$ added to the conditioning events are $-1$ and $1$, and that the two laws induce the same distribution of $(Y,S,Z)$.",
+        "headline": "A counterexample to the displayed bounds of Proposition 1, as printed",
+        "location": "p. 575 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/PropositionOneFiniteTailC.lean",
+          "highlight_ids": [
+            "H052"
+          ],
+          "lean_name": "AronowAudit.P010.Wave1.proposition_one_finite_proof",
+          "line": 336,
+          "module": "AronowAudit.P010.Wave1.PropositionOneFiniteTailC",
+          "status": "proved",
+          "target_id": "P010-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.always_passer_union_bound",
+          "line": 420,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.trimming_mass_identity",
+          "line": 438,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is the first case of the corrected proposition of P010-E001. Fix an arm $z$, and let $A=\\{S(1)=\\cdots=S(K)=1\\}$, $p_k=\\Pr[S=1\\mid Z=k]$, $r_z=\\sum_{z'\\ne z}(1-p_{z'})/p_z$ and $Q_z=Q_{Y\\mid Z=z,S=1}$. Suppose that Assumptions 1 to 3 hold, that $\\Pr[A]>0$, that the distribution of $Y$ given $Z=z$ and $S=1$ has no atoms and a finite mean, and that $r_z<1$. Then the statement asserts that $\\mathrm{E}[Y\\mid Y\\le Q_z(1-r_z),\\ Z=z,\\ S=1]\\ \\le\\ \\mathrm{E}[Y(z)\\mid A]\\ \\le\\ \\mathrm{E}[Y\\mid Y\\ge Q_z(r_z),\\ Z=z,\\ S=1].$ The paper does not define “sharp”, and the statement gives it the following meaning. A compatible law is a law of the potential variables and $Z$ that satisfies Assumptions 1 to 3, assigns positive probability to $A$ and induces the same distribution of $(Y,S,Z)$. The statement asserts that each of the two bounds is the value of $\\mathrm{E}[Y(z)\\mid A]$ under some compatible law, and that this mean lies between the bounds under every compatible law. Further clauses assert that $p_z(1-r_z)=L$, where $L=1-\\sum_k(1-p_k)$, that $r_z<1$ if and only if $L>0$, and that both bounds equal $\\mathrm{E}[Y\\mid Z=z,S=1]$ when $r_z=0$. They assert also that the two bounds equal $\\frac{p_z}{L}\\int_0^{L/p_z}Q_z(u)\\,du\\qquad\\text{and}\\qquad\\frac{p_z}{L}\\int_{1-L/p_z}^{1}Q_z(u)\\,du .$ Two supporting statements assert the union bound $\\Pr[A]\\ge L$ under Assumptions 1 to 3 and, for every law with positive passing rates, the identity $p_z(1-r_z)=L$ with its equivalence. A population is represented by a probability law for one subject’s potential responses, potential results and assignment, with $Y=Y(Z)$ and $S=S(Z)$, and Assumption 2 is the independence of $(Y(k),S(k))$ and $Z$ for each $k$ separately. Compared with the printed proposition, the statement adds $S=1$ to the two outer conditioning events and adds the finite mean. It requires continuity only among the passers of arm $z$, and it does not assume unbounded support.",
+        "headline": "Proposition 1, as corrected: the case in which the sum in the display is below 1",
+        "location": "p. 575 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GLP010P033B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.Wave1.infinite_sharp_bounds_counterexample_proof",
+          "line": 1105,
+          "module": "AronowAudit.P010.Wave1.Gap.GLP010P033B4",
+          "status": "proved",
+          "target_id": "P010-T5",
+          "target_kind": "counterexample",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the counterexample of P010-E002. In it $K=2$, $S(1)=S(2)=B$ with $\\Pr[B=1]=1/3$, and $Y(1)=Y(2)$ has density $30x^2(1-x)^2$ on $(0,1)$ if $B=1$ and density $5/[2(1+|v|)^6]$ on the real line if $B=0$. The assignment $Z$ is independent of these variables, with $\\Pr[Z=1]=1/2$. The statement asserts that Assumptions 1 to 3 hold, that $\\Pr[S(1)=S(2)=1]=1/3$, and that $Y$ has no atoms and its support is the real line. It asserts that $\\mathrm{E}[Y]=1/6$, $\\mathrm{E}[Y^2]=13/63$ and $\\mathrm{E}|Y|^3=19/84$, and that $\\Pr[Y>R]=\\Pr[Y<-R]=1/[3(1+R)^5]$ for all $R\\ge1$. For each arm $z$ it asserts that the passing rate is $1/3$ and that the sum in the display is $2$, so that the last clause of the printed proposition applies. A compatible law is a law of $(Y(1),Y(2),S(1),S(2),Z)$ that satisfies Assumptions 1 to 3, has $\\Pr[S(1)=S(2)=1]>0$ and induces the same distribution of $(Y,S,Z)$. The statement asserts that $0<\\mathrm{E}[Y(z)\\mid S(1)=S(2)=1]<1$ under every compatible law. It asserts that the infimum and the supremum of this mean over the compatible laws are $0$ and $1$, and that they are not $-\\infty$ and $\\infty$. The last clause concerns the two families of laws by which the finding approaches the endpoints. For all $t\\in(0,1)$ it asserts that both laws are compatible, that the mean under the first equals $t(15/2-12t+5t^2)/(10-15t+6t^2)$ and lies in $(0,t)$, and that the mean under the second is one minus this value. The printed interval from $-\\infty$ to $\\infty$ contains this mean, and the statement contradicts only the claim that the interval is sharp.",
+        "headline": "A counterexample to the last clause of Proposition 1, “else these bounds are given by $-\\infty\\le\\mathrm{E}[Y(z)\\mid S(1)=S(2)=\\cdots=S(K)=1]\\le\\infty$”, as printed",
+        "location": "p. 575 (PDF p. 4); matching clauses of the proof, p. 580 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/PropositionOneElseTailC.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.Wave1.proposition_one_else_proof",
+          "line": 165,
+          "module": "AronowAudit.P010.Wave1.PropositionOneElseTailC",
+          "status": "proved",
+          "target_id": "P010-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.else_branch_criterion",
+          "line": 468,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is the second case of the corrected proposition of P010-E002. Fix an arm $z$, and let $A=\\{S(1)=\\cdots=S(K)=1\\}$ and $r_z=\\sum_{z'\\ne z}\\Pr[S=0\\mid Z=z']/\\Pr[S=1\\mid Z=z]$. Let $\\ell_z$ and $u_z$ denote the essential infimum and supremum of $Y$ given $Z=z$ and $S=1$, which may be infinite. Suppose that Assumptions 1 to 3 hold, that $\\Pr[A]>0$, that $Y$ has no atoms, that $\\mathrm{E}[|Y|\\mid Z=z,S=1]<\\infty$, and that $r_z\\ge1$. Then the statement asserts that $\\ell_z\\le\\mathrm{E}[Y(z)\\mid A]\\le u_z,$ with strict inequality at each finite endpoint. A compatible law is a law of the potential variables and $Z$ that satisfies Assumptions 1 to 3, assigns positive probability to $A$ and induces the same distribution of $(Y,S,Z)$. The statement asserts that $\\ell_z$ and $u_z$ are the infimum and the supremum of $\\mathrm{E}[Y(z)\\mid A]$ over the compatible laws, and that no compatible law attains a finite endpoint. It asserts that this infimum and supremum are $-\\infty$ and $\\infty$ if and only if the distribution of $Y$ given $Z=z$ and $S=1$ is unbounded below and above. One further clause is the criterion that $r_z\\ge1$ if and only if $\\sum_k\\Pr[S=1\\mid Z=k]\\le K-1$, and a supporting statement asserts it for every law with positive passing rates. The statement imposes continuity on $Y$ itself, as the printed proposition does, and this is stronger than continuity among the passers of arm $z$. It adds the finite mean among these passers, and it does not assume unbounded support.",
+        "headline": "Proposition 1, as corrected: the case in which the sum in the display is at least 1",
+        "location": "p. 575 (PDF p. 4); matching clauses of the proof, p. 580 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T7",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.joint_independence_step_counterexample",
+          "line": 904,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "counterexample_proved",
+          "target_id": "P010-T7",
+          "target_kind": "counterexample",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the counterexample of P010-E009. In it $K=2$, and four states have probability $1/4$ each: $(Z,Y(1),Y(2))$ equals $(1,0,0)$, $(1,1,1)$, $(2,0,1)$ or $(2,1,0)$, and $S(1)=S(2)=1$ in every state. The law is a sum of four point masses, with $Y=Y(Z)$ and $S=S(Z)$. The statement asserts that Assumptions 1 to 3 hold, where Assumption 2 is the independence of $(Y(a),S(a))$ and $Z$ for each $a$ separately, as printed. It asserts that $\\Pr[S(1)=S(2)]=1$ and that $\\Pr[S(1)=S(2)=1]=1$. It asserts that $(Y(1),Y(2),S)$ is not independent of $Z$, and it asserts the two values that show this: $\\Pr[Y(1)=0,\\ Y(2)=0,\\ S=1,\\ Z=1]=\\frac14,\\qquad \\Pr[Y(1)=0,\\ Y(2)=0,\\ S=1]\\,\\Pr[Z=1]=\\frac18 .$ The last clauses are that $\\mathrm{E}[Y\\mid S=1,Z=1]=\\mathrm{E}[Y\\mid S=1,Z=2]=1/2$ and that $\\mathrm{E}[Y(1)-Y(2)\\mid S(1)=S(2)=1]=0$. Note that both sides of Corollary 1 equal zero in this example, and the statement contradicts the step of the proof and not the corollary.",
+        "headline": "A counterexample to the step “thus ensuring $(Y(1),Y(2),\\ldots,Y(K),S)\\perp\\!\\!\\!\\perp Z$” in the proof of Corollary 1",
+        "location": "Appendix A, pp. 579–580 (PDF pp. 8–9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.corollary_one_corrected_proof",
+          "line": 533,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement follows the corrected proof of P010-E009 for one arm $a$. Suppose that Assumptions 1 to 3 hold, that $\\Pr[S(1)=S(2)=\\cdots=S(K)]=1$ and that $\\mathrm{E}|Y(a)|<\\infty$. The statement asserts that $S=S(a)$ almost surely and that $(Y(a),S)$ is independent of $Z$. It asserts that $\\Pr[S=1\\mid Z=t]=\\Pr[S=1]>0$ for all arms $t$, and that the events $\\{S=1\\}$ and $\\{S(1)=\\cdots=S(K)=1\\}$ differ by a set of probability zero. It asserts next that $\\mathrm{E}[Y\\mid S=1,Z=a]=\\mathrm{E}[Y(a)\\mid S=1,Z=a]=\\mathrm{E}[Y(a)\\mid S=1]=\\mathrm{E}[Y(a)\\mid S(1)=\\cdots=S(K)=1].$ The independence of the whole vector $(Y(1),\\ldots,Y(K),S)$ and $Z$ is neither assumed nor asserted. A population is represented by a probability law for one subject’s potential responses, potential results and assignment, with $Y=Y(Z)$ and $S=S(Z)$. Assumption 2 is imposed for each arm separately, as printed. The finite first moment is the condition under which the paper’s conditional means exist, and the paper leaves it to the regularity conditions of Section 2.1. The corollary follows when the identities for two arms are subtracted, and a separate statement asserts it.",
+        "headline": "The proof of Corollary 1, as corrected",
+        "location": "Appendix A, pp. 579–580 (PDF pp. 8–9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T9",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GLP010P033B5.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.Wave1.simulation_width_counterexample_proof",
+          "line": 1372,
+          "module": "AronowAudit.P010.Wave1.Gap.GLP010P033B5",
+          "status": "proved",
+          "target_id": "P010-T9",
+          "target_kind": "counterexample",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement concerns the population bounds in the designs of rows 1 and 4 of Table 1 (see P010-E011). Both rows have $\\lambda=\\sigma=1$ and $\\Pr[S(1)=1]=\\Pr[S(2)=1]=4/5$, and $\\rho(S(1),S(2))$ is $1/4$ in row 1 and $1/2$ in row 4. In each design the pair $(S(1),S(2))$ has the four joint probabilities that the passing rates and the correlation determine, and $Y(1)=Y(2)=S(2)-S(1)+\\varepsilon$. Here $\\varepsilon$ is standard normal, and $\\varepsilon$ and $Z$ are independent of each other and of the pair, with $\\Pr[Z=1]=1/2$. For both designs the statement asserts Assumptions 1 to 3, the stated correlation, and that $Y$ has no atoms and full real support. It asserts that $\\Pr[S(1)=S(2)=1]$ is $17/25$ in row 1 and $18/25$ in row 4, and that in both arms the passing rate is $4/5$ and the sum in the display of Proposition 1 is $1/4$. It asserts that $Y$ given $Z=1$ and $S=1$ has distribution function $F_w(x)=(1-w)\\Phi(x)+w\\Phi(x+1)$, with $w=3/20$ in row 1 and $w=1/10$ in row 4. Its further clauses give the mean $-w$, the variances $451/400$ in row 1 and $109/100$ in row 4, and the reflection of $F_w$ about zero as the distribution of $Y$ given $Z=2$ and $S=1$. Let $W$ be the width of the interval for the difference of the two always-passer means, formed by subtracting the arm bounds of the corrected Proposition 1. The statement asserts that $W=2(U_w-L_w)$, where $L_w$ and $U_w$ are the means of the lower and of the upper three quarters of $F_w$, and that $\\begin{aligned} 1.798577298898&\\le W\\le1.798577299027\\quad\\text{in row 1},\\\\ 1.767983385194&\\le W\\le1.767983385319\\quad\\text{in row 4}, \\end{aligned}$ with a difference greater than $0.030593913580$. These are population widths, distinct from the printed simulation averages 1.753 and 1.723; the statement does not assert that the interval of width $W$ is sharp for the difference.",
+        "headline": "A counterexample to the sentence “the width of the bounds does not change as $\\rho(S(1),S(2))$ is varied; compare, e.g., row 1 to row 4” of Appendix C",
+        "location": "Appendix C, p. 581 (PDF p. 10); Table 1, p. 582 (PDF p. 11)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GLP010P033B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.Wave1.simulation_invariance_corrected_proof",
+          "line": 928,
+          "module": "AronowAudit.P010.Wave1.Gap.GLP010P033B1",
+          "status": "proved",
+          "target_id": "P010-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.bounds_fixed_observables",
+          "line": 1320,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.bounds_fixed_observables_actual",
+          "line": 1330,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.simulation_mean_formula_injective",
+          "line": 1345,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "Four Lean statements give the formal content of the corrected paragraph of P010-E011, and two of them concern the invariance. The first treats the corrected Proposition 1 bounds for arm $z$ as a formula in the passing rates and a distribution on the real line, and asserts that equal inputs give equal values. The second asserts the same for the bounds as they are defined in the population, in both cases of the proposition, for two populations that satisfy Assumptions 1 to 3. The main statement repeats the second and adds the simulation design of Appendix C, with passing rates $p_1,p_2\\in(0,1)$, correlation $\\rho$, and $\\sigma\\ge0$ as the standard deviation of the normal term. Let $a=p_1p_2+\\rho\\sqrt{p_1(1-p_1)p_2(1-p_2)}$, $w_1=1-a/p_1$ and $w_2=1-a/p_2$. The statement asserts that Assumptions 1 to 3 hold, that the passing rates are $p_1$ and $p_2$, that $\\Pr[S(1)=S(2)=1]=a$, and that the correlation of $S(1)$ and $S(2)$ is $\\rho$. It asserts that $Y$ given $Z=1$ and $S=1$ is the mixture of $N(0,\\sigma^2)$ and $N(-\\lambda,\\sigma^2)$ with weights $1-w_1$ and $w_1$. For $Z=2$ and $S=1$ it gives the mixture of $N(0,\\sigma^2)$ and $N(\\lambda,\\sigma^2)$ with weights $1-w_2$ and $w_2$; the two means are $-\\lambda w_1$ and $\\lambda w_2$. For $\\lambda\\ne0$ it asserts that each of these two expressions takes different values at two different values of $\\rho$, and a fourth statement asserts this comparison separately. Its last clause is that the population widths of the bounds in rows 1 and 4 of Table 1 differ. The main statement makes the feasibility inequalities for $\\rho$ explicit, but compares the two mean expressions for every real second correlation, feasible or not; this algebraic comparison is broader than the corrected paragraph. The word “slightly” of the corrected paragraph has no formal counterpart.",
+        "headline": "Appendix C, last paragraph, as corrected",
+        "location": "Appendix C, p. 581 (PDF p. 10); Table 1, p. 582 (PDF p. 11)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T11",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Transport.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.transport_logistic_certificate",
+          "line": 91,
+          "module": "AronowAudit.P010.P010_Transport",
+          "status": "proved",
+          "target_id": "P010-T11",
+          "target_kind": "counterexample",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Transport.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.transport_odds_counterexample",
+          "line": 46,
+          "module": "AronowAudit.P010.P010_Transport",
+          "status": "counterexample_proved",
+          "target_id": "P010-T11",
+          "target_kind": "counterexample",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements formalize the counterexample of P010-E007, with eight subjects and one binary covariate: $X=(0,0,0,1)$ in the original sample and $X=(0,1,1,1)$ in the replication sample. The two samples are represented by their covariate distributions on $\\{0,1\\}$, which are $f_O=(3/4,1/4)$ and $f_R=(1/4,3/4)$, with equal shares of the pooled data. Let $R=1$ for the replication study, and let $p(x)=\\Pr[R=1\\mid X=x]$ be computed by Bayes' rule. The main statement asserts that both distributions are positive and that $0<p(x)<1$ at both values of $x$. It asserts that $p(0)=1/4$ and $p(1)=3/4$, and that the printed weights $p/(1-p)$ are $1/3$ and $3$. It asserts that the weighted replication masses are $1/12$ and $9/4$, with sum $7/3$, so that the weighted replication share of $X=1$ is $27/28$ and not the $1/4$ of the original sample. It asserts also that the reciprocal weights $(1-p)/p$ reproduce $f_O$ at both values. The second statement concerns the logistic regression of $R$ on $X$, which is saturated in this example. It asserts that the intercept $\\log(1/3)$ and the slope $\\log 9$ give the fitted probabilities $1/4$ and $3/4$. It asserts that the likelihood of the eight observations, as a function of the two cell probabilities in $(0,1)$, has its unique maximum at $(1/4,3/4)$. The maximum is stated in terms of the two cell probabilities. The main statement uses the true conditional probabilities, and the second statement connects them with the fitted values in this example.",
+        "headline": "A counterexample to footnote 7, as printed: the weight $p_i/(1-p_i)$ with $R_i=1$ for the replication study",
+        "location": "Footnote 7, p. 578 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T12",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Transport.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.transport_bayes",
+          "line": 122,
+          "module": "AronowAudit.P010.P010_Transport",
+          "status": "proved",
+          "target_id": "P010-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Transport.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.transport_corrected_density",
+          "line": 323,
+          "module": "AronowAudit.P010.P010_Transport",
+          "status": "proved",
+          "target_id": "P010-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Transport.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.transport_corrected_finite",
+          "line": 169,
+          "module": "AronowAudit.P010.P010_Transport",
+          "status": "proved",
+          "target_id": "P010-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Transport.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.transport_printed_finite",
+          "line": 196,
+          "module": "AronowAudit.P010.P010_Transport",
+          "status": "proved",
+          "target_id": "P010-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "Four Lean statements give the formal content of the corrected footnote of P010-E007. Let $R=1$ for the replication study and $\\pi=\\Pr[R=1]\\in(0,1)$. Let $f_R$ and $f_O$ denote the covariate distributions of the replication and original samples, positive on a common support, and let $p(x)=\\Pr[R=1\\mid X=x]$ be given by Bayes' rule. The first statement concerns one value of the covariate, at which it asserts that $0<p<1$ and that $\\frac{p}{1-p}=\\frac{\\pi}{1-\\pi}\\,\\frac{f_R}{f_O},\\qquad \\frac{f_O}{f_R}=\\frac{\\pi}{1-\\pi}\\,\\frac{1-p}{p}.$ The second concerns a covariate with finitely many values. It asserts that the replication distribution, weighted by $(1-p)/p$ and normalized, equals $f_O$, and that the same holds when all weights are multiplied by a positive constant. The third asserts that the printed weight $p/(1-p)$ gives the distribution proportional to $f_R(x)^2/f_O(x)$, and that this distribution equals $f_O$ if and only if $f_R=f_O$. The main statement asserts the same facts for densities with respect to an arbitrary measure, with the equalities holding almost everywhere. The printed-weight clause additionally assumes that $f_R^2/f_O$ is integrable, ensuring a finite normalizing constant; the reciprocal-weight clause needs no added integrability condition. The statements use the true conditional probabilities $p(x)$ and assert nothing about weights from a fitted regression. The corrected footnote exchanges the coding, with $R_i=1$ for the original study, and this is the reciprocal weight under the printed coding.",
+        "headline": "Footnote 7, as corrected",
+        "location": "Footnote 7, p. 578 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T13",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GLP010P033B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.Wave1.lower_tail_upper_bound_counterexample_proof",
+          "line": 1317,
+          "module": "AronowAudit.P010.Wave1.Gap.GLP010P033B1",
+          "status": "proved",
+          "target_id": "P010-T13",
+          "target_kind": "counterexample",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the counterexample of P010-E004. In it $K=2$, $S(1)=S(2)=B$ with $\\Pr[B=1]=4/5$, and $Y(1)=Y(2)$ is standard normal and independent of $B$. The assignment $Z$ is independent of these variables, with $\\Pr[Z=1]=1/2$. The statement asserts that Assumptions 1 to 3 hold, that $\\Pr[S(1)=S(2)=1]=4/5$, and that $Y$ has no atoms and its support is the real line. It asserts that in each arm the passing rate is $4/5$ and the outcome of the passers is standard normal. It asserts that the ratio in the display is $1/4$, both in terms of the potential results and in terms of the observed ones. It asserts that the left side of the display is zero: $\\mathrm{E}[Y(1)\\mid U=1,S(1)=1]=\\mathrm{E}[Y(1)\\mid S(1)=S(2)=1]=0$. Let $q=\\Phi^{-1}(3/4)$. The statement asserts that the printed right side is $\\mathrm{E}[Y(1)\\mid Y(1)\\le q]=-\\frac{\\varphi(q)}{3/4}<0,$ and that the printed inequality fails. Note that the right side conditions on the tail event alone, as printed. A last clause asserts that the corrected upper bound, which is the mean of $Y$ above its $1/4$ quantile among the passers of arm 1, equals $\\varphi(\\Phi^{-1}(1/4))/(3/4)$ and is positive. These values are exact expressions in the normal density and quantile function, and the statement contains no decimal approximation.",
+        "headline": "A counterexample to the first upper bound in the proof of Proposition 1, as printed",
+        "location": "Appendix A, p. 580 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T14",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GLP010P033B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.Wave1.upper_tail_proof_corrected_proof",
+          "line": 326,
+          "module": "AronowAudit.P010.Wave1.Gap.GLP010P033B2",
+          "status": "proved",
+          "target_id": "P010-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.other_arm_conditional_union_bound",
+          "line": 633,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.upper_tail_fixed_mass",
+          "line": 705,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements cover the corrected display of P010-E004, in potential variables for any arm $a$ in place of arm 1. Let $U=1$ if $S(k)=1$ for all $k\\ne a$ and $U=0$ otherwise, and let $r=\\sum_{k\\ne a}\\Pr[S(k)=0]/\\Pr[S(a)=1]$. Let $F$ denote the distribution of $Y(a)$ given $S(a)=1$, with quantile function $Q$. The main statement supposes that $\\Pr[S(1)=\\cdots=S(K)=1]>0$ and that $F$ has no atoms and a finite mean. Its first part concerns every $p\\in[0,1)$ and every joint distribution of $(Y(a),U)$ given $S(a)=1$ such that $Y(a)$ has distribution $F$ and $\\Pr[U=0]=p$. It asserts that the upper-tail mean above $Q(p)$ bounds the mean of $Y(a)$ given $U=1$ and is nondecreasing in $p$; the joint distribution with $U=1$ exactly when $Y(a)\\ge Q(p)$ attains this bound. The second part asserts that $\\Pr[U=0\\mid S(a)=1]\\le r$ and that, if $r<1$, $\\mathrm{E}[Y(a)\\mid U=1,\\ S(a)=1]\\le\\mathrm{E}[Y(a)\\mid Y(a)\\ge Q(r),\\ S(a)=1].$ The first supporting statement asserts, for an integrable variable $f$ and a real cutoff $q$, that its mean on any measurable event of the same positive probability as $\\{f\\ge q\\}$ is at most its mean on that upper tail. The second is the union bound $\\Pr[U=0\\mid S(a)=1]\\le r$. None of the three statements assumes Assumption 2 or Assumption 3, and the clause “else the upper bound is infinite” is outside them (see P010-E002).",
+        "headline": "The first upper bound in the proof of Proposition 1, as corrected",
+        "location": "Appendix A, p. 580 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T15",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GP010P033B1b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.Wave1.observable_upper_bound_corrected_proof",
+          "line": 714,
+          "module": "AronowAudit.P010.Wave1.Gap.GP010P033B1b",
+          "status": "proved",
+          "target_id": "P010-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.conditional_law_consistency",
+          "line": 735,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.eventMean_eventLaw",
+          "line": 255,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.passer_tail_mean_formula",
+          "line": 802,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.potential_trim_consistency",
+          "line": 680,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "Five Lean statements cover the corrected final display of P010-E005 for any arm $a$ in place of arm 1, with $S=1$ restored as in P010-E001. Let $r_a=\\sum_{k\\ne a}\\Pr[S=0\\mid Z=k]/\\Pr[S=1\\mid Z=a]$, and let $Q_a$ denote the quantile function of $Y$ given $Z=a$ and $S=1$. The main statement supposes that Assumptions 1 to 3 hold, that $\\Pr[S(1)=\\cdots=S(K)=1]>0$, that $Y$ has no atoms, and that $\\mathrm{E}[|Y|\\mid Z=a,S=1]<\\infty$. It asserts that the distribution of $Y(a)$ given $S(a)=1$ equals the distribution of $Y$ given $S=1$ and $Z=a$, and that $\\Pr[S(k)=1]=\\Pr[S=1\\mid Z=k]$ for all $k$. It also asserts $\\sum_{k\\ne a}\\Pr[S(k)=0]/\\Pr[S(a)=1]=r_a$, with the focal-arm denominator, and that the potential passer tail mean above its $r_a$ quantile equals the right side of the display below. Its last clause is that, when $r_a<1$, $\\mathrm{E}[Y(a)\\mid S(1)=\\cdots=S(K)=1]\\le\\mathrm{E}[Y\\mid Y\\ge Q_a(r_a),\\ Z=a,\\ S=1],$ and that the left side equals $\\mathrm{E}[Y(a)\\mid U=1,S(a)=1]$, where $U=1$ if $S(k)=1$ for all $k\\ne a$. The first two supporting statements give the conditional-law and ratio equalities. The third expresses the two bounds of the corrected proposition as tail means of the outcome distribution among the passers of arm $a$. The fourth is the identity by which a tail mean of a conditional distribution is a conditional mean in the population. The main statement gives no lower-bound inequality, which the proof leaves to analogous calculations; the infinite-upper-bound clause is outside these statements (see P010-E002).",
+        "headline": "The final upper bound in the proof of Proposition 1, as corrected",
+        "location": "Appendix A, p. 580 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T16",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.selection_counterexample_corrected",
+          "line": 1046,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "counterexample_proved",
+          "target_id": "P010-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the example in the proof of Corollary 3, with the arithmetic of P010-E010. The law puts probability $1/3$ on each of the three types $(Y(1),Y(2),S(1),S(2))=(1,1,0,1)$, $(0,0,1,0)$ and $(0,0,1,1)$, and $Z$ is independent of the type with $\\Pr[Z=1]=q$. The proof does not state the law of $Z$, and the statement covers all $q\\in(0,1)$. It asserts that Assumptions 1 to 3 hold, that $\\Pr[S(1)=S(2)=1]=1/3$, that the passing rate is $2/3$ in both arms, and that $S$ is independent of $Z$. It asserts that $Y(2)-Y(1)=0$ almost surely and that $\\mathrm{E}[S(2)-S(1)]=0$. With $\\tau=Y(2)-Y(1)$, it asserts that the mean of $\\tau$ is zero given each of the events $\\{S(1)=S(2)=1\\}$, $\\{S(1)=1,S(2)=0\\}$ and $\\{S(1)=0,S(2)=1\\}$. Its last clauses are that $\\mathrm{E}[Y\\mid S=1,Z=1]=0$, that $\\mathrm{E}[Y\\mid S=1,Z=2]=1/2$, and that $\\mathrm{E}[Y\\mid S=1,Z=2]-\\mathrm{E}[Y\\mid S=1,Z=1]=\\frac12\\ne0 .$ The law also carries a constant covariate, and the statement asserts in addition that Assumption 4 holds and that $\\mathbf{X}$ is independent of $Z$ given $S$. These two clauses are not part of the proof of Corollary 3. They serve the example for Corollary 5, and in this respect the statement is broader than the printed proof.",
+        "headline": "The closing arithmetic of the proof of Corollary 3, as corrected",
+        "location": "Appendix A, p. 580 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T17",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.nonzero_passing_corrected",
+          "line": 401,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "An assumption is not a theorem, and its formal counterpart is a definition. The corrected Assumption 3 of P010-N002 is the condition that $\\Pr[S=1\\mid Z=z]>0$ for all $z\\in\\{1,\\ldots,K\\}$, where $\\Pr[S=1\\mid Z=z]$ is the ratio of $\\Pr[S=1,Z=z]$ to $\\Pr[Z=z]$. Every Lean statement for this paper that assumes Assumption 3 uses this definition. One Lean statement is attached to it. For a population that satisfies Assumptions 1 and 2, it asserts that $\\Pr[S=1\\mid Z=z]=\\Pr[S(z)=1]$ for all $z$, and that the corrected assumption holds if and only if $\\Pr[S(z)=1]>0$ for all $z$. The proof of Proposition 1 uses the first of these facts on p. 580, where it says that “the marginal distributions of $S(k)$ are each equivalent to $S\\mid Z=k$”. A population is represented by a probability law for one subject’s potential responses, potential results and assignment, with $Y=Y(Z)$ and $S=S(Z)$. Assumption 2 is the independence of $(Y(z),S(z))$ and $Z$ for each $z$ separately, with $\\Pr[Z=z]>0$. The change from “both treatment and control” to “every treatment arm” in the sentence before the assumption appears in the definition only as the quantifier over all $z$.",
+        "headline": "Assumption 3 (Nonzero Passing Rates), as corrected",
+        "location": "p. 574 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T18",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.corollary_one",
+          "line": 585,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is Corollary 1 with the bracket placed as in P010-N003. Suppose that Assumptions 1 to 3 hold, that $\\Pr[S(1)=S(2)=\\cdots=S(K)]=1$, and that $\\mathrm{E}|Y(z)|$ and $\\mathrm{E}|Y(z')|$ are finite. Then the statement asserts that $\\mathrm{E}[Y\\mid S=1,Z=z]-\\mathrm{E}[Y\\mid S=1,Z=z']=\\mathrm{E}[Y(z)-Y(z')\\mid S(1)=S(2)=\\cdots=S(K)=1]$ for all $z$ and $z'$ in $\\{1,\\ldots,K\\}$. A population is represented by a probability law for one subject’s potential responses, potential results and assignment, with $Y=Y(Z)$ and $S=S(Z)$, so that Assumption 1 holds by construction. Assumption 2 is the independence of $(Y(k),S(k))$ and $Z$ for each $k$ separately, as printed, and the independence of the whole vector of potential responses and $Z$ is not assumed. Assumption 3 has the corrected form $\\Pr[S=1\\mid Z=k]>0$. A conditional mean is the integral over the conditioning event divided by the probability of that event. The two finite first moments are the only addition to the printed statement, which leaves the existence of the means to the regularity conditions of Section 2.1.",
+        "headline": "Corollary 1, as corrected",
+        "location": "p. 574 (PDF p. 3); proof in Appendix A, pp. 579–580 (PDF pp. 8–9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T19",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.lemma_one",
+          "line": 489,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T19",
+          "target_kind": "headline_result",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts Lemma 1 together with the identity for each arm that the sentence before the lemma states. Suppose that Assumptions 1 and 2 hold and that $\\mathrm{E}|Y(z)|$ and $\\mathrm{E}|Y(z')|$ are finite. Then the statement asserts that $\\mathrm{E}[Y\\mid Z=z]=\\mathrm{E}[Y(z)]$, that $\\mathrm{E}[Y\\mid Z=z']=\\mathrm{E}[Y(z')]$, and that $\\mathrm{E}[Y\\mid Z=z]-\\mathrm{E}[Y\\mid Z=z']=\\mathrm{E}[Y(z)-Y(z')].$ A population is represented by a probability law for one subject’s potential responses, potential results and assignment, with $Y=Y(Z)$ and $S=S(Z)$, so that Assumption 1 holds by construction. Assumption 2 is the independence of $(Y(k),S(k))$ and $Z$ for each $k$ separately, with $\\Pr[Z=k]>0$. The statement does not assume Assumption 3, which the lemma does not need. In this respect it is broader than the lemma read under all three assumptions of Section 2. The two finite first moments are added, since the paper puts no moment condition in the lemma. The sentence on plug-in estimators that follows the lemma is not formalized.",
+        "headline": "Lemma 1",
+        "location": "Section 2.1, p. 574 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T20",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.corollary_two",
+          "line": 513,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T20",
+          "target_kind": "headline_result",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that, under Assumptions 1 and 2, the condition $\\Pr[S(1)=S(2)=\\cdots=S(K)]=1$ implies that $S$ and $Z$ are independent. A population is represented by a probability law for one subject’s potential responses, potential results and assignment, with $Y=Y(Z)$ and $S=S(Z)$, so that Assumption 1 holds by construction. Assumption 2 is the independence of $(Y(k),S(k))$ and $Z$ for each $k$ separately, with $\\Pr[Z=k]>0$. The conclusion is the independence of the random variables $S$ and $Z$ under this law. The statement does not assume Assumption 3, and it puts no condition on the outcome. This agrees with the remark in the paper that a proof follows directly from Assumptions 1 and 2. In this respect the statement is broader than the corollary read under all three assumptions of Section 2. The paper’s conclusion that the condition of Corollary 1 fails when $S$ and $Z$ are dependent is the contrapositive of the same statement.",
+        "headline": "Corollary 2",
+        "location": "p. 574 (PDF p. 3); the remark on its proof is on p. 575 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T21",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.corollary_three",
+          "line": 1150,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T21",
+          "target_kind": "headline_result",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "Corollary 3 says that an implication fails, and the Lean statement asserts that an example exists. It asserts that there exists a population with $K=2$ that satisfies Assumptions 1 to 3, in which $S$ is independent of $Z$ and $\\Pr[S(1)=S(2)=1]>0$, such that $\\mathrm{E}[Y\\mid S=1,Z=2]-\\mathrm{E}[Y\\mid S=1,Z=1]\\ne\\mathrm{E}[Y(2)-Y(1)\\mid S(1)=S(2)=1].$ The example intended is the one in the paper’s proof with $\\Pr[Z=1]=1/2$, in which the left side is $1/2$ and the right side is $0$ (for the sign, see P010-E010). The statement itself names no example. It asserts existence for $K=2$ and for the pair $z=2$, $z'=1$, and one such population is what the corollary requires. A population is represented by a probability law for one subject’s potential responses, potential results and assignment, with $Y=Y(Z)$ and $S=S(Z)$. The printed corollary does not mention the condition $\\Pr[S(1)=S(2)=1]>0$, under which the conditional mean on the right is defined.",
+        "headline": "Corollary 3",
+        "location": "p. 575 (PDF p. 4); proof in Appendix A, p. 580 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T22",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.corollary_four",
+          "line": 600,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T22",
+          "target_kind": "headline_result",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement asserts that, under Assumptions 1 and 4, the condition $\\Pr[S(1)=S(2)=\\cdots=S(K)]=1$ implies that $\\mathbf{X}\\perp\\!\\!\\!\\perp Z\\mid S$. The covariates are a vector of finitely many real variables. A population is represented by a probability law for one subject’s potential responses, potential results, assignment and covariates, with $Y=Y(Z)$ and $S=S(Z)$. Assumption 4 is the independence of $(Y(z),S(z),\\mathbf{X})$ and $Z$ for each $z$ separately, with $\\Pr[Z=z]>0$. The conclusion has the following meaning: for each value $s$ of $S$ such that $\\Pr[S=s]>0$, the variables $\\mathbf{X}$ and $Z$ are independent under the law conditional on $S=s$. The statement does not assume Assumption 3, and it puts no condition on the outcome. This agrees with the remark in the paper that a proof follows directly from Assumptions 1 and 4. The balance test that the paper derives from the corollary is the contrapositive of the same statement.",
+        "headline": "Corollary 4",
+        "location": "Section 2.3, p. 576 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P010-T23",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/P010_Population.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P010.corollary_five",
+          "line": 1163,
+          "module": "AronowAudit.P010.P010_Population",
+          "status": "proved",
+          "target_id": "P010-T23",
+          "target_kind": "headline_result",
+          "work_id": "P010"
+        }
+      ],
+      "text": {
+        "body": "Corollary 5 says that an implication fails, and the Lean statement asserts that an example exists. It asserts that there exists a population with $K=2$ and one real covariate that satisfies Assumptions 1, 3 and 4, in which $\\mathbf{X}$ is independent of $Z$ given $S$ and $\\Pr[S(1)=S(2)=1,\\mathbf{X}=0]>0$, such that $\\mathrm{E}[Y\\mid S=1,Z=2,\\mathbf{X}=0]-\\mathrm{E}[Y\\mid S=1,Z=1,\\mathbf{X}=0]\\ne\\mathrm{E}[Y(2)-Y(1)\\mid S(1)=S(2)=1,\\mathbf{X}=0].$ The example intended is that of Corollary 3 with the covariate constant and equal to zero, as the paper’s remark on the proof indicates. With a constant covariate, Assumption 4 reduces to Assumption 2, the conditional independence holds because a constant is independent of every variable, and the two sides are $1/2$ and $0$. The statement itself names no example. It asserts existence for $K=2$, for the pair $z=2$, $z'=1$ and for the value $\\mathbf{x}=0$, and one such population is what the corollary requires. The conditional independence means that $\\mathbf{X}$ and $Z$ are independent under the law conditional on each value of $S$ that has positive probability.",
+        "headline": "Corollary 5",
+        "location": "Section 2.3, p. 576 (PDF p. 5)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "P. M. Aronow",
+      "Jonathon Baron",
+      "Lauren Pinson"
+    ],
+    "citation": "P. M. Aronow, Jonathon Baron, and Lauren Pinson (2019). A Note on Dropping Experimental Subjects who Fail a Manipulation Check. Political Analysis 27(4):572–589.",
+    "doi": "10.1017/pan.2019.5",
+    "title": "A Note on Dropping Experimental Subjects who Fail a Manipulation Check",
+    "type": "Journal article",
+    "venue": "Political Analysis",
+    "year": "2019"
+  },
+  "work_id": "P010"
+}

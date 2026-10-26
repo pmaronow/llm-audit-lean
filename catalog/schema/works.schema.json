@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "items": {
+    "additionalProperties": false,
+    "properties": {
+      "areas": {
+        "items": {
+          "enum": [
+            "probability",
+            "asymptotic-statistics",
+            "randomization-inference",
+            "experimental-design-and-estimation",
+            "survey-sampling",
+            "interference-and-networks",
+            "causal-identification",
+            "partial-identification-and-bounds",
+            "regression-and-variance-estimation",
+            "resampling",
+            "optimization-and-computation",
+            "foundations"
+          ],
+          "type": "string"
+        },
+        "type": "array",
+        "uniqueItems": true
+      },
+      "catalog": {
+        "type": "string"
+      },
+      "counts": {
+        "additionalProperties": false,
+        "properties": {
+          "counterexample_proved": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "proved": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "results": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "targets": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "targets",
+          "results",
+          "proved",
+          "counterexample_proved"
+        ],
+        "type": "object"
+      },
+      "docs": {
+        "type": "string"
+      },
+      "work": {
+        "additionalProperties": false,
+        "properties": {
+          "arxiv_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "authors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "citation": {
+            "type": "string"
+          },
+          "doi": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "venue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "year": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "authors",
+          "venue",
+          "year",
+          "type",
+          "doi",
+          "arxiv_id",
+          "citation"
+        ],
+        "type": "object"
+      },
+      "work_id": {
+        "pattern": "^P[0-9]{3}$",
+        "type": "string"
+      }
+    },
+    "required": [
+      "work_id",
+      "work",
+      "areas",
+      "counts",
+      "docs",
+      "catalog"
+    ],
+    "type": "object"
+  },
+  "title": "llm-audit-lean works",
+  "type": "array"
+}

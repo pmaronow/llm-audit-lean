@@ -1,0 +1,309 @@
+llm-audit-lean. Licensed under the Apache License 2.0; see LICENSE.
+Machine-generated except third-party code.
+
+Third-party code
+
+Third-party source: Causalean / CausalSmith
+Upstream repository: https://github.com/Jiyuan-Tan/CausalSmith
+Revision: a7085d88d2e4b30003db7097ca374f4718da0f01
+License: Apache-2.0
+Copyright holders: Jiyuan Tan
+License-text note: Standard Apache License 2.0 text; see root LICENSE.
+The applicable parts of Causalean's upstream NOTICE file (verbatim excerpt; paragraphs about upstream components not included in this repository are omitted):
+
+Causalean
+Copyright 2026 Jiyuan Tan
+
+This product includes software developed as part of the Causalean project
+(https://github.com/Jiyuan-Tan/CausalSmith), a Lean 4 library laying foundations
+for the formalization of causal inference, together with the CausalSmith
+theorem-generation pipeline.
+
+This software is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+
+End of applicable Causalean upstream NOTICE excerpt.
+LICENSE in the reproduced text refers to upstream.
+
+Files with code adapted from or applying this source:
+  AronowAudit/External/Causalean/Experimentation/DesignBased/Designs/CompleteRandomization.lean
+  AronowAudit/External/Causalean/Experimentation/DesignBased/Estimators/DifferenceInMeans.lean
+  AronowAudit/External/Causalean/Experimentation/DesignBased/Estimators/NeymanVariance.lean
+  AronowAudit/External/Causalean/Experimentation/DesignBased/FinitePopulationVariance.lean
+  AronowAudit/External/Causalean/Experimentation/DesignBased/InProb.lean
+  AronowAudit/External/Causalean/Experimentation/DesignBased/Risk.lean
+  AronowAudit/External/Causalean/Experimentation/FinitePopulationMoments.lean
+  AronowAudit/External/Causalean/Mathlib/Analysis/SignedTailRepresentation.lean
+  AronowAudit/External/Causalean/Mathlib/Analysis/SpecialFunctions/Jacobi/Basic.lean
+  AronowAudit/External/Causalean/Mathlib/Analysis/SpecialFunctions/Jacobi/Beta.lean
+  AronowAudit/External/Causalean/Mathlib/Analysis/SpecialFunctions/Jacobi/Calculus.lean
+  AronowAudit/External/Causalean/Mathlib/Analysis/SpecialFunctions/Jacobi/EndpointEnergy.lean
+  AronowAudit/External/Causalean/Mathlib/Analysis/SpecialFunctions/Jacobi/Legendre.lean
+  AronowAudit/External/Causalean/Mathlib/Probability/Distributions/Gaussian/Standard.lean
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/Bounds.lean
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/Bounds_Part1.lean
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/Bounds_Part2.lean
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/CLT.lean
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/DepGraphCLT.lean
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/DependencyCLT.lean
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/Solution.lean
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/StandardizedDepGraphCLT.lean
+  AronowAudit/External/Causalean/Stat/CLT/ChiSquared.lean
+  AronowAudit/External/Causalean/Stat/CLT/ChiSquaredProjection.lean
+  AronowAudit/External/Causalean/Stat/CLT/GaussianCharFunBridge.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Basic.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/Coupling.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/FrechetHoeffding.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/FrechetHoeffdingAttainment.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/Hoeffding.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/HoeffdingFubini.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/HoeffdingFubiniIntegrability.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/Optimality.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/PIT.lean
+  AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/Survival.lean
+  AronowAudit/External/Causalean/Stat/FiniteDesign/Chebyshev.lean
+  AronowAudit/External/Causalean/Stat/FiniteDesign/DesignCore.lean
+  AronowAudit/External/Causalean/Stat/FiniteDesign/FiniteDesignMeasure.lean
+  AronowAudit/External/Causalean/Stat/Limit/Modes.lean
+  AronowAudit/External/Causalean/Stat/Limit/StochasticOrder.lean
+  AronowAudit/External/Causalean/Stat/OrderStatistic/Basic.lean
+  AronowAudit/External/Causalean/Stat/OrderStatistic/Dirichlet.lean
+  AronowAudit/External/Causalean/Stat/OrderStatistic/Moments.lean
+  AronowAudit/External/Causalean/Stat/OrderStatistic/SimplexIntegrals.lean
+  AronowAudit/External/Causalean/Stat/Quantile/Quantile.lean
+  AronowAudit/External/Causalean/Stat/Quantile/Transport.lean
+  AronowAudit/External/Causalean/Tactic/Attr.lean
+  AronowAudit/External/Causalean/Tactic/IntegralLinearity.lean
+  AronowAudit/P011/P011_OracleCompletion.lean
+  AronowAudit/P011/P011_ProbabilityCompletion.lean
+  AronowAudit/P033/Wave1/Gap/GLP010P033P033B2.lean
+Modifications:
+  Vendored source directory: AronowAudit/External/Causalean. Project-local imports rewritten to AronowAudit.External.Causalean; original Causalean mathematical namespaces and source notices retained. Unused declarations were removed from some modules, leaving source documentation/import wrappers in some files.
+  Lean/Mathlib 4.34.1 compatibility changes: DependencyCLT replaces Measurable.abs with Measurable.norm and Real.norm_eq_abs; CLT and ChiSquared use canonical map-probability instances; DepGraphCLT replaces obsolete measurable_pi_lambda calls with Measurable.of_eval; Gaussian.Standard supplies HasGaussianLaw.mk measurability. The listed compatibility repairs do not describe every change in the final tree.
+  AronowAudit/P033/Wave1/Gap/GLP010P033P033B2.lean: selected Gaussian integral series definitions/lemmas from Mathlib.Probability.Certified.NormalCDF.PowerSeries integrated under local names/namespace; unneeded declarations omitted; normalization uses Mathlib proved twenty-decimal pi bounds.
+  AronowAudit/P011/P011_ProbabilityCompletion.lean applies the dependency CLT imported from CausalSmith. AronowAudit/P011/P011_OracleCompletion.lean attributes its adapted neighborhood-product variance bound to CausalSmith. These attributions describe the uses and adaptations stated in their source comments and do not assign Jiyuan Tan authorship of the complete local files.
+  The two AlmostEverywhereDepGraph adapter files are original local code and are excluded from the adapted-file list; they apply the vendored theorems using coordinatewise clipping.
+  Documentation corrected for this repository in:
+    AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/Bounds_Part2.lean
+    AronowAudit/External/Causalean/Stat/Coupling/Monotone/ProductLoss/Optimality.lean
+
+Third-party source: StatLean
+Upstream repository: https://github.com/StatLean/Stat-Lean
+Revision: e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2
+License: Apache-2.0
+Copyright holders: Junwei Lu; StatLean contributors
+StatLean's source files state: Released under Apache 2.0 license as described in the file LICENSE. StatLean's LICENSE file is reproduced verbatim in AronowAudit/External/StatLean/LICENSE and AronowAudit/P037/LICENSE-StatLean.txt.
+License-text note: StatLean's source files state that they are released under the Apache 2.0 license as described in the file LICENSE; StatLean's LICENSE file is reproduced verbatim.
+Files containing adapted code:
+  AronowAudit/External/StatLean/AsymptoticStatistics/Core/CandidateIF.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/Core/Hilbert.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/Core/NondominatedQMDPath.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/Core/NondominatedQMDProductComparison.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/Core/QMDPath.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/DQM/Defs.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/DQM/Properties.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/BracketingDonsker.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/BrownianBridge.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/Carrier.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/Characterization.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/FiniteCarrier.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/GPNet.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/GPProcess.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/NecessityTightness.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/PBridgeTight.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/SufficiencyDiscretization.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/Bracketing.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/ChainingAssembly.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/Donsker.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/DonskerBracketing.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/EmpiricalDistribution.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/EmpiricalMeasure.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/EmpiricalProcess.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/EquicontinuityChaining.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/FunctionClass.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/GlivenkoCantelli.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/HalfLineBracketing.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/HalfLineIndicators.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/HalfLineQuantile.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/LocalizedClass.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/Maximal.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/MaximalBernstein.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/MaximalOrlicz.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/NestedPartition.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/PointwiseDense.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/SupMeasurability.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Contiguity.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/EmpiricalAverage.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/GaussianMGF.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/HellingerProduct.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/IIdJointLaw.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/IidWLLN.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/InProbability.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/IntegrableTail.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/L2.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/L2Asymptotics.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/L2Tail.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/LogTaylor.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/LpSeminorm.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Markov.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/MeanVarConvergence.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/MeasurableSelectionRandomFunctions.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/MultivariateCLT.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/OuterIntegration/OuterExpectation.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/PairwiseQMDAnalytic.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/PiWithDensity.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Probability/GaussianChaining.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Probability/GaussianMaximal.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Probability/IsonormalProcess.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Probability/SubgaussianGaussian.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Prohorov.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/QMDAnalytic.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/RnDerivSqrt.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Slutsky.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/SqrtLogProduct.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/WeakConvergence/Outer.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/WeakConvergence/OuterFiniteProduct.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/WeakConvergence/OuterMapping.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/WeakConvergence/OuterSlutsky.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/WeakConvergence/OuterTightness.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/WeakConvergence/TightCoordinateUniqueness.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/LocalAsymptoticNormality/LANExpansion.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/LowerBounds/T6_FinDimLAN/Abstract1DLAN.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/LowerBounds/T6_FinDimLAN/NondominatedQMDLAN.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/LowerBounds/T6_FinDimLAN/NondominatedQMDLeCamThird.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ParametricFamily/Defs.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ParametricFamily/FisherInformation.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ParametricFamily/Score.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/ParametricFamily/SqrtDensityRatio.lean
+  AronowAudit/External/StatLean/AsymptoticStatistics/Probability/ScoreCLT.lean
+  AronowAudit/External/StatLean/Bayesian/ForMathlib/MultinomialDist.lean
+  AronowAudit/External/StatLean/ComputationalStatistics/Core/Defs.lean
+  AronowAudit/External/StatLean/ComputationalStatistics/Core/EmpiricalMeasure.lean
+  AronowAudit/External/StatLean/ComputationalStatistics/ForMathlib/PiMoments.lean
+  AronowAudit/External/StatLean/ComputationalStatistics/Resampling/BootstrapMoments.lean
+  AronowAudit/External/StatLean/ComputationalStatistics/Resampling/CategoricalCounts.lean
+  AronowAudit/External/StatLean/ComputationalStatistics/Resampling/MultinomialMoments.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/ForMathlib/GaussianAbsMoment.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/ForMathlib/IndepTransport.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/Maximal/FiniteMaximal.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/McDiarmid/CondHoeffding.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/McDiarmid/DoobDecomposition.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/McDiarmid/McDiarmid.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/SubGaussian/Defs.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/SubGaussian/TailBounds.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/Symmetrization/Empirical.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/Symmetrization/GaussianMax.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/Symmetrization/GaussianVector.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/Symmetrization/NormAddMeanZero.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/Symmetrization/Rademacher.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/Symmetrization/SignFlip.lean
+  AronowAudit/External/StatLean/ConcentrationInequalities/Symmetrization/Symmetrization.lean
+  AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/BerryEsseen.lean
+  AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/CombinatorialCLT.lean
+  AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/DKWUniform.lean
+  AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/EsseenSmoothing.lean
+  AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/PermutationMarginals.lean
+  AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/SteinMethod.lean
+  AronowAudit/External/StatLean/MultipleTesting/ForMathlib/ChiSquared.lean
+  AronowAudit/External/StatLean/MultipleTesting/ForMathlib/ChiSquaredInverseMoment.lean
+  AronowAudit/External/StatLean/MultipleTesting/ForMathlib/GammaMoments.lean
+  AronowAudit/External/StatLean/MultipleTesting/ForMathlib/GaussianSquareMGF.lean
+  AronowAudit/P001/P001_Foundations.lean
+  AronowAudit/P001/Wave1/Gap/GLP0011B3.lean
+  AronowAudit/P001/Wave1/Lib/TailA/EmpiricalCDFBound.lean
+  AronowAudit/P004/P004_MCCompletion.lean
+  AronowAudit/P009/Wave1/Gap/GLP0091B10.lean
+  AronowAudit/P011/P011_CoverageCompletion.lean
+  AronowAudit/P013/Wave1/Gap/GP013P012B1.lean
+  AronowAudit/P022/Wave1/Gap/GLP022B3.lean
+  AronowAudit/P037/P037_VaryingLindeberg.lean
+  AronowAudit/P053/P053_NormalQuantiles.lean
+  AronowAudit/P061/P061_Foundations.lean
+Modifications:
+  Vendored source directory: AronowAudit/External/StatLean. Local StatLean import paths rewritten; original mathematical namespaces retained for vendored modules. The final snapshot also removes unused declarations (some modules retain documentation/import wrappers) and adds local documentation corrections/clarifications. The descriptions above do not exhaust changes in the final snapshot.
+  AronowAudit/External/StatLean/MultipleTesting/ForMathlib/ChiSquaredInverseMoment.lean: private GammaMoments density-reduction helper adapted under a local public name/namespace; inverse-gamma integrability/mean and Gaussian sum-of-squares inverse moments proved locally. GaussianRatioMoments.lean is original local code and is excluded from files.
+  AronowAudit/P001/P001_Foundations.lean: SteinMethod continuous-CDF squeeze specialized to natural-number indexing and point zero; QMDAnalytic square-integral norm identity adapted under local names; a second square-integral/Minkowski lemma also attributes ZEstimatorModelShift, which is absent from the vendored snapshot.
+  AronowAudit/P011/P011_CoverageCompletion.lean and AronowAudit/P013/Wave1/Gap/GP013P012B1.lean: indirect SteinMethod adaptations through the P001 squeeze proof; helper names/proof presentation changed and integrated into local row-specific closed-interval coverage arguments.
+  AronowAudit/P001/Wave1/Gap/GLP0011B3.lean: selected AsymptoticStatistics source modules embedded in local namespaces/GLP0011B3Source sections; unused declarations removed. Of 37 source markers, 27 blocks retain declarations and 10 retain only wrappers/comments. LpSeminorm retains the 2026 StatLean contributors notice. The Slutsky block also inherits an explicit Mathlib adaptation.
+  AronowAudit/P001/Wave1/Lib/TailA/EmpiricalCDFBound.lean: DKWUniform private right-continuity/rational-supremum helpers renamed and made local public helpers; supremum proof specialized to an explicit bounded-above hypothesis, omitting the unbounded branch.
+  AronowAudit/P004/P004_MCCompletion.lean: ExactLevel.superUniform_randPValue finite rank-counting fragment specialized to arbitrary finite real arrays; local finite-product weights, coordinate-swap symmetry and Monte Carlo bridges added.
+  AronowAudit/P009/Wave1/Gap/GLP0091B10.lean: only bounded-covariance and Davydov proofs and helpers selected from TimeSeries.Mixing.Inequalities and Defs, placed in the local t45_donor namespace and integrated with local results.
+  AronowAudit/P022/Wave1/Gap/GLP022B3.lean: generalized inverse/left-limit/specification helpers selected from HalfLineQuantile, given local names; other quantile declarations omitted.
+  AronowAudit/P037/P037_VaryingLindeberg.lean: LindebergCLT proofs adapted to row-dependent probability spaces and measures; moment, independence, variance and Lindeberg hypotheses explicit.
+  AronowAudit/P053/P053_NormalQuantiles.lean: first three analytic lemmas from SignChange renamed as public local helpers; Gaussian strict monotonicity specialized to the standard normal. Later symmetry, quantile and interval-mass consequences are local.
+  AronowAudit/P061/P061_Foundations.lean: Slutsky proof integrated with local WeakConvergesLaw and atomic-law inference API; distance perturbation and varying sample spaces/measures retained. The underlying Mathlib proof lineage is listed separately.
+  The revision is the verified StatLean snapshot identity. Exact source-version correspondence and module-specific authorship remain unverified for the attributed modules absent from the vendored tree. Junwei Lu is named in the LICENSE (2024) and MultivariateCLT header (2026); StatLean contributors is named specifically in LpSeminorm (2026). Blank-holder 2026 headers have not been assigned a guessed holder.
+  Documentation corrected for this repository in:
+    AronowAudit/External/StatLean/AsymptoticStatistics/Core/QMDPath.lean
+    AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/BrownianBridge.lean
+    AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/AbstractDonsker/SufficiencyDiscretization.lean
+    AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/Bracketing.lean
+    AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/GlivenkoCantelli.lean
+    AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/MaximalBernstein.lean
+    AronowAudit/External/StatLean/AsymptoticStatistics/EmpiricalProcess/NestedPartition.lean
+    AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Contiguity.lean
+    AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/LogTaylor.lean
+    AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Probability/GaussianChaining.lean
+    AronowAudit/External/StatLean/ComputationalStatistics/Core/Defs.lean
+    AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/DKWUniform.lean
+    AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/SteinMethod.lean
+
+Third-party source: Mathlib
+Upstream repository: https://github.com/leanprover-community/mathlib4
+Revision: v4.34.1
+License: Apache-2.0
+Copyright holders: Rémy Degenne
+License-text note: Standard Apache License 2.0 text; see root LICENSE.
+Files containing adapted code:
+  AronowAudit/External/StatLean/AsymptoticStatistics/ForMathlib/Slutsky.lean
+  AronowAudit/P001/Wave1/Gap/GLP0011B3.lean
+  AronowAudit/P015/P015_FiniteConditioning.lean
+  AronowAudit/P061/P061_Foundations.lean
+Modifications:
+  AronowAudit/P015/P015_FiniteConditioning.lean: condExp_generateFrom_singleton from Mathlib.Probability.Kernel.Condexp (copyright 2023 Rémy Degenne) generalized to arbitrary measurable fibers in condExp_on_fiber, with a local restriction/uniqueness proof.
+  The Slutsky proofs in the vendored StatLean Slutsky module, the embedded GLP0011B3 Slutsky block, and P061_Foundations explicitly adapt MeasureTheory.tendstoInDistribution_of_tendstoInMeasure_sub from Mathlib.MeasureTheory.Function.ConvergenceInDistribution (copyright 2025 Rémy Degenne). Fixed-base additive-group formulation adapted to row-varying spaces/measures and distance perturbations; P061 uses local WeakConvergesLaw.
+  lake-manifest.json pins Mathlib v4.34.1 to d13f23b723b8a846827a245b89c10fc7d3f11612. Only identified source adaptations are enumerated; ordinary imports and theorem applications are not enumerated as copied code.
+
+Third-party source: EpsilonEridani
+Upstream repository: https://github.com/eic/EpsilonEridani
+Revision: bfe8fdb3279de1c45eb1f5b9713f44f0c016f84c
+License: Apache-2.0
+Copyright holders: Wouter Deconinck
+License-text note: Standard Apache License 2.0 text; see root LICENSE.
+Files containing adapted code:
+  AronowAudit/P023/Wave1/Gap/GLP023B3.lean
+  AronowAudit/P023/Wave1/Gap/GLP023B4c.lean
+Modifications:
+  Selected polynomial integration and Legendre definitions/statements/proofs from Mathematics.Calculus.Polynomial and Mathematics.SpecialFunctions.Legendre.Basic embedded in local GLP023B3_urcPort and GLP023B4c_T8_urcPort sections/local namespace; other upstream declarations not included. Both files retain copyright 2026 Wouter Deconinck and an explicit local-namespace adaptation notice. Original local audit material elsewhere in these files is not attributed to the upstream author.
+
+Third-party source: Econlib
+Upstream repository: https://github.com/danlyng/Econlib
+Revision: d7bd9477476cade1c6695c8891746048ceddc52f
+License: Apache-2.0
+Copyright holders: Daniel Lyng
+License-text note: Standard Apache License 2.0 text; see root LICENSE.
+Files containing adapted code:
+  AronowAudit/P033/Wave1/Gap/GLP010P033P033B3.lean
+Modifications:
+  Elementary finite Pascal recursion and binomial-tail monotonicity from Econlib.Probability.Distributions.Binomial.Tail.Basic integrated with local P033T8 names/definitions and local proof context; only the needed finite-sum lemmas included, with no Econlib dependency. The embedded notice retains copyright 2026 Daniel Lyng; unrelated local audit results are not attributed to that project.
+
+Third-party source: P018 product-coordinate and pair-moment adaptations
+Copyright (c) 2026 P. M. Aronow and Patrick Lopatto
+License: MIT
+Adapted from earlier code by P. M. Aronow and Patrick Lopatto, MIT License; the full notice is retained in each file.
+Files containing adapted code:
+  AronowAudit/P018/Wave1/Gap/GP0182B2b.lean
+  AronowAudit/P018/Wave1/Gap/GLP0182B3.lean
+Machine-generated adaptations of earlier jointly attributed code. Full MIT permission and warranty notices are retained in both files. GP0182B2b contains the identified pair-coordinate/measure-preserving and kernel-moment section; GLP0182B3 adapts pair/triple product transport and the L² shared-product cancellation to two kernels and almost-everywhere section centering. This records the identified MIT portions, not a whole-file MIT relicensing. The earlier project/file/revision and exact outer limits of all derived portions are unstated.
+
+Original local files in vendor directories
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/AlmostEverywhereDepGraphCLT.lean
+  Local file of llm-audit-lean, not taken from Causalean; it builds on the vendored Causalean code in this directory tree.
+  AronowAudit/External/Causalean/Mathlib/Probability/SteinMethod/AlmostEverywhereDepGraphVariance.lean
+  Local file of llm-audit-lean, not taken from Causalean; it builds on the vendored Causalean code in this directory tree.
+  AronowAudit/External/StatLean/MultipleTesting/ForMathlib/GaussianRatioMoments.lean
+  Local file of llm-audit-lean, not taken from StatLean; it builds on the vendored StatLean code in this directory tree.
+These files are original local code, not copied upstream code, and are excluded from the third-party adapted-code lists.
+
+Replication-software specifications
+Some Lean definitions mathematically specify the computations of released replication software, including P011, P032, P037 and P044. These are mathematical specifications, not copied third-party software code.

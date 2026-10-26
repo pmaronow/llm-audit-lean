@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "axioms": {
+      "items": {
+        "enum": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ],
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "conditional_on": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "hypothesis": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "hypothesis",
+          "source"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "file": {
+      "pattern": "^AronowAudit/.+\\.lean$",
+      "type": "string"
+    },
+    "highlight_ids": {
+      "items": {
+        "pattern": "^H[0-9]{3}$",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "lean_name": {
+      "type": "string"
+    },
+    "line": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "module": {
+      "type": "string"
+    },
+    "status": {
+      "description": "proved: proves the component under its stated assumptions (for a corrected statement, the corrected version); counterexample_proved: belongs to a refutation of the claim as recorded in its target, under its stated assumptions: proves the counterexample itself or a step of it; where the target states a specific reading of the printed text, the refutation applies to that reading",
+      "enum": [
+        "proved",
+        "counterexample_proved"
+      ],
+      "type": "string"
+    },
+    "target_id": {
+      "pattern": "^P[0-9]{3}-T[0-9]+$",
+      "type": "string"
+    },
+    "target_kind": {
+      "enum": [
+        "headline_result",
+        "result_touched_by_finding",
+        "counterexample",
+        "corrected_statement"
+      ],
+      "type": "string"
+    },
+    "work_id": {
+      "pattern": "^P[0-9]{3}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "work_id",
+    "target_id",
+    "target_kind",
+    "lean_name",
+    "module",
+    "file",
+    "line",
+    "axioms",
+    "status",
+    "conditional_on",
+    "highlight_ids"
+  ],
+  "title": "llm-audit-lean results",
+  "type": "object"
+}

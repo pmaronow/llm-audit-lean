@@ -1,0 +1,1693 @@
+{
+  "counts": {
+    "counterexample_proved": 2,
+    "proved": 85,
+    "results": 87,
+    "targets": 8
+  },
+  "overview": {
+    "areas": [
+      "experimental-design-and-estimation",
+      "randomization-inference",
+      "asymptotic-statistics"
+    ],
+    "caveats": [
+      "These are formal versions of selected verbal claims in a design review; the article does not print the mathematical theorems or the counterexample constructions.",
+      "The timing counterexample tests the broad necessity reading of causal attribution and does not settle the authors' intended meaning. Its effect-estimation path and sharp-null path are distinct parts of the construction.",
+      "Timing estimation assumes observed outcomes depend only on current exposure, excluding anticipation, carryover and duration dependence; it averages effects only over periods with treatment and control overlap and requires no independence across periods.",
+      "The randomization-test theorem takes a single fixed statistic function on schedules. A sharp null supplies the fixed outcome path needed to apply it to an observed-data statistic; the theorem alone does not specify a test for a non-sharp null.",
+      "Block weights are population size shares and treatment counts are fixed within blocks, giving a mathematical interpretation of Note 4. The article does not print these formulas.",
+      "Cluster consistency concerns individual-weighted arm means and permits arbitrary values on empty-arm allocations. The separate equal-size cluster unbiasedness theorems condition independent parent assignment on both arms being nonempty; unequal sizes do not imply bias in every population."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P024.randomized_timing_no_trend_counterexample",
+        "target_ids": [
+          "P024-T1"
+        ],
+        "what": "The printed assertion that treatment must be the sole systematic factor changing over time is false under its broad design-level necessity reading: a four-period randomized-onset example with untreated path $t^2$ has an unbiased effect estimator with mean effect 2 and a valid sharp-null randomization test."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P024.timing_overlap_unbiased",
+        "target_ids": [
+          "P024-T2"
+        ],
+        "what": "In place of the printed necessity of excluding systematic calendar trends, fixed current-exposure potential outcomes and a known finite schedule law give an unbiased Horvitz–Thompson estimate of the average effect over all periods with strictly positive treatment and control probabilities, provided that set is nonempty."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P024.clustered_consistency_counterexample",
+        "target_ids": [
+          "P024-T4"
+        ],
+        "what": "The printed claim that the cluster difference in means becomes consistent merely as the number of clusters grows fails for independent half-probability assignment with one cluster of size $K^2$ and $K-1$ singletons: all individual effects equal $1/4$, yet the probability of error exceeding $1/8$ tends to one for any empty-arm convention."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P024.corrected_cluster_consistency",
+        "target_ids": [
+          "P024-T5"
+        ],
+        "what": "The printed cluster-count-only consistency claim is replaced by consistency for the changing individual average effect under uniformly bounded outcomes, independent Bernoulli or uniform fixed-count cluster assignment, common treatment probabilities bounded away from zero and one, and maximum cluster population share tending to zero."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P024.complete_individual_dim_unbiased",
+        "target_ids": [
+          "P024-T6"
+        ],
+        "what": "With fixed potential outcomes and a uniformly selected treatment subset of size $0<m<N$, the observed difference in individual treatment and control means is unbiased for the subject-pool average treatment effect."
+      },
+      {
+        "lean_name": "AronowAudit.P024.blocked_weighted_identity",
+        "target_ids": [
+          "P024-T8"
+        ],
+        "what": "On allocations with the stipulated fixed nonempty treatment and control counts in every block, the Horvitz–Thompson estimator equals the block-size-share weighted average of block differences in means."
+      },
+      {
+        "lean_name": "AronowAudit.P024.blocked_estimator_unbiased",
+        "target_ids": [
+          "P024-T8"
+        ],
+        "what": "Fixed nonempty arm counts and equal marginal treatment probabilities within each block make both the block-weighted difference in means and its Horvitz–Thompson representation unbiased for the average effect among randomized units, allowing dependence across blocks."
+      },
+      {
+        "lean_name": "AronowAudit.P024.randomization_test_valid",
+        "target_ids": [
+          "P024-T2"
+        ],
+        "what": "For any fixed real statistic on a nonempty finite schedule space sampled uniformly, the upper-tail randomization p-value, including ties, satisfies $\\Pr(p\\le\\alpha)\\le\\alpha$ for $0\\le\\alpha\\le1$."
+      }
+    ],
+    "overview": "The article reviews field-experimental designs for media effects, including individual, clustered, blocked and randomized-timing designs. Its Lean development gives mathematical versions of selected verbal claims about unbiased estimation and block weighting, together with randomized-timing and dominant-cluster counterexamples. Corrected results specify when time-varying untreated outcomes permit estimation and when individual-weighted cluster differences in means are consistent.",
+    "work_id": "P024"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P024-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.calendar_ht_counterexample",
+          "line": 198,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T1",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.calendar_null_counterexample",
+          "line": 218,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T1",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.calendar_p_grid",
+          "line": 992,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T1",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.randomized_timing_no_trend_counterexample",
+          "line": 1008,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "counterexample_proved",
+          "target_id": "P024-T1",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the four-period example of P024-A002. The example has one outlet, with one outcome in each of the periods $t=1,2,3,4$, the onset $S$ of a permanent treatment is uniform on $\\{2,3,4\\}$, and the potential outcomes are $Y_t(0)=t^2$ and $Y_t(1)=t^2+2$. The main statement asserts that the untreated outcomes of periods 1 and 2 differ, which is how it expresses that the treatment is not the sole systematic factor that changes over time. It asserts that the Horvitz–Thompson estimator $\\widehat{\\tau}(S)=\\tfrac12\\sum_{t=2}^{3}\\{Z_tY_t/p_t-(1-Z_t)Y_t/(1-p_t)\\}$ (with $Z_t=\\mathbf{1}\\{t\\ge S\\}$, $Y_t=t^2+2Z_t$, $p_2=1/3$ and $p_3=2/3$) has expectation $2$, which is the average effect over periods 2 and 3. It asserts further that $\\mathbb{P}(p(S)\\le\\alpha)\\le\\alpha$ for every $\\alpha\\in[0,1]$. Here $p(s)$ is the fraction of the onsets $u$ such that $D(u)\\ge D(s)$, and $D(s)=\\frac{1}{5-s}\\sum_{t=s}^{4}t^2-\\frac{1}{s-1}\\sum_{t=1}^{s-1}t^2$ is the before-after difference computed under the sharp null hypothesis. Three further statements give the exact values. The probabilities of treatment are $(p_1,p_2,p_3,p_4)=(0,1/3,2/3,1)$, and the three onsets give the estimates $69/4$, $21/4$ and $-33/2$, with variance $1561/8$. Under the sharp null hypothesis they give the differences $26/3$, $10$ and $34/3$, with $p$ values $1$, $2/3$ and $1/3$, and $\\mathbb{P}(p(S)\\le k/3)=k/3$ for $k=0,1,2,3$. The periods and the onsets are finite index sets, and expectations and probabilities are exact sums over the three onsets. The statements contradict the sentence when it is read as a condition that the design with randomized timing requires. They do not determine the intended reading, and the six-period example of the finding is not formalized.",
+        "headline": "A counterexample to the sentence beginning “In order to attribute a change in outcomes to the treatment”, as printed",
+        "location": "Section “Single-Medium Multi-Outcome Crossover Design”, first paragraph, p. 174 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P024-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.expectation_add",
+          "line": 40,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.expectation_const",
+          "line": 55,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.expectation_div",
+          "line": 67,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.expectation_mul",
+          "line": 50,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.expectation_sub",
+          "line": 45,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.expectation_sum",
+          "line": 60,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.ht_coordinate_unbiased",
+          "line": 96,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.randomization_test_valid",
+          "line": 147,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.raw_before_after_bias",
+          "line": 235,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.raw_observed_effect_bias",
+          "line": 979,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.timing_ht_unbiased",
+          "line": 113,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.timing_overlap_unbiased",
+          "line": 133,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the mathematical content of the sentences that replace the printed one in P024-A002. In the two statements on estimation, a schedule is drawn from a finite set with known probabilities, $Z_t$ indicates treatment in period $t$, and the observed outcome is $Y_t=Y_t(Z_t)$ for fixed numbers $Y_t(0)$ and $Y_t(1)$. Set $p_t=\\mathbb{P}(Z_t=1)$, and let $\\mathcal{T}$ be a nonempty finite set of periods such that $0<p_t<1$ for every $t\\in\\mathcal{T}$. The two statements assert that $\\mathbb{E}\\biggl[\\frac{1}{|\\mathcal{T}|}\\sum_{t\\in\\mathcal{T}}\\Bigl\\{\\frac{Z_tY_t}{p_t}-\\frac{(1-Z_t)Y_t}{1-p_t}\\Bigr\\}\\biggr] =\\frac{1}{|\\mathcal{T}|}\\sum_{t\\in\\mathcal{T}}\\bigl[Y_t(1)-Y_t(0)\\bigr],$ the first for any such $\\mathcal{T}$, and the second, for finitely many periods, with $\\mathcal{T}$ the set of all periods such that $0<p_t<1$. Note that they place no condition on how $Y_t(0)$ varies with $t$. The schedule need not be the onset of a permanent treatment, in agreement with the corrected statement, which allows arbitrary finite schedules and uses onsets only as an example. A third statement concerns the test. If $S$ is uniform on a finite set of $m\\ge1$ schedules and $D$ is any real function of the schedule, then $p(s)=\\#\\{u:D(u)\\ge D(s)\\}/m$ satisfies $\\mathbb{P}(p(S)\\le\\alpha)\\le\\alpha$ for every $\\alpha\\in[0,1]$. Under the sharp null hypothesis the outcomes are the same for every schedule, so that the statistic is a function of the schedule alone, and the hypothesis enters the statement only through $D$. Two statements give the warning about unadjusted comparisons in the four-period example of the finding, where the before-after difference has expectation $10$ with no effect and $12$ with the effect $2$. Seven supporting statements give elementary facts about expectations over a finite design. The last sentence of the correction, on what an analysis of effects must specify, has no statement of its own.",
+        "headline": "The sentence beginning “In order to attribute a change in outcomes to the treatment”, as corrected",
+        "location": "Section “Single-Medium Multi-Outcome Crossover Design”, first paragraph, p. 174 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": false,
+      "excluded_associations": [
+        {
+          "lean_name": null,
+          "status": "not_applicable"
+        }
+      ],
+      "id": "P024-T3",
+      "kind": "result_touched_by_finding",
+      "results": [],
+      "text": {
+        "body": "No Lean statement is written for the paragraph as printed. The paragraph states in words that one must assume that the treatment is the sole systematic factor that changes over time, and it calls the design with several messages “stronger”. It gives no estimator, no distribution of the timing and no definition of a systematic factor. A formal statement does not determine the intended reading. The reading in which the design with randomized timing requires the assumption is the subject of the counterexample, and the warning about unadjusted before-after comparisons is part of the corrected sentence. Both have their own Lean statements.",
+        "headline": "Section “Single-Medium Multi-Outcome Crossover Design”: the first paragraph, as printed",
+        "location": "p. 174 (PDF p. 8); related sentences on p. 174 (PDF p. 8) and p. 175 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P024-T4",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.cluster_dim_subset",
+          "line": 632,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.clustered_consistency_counterexample",
+          "line": 1053,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "counterexample_proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_cluster_inconsistent",
+          "line": 820,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_complete_distribution",
+          "line": 1687,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_complete_limits",
+          "line": 1795,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_conditional_unbiased",
+          "line": 1562,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_effect",
+          "line": 672,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_error_bound",
+          "line": 734,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_exact_value",
+          "line": 688,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_individual_outcomes",
+          "line": 663,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_max_weight",
+          "line": 1820,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_means",
+          "line": 641,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_probability_lower_bound",
+          "line": 792,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_share_limit",
+          "line": 1851,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_six_actual_checks",
+          "line": 1899,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_six_checks",
+          "line": 1876,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.dominant_total_size",
+          "line": 1808,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.expectation_if_constant",
+          "line": 1616,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.half_dominant_ratio_limit",
+          "line": 1761,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.nonempty_arm_probability",
+          "line": 771,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.probability_all",
+          "line": 1627,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.probability_indicator_expected",
+          "line": 1607,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.sum_two_values",
+          "line": 623,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.uniform_fixed_subset_marginal",
+          "line": 1633,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.uniform_subsets_independent",
+          "line": 758,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T4",
+          "target_kind": "counterexample",
+          "work_id": "P024"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the counterexample of P024-E002. For each $K\\ge2$ the population has one cluster of $K^2$ subjects with $Y(0)=1/2$ and $Y(1)=3/4$, and $K-1$ clusters of one subject with $Y(0)=1/4$ and $Y(1)=1/2$. In the main statement the clusters are assigned independently, each to treatment with probability $1/2$, which is the uniform distribution over the sets of treated clusters. It asserts that every potential outcome lies strictly between $0$ and $1$, that every subject has treatment effect $1/4$, and that the average treatment effect is $\\tau_K=1/4$ for every $K$. It asserts further that the difference in means $\\widehat{\\tau}_K$ satisfies $\\mathbb{P}\\bigl(|\\widehat{\\tau}_K-\\tau_K|>1/8\\bigr)\\to1\\quad\\text{as }K\\to\\infty,$ whatever value it is given on the two allocations with an empty arm. For each $K$, further statements assert that on an allocation with both arms nonempty the estimate is given by the two formulas of the finding, and that $|\\widehat{\\tau}_K-\\tau_K|\\ge(1/4)K^2/(K^2+K-2)>1/8$. These allocations have probability $1-2^{1-K}$, and conditionally on them the estimator has mean $1/4$. Suppose next that $K$ is even and that $K/2$ clusters are treated, all such allocations being equally likely, and set $r_K=K^2/(K^2+K/2-1)$. The statements assert that $\\widehat{\\tau}_K=1/4\\pm r_K/4$ with probability $1/2$ each, that the mean is $1/4$, and that the variance $r_K^2/16$ tends to $1/16$. They also assert that the share $K^2/(K^2+K-1)$ of the large cluster tends to $1$, and they give the values of the finding for $K=6$. An allocation is represented by the set of treated clusters, and consistency is read as convergence of $\\widehat{\\tau}_K-\\tau_K$ to zero in probability under the design. The statements have the same scope as the counterexample, and they say nothing about sequences of populations such that no cluster keeps a nonvanishing share of the subjects.",
+        "headline": "A counterexample to the sentence beginning “The difference-in-means estimator is consistent”, as printed",
+        "location": "Section “Between-Subjects Clustered Design”, second paragraph, p. 171 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P024-T5",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.assignment_total_complement",
+          "line": 1201,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.assignment_total_indicator",
+          "line": 1196,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.cluster_population_probability_bound",
+          "line": 2019,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.complete_joint_probability",
+          "line": 1296,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.complete_marginal",
+          "line": 1307,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.complete_pair_inclusion",
+          "line": 1331,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.complete_probability_count",
+          "line": 1277,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.complete_weighted_moments",
+          "line": 1391,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.corrected_cluster_consistency",
+          "line": 2067,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.exchangeable_weighted_moments",
+          "line": 1209,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.expectation_mono",
+          "line": 571,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.finite_chebyshev",
+          "line": 511,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.finite_mean_abs_bound",
+          "line": 1956,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.finite_ratio_good_event",
+          "line": 855,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.finite_sample_probability_bound",
+          "line": 890,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.finite_variance_identity",
+          "line": 1177,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.independent_exclusion_probability",
+          "line": 1088,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.independent_marginal",
+          "line": 1126,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.independent_pair_moment",
+          "line": 1143,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.independent_weighted_moments",
+          "line": 1255,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.no_dominance_iff_squared_weights",
+          "line": 945,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.normalized_total_moments",
+          "line": 1470,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.population_effect_normalized",
+          "line": 1983,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.population_estimator_normalized",
+          "line": 1992,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.population_total_positive",
+          "line": 1940,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.population_weights",
+          "line": 1947,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.probability_bounds",
+          "line": 588,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.probability_mono",
+          "line": 578,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.probability_not",
+          "line": 1074,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.probability_union_le",
+          "line": 846,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.ratio_error_bound",
+          "line": 532,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.two_arm_ratio_bound",
+          "line": 557,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.uniform_probability_card",
+          "line": 600,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.variance_const_sub",
+          "line": 1187,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.weight_square_bounds",
+          "line": 490,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.weighted_mean_abs_bound",
+          "line": 1971,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P024"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is the full statement of the correction in P024-E002. For each $K\\ge2$ the population consists of $N$ subjects in $K$ clusters of sizes $n_1,\\dots,n_K$, with fixed potential outcomes, and the populations for different $K$ need not be related. As in the correction, the clusters are assigned independently with a common probability $p_K$, or $m_K$ of them are treated, all such allocations being equally likely, and $p_K=m_K/K$. Every potential outcome is at most $B$ in absolute value, $\\eta\\le p_K\\le1-\\eta$, and $\\max_j n_j/N\\to0$, where $B$ and $\\eta>0$ do not depend on $K$. The statement asserts that $\\mathbb{P}(|\\widehat{\\tau}_K-\\tau_K|>\\varepsilon)\\to0$ as $K\\to\\infty$, for every $\\varepsilon>0$, where $\\widehat{\\tau}_K$ is the difference in means and $\\tau_K$ is the average treatment effect among the $N$ subjects. Note that neither $\\tau_K$ nor $p_K$ is required to converge, and that the estimator may take any value on an allocation with an empty arm. A second statement is a bound for a single population, and it does not use the condition on $\\max_j n_j/N$. Set $w_j=n_j/N$ and $\\delta=\\min\\{\\eta/2,\\varepsilon\\eta/(16\\max(B,1))\\}$, and let $c=1$ for independent assignment and $c=K/(K-1)$ for the other design. Then $\\mathbb{P}\\bigl(|\\widehat{\\tau}_K-\\tau_K|\\ge\\varepsilon\\bigr)\\le\\frac{c}{4}\\Bigl(\\sum_j w_j^2\\Bigr)\\Bigl[\\frac{128B^2}{\\varepsilon^2\\eta^2}+\\frac{1}{\\delta^2}\\Bigr].$ A third statement asserts that $\\max_j w_j\\to0$ if and only if $\\sum_j w_j^2\\to0$. The supporting statements follow the derivation of the finding, from the means and variances of weighted sums of the treatment indicators under the two designs to Chebyshev’s inequality and the bounds on the two ratios. Some of them are more general than the derivation needs. The main statement has the same scope as the correction, and no statement asserts that the conditions are necessary.",
+        "headline": "The sentence beginning “The difference-in-means estimator is consistent”, as corrected",
+        "location": "Section “Between-Subjects Clustered Design”, second paragraph, p. 171 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P024-T6",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.complete_individual_dim_unbiased",
+          "line": 1664,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T6",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.fixed_dim_ht",
+          "line": 267,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T6",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.individual_dim_unbiased",
+          "line": 295,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T6",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.individual_observed_dim_unbiased",
+          "line": 1020,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T6",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        }
+      ],
+      "text": {
+        "body": "The article states this result in words. The Lean statements express it for a pool of $N$ subjects with fixed potential outcomes $Y_i(0)$ and $Y_i(1)$, a treatment indicator $Z_i$ and the observed outcome $Y_i=Y_i(Z_i)$. In the main statement the set of treated subjects is uniform over the subsets of size $m$, where $0<m<N$. It asserts that $\\mathbb{E}\\Bigl[\\frac{1}{m}\\sum_{i=1}^{N}Z_iY_i-\\frac{1}{N-m}\\sum_{i=1}^{N}(1-Z_i)Y_i\\Bigr]=\\frac{1}{N}\\sum_{i=1}^{N}\\bigl[Y_i(1)-Y_i(0)\\bigr].$ Two further statements have the same conclusion for any assignment over a finite set of allocations such that every allocation treats exactly $m$ subjects and every subject is treated with probability $m/N$. They do not use independence between subjects. A supporting statement asserts that the difference in means with the divisors $m$ and $N-m$ equals the inverse-probability-weighted estimator with the probabilities $m/N$. Conditions (a)–(c) of the article are represented by fixed potential outcomes, by the observed outcome $Y_i(Z_i)$, and by an assignment that is the only source of randomness. The Lean statements are narrower than the printed one in one respect. The article says only that subjects are assigned “individually and with identical probability”, which does not fix the number of treated subjects. Independent assignment with a common probability, under which the estimator is defined only when both groups are nonempty, is not formalized.",
+        "headline": "Section “Between-Subjects Design”: unbiasedness of the difference between the treatment and control group averages",
+        "location": "Section “Between-Subjects Design”, first paragraph, p. 170 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P024-T7",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/Wave1/Gap/DecisionT7.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.Wave1.equal_cluster_independent_population_on_defined_domain",
+          "line": 17,
+          "module": "AronowAudit.P024.Wave1.Gap.DecisionT7",
+          "status": "proved",
+          "target_id": "P024-T7",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/Wave1/Gap/DecisionT7.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.Wave1.independent_unequal_size_bias_on_defined_domain",
+          "line": 58,
+          "module": "AronowAudit.P024.Wave1.Gap.DecisionT7",
+          "status": "proved",
+          "target_id": "P024-T7",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.equal_size_dim",
+          "line": 322,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T7",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        }
+      ],
+      "text": {
+        "body": "The two main Lean statements describe bias and unbiasedness conditional on both arms being nonempty, for clusters of sizes $n_j$ with mean potential outcomes $\\bar{Y}_j(0)$ and $\\bar{Y}_j(1)$. The estimator $\\widehat{\\tau}$ is the mean outcome of all subjects in treated clusters minus that of all subjects in control clusters, and the estimand is $\\tau=\\sum_j n_j[\\bar{Y}_j(1)-\\bar{Y}_j(0)]/\\sum_j n_j$. The first statement is an example of bias with two clusters of sizes $1$ and $2$, assigned independently to treatment with probability $1/2$ each. All three subjects have $Y(0)=0$, and $Y(1)$ is $0$ in the small cluster and $1$ in the large one. Under this parent law all four allocations have probability $1/4$, including the allocation treating both clusters. Both arms are nonempty with probability $1/2$; conditional on this event, the two singleton treated sets have probability $1/2$ each. The statement asserts that $\\tau=2/3$ and that the conditional expectation of $\\widehat{\\tau}$ is $1/2$; the two nonempty-arm allocations give the estimates $0$ and $1$. The second statement covers every finite population of $K\\ge2$ clusters with a common positive integer size, arbitrary fixed individual potential outcomes, and independent parent assignments with a common probability $0<p<1$. It asserts that the conditioning event has positive probability and that, conditional on both arms being nonempty, $\\mathbb{E}[\\widehat{\\tau}]=\\tau$. Both main statements identify each conditional allocation mass as its parent mass divided by the probability of the conditioning event, and their conditional expectations hold whatever real values are assigned to the estimator on empty-arm allocations. No fixed treatment count is imposed in the equal-size statement; for $K\\ge3$ the count can vary after conditioning. A supporting statement gives the algebra. It cancels any positive real common cluster size on an allocation with exactly $m$ treated clusters, where $0<m<K$. The parent laws retain the article’s premise that “clusters are assigned independently”; independence does not describe the conditional laws. The main statements concern conditional expectations and make no assertion of unconditional unbiasedness for arbitrary empty-arm extensions. The statements do not say that unequal sizes always produce bias. The recommendation to block on cluster size is not formalized, and the consistency clause of the paragraph has its own Lean statements.",
+        "headline": "Section “Between-Subjects Clustered Design”: bias of the comparison of group averages when clusters contain different numbers of subjects",
+        "location": "Section “Between-Subjects Clustered Design”, second paragraph, p. 171 (PDF p. 5); the estimand is named on p. 172 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P024-T8",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.blocked_actual_means_identity",
+          "line": 1036,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T8",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.blocked_estimator_unbiased",
+          "line": 394,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T8",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P024/P024_Designs.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P024.blocked_weighted_identity",
+          "line": 373,
+          "module": "AronowAudit.P024.P024_Designs",
+          "status": "proved",
+          "target_id": "P024-T8",
+          "target_kind": "headline_result",
+          "work_id": "P024"
+        }
+      ],
+      "text": {
+        "body": "The article prints neither the estimator nor the weights, and the Lean statements express my reading of the sentence and of Note 4. The randomized units are divided into blocks. Block $b$ has $N_b$ units, of which $m_b$ are treated, where $0<m_b<N_b$, and I set $N=\\sum_b N_b$ and $\\pi_b=m_b/N_b$. Unit $i$ has a treatment indicator $Z_i$, fixed potential outcomes $Y_i(0)$ and $Y_i(1)$, and the observed outcome $Y_i=Y_i(Z_i)$. Two statements assert that, on every allocation that treats exactly $m_b$ units in each block, $\\frac{1}{N}\\sum_{i}\\Bigl[\\frac{Z_iY_i}{\\pi_{b(i)}}-\\frac{(1-Z_i)Y_i}{1-\\pi_{b(i)}}\\Bigr]=\\sum_b\\frac{N_b}{N}\\bigl(\\bar{Y}^{T}_b-\\bar{Y}^{C}_b\\bigr),$ where $b(i)$ is the block of unit $i$, and $\\bar{Y}^{T}_b$ and $\\bar{Y}^{C}_b$ are the mean outcomes of the treated and the control units of block $b$. The left side is the inverse-probability-weighted estimator that Note 4 names. One of the two statements writes the block means with the divisors $m_b$ and $N_b-m_b$, and the other with the observed numbers of treated and control units. A third statement adds the hypothesis that every unit of block $b$ is treated with probability $\\pi_b$, and it asserts that both sides have expectation $N^{-1}\\sum_i[Y_i(1)-Y_i(0)]$. No independence between blocks is assumed, and these hypotheses are weaker than uniform randomization within each block. Each unit has one outcome, and the two markets that were excluded from the random assignment are outside the units and the estimand. No Lean statement expresses the reason for taking the blocks into account, namely that a pooled difference in means can be biased when the probability of treatment differs between blocks.",
+        "headline": "Section “Restricted Random Assignment” and Note 4: the overall estimate under a blocked design as a weighted average of the estimate for each block",
+        "location": "Section “Restricted Random Assignment”, first paragraph, p. 173 (PDF p. 7); Note 4, p. 177 (PDF p. 11)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "Donald P. Green",
+      "Brian R. Calfano",
+      "P. M. Aronow"
+    ],
+    "citation": "Donald P. Green, Brian R. Calfano, and P. M. Aronow (2014). Field Experimental Designs for the Study of Media Effects. Political Communication 31(1):168–180.",
+    "doi": "10.1080/10584609.2013.828142",
+    "title": "Field Experimental Designs for the Study of Media Effects",
+    "type": "Journal article",
+    "venue": "Political Communication",
+    "year": "2014"
+  },
+  "work_id": "P024"
+}

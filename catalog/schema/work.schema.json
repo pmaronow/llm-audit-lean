@@ -1,0 +1,400 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "counts": {
+      "additionalProperties": false,
+      "properties": {
+        "counterexample_proved": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "proved": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "results": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "targets": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "targets",
+        "results",
+        "proved",
+        "counterexample_proved"
+      ],
+      "type": "object"
+    },
+    "overview": {
+      "additionalProperties": false,
+      "properties": {
+        "areas": {
+          "items": {
+            "enum": [
+              "probability",
+              "asymptotic-statistics",
+              "randomization-inference",
+              "experimental-design-and-estimation",
+              "survey-sampling",
+              "interference-and-networks",
+              "causal-identification",
+              "partial-identification-and-bounds",
+              "regression-and-variance-estimation",
+              "resampling",
+              "optimization-and-computation",
+              "foundations"
+            ],
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "caveats": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "corrections": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "counterexample",
+                  "corrected_statement"
+                ],
+                "type": "string"
+              },
+              "lean_name": {
+                "type": "string"
+              },
+              "target_ids": {
+                "items": {
+                  "pattern": "^P[0-9]{3}-T[0-9]+$",
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "what": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "lean_name",
+              "target_ids",
+              "what",
+              "kind"
+            ],
+            "type": "object"
+          },
+          "maxItems": 6,
+          "type": "array"
+        },
+        "key_results": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "lean_name": {
+                "type": "string"
+              },
+              "target_ids": {
+                "items": {
+                  "pattern": "^P[0-9]{3}-T[0-9]+$",
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "what": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "lean_name",
+              "target_ids",
+              "what"
+            ],
+            "type": "object"
+          },
+          "maxItems": 6,
+          "type": "array"
+        },
+        "overview": {
+          "type": "string"
+        },
+        "work_id": {
+          "pattern": "^P[0-9]{3}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "work_id",
+        "areas",
+        "overview",
+        "key_results",
+        "corrections",
+        "caveats"
+      ],
+      "type": "object"
+    },
+    "targets": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "credited": {
+            "type": "boolean"
+          },
+          "excluded_associations": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "lean_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "not_applicable"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "lean_name",
+                "status"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "id": {
+            "pattern": "^P[0-9]{3}-T[0-9]+$",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "headline_result",
+              "result_touched_by_finding",
+              "counterexample",
+              "corrected_statement"
+            ],
+            "type": "string"
+          },
+          "results": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "axioms": {
+                  "items": {
+                    "enum": [
+                      "Classical.choice",
+                      "Quot.sound",
+                      "propext"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                "conditional_on": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "hypothesis": {
+                        "type": "string"
+                      },
+                      "source": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "hypothesis",
+                      "source"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "file": {
+                  "pattern": "^AronowAudit/.+\\.lean$",
+                  "type": "string"
+                },
+                "highlight_ids": {
+                  "items": {
+                    "pattern": "^H[0-9]{3}$",
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                "lean_name": {
+                  "type": "string"
+                },
+                "line": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "module": {
+                  "type": "string"
+                },
+                "status": {
+                  "description": "proved: proves the component under its stated assumptions (for a corrected statement, the corrected version); counterexample_proved: belongs to a refutation of the claim as recorded in its target, under its stated assumptions: proves the counterexample itself or a step of it; where the target states a specific reading of the printed text, the refutation applies to that reading",
+                  "enum": [
+                    "proved",
+                    "counterexample_proved"
+                  ],
+                  "type": "string"
+                },
+                "target_id": {
+                  "pattern": "^P[0-9]{3}-T[0-9]+$",
+                  "type": "string"
+                },
+                "target_kind": {
+                  "enum": [
+                    "headline_result",
+                    "result_touched_by_finding",
+                    "counterexample",
+                    "corrected_statement"
+                  ],
+                  "type": "string"
+                },
+                "work_id": {
+                  "pattern": "^P[0-9]{3}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "work_id",
+                "target_id",
+                "target_kind",
+                "lean_name",
+                "module",
+                "file",
+                "line",
+                "axioms",
+                "status",
+                "conditional_on",
+                "highlight_ids"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "text": {
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "string"
+              },
+              "headline": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "headline",
+              "location",
+              "body"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "credited",
+          "excluded_associations",
+          "text",
+          "results"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "work": {
+      "additionalProperties": false,
+      "properties": {
+        "arxiv_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "authors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "citation": {
+          "type": "string"
+        },
+        "doi": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "venue": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "year": {
+          "type": [
+            "string",
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "authors",
+        "venue",
+        "year",
+        "type",
+        "doi",
+        "arxiv_id",
+        "citation"
+      ],
+      "type": "object"
+    },
+    "work_id": {
+      "pattern": "^P[0-9]{3}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "work_id",
+    "work",
+    "overview",
+    "targets",
+    "counts"
+  ],
+  "title": "llm-audit-lean work",
+  "type": "object"
+}

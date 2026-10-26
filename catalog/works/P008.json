@@ -1,0 +1,3242 @@
+{
+  "counts": {
+    "counterexample_proved": 26,
+    "proved": 136,
+    "results": 162,
+    "targets": 28
+  },
+  "overview": {
+    "areas": [
+      "interference-and-networks",
+      "randomization-inference",
+      "regression-and-variance-estimation"
+    ],
+    "caveats": [
+      "Randomization validity requires the reference law to be the actual design law, or a justified conditional design law; inclusive ties and the Monte Carlo sampling assumptions are part of the stated results.",
+      "The percentile counterexample fixes type-7 interpolated quantiles and a suitable counting measure on a spatial rectangle; it does not refute every possible discrete critical-value rule.",
+      "The cutoff counterexample concerns the Hajek linearization, not the exact finite-sample variance of a ratio estimator; the HAC algebra alone gives no interval-coverage theorem.",
+      "The cumulative-risk construction verifies binary circle counts, marginalization and normalization on indexed circles, without certifying a Euclidean realization or coordinate injectivity; its baseline risk is synthetic.",
+      "The positive-cutoff-plus-position rule is a premise read from a later archived package, not a theorem about the historical release; its selected counterexample uses reduced outcome vectors rather than constructing the full spatial field.",
+      "Neither the examples nor the validity theorems compute a design-valid Uganda p-value or establish the reported empirical significance.",
+      "The “later archived version” means SpatialEffect 0.1.0 in the replication materials for Ye Wang, Cyrus Samii, Haoge Chang and P. M. Aronow (2025), “Design-Based Inference for Spatial Experiments under Unknown Interference,” Annals of Applied Statistics 19(1):744–768 (P004; [doi:10.1214/24-AOAS1986](https://doi.org/10.1214/24-AOAS1986)). The source is the [SpatialEffectPackage replication bundle at commit 7c873da50f023c75eb31b9ba90d3a7a249c7a753](https://github.com/YeWang1576/SpatialEffectPackage/tree/7c873da50f023c75eb31b9ba90d3a7a249c7a753/WangSamiiChangAronow_2024_replication), file `WangSamiiChangAronow_2024_replication/SpatialEffect/R/SpatialEffect.R` (SHA-256 `ab1aebc0fc12a9d9e1be3573a8f0b60b3d037483d034f63a0bf5759f7efe6fee`). This is the external software premise for P008-T9, P008-T10, P008-T16, P008-T17 and P008-T19; it is not established to be the historical release cited by P008."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P008.spatial_percentile_counterexample",
+        "target_ids": [
+          "P008-T3"
+        ],
+        "what": "The printed interpolated-percentile rule need not have its stated 5% sharp-null error rate: an exact four-node spatial model with all six assignments enumerated rejects with probability $1/3$, both at a single radius and for the sum over five radii."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P008.reference_laws_counterexample",
+        "target_ids": [
+          "P008-T1"
+        ],
+        "what": "Against treating unrestricted permutations as the design reference law in the application, four-node sharp-null examples give inclusive tails of $1/3$ versus $1/2$, or $2/3$ versus $1/2$, under unrestricted and blocked assignment laws; they do not determine the application p-value."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P008.effect_range_cutoff_counterexample",
+        "target_ids": [
+          "P008-T5"
+        ],
+        "what": "A cutoff covering the range of effects need not cover dependence between node contributions: in the two-node example the diagonal-only Hajek linearization variance is $1/8$, whereas its true variance is $1/4$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P008.summed_risk_counterexample",
+        "target_ids": [
+          "P008-T7"
+        ],
+        "what": "The printed interpretation of an unscaled sum as a probability change fails in a synthetic binary model with indexed circles: the four-radius sum is $-0.0321$, while the normalized probability difference is $-0.008025$."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P008.printed_grid_counterexample",
+        "target_ids": [
+          "P008-T12"
+        ],
+        "what": "The printed grid with step $5/111$ has no point in the printed test interval $[1/111,2.5/111]$, so every selected observed or permutation sum is zero, contrary to the three reported nonzero values."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P008.grid_position_counterexample",
+        "target_ids": [
+          "P008-T9"
+        ],
+        "what": "The later archived code rule that adds grid position to a positive cutoff does not implement a fixed distance threshold: for the same reduced circle-average data it gives variances $1$ and $1/2$ at positions one and two, while retaining the physical cutoff gives $1$ at both."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P008.design_tail_valid",
+        "target_ids": [
+          "P008-T2"
+        ],
+        "what": "For any finite probability law and fixed statistic, its inclusive absolute-tail p-value satisfies $\\Pr(p\\le\\delta)\\le\\delta$ for every $0\\le\\delta\\le1$ when observations follow that same law."
+      },
+      {
+        "lean_name": "AronowAudit.P008.monte_carlo_rank_valid",
+        "target_ids": [
+          "P008-T4"
+        ],
+        "what": "When the observed assignment and $B$ simulated assignments are independent draws from the same finite design law, the inclusive absolute-tail rank p-value with the plus-one correction is superuniform."
+      },
+      {
+        "lean_name": "AronowAudit.P008.matrix_hac_reduction",
+        "target_ids": [
+          "P008-T6"
+        ],
+        "what": "With both treatment arms nonempty, regressing circle averages on an intercept and binary treatment gives the Hajek contrast weights and group residuals, and the treatment entry of the uniform-kernel spatial-HAC sandwich equals the corresponding scalar residual-score quadratic form."
+      },
+      {
+        "lean_name": "AronowAudit.P008.distance_to_circle",
+        "target_ids": [
+          "P008-T17"
+        ],
+        "what": "For a planar circle of positive radius $d$ centered at $p$, the distance from any point $x$ to the circle is $|\\operatorname{dist}(x,p)-d|$."
+      }
+    ],
+    "overview": "This tutorial develops the average marginalized response for spatial experiments with interference and illustrates estimation and inference with the SpatialEffect package. The Lean development covers finite randomization-test validity, spatial averaging geometry, and the regression form of spatial-HAC variance estimates. It also supplies exact counterexamples and corrected statements for percentile calibration, design-law substitution, variance cutoffs, cumulative-effect normalization, and selected printed or archived-code formulas; these do not constitute a reanalysis of the Uganda experiment.",
+    "work_id": "P008"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.blocked_support",
+          "line": 452,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T1",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.observed_count_does_not_identify_law",
+          "line": 1482,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T1",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.reference_laws_counterexample",
+          "line": 489,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T1",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.six_support",
+          "line": 445,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T1",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Four Lean statements formalize the four-unit example of P008-N012 and a further example with 121 units. The examples contradict the claim that the observed assignment and its number of treated units determine the law under which the test is computed. In the first example an assignment of 121 units is represented by its set of treated units. Let $Q_U$ be the uniform law on the $\\binom{121}{60}$ sets of 60 units, and let $Q_B$ be the uniform law on the $\\binom{10}{5}\\binom{111}{55}$ sets that contain five of the first ten units and 55 of the other 111. The statement asserts that the support of $Q_B$ is a proper subset of the support of $Q_U$ and that one assignment, which stands for the observed one, has positive probability under both laws. It asserts further that a second assignment with 60 treated units has positive probability under $Q_U$ and probability $0$ under $Q_B$. The second example has four nodes with fixed circle averages $y$, the Hajek contrast $T$ with two nodes in each arm, and the observed assignment $1010$. There $Q_U$ is uniform on the six assignments with two treated nodes, and $Q_B$ is uniform on the four assignments that treat one node in each of the pairs $\\{1,2\\}$ and $\\{3,4\\}$. For a law $Q$, the tail probability is $p_Q=Q(\\{w:|T(w)|\\ge|T(1010)|\\})$. The statement asserts that $p_{Q_U}=1/3$ and $p_{Q_B}=1/2$ for $y=(0,1,0,1)$, and that $p_{Q_U}=2/3$ and $p_{Q_B}=1/2$ for $y=(0,1/3,2/3,1)$. Two supporting statements assert that the two lists of assignments are exactly these supports. The laws $Q_B$ are examples of a blocked design, and they are not the seven subcounty lotteries of the source study. No statement concerns the percentiles, the statistic or the $p$-value of the application.",
+        "headline": "Counterexamples to the permutation test of the cumulative effect between 1 and 2.5 km (Section 6), read as the randomization test of the sharp null for the experiment",
+        "location": "p. 153 (PDF p. 16); the sentences on the design, p. 151 (PDF p. 14), p. 145 (PDF p. 8) and p. 142 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.bernoulli_given_count_uniform",
+          "line": 1634,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.conditional_tail_valid",
+          "line": 1619,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.design_tail_valid",
+          "line": 227,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.prob_mono",
+          "line": 215,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.sharp_null_cumulative_test_valid",
+          "line": 3815,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Five Lean statements, one of them auxiliary, give the formal content of the correction of P008-N012. A design is a probability law $Q$ on a finite set of assignments, and for a statistic $T$ the tail probability $p_Q(z)=Q(\\{w:|T(w)|\\ge|T(z)|\\})$ counts $z$ and all ties. The first statement asserts that $Q(\\{z:p_Q(z)\\le\\delta\\})\\le\\delta$ for all $\\delta\\in[0,1]$, all laws and all statistics. The second asserts the same bound for the conditional law $Q(\\cdot\\mid A)$, for all events $A$ such that $Q(A)>0$. The third concerns $N$ independent assignments with a common probability $p\\in(0,1)$. For all $M\\le N$, it asserts that the event of $M$ treated nodes has positive probability and that, given this event, each assignment with $M$ treated nodes has probability $1/\\binom{N}{M}$. The fourth applies the second statement to the paper’s objects. Under the sharp null on the spatial field, the sum of the Hajek estimates over a finite set of radii is a fixed function of the assignment. The test that rejects when the tail probability of this sum is at most $\\delta$ then has level $\\delta$, where the tail probability is computed under the law of the design given an event of positive probability. The fourth statement assumes a measurable field, $N>0$, circles of positive finite measure, integrable outcomes and nonempty arms at every assignment of positive conditional probability. The case in which the law of the design is not the law of unrestricted permutations has no statement of its own, and it rests on the counterexamples to the printed test. The lotteries of the source study are not represented, and nothing is asserted about the $p$-value of the application.",
+        "headline": "Section 6, the claim “The cumulative effect between 1 km and 2.5 km is thus significant with $p < 0.05$”, as corrected",
+        "location": "p. 153 (PDF p. 16); see also p. 151 (PDF p. 14), p. 145 (PDF p. 8), p. 144 (PDF p. 7) and p. 142 (PDF p. 5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.finite_field_percentile_counterexample",
+          "line": 2503,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T3",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.interpolated_percentile_counterexample",
+          "line": 541,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T3",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.line_embedding_distance",
+          "line": 2445,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T3",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.percentile_spatial_hypotheses",
+          "line": 2476,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T3",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.spatial_percentile_counterexample",
+          "line": 2732,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T3",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.univ_five",
+          "line": 32,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T3",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.univ_four",
+          "line": 29,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T3",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.univ_six",
+          "line": 35,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T3",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Eight Lean statements formalize the counterexample of P008-E002. In the main statement the spatial field is the rectangle $[-1,31]\\times[-1,1]$, with four nodes at $(0,0)$, $(10,0)$, $(20,0)$ and $(30,0)$. The outcome equals $i-1$ on the closed disc of radius $1$ around node $i$ and $0$ elsewhere, under every assignment. The integration measure is the counting measure on 24 points, namely each node and the five points at distances $0.1,\\dots,0.5$ to its right. The statement asserts that the four discs lie in the field and are disjoint, that the sharp null holds, and that the circle averages are $(0,1,2,3)$ at each of the five radii. It asserts that the Hajek estimator takes the values $-2,-1,0,0,1,2$ on the six assignments with two treated nodes, each of probability $1/6$. The percentiles are interpolated, as by the default rule of the R function quantile. At the levels $0.025$ and $0.975$ they are $-15/8$ and $15/8$, and the rule rejects with probability $1/3>1/20$. For the sum over the five radii the percentiles are $-75/8$ and $75/8$, and the probability is again $1/3$. Two statements contain the same example on a field that consists of the 24 points only, one states the arithmetic alone, and four are auxiliary. The paper leaves open the integration measure and the rule for percentiles, and both are fixed here. The statements concern the interpolated percentiles only.",
+        "headline": "A counterexample to the rule of Sections 2.3 and 3 that rejects the sharp null outside the $\\delta/2$ and $1-\\delta/2$ percentiles of the permutation distribution, as a test with error rate $\\delta$",
+        "location": "p. 144 (PDF p. 7); p. 146 (PDF p. 9); footnote 5, p. 148 (PDF p. 11); pp. 149–150 (PDF pp. 12–13)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.complement_contrast",
+          "line": 478,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.contrast_is_hajek",
+          "line": 464,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.linear_functional_complement",
+          "line": 560,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.monte_carlo_rank_valid",
+          "line": 1719,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.prob_as_expect",
+          "line": 1698,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.prob_equiv",
+          "line": 1709,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.six_no_five_percent_rejection",
+          "line": 596,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.six_tail_lower_bound",
+          "line": 569,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Eight Lean statements give the formal content of the correction of P008-E002. The six assignments of four nodes with two treated nodes are listed with the uniform law, and the circle averages $m_i(d)$ are arbitrary real numbers, fixed under the sharp null. Three statements concern the contrast $T_d(z)=(1/2)\\sum_iz_im_i(d)-(1/2)\\sum_i(1-z_i)m_i(d)$. They assert that $T_d$ is the Hajek estimator with two nodes in each arm, that the complement $1-z$ of a listed assignment $z$ is a different listed assignment, and that $S(1-z)=-S(z)$ for all linear combinations $S=\\sum_ja_jT_{d_j}$. Two statements concern every function $S$ on the six assignments such that $S(1-z)=-S(z)$. They assert that the tail probability $\\#\\{w:|S(w)|\\ge|S(z)|\\}/6$ is at least $1/3$ at every $z$ and is never at most $1/20$, and that every nonempty set of assignments has probability greater than $1/20$. A further statement is about permutations that are sampled and not enumerated. If the observed assignment and $B$ further assignments are independent draws from a law $Q$ on a finite set, it asserts that $\\Pr\\left(\\frac{1+\\#\\{b:|S(Z^{b})|\\ge|S(Z^{\\mathrm{obs}})|\\}}{B+1}\\le\\delta\\right)\\le\\delta\\qquad\\text{for all }\\delta\\in[0,1] .$ Two supporting statements are facts about finite probability spaces. The calibrated rule for an enumerated design has its own Lean statement, which is described with the correction of the significance claim of Section 6 (P008-N012). No statement contains the toy data. That the sum on $[0.1,0.5]$ is not significant at $\\delta=0.05$ follows from the bound $1/3$, which holds for all circle averages.",
+        "headline": "Sections 2.3, 3 and 5, the permutation test of the sharp null and the conclusion of the toy example on $[0.1,0.5]$, as corrected",
+        "location": "p. 144 (PDF p. 7); p. 146 (PDF p. 9); footnote 5, p. 148 (PDF p. 11); pp. 149–150 (PDF pp. 12–13)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.effect_range_covariance_omission",
+          "line": 2949,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.effect_range_cutoff_counterexample",
+          "line": 1346,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.pair_circle_calculation",
+          "line": 1328,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.pair_support",
+          "line": 1300,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_circle_depends_on_pair",
+          "line": 4251,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_cutoff_variance",
+          "line": 3299,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_local_outcome",
+          "line": 4108,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_nodes_separated",
+          "line": 4232,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_other_pair_far",
+          "line": 4094,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_plane_circle",
+          "line": 4296,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_plane_cutoff_omission",
+          "line": 4447,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_plane_separation",
+          "line": 4289,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_sign_moments",
+          "line": 3256,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_spatial_counterexample",
+          "line": 4134,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_spatial_cutoff_omission",
+          "line": 4265,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.replicated_spatial_marginals",
+          "line": 4417,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.uniform_bit_expect",
+          "line": 4405,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T5",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Seventeen Lean statements formalize the counterexample of P008-N002 to the reading that a cutoff equal to the range of the effects accounts for the dependence between nodes. In the first four, two nodes lie at $0$ and $2$ on a line and the field consists of the points $-1,0,1,2,3$ with counting measure. A treated node raises by $1$ the outcome of every point within distance $1$ of it, the assignments are independent with probability $1/2$, and $d=1$. These statements assert that $\\mu_1=Z_1+Z_2/2$ and $\\mu_2=Z_2+Z_1/2$, with marginal means $5/4$ under treatment and $1/4$ under control. With $\\phi_i=2Z_i(\\mu_i-5/4)-2(1-Z_i)(\\mu_i-1/4)$, they assert that $\\phi_1=\\phi_2=(1/2)(2Z_1-1)(2Z_2-1)$ and that $\\operatorname{Var}(\\phi_1)=\\operatorname{Cov}(\\phi_1,\\phi_2)=1/4$. The variance of $(\\phi_1+\\phi_2)/2$ is then $1/4$, while a cutoff of $1$ excludes the pair of nodes, which are $2$ apart, and leaves $1/8$. The other thirteen statements place $M$ such pairs on the line, with nodes at $6g$ and $6g+2$ for $g=0,\\dots,M-1$, and $N=2M$. For all $M\\ge1$ they assert that the outcomes lie in $[0,2]$, that distinct nodes are at least $2$ apart, and that each circle average depends only on the two assignments of its own pair. They assert further that $\\operatorname{Var}\\Bigl(\\frac1N\\sum_{i=1}^N\\phi_i\\Bigr)=\\frac{1}{2N},\\qquad\\frac{1}{N^2}\\sum_{i,j}\\operatorname{Cov}(\\phi_i,\\phi_j)\\,\\mathbf{1}\\{D_{ij}\\le1\\}=\\frac{1}{4N} .$ The points have rational coordinates on a line, and separate statements identify their distances with Euclidean distances in the plane. The variances are those of the linearization and not of the ratio estimator. No statement concerns a limit as $N\\to\\infty$, either of the estimator or of a variance estimate.",
+        "headline": "A counterexample to the cutoff of the toy example (“cutoff = .4”) as a use of the instruction of Section 3: a cutoff equal to the range of the effects leaves out half of the variance",
+        "location": "p. 145 (PDF p. 8); pp. 147–148 (PDF pp. 10–11); table on p. 149 (PDF p. 12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.additive_score_covariance",
+          "line": 1833,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.additive_vector_update",
+          "line": 1816,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.binary_regression_weights_residuals",
+          "line": 1046,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.circle_outside_effect_range",
+          "line": 1911,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.finite_far_coefficient_zero",
+          "line": 1920,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.hac_equals_hc0",
+          "line": 1156,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.hac_group_hc0",
+          "line": 1173,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.hajek_weighted_contrast",
+          "line": 1149,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.integral_far_coefficient_zero",
+          "line": 2380,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.matrix_hac_reduction",
+          "line": 1099,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.spatial_hac_hc0",
+          "line": 4305,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.toy_cutoff_is_hc0",
+          "line": 1281,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.uniform_average_update",
+          "line": 1790,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.variance_sum_covariances",
+          "line": 2321,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Fourteen Lean statements cover the four parts of the correction of P008-N002. Let $q_i=Z_i/N_1-(1-Z_i)/N_0$, let $e_i$ be the deviation of the circle average $M_i$ from the mean of its arm, and let $\\widehat V(c)=\\sum_{i,j}q_iq_je_ie_j\\mathbf{1}\\{D_{ij}\\le c\\}$. For two nonempty arms, the first statements assert that $\\widehat\\tau_{HA}(d)=\\sum_iq_iM_i$ and that $q_i$ and $e_i$ are the weights and the residuals of the regression of $M_i$ on an intercept and $Z_i$. They assert that $\\widehat V(c)$ is the diagonal entry for the treatment in the sandwich covariance matrix with the uniform kernel. If $D_{ii}=0$ and $D_{ij}>c\\ge0$ for all $i\\ne j$, they assert that $\\widehat V(c)=\\sum_iq_i^2e_i^2=\\frac{1}{N_1^2}\\sum_{i:Z_i=1}e_i^2+\\frac{1}{N_0^2}\\sum_{i:Z_i=0}e_i^2=\\widehat V(0) .$ A statement for the four nodes of the toy example asserts that every two of them are more than $2/5$ apart, so that the variance with cutoff $0.4$ is $\\sum_ig_i^2$ for every vector of scores $g$. A further statement is about circle averages of the additive form $\\mu_i=b_i+\\sum_ka_{ik}Z_k$, independent assignments with probability $1/2$, and the contributions $\\phi_i=2Z_i(\\mu_i-m_1)-2(1-Z_i)(\\mu_i-m_0)$. It asserts that $\\operatorname{Cov}(\\phi_i,\\phi_j)=a_{ij}a_{ji}$ for all $i\\ne j$ and all constants $m_1$ and $m_0$. It is supported by two auxiliary statements, and another states that the variance of a sum is the sum of all covariances. For the last part, three geometric statements assert that $\\|x-x(k)\\|>r$ whenever $\\|x-x(i)\\|=d$ and $\\|x(i)-x(k)\\|>d+r$, and that a function which vanishes beyond distance $r$ of node $k$ has circle average $0$ around node $i$. The coordinates of the toy nodes, which the paper does not print, are those that I recomputed from the vignette distributed with the package, as exact dyadic numbers. Some algebraic statements allow arbitrary real matrices $D$ or arbitrary scores, which is broader than the correction requires. No statement compares the ten printed intervals with heteroskedasticity-robust (HC0) intervals, and none concerns coverage.",
+        "headline": "Section 3, the instruction on the spatial-HAC cutoff, and the intervals of the toy example with cutoff 0.4, as corrected",
+        "location": "p. 145 (PDF p. 8); pp. 147–149 (PDF pp. 10–12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T7",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.binary_companion_counterexample",
+          "line": 2618,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T7",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.binary_companion_counterexample_bernoulli",
+          "line": 4369,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T7",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.binary_count_mean",
+          "line": 1398,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T7",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.risk_circle_calculation",
+          "line": 1407,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T7",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.risk_design_and_companion_estimates",
+          "line": 2924,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T7",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.risk_sampling_probabilities",
+          "line": 2913,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T7",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.risk_sampling_probabilities_bernoulli",
+          "line": 4379,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T7",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.summed_risk_counterexample",
+          "line": 1425,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T7",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.summed_risk_counterexample_bernoulli",
+          "line": 4354,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T7",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Nine Lean statements formalize the exact example of P008-N016, which is a constructed population and not the data of the application. There are four nodes and four radii, and each of the sixteen circles is a set of $40{,}000$ points indexed here by $k=1,\\dots,40{,}000$. The outcome at point $k$ of every circle of node $i$ is $\\mathbf{1}\\{k\\le B_i-321z_i\\}$, with $(B_1,\\dots,B_4)=(400,1000,400,1000)$. The main statement asserts that $\\mu_i(b;d_j,\\alpha)=(B_i-321b)/40000$ for all laws of the assignment, and that the AMR is $-321/40000$ at each radius. At the assignment $(1,1,0,0)$ the Hajek estimate is $-321/40000$ at each radius, and four such terms sum to $-321/10000=-0.0321$. The loss probabilities averaged over nodes and radii are $7/400$ under control and $379/40000$ under treatment. Their difference is $-321/40000=-0.008025$, and $7/400-321/10000<0$. A companion statement takes the outcome $1-z_i$ at every circle point. It asserts that the AMR is $-1$ at each radius, that the sum is $-4$, and that no two numbers in $[0,1]$ differ by $-4$. Further statements repeat these assertions under independent assignment with probability $1/2$, for which $(1,1,0,0)$ has probability $1/16$, and two are auxiliary. The statements do not construct the points in the plane, and they omit the four centres, where the outcome is $0$ and which lie on no circle of positive radius. The main statements hold for all laws of the assignment, which is broader than the design of the example.",
+        "headline": "A counterexample to the reading of the cumulative effect and of its percentiles as percentage-point changes in a probability of forest loss (Section 6)",
+        "location": "p. 153 (PDF p. 16)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.circle_probability_bounds",
+          "line": 2238,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.common_rescaling",
+          "line": 654,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.common_rescaling_for_percentiles",
+          "line": 3870,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.constant_radius_effect",
+          "line": 648,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.constant_radius_effect_for_sampling",
+          "line": 3862,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.expect_probability_bounds",
+          "line": 2208,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.expect_probability_bounds_on_support",
+          "line": 2221,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.normalized_probability_effect",
+          "line": 614,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.reported_values_divided_by_four",
+          "line": 666,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.spatial_risk_normalization",
+          "line": 2268,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.spatial_risk_normalization_all_assignments",
+          "line": 4328,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Eleven Lean statements give the formal content of the correction of P008-N016. Let all potential outcomes on the spatial field be $0$ or $1$, and let $q_b(d)=N^{-1}\\sum_i\\mu_i(b;d,\\alpha)$. For a measurable field, $N>0$, circles of positive finite measure and all finite designs, the first statements assert that $0\\le q_b(d)\\le1$ and $\\tau(d;\\alpha)=q_1(d)-q_0(d)$. For weights $w_j\\ge0$ such that $\\sum_jw_j=1$ and all numbers $q_0(d_j)$ and $q_1(d_j)$ in $[0,1]$, let $Q_b=\\sum_jw_jq_b(d_j)$. A statement asserts that $0\\le Q_b\\le1$, that $Q_1-Q_0=\\sum_{j=1}^mw_j\\,[q_1(d_j)-q_0(d_j)] ,$ that $|Q_1-Q_0|\\le1$, and that $Q_1-Q_0$ lies in every interval that contains all the differences $q_1(d_j)-q_0(d_j)$. If these differences equal a common value $t$, the weighted sum is $t$ and the unweighted sum is $mt$. The statements on rescaling assert that division by $m>0$ preserves the comparisons $x\\le y$ and $|x|\\le|y|$ and divides every interpolated quantile by $m$. For the printed numbers they give $-0.0304/4=-19/2500$, $-0.0321/4=-321/40000$ and $0.0336/4=21/2500$, with $-321/40000<-19/2500$. The quantity $Q_b$ enters as this weighted average, and the random draw of a node, a radius and a point is not constructed. Two statements are broader than the correction. Integrability is required only after setting a node’s treatment in an assignment of positive probability, and the rescaling identity holds for unsorted values and every real level. That an unweighted sum can leave $[-1,1]$ belongs to the counterexample, which has its own Lean statements. Neither the grid of the application nor its percentiles are part of the statements.",
+        "headline": "Section 6, the reported cumulative effect between 1 and 2.5 km and its two percentiles, as corrected",
+        "location": "p. 153 (PDF p. 16)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T9",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.archived_sixth_row_incompatible",
+          "line": 1259,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T9",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.bandwidth_spatial_realization",
+          "line": 3557,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T9",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.grid_position_counterexample",
+          "line": 1236,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T9",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.spatial_grid_position_counterexample",
+          "line": 3768,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T9",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.toy_archived_sixth_row_incompatible",
+          "line": 2670,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T9",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Five Lean statements formalize the counterexample of P008-E015. The rule of the later archived version of the package is a premise read from the code, and the statements do not establish what any release of the package does. Whenever cutoff is positive, the rule sets the bandwidth at the $j$th radius of the grid to $\\texttt{cutoff}+j$. In the main statement the field is the plane, with nodes at $(0,0)$, $(2,0)$, $(4,0)$ and $(6,0)$ and treatments $(0,0,1,1)$. Under every assignment, the outcome equals $0$, $2$, $4$ and $6$ on the closed discs of radius $3/10$ around the nodes and $0$ elsewhere. The integration measure is the counting measure on 16 points, namely each node and the points at distances $1/10$, $1/5$ and $3/10$ to its right. The statement asserts that the circle averages are $(0,2,4,6)$ at the three radii and that the Hajek contrast at the radius $1/5$ is $4$. With cutoff $2/5$ and the uniform kernel, it asserts that the variance is $1$ when this radius is first in the grid $(1/5,3/10)$ and $1/2$ when it is second in the grid $(1/10,1/5,3/10)$. A second statement contains the scores $g=(1/2,-1/2,-1/2,1/2)$ and adds that a bandwidth equal to the cutoff gives the variance $1$ at both places, and a third supports the main statement. The last two concern the row $d=0.6$ of the printed toy table, one of them in a general algebraic form. For the four toy nodes, whose coordinates I recomputed from the vignette distributed with the package, they give a bound of $32$ on every squared distance; the algebraic version allows any real matrix $D$ with $D_{il}^2\\le32$ and any scores summing to $0$. Under the rule, the variance at the sixth radius with cutoff $2/5$ is then $0$, for all circle averages and all assignments with two nonempty arms. The printed interval has width $3.438+0.038=869/250>0$, which no multiple of the square root of this variance equals.",
+        "headline": "A counterexample to the spatial-HAC bandwidth of the later archived version of the package as the distance threshold of Section 3: the variance at a fixed radius changes with the grid of radii",
+        "location": "Section 3, p. 145 (PDF p. 8); toy call and table, pp. 148–149 (PDF pp. 11–12); file R/SpatialEffect.R of the later archived version of the package, lines 199–229 (not printed in the article)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.corrected_bandwidth_invariant",
+          "line": 1226,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.corrected_spatial_bandwidth_invariant",
+          "line": 3878,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.hac_all_pairs_zero",
+          "line": 1203,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.regression_all_pairs_zero",
+          "line": 2427,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.regression_score_sum_zero",
+          "line": 2397,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.spatial_all_pairs_zero",
+          "line": 4319,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Six Lean statements give the formal content of the correction of P008-E015. The rule being corrected, bandwidth $\\texttt{cutoff}+j$ at grid position $j$ for a positive cutoff, is a premise read from the later archived code and is not established by these statements. The variance with bandwidth $c$ is $V(c)=\\sum_{i,l}g_ig_l\\mathbf{1}\\{D_{il}\\le c\\}$, where the score $g_i$ is the product of the weight of node $i$ in the treatment coefficient and its residual. Two statements assert that, with the bandwidth equal to the cutoff, the variance reported at a radius is $V(\\texttt{cutoff})$, whatever the place of the radius in the grid. They hold by definition, since the corrected rule does not use the place. One is stated for all real matrices $D$ and all scores, and the other for Euclidean distances between nodes, a nonnegative cutoff and the scores of a regression with two nonempty arms. The remaining four statements are about a bandwidth that includes every pair of nodes. They assert that the scores of the regression on an intercept and the treatment sum to $0$ when both arms are nonempty, and that $V(c)=0$ whenever $\\sum_ig_i=0$ and $D_{il}\\le c$ for all $i$ and $l$. Then $V(c)=0$ for the scores of the regression, for every such matrix $D$ and in particular for Euclidean distances. The part of the correction on the toy example has no statement of its own. That a cutoff of $0.4$ keeps only the terms with $i=l$ for the toy nodes is asserted with the correction of the cutoff of the toy example (P008-N002). The statements are algebraic, and they do not assert that any cutoff leads to valid intervals.",
+        "headline": "The spatial-HAC bandwidth of the unsmoothed estimator in the later archived version of the package, as corrected to the cutoff at every radius",
+        "location": "Section 3, p. 145 (PDF p. 8); file R/SpatialEffect.R of the later archived version of the package, lines 199–229 (not printed in the article)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T11",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.printed_toy_sums",
+          "line": 243,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.toy_sum_rounding",
+          "line": 251,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements contain the arithmetic of P008-E003 on the printed table. The first asserts that $1.491+1.550+1.550+1.691+1.714=7.996\\qquad\\text{and}\\qquad7.996+1.700+1.678+1.002=12.376 .$ The second concerns all real numbers $a,b,c,e,f$ within $1/2000$ of the five printed estimates at $d=0.1,\\dots,0.5$, allowing a rounding error of at most $0.0005$ in each estimate. It asserts that $7.9935\\le a+b+c+e+f\\le7.9985$, that the sum differs from $12.38$ by more than $1/200$, and that it exceeds $7.975$. The sum on $[0.1,0.5]$ then cannot be printed as $12.38$, and it exceeds every number printed as $7.97$. The statements concern the printed numbers only. They do not determine whether the sum rounds to $7.99$ or to $8.00$. The value $8.00$ is the rounding of the recalculated sum $7.99649$, which is not part of the Lean statements.",
+        "headline": "Section 5, “the actual cumulative effect is 12.38” on the interval $[0.1,0.5]$, as corrected to 8.00",
+        "location": "p. 149 (PDF p. 12), last two lines; table on the same page"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T12",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.printed_grid_counterexample",
+          "line": 288,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T12",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.printed_grid_empty_percentiles",
+          "line": 4341,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T12",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.zero_sum_quantiles",
+          "line": 2348,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T12",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements formalize the derivation of P008-E004. The printed grid is $d_k=5k/111$ for $k=0,\\dots,4$, and the test range is the closed interval $[1/111,5/222]$. The first statement asserts that none of the five points lies in the range. The sum over the grid points in the range is then $0$ for all real functions on the grid, and the reported values $-0.0321$, $-0.0304$ and $0.0336$ are different from $0$. The second asserts that every interpolated quantile of a sample of zeros is $0$. The third combines the two. For any number of permutations and all values of the AMR estimates on the grid, each permuted sum is $0$, and its quantiles at the levels $0.025$ and $0.975$ are $0$. The grid is represented by its five points. The statements do not derive that seq returns these points in R, or that the test uses a closed range. Both facts are read from R and from the code of the package. The quantiles are the interpolated ones of the R function quantile.",
+        "headline": "A counterexample to the distance grid of Section 6 as printed (step $5/111$) with the test range from $1/111$ to $2.5/111$: no grid point lies in the range",
+        "location": "p. 153 (PDF p. 16)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T13",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.corrected_grid",
+          "line": 304,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement contains the arithmetic of the grid corrected in P008-E004, $d_k=k/222$ for $k=0,\\dots,40$. It asserts that the grid has 41 points, that its last point is $20/111$, and that consecutive points differ by $1/222$. It asserts that $d_k$ lies in the closed range $[1/111,5/222]$ if and only if $2\\le k\\le5$. The sum over the grid points in the range is then $f(d_2)+f(d_3)+f(d_4)+f(d_5)$ for every real function $f$ on the grid. These four points are at $1$, $1.5$, $2$ and $2.5$ km, at 111 km per degree. The statement is in exact arithmetic. In floating-point arithmetic the membership of the endpoint $2.5/111$ can depend on rounding. The statement does not concern the values plotted in Figure 8, the reported percentiles or the $p$-value.",
+        "headline": "Section 6, the distance grid, as corrected to the step $0.5/111\\approx0.0045$",
+        "location": "p. 153 (PDF p. 16); Figure 8, p. 154 (PDF p. 17)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T14",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.amr_display",
+          "line": 350,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.amr_display_on_valid_circles",
+          "line": 3841,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.amr_misprint",
+          "line": 355,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.amr_misprint_witness",
+          "line": 366,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Four Lean statements cover the correction of P008-E005. The spatial field is a subset of the plane with a measure $\\zeta$, and the design is a probability law on the binary assignments of the $N$ nodes. The quantity $\\mu_i(z;d,\\alpha)$ is the expectation over the design of the circle average, with the treatment of node $i$ set to $z$. The first statement asserts the corrected display, $\\tau(d;\\alpha)=\\frac1N\\sum_{i=1}^N\\left[\\mu_i(1;d,\\alpha)-\\mu_i(0;d,\\alpha)\\right] ,$ for $N>0$, circles of positive finite measure and integrable outcomes. A second asserts the same identity without these hypotheses. Both hold by definition, since $\\tau(d;\\alpha)$ is defined as the average of $\\tau_i(d;\\alpha)=\\mu_i(1;d,\\alpha)-\\mu_i(0;d,\\alpha)$. The other two concern the display read literally, as a product of two averages. One asserts that $A^2=A$ if and only if $A=0$ or $A=1$. The other is the example of the finding, in which the effects $3-0$ and $7-2$ have average $4$, and $4^2=16\\ne4$. In the Lean definitions an average over a circle of measure zero, or over no nodes, is set to $0$, which is why the second statement needs no hypotheses. The distance is Euclidean.",
+        "headline": "Section 2.2, the display defining the average marginalized response $\\tau(d;\\alpha)$, as corrected",
+        "location": "p. 143 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T15",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.band_average_display",
+          "line": 383,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.band_contains_no_nodes",
+          "line": 395,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements cover the correction of P008-E007. For a node $i$, a radius $d\\ge0$ and $k\\ge0$, the band is the set of points $x$ of the spatial field such that $d-k\\le\\|x-x(i)\\|\\le d+k$. Suppose that the measure of this set is positive and finite. The first statement asserts that the band average of the outcomes is their integral over the set with respect to $\\zeta$, divided by its measure. It holds by definition, and it makes explicit that the band consists of points of the field, at which outcomes are defined. The second concerns the set that the printed words describe, namely the nodes $j$ such that $x(j)$ lies in the band around node $i$. It asserts that this set is empty when $d-k>0$ and every other node is farther than $d+k$ from node $i$. The distance is Euclidean. The paper allows other metrics. In the Lean definition a band of measure zero or a nonintegrable outcome has average $0$; the first statement excludes only the former case.",
+        "headline": "Section 2.2, the description of the circular band (“donut”), as corrected from “of intervention nodes” to “of outcome points”",
+        "location": "p. 143 (PDF p. 6)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T16",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.donut_counterexample",
+          "line": 684,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T16",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.donut_spatial_distances",
+          "line": 3631,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T16",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.polygon_donut_counterexample",
+          "line": 3695,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T16",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements formalize the example of P008-N001. One premise is read from the code. At the second radius, the later archived version of the package averages the cells added between the buffers of the first and second radii. The first statement uses only the four cells near the treated polygon, at distances $0$, $19/8$, $27/8$ and $35/8$ from its boundary, with outcomes $4$, $2$, $0$ and $8$. It asserts that the average over the cells within distance $4$ but not within distance $2$ is $1$, that the average over the band $[3,5]$ is $4$, and that the average over the buffer of radius $4$ is $2$. The other two statements realize the example in the plane. The polygons are the rectangles $[0,1]\\times[-1,1]$ and $[100,101]\\times[-1,1]$, each with four cells centred on the line $y=0$, at and beyond its right edge. These statements assert that the four cells of each polygon are at the stated distances from its boundary and more than $5$ from the boundary of the other polygon. With the first polygon treated and the outcomes near the second equal to $0$, they assert that the three Hajek contrasts are $1$, $4$ and $2$. The rectangles differ from the squares of the finding and have the same distances to the cells. A cell is represented by its centre, with no extent, and no law of the assignment enters.",
+        "headline": "A counterexample to the “donut” as a band centered at radius $d$ (Sections 2.2 and 3), for the polygon buffers of the later archived version of the package",
+        "location": "p. 143 (PDF p. 6) and p. 145 (PDF p. 8); file R/SpatialEffect.R of the later archived version of the package, lines 115–118 (not printed in the article)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T17",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.distance_to_circle",
+          "line": 1931,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.nested_buffer_average",
+          "line": 409,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.positive_radius_band_geometry",
+          "line": 3852,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.radial_band_geometry",
+          "line": 418,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Four Lean statements cover the two parts of the correction of P008-N001. The first part is the geometry of the printed band. For a point $p$ of the plane and $d>0$, a statement asserts that the distance from a point $x$ to the circle of radius $d$ around $p$ is $\\bigl|\\|x-p\\|-d\\bigr|$. Two statements assert that, for $k\\ge0$, the points within distance $k$ of this circle are the points $x$ such that $\\max(0,d-k)\\le\\|x-p\\|\\le d+k$, and that $(d+k)-(d-k)=2k$. One of the two is the scalar identity for all real $d$ and $k$, and the other is stated in the plane for $d>0$ and $k\\ge0$. The second part is about finite sets of cells $A\\subset B$ such that $|A|<|B|$, with real outcomes $Y$. The statement asserts that $\\frac{\\sum_{x\\in B}Y_x-\\sum_{x\\in A}Y_x}{|B|-|A|}=\\frac{1}{|B\\setminus A|}\\sum_{x\\in B\\setminus A}Y_x .$ With $A$ and $B$ the buffers of radii $d_{j-1}<d_j$, the right side is the average over the cells added between the two buffers. That the package computes the left side is a premise read from the code of the later archived version, and it is not asserted for the release that the paper cites. No statement identifies the buffers with the cells within given distances of a polygon, and the new wording for the “disk” has no statement.",
+        "headline": "Sections 2.2 and 3, the descriptions of the band and of the “disk”, as corrected, with what the later archived version of the package averages for polygons",
+        "location": "p. 143 (PDF p. 6) and p. 145 (PDF p. 8); file R/SpatialEffect.R of the later archived version of the package, lines 115–118 (not printed in the article)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T18",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.additive_switch",
+          "line": 873,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.spatial_toy_raster_amr_formula",
+          "line": 4388,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.toy_amplitude_and_bound",
+          "line": 970,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.toy_kernel_lower_bound",
+          "line": 939,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.toy_raster_amr_formula",
+          "line": 3215,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Five Lean statements formalize the derivation of P008-N004. The kernel is $f(r)=2e^{-2r}-(128/3)r^4e^{-4r}$, and the outcome in raster cell $c$ with amplitude $a$ is $Y_{0c}+a\\sum_jz_jf(r_{jc})$, where $r_{jc}$ is the distance from node $j$ to the centre of the cell. The kernel and the amplitude $3$ are taken from the vignette distributed with the package, since the paper prints no formula. The first statement asserts that switching node $i$ from control to treatment changes an additive outcome by the contribution of node $i$, whatever the other assignments. A second asserts that $f(r)>-384/437>-1$ for all $r\\ge0$. For all laws of the assignment, a third asserts that the marginalized effect of node $i$ in cell $c$ is $af(r_{ic})$. Let $\\tau^{(a)}$ be the AMR with amplitude $a$ and weights $w_{ic}\\ge0$ such that $\\sum_cw_{ic}=1$. The same statement asserts that $\\tau^{(a)}=\\frac14\\sum_{i=1}^4\\sum_cw_{ic}\\,af(r_{ic}),\\qquad\\tau^{(3)}=3\\tau^{(1)},\\qquad\\tau^{(1)}>-\\frac{384}{437} .$ In this statement the distances $r_{ic}$ are supplied nonnegative numbers. One of the remaining two states the scaling and the bound for the weighted average alone. The other repeats the whole statement with the distances computed from the positions of the nodes and cells in the plane. The weights are arbitrary. No statement requires them to be the shares of a circle of radius $d$ in the cells, so the formula is broader than the circle averages of the toy example. The agreement of $f$ and of $3f$ with the curves of Figures 2 and 4 is numerical and is not part of the statements.",
+        "headline": "Figure 2, right panel and caption, as corrected: the panel shows the kernel $f(d)$, and a treated node contributes $3f(d)$ in the toy example",
+        "location": "Figure 2 and its caption, p. 147 (PDF p. 10); Section 4, p. 146 (PDF p. 9); Figure 4, p. 149 (PDF p. 12)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T19",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.boundary_counterexample",
+          "line": 720,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T19",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.boundary_hajek_counterexample",
+          "line": 2866,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T19",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.polygon_raster_counterexample",
+          "line": 3125,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T19",
+          "target_kind": "counterexample",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements formalize the counterexample of P008-N009. In the main statement the raster has $20\\times10$ cells, and each of the two polygons is a block of $5\\times5$ cells. The outcome equals the treatment indicator of the first polygon at its nine central cells and $0$ at the other 191 cells. A boundary cell of a polygon is a cell of the polygon with one of its eight neighbours outside it. The statement asserts that each polygon has 25 cells, of which 16 are boundary cells. It asserts that the average over the boundary cells is $0$ for both polygons under every assignment. It asserts further that the average over all cells is $9/25$ for the first polygon when it is treated, and $0$ in every other case. With the first polygon treated and the second under control, the edge contrast at distance $0$ is then $0$ and the contrast inside the polygons is $9/25$. Under independent assignment with probability $1/2$, this assignment has probability $1/4$, and the two AMRs are $0$ and $9/50$. The other two statements make the same comparison on a single block of $5\\times5$ cells. One is the arithmetic, and the other asserts the AMRs $0$ and $9/50$ for all laws on the four assignments of the two polygons. That the later archived version of the package selects the boundary cells at distance $0$ is a premise read from the code. The cells are indexed by column and row, and a polygon and its boundary are sets of cells.",
+        "headline": "A counterexample to “the starting point at 0 corresponds to the area within the boundary of each village” (Section 6), for the edge-based estimate",
+        "location": "p. 153 (PDF p. 16); p. 145 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T20",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.block_boundary_is_eight_neighbour",
+          "line": 2354,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.raster_zero_summaries",
+          "line": 3079,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.zero_distance_is_boundary",
+          "line": 744,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Three Lean statements cover the correction of P008-N009. For a finite set $R$ of cells of the integer grid, the boundary $\\partial R$ consists of the cells of $R$ with at least one of their eight neighbours outside $R$. For $\\partial R$ nonempty, the first statement asserts that the edge summary at distance $0$ is $|\\partial R|^{-1}\\sum_{x\\in\\partial R}Y_x$ and that the summary inside the polygon is $|R|^{-1}\\sum_{x\\in R}Y_x$. It holds by definition. The second asserts that the boundary cells of a block of $5\\times5$ cells are those of its outer rows and columns, and that the other cells form the central block of $3\\times3$ cells. The third is the continuous form. Let $P$ be a set of the plane with nonempty boundary $\\partial P$. The statement asserts that the points at distance $0$ from $\\partial P$ are exactly the points of $\\partial P$, and that every interior point of $P$ is at positive distance from $\\partial P$. It is stated for arbitrary sets, which is broader than polygons. That the two summaries can differ is the counterexample to the printed sentence, which has its own Lean statements. The value of the smoothed curve at distance $0$ is not addressed.",
+        "headline": "Section 6, “the starting point at 0 corresponds to the area within the boundary of each village”, as corrected",
+        "location": "p. 153 (PDF p. 16); p. 145 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T21",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.sharp_null_cumulative_test_valid",
+          "line": 3815,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T21",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.uganda_printed_comparison",
+          "line": 2180,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T21",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "The printed conclusion has two parts, and only the first has a Lean statement of its own. The first part is the comparison of the reported numbers, $-0.0321<-0.0304$. The second is the inference from this comparison to $p<0.05$ under the law by which the 121 villages were assigned. It is not stated in Lean. Neither the law of the lotteries between balanced lists nor the values of the statistic on its support are available, and the number of treated villages does not determine that law (P008-N012). A further statement contains the conditional form of the inference. It concerns every design, every event $A$ of positive probability and every finite set of radii. Under the sharp null, it asserts that the test based on the two-sided tail probability of the sum of the Hajek estimates, computed under the design given $A$, rejects with probability at most $\\delta$. It assumes a measurable field, $N>0$, circles of positive finite measure, integrable outcomes and nonempty arms at every assignment of positive conditional probability. This statement is shared with the corrected claim. It says nothing about the reported percentiles; the inspected implementations use interpolated quantiles of unrestricted permutations.",
+        "headline": "Section 6, the test of the cumulative effect between 1 and 2.5 km and its conclusion “thus significant with $p < 0.05$”, as printed",
+        "location": "p. 153 (PDF p. 16); p. 151 (PDF p. 14); p. 145 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T22",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_PrintedRefutations.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.printed_percentile_calibration_refuted",
+          "line": 7,
+          "module": "AronowAudit.P008.P008_PrintedRefutations",
+          "status": "counterexample_proved",
+          "target_id": "P008-T22",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.printed_toy_rule_rejects",
+          "line": 2647,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T22",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements address the printed content that P008-E002 corrects. The first negates the universal claim that the percentile rule has error rate $\\delta$ when every assignment is enumerated. It concerns every nonempty nondecreasing sequence $s_1\\le\\dots\\le s_n$ of values of the statistic and all $\\delta\\in[0,1]$. The claim being refuted is that the proportion of indices $k$ such that $s_k$ is below the $\\delta/2$ percentile or above the $1-\\delta/2$ percentile is at most $\\delta$. The percentiles are the interpolated type-7 quantiles of the R function quantile, a rule that the paper does not specify and that the archived code uses. For the six equally likely values $(-2,-1,0,0,1,2)$ at $\\delta=0.05$, the cutoffs are $-15/8$ and $15/8$ and the rejection proportion is $1/3$. The counterexample and the corrected rule have their own Lean statements; the refutation does not apply to rules with calibrated discrete critical values. The second statement is the printed decision of the toy example, that $12.38$ lies outside $[-7.97,7.97]$. It asserts the comparison only, and neither that the rule has error rate $0.05$ nor that $12.38$ is the statistic on $[0.1,0.5]$. The first statement is restricted to designs in which the enumerated assignments are equally likely, which is narrower than the printed sentence.",
+        "headline": "Sections 2.3, 3 and 5, the percentile rule for the permutation test of the sharp null and the rejection in the toy example at $\\delta=0.05$, as printed",
+        "location": "p. 144 (PDF p. 7); p. 146 (PDF p. 9); footnote 5, p. 148 (PDF p. 11); pp. 149–150 (PDF pp. 12–13)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T23",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/Wave1/Gap/WretiredunstatedB1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.Wave1.toy_cutoff_equals_zero",
+          "line": 34,
+          "module": "AronowAudit.P008.Wave1.Gap.WretiredunstatedB1",
+          "status": "proved",
+          "target_id": "P008-T23",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.dependence_cutoff_identity",
+          "line": 2332,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T23",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "The printed passage has two parts, and only the first is stated in Lean. The first part is the instruction of p. 145, read as a condition on the contributions $\\phi_i$ of the nodes to the estimate. The statement concerns a probability law on a finite set, real functions $\\phi_1,\\dots,\\phi_N$ and a real matrix $D$. If $\\operatorname{Cov}(\\phi_i,\\phi_j)=0$ whenever $D_{ij}>c$, it asserts that $\\sum_{i,j}\\operatorname{Cov}(\\phi_i,\\phi_j)\\,\\mathbf{1}\\{D_{ij}\\le c\\}=\\operatorname{Var}\\Bigl(\\sum_{i=1}^N\\phi_i\\Bigr) .$ The matrix $D$ need not be a matrix of distances, so the statement is broader than the instruction. The second part is the presentation of the toy intervals with cutoff $0.4$ as intervals that account for the dependence between nodes, unlike intervals with cutoff $0$. It has no Lean statement, since the paper does not define what it means to account for dependence and asserts no coverage property that could be written down. What can be stated about these intervals is part of the correction (P008-N002). For the toy nodes, the variance with cutoff $0.4$ equals the variance with cutoff $0$.",
+        "headline": "Section 3, the instruction on the spatial-HAC cutoff, and the intervals of the toy example “based on the spatial-HAC standard errors”, as printed",
+        "location": "p. 145 (PDF p. 8); pp. 147–149 (PDF pp. 10–12); p. 153 (PDF p. 16)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T24",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_PrintedRefutations.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.printed_sum_probability_gloss_refuted",
+          "line": 27,
+          "module": "AronowAudit.P008.P008_PrintedRefutations",
+          "status": "counterexample_proved",
+          "target_id": "P008-T24",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement refutes the universal printed reading that P008-N016 corrects, namely that an unweighted sum of AMR estimates over several distances is a change in a probability. It asserts that there are a finite $m$ and numbers $q_0(d_j)$ and $q_1(d_j)$ in $[0,1]$, $j=1,\\dots,m$, for which no $Q_0$ and $Q_1$ in $[0,1]$ satisfy $Q_1-Q_0=\\sum_{j=1}^m\\,[q_1(d_j)-q_0(d_j)] .$ The paper does not define “the cumulative probability of forest loss”. The refuted claim takes the weakest reading, in which the sum is the difference of some two probabilities, and it does not say how a point would be drawn. With four terms $q_0(d_j)=1$ and $q_1(d_j)=0$, the sum is $-4$, whereas any difference of two probabilities is at least $-1$. The counterexample and the normalized form have their own Lean statements. The reported numbers $-0.0321$, $-0.0304$ and $0.0336$ do not enter. As values of the summed statistic they are not addressed. Their permutation distribution and the significance decision are not reproduced or assessed.",
+        "headline": "Section 6, the readings of the cumulative effect and of its percentiles in percentage points, as printed",
+        "location": "p. 153 (PDF p. 16)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T25",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.amr_integral_identity",
+          "line": 812,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T25",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.circle_effect_identity",
+          "line": 793,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T25",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.circle_marginal_identity",
+          "line": 774,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T25",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.circle_measurable",
+          "line": 768,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T25",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.expect_const",
+          "line": 205,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T25",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.expect_sub",
+          "line": 210,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T25",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.toy_eight_assignment_mean",
+          "line": 1981,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T25",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.weighted_integrable",
+          "line": 759,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T25",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Eight Lean statements cover the identities that Section 2.2 states in words. The spatial field is a subset of the plane with a measure $\\zeta$ and the Euclidean distance, and the design is a probability law on the binary assignments of the $N$ nodes. The quantity $Y_{ix}(z;\\alpha)$ is the expectation of $Y_x$ with the treatment of node $i$ set to $z$ and the other nodes drawn from the design. Fix a node $i$ and a radius $d$ such that the circle has positive finite measure and the outcomes are integrable on it after setting node $i$ to either treatment value in each assignment of positive probability. The first statement asserts that $\\mu_i(z;d,\\alpha)=\\frac{1}{|\\{x:d_i(x)=d\\}|}\\int_{x:d_i(x)=d}Y_{ix}(z;\\alpha)\\,\\mathrm{d}\\zeta .$ The second asserts that $\\tau_i(d;\\alpha)$ is the circle average of $\\tau_{ix}(\\alpha)$, and the third that $\\tau(d;\\alpha)$ is the average over the nodes of these circle averages, for $N>0$. The fourth is the rule of Section 4. Under the uniform law on the sixteen assignments of four nodes, it asserts that $Y_{ix}(z;\\alpha)$ is the mean of $Y_x(\\mathbf{z})$ over the eight assignments such that $z_i=z$. Four supporting statements contain the linearity of a finite expectation, the integrability of a weighted outcome and the measurability of a circle. The paper says only that $\\zeta$ is “a suitable integration measure”, and the conditions of measurability and integrability are added here. The paper also allows metrics other than the Euclidean distance. Integrability is required only after setting a node’s treatment in an assignment of positive probability, which is slightly broader than a requirement at all assignments. The fourth statement concerns the uniform design, and it is not asserted for a design in which $Z_i$ and the other assignments are dependent.",
+        "headline": "Section 2.2, the average marginalized response and the two identities for circle averages, with the rule of Section 4 for computing $\\tau_{ix}(\\alpha)$ in the toy example",
+        "location": "pp. 142–143 (PDF pp. 5–6); Section 4, pp. 146–147 (PDF pp. 9–10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T26",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.cancelling_circle_masses",
+          "line": 2661,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T26",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.cancelling_schedule_all_designs",
+          "line": 2366,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T26",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.real_rational_circle",
+          "line": 2653,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T26",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.sharp_null_implies_weak",
+          "line": 832,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T26",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.weak_not_sharp_example",
+          "line": 2012,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P008-T26",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "Five Lean statements cover the two directions. The first assumes the sharp null, $Y_x(\\mathbf{z})=Y_x(\\mathbf{0})$ at every point $x$ of a measurable spatial field and every assignment $\\mathbf{z}$. For all designs it asserts that $\\tau_{ix}(\\alpha)=0$ at every node and every point of the field, and that $\\tau_i(d;\\alpha)=0$ and $\\tau(d;\\alpha)=0$ for all real $d$. The other four statements give an example for the failure of the converse, which the paper asserts without one. The example has one node, at $0$ on a line, and its field consists of the points $-1$, $0$ and $1$ with counting measure. Treatment changes the outcome from $0$ to $1$ at the point $1$ and from $0$ to $-1$ at the point $-1$. These statements assert that the circle average is $0$ at every radius under both assignments, and that the AMR is $0$ at every radius for all designs. They assert also that the outcome at the point $1$ depends on the assignment, and that the circle of radius $0$ has one point and the circle of radius $1$ has two. At every other radius the circle is empty, and its average is $0$ by a convention of the Lean definitions. The assertion for all real $d$ then has content at the radii $0$ and $1$ only. The same convention applies to the first statement, which needs no hypothesis on the measure of the circles. The measurability of the field is a hypothesis added here.",
+        "headline": "Section 2.3: under the sharp null “all unit-level effects are also zero and the AMR is zero”; “The weak null is implied by the sharp null, but the reverse does not hold”",
+        "location": "p. 144 (PDF p. 7)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T27",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.additive_amr",
+          "line": 913,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T27",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.additive_point_effect",
+          "line": 896,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T27",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.homogeneous_additive_amr",
+          "line": 2032,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T27",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "The paper attributes this sentence to Wang et al. (2022) and writes out neither the linear structural model nor its coefficient. The three Lean statements formalize the additive case, and they are not a transcription of the cited result. Suppose that $Y_x(\\mathbf{z})=Y_x(\\mathbf{0})+\\sum_kz_kg_k(x)$ at every point of the spatial field and every assignment. The first statement asserts that $\\tau_{ix}(\\alpha)=g_i(x)$ for all designs, including designs with dependent assignments. The second asserts that $\\tau_i(d;\\alpha)$ is the circle average of $g_i$ and that $\\tau(d;\\alpha)$ is the average of these circle averages over the nodes. The third assumes moreover that $g_k(x)=g(\\|x-x(k)\\|)$ for one function $g$. It asserts that $\\tau_{ix}(\\alpha)=g(\\|x-x(i)\\|)$ and that $\\tau_i(d;\\alpha)=\\tau(d;\\alpha)=g(d)$. The second and third statements assume a measurable field, $N>0$, circles of positive finite measure at the radius $d$, and outcomes integrable on them after setting a node’s treatment in each assignment of positive probability. The baseline is written as an arbitrary function, which the additive form identifies with $Y_x(\\mathbf{0})$. Homogeneity without additivity, which the printed sentence also mentions, is not covered.",
+        "headline": "Section 1, the equivalence of the AMR with the “spillover” coefficient of a linear structural model when effects are additive or homogenous (attributed to Wang et al. 2022): the additive case",
+        "location": "p. 140 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P008-T28",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.bernoulli_fraction_moments",
+          "line": 2532,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.bernoulli_good_denominator_bound",
+          "line": 2985,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.bernoulli_numerator_identity",
+          "line": 2117,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.common_numerator_means",
+          "line": 3015,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.covariance_le_bound_sq",
+          "line": 3440,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.covariance_raw",
+          "line": 2307,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.covariance_zero_of_fibres",
+          "line": 3371,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.dependency_numerator_variance_bound",
+          "line": 3459,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.expect_abs_bound",
+          "line": 3888,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.expect_add",
+          "line": 2301,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.expect_mul_const",
+          "line": 2199,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.expect_sum",
+          "line": 2191,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.expect_value_fibres",
+          "line": 3346,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.finite_chebyshev",
+          "line": 2578,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.finite_hajek_error_bound",
+          "line": 3933,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.hajek_ratio_decomposition",
+          "line": 3043,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.marginal_mean_abs_bound",
+          "line": 3902,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.prob_or_le",
+          "line": 3921,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.ratio_deviation_bound",
+          "line": 2156,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.sufficient_hajek_consistency",
+          "line": 4027,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.variance_le_bound_sq",
+          "line": 3426,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/P008_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P008.variance_mul_const",
+          "line": 2520,
+          "module": "AronowAudit.P008.P008_Audit",
+          "status": "proved",
+          "target_id": "P008-T28",
+          "target_kind": "headline_result",
+          "work_id": "P008"
+        }
+      ],
+      "text": {
+        "body": "The printed sentence is not stated in Lean. The paper names two of the conditions of Wang et al. (2022), the separation of the nodes and a bound on interference, and does not list the others. The cited theorem is not formalized here; the consistency result below has a separately stated sufficient set of assumptions. The 22 Lean statements formalize instead a sufficient version of consistency that I derived. For each $N$, the assignments are independent with a common probability $p\\in(0,1)$, and the circle average of node $i$ at a fixed $d$ is an arbitrary function $M_i(\\mathbf{z})$ of the assignment such that $|M_i(\\mathbf{z})|\\le H$. The pairs $(Z_i,M_i(\\mathbf{Z}))$ have a dependency graph of maximum degree at most $D$, which means that events determined by two sets of pairs with no edge between them are independent. The numbers $p$, $H$ and $D$ do not depend on $N$. The main statement asserts that, for all $\\varepsilon>0$, $\\Pr\\bigl(|\\widehat\\tau_{HA}(d)-\\tau_N|>\\varepsilon\\bigr)\\to0\\qquad\\text{as }N\\to\\infty ,$ where $\\tau_N$ is the AMR of the $N$th experiment and the estimator is given a fixed value when an arm is empty. A finite version bounds this probability by an explicit constant divided by $N$, and the other statements are the steps. With $U=N_1/N$, the normalized numerators have means $pr_1$ and $(1-p)r_0$, where $r_1$ and $r_0$ are the averages of the marginal circle means, and $U$ has mean $p$ and variance $p(1-p)/N$. The variance of each numerator is at most $H^2(D+1)/N$, and $|S/U-r|\\le(2/p)\\{|S-pr|+H|U-p|\\}$ whenever $U\\ge p/2$ and $|r|\\le H$. The rest are the decomposition of $\\widehat\\tau_{HA}(d)-\\tau_N$ into two ratio errors, a bound on the probability that $U<p/2$ or $1-U<(1-p)/2$, Chebyshev’s inequality and facts about finite expectations. Asymptotic normality and the conservativeness of the intervals are not stated in any form.",
+        "headline": "Section 2.3: “under a set of mild regularity conditions, the Hajek estimator is consistent and asymptotically normal” (attributed to Wang et al. 2022)",
+        "location": "p. 144 (PDF p. 7); the estimator on pp. 143–144 (PDF pp. 6–7); p. 145 (PDF p. 8)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "2106.15081",
+    "authors": [
+      "Cyrus Samii",
+      "Ye Wang",
+      "Jonathan Sullivan",
+      "P. M. Aronow"
+    ],
+    "citation": "Cyrus Samii, Ye Wang, Jonathan Sullivan, and P. M. Aronow (2023). Inference in Spatial Experiments with Interference using the SpatialEffect Package. Journal of Agricultural, Biological, and Environmental Statistics 28(1):138–156.",
+    "doi": "10.1007/s13253-022-00517-y",
+    "title": "Inference in Spatial Experiments with Interference using the SpatialEffect Package",
+    "type": "Journal article",
+    "venue": "Journal of Agricultural, Biological, and Environmental Statistics",
+    "year": "2023"
+  },
+  "work_id": "P008"
+}

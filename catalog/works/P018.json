@@ -1,0 +1,2615 @@
+{
+  "counts": {
+    "counterexample_proved": 15,
+    "proved": 111,
+    "results": 126,
+    "targets": 28
+  },
+  "overview": {
+    "areas": [
+      "regression-and-variance-estimation",
+      "asymptotic-statistics"
+    ],
+    "caveats": [
+      "The principal corrected asymptotic results use all unordered non-self dyads from iid unit characteristics, a symmetric measurable kernel, a common almost-sure finite bound on regressors and response, an intercept, and a nonsingular population Gram matrix; they do not cover arbitrary dyadic dependence.",
+      "Finite singular samples use a zero inverse convention; their probabilities vanish under the population-rank assumption, and convergence is expressed with an entrywise matrix norm.",
+      "Variance consistency allows a degenerate leading covariance; conventional studentized inference additionally requires strictly positive asymptotic variance for the tested contrast, making the nonpositive estimated-variance event asymptotically negligible under the formal pivot convention.",
+      "Probability limits and a CLT do not establish convergence of finite-sample variances or expectations of inverse Gram matrices; the separate uniform-integrability result assumes its tail condition rather than establishing it for every paper estimator.",
+      "The random-effects counterexample concerns independent first-role and second-role effects in the fitted benchmark; a genuinely shared unit-effect covariance model is not refuted, and no empirical efficiency claim follows.",
+      "The infinite-moment result certifies the repeated-record construction and its limits; its directed-record reformulation is outside that selected declaration, and the finite negative-OLS certificate alone is not a population or asymptotic theorem."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P018.Wave1.lemma1_printed_refuted",
+        "target_ids": [
+          "P018-T26"
+        ],
+        "what": "The universal reading of printed Lemma 1 is false under its bounded iid-unit and rank assumptions because its exact conditional-covariance representation of the unconditional score variance can fail."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P018.Wave1.benchmark_correspondence_printed_false",
+        "target_ids": [
+          "P018-T25"
+        ],
+        "what": "The printed exact correspondence between the simulation covariance and the independently fitted two-role random-effects family fails: a three-unit shared-effect covariance has no representation in that family with nonnegative variance components."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P018.negative_ols_certificate",
+        "target_ids": [
+          "P018-T17"
+        ],
+        "what": "The instruction to obtain standard errors by taking diagonal square roots is not always defined: an explicit full-rank six-dyad OLS sample has variance-estimator diagonals $-17/50$ and $-58/625$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P018.logistic_correction",
+        "target_ids": [
+          "P018-T14"
+        ],
+        "what": "Where Appendix E repeats the first dyad's regressor in the cross term, the corrected logistic score product uses $r_dr_{d'}X_dX_{d'}'$; for finite distinct two-unit dyads, binary outcomes and nonsingular bread, Lean proves the incidence decomposition and symmetry of the resulting sandwich."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P018.Wave1.variance_consistency_corrected_proof",
+        "target_ids": [
+          "P018-T4"
+        ],
+        "what": "For bounded symmetric measurable dyad data generated from iid units, with an intercept and nonsingular population Gram matrix, the corrected result gives $N\\hat V-V_N\\to0$ in probability for the unconditional score-covariance target $V_N$."
+      },
+      {
+        "lean_name": "AronowAudit.P018.Wave1.inference_corrected_proof",
+        "target_ids": [
+          "P018-T8"
+        ],
+        "what": "Under the same iid-unit model, the corrected projection result gives a possibly singular Gaussian limit for $\\sqrt N(\\hat\\beta-\\beta)$ and a standard normal studentized limit for every fixed contrast with strictly positive projection asymptotic variance."
+      },
+      {
+        "lean_name": "AronowAudit.P018.Wave1.concentrated_weights_counterexample_proof",
+        "target_ids": [
+          "P018-T9"
+        ],
+        "what": "For the explicit bounded positive fixed-weight intercept model, the coefficient variance tends to $36/35$ and no deterministic sequence satisfies both the finite-variance-target limit and the scaled-sandwich probability limit."
+      },
+      {
+        "lean_name": "AronowAudit.P018.Wave1.TailB_infinite_moments_counterexample",
+        "target_ids": [
+          "P018-T19"
+        ],
+        "what": "In the bounded full-rank two-record-per-dyad construction, the slope has infinite second moment for every $N\\ge3$ and the variance estimate has infinite expected positive part for $N\\ge4$, while a Gaussian coefficient limit and sandwich probability limit still hold."
+      }
+    ],
+    "overview": "This paper studies sandwich variance estimation for regressions on dyads that can be dependent when they share a unit. The Lean development proves a corrected probability-limit argument for variance consistency and a projection central limit theorem with studentized inference for positive-variance contrasts. Exact counterexamples address the printed conditional variance identity, finite-sample negative variance estimates, weighted-design assumptions, inverse-moment arguments, and the covariance correspondence of the fitted random-effects benchmark; algebraic corrections also cover the logistic sandwich.",
+    "work_id": "P018"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0181B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.nonlinear_counterexample_proof",
+          "line": 533,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0181B1",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.nonlinear_bounds",
+          "line": 1737,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.nonlinear_matrices_positive",
+          "line": 2647,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.nonlinear_matrix_certificate",
+          "line": 1089,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.nonlinear_model_assumptions",
+          "line": 1045,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.nonlinear_population_projection",
+          "line": 956,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.uniform_pair_monomial",
+          "line": 897,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.uniform_pair_monomial_integrable",
+          "line": 918,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.uniform_polynomial_integral",
+          "line": 926,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.uniform_unit_moment",
+          "line": 865,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.uniform_unit_moments",
+          "line": 883,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.uniform_unit_power_L2",
+          "line": 906,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T1",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the first example of P018-E001: the units $Z_1,\\dots,Z_N$ are independent and uniform on $[-1,1]$, and $X_{ij}=(1,\\,2+Z_i+Z_j)'$ and $Y_{ij}=(Z_i+Z_j)^2$ for $i<j$. The main statement asserts that this model satisfies the conditions of p. 566, read as i.i.d. units, bounded dyad data given by one symmetric function of the two units, a constant regressor and a nonsingular $Q=\\mathrm{E}[X_dX_d']$. It asserts that the sample design has full rank almost surely for every $N\\ge3$, and that $Q$, $\\beta=(2/3,0)'$, $H$ and $\\Gamma$ have the values given in the finding, with $\\Gamma$ positive definite. Here $h_d=X_d\\epsilon_d$, $H=\\mathrm{E}[h_{12}h_{12}']$, and $\\Gamma$ is the matrix of second moments of $g(Z_1)$, where $g(z)=\\mathrm{E}[h_{12}\\mid Z_1=z]$. The finding writes $\\Gamma$ as $\\mathrm{E}[h_{12}h_{13}']$. For every $N\\ge3$ the statement asserts that each conditional covariance $\\operatorname{Cov}[\\epsilon_d,\\epsilon_{d'}\\mid\\mathbf{X}]$ is zero almost surely, that the right side of (2) is the zero matrix, and that $\\operatorname{Var}\\Big[\\sum_{d=1}^{D}X_d\\epsilon_d\\Big]=DH+N(N-1)(N-2)\\Gamma\\ne0 .$ The $V$ of equation (1) converges to the positive definite matrix $V_*=4Q^{-1}\\Gamma Q^{-1}$, and $N\\hat V$ converges to $V_*$ in probability, where $\\hat V$ is the estimator (3). Further, $\\sqrt N(\\hat\\beta-\\beta)$ converges in distribution to a normal vector with mean zero and covariance matrix $V_*$. Supporting statements contain the exact computations: the moments of the uniform distribution and of polynomials in two independent units, the values of $Q$, $\\mathrm{E}[X_{12}Y_{12}]$ and $\\beta$ that follow from them, the ranges of the regressor, the outcome and the residual, and the determinants and the positive definiteness of the rational matrices $\\Gamma$ and $V_*$. The uniform distribution is normalized Lebesgue measure on $[-1,1]$, the sample is the product of $N$ copies of it, and the conditioning is on the whole design $\\mathbf{X}$. The main statement does not contain the entrywise formula for the variance of the score sum, or the statement that the conditional mean of $Y_{ij}$ is not linear in $X_{ij}$, and the extension to $V_r$ with $T(d)=1$ and to $V_w$ with $w_d=1$ is not stated separately.",
+        "headline": "A counterexample to equation (2) of Lemma 1 and to the second and third lines of equation (6)",
+        "location": "p. 566 (PDF p. 3), equation (2); p. 573 (PDF p. 10), equation (6) and $\\Sigma$ of Appendix B; p. 568 (PDF p. 5), $V_r$; p. 576 (PDF p. 13), $V_w$"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0181B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.conditional_moment_correction_proof",
+          "line": 166,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0181B3",
+          "status": "proved",
+          "target_id": "P018-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0181B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.variance_correction_proof",
+          "line": 790,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0181B3",
+          "status": "proved",
+          "target_id": "P018-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.variance_sparse_identity",
+          "line": 1796,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the correction of P018-E001 for any model that satisfies the conditions of p. 566: i.i.d. units, bounded $(X_d,Y_d)$ given by one symmetric function of the two units of $d$, a constant regressor, and $Q=\\mathrm{E}[X_dX_d']$ nonsingular. Let $\\beta=Q^{-1}\\mathrm{E}[X_dY_d]$ and $\\epsilon_d=Y_d-X_d'\\beta$, and let $h_d=X_d\\epsilon_d$, $S=\\sum_dh_d$ and $m_d=\\mathrm{E}[\\epsilon_d\\mid\\mathbf{X}]$. For every $N\\ge2$ the main statement asserts that $\\mathrm{E}[h_d]=0$, that $\\mathrm{E}[h_dh_{d'}']=0$ when $d$ and $d'$ share no unit, and that $\\operatorname{Var}(S)=\\sum_{d=1}^{D}\\Big(\\mathrm{E}[X_dX_d'\\epsilon_d^2]+\\sum_{d'\\in\\mathcal{S}(d)}\\mathrm{E}[X_dX_{d'}'\\epsilon_d\\epsilon_{d'}]\\Big)=DH+N(N-1)(N-2)\\Gamma .$ It asserts that $\\operatorname{Var}(S)$ is the second line of (6) plus the matrix $M_N=\\operatorname{Var}(\\sum_dX_dm_d)$, that $M_N$ is positive semidefinite, and that the second equality of (6) holds if and only if $M_N=0$. It asserts that $\\operatorname{Var}(S)$ minus the right side of (2) is $M_N$ plus the sum of $\\mathrm{E}\\{X_dX_{d'}'\\operatorname{Cov}[\\epsilon_d,\\epsilon_{d'}\\mid\\mathbf{X}]\\}$ over the pairs of dyads with no common unit, that $\\Gamma$ is positive semidefinite, and that the $V$ of equation (1) converges to $4Q^{-1}\\Gamma Q^{-1}$. A second statement asserts that the corrected right side equals the printed form with $\\mathrm{E}[\\epsilon_d\\epsilon_{d'}\\mid\\mathbf{X}]$ in place of the conditional covariances, and that $M_N=0$ if $m_d=0$ almost surely for every $d$. A third statement is the identity behind the corrected (2), for any finite family of square-integrable random vectors $q_d$ of mean zero, indexed by finite sets $s(d)$ of units: if $q_d$ and $q_{d'}$ are uncorrelated whenever their sets share no unit, then the variance of $\\sum_dq_d$ is the sum of $\\mathrm{E}[q_dq_{d'}']$ over the ordered pairs whose sets share a unit. It does not require each $s(d)$ to have two units and is broader than the paper’s setting. Here $H=\\mathrm{E}[h_{12}h_{12}']$, and $\\Gamma$ is the matrix of second moments of $g(U_1)$, where $g(u)$ is the mean of $h_{12}$ when the first unit has characteristics $u$. The expression for $V$ at finite $N$ in terms of $H$ and $\\Gamma$ is not stated.",
+        "headline": "Equation (2) of Lemma 1 and equation (6) of Appendix A, as corrected",
+        "location": "p. 566 (PDF p. 3), equation (2); p. 573 (PDF p. 10), equation (6) and $\\Sigma$ of Appendix B"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0181B5.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.appendixB_counterexample_proof",
+          "line": 348,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0181B5",
+          "status": "proved",
+          "target_id": "P018-T3",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0182B1.lean",
+          "highlight_ids": [
+            "H042"
+          ],
+          "lean_name": "AronowAudit.P018.Wave1.inverse_gram_counterexample_proof",
+          "line": 443,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0182B1",
+          "status": "proved",
+          "target_id": "P018-T3",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0182B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.inverse_spike_counterexample_proof",
+          "line": 105,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0182B1",
+          "status": "proved",
+          "target_id": "P018-T3",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.fitted_products_counterexample",
+          "line": 1860,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T3",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.intercept4_fit",
+          "line": 1824,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T3",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.missing_N_counterexample",
+          "line": 1113,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T3",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.sign_mean_counterexample",
+          "line": 1159,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T3",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the examples of P018-E006, in the first of which $U_1,\\dots,U_N$ are independent signs, each $\\pm1$ with probability $1/2$, and $X_{ij}=1$ and $Y_{ij}=U_i+U_j$. The main statement asserts that this model satisfies the conditions of Lemma 1 and of Proposition 1 with $\\beta=0$, and that for every $N\\ge4$ $V=4,\\qquad\\mathrm{E}[\\hat\\Sigma]=(N-1)(N-2)(N-3),\\qquad\\mathrm{E}[\\hat V]=\\frac{4(N-2)(N-3)}{N^2(N-1)} .$ It asserts that $\\mathrm{E}[\\hat V-V]\\to-4$, against condition (i) of p. 573, and that $N\\hat V\\to4$ in probability, as Proposition 1 states. Two statements enumerate the sign patterns at $N=4$ and at $N=8$, and another gives the least-squares fit at $N=4$ for arbitrary real unit values. At $N=4$ the least-squares estimate is $\\hat\\beta=(1/2)\\sum_iU_i$, $\\mathrm{E}[\\hat\\Sigma]=6$ while $\\Sigma=36$, and $\\mathrm{E}[\\hat V-4]=-23/6$; at $N=8$, $\\operatorname{Cov}(e_{12}e_{13},e_{45}e_{46})=7/16$ and $\\operatorname{Cov}(e_{12}e_{13},e_{14}e_{15})=-1/16$, while $\\operatorname{Cov}(\\epsilon_{12}\\epsilon_{13},\\epsilon_{45}\\epsilon_{46})=0$. A further statement concerns the constant sequence $\\hat V_N=V=1$, for which $\\mathrm{E}[\\hat V_N-V]=0$ and $\\operatorname{Var}[N\\hat V_N]=0$ while $N\\hat V_N-V=N-1$ does not tend to zero. The last two statements concern convergence in probability without convergence of moments. If $R_N=N$ with probability $1/N$ and $R_N=1$ otherwise, then $R_N\\to1$ in probability, $\\mathrm{E}[R_N]=2-1/N$ and $\\operatorname{Var}(R_N)=N-3+3/N-1/N^2\\to\\infty$. For $T_i$ with density $t^{-2}$ on $[1,\\infty)$ and $X_{ij}=(1,\\,e^{-T_i}+e^{-T_j})'$, the conditions of p. 566 hold, $(\\mathbf{X}'\\mathbf{X}/D)^{-1}$ converges in probability to $\\mathrm{E}[X_dX_d']^{-1}$, and the expected norm of $(\\mathbf{X}'\\mathbf{X}/D)^{-1}$ is at least $e^{2m}/(4m^N)$ for all $N\\ge3$ and $m\\ge1$, hence infinite. The condition of Proposition 1 on second moments and cross-moments is read with the fitted residuals, and an infinite expectation is the integral of a nonnegative function with values in $[0,\\infty]$. The formulas of the finding for $\\operatorname{Var}[N\\hat V]$ and for $\\operatorname{Cov}(e_{12}e_{13},e_{45}e_{46})$ at every $N\\ge6$ are not stated.",
+        "headline": "Counterexamples to steps of the proof of Proposition 1 in Appendix B",
+        "location": "pp. 573–574 (PDF pp. 10–11), Appendix B"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0182B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.dyad_counts_proof",
+          "line": 243,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0182B1",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0182B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.population_meat_variance_bounds_proof",
+          "line": 197,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0182B2",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0182B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.variance_consistency_corrected_proof",
+          "line": 322,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0182B2",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.corrected_chebyshev",
+          "line": 820,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.members_card",
+          "line": 56,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.normalized_overlap_coefficient",
+          "line": 2283,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.normalized_sample_sandwich",
+          "line": 2348,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.number_of_dyads",
+          "line": 2616,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.residual_substitution_bound",
+          "line": 1752,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.sandwich_difference",
+          "line": 813,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is the conclusion of the corrected proof in P018-E006. It concerns any model that satisfies the conditions of p. 566: i.i.d. units, bounded $(X_d,Y_d)$ given by one symmetric function of the two units of $d$, a constant regressor, and $Q=\\mathrm{E}[X_dX_d']$ nonsingular. It asserts that $N\\hat V-V\\overset{p}{\\to}0\\qquad\\text{as }N\\to\\infty,$ where $\\hat V$ is the estimator (3) and $V$ is the matrix of equation (1), with the unconditional variance of $\\sum_dX_d\\epsilon_d$ in the middle. No condition on the fitted residuals or on the rank of the sample design is assumed. On a sample where $\\mathbf{X}'\\mathbf{X}$ is singular, its inverse has a conventional value. Convergence in probability means that, for each $\\varepsilon>0$, the probability that some entry is at least $\\varepsilon$ in absolute value tends to zero, under the product of $N$ copies of the distribution of a unit. Supporting statements contain the counts ($D=\\binom N2$ dyads, $2(N-2)$ dyads in each $\\mathcal{S}(d)$, and $D(2N-3)$ ordered pairs of dyads that are equal or share a unit), the bound $(N/D^2)\\,D(2N-3)=2(2N-3)/(N-1)\\le4$, and the variance bounds of Steps 1 and 2 for the entries of $\\mathbf{X}'\\mathbf{X}/D$ and of $M_N(\\epsilon)$. They also contain the inequality $|(a-u)(b-v)-ab|\\le2C_ec+c^2$ for $|a|,|b|\\le C_e$ and $|u|,|v|\\le c$, which is behind Step 3, and the identity $N\\hat V=Q_N^{-1}M_N(e)Q_N^{-1}$ on samples of full rank, with the decomposition of $N\\hat V-V$ into three terms in Step 4. A last one is the inequality $\\Pr(|Z-V|>c)\\le c^{-2}\\{\\operatorname{Var}(Z)+(\\mathrm{E}[Z]-V)^2\\}$ for a square-integrable $Z$ and $c>0$, which is Chebyshev’s inequality with the mean condition in its correct form. The matrix bounds on $T_N$ and on $M_N(e)-M_N(\\epsilon)$ are present only through the scalar inequalities above, and the rate $\\hat\\beta-\\beta=O_p(N^{-1/2})$ of Step 1 is not stated separately.",
+        "headline": "Proposition 1, with the proof of Appendix B as corrected",
+        "location": "p. 567 (PDF p. 4), Proposition 1; pp. 573–574 (PDF pp. 10–11), Appendix B"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0182B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.random_intercept_lower_bound_proof",
+          "line": 314,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0182B1",
+          "status": "proved",
+          "target_id": "P018-T5",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.gls_variance_counterexample",
+          "line": 382,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T5",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.two_role_counterexample",
+          "line": 342,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T5",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the three computations of P018-E008. The main statement takes $N=3$ with the dyads ordered $\\{1,2\\}$, $\\{1,3\\}$, $\\{2,3\\}$. The covariance matrix of the errors $\\alpha_i+\\alpha_j+\\nu_{ij}$ of equation (4) then has $3$ on the diagonal and $1$ elsewhere, and the covariance matrix of the fitted model is the second matrix displayed in the finding. The statement asserts that the two differ for all real $\\tau_1$, $\\tau_2$ and $\\sigma^2$, in particular for all nonnegative ones. A second statement is the example with unit covariates $(0,1,3)$ and $\\tau_1=\\tau_2=\\sigma^2=1$. It asserts that the generalized least squares coefficient matrix $L$ satisfies $LF=I$ for the design matrix $F$, that $LCL'$ for the covariance matrix $C$ of equation (4) has rows $(379/64,\\,-135/64)$ and $(-135/64,\\,67/64)$, and that the ratio of the reported intercept variance $71/16$ to the actual one is $284/379$. A third statement is the lower bound of the finding: if $N\\ge1$, $\\alpha_1,\\dots,\\alpha_N$ are independent standard normal variables with sample average $\\bar\\alpha$, $y^c$ is a random vector that is independent of $\\bar\\alpha$, and $\\hat\\beta_0$ is a measurable function of the outcomes with $\\hat\\beta_0(y+c\\mathbf{1})=\\hat\\beta_0(y)+c$ for all real $c$, and both estimates below have finite second moments, then $\\operatorname{Var}\\big(\\hat\\beta_0(y^c+2\\bar\\alpha\\mathbf{1})\\big)=\\operatorname{Var}\\big(\\hat\\beta_0(y^c)\\big)+\\frac4N\\ge\\frac4N .$ The covariance matrices of the first two statements are matrices of numbers and are not derived from random variables. In the third, the independence of $y^c$ and $\\bar\\alpha$ and the behaviour of $\\hat\\beta_0$ under the addition of a constant are hypotheses, which the statement does not derive from equation (4) or from the fitted model. The mismatch is stated here for $N=3$ only, and the remark of the finding on repeated observations is not formalized.",
+        "headline": "A counterexample to the sentence that expression (4) “corresponds precisely to the assumptions of a two-way normal random effects model”, for the model fitted in the simulations",
+        "location": "pp. 569–570 (PDF pp. 6–7); Supporting Information, p. 2; Conclusion, p. 572 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0182B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.benchmark_covariance_correction_proof",
+          "line": 471,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0182B1",
+          "status": "proved",
+          "target_id": "P018-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.correct_gls_identity",
+          "line": 404,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.shared_random_effect_covariance",
+          "line": 1964,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.shared_role_expansion",
+          "line": 361,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the algebra behind the correction of P018-E008. The dyads are the pairs $(i,j)$ with $i<j\\le N$, and $Z_1$ and $Z_2$ are the $D\\times N$ matrices that mark the first and the second unit of each dyad, with $Z=Z_1+Z_2$. For every $N\\ge2$ the main statement asserts that the entries of $Z_1Z_1'$, $Z_2Z_2'$, $Z_1Z_2'$ and $Z_2Z_1'$ for the dyads $(i,j)$ and $(k,l)$ are the indicators of $i=k$, $j=l$, $i=l$ and $j=k$, and that the entry of $ZZ'$ is the number of units that the two dyads share. It asserts that $\\tau^2ZZ'+\\sigma^2I=\\tau^2\\big(Z_1Z_1'+Z_2Z_2'+Z_1Z_2'+Z_2Z_1'\\big)+\\sigma^2I,$ and that for $N\\ge3$, $\\tau^2>0$ and every $\\sigma^2$ this matrix differs from $t_1Z_1Z_1'+t_2Z_2Z_2'+sI$ for all real $t_1$, $t_2$ and $s$. A second statement asserts that $Za+\\nu$ has covariance matrix $\\tau^2ZZ'+\\sigma^2I$ when $a$ and $\\nu$ are independent square-integrable random vectors with covariance matrices $\\tau^2I$ and $\\sigma^2I$. At $\\tau^2=\\sigma^2=1$ this is the covariance matrix of the errors of equation (4). A third statement asserts that, for a symmetric invertible matrix $C$ and a matrix $F$ with $F'C^{-1}F$ invertible, the matrix $L_*=(F'C^{-1}F)^{-1}F'C^{-1}$ satisfies $L_*F=I$ and $L_*CL_*'=(F'C^{-1}F)^{-1}$. A fourth is the displayed expansion for arbitrary matrices $Z_1$ and $Z_2$ of equal dimensions. The third statement assumes invertibility where the correction has a positive definite $C$ and an $F$ of full column rank, and it is broader in this respect. Only this algebra is formalized: the sentences of the correction about what the simulations show are not mathematical statements, and nothing is asserted about the performance of a model with one effect per unit.",
+        "headline": "The correspondence between expression (4) and the random effects model of the simulations, as corrected",
+        "location": "pp. 569–570 (PDF pp. 6–7); Supporting Information, p. 2; Conclusion, p. 572 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T7",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/TailBSignDegeneracy.lean",
+          "highlight_ids": [
+            "H041"
+          ],
+          "lean_name": "AronowAudit.P018.Wave1.TailB_degenerate_inference_counterexample",
+          "line": 14,
+          "module": "AronowAudit.P018.Wave1.Gap.TailBSignDegeneracy",
+          "status": "proved",
+          "target_id": "P018-T7",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.degenerate_numeric_certificate",
+          "line": 1585,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T7",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the example of P018-E002: each unit has independent signs $Z_i$ and $W_i$, each $\\pm1$ with probability $1/2$, and $X_{ij}=(1,\\,1+Z_iZ_j)'$ and $Y_{ij}=W_i+W_j$. The main statement asserts that the model satisfies the conditions of p. 566 and the condition of Proposition 1 on bounded support and nonzero second moments and cross-moments. It asserts that $Q$ and $\\Omega$ are the matrices displayed in the finding, that $\\beta=0$, and that for every $N\\ge3$ the matrix of equation (1) is $V=\\begin{pmatrix}4N/(N-1)&-4/(N-1)\\\\-4/(N-1)&4/(N-1)\\end{pmatrix},\\qquad\\text{with limit}\\quad4Q^{-1}\\Omega Q^{-1}=\\begin{pmatrix}4&0\\\\0&0\\end{pmatrix}.$ It asserts that the probability that the slope entry $\\hat V_{22}$ is negative converges to $1-e^{-1/2}$, that the ratio of $\\hat\\beta_1-\\beta_1$ to $\\sqrt{\\hat V_{22}}$ does not converge in distribution to a standard normal variable, and that $N\\hat V$ converges in probability to $\\operatorname{diag}(4,0)$. A second statement is the sample of eight units in the finding. It asserts that $\\mathbf{X}'\\mathbf{X}$ has rows $(28,24)$ and $(24,48)$ and determinant $768$, that $\\hat\\beta=0$, and that $\\hat V$ is the matrix displayed there, with slope entry $-13/288$. The condition of Proposition 1 is read as a bound on the fitted residuals that does not depend on $N$, together with nonzero entries of $\\mathrm{E}[X_dX_d']$ and of $\\mathrm{E}[X_dX_{d'}']$ for dyads that share a unit. For all large $N$ it also requires nonzero second moments of the fitted residuals, and nonzero cross-moments for dyads that share a unit. On samples with $\\hat V_{22}\\le0$ the ratio has a conventional value. The joint limit of $(N\\hat\\beta_1,N^2\\hat V_{22})$ in the finding is not stated, and full rank of the sample design is not asserted, since all $Z_i$ are equal with positive probability.",
+        "headline": "A counterexample to the claim of valid confidence intervals and tests under the conditions of Lemma 1 and Proposition 1",
+        "location": "p. 567 (PDF p. 4), Proposition 1 and the two sentences after it; p. 565 (PDF p. 2); p. 566 (PDF p. 3), Lemma 1"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0182B2b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.contrast_coverage_corrected_proof",
+          "line": 1710,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0182B2b",
+          "status": "proved",
+          "target_id": "P018-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0182B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.inference_corrected_proof",
+          "line": 187,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0182B3",
+          "status": "proved",
+          "target_id": "P018-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0182B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.score_projection_decomposition_proof",
+          "line": 793,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0182B3",
+          "status": "proved",
+          "target_id": "P018-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the corrected text of P018-E002 for any model that satisfies the conditions of p. 566, read as i.i.d. units, bounded dyad data given by one symmetric function of the two units, a constant regressor and a nonsingular $Q=\\mathrm{E}[X_dX_d']$. Let $\\eta(u)$ be the mean of $X_d\\epsilon_d$ when one unit of $d$ has characteristics $u$, let $\\Omega=\\mathrm{E}[\\eta(U_1)\\eta(U_1)']$, and let $V_\\infty=4Q^{-1}\\Omega Q^{-1}$. The main statement asserts that $\\sqrt N(\\hat\\beta-\\beta)$ converges in distribution to a normal vector with mean zero and covariance matrix $V_\\infty$, which may be singular. It asserts that the $V$ of equation (1) converges to $V_\\infty$ and that $N\\hat V\\to V_\\infty$ in probability. For every fixed vector $c$ with $c'V_\\infty c>0$ it asserts that $\\frac{c'(\\hat\\beta-\\beta)}{\\sqrt{c'\\hat Vc}}\\overset{d}{\\to}N(0,1)\\qquad\\text{and}\\qquad\\Pr(c'\\hat Vc\\le0)\\to0 .$ A second statement asserts, for such a $c$ and $0<\\alpha<1$, that the probability of the event $c'\\hat Vc\\ge0$ and $|c'(\\hat\\beta-\\beta)|\\le z_{1-\\alpha/2}\\sqrt{c'\\hat Vc}$ converges to $1-\\alpha$. A third statement is the decomposition used in the finding, with $r(u,v)=X_d\\epsilon_d-\\eta(u)-\\eta(v)$ for a dyad whose units have characteristics $u$ and $v$. It asserts that $\\eta(U_1)$ has mean zero, that $r(u,U_2)$ has mean zero for almost every $u$, and that the displayed identity of the finding holds for every $N\\ge2$ and every sample. It also asserts that $\\operatorname{Var}\\Big(\\frac1D\\sum_{d=1}^{D}X_d\\epsilon_d\\Big)=\\frac4N\\,\\Omega+\\frac1D\\,\\mathrm{E}[rr'] .$ Convergence in distribution is convergence of the expectations of all bounded continuous functions, and a normal vector whose covariance matrix may be singular is described through the normal distributions of its linear combinations. The equality $\\Omega=\\mathrm{E}[X_{d(i,j)}X_{d(i,k)}'\\epsilon_{d(i,j)}\\epsilon_{d(i,k)}]$ of the corrected text is not stated, and nothing is asserted for a contrast with $c'V_\\infty c=0$.",
+        "headline": "The claim of valid confidence intervals and tests, as corrected",
+        "location": "p. 567 (PDF p. 4), after Proposition 1; p. 565 (PDF p. 2); p. 573 (PDF p. 10), Appendix A"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T9",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0182B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.concentrated_repetitions_counterexample_proof",
+          "line": 282,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0182B2",
+          "status": "proved",
+          "target_id": "P018-T9",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0182B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.concentrated_weights_counterexample_proof",
+          "line": 538,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0182B4",
+          "status": "proved",
+          "target_id": "P018-T9",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the example of P018-E003: $A_1,A_2,\\dots$ are independent signs, each $\\pm1$ with probability $1/2$, and for $i<j\\le N$ the data are $X_{ij}=1$, $Y_{ij}=A_i+A_j$ and $w_{ij}=2^{-i-j}$. The main statement asserts that $0<w_{ij}\\le1/8$, that $\\operatorname{Var}(\\hat\\beta_w)\\ge9/16$ for every $N\\ge2$, and that $\\operatorname{Var}(\\hat\\beta_w)\\to36/35$. For every $N\\ge8$ it asserts that $\\Pr\\Big(\\big|N\\hat V_w-N\\operatorname{Var}(\\hat\\beta_w)\\big|\\ge\\frac N2\\Big)\\ge\\frac1{256},$ where $\\hat V_w$ is the estimator (7). Its last assertion is that there exists no sequence of numbers $V_N$ such that $N\\operatorname{Var}(\\hat\\beta_w)-V_N\\to0$ and $N\\hat V_w-V_N\\to0$ in probability. A second statement concerns repeated observations. Let the dyad $\\{i,j\\}$ have $2^{i+j}$ identical observations $X_{ijt}=1$, $Y_{ijt}=A_i+A_j$, with no weights. Then, for every $N\\ge2$, the pair $(\\hat\\beta_r,\\hat V_r)$ has the same joint distribution as the pair $(\\hat\\beta_w,\\hat V_w)$ of the weighted example. The formula for the coefficients $c_{i,N}$, the bound $|\\hat V_w|\\le1/16$ on the event $A_1=\\dots=A_8=1$ and the limit $\\mathbf{X}'\\mathbf{W}\\mathbf{X}/D\\to0$ are steps of the derivation in the finding and are not asserted separately.",
+        "headline": "A counterexample to Corollary 2 with weights that are “finite and fixed”",
+        "location": "p. 575 (PDF p. 12), Appendix D and Corollary 2; pp. 567–568 (PDF pp. 4–5), Corollary 1"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/DecideC.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.repeated_consistency_with_overlap_mean_control",
+          "line": 679,
+          "module": "AronowAudit.P018.Wave1.Gap.DecideC",
+          "status": "proved",
+          "target_id": "P018-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/WeightedConsistency.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.weighted_consistency_common_directed_kernel",
+          "line": 35,
+          "module": "AronowAudit.P018.Wave1.WeightedConsistency",
+          "status": "proved",
+          "target_id": "P018-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.covariance_score_scale",
+          "line": 1937,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.matrix_inverse_scale",
+          "line": 2010,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.matrix_inverse_scale_total",
+          "line": 2020,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.meat_scale",
+          "line": 2031,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.sandwich_scale_invariance",
+          "line": 1376,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.weighted_sample_scale_invariance",
+          "line": 2047,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.weighted_scale_invariance",
+          "line": 2079,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The repeated-data Lean statement expresses Corollary 1 of P018-E003, with the target $V_r$ of P018-E004. It assumes i.i.d. units, jointly measurable observations with one uniform almost-sure bound, a constant regressor, deterministic positive record counts $T_N(d)$ bounded uniformly in $d$ and $N$, and, for each record kind $t$, one common measurable function of the two unit characteristics that determines $(X_{dt},Y_{dt})$ independently of $N$ and $d$ wherever that record exists. Put $L_N=\\sum_dT_N(d)$, let $q_{d,N}=X_d'\\epsilon_d$ be the block score at the stacked population projection, and put $m_{d,N}=\\mathrm{E}[q_{d,N}]$ and $H_{r,N}=L_N^{-1}\\sum_d\\mathrm{E}[X_d'X_d]$. In addition to $H_{r,N}\\to H_r$ with $H_r$ positive definite, it assumes $(N/L_N^2)\\sum_{(d,f):\\,s(d)\\cap s(f)\\ne\\emptyset}m_{d,N}m_{f,N}'\\to0$, with ordered dyad pairs including $d=f$. It asserts that $N\\hat V_r-V_r\\to0$ in probability for $V_r=(N/L_N^2)H_{r,N}^{-1}\\operatorname{Var}[\\sum_dq_{d,N}]H_{r,N}^{-1}$. The weighted statement assumes i.i.d. units, jointly measurable observations with one uniform almost-sure bound and a constant regressor, with one or two observations for each unordered pair of units. One common measurable function of the ordered unit characteristics $(X(u,v),Y(u,v))$, independent of $N$ and of the pair, determines the data, with each of its two orientations used at most once per pair. The weights $w$ are deterministic, with constants $a_N>0$ and $C$ such that $0<w/a_N\\le C$ for every observation and every $N$. It also assumes that $D^{-1}\\sum\\mathrm{E}[(w/a_N)XX']$, summed over the observations, converges to a positive definite matrix, and it asserts that $N\\hat V_w-V_w\\to0$ in probability. Further statements are the invariance under a common rescaling of the weights and its parts: for every $a>0$, replacing each $w$ by $aw$ leaves $\\hat\\beta_w$, $\\hat V_w$ and $V_w$ unchanged, for arbitrary weighted observations and with no condition on rank.",
+        "headline": "Corollaries 1 and 2, with the conditions on the $T(d)$ and on the weights as corrected",
+        "location": "pp. 567–568 (PDF pp. 4–5), Corollary 1; p. 575 (PDF p. 12), Appendix D and Corollary 2"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T11",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0181B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.printed_targets_counterexample_proof",
+          "line": 506,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0181B1",
+          "status": "proved",
+          "target_id": "P018-T11",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.printed_bread_numeric_certificate",
+          "line": 1872,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T11",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.scalar_target_counterexample",
+          "line": 1207,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T11",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the example of P018-E004: $U_1,\\dots,U_N$ are independent signs, each $\\pm1$ with probability $1/2$, and $X_{ij}=1$ and $Y_{ij}=U_i+U_j$, with one observation per dyad and unit weights. The main statement asserts that $N\\operatorname{Var}(\\hat\\beta)=4$ for every $N\\ge3$, that $4/D\\to0$, and that $N\\hat V\\to4$ in probability. Here $\\hat V$ is the estimator (3), with which $\\hat V_r$ and $\\hat V_w$ coincide in this example. A second statement is the arithmetic of the two targets for every $N\\ge3$: $\\frac{N(2N-2)}{D^2}=\\frac4D\\ne4,\\qquad\\frac{N\\cdot N(N-1)^2}{D^2}=4 .$ The first value is the target as printed, and the second is the target with the sum over dyads restored. A third statement is the arithmetic of the outer factors. The $2\\times2$ matrix of ones, which is $\\mathrm{E}[X_dX_d']$ for two identical observations per dyad, has determinant zero, while $\\mathrm{E}[X_d'X_d]=2$. With this Gram matrix left unnormalized the target would be $4/2^2=1$ and not $4$. With a second regressor $Z_i+Z_j$, where the $Z_i$ are uniform on $[-1,1]$ and independent of the $U_i$, the scalar left factor of the printed $V_w$ gives $12/5$ and not $4$ for the first entry. In these statements the printed targets enter as the numbers $2N-2$ and $4/D$. The printed displays are not written as matrix expressions, and the covariances $\\operatorname{Cov}(\\epsilon_d,\\epsilon_{d'})$ that produce $2N-2$ are not derived from the model. The formula for $N\\hat V$ in every sample and the moments of the example with a second regressor are not stated either.",
+        "headline": "A counterexample to the displays that define $V_r$ and $V_w$, as printed",
+        "location": "p. 568 (PDF p. 5), display for $V_r$; p. 576 (PDF p. 13), display for $V_w$"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T12",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0181B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.corrected_target_reductions_proof",
+          "line": 713,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0181B1",
+          "status": "proved",
+          "target_id": "P018-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0181B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.repeated_target_correction_proof",
+          "line": 328,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0181B2",
+          "status": "proved",
+          "target_id": "P018-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0181B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.weighted_target_correction_proof",
+          "line": 386,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0181B2",
+          "status": "proved",
+          "target_id": "P018-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.covariance_linear_map",
+          "line": 1914,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.meanMat_scale",
+          "line": 1948,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.meanVec_scale",
+          "line": 1956,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.repeated_target_normalization",
+          "line": 2375,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T12",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the corrected displays of P018-E004, $V_r=(N/L^2)H_r^{-1}\\Omega_rH_r^{-1}$ and $V_w=(N/D^2)H_w^{-1}\\Omega_wH_w^{-1}$, at a fixed $N\\ge2$. For repeated observations determined by i.i.d. units, with bounded data and $H_r$ nonsingular, the first statement writes $S_r=\\sum_dX_d'\\epsilon_d$ and asserts that $\\mathrm{E}[S_r]=0$, that $\\mathrm{E}[\\mathbf{X}'\\mathbf{X}/L]=H_r$, and that $V_r=\\operatorname{Var}\\Big(H_r^{-1}\\frac{\\sqrt N}{L}S_r\\Big),\\qquad\\sqrt N(\\hat\\beta_r-\\beta_r)=\\Big(\\frac{\\mathbf{X}'\\mathbf{X}}{L}\\Big)^{-1}\\frac{\\sqrt N}{L}S_r .$ The second identity is asserted almost surely on the samples where $\\mathbf{X}'\\mathbf{X}$ is nonsingular. The second statement asserts the same four facts for weighted observations, with $S_w=\\sum_d\\sum_t w_{dt}X_{dt}\\epsilon_{dt}$, $\\mathbf{X}'\\mathbf{W}\\mathbf{X}/D$ and $H_w=D^{-1}\\sum_d\\sum_t\\mathrm{E}[w_{dt}X_{dt}X_{dt}']$ nonsingular. A third statement asserts that, with one observation per dyad and with unit weights, both targets equal the $V$ of equation (1). A fourth asserts that $V_r=(N/D^2)\\tilde H_r^{-1}\\Omega_r\\tilde H_r^{-1}$, where $\\tilde H_r=D^{-1}\\sum_d\\mathrm{E}[X_d'X_d]$. Supporting statements are the rule $\\operatorname{Var}(Aq)=A\\operatorname{Var}(q)A'$ for a square-integrable random vector $q$ and a fixed matrix $A$, and the rules for multiplying an expectation or a covariance matrix by a constant. Here $\\beta_r$ and $\\beta_w$ are defined by the expected normal equations for the stacked and weighted data at this $N$. The paper does not define $\\beta_w$. The first two statements allow dyad-specific and directed observations, any positive number of observations per dyad, and any real weights, which is broader than the setting of the corollaries. The numerical check of the finding ($V_r=V_w=4$ in its example) is not stated.",
+        "headline": "The displays that define $V_r$ and $V_w$, as corrected",
+        "location": "p. 568 (PDF p. 5), display for $V_r$; p. 576 (PDF p. 13), display for $V_w$"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T13",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logLikelihood_tangent",
+          "line": 1471,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T13",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logistic_counterexample",
+          "line": 2164,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T13",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logistic_covariances_positive",
+          "line": 2654,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T13",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logistic_numeric_certificate",
+          "line": 293,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T13",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logistic_tangent_bound",
+          "line": 1443,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T13",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logistic_witness_is_MLE",
+          "line": 1483,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T13",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the example of P018-E005: four units, the six dyads in the order $\\{1,2\\}$, $\\{1,3\\}$, $\\{1,4\\}$, $\\{2,3\\}$, $\\{2,4\\}$, $\\{3,4\\}$, regressors $X_d=(1,x_d)'$ with $x=(0,2,5,5,1,1)$, and outcomes $Y=(1,1,1,0,0,0)$. The main statement asserts that the outcomes are binary, that $\\hat\\beta=(0,0)'$ is the unique maximizer of the logistic log-likelihood, and that $\\mathbf{X}'\\mathbf{M}\\mathbf{X}$ has determinant $35/4$ at this point. It asserts that the display as printed and the display with the cross term $X_dX_{d'}'r_dr_{d'}$ have the values $\\begin{pmatrix}8/5&-2/5\\\\-2/5&6/35\\end{pmatrix}\\qquad\\text{and}\\qquad\\begin{pmatrix}38/25&-64/175\\\\-64/175&192/1225\\end{pmatrix},$ and that these two matrices differ. Supporting statements contain the steps. One asserts that the score vanishes at $\\hat\\beta=0$ and states $\\mathbf{X}'\\mathbf{M}\\mathbf{X}$, its inverse and the two middle factors, of which the printed one equals $\\mathbf{X}'\\mathbf{M}\\mathbf{X}$. Three concern the maximizer: the inequality $\\log2+t/2\\le\\log(1+e^t)$, which is strict for $t\\ne0$; the bound of the log-likelihood of an observation by its tangent at $\\beta=0$ that follows from it; and the conclusion that $\\beta=0$ is the unique maximizer for these data. A last one asserts that both covariance matrices are positive definite. The covariance comparisons concern this data set only and assert nothing about large samples.",
+        "headline": "A counterexample to the display for $\\hat V_l$ in Appendix E, as printed",
+        "location": "p. 576 (PDF p. 13), Appendix E, display for $\\hat V_l$"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T14",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logistic_bread_symmetric",
+          "line": 1384,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logistic_correction",
+          "line": 1417,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.meat_symmetric",
+          "line": 260,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.printed_logistic_factorization",
+          "line": 1401,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.sandwich_symmetric",
+          "line": 1394,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.score_product",
+          "line": 243,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T14",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements concern the display of P018-E005 with the cross term $X_dX_{d'}'r_dr_{d'}$, where $p_d=\\operatorname{expit}(X_d'\\hat\\beta)$, $r_d=Y_d-p_d$ and $\\operatorname{expit}(t)=1/(1+e^{-t})$. The estimator is defined for any real $\\hat\\beta$, which need not be the maximum likelihood estimate. The main statement assumes binary outcomes and a nonsingular $\\mathbf{X}'\\mathbf{M}\\mathbf{X}$. With the score $s_d=X_dr_d$ and $U_i=\\sum_{d:\\,i\\in s(d)}s_d$, it asserts that $s_ds_{d'}'=X_dX_{d'}'r_dr_{d'}$ for all dyads $d$ and $d'$, that the middle factor equals $\\sum_{i=1}^{N}U_iU_i'-\\sum_{d=1}^{D}s_ds_d',$ and that $\\hat V_l$ is symmetric. It also asserts that the middle factor as printed equals $\\sum_dX_dX_d'\\,r_d\\big(r_d+\\sum_{d'\\in\\mathcal{S}(d)}r_{d'}\\big)$. Supporting statements are the separate parts: the product of two scores, the symmetry of the middle factor and of $\\mathbf{X}'\\mathbf{M}\\mathbf{X}$, and the symmetry of a product $PMP$ with $P$ and $M$ symmetric. The statements hold for any finite collection of distinct dyads, each a set of two units, and are broader than the paper’s setting, in which every pair of units is a dyad. Binary outcomes and a nonsingular $\\mathbf{X}'\\mathbf{M}\\mathbf{X}$ are hypotheses of the main statement, although the identities do not depend on them. The paper states the estimator without a result about it, and the Lean statements are identities for the corrected display, with no claim of consistency.",
+        "headline": "The plug-in variance estimator $\\hat V_l$ of Appendix E, as corrected",
+        "location": "p. 576 (PDF p. 13), Appendix E"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T15",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.ordered_index_counterexample",
+          "line": 431,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T15",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.ordered_index_general",
+          "line": 2235,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T15",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the reading discussed in P018-E007, in which the sum indexed by $j,k\\ne i$ runs over ordered pairs. Each dyad without unit $i$ then enters twice, and the undefined terms with $j=k$ are left out. Let $E_i^{\\mathrm{ord}}$ and $\\hat\\Sigma_{C,i}^{\\mathrm{ord}}$ denote the quantities read in this way. The main statement asserts, for arbitrary real arrays $X_{dt}$ and $e_{dt}$, that $E_i^{\\mathrm{ord}}=2E_i$, that $\\sum_iE_i^{\\mathrm{ord}}=2(N-2)\\hat\\Sigma_0$, and that $\\sum_{i=1}^{N}\\hat\\Sigma_{C,i}^{\\mathrm{ord}}-\\hat\\Sigma_D-(N-2)\\hat\\Sigma_0=\\hat\\Sigma_r+(N-2)\\hat\\Sigma_0,$ where $\\hat\\Sigma_r$ is the middle factor of $\\hat V_r$. A second statement is the example of the finding, with $N=4$, one observation per dyad and scalar scores $X_de_d=1,2,\\dots,6$. It asserts that $\\hat\\Sigma_0=\\hat\\Sigma_D=91$, that $\\hat\\Sigma_r=385$, that the terms of the $\\hat\\Sigma_{C,i}$ that involve unit $i$ sum to $476$, that $\\sum_iE_i=182$, and that $476+2\\cdot182-91-2\\cdot91=567\\ne385$. The main statement is broader than the paper’s setting: the dyads may be any finite collection of distinct sets of two units, and $N$ is the number of units. The scores of the example are arbitrary numbers and not least-squares residuals, which suffices because the identity is algebraic.",
+        "headline": "A counterexample to Proposition 2 with the sum over $j,k\\ne i$ read as printed",
+        "location": "p. 568 (PDF p. 5), Proposition 2, definition of $\\hat\\Sigma_{C,i}$; p. 575 (PDF p. 12), Appendix C, definition of $E_i$"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T16",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.appendixC_corrected_steps",
+          "line": 2411,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.intersection_count",
+          "line": 113,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.matrix_ite_apply",
+          "line": 39,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.nonincident_sum",
+          "line": 173,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.overlap_meat_identity",
+          "line": 138,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.proposition2_corrected",
+          "line": 194,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is Proposition 2 with the index $j<k$, $j,k\\ne i$ of P018-E007. For each dyad $d$ let $T(d)$ be the number of its observations, let $X_{dt}\\in\\mathbb{R}^k$ and $e_{dt}\\in\\mathbb{R}$ be arbitrary, and let $P$ be any $k\\times k$ matrix. With $\\hat\\Sigma_r$ the middle factor of $\\hat V_r$ and $\\hat V_\\bullet=P\\hat\\Sigma_\\bullet P$, the statement asserts that $\\hat\\Sigma_r=\\sum_{i=1}^{N}\\hat\\Sigma_{C,i}-\\hat\\Sigma_D-(N-2)\\hat\\Sigma_0\\qquad\\text{and}\\qquad\\hat V_r=\\sum_{i=1}^{N}\\hat V_{C,i}-\\hat V_D-(N-2)\\hat V_0 .$ A second statement contains the five steps of Appendix C with $E_i$ as corrected: $\\sum_d\\sum_{d'\\in\\mathcal{S}(d)}X_d'e_de_{d'}'X_{d'}=\\sum_iC_i$, $\\hat\\Sigma_{C,i}=C_i+D_i+E_i$, $\\sum_iD_i=2\\hat\\Sigma_D$, $\\sum_iE_i=(N-2)\\hat\\Sigma_0$ and $\\hat\\Sigma_r=\\hat\\Sigma_D+\\sum_iC_i$. Supporting statements are the counting facts behind these steps. Two distinct dyads share one unit or none, each dyad avoids exactly $N-2$ units, and $\\hat\\Sigma_r$ is the sum of $U_iU_i'$ over the units less $\\hat\\Sigma_D$, where $U_i$ is the sum of $X_d'e_d$ over the dyads that contain unit $i$. A further one is a rule for the entries of a matrix that is chosen by a condition. In the paper $P=(\\mathbf{X}'\\mathbf{X})^{-1}$ and the $e_{dt}$ are least-squares residuals, but the statements use neither fact, nor any assumption on sampling. They are broader than the printed proposition in two further respects: the dyads may be any finite collection of distinct sets of two units, and $T(d)=0$ is allowed.",
+        "headline": "Proposition 2, with the sum over the dyads that do not contain unit $i$ as corrected",
+        "location": "p. 568 (PDF p. 5), Proposition 2; pp. 574–575 (PDF pp. 11–12), Appendix C"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T17",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0181B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.negative_sample_population_proof",
+          "line": 258,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0181B2",
+          "status": "proved",
+          "target_id": "P018-T17",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.negative_ols_certificate",
+          "line": 454,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T17",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements formalize the first example of P018-N003, with four units and the data of its table. One statement asserts that $\\mathbf{X}'\\mathbf{X}$ has rows $(6,10)$ and $(10,20)$ and determinant $20$, that $\\hat\\beta=(3,2/5)'$ with the residuals of the table, that $\\mathbf{X}'e=0$, and that the estimator (3) is $\\hat V=\\begin{pmatrix}-17/50&21/125\\\\21/125&-58/625\\end{pmatrix},$ with both diagonal entries negative. The main statement places this sample in a model that satisfies the conditions of p. 566. The characteristics $(T_i,A_i)$ of a unit are uniform on $\\{0,1,2,3\\}\\times\\{-1,1\\}$, and $z_{ij}=|T_i-T_j|$ and $Y_{ij}=z_{ij}+H_{T_iT_j}+A_i+A_j$ with the matrix $H$ of the finding. The statement asserts that $Q=\\mathrm{E}[X_dX_d']$ has rows $(1,5/4)$ and $(5/4,5/2)$, that $\\beta=(1/3,11/15)'$, and that the matrix $4Q^{-1}\\Omega Q^{-1}$ has rows $(1004/225,\\,-48/125)$ and $(-48/125,\\,1856/5625)$ and is positive definite. Here $\\Omega$ is the matrix of second moments of the mean of $X_d\\epsilon_d$ given one unit of $d$, and the finding identifies $4Q^{-1}\\Omega Q^{-1}$ as the covariance matrix of the limiting distribution of $\\sqrt N(\\hat\\beta-\\beta)$. It asserts that the event $T=(0,1,2,3)$, $A=(1,1,1,1)$ has probability $1/4096$, and that on this event $\\mathbf{X}'\\mathbf{X}$ has determinant $20$ and $\\hat V$ is the matrix above. Three other parts of the finding are not formalized: the eigenvalues of the matrix $W$ for $N=4$, the probability $1/2048$ of the table, which counts a second event, and the example with $N=20$ in the simulation design of Section 4.",
+        "headline": "A counterexample to the sentence on standard errors after Proposition 1",
+        "location": "p. 567 (PDF p. 4), sentence after Proposition 1 and equation (3); p. 570 (PDF p. 7), caption of Figure 1"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T18",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.incidence_meat_structure",
+          "line": 2467,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.negative_diagonals_vanish",
+          "line": 2266,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.negative_implies_deviation",
+          "line": 527,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.outer_positive_semidefinite",
+          "line": 2204,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.positive_definite_two",
+          "line": 2621,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.sandwich_difference_of_grams",
+          "line": 2674,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.sandwich_positive_semidefinite",
+          "line": 2663,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.scaled_truncation",
+          "line": 516,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.score_gram_terms_psd",
+          "line": 2211,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.standard_error_correction",
+          "line": 2130,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.standard_error_domain",
+          "line": 497,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.truncation_contraction",
+          "line": 502,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.truncation_keeps_consistency",
+          "line": 2144,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the correction of P018-N003. The main statement takes any finite collection of distinct two-unit dyads and scores $q_d=X_de_d$ with arbitrary real $X_d$ and $e_d$, and a symmetric matrix $P$ in the place of $(\\mathbf{X}'\\mathbf{X})^{-1}$. It asserts that the middle factor of equation (3) equals $\\sum_iU_iU_i'-\\sum_dq_dq_d'$, where $U_i$ is the sum of the scores of the dyads that contain unit $i$, and that $\\hat V$ is symmetric. It asserts that the standard error of a coefficient is defined exactly when its estimated variance is nonnegative; a standard error is represented as a quantity that is absent when the entry is negative, and not as a square root with a conventional value. It also contains two inequalities for real $N\\ge0$: $|N\\max(v,0)-V|\\le|Nv-V|$ when $V\\ge0$, and $V\\le|Nv-V|$ when $V>0$ and $v<0$. Supporting statements contain the matrix form of the finding: with $B$ the incidence matrix of units and dyads and $S$ the matrix with rows $e_dX_d'$, the matrix $W=B'B-I$ has entry $1$ for dyads that are equal or share a unit and $0$ otherwise, and the middle factor is $S'WS=(BS)'(BS)-S'S$. Both terms are positive semidefinite and remain so between two copies of $P$, so that $\\hat V$ is a difference of two positive semidefinite matrices. Two further statements are the consequences for limits, for any sequence of random variables $v_N$ and not only for the entries of $\\hat V$. If $Nv_N-V_N\\to0$ in probability with $V_N\\ge0$, then $N\\max(v_N,0)-V_N\\to0$ in probability; and if $Nv_N-V\\to0$ in probability for a fixed $V>0$, then $\\Pr(v_N<0)\\to0$. A last one is the criterion that a symmetric $2\\times2$ matrix with positive first entry and positive determinant is positive definite, which the examples of other findings use.",
+        "headline": "The sentence on standard errors after Proposition 1, as corrected",
+        "location": "p. 567 (PDF p. 4), sentence after Proposition 1"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T19",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/TailBRareLimits.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.TailB_infinite_moments_counterexample",
+          "line": 264,
+          "module": "AronowAudit.P018.Wave1.Gap.TailBRareLimits",
+          "status": "proved",
+          "target_id": "P018-T19",
+          "target_kind": "counterexample",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement formalizes the example of P018-N004, with units $(M_i,C_i,A_i,B_i)$ and two observations $X_{ij,\\pm}=(1,\\,1\\pm s_{ij})'$, $Y_{ij,\\pm}=B_i+B_j\\pm a_{ij}$ for each dyad. It asserts that the distribution of a unit is a probability distribution and that the data are bounded, with a constant regressor. For every $N\\ge2$ and every sample it asserts that $\\det(\\mathbf{X}'\\mathbf{X})>0$ and that every fitted residual is at most $8$ in absolute value. For every $N\\ge3$ it asserts that the slope estimate $\\hat b$ satisfies $\\mathrm{E}[\\hat b^2]=\\infty$ and $\\mathrm{E}|\\hat b|=\\infty$. For every $N\\ge4$ it asserts that the positive part of the slope entry of $\\hat V_r$ has infinite expectation and that its negative part has finite expectation. Its last assertions are that $N\\hat V_r\\overset{p}{\\to}V_\\infty=\\begin{pmatrix}4+v&-v\\\\-v&v\\end{pmatrix},\\qquad v>0,$ and that $\\sqrt N(\\hat\\beta_r-\\beta_r)$ converges in distribution to a normal vector with mean zero and covariance matrix $V_\\infty$. Here $v=4H/q^2$, with $q=\\mathrm{E}[s_{12}^2]$ and $H=\\sum_{m\\ge1}2^{-3m}(1-1/m)^2\\delta_m^2$. An infinite expectation is expressed as the integral of a nonnegative function with values in $[0,\\infty]$, so that it cannot be confused with the value zero that the integral of a function that is not integrable has by convention. The formula for $\\hat b$ and the events $E_m$ are steps of the derivation in the finding and are not asserted. The reading of the two observations as two directions with unit weights, which makes the model an example for Corollary 2, is not stated.",
+        "headline": "A counterexample to the first conclusion of Corollaries 1 and 2",
+        "location": "p. 567 (PDF p. 4), Corollary 1, first display after “Then, as $N\\to\\infty$”; p. 575 (PDF p. 12), Corollary 2, the same display; pp. 573–574 (PDF pp. 10–11), Appendix B"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T20",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0181B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.variance_limit_with_UI_proof",
+          "line": 439,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0181B3",
+          "status": "proved",
+          "target_id": "P018-T20",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement proves the moment-convergence fact used in the final sentence of each corrected corollary of P018-N004. Let $\\xi_N$ be random vectors with finite second moments that converge in distribution to a vector $\\xi$ with mean zero and finite second moments, and suppose that the $\\lVert\\xi_N\\rVert^2$ are uniformly integrable. Then $\\mathrm{E}[\\xi_N]\\to0$ and $\\operatorname{Var}(\\xi_N)\\to\\operatorname{Var}(\\xi)$. I describe the repeated-data and weighted variance-consistency statements in P018-T10, under their stated hypotheses on common data functions, repetition or weights, a positive definite limiting design matrix and, for repeated data, products of score means over overlapping dyads. The moment-convergence statement concerns arbitrary random vectors: it does not identify $\\xi_N$ with $\\sqrt N(\\hat\\beta-\\beta)$ or state the final step $N\\operatorname{Var}[\\hat\\beta-\\beta]-V\\to0$, which needs the limit of $V$.",
+        "headline": "The uniform-integrability step for Corollaries 1 and 2, as corrected",
+        "location": "p. 567 (PDF p. 4), Corollary 1; p. 575 (PDF p. 12), Corollary 2"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T21",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.expectation_placement_correction",
+          "line": 1640,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T21",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement concerns equation (2) with the expectation of term $B$ placed before the braces, as in P018-N001. For a dyad $d$ let $A_d=\\mathrm{E}\\{X_dX_d'\\operatorname{Var}[\\epsilon_d\\mid\\mathbf{X}]\\}$ and $B_d=\\sum_{d'\\in\\mathcal{S}(d)}\\mathrm{E}\\{X_dX_{d'}'\\operatorname{Cov}[\\epsilon_d,\\epsilon_{d'}\\mid\\mathbf{X}]\\}$. The statement asserts that $\\sum_{d=1}^{D}(A_d+B_d)=\\sum_{(d,d'):\\,s(d)\\cap s(d')\\ne\\emptyset}\\mathrm{E}\\{X_dX_{d'}'\\operatorname{Cov}[\\epsilon_d,\\epsilon_{d'}\\mid\\mathbf{X}]\\},$ where the sum on the right runs over the ordered pairs of dyads that are equal or share a unit. With the expectation so placed, the right side of (2) is the third line of (6), term for term. The identity is a rearrangement of finitely many matrices and has no hypothesis on the model or on $N$. The statement does not assert that either side equals $\\operatorname{Var}[\\sum_dX_d\\epsilon_d]$. That is the content of equation (2), which P018-E001 corrects. The counts of the terms, $2(N-2)$ dyads in each $\\mathcal{S}(d)$ and $D(2N-3)$ ordered pairs in all, are a separate statement, described with the corrected proof of Proposition 1.",
+        "headline": "Equation (2) of Lemma 1, term $B$, as corrected",
+        "location": "p. 566 (PDF p. 3), equation (2), term $B$"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T22",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GP0181B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.simulation_design_correction_proof",
+          "line": 673,
+          "module": "AronowAudit.P018.Wave1.Gap.GP0181B3",
+          "status": "proved",
+          "target_id": "P018-T22",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement describes the design that the sentence defines once $\\nu_{d(i,j)t}$ replaces the printed $u_{d(i,j)t}$, as in P018-N006. For $N\\ge2$ units and $T\\ge1$ observations per dyad, the variables $X_i$, $\\alpha_i$ and $\\nu_{dt}$ are independent standard normal, and $\\epsilon_{d(i,j)t}=\\alpha_i+\\alpha_j+\\nu_{d(i,j)t}$. The statement asserts that the errors $\\epsilon_{dt}$ are jointly normal with mean zero and independent of the covariates $X_1,\\dots,X_N$, and that $\\operatorname{Cov}(\\epsilon_{dt},\\epsilon_{d't'})=|s(d)\\cap s(d')|+\\mathbf{1}\\{d=d',\\ t=t'\\} .$ The covariance is $3$ for the same observation, $2$ for two observations of one dyad, $1$ for dyads that share one unit, and $0$ for dyads with no common unit. The statement also asserts that $\\mathrm{E}[\\epsilon_{dt}\\mid X_1,\\dots,X_N]=0$ almost surely. The variables are the coordinates of a product of standard normal distributions, with one coordinate for each $X_i$, each $\\alpha_i$ and each $\\nu_{dt}$. The statement holds for every $T\\ge1$, where the paper has $T=1$ or $T=2$. The outcome $Y_{d(i,j)t}$ and the regressor $|X_i-X_j|$ do not appear in it, and the consequence that the linear regression of equation (4) is correctly specified is not stated.",
+        "headline": "The sentence after equation (4), as corrected",
+        "location": "p. 569 (PDF p. 6), sentence after equation (4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T23",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.expit_bounds",
+          "line": 251,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.expit_hasDerivAt",
+          "line": 2527,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.expit_positive_form",
+          "line": 2517,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.generic_score_meat_psd",
+          "line": 2304,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logistic_formula_correction",
+          "line": 2562,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.logistic_summed_formulas",
+          "line": 2598,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.predictor_partial_derivative",
+          "line": 2538,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.scalar_logLikelihood_derivative",
+          "line": 2551,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T23",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements cover the two formulas of P018-N010 in their corrected forms, $\\mathbf{B}=\\mathrm{E}[\\psi(D;\\hat\\theta)\\psi(D;\\hat\\theta)']$ and $p_d=\\operatorname{expit}(X_d'\\hat\\beta)$, with $\\operatorname{expit}(t)=1/(1+e^{-t})$. For $x,\\beta\\in\\mathbb{R}^k$ and real $y$, let $p=\\operatorname{expit}(x'\\beta)$ and $\\psi((x,y);\\beta)=x(y-p)$. The main statement asserts that $0<p<1$, that $\\psi$ is the gradient in $\\beta$ of $y\\,x'\\beta-\\log(1+e^{x'\\beta})$, that $-\\partial\\psi/\\partial\\beta'=p(1-p)\\,xx'$ is positive semidefinite, and that $\\psi\\psi'=(y-p)^2xx'$. A second statement sums over the data: for any $\\hat\\beta$, $\\sum_{d=1}^{D}-\\frac{\\partial}{\\partial\\beta'}\\psi((X_d,Y_d);\\hat\\beta)=\\mathbf{X}'\\mathbf{M}\\mathbf{X}\\qquad\\text{and}\\qquad\\sum_{d=1}^{D}\\psi((X_d,Y_d);\\hat\\beta)\\psi((X_d,Y_d);\\hat\\beta)'=\\sum_{d=1}^{D}X_dX_d'r_d^2 .$ A third statement asserts that $\\mathbf{B}$, at a fixed parameter value and with the same data argument in both factors, is positive semidefinite when the coordinates of the score are square-integrable. Supporting statements are the facts of calculus that these use: $\\operatorname{expit}(t)=e^t/(1+e^t)$, the derivative $\\operatorname{expit}(t)(1-\\operatorname{expit}(t))$ of $\\operatorname{expit}$, the derivative $y-\\operatorname{expit}(t)$ of $yt-\\log(1+e^t)$, and the partial derivatives $x_a$ of $x'\\beta$. The gradient and the matrix of derivatives are stated coordinate by coordinate. The outcome $y$ may be any real number, which is broader than the binary outcomes of the paper. That the printed product $\\mathbf{X}_d\\hat\\beta$ is not defined for $k>1$ is not an assertion of the statements, and it is reflected only in the scalar index $x'\\beta$. No property of the sandwich $\\mathbf{A}^{-1}\\mathbf{B}\\{\\mathbf{A}^{-1}\\}'$ as an approximation to a variance is asserted.",
+        "headline": "The matrices $\\mathbf A$ and $\\mathbf B$ and the logistic index of Appendix E, as corrected",
+        "location": "p. 576 (PDF p. 13), Appendix E"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T24",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_PaperDomains.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.PaperDomains.printed_significance_rounding_refuted",
+          "line": 13,
+          "module": "AronowAudit.P018.P018_PaperDomains",
+          "status": "counterexample_proved",
+          "target_id": "P018-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_PaperDomains.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.PaperDomains.significance_on_rounding_intervals",
+          "line": 21,
+          "module": "AronowAudit.P018.P018_PaperDomains",
+          "status": "proved",
+          "target_id": "P018-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.significance_rounding_literal_fails",
+          "line": 579,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P018-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.table_exact_ratios",
+          "line": 2507,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.table_magnitude_correction",
+          "line": 588,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.table_ratios_corrected",
+          "line": 544,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.table_rounding_constraints",
+          "line": 553,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.table_rounding_ratio",
+          "line": 562,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T24",
+          "target_kind": "corrected_statement",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statements are exact arithmetic on the nine rows of Table 1, as in P018-E012. Let $H$, $C$ and $D$ be the entries of a row in columns (4), (5) and (6), taken as the rational numbers that the printed decimals denote. The main statement asserts that the smallest and the largest of the ratios $D/H$ are $24749/10734$ and $172/39$, that every ratio is below $5$, that $D>C>H$ in every row, and that $D/C$ lies between $185/181$ and $86/47$. It asserts that in every row $\\frac dh<10\\qquad\\text{for all real }h\\ge H-\\tfrac1{2000}\\text{ and }d\\le D+\\tfrac1{2000},$ which includes all values that round to the printed entries, and that $11/8<41/25=1.64$. Supporting statements list the nine ratios and the nine bounds $(D+1/2000)/(H-1/2000)$ in the order of the rows, and the largest bound is $17/3$. Three statements concern the significance comparison for international organizations. One proves that, for $21/2000\\le|b|\\le23/2000$, $15/2000\\le se_D\\le17/2000$ and $3/2000\\le se_H\\le5/2000$, the ratios satisfy $|b|/se_D\\le23/15<1.64$ and $|b|/se_H\\ge21/5>1.64$. These intervals include the positive standard errors that round to Table 1. Another refutes the version of the implications that omits positivity of the heteroskedasticity-robust standard error. The third gives its counterexamples at $b=21/2000$ with $se=0$ and $se=-1$; division by zero has value zero in Lean. The recalculation of the ratios from the replication data is not part of these statements.",
+        "headline": "The sentence “sometimes an order of magnitude larger” of Section 5, as corrected against Table 1",
+        "location": "p. 571 (PDF p. 8), Section 5, second paragraph; Table 1, p. 572 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T25",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/DecideC.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.benchmark_correspondence_printed_false",
+          "line": 755,
+          "module": "AronowAudit.P018.Wave1.Gap.DecideC",
+          "status": "counterexample_proved",
+          "target_id": "P018-T25",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement refutes the printed correspondence claim, read for the model that the simulations fit, as an equality of covariance matrices. The dyads are the pairs $(i,j)$ with $i<j\\le N$, and $Z_1$ and $Z_2$ are the $D\\times N$ matrices that mark the first and the second unit of each dyad, with $Z=Z_1+Z_2$. The errors $\\alpha_i+\\alpha_j+\\nu_{ij}$ of equation (4) have covariance matrix $ZZ'+I$. The fitted model, with the terms (1|dyad1) + (1|dyad2), has covariance matrices of the form $t_1Z_1Z_1'+t_2Z_2Z_2'+sI$. The claim being refuted says that for every $N\\ge3$ there exist $t_1,t_2,s\\ge0$ such that $ZZ'+I=t_1Z_1Z_1'+t_2Z_2Z_2'+sI .$ The refutation uses $N=3$: for the dyads $(1,2)$ and $(2,3)$ the left side has entry $1$ and the right side has entry $0$ for every choice of components, as in P018-E008. The covariance correspondence holds for a model with one effect per unit, which is the model that the text describes. The statement concerns the model in the replication files. Only the correspondence of covariance matrices is formalized. The phrases “more efficient”, “consistent standard errors” and “reliable inference” describe the output of simulations and are not part of the statement.",
+        "headline": "The sentence that expression (4) “corresponds precisely to the assumptions of a two-way normal random effects model”, as printed",
+        "location": "pp. 569–570 (PDF pp. 6–7); Supporting Information, p. 2; Conclusion, p. 572 (PDF p. 9)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T26",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/PrintedLemma1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.lemma1_printed_refuted",
+          "line": 15,
+          "module": "AronowAudit.P018.Wave1.PrintedLemma1",
+          "status": "counterexample_proved",
+          "target_id": "P018-T26",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.ols_score_identity",
+          "line": 1770,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T26",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P018"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/P018_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.variance_sum_identity",
+          "line": 792,
+          "module": "AronowAudit.P018.P018_Audit",
+          "status": "proved",
+          "target_id": "P018-T26",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement refutes the following reading of Lemma 1 as printed, for models that satisfy the conditions of p. 566 (i.i.d. units, bounded dyad data given by one symmetric function of the two units, a constant regressor and a nonsingular $\\mathrm{E}[X_dX_d']$) and whose sample design has full rank almost surely for all large $N$. The first part of this reading is equation (2): for every $N\\ge3$, $\\operatorname{Var}[\\sum_dX_d\\epsilon_d]$ equals the sum of the terms $A$ and $B$ built from $\\operatorname{Var}[\\epsilon_d\\mid\\mathbf{X}]$ and $\\operatorname{Cov}[\\epsilon_d,\\epsilon_{d'}\\mid\\mathbf{X}]$, with the expectation of term $B$ placed as in equation (6). This is the identity that P018-E001 contradicts with an example whose conditional mean is not linear. The second part reads the sentence on the asymptotic distribution: $\\sqrt N(\\hat\\beta-\\beta)$ converges in distribution to a limit with mean zero and finite second moments, and the $V$ of equation (1) converges to the covariance matrix of this limit. The refutation uses independent uniform units $Z_i$ on $[-1,1]$, with $X_{ij}=(1,2+Z_i+Z_j)'$ and $Y_{ij}=(Z_i+Z_j)^2$. At $N=3$ the population residuals are measurable from the design, so the printed conditional covariance sum is zero, while the intercept entry of the unconditional score variance is $12/5$. This contradicts the first part and hence the conjunction; it does not separately refute the asymptotic-law clause. Two supporting statements are steps of Appendix A that hold. One is the first equality of (6), $\\operatorname{Var}[\\sum_dq_d]=\\sum_d\\sum_{d'}\\operatorname{Cov}[q_d,q_{d'}]$, for any finite family of square-integrable random vectors, and the other is the identity $\\hat\\beta-\\beta=(\\mathbf{X}'\\mathbf{X})^{-1}\\sum_dX_d\\epsilon_d$ on a sample of full rank. The lemma does not say what it means for an asymptotic distribution to have a variance $V$ that depends on $N$, and the statement takes it to mean that $V$ converges to the covariance matrix of the limit, which is not required to be normal. “The usual rank conditions on $\\mathbf{X}$” are read as full rank almost surely for all large $N$, which is stronger than full rank with probability tending to one.",
+        "headline": "Lemma 1, as printed",
+        "location": "p. 566 (PDF p. 3), Lemma 1; p. 573 (PDF p. 10), Appendix A"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T27",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/Gap/GLP0181B4.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.proposition1_printed_proof",
+          "line": 24,
+          "module": "AronowAudit.P018.Wave1.Gap.GLP0181B4",
+          "status": "proved",
+          "target_id": "P018-T27",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is Proposition 1 with its printed hypotheses. It assumes the conditions of p. 566 (i.i.d. units, bounded dyad data given by one symmetric function of the two units, a constant regressor and a nonsingular $\\mathrm{E}[X_dX_d']$), full rank of the sample design almost surely for all large $N$, and the condition that “$X_d$ and $e_d$ have bounded support with nonzero second moments and cross-moments”. It asserts that $N\\hat V-V\\overset{p}{\\to}0$, where $\\hat V$ is the estimator (3) and $V$ is the matrix of equation (1), with the unconditional variance of $\\sum_dX_d\\epsilon_d$ in the middle. The printed condition is read in three parts. The fitted residuals $e_d$ are bounded by a constant that does not depend on $N$; every entry of $\\mathrm{E}[X_dX_d']$, and of $\\mathrm{E}[X_dX_{d'}']$ for two dyads that share a unit, is nonzero; and, for all large $N$, $\\mathrm{E}[e_d^2]\\ne0$ for every dyad and $\\mathrm{E}[e_de_{d'}]\\ne0$ for every pair of dyads that share a unit. The paper does not say which moments are meant, or that the condition is to hold for large $N$. These readings make the ambiguous hypotheses explicit. The target $V$ is that of equation (1) and not the conditional form of equation (2) and of $\\Sigma$ in Appendix B, so that the statement is the proposition with the correction of P018-E001 already made. The steps of the printed proof are not part of the statement, and those that fail are the subject of P018-E006. The statement of the corrected proof has the same conclusion without the conditions on the rank and on the fitted residuals.",
+        "headline": "Proposition 1, as printed",
+        "location": "p. 567 (PDF p. 4), Proposition 1; pp. 573–574 (PDF pp. 10–11), Appendix B"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P018-T28",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P018/Wave1/PrintedScalarCorollaries.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P018.Wave1.printed_corollaries_scalar_refuted",
+          "line": 12,
+          "module": "AronowAudit.P018.Wave1.PrintedScalarCorollaries",
+          "status": "counterexample_proved",
+          "target_id": "P018-T28",
+          "target_kind": "headline_result",
+          "work_id": "P018"
+        }
+      ],
+      "text": {
+        "body": "The display that defines $V_r$ in Corollary 1 cannot be represented literally as a general matrix product in Lean. Its outer factors $\\mathrm{E}[X_dX_d']^{-1}$ are $T(d)\\times T(d)$ matrices, whose size varies with $d$, while the middle factor is a $k\\times k$ matrix. The display also contains a dyad index $d$ that is not summed over (P018-E004). One Lean statement covers the special case of the example in that finding, with $k=1$, one observation per dyad and unit weights, where $X_{ij}=1$ and $Y_{ij}=U_i+U_j$ for independent signs $U_i$. In this case every product is a product of numbers, and the printed target equals $4/D$. The Lean statement refutes the conjunction of the two conclusions of the corollary with this target: $N\\operatorname{Var}(\\hat\\beta)-4/D\\to0$, and $N\\hat V-4/D\\to0$ in probability. In the fair-sign model, $\\hat\\beta=(2/N)\\sum_iU_i$ and $N\\operatorname{Var}(\\hat\\beta)=4$ for $N\\ge2$, while $4/D\\to0$, so the first conclusion fails. This suffices to refute the conjunction and therefore the general printed corollary. This statement does not separately assert failure of each limit. The separate counterexample statement for P018-E004 also gives $N\\hat V\\to4$ in probability, establishing failure of the second printed conclusion in this model. It serves Corollary 2 as well, whose printed target has the same value in this example. The corollary in its corrected form is described with the corrected conditions of P018-E003 and the corrected displays of P018-E004.",
+        "headline": "Corollary 1, as printed",
+        "location": "pp. 567–568 (PDF pp. 4–5)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "1312.3398",
+    "authors": [
+      "P. M. Aronow",
+      "Cyrus Samii",
+      "Valentina A. Assenova"
+    ],
+    "citation": "P. M. Aronow, Cyrus Samii, and Valentina A. Assenova (2015). Cluster-Robust Variance Estimation for Dyadic Data. Political Analysis 23(4):564–577.",
+    "doi": "10.1093/pan/mpv018",
+    "title": "Cluster-Robust Variance Estimation for Dyadic Data",
+    "type": "Journal article",
+    "venue": "Political Analysis",
+    "year": "2015"
+  },
+  "work_id": "P018"
+}

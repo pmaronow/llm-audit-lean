@@ -1,0 +1,1302 @@
+{
+  "counts": {
+    "counterexample_proved": 0,
+    "proved": 70,
+    "results": 70,
+    "targets": 3
+  },
+  "overview": {
+    "areas": [
+      "causal-identification",
+      "asymptotic-statistics"
+    ],
+    "caveats": [
+      "The positive results require known fixed outcome and overlap bounds common across the model class; law-dependent bounds or merely pointwise $0<e(W)<1$ do not give the recorded uniform conclusions.",
+      "Each law in the known-score class is paired with the estimator using its own supplied propensity; the Gaussian limit is pointwise in the law, not a uniform normal approximation.",
+      "The known-score results allow an arbitrary distribution of one real covariate, extending the printed continuous-covariate setting; the confidence statement concerns the specified concentration intervals rather than every interval centered on the estimator.",
+      "The impossibility theorem treats procedures based on the observed sample and an independent seed with the same law across populations; interval endpoints may be extended real, allowing empty and unbounded intervals.",
+      "The width obstruction is under a single baseline with independent uniform covariate, fair treatment and fair treated potential outcome, and zero control potential outcome; the unknown-model subclass suffices for impossibility on any containing unrestricted model.",
+      "The word “untestable” and any claim that restricting either nuisance function suffices are outside the formalized impossibility statement."
+    ],
+    "corrections": [],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P047.known_propensity_finite_sample",
+        "target_ids": [
+          "P047-T1"
+        ],
+        "what": "Under iid sampling and ignorability, with fixed $B>0$, $0<\\epsilon\\le1/2$, $|Y(a)|\\le B$ and known $\\epsilon\\le e(W)\\le1-\\epsilon$, the observable HT ATE mean $T_n$ is unbiased for $\\tau=\\mathrm{E}[Y(1)-Y(0)]$, satisfies $\\Pr(|T_n-\\tau|\\ge t)\\le2\\exp[-nt^2\\epsilon^2/(2B^2)]$ for every $n\\ge1$ and $t\\ge0$, and its concentration interval has coverage at least $1-\\alpha$ and width $2(B/\\epsilon)\\sqrt{2\\log(2/\\alpha)/n}$ for $0<\\alpha<1$."
+      },
+      {
+        "lean_name": "AronowAudit.P047.known_propensity_asymptotics",
+        "target_ids": [
+          "P047-T2"
+        ],
+        "what": "With fixed common $B>0$ and $0<\\epsilon\\le1/2$, the known-propensity HT mean has uniform root-n tightness over all sample sizes and model laws, and at each fixed law its centered root-n error converges to a Gaussian with the score variance, including zero variance."
+      },
+      {
+        "lean_name": "AronowAudit.P047.Wave1.unknown_propensity_impossibility_randomized",
+        "target_ids": [
+          "P047-T3"
+        ],
+        "what": "In the unrestricted unknown-propensity class with uniform continuous covariate, binary potential outcomes, joint ignorability and overlap $[1/4,3/4]$, every measurable randomized estimator has worst-case probability at least $1/2$ of absolute error at least $1/12$ for every $n\\ge1$, and uniformly asymptotically honest intervals at level $1-\\alpha$, $0<\\alpha<1/2$, have limiting lower probability at least $1-2\\alpha$ of width exceeding $1/6$ under one fixed baseline law."
+      }
+    ],
+    "overview": "This rejoinder contrasts estimation with a known propensity score against inference over unrestricted unknown-propensity models. The Lean development supplies explicit finite-sample concentration intervals, uniform root-n error control and pointwise Gaussian limits for inverse-probability estimators with common outcome and overlap bounds. It also proves a minimax estimation obstruction and an honest-interval width lower bound over a continuous-covariate model, including randomized procedures and extended-real interval endpoints.",
+    "work_id": "P047"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P047-T1",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.armIPW_abs_le",
+          "line": 206,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.armIPW_eq_observed",
+          "line": 1216,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.armPropensity_ge",
+          "line": 197,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.bounded_independent_average_tail",
+          "line": 365,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.conditional_armIPW",
+          "line": 268,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.conditional_score_identity",
+          "line": 293,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.confidenceInterval_coverage",
+          "line": 516,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.confidenceInterval_endpoint_width",
+          "line": 1019,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.confidenceInterval_root_width",
+          "line": 528,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.covariateSigma_le",
+          "line": 140,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.estimator_hoeffding",
+          "line": 410,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.estimator_unbiased",
+          "line": 338,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.halfWidth_exponential",
+          "line": 499,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.integrable_armIPW",
+          "line": 260,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.integrable_arm_numerator",
+          "line": 247,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.integrable_potential",
+          "line": 191,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [
+            "H060"
+          ],
+          "lean_name": "AronowAudit.P047.known_propensity_finite_sample",
+          "line": 544,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_arm",
+          "line": 148,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_armIPW",
+          "line": 172,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_armPropensity_conditioning",
+          "line": 165,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_covariate",
+          "line": 137,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_covariate_conditioning",
+          "line": 144,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_estimator",
+          "line": 470,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_observed",
+          "line": 160,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_potential",
+          "line": 154,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_score",
+          "line": 184,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.propensity_is_conditional_probability",
+          "line": 1011,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.sample_coordinate_hasLaw",
+          "line": 318,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.sample_score_identDistrib",
+          "line": 328,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.sample_scores_independent",
+          "line": 323,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.score_abs_le",
+          "line": 220,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.score_eq_armIPW",
+          "line": 178,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.score_unbiased",
+          "line": 307,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.subgaussian_abs_tail",
+          "line": 351,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.symmetric_interval_coverage",
+          "line": 477,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.treatedEstimator_eq_observed_sum",
+          "line": 1224,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [
+            "H060"
+          ],
+          "lean_name": "AronowAudit.P047.treated_mean_finite_sample",
+          "line": 577,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T1",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        }
+      ],
+      "text": {
+        "body": "The rejoinder prints no formula for this sentence, and two Lean statements give it with explicit constants. A population is represented by a probability law for one unit $(W,X,Y(0),Y(1))$, with $W$ real, $X$ binary and observed outcome $Y=XY(1)+(1-X)Y(0)$, together with a propensity score $\\pi$ such that $X$ is independent of $Y(x)$ given $W$ for $x=0,1$. The first statement takes constants $B>0$ and $0<\\delta\\le1/2$ such that $|Y(x)|\\le B$ and $\\delta\\le\\pi(W)\\le1-\\delta$ almost surely. With $Z_i=X_iY_i/\\pi(W_i)-(1-X_i)Y_i/(1-\\pi(W_i))$, the mean $T_n=n^{-1}\\sum_{i=1}^nZ_i$ over a sample of $n$ independent units, $\\tau=\\mathrm{E}[Y(1)-Y(0)]$ and $h_n=(B/\\delta)\\sqrt{2\\log(2/\\alpha)/n}$, it asserts that, for every $n\\ge1$, every $t\\ge0$ and every $0<\\alpha<1$, $\\mathrm{E}[T_n]=\\tau,\\qquad\\Pr\\bigl(|T_n-\\tau|\\ge t\\bigr)\\le2\\exp\\Bigl(-\\frac{nt^2\\delta^2}{2B^2}\\Bigr),\\qquad\\Pr\\bigl(\\tau\\in[T_n-h_n,T_n+h_n]\\bigr)\\ge1-\\alpha,$ and that $\\sqrt{n}$ times the width $2h_n$ equals $(2B/\\delta)\\sqrt{2\\log(2/\\alpha)}$. It asserts further that $\\mathrm{E}[Z_i\\mid W_i]=\\mathrm{E}[Y_i(1)-Y_i(0)\\mid W_i]$ and $|Z_i|\\le B/\\delta$ almost surely. The second statement assumes only that $0\\le Y(1)\\le1$ and $\\pi(W)\\ge\\delta$ almost surely for a constant $\\delta>0$. For $\\mu=\\mathrm{E}[Y(1)]$ and $\\hat\\mu=n^{-1}\\sum_{i=1}^nX_iY_i/\\pi(W_i)$, it asserts that $0\\le X_iY_i/\\pi(W_i)\\le1/\\delta$ almost surely, that $\\mathrm{E}[\\hat\\mu]=\\mu$, that $\\Pr(|\\hat\\mu-\\mu|\\ge t)\\le2\\exp(-2n\\delta^2t^2)$, and that the interval $\\hat\\mu\\pm\\delta^{-1}\\sqrt{\\log(2/\\alpha)/(2n)}$ contains $\\mu$ with probability at least $1-\\alpha$, for the same $n$, $t$ and $\\alpha$. The rejoinder says only “bounded” and “positivity”; the target article assumes positivity with a positive $\\delta$ but does not say it is common to the class. The Lean statements use fixed common bounds, a narrower reading than law-by-law bounds or $0<\\pi(W)<1$ alone. The statements read “Confidence intervals based on these estimators” as the two intervals above, and they assert nothing about other intervals centred on the estimators. They are broader than the printed setting in that $W$ is one real covariate with an arbitrary distribution, where the rejoinder supposes at least one continuous covariate. Of the thirty-five supporting statements, thirteen assert measurability or integrability, and seven give the bounds and the means of the summands and of $T_n$. Four are identities, among them $\\pi(W)=\\Pr(X=1\\mid W)$ almost surely, and three give the law of the units of the sample and the independence of the $Z_i$. The other eight give Hoeffding’s bound for a mean of independent bounded variables and for $T_n$, and the coverage and the width of the interval.",
+        "headline": "Section 1, first bullet, second sentence (confidence intervals when the propensity score is known)",
+        "location": "p. 85 (PDF p. 2)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P047-T2",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.estimator_central_limit",
+          "line": 435,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T2",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.estimator_root_tail",
+          "line": 681,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T2",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.estimator_uniform_root_consistency",
+          "line": 702,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T2",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.known_propensity_asymptotics",
+          "line": 744,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T2",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.score_memLp",
+          "line": 232,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T2",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.score_variance_le",
+          "line": 238,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T2",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        }
+      ],
+      "text": {
+        "body": "The rejoinder does not define “uniformly root-$n$ consistent” or “asymptotically normal”, and the Lean statement fixes a reading of each. A population is represented by a probability law $P$ for one unit $(W,X,Y(0),Y(1))$, with $W$ real, $X$ binary and observed outcome $Y=XY(1)+(1-X)Y(0)$, together with a propensity score $\\pi$ such that $X$ is independent of $Y(x)$ given $W$ for $x=0,1$. The statement takes constants $B>0$ and $0<\\delta\\le1/2$ and the class of the laws such that $|Y(x)|\\le B$ and $\\delta\\le\\pi(W)\\le1-\\delta$ almost surely. With $Z_i=X_iY_i/\\pi(W_i)-(1-X_i)Y_i/(1-\\pi(W_i))$, the mean $T_n=n^{-1}\\sum_{i=1}^nZ_i$ over a sample of $n$ independent units and $\\tau_P=\\mathrm{E}_P[Y(1)-Y(0)]$, it asserts that $\\lim_{K\\to\\infty}\\,\\sup_{n\\ge1}\\,\\sup_{P}\\,P\\bigl(\\sqrt{n}\\,|T_n-\\tau_P|>K\\bigr)=0,$ where the inner supremum is over the class and each law is paired with the estimator that uses its own propensity score. It asserts further that, for every law of the class, $P(\\sqrt{n}\\,|T_n-\\tau_P|\\ge K)\\le2\\exp(-K^2\\delta^2/(2B^2))$ for every $n\\ge1$ and every $K\\ge0$, and that $\\operatorname{Var}_P(Z_i)\\le B^2/\\delta^2$. Its last clause is that, under each law of the class, $\\sqrt{n}(T_n-\\tau_P)$ converges in distribution to $N(0,\\operatorname{Var}_P(Z_i))$, which is the point mass at zero when the variance is zero. Only root-$n$ consistency is uniform. The normal limit is asserted for each fixed law, and the statement contains no uniform normal approximation. The rejoinder says only “bounded” and “positivity”; the target article assumes positivity with a positive $\\delta$ but does not say it is common to the class. The Lean statement takes $B$ and $\\delta$ fixed and common to the class, a narrower reading than law-by-law bounds. The statement is broader than the printed setting in that $W$ is one real covariate with an arbitrary distribution, where the rejoinder supposes at least one continuous covariate. Five supporting statements give the parts separately: the finite moments of $Z_i$, the variance bound, the exponential bound, the limit of the supremum and the normal limit.",
+        "headline": "Section 1, first bullet, first sentence (estimators when the propensity score is known)",
+        "location": "p. 85 (PDF p. 2)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P047-T3",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/Wave1/Impossibility.lean",
+          "highlight_ids": [
+            "H024"
+          ],
+          "lean_name": "AronowAudit.P047.Wave1.unknown_propensity_impossibility_randomized",
+          "line": 38,
+          "module": "AronowAudit.P047.Wave1.Impossibility",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.baseline_ate",
+          "line": 1248,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.baseline_covariate_law",
+          "line": 1240,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.cell_mean_bounds",
+          "line": 845,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.cell_overlap",
+          "line": 841,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.collision_union_bound",
+          "line": 958,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.event_difference_of_agreement_on_good",
+          "line": 1196,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.familyEffect_bounds",
+          "line": 1049,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.familyEffect_eq_cell_average",
+          "line": 943,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.familyEffect_memLp",
+          "line": 1060,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.familyEffect_moments",
+          "line": 1069,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.familyEffect_prior_concentration",
+          "line": 1097,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.highIndicator_mean",
+          "line": 891,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.highIndicator_memLp",
+          "line": 886,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.highIndicator_variance",
+          "line": 895,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.highProportion_bounds",
+          "line": 1026,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.highProportion_moments",
+          "line": 910,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.iid_uniform_labels_collision",
+          "line": 1171,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_baseline_map",
+          "line": 1233,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_familyEffect",
+          "line": 1043,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_highIndicator",
+          "line": 883,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.measurable_highProportion",
+          "line": 904,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.separated_bands_force_width",
+          "line": 1001,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.single_cell_observable_agreement",
+          "line": 851,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.two_point_estimator_algebra",
+          "line": 992,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.two_point_interval_algebra",
+          "line": 1114,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P047/P047_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P047.uniform_labels_pair_collision",
+          "line": 1127,
+          "module": "AronowAudit.P047.P047_Identification",
+          "status": "proved",
+          "target_id": "P047-T3",
+          "target_kind": "headline_result",
+          "work_id": "P047"
+        }
+      ],
+      "text": {
+        "body": "The rejoinder prints no formula for this bullet, and the main Lean statement gives its first sentence for one class of laws. The second sentence of the bullet, with the word “untestable” (see P047-N003), has no Lean statement. The class $\\mathcal{P}$ consists of the probability laws $P$ for one unit $(W,X,Y(0),Y(1))$ such that $W$ is uniform on $(0,1)$, the potential outcomes are binary, $X$ is independent of $(Y(0),Y(1))$ given $W$, and the propensity score satisfies $1/4\\le\\pi(W)\\le3/4$ almost surely. For every measurable seed space $R$ and probability law $Q$, an estimator is a sequence of measurable functions $\\hat\\tau_n$ of the observed sample $(W_i,X_i,Y_i)_{i\\le n}$ and a seed drawn independently from $Q$; the functions and seed law are the same for every population law. An interval is $C_n=\\{t\\in\\mathbb{R}:\\ell_n\\le t\\le u_n\\}$, with measurable endpoints $\\ell_n,u_n$ in $\\mathbb{R}\\cup\\{-\\infty,+\\infty\\}$ depending on the observed sample and seed. No ordering of the endpoints is required, so empty and unbounded intervals are allowed. All error and coverage probabilities use $P^{\\mathbb{N}}\\otimes Q$, where $P^{\\mathbb{N}}$ is the law of independent observations from $P$. With $\\tau(P)=\\mathrm{E}_P[Y(1)-Y(0)]$, the statement asserts that, for every estimator and every $n\\ge1$, $\\sup_{P\\in\\mathcal{P}}(P^{\\mathbb{N}}\\otimes Q)\\bigl(|\\hat\\tau_n-\\tau(P)|\\ge\\tfrac{1}{12}\\bigr)\\ge\\frac12,$ and that there exists $\\eta>0$ such that $\\limsup_{n\\to\\infty}\\sup_{P\\in\\mathcal{P}}(P^{\\mathbb{N}}\\otimes Q)(|\\hat\\tau_n-\\tau(P)|>\\eta)>0$. For intervals it asserts that, if $0<\\alpha<1/2$ and $\\liminf_{n\\to\\infty}\\inf_{P\\in\\mathcal{P}}(P^{\\mathbb{N}}\\otimes Q)(\\tau(P)\\in C_n)\\ge1-\\alpha$, then $\\liminf_{n\\to\\infty}\\,(S^{\\mathbb{N}}\\otimes Q)\\bigl(\\ell_n+\\tfrac16<u_n\\bigr)\\ge1-2\\alpha>0,$ where $S$ is the law in which $W$ is uniform on $(0,1)$, $X$ and $Y(1)$ are fair coin flips, the three are independent, and $Y(0)=0$. The width event $\\ell_n+1/6<u_n$ is interpreted in the extended reals; for finite endpoints it is equivalent to $u_n-\\ell_n>1/6$. The restriction to $\\mathcal{P}$ does not narrow it, since an impossibility over $\\mathcal{P}$ holds over every model that contains $\\mathcal{P}$. Twenty-six supporting statements establish finite ingredients of the following construction. In the construction $(0,1)$ is cut into $M$ cells of equal length, $Y(0)=0$, and on each cell $(\\pi,\\mathrm{E}[Y(1)\\mid W])$ is $(3/4,1/3)$ or $(1/4,1)$ in family A, and $(3/4,2/3)$ or $(1/4,0)$ in family B. Sixteen statements concern one cell and the choice between the two values, which is made with equal probabilities and independently over the cells. They include the probabilities $1/4$, $1/4$ and $1/2$ of $(X,Y)=(1,1)$, $(1,0)$ and $(0,0)$ in such a cell, which are the same in both families, and the means $2/3$ and $1/3$ and the variance $1/(9M)$ of the average effects of the two families. Three give the bound $n(n-1)/(2M)$ on the probability that two of $n$ independent uniform labels coincide, and three concern $S$, whose average effect is $1/2$. Four give the comparison of two laws that agree within an event of large probability, the arithmetic of the two testing steps, and the interval geometry. The main statement uses the two families as population laws in $\\mathcal{P}$ and compares their observed $n$-sample mixtures with the observed $n$-sample law of $S$ on samples with no two covariates in one cell. The testing and interval steps use these comparisons, including after adjoining the independent seed.",
+        "headline": "Section 1, second bullet (no uniformly consistent estimator and no honest interval of shrinking width when the propensity score is not known)",
+        "location": "pp. 85–86 (PDF pp. 2–3)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": null,
+    "authors": [
+      "P. M. Aronow",
+      "James M. Robins",
+      "Theo Saarinen",
+      "Fredrik Sävje",
+      "Jasjeet Sekhon"
+    ],
+    "citation": "P. M. Aronow, James M. Robins, Theo Saarinen, Fredrik Sävje, and Jasjeet Sekhon (2025). Rejoinder: Nonparametric Identification Is Not Enough, but Randomized Controlled Trials Are. Observational Studies 11(1):85–90.",
+    "doi": "10.1353/obs.2025.a956844",
+    "title": "Rejoinder: Nonparametric Identification Is Not Enough, but Randomized Controlled Trials Are",
+    "type": "Rejoinder",
+    "venue": "Observational Studies",
+    "year": "2025"
+  },
+  "work_id": "P047"
+}

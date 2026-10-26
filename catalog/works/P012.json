@@ -1,0 +1,2622 @@
+{
+  "counts": {
+    "counterexample_proved": 11,
+    "proved": 117,
+    "results": 128,
+    "targets": 24
+  },
+  "overview": {
+    "areas": [
+      "interference-and-networks",
+      "partial-identification-and-bounds",
+      "optimization-and-computation"
+    ],
+    "caveats": [
+      "Graphs are finite, simple and undirected, traits are binary, and recruitment times enter through their distinct order; admissibility includes an earlier recruiter for every nonseed and reported degrees at least the recruitment degrees.",
+      "Homophily is defined on every compatible completion exactly when each sampled trait class has a positive reported degree total; preferential recruitment requires at least one nonseed, and undefined functionals are represented explicitly rather than assigned a real value.",
+      "The sharp endpoints concern the separate marginal ranges of homophily and preferential recruitment; no assertion that every point of the enclosing rectangle is jointly attainable is made, and extra graph restrictions would change the compatible set.",
+      "The Table 1 contradiction is conditional on the published totals and the degree sum 4487; it does not reconstruct Hartford microdata, determine corrected trait-specific numerical endpoints or adjudicate the printed upper limits.",
+      "The annealing theorem uses the corrected proposal, a finite quotient by unsampled labels and $T_t=(\\epsilon\\log t)^{-1}$ for $t\\ge2$, with $\\epsilon>0$ and a finite first temperature at least $(\\epsilon\\log2)^{-1}$; it concerns the specified homophily objective, and the closed-form endpoint results already avoid a search for these extrema."
+    ],
+    "corrections": [
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P012.proposal_counterexample",
+        "target_ids": [
+          "P012-T1"
+        ],
+        "what": "The printed proposal mechanisms are said to propose another compatible pair, but the explicit two-subject compatible state has a permitted unsampled-vertex branch producing an incompatible state for either fresh trait."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P012.corrected_proposal_preserves",
+        "target_ids": [
+          "P012-T2"
+        ],
+        "what": "The printed proposal can leave the compatible set; moving line 22 inside the sampled-vertex branch, deleting only isolated unsampled vertices and making an empty trait pool a no-op ensures that every corrected proposal preserves compatibility for admissible data."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P012.table_counterexample",
+        "target_ids": [
+          "P012-T3"
+        ],
+        "what": "The three printed Table 1 homophily lower limits exceed a compatible value for any admissible data with 527 sampled vertices, six seeds and degree sum 4487: the opposite-trait private-leaf completion has defined homophily at most $-178409/241987$, below all three printed limits."
+      },
+      {
+        "kind": "counterexample",
+        "lean_name": "AronowAudit.P012.a2_counterexample",
+        "target_ids": [
+          "P012-T12"
+        ],
+        "what": "Printed display (A2) keeps only one recruitment contribution, but an explicit compatible two-child example changes the full preferential-recruitment functional by $-5/12$, rather than either printed single-child value $-1/6$ or $-1/4$."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P012.no_positive_nondecreasing_zero_limit",
+        "target_ids": [
+          "P012-T16"
+        ],
+        "what": "The appendix calls its positive cooling schedule nondecreasing while requiring convergence to zero; Lean proves that no positive nondecreasing real sequence can have that limit."
+      }
+    ],
+    "key_results": [
+      {
+        "lean_name": "AronowAudit.P012.exact_h_region",
+        "target_ids": [
+          "P012-T6"
+        ],
+        "what": "For admissible recruitment data with positive reported degree totals in both trait classes, homophily has sharp closed-form lower and upper bounds over every compatible completion, attained by opposite-trait and same-trait private-leaf completions respectively."
+      },
+      {
+        "lean_name": "AronowAudit.P012.exact_p_region",
+        "target_ids": [
+          "P012-T7"
+        ],
+        "what": "For admissible data with at least one nonseed, preferential recruitment has sharp closed-form bounds obtained from obligatory later children and recruiter spare degrees, attained simultaneously across recruitment events by same-trait and opposite-trait private leaves."
+      },
+      {
+        "lean_name": "AronowAudit.P012.joint_identification",
+        "target_ids": [
+          "P012-T22"
+        ],
+        "what": "On the domain where both functionals are defined at every compatible completion, homophily and preferential recruitment are both point identified exactly when every sampled degree equals its recruitment degree, equivalently when every compatible graph is the recruitment skeleton."
+      },
+      {
+        "lean_name": "AronowAudit.P012.preferential_identification",
+        "target_ids": [
+          "P012-T22"
+        ],
+        "what": "Under admissibility, positive reported degree totals in both trait classes and at least one nonseed, preferential recruitment alone is point identified exactly when every sampled vertex that recruited a child has no spare degree."
+      },
+      {
+        "lean_name": "AronowAudit.P012.figure1_extrema",
+        "target_ids": [
+          "P012-T23"
+        ],
+        "what": "For the explicit Figure 1 data, the sharp homophily endpoints are $-5/8$ and $79/105$, and the sharp preferential-recruitment endpoints are $-11/80$ and $49/120$."
+      },
+      {
+        "lean_name": "AronowAudit.P012.Wave1.annealing_convergence_proof",
+        "target_ids": [
+          "P012-T24"
+        ],
+        "what": "For admissible data with positive reported degree totals in both sampled trait classes and at least one nonseed, the corrected chain on the full compatible state space modulo unsampled-vertex renaming, with a fixed kernel having exactly the corrected proposal support and the corrected logarithmic cooling schedule, places probability tending to one on the global maximizers of $J(h)=1/(1+\\epsilon+h)$ for $\\epsilon>0$, equivalently the global minimizers of homophily."
+      }
+    ],
+    "overview": "The work studies identification of homophily and preferential recruitment from respondent-driven sampling records with partially observed networks. The Lean development proves sharp marginal endpoint formulas over all compatible graph-and-trait completions, identification criteria and the four extrema in Figure 1. It also proves counterexamples to printed proposal mechanisms, proof steps and Table 1 lower limits under the stated network totals, and convergence of the corrected annealing chain for its concrete homophily objective.",
+    "work_id": "P012"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.cleanup_counterexample",
+          "line": 1003,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "counterexample_proved",
+          "target_id": "P012-T1",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.empty_trait_pool_counterexample",
+          "line": 1022,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "counterexample_proved",
+          "target_id": "P012-T1",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.proposal_counterexample",
+          "line": 499,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "counterexample_proved",
+          "target_id": "P012-T1",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.proposal_counterexample_b",
+          "line": 979,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "counterexample_proved",
+          "target_id": "P012-T1",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The four Lean statements are four explicit examples of how the proposal mechanisms as printed fail (P012-E001). In the first, $V_R=\\{1,2\\}$, vertex 1 recruits vertex 2, $\\mathbf d_R=(2,1)$ and $\\mathbf Z_R=(0,1)$, and the state has the edges $\\{1,2\\}$ and $\\{1,3\\}$ with $Z_3=0$. The statement asserts that this state is compatible, with $h=-1/3$ and $p=-1/2$, and that $U_{-1}$ is empty. It asserts further that, for either trait of the new vertex 4, the listing can return the graph with edges $\\{1,2\\}$, $\\{1,4\\}$ and $\\{3,4\\}$, and that this output is not compatible. The second statement is the same failure for three sampled vertices with recruitments $1\\to2\\to3$, $\\mathbf d_R=(1,3,1)$ and $\\mathbf Z_R=(0,1,0)$. In the third, a sampled seed has reported degree zero, line 27 removes it, and the output is not compatible. The fourth asserts that the second proposal mechanism has no execution at the compatible state with $V_{SU}=V_R=\\{1,2\\}$ and the single edge $\\{1,2\\}$, where no vertex is unsampled. In the Lean statements a raw state records finite sets of vertices and edges with a binary trait function. Simplicity, including two distinct active endpoints per edge, and compatibility are separate conditions. A mechanism is the relation between a state and the outputs of its executions, over all choices that the listing allows. The coin $B$ enters only through the two branches that it selects, and no test of compatibility is added.",
+        "headline": "A counterexample to the two proposal mechanisms of Web Appendix 2, as printed",
+        "location": "Web Appendix pp. 2–3 (supplement PDF pp. 2–3); the kernel $K$ is defined on Web Appendix p. 1"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.add_edge_base",
+          "line": 570,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.add_vertex_base",
+          "line": 590,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.cleanup_compatible",
+          "line": 627,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.corrected_graph_preserves",
+          "line": 667,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.corrected_proposal_preserves",
+          "line": 779,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.corrected_trait_preserves",
+          "line": 469,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.degree_add_step",
+          "line": 544,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.degree_remove_step",
+          "line": 530,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.recruitment_edge_sampled",
+          "line": 656,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.remove_edge_base",
+          "line": 557,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.replacement_properties",
+          "line": 606,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement concerns the two proposal mechanisms as corrected in P012-E001. In the corrected listing, line 22 lies inside the conditional of line 13, and line 27 removes only isolated unsampled vertices. As corrected, the trait flip returns the current state when no vertex is unsampled. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$). The statement asserts that every execution of either proposal mechanism, as corrected, from a compatible state returns a compatible state. A mechanism is the relation between a state and the outputs of its executions, over all choices of $i$, $j$, $u$, $u_1$, $u_2$ and of the traits of new vertices. The sets $U_{-i}$ and $U_{-j}$ are those of the current state, as printed, also at the second replacement. Two further statements assert the same for the edge proposal and for the trait flip separately. Eight supporting statements give the steps. Two give the change of each degree when an edge is removed or added, and three give the properties that an intermediate state, which need not be compatible, keeps through each operation of the listing. The others concern the vertex $u$ chosen at lines 5–11 or 14–20, the corrected line 27, and the statement that both ends of a recruitment edge are sampled. The main statement asserts the compatibility of the output only. What happens to the degrees in each branch, which the correction describes case by case, is not a separate assertion.",
+        "headline": "The two proposal mechanisms of Web Appendix 2, as corrected",
+        "location": "Web Appendix pp. 2–3 (supplement PDF pp. 2–3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.leafCompletion_compatible",
+          "line": 365,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T3",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.leaf_edge_card",
+          "line": 2386,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T3",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.opposite_leaf_counts",
+          "line": 2413,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T3",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.recruitment_skeleton_counts",
+          "line": 1823,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T3",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.spare_total_identity",
+          "line": 1861,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T3",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.table_counterexample",
+          "line": 2493,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "counterexample_proved",
+          "target_id": "P012-T3",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.table_numeric_gaps",
+          "line": 1305,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T3",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.uniform_integer_leaf_bound",
+          "line": 1280,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T3",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.uniform_leaf_bound",
+          "line": 1266,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T3",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is stated for all observed data with the published totals, as the argument of P012-N002 is, and it uses no individual-level data of the study. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$), with $n=527$, $|M|=6$ and $\\sum_{i\\in V_R}d_i=4{,}487$. Let $a$, $b$ and $c_R$ be the numbers of recruitment edges joining two vertices of trait 1, two vertices of trait 0, and unlike vertices. The statement concerns the pair that consists of the recruitment edges and, for each sampled vertex $i$, exactly $d_i-d_i^r$ new unsampled neighbors of degree one with trait $1-Z_i$. It asserts that this pair is compatible, that $S=3{,}445$ and $a+b+c_R=521$, and that $h$ is defined at the pair, with $h=\\frac{4ab-(c_R+3445)^2}{(2a+c_R+3445)(2b+c_R+3445)},\\qquad h\\le-\\frac{1462}{1983},\\qquad h\\le-\\frac{178409}{241987}.$ It asserts also that $h$ is below each of the printed limits $-0.7027$, $-0.6918$ and $-0.7179$. Three supporting statements give the arithmetic: the first bound for nonnegative real $a$, $b$, $c_R$ with sum $521$, the second for nonnegative integers, with equality at $(260,261,0)$ and $(261,260,0)$, and the exact differences between the printed limits and $-1462/1983$. Five others assert the graph steps: the constructed pair is compatible, the recruitment graph has $n-|M|$ edges, $S=\\sum_{i\\in V_R}d_i-2(n-|M|)$, exactly $S$ edges are added, and the constructed graph has $a$, $b$ and $c_R+S$ edges of the three kinds. The statements do not determine whether the numerical search stopped short of the minimum or used degrees different from those of the nomination network.",
+        "headline": "A counterexample to the three lower limits of $I_h$ in Table 1, as printed",
+        "location": "Table 1, p. 158 (PDF p. 6); the network counts are on p. 156 (PDF p. 4); Definitions 3 and 4, p. 155 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.corrected_table_bound",
+          "line": 2548,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.table_degree_converse",
+          "line": 2569,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements cover the two cases of P012-N002. In the first, the observed data are admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$), with $n=527$, $|M|=6$ and $\\sum_{i\\in V_R}d_i=4{,}487$. Let $L$ be the infimum of $h$ over the compatible pairs at which $h$ is defined. The statement asserts that $L\\le-1462/1983$ and $L\\le-178409/241987$, and that the printed limits $-0.7027$, $-0.6918$ and $-0.7179$ exceed $L$ by at least $685459/19830000$, $450803/9915000$ and $384043/19830000$. The lower limit is an infimum here, and the statement does not assume that it is attained. The second statement is the converse. Let a graph have degrees at the sampled vertices with sum $4{,}487$. Let the observed data be admissible, with $n=527$ and $|M|=6$, and such that $L$ lies within $0.00005$ of one of the three printed limits, the tolerance of rounding to four decimals. The statement asserts that the reported degrees do not have sum $4{,}487$, that some $d_i$ differs from the degree of $i$ in that graph, and that the graph is not compatible with the data. The graph stands for the nomination network, which is not published, and it is arbitrary apart from its degree sum. Neither statement asserts a value for a lower limit.",
+        "headline": "The three lower limits of $I_h$ in Table 1, as corrected: the bound that each limit satisfies",
+        "location": "Table 1, p. 158 (PDF p. 6); the network counts are on p. 156 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T5",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.exact_h_lower",
+          "line": 2711,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T5",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement gives the exact lower limit for which P012-N002 gives an upper bound. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$). Let $s_i=d_i-d_i^r$ and $S=\\sum_{i\\in V_R}s_i$, and let $a$, $b$ and $c_R$ be the numbers of recruitment edges joining two vertices of trait 1, two vertices of trait 0, and unlike vertices. Suppose that $S>0$, or that $2a+c_R>0$ and $2b+c_R>0$. The statement asserts that $\\frac{4ab-(c_R+S)^2}{(2a+c_R+S)(2b+c_R+S)}$ is the least value of $h$ over the compatible pairs at which $h$ is defined. It asserts also that this value is attained at the pair in which every spare edge-end of a sampled vertex has its own unsampled neighbor of the opposite trait. The Lean statement writes the expression as $1-c/(2a+c)-c/(2b+c)$ with $c=c_R+S$, which equals the fraction above under the stated condition. The minimum is over the pairs at which $h$ is defined, so the statement does not need the stronger condition under which $h$ is defined at every compatible pair. The statement is general and does not mention the application. For the totals of p. 156, the statement on the printed limits asserts that $S=3{,}445$. The edge counts $(a,b,c_R)$ for the three traits are not published, and no numerical limit is asserted.",
+        "headline": "The three lower limits of $I_h$ in Table 1, as corrected: the exact lower limit",
+        "location": "Table 1, p. 158 (PDF p. 6); the network counts are on p. 156 (PDF p. 4); the computation is described on pp. 156–157 (PDF pp. 4–5)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.binary_edge_counts",
+          "line": 1631,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.compatible_edge_counts",
+          "line": 2330,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.compatible_filtered_edge_bounds",
+          "line": 2302,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.count_bounds_imply_h_bounds",
+          "line": 1219,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [
+            "H064"
+          ],
+          "lean_name": "AronowAudit.P012.exact_h_region",
+          "line": 2774,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.extra_edge_budget",
+          "line": 2271,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.graph_homophily_formula",
+          "line": 2241,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.numerator_edge_identity",
+          "line": 2220,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.ordered_trait_adjacency",
+          "line": 2174,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.phi_anti_c",
+          "line": 1205,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.phi_formula",
+          "line": 1180,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.phi_mono_x",
+          "line": 1187,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.phi_mono_y",
+          "line": 1196,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_edge_card",
+          "line": 2599,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.same_leaf_counts",
+          "line": 2624,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.trait_degree_edge_incidence",
+          "line": 1607,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is the part of the corrected statement of P012-N007 that concerns $h$. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$), and suppose that $\\sum_{i\\in V_R:Z_i=z}d_i>0$ for $z=0$ and for $z=1$. Let $s_i=d_i-d_i^r$, $S_z=\\sum_{i\\in V_R:Z_i=z}s_i$ and $S=S_0+S_1$, let $a$, $b$ and $c_R$ be the numbers of recruitment edges joining two vertices of trait 1, two vertices of trait 0, and unlike vertices, and let $\\phi(x,y,c)=(4xy-c^2)/((2x+c)(2y+c))$. For a compatible pair let $x$, $y$ and $c$ be the numbers of edges joining two vertices of trait 1, two vertices of trait 0, and unlike vertices. The statement asserts that at every compatible pair the denominator of equation (1) equals $(2x+c)(2y+c)/(2(x+y+c))$ and is positive, and that $\\begin{aligned} &h=\\phi(x,y,c),\\qquad a\\le x\\le a+S_1,\\qquad b\\le y\\le b+S_0,\\qquad c_R\\le c\\le c_R+S,\\\\ &\\phi(a,b,c_R+S)\\le h\\le\\phi(a+S_1,b+S_0,c_R). \\end{aligned}$ It asserts also that both bounds are attained. The lower bound is attained at the pair in which every spare edge-end of a sampled vertex has its own unsampled neighbor of the opposite trait, and the upper bound at the corresponding pair with the same trait. Fifteen supporting statements give the steps. Five are the algebra of $\\phi$: the equality of its two forms, its monotonicity in each argument, and the step from the bounds on the counts to the bounds on $h$. Ten concern graphs. They reduce equation (1) to $\\phi(x,y,c)$, bound the counts, and give the counts at the pair that attains the upper bound. The bounds on the counts rest on the statement that each edge outside the recruitment graph uses a spare edge-end of a sampled vertex. Several supporting statements are stated for every simple graph, compatible or not, which is more general than the correction needs. In the Lean statements the sums of equation (1) run over ordered pairs of vertices, and $d_id_j/2|E_{SU}|$ is read as $d_id_j/(2|E_{SU}|)$.",
+        "headline": "The first sentence of Web Appendix 1, as corrected: closed forms for the extrema of $h$",
+        "location": "Web Appendix p. 1 (supplement PDF p. 1); Definitions 1, 3 and 4, p. 155 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T7",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.exact_p_region",
+          "line": 3103,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.later_children_susceptible",
+          "line": 2868,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.leaf_preferential_endpoints",
+          "line": 3071,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.leaf_susceptible_counts",
+          "line": 3003,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.matching_child_card",
+          "line": 2920,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.susceptible_decomposition",
+          "line": 2940,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.susceptible_fraction_bounds",
+          "line": 1247,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.susceptible_recruitment_edges",
+          "line": 2884,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T7",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is the part of the corrected statement of P012-N007 that concerns $p$. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$), with $n>|M|$, and let $s_i=d_i-d_i^r$. For a nonseed $j$ with recruiter $r=r_j$, let $B_j$ be the set of vertices recruited by $r$ at or after time $t_j$, let $b_j=|B_j|$, and let $a_j$ be the number of vertices of $B_j$ with trait $Z_r$. The statement asserts that, at every compatible pair and for every nonseed $j$, the set $S_r(t_j)$ contains $B_j$ and has $b_j+y_j$ elements, of which $a_j+q_j$ have trait $Z_r$, for some integers $0\\le q_j\\le y_j\\le s_r$, and that $\\frac{a_j}{b_j+s_r}\\le\\frac{a_j+q_j}{b_j+y_j}\\le\\frac{a_j+s_r}{b_j+s_r}.$ It asserts also that $p$ is defined at every compatible pair, with least and greatest values $\\begin{aligned} \\min_{\\mathcal C}p&=\\frac{1}{n-|M|}\\sum_{j\\notin M}\\Bigl[\\mathbf 1\\{Z_j=Z_{r_j}\\}-\\frac{a_j+s_{r_j}}{b_j+s_{r_j}}\\Bigr],\\\\ \\max_{\\mathcal C}p&=\\frac{1}{n-|M|}\\sum_{j\\notin M}\\Bigl[\\mathbf 1\\{Z_j=Z_{r_j}\\}-\\frac{a_j}{b_j+s_{r_j}}\\Bigr]. \\end{aligned}$ The least value is attained at the pair in which every spare edge-end of a sampled vertex has its own unsampled neighbor of the same trait, and the greatest at the corresponding pair with the opposite trait. Seven supporting statements give the steps. One is the pair of fraction inequalities above, for real numbers. Another asserts that the neighbors of $r$ in $S_r(t_j)$ along recruitment edges are exactly the vertices of $B_j$. The others decompose $S_r(t_j)$ and give the counts and the values of $p$ at the two extremal pairs. In the Lean statements the recruitment times enter through their order only. The set $S_r(t_j)$ consists of the neighbors of $r$ that are unsampled, or are sampled at time $t_j$ or later.",
+        "headline": "The first sentence of Web Appendix 1, as corrected: closed forms for the extrema of $p$",
+        "location": "Web Appendix p. 1 (supplement PDF p. 1); Definitions 2, 3 and 4, p. 155 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T8",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.result1_proof_counterexample",
+          "line": 809,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "counterexample_proved",
+          "target_id": "P012-T8",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is the first example of P012-E003. The data are $V_R=\\{1,2,3\\}$ with recruitments $1\\to2\\to3$, $\\mathbf d_R=(3,2,3)$ and $\\mathbf Z_R=(0,0,1)$, and $i=1$, $j=3$. The starting graph $G^1_{SU}$ has the edges $\\{1,2\\}$, $\\{2,3\\}$, $\\{1,3\\}$, $\\{1,4\\}$ and $\\{3,4\\}$, where $u=4$ is unsampled and $Z_4=0$. The statement asserts that this graph is compatible and that the hypotheses of Result 1 hold: vertex 1 precedes vertex 3 and did not recruit it, $d_1^r<d_1$ and $d_3^r<d_3$. It asserts that the graph contains $\\{1,4\\}$ and $\\{3,4\\}$, as the proof requires, and also $\\{1,3\\}$. It then asserts that the graph produced by the printed step is not compatible, and that $G^1_S$ and $G^2_S$ have the same edges. In that graph $\\{1,4\\}$ and $\\{3,4\\}$ are removed, $\\{1,3\\}$ is present, and the isolated vertex 4 is deleted. A graph is represented by a finite set of vertices and a finite set of two-element edges, so that adding an edge that is already present changes nothing. The statement contradicts a step of the proof and not Result 1.",
+        "headline": "A counterexample to the step from $G^1_{SU}$ to $G^2_{SU}$ in the proof of Result 1, as printed",
+        "location": "Appendix, p. 160 (PDF p. 8); Result 1 is stated on p. 155 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T9",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.result2_proof_counterexample",
+          "line": 838,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "counterexample_proved",
+          "target_id": "P012-T9",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is the second example of P012-E003, on the data of the first: $V_R=\\{1,2,3\\}$ with recruitments $1\\to2\\to3$, $\\mathbf d_R=(3,2,3)$ and $\\mathbf Z_R=(0,0,1)$, and $i=1$, $j=3$. The starting pair has the unsampled vertices $u_1=4$ and $u_2=5$ with $Z_4=0$ and $Z_5=1$, and the edges $\\{1,2\\}$, $\\{2,3\\}$, $\\{1,4\\}$, $\\{3,5\\}$, $\\{1,5\\}$ and $\\{3,4\\}$. The statement asserts that this pair is compatible and that the hypotheses of Result 2 hold, with $Z_1=0$, $Z_3=1$, $d_1^r<d_1$ and $d_3^r<d_3$. It asserts that the pair contains $\\{1,4\\}$ and $\\{3,5\\}$, as the proof requires, and also the edges $\\{1,5\\}$ and $\\{3,4\\}$ that the swap is to add. It then asserts that the pair obtained by the printed swap is not compatible. A graph is represented by a finite set of vertices and a finite set of two-element edges, so that an edge cannot be present twice. The statement does not include the remark of the finding that display (A1) then has no common denominator. It contradicts the sentence “Clearly $(G^2_{SU},\\mathbf Z^2_{SU})\\in\\mathrm{C}(G_R,\\mathbf d_R,\\mathbf Z_R)$” and not Result 2.",
+        "headline": "A counterexample to the swap in the proof of Result 2, as printed",
+        "location": "Appendix, p. 160 (PDF p. 8); Result 2 is stated on p. 155 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T10",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.result1",
+          "line": 3829,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T10",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is Result 1, with the two graphs of the corrected proof of P012-E003 as its witnesses. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$). Let $i,j\\in V_R$ be such that $i$ precedes $j$, $i$ did not recruit $j$, $d_i^r<d_i$ and $d_j^r<d_j$. The statement asserts that there exist two compatible pairs, with graphs $G^1_{SU}$ and $G^2_{SU}$, such that $\\{i,j\\}\\notin E^1_{SU}$ and $\\{i,j\\}\\in E^2_{SU}$. Let $G^1_S$ and $G^2_S$ be obtained from them by removing the unsampled vertices. The statement asserts that the edges of $G^1_S$ are the recruitment edges, that those of $G^2_S$ are the recruitment edges and $\\{i,j\\}$, and that both graphs are compatible in the sense defined at the opening of the printed proof. It asserts also that $G^1_{SU}$ has an unsampled vertex $u$ adjacent to $i$ and to $j$, and that $G^2_{SU}$ is obtained from it by removing $\\{i,u\\}$ and $\\{j,u\\}$, adding $\\{i,j\\}$ and deleting the unsampled vertices left isolated. The phrase “not identified” is rendered as the existence of two different compatible graphs, for $G_{SU}$ and for $G_S$. The two pairs satisfy all four conditions of Definition 3, with traits, which is more than conditions 1, 3 and 4 that the proof uses. In one respect the statement is narrower than the corrected proof. It does not record that every other unsampled vertex of $G^1_{SU}$ is adjacent to one sampled vertex only, or that $u$ has no further neighbor.",
+        "headline": "Result 1, with its proof corrected",
+        "location": "Result 1, p. 155 (PDF p. 3); proof in the Appendix, p. 160 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T11",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.a1_exact_instance",
+          "line": 1804,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.compatible_same_graph",
+          "line": 3946,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_leaf_swap_graph",
+          "line": 3960,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_leaf_swap_value",
+          "line": 4110,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_swap_reversed",
+          "line": 4218,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_swap_true_edge_count",
+          "line": 4070,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.result2",
+          "line": 4233,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.result2_swap_formula",
+          "line": 4165,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.same_degree_h_denominator",
+          "line": 4055,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements contain Result 2 with the corrected proof of P012-E003. In both, the observed data are admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$), and $i,j\\in V_R$ satisfy $d_i^r<d_i$, $d_j^r<d_j$ and $Z_i\\ne Z_j$. No condition excludes a recruitment edge between $i$ and $j$. The starting graph consists of the recruitment edges and, for each $v\\in V_R$, $d_v-d_v^r$ new unsampled vertices adjacent to $v$ only. The vertex $u_1$ is one of those attached to $i$, and $u_2$ is one of those attached to $j$. The first statement gives each new vertex the trait of its sampled neighbor. It asserts that the starting pair and the pair after the swap are compatible, that $\\{i,u_2\\}$ and $\\{j,u_1\\}$ are absent before the swap, and that the two pairs have the same vertices, traits, degrees and number of edges. It asserts further that the denominator $D$ of equation (1) is positive and the same for both pairs, that $h_1-h_2=2/D\\ne0$, and that $h$ is not point identified. The second statement takes $Z_i=0$, $Z_j=1$, $Z_{u_1}=0$ and $Z_{u_2}=1$, as in the printed proof, with arbitrary traits at the other unsampled vertices. It asserts the same facts about the two pairs, together with $D=Q-Q^2/(2|E_{SU}|)$ for $Q=\\sum_kd_kZ_k$ and the middle expression of display (A1). Seven supporting statements give the steps of the swap and the instance of the finding, with $h_1=1/3$, $h_2=-1$ and $D=3/2$. Here $h$ is point identified when it takes exactly one value over the compatible pairs at which it is defined.",
+        "headline": "Result 2 and display (A1), with the proof corrected",
+        "location": "Result 2, p. 155 (PDF p. 3); proof and display (A1) in the Appendix, p. 160 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T12",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.a2_counterexample",
+          "line": 865,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "counterexample_proved",
+          "target_id": "P012-T12",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is the example of P012-E002. The data are $V_R=\\{1,2,3\\}$, where the seed 1 recruits vertex 2 and then vertex 3, with $\\mathbf d_R=(3,1,1)$ and $Z_1=Z_2=Z_3=1$. The graph has the edges $\\{1,2\\}$, $\\{1,3\\}$ and $\\{1,4\\}$, where $u=4$ is unsampled, with $Z_4=1$ in the first pair and $Z_4=0$ in the second. The statement asserts that both pairs are compatible and that the hypotheses of the proof hold: $d_1^r<d_1$, vertex 1 recruited vertex 2, and $u$ is adjacent to no sampled vertex other than vertex 1. It asserts that $S_1(t_2)=\\{2,3,4\\}$ and $S_1(t_3)=\\{3,4\\}$, and that $p_1=0$ and $p_2=5/12$. It then asserts that $p_1-p_2=-5/12$, and that this differs from $-1/((n-|M|)|S_1(t_j)|)$ for $j=2$ and for $j=3$. Here $p_1$ and $p_2$ are the whole functional of equation (2), as the proof defines them. The set $S_1(t_j)$ is represented as the set of neighbors of vertex 1 that are unsampled, or are sampled at time $t_j$ or later.",
+        "headline": "A counterexample to display (A2) in the proof of Result 3, as printed",
+        "location": "Appendix, p. 160 (PDF p. 8); Result 3 is stated on p. 155 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T13",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.child_reciprocal_sum",
+          "line": 3630,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.flip_false_filter",
+          "line": 3507,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.flip_susceptible",
+          "line": 3467,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.flip_true_filter",
+          "line": 3487,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_flip_event_difference",
+          "line": 3529,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_flip_full_sum",
+          "line": 3594,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_leaf_member",
+          "line": 3678,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_susceptible_iff",
+          "line": 3472,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_trait_flip_difference",
+          "line": 3706,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.result3",
+          "line": 3775,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.unsampled_not_yet",
+          "line": 3455,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.unsampled_trait_update_preserves",
+          "line": 3665,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "Two Lean statements contain Result 3 with the corrected display of P012-E002. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$), and suppose that $i\\in V_R$ recruited $j$. In both statements $u$ is an unsampled vertex adjacent to $i$ and to no other sampled vertex, with $Z_u=1$ in the first pair and $Z_u=0$ in the second. The statements assert that both pairs are compatible, that every set $S_{r_\\ell}(t_\\ell)$ is the same in the two pairs, that $u\\in S_{r_\\ell}(t_\\ell)$ exactly when $r_\\ell=i$, and that $p_1-p_2=\\frac{1-2Z_i}{n-|M|}\\sum_{\\ell\\in V_R\\setminus M:\\,r_\\ell=i}\\frac{1}{|S_i(t_\\ell)|}\\ne0 .$ For $Z_i=1$ they assert that $p_1-p_2\\le-1/((n-|M|)|S_i(t_j)|)<0$, with equality exactly when $j$ is the only vertex recruited by $i$. The first statement assumes $d_i^r<d_i$, as Result 3 does. It asserts that there exists such a pair on the graph in which every spare edge-end of a sampled vertex has its own unsampled neighbor, and that $p$ is not point identified. The second statement starts from any compatible pair that has such a vertex $u$. Ten supporting statements give the steps. Among them are the statements that a change of an unsampled trait preserves compatibility and changes no set $S_{r_\\ell}(t_\\ell)$, and that the sum over the recruits of $i$ is at least any one of its terms. The case $Z_i=0$ is included, so the statements do not need the normalization $Z_i=1$ of the printed proof.",
+        "headline": "Result 3, with display (A2) corrected",
+        "location": "Result 3, p. 155 (PDF p. 3); proof and display (A2) in the Appendix, p. 160 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T14",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.domain_counterexamples",
+          "line": 912,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "counterexample_proved",
+          "target_id": "P012-T14",
+          "target_kind": "counterexample",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement combines four explicit examples of undefined functionals, including those of P012-E006. In the first, vertex 1 recruits vertex 2, $\\mathbf d_R=(1,1)$ and $\\mathbf Z_R=(0,0)$. The statement asserts that the single edge is a compatible pair at which the numerator and the denominator of equation (1) are both zero, so that $h$ has no value, while $p=0$. In the second, both vertices are seeds, $\\mathbf d_R=(1,1)$ and $\\mathbf Z_R=(0,1)$. The statement asserts that the edge $\\{1,2\\}$ is a compatible pair with $h=-1$, and that $p$ has no value at any state, since $n-|M|=0$. In the third, a single seed has reported degree zero, and at the compatible pair with no edge neither $h$ nor $p$ has a value. In the fourth, vertex 1 recruits vertex 2, $\\mathbf d_R=(1,4)$ and $\\mathbf Z_R=(1,1)$, and vertex 2 has three unsampled neighbors. The statement asserts that all eight assignments of their traits are compatible, with $p=0$, and that $h$ has no value when the three traits are 1. It asserts that $h=-3/5$, $-1/3$ and $-1/7$ at one assignment each with no trait, one trait and two traits equal to 1. In the Lean statements $h$ and $p$ are partial: they have a value only where the denominators of equations (1) and (2) are not zero, and no convention gives a value to $0/0$. The statement is narrower than the examples of the finding. It does not assert that the compatible pair of the first or of the third example is the only one, or that every compatible graph of the fourth example has the stated form.",
+        "headline": "A counterexample to Definitions 1, 2 and 4, as printed",
+        "location": "p. 155 (PDF p. 3); the same functionals are used in Web Appendix 1, p. 1 (supplement PDF p. 1)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T15",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.adjacency_row_sum",
+          "line": 1905,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.boundary_numerator_zero",
+          "line": 1931,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.degreeTraitSum_eq",
+          "line": 1580,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.degree_eq_neighbor_card",
+          "line": 1880,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.degree_sum_twice_edges",
+          "line": 1552,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.denominator_domain_criterion",
+          "line": 1589,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.denominator_sum_identity",
+          "line": 1516,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.full_domain_conditions",
+          "line": 2085,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.full_p_domain_conditions",
+          "line": 1045,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.homophily_domain",
+          "line": 1990,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.leaf_same_zero_trait",
+          "line": 2049,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.recruit_is_susceptible",
+          "line": 456,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.result_domain_conditions",
+          "line": 1661,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.sampled_trait_positive_transfer",
+          "line": 2027,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.trait_degree_partition",
+          "line": 1571,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.zero_degree_no_edge",
+          "line": 1912,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.zero_trait_degree",
+          "line": 1922,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "Five principal Lean statements and twelve supporting statements cover the corrected definitions of P012-E006. The first is for a graph with $m=|E_{SU}|>0$ and binary traits, where $D_z$ is the total degree of the vertices of trait $z$. It asserts that the denominator of equation (1) equals $D_1-D_1^2/(2m)=D_0D_1/(2m)$, that $h$ is defined exactly when $D_0>0$ and $D_1>0$, and that the numerator and the denominator are both zero when $D_1=0$ or $D_1=2m$. The second and the third are for admissible observed data (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$). They assert that $h$ is defined at every compatible pair if and only if $\\sum_{i\\in V_R:Z_i=z}d_i>0$ for $z=0$ and for $z=1$, and that $p$ is defined at every compatible pair if and only if $n>|M|$. A fourth statement asserts that the hypotheses of Result 2 imply the condition for $h$ and that those of Result 3 imply $n>|M|$. A fifth asserts that every nonseed $j$ belongs to $S_{r_j}(t_j)$ at every compatible pair. Twelve supporting statements give the identities behind the first statement, such as $\\sum_id_i=2m$, and the two directions of the second. In the Lean statements $h$ and $p$ are partial, with a value only where the denominators are not zero. An identification region over the whole compatible set requires the functional to be defined at every compatible pair. The first statement is stated for every simple graph with at least one edge, augmented or not.",
+        "headline": "Definitions 1, 2 and 4, as corrected",
+        "location": "p. 155 (PDF p. 3); the same functionals are used in Web Appendix 1, p. 1 (supplement PDF p. 1)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T16",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.cooling_properties",
+          "line": 1368,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.cooling_series_diverges",
+          "line": 1441,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.cooling_term_bound",
+          "line": 1422,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.harmonic_tail_log_bound",
+          "line": 1693,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.no_positive_nondecreasing_zero_limit",
+          "line": 1347,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.printed_first_temperature_undefined",
+          "line": 1357,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T16",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "Six Lean statements cover the two parts of P012-E007. All six are statements of real analysis, and none involves the chain. Two concern the printed wording. One asserts that no sequence of positive numbers is nondecreasing and tends to zero, and the other that no real number $T$ satisfies $T\\epsilon\\log1=1$, so that the printed $T_1$ has no value. The third concerns the corrected schedule, with $\\epsilon>0$, a first value $T_1\\ge(\\epsilon\\log2)^{-1}$ and $T_t=(\\epsilon\\log t)^{-1}$ for $t\\ge2$. It asserts that this sequence is positive and nonincreasing, is strictly decreasing from $t=2$ on, and tends to zero. The fourth asserts that $\\exp[-D^*/T_t]=t^{-D^*\\epsilon}\\ge1/t$ for real $t\\ge2$ when $0\\le D^*\\epsilon\\le1$. The fifth asserts that the partial sums of $\\sum_{t\\ge2}\\exp[-D^*/T_t]$ tend to infinity, also after any finite first term is added, and the sixth that $\\sum_{t=2}^N1/t\\ge\\log((N+1)/2)$. The cooling sequence is indexed from zero in Lean, with index $t-1$ for the printed $t$; the series uses index $t-2$ for its terms starting at $t=2$, and divergence is stated as a limit of partial sums. In these statements $D^*$ is any real number with $0\\le D^*\\epsilon\\le1$. The depth constant of the proof belongs to the statements on Proposition 1.",
+        "headline": "The cooling schedule of Web Appendix 1 and display (2) in the proof of Proposition 1, as corrected",
+        "location": "Web Appendix p. 1, the sentence after the definition of the kernel $K$, and p. 2, Proposition 1 and display (2) (supplement PDF pp. 1–2)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T17",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.induced_compatibility",
+          "line": 1063,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T17",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The Lean statement is the general assertion behind the corrected sentence of P012-N005. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$). Let $G_{SU}$ satisfy conditions 1, 3 and 4 of Definition 3, and let $G_S$ be obtained from it by removing the unsampled vertices and the edges at them. The statement asserts that $G_S$ is compatible in the sense defined at the opening of the proof: its vertex set is $V_R$, it contains the recruitment edges, and the degree of each $i\\in V_R$ is at most $d_i$. It asserts also that $G_S$ satisfies condition 4 of Definition 3, with the degree of every $i\\in V_R$ equal to $d_i$, if and only if $G_{SU}$ has no unsampled vertex. Applied to the proof, the statement says that $G^1_S$ and $G^2_S$ satisfy the definition given at its opening, and that they satisfy condition 4 of Definition 3 only if the augmented graph has no unsampled vertex. The hypothesis on $G_{SU}$ involves the graph only, as in the proof, and places no condition on the traits. A graph is represented by a finite set of vertices and a finite set of two-element edges, and every edge of an augmented graph has a sampled endpoint. The example of the finding with two seeds is not a separate statement.",
+        "headline": "The last step of the proof of Result 1, as corrected",
+        "location": "Appendix, p. 160 (PDF p. 8), last sentences of the proof of Result 1; Definition 3, p. 155 (PDF p. 3)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T18",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.homophily_arguments",
+          "line": 1121,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T18",
+          "target_kind": "corrected_statement",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The correction of P012-N006 changes notation, and its formal content is that $h$ depends on the augmented graph and its traits only. The Lean statement takes two compatible pairs, each with its own admissible observed data (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$). Suppose that the two pairs have the same vertices, the same edges and the same traits at these vertices. The statement asserts that $h$ is defined at both pairs or at neither, and that it has the same value where it is defined. The recruitment graphs, the recruitment times and the seeds of the two data sets may differ. In the Lean file $h$ takes a graph and its traits as its only arguments, in agreement with equation (1). The hypotheses that the data are admissible and the pairs compatible are not needed for the conclusion, and they keep the statement within the setting of the paper. The inequality $h(G^1_{SU},\\mathbf Z^1_{SU})\\ne h(G^2_{SU},\\mathbf Z^2_{SU})$ itself belongs to the statements on Result 2.",
+        "headline": "The arguments of $h$ in the proof of Result 2 and in the sentence after equation (2), as corrected",
+        "location": "Appendix, p. 160 (PDF p. 8), proof of Result 2, four occurrences; p. 155 (PDF p. 3), sentence after equation (2)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T19",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.pair_edge_eq",
+          "line": 36,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T19",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_PrintedRefutations.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.printed_proposal_preserves_refuted",
+          "line": 7,
+          "module": "AronowAudit.P012.P012_PrintedRefutations",
+          "status": "counterexample_proved",
+          "target_id": "P012-T19",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement negates the printed claim that the proposal mechanisms preserve compatibility. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$). The statement asserts that, for some such data, an execution of the first or of the second proposal mechanism as printed, from a compatible state, returns an incompatible state. The listing is read as ordinary pseudocode: line 22 runs also when $j$ is unsampled, line 27 removes every isolated vertex, and the second proposal mechanism has no execution when no vertex is unsampled. A mechanism is the relation between a state and the outputs of its executions, over all choices that the listing allows, and no test of compatibility is added. The counterexamples of P012-E001 address the positive preservation claim. The Lean file records the printed preservation claim as a definition; no proof assumes that claim. The sentences of Web Appendix 2 on the connectedness of the compatible set and on a well-mixing sequence are not part of this claim. A second, auxiliary statement asserts that two unordered pairs of vertices are equal exactly when their elements agree in one of the two orders. It serves to simplify the explicit examples.",
+        "headline": "The two proposal mechanisms of Web Appendix 2, as printed",
+        "location": "Web Appendix pp. 2–3 (supplement PDF pp. 2–3); the kernel $K$ is defined on Web Appendix p. 1 (supplement PDF p. 1)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T20",
+      "kind": "result_touched_by_finding",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P008/Wave1/Gap/WretiredunstatedB1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.Wave1.printed_table_intervals_refuted",
+          "line": 82,
+          "module": "AronowAudit.P008.Wave1.Gap.WretiredunstatedB1",
+          "status": "counterexample_proved",
+          "target_id": "P012-T20",
+          "target_kind": "result_touched_by_finding",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The listed statement proves that no three admissible data sets with the same recruitment history and degrees, $n=527$, $|M|=6$ and total reported degree $4{,}487$ can have all six homophily-interval endpoints within $0.00005$ of the printed limits. The contradiction already follows from the sex lower limit: a compatible pair has $h\\le-1462/1983$, below $-0.7027$ even allowing for rounding (P012-N002). This is a conditional refutation using the published totals, not a recomputation from the Hartford observations. If the bounds use the nomination-network degrees, those totals apply; otherwise the comparison concerns different networks. The statement gives neither the actual corrected endpoints nor a conclusion about the unavailable implementation.",
+        "headline": "Table 1, the column $I_h$, as printed",
+        "location": "Table 1, p. 158 (PDF p. 6); the text that presents it is on pp. 156–157 (PDF pp. 4–5)"
+      }
+    },
+    {
+      "credited": false,
+      "excluded_associations": [
+        {
+          "lean_name": null,
+          "status": "not_applicable"
+        }
+      ],
+      "id": "P012-T21",
+      "kind": "result_touched_by_finding",
+      "results": [],
+      "text": {
+        "body": "The sentence says that there are no general closed-form expressions for the extrema of $h$ and $p$ on $\\mathcal C(G_R,\\mathbf d_R,\\mathbf Z_R)$. Here “closed form” is not a defined mathematical notion. The formal content of the correction is supplied by the two statements that give the four extrema explicitly, for $h$ and for $p$ (P012-N007).",
+        "headline": "The first sentence of Web Appendix 1, as printed",
+        "location": "Web Appendix p. 1 (supplement PDF p. 1)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T22",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.homophily_endpoints_strict",
+          "line": 3327,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.joint_identification",
+          "line": 3393,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.joint_leaf_flip_witness",
+          "line": 4417,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.leaf_flip_edge_counts",
+          "line": 4302,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.phi_strict_anti_c",
+          "line": 4391,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.point_identified_iff_equal_extrema",
+          "line": 3184,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.preferential_endpoint_gap",
+          "line": 3207,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.preferential_endpoints_equal_iff",
+          "line": 3221,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.preferential_identification",
+          "line": 3258,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.private_edge_incidence",
+          "line": 4282,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.trait_spare_partition",
+          "line": 3283,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.zero_spare_compatible_unique",
+          "line": 3294,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T22",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The printed sentences are not numbered results, and the Lean statements give them an exact form, read as a claim about $h$ and $p$ together. Let the observed data be admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$). Suppose that $\\sum_{i\\in V_R:Z_i=z}d_i>0$ for $z=0$ and for $z=1$ and that $n>|M|$, so that $h$ and $p$ are defined at every compatible pair. The main statement asserts that $h$ and $p$ are both point identified if and only if $d_i=d_i^r$ for every $i\\in V_R$. It asserts that this condition holds if and only if every compatible graph has vertex set $V_R$ and the recruitment edges as its only edges, and that every compatible pair then carries the observed traits. It asserts also that $h$ is not point identified when $d_i>d_i^r$ for some $i\\in V_R$. A second statement asserts, under the same conditions, that $p$ alone is point identified if and only if $d_i=d_i^r$ for every $i\\in V_R$ that recruited at least one vertex. Ten supporting statements give the steps, among them the two compatible pairs that differ in the trait of one unsampled vertex and have different values of $h$. A functional is point identified when it takes exactly one value over the compatible pairs. The words “degenerate form” and “nearly identical” have no formal counterpart. The two conditions on the degrees of the traits are kept in the statement about $p$ alone, which does not need them.",
+        "headline": "The statement that $h$ and $p$ are not point identified unless the recruitment graph is identical to the underlying subgraph",
+        "location": "Abstract, p. 153 (PDF p. 1); introduction, p. 154 (PDF p. 2); text after Result 3, pp. 155–156 (PDF pp. 3–4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T23",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.figure1_endpoint_arithmetic",
+          "line": 1317,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T23",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.figure1_extrema",
+          "line": 3169,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T23",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement concerns the data read from panel A of Figure 1. There are five sampled vertices, the seed is vertex 1, and the recruitments are $1\\to2$, $1\\to4$, $2\\to3$ and $2\\to5$, in the order of the labels. The reported degrees are $\\mathbf d_R=(5,4,3,3,2)$, and the traits are $\\mathbf Z_R=(1,1,1,0,1)$ with gray coded as 1. The statement asserts that $h$ and $p$ are defined at every compatible pair, and that $\\min_{\\mathcal C}h=-\\frac58,\\qquad\\max_{\\mathcal C}h=\\frac{79}{105},\\qquad\\min_{\\mathcal C}p=-\\frac{11}{80},\\qquad\\max_{\\mathcal C}p=\\frac{49}{120},$ where each of the four values is attained at a compatible pair. In particular, the statement places every compatible value of $(h,p)$ in the rectangle $[-5/8,79/105]\\times[-11/80,49/120]$ of panel B. The extrema are over all compatible pairs, with no bound imposed on the number of unsampled vertices. A second statement is arithmetic only. It asserts that the four closed-form expressions for the extrema take these four values at the data of the figure, and it says nothing about the other compatible pairs. The values $-0.625$, $0.752$, $-0.138$ and $0.408$ printed in the caption are these fractions rounded to three decimals, and the rounding is not part of the Lean statements. The degrees are not printed as numbers and are read from the recruitment arrows and the pendant edges of panel A.",
+        "headline": "Figure 1: the extrema of $h$ and $p$ for the example with five sampled vertices",
+        "location": "Figure 1 and its caption, p. 156 (PDF p. 4)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P012-T24",
+      "kind": "headline_result",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/Wave1/Gap/GLP013P012P012B1c.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.Wave1.annealing_convergence_proof",
+          "line": 600,
+          "module": "AronowAudit.P012.Wave1.Gap.GLP013P012P012B1c",
+          "status": "proved",
+          "target_id": "P012-T24",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/Wave1/Gap/GLP013P012P012B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.Wave1.compatible_finite_up_to_names_proof",
+          "line": 179,
+          "module": "AronowAudit.P012.Wave1.Gap.GLP013P012P012B1",
+          "status": "proved",
+          "target_id": "P012-T24",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.compatible_objective_bounds",
+          "line": 4498,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T24",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.critical_depth_bound",
+          "line": 1741,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T24",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.critical_depth_singleton",
+          "line": 1783,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T24",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.homophily_global_range",
+          "line": 4475,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T24",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.objective_bounds",
+          "line": 1333,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T24",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.optimum_exact_zero_depth",
+          "line": 1770,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T24",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        },
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P012/P012_Identification.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P012.unsampled_card_bound",
+          "line": 2119,
+          "module": "AronowAudit.P012.P012_Identification",
+          "status": "proved",
+          "target_id": "P012-T24",
+          "target_kind": "headline_result",
+          "work_id": "P012"
+        }
+      ],
+      "text": {
+        "body": "The main Lean statement is Proposition 1 for the corrected chain. The observed data are admissible (distinct recruitment times, one earlier recruiter for each nonseed, and $d_i\\ge d_i^r$ for every $i\\in V_R$), and $h$ and $p$ are defined at every compatible pair (P012-E006). The states are the compatible pairs up to renaming of the unsampled vertices, given as a finite list. The kernel $K$ is any stochastic matrix on the states that is positive exactly on the pairs of states joined by a corrected proposal (P012-E001). It is arbitrary in this class, since the listing does not fix the probabilities of its choices. The temperatures are a first value $T_1\\ge(\\epsilon\\log2)^{-1}$ and $T_t=(\\epsilon\\log t)^{-1}$ for $t\\ge2$, with $\\epsilon>0$ (P012-E007), and a proposal is accepted with the probability $\\rho_t$ of Web Appendix 1 for $J=1/(1+\\epsilon+h)$. The statement asserts that the probability that the chain is in $\\mathcal M$ tends to one. It does not assume that the chain is irreducible or weakly reversible, and it does not assume the theorem of Hajek. The restriction $\\epsilon<1$ of the printed proof is absent. A second statement asserts that the compatible pairs form finitely many classes under renaming of the unsampled vertices. Four supporting statements are elementary bounds: the bounds $0<J\\le1/\\epsilon$ of display (1), the bounds $-1\\le h\\le1$, and the bound $S=\\sum_{i\\in V_R}(d_i-d_i^r)$ on the number of unsampled vertices of a compatible graph. Three others concern the constant $D^*$, with the wording of the proof taken literally. Here $D^*$ is the least $D$ such that every state has a path to $\\mathcal M$ along which the least value of $J$ is its value at the state minus $D$. One asserts that, if such a $D^*$ exists, then $0\\le D^*\\le\\max J$ and $D^*\\epsilon\\le1$. The existence of $D^*$ is a hypothesis there. The other two are cases in which the depth is zero: a state of $\\mathcal M$, and a chain with a single state. With this literal definition a depth common to all states can only be zero. The bound does not concern the largest of the depths of the individual states, which is a different quantity.",
+        "headline": "Proposition 1 of Web Appendix 1",
+        "location": "Web Appendix p. 2 (supplement PDF p. 2); the set-up is on Web Appendix p. 1"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "1511.05397",
+    "authors": [
+      "Forrest W. Crawford",
+      "P. M. Aronow",
+      "Li Zeng",
+      "Jianghong Li"
+    ],
+    "citation": "Forrest W. Crawford, P. M. Aronow, Li Zeng, and Jianghong Li (2018). Identification of homophily and preferential recruitment in respondent-driven sampling. American Journal of Epidemiology 187(1):153–160.",
+    "doi": "10.1093/aje/kwx208",
+    "title": "Identification of homophily and preferential recruitment in respondent-driven sampling",
+    "type": "Journal article",
+    "venue": "American Journal of Epidemiology",
+    "year": "2018"
+  },
+  "work_id": "P012"
+}

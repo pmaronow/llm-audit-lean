@@ -1,0 +1,595 @@
+{
+  "counts": {
+    "counterexample_proved": 4,
+    "proved": 11,
+    "results": 15,
+    "targets": 18
+  },
+  "overview": {
+    "areas": [
+      "regression-and-variance-estimation",
+      "asymptotic-statistics",
+      "optimization-and-computation"
+    ],
+    "caveats": [
+      "The diagnostic constructions condition on a fixed eight-score RD design; they establish observational nonidentification in those models rather than a diagnosis of the studies in the sample.",
+      "The default clustered-variance cancellation applies when every running-variable cell has at least four records, each cell is contained in one cluster, and estimator weights are constant within a cell. The separate algebraic residual identity holds for a cell of at least two records when all other records in that cell are used as neighbors. The plug-in expectation calculation assumes independent square-integrable cluster variables with common mean and variance; it does not certify consistency of a generic replacement estimator or regenerate the empirical tables.",
+      "Binary standardization and power calculations treat the saved standard error and table inputs as fixed supplied numbers; a valid individual baseline standard deviation and an empirical change in a study’s power indicator are not established.",
+      "The caliper model consists of iid nonnegative statistics from a density and uses the printed cutoff $1.96$, a symmetric window of half-width $0<h<1.96$ with positive probability mass, and a positive-probability conditioning event for its count. No density or equal-mass condition is established for the observed studies.",
+      "The pseudo-p calibration and its separate valid bias-aware alternative concern a fixed known bound and unit Gaussian variance. The bound-one counterexample uses the worst-case 95% half-length and bias equal to one; these results do not calibrate intervals with a data-estimated bound or variance.",
+      "For a positive interval half-length, a strict pseudo-p threshold of 0.05 corresponds to exclusion from a closed interval; a non-strict threshold also includes an interval endpoint touching zero.",
+      "P033-T16, P033-T17 and P033-T18 are recorded as not applicable to proof as empirical statements; their exclusion is separate from the mathematical corrections and counterexamples."
+    ],
+    "corrections": [
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P033.Wave1.diagnostic_correction_proof",
+        "target_ids": [
+          "P033-T2"
+        ],
+        "what": "The printed diagnosis of understated original uncertainty from larger reanalysis standard errors is qualified by conditional Gaussian RD constructions with identical observable laws but different true effects and interval coverages, showing that those observations do not identify the number of studies with poor coverage."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P033.clustered_variance_correction",
+        "target_ids": [
+          "P033-T4"
+        ],
+        "what": "The printed use of default clustered reanalysis variance is qualified for running-variable cells of at least four records nested in clusters, with estimator weights constant within each cell: the documented default nearest-neighbor residuals sum to zero within cells and erase the cluster scores, while explicit estimator constructions have positive sampling variance and an independent-cluster plug-in calculation recovers that variance in expectation."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P033.Wave1.binary_standardization_correction_proof",
+        "target_ids": [
+          "P033-T6"
+        ],
+        "what": "The individual Cohen’s-d reading of the count-standardized turnout analysis is corrected by $\\operatorname{SD}(Y)\\le1/2$ for a binary outcome, so $d=0.1$ implies an absolute population effect at most $1/20$ and, at the supplied fixed standard error, normal power strictly below 95%."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P033.Wave1.caliper_correction_proof",
+        "target_ids": [
+          "P033-T8"
+        ],
+        "what": "The printed no-selection interpretation of the caliper binomial benchmark requires an additional equal-mass condition. For iid nonnegative statistics from a density, a symmetric window about $1.96$ with half-width $0<h<1.96$ and positive mass, and a positive-probability window-count event, the conditional above-cutoff count is binomial with success probability equal to above-side mass divided by total window mass, which equals $1/2$ exactly when the two side masses agree."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P033.funnel_correction",
+        "target_ids": [
+          "P033-T11"
+        ],
+        "what": "The printed slope 1.96 and variance divisor are corrected algebraically: for positive standardized standard error $y$ and critical value $z>0$, the significance boundary is $y=x/z$, common standardization preserves the t-ratio, and the standard deviation differs from the variance except when the variance is zero or one."
+      },
+      {
+        "kind": "corrected_statement",
+        "lean_name": "AronowAudit.P033.Wave1.pseudo_p_correction_proof",
+        "target_ids": [
+          "P033-T13"
+        ],
+        "what": "The printed p-value label is narrowed to a pseudo p-value: for $h>0$, $p_*=2\\Phi(-z_{0.975}|t|/h)<0.05$ exactly when the closed interval $[t-h,t+h]$ excludes zero. In a unit-variance Gaussian model with known bias bound one, the worst-case 95% interval half-length and bias equal to one, this transform rejects a true null with probability above $1/5$ at nominal level $1/5$."
+      }
+    ],
+    "key_results": [],
+    "overview": "This empirical work reanalyzes regression discontinuity studies and reports comparisons of standard errors, significance and power. Its Lean records establish mathematical counterexamples and corrected statements about interpreting those comparisons, clustered residual cancellation, binary-outcome standardization, caliper tests, funnel-plot geometry and interval-derived pseudo p-values. The formalization does not establish the empirical fraction of studies with misleading inference or certify recomputed study-level tables.",
+    "work_id": "P033"
+  },
+  "targets": [
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T1",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GP010P033B1b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.Wave1.diagnostic_counterexample_proof",
+          "line": 190,
+          "module": "AronowAudit.P010.Wave1.Gap.GP010P033B1b",
+          "status": "proved",
+          "target_id": "P033-T1",
+          "target_kind": "counterexample",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The paper takes the larger standard errors and smaller $t$-statistics of the bias-corrected reanalysis to indicate that the original studies overestimated the accuracy of their estimates. The Lean statement gives a sharp RD design in which the same comparison arises although the original interval has exact coverage at the specified affine means. This is a pointwise property, not a coverage guarantee over a smoothness class; it does not establish validity of an original study’s analysis. The design is my construction and is not in the paper; it is of the same kind as the example in P033-N006, with other scores and weights. The mean of the outcome is $2+x$ without treatment and $6+x$ with treatment, and the cutoff is $0$. The design has eight units, with scores $\\pm1/5,\\pm2/5,\\pm3/5,\\pm4/5$ and independent $N(0,1)$ errors of known variance. Let $A$ be the local linear estimator with the triangular kernel and bandwidth $1$, and let $B$ be the estimator that subtracts from $A$ an estimate of its bias from a quadratic fit with the same kernel and bandwidth. Conditional on the scores, the statement asserts that $\\mathbb{E}[A]=\\mathbb{E}[B]=4$, which is the effect, that $\\operatorname{Var}(A)=83/25$ and $\\operatorname{Var}(B)=82/5$, and that the standard errors $s_A<s_B$ are the square roots of these variances. It asserts that $(A-4)/s_A$ and $(B-4)/s_B$ are standard normal, and that each interval of half-length $z_{.975}$ standard errors covers the effect with probability exactly $19/20$. For one fixed vector of outcomes, both estimates equal $4$ and $|t_B|<1.96<|t_A|$. The estimators are fixed linear combinations of the outcomes. Since the bandwidths and the error variance are fixed, the statement does not concern the bandwidths and variances that rdrobust estimates from data, and it asserts nothing about the studies of the paper.",
+        "headline": "A counterexample to the inference on p. 7 from the shift of the $t$-statistics in panel 3(c) to overestimated accuracy in the original studies",
+        "location": "Results, p. 7 (PDF p. 7), right column, paragraph on panel 3(c); abstract, p. 1 (PDF p. 1); introduction, p. 2 (PDF p. 2); Concluding remarks, p. 10 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T2",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GP010P033B1b.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.Wave1.diagnostic_correction_proof",
+          "line": 427,
+          "module": "AronowAudit.P010.Wave1.Gap.GP010P033B1b",
+          "status": "proved",
+          "target_id": "P033-T2",
+          "target_kind": "corrected_statement",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The correction is P033-N006. The corrected passages say that the reanalysis is consistent with understated uncertainty in the original studies, and that it establishes neither this nor the share of studies affected. This wording is not a mathematical statement, and the Lean statement asserts the argument behind it: the comparison of the two analyses does not determine whether the original inference is calibrated. It uses the design of the counterexample to the printed inference, with eight units at the scores $\\pm j/5$, the local linear estimator $A$ and its standard error $s_A=\\sqrt{83}/5$. A second model has the same control mean and errors, and its treated mean differs by a quartic polynomial that vanishes at the four treated scores and equals $20$ at the cutoff, which implies that its effect is $24$. The statement asserts that, given the eight scores, the outcomes have the same law under the two models, and so does every measurable function of them. Under the second model $A$ has bias $-20$ and the interval $A\\pm z_{.975}s_A$ covers the effect with probability at most $1/25$, while under the first the coverage is $19/20$. Next, suppose that there are $N\\ge1$ independent studies, and that those in an arbitrary subset $S$ follow the second model. Then the law of all the data does not depend on $S$, exactly $|S|$ studies have coverage at most $1/25$, and there exists no measurable function of the data that equals $|S|$ almost surely for all $S$. In general, if $A\\sim N(\\tau,\\sigma_A^2)$ and $B\\sim N(\\tau,\\sigma_B^2)$ with $\\sigma_A,\\sigma_B>0$, then for all $c>0$ the intervals $A\\pm c\\,\\sigma_A$ and $B\\pm c\\,\\sigma_B$ each cover $\\tau$ with probability $2\\Phi(c)-1$, whatever the ratio $\\sigma_B/\\sigma_A$. The statement also contains the identity $\\operatorname{Var}(L-\\widehat\\beta)=\\operatorname{Var}(L)+\\operatorname{Var}(\\widehat\\beta)-2\\operatorname{Cov}(L,\\widehat\\beta)$ for square-integrable $L$ and $\\widehat\\beta$. The equality of laws is conditional on the eight scores, and it is not an equality of the laws of the two populations. The counts 27 of 39 and 28 of 39 in the corrected wording come from the replication files and are not part of the statement, which asserts nothing about the studies of the paper.",
+        "headline": "The diagnosis of the original studies in the abstract and on pp. 2, 7 and 10, as corrected",
+        "location": "Abstract, p. 1 (PDF p. 1); introduction, p. 2 (PDF p. 2); Results, p. 7 (PDF p. 7), paragraph on panel 3(c); Concluding remarks, p. 10 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T3",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/P033_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.clustered_variance_counterexample",
+          "line": 1558,
+          "module": "AronowAudit.P033.P033_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P033-T3",
+          "target_kind": "counterexample",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The reanalysis uses the default variance of rdrobust with the cluster variable of each study, and the paper treats the resulting standard errors as measures of sampling uncertainty. The Lean statement concerns a sharp RD design with clusters in which this variance estimate is $0$ for every possible outcome while the true variances are positive. It is the ten-cluster example of P033-N011, which is my construction and is not in the paper. Ten clusters of five records lie at $x=-5,\\dots,-1,1,\\dots,5$, the cutoff is $0$, and every record of cluster $g$ has the outcome $U_g$, where the $U_g$ are independent and uniform on $\\{-1,1\\}$. The estimators are the local linear one and its bias-corrected version, with the triangular kernel and bandwidths $h=b=6$. The statement asserts that both estimators have mean $0$, that their variances are $62/25$ and $10$, and that the estimated variance of each is $0$ for all $1024$ outcome vectors and every factor $f$. The conventional estimate is nonzero for $912$ of the outcome vectors and the bias-corrected one for $968$. When independent noise that is uniform on $\\{-1,1\\}$ is added to every record, the covariance matrix of each cluster is positive definite and the true variances are $372/125$ and $12$, while both estimated variances are still $0$ for every outcome. Independence is represented by the uniform distribution on all vectors of signs. The paper prints no formula for the variance. The residuals and the cluster scores follow my reading of the source code of the package, for a cell of at least four records that share a value of the running variable. The bandwidths are fixed, and the statement does not say that the package selects them on these data.",
+        "headline": "A counterexample to the default standard errors of rdrobust in the clustered reanalyses (pp. 7 and 9), read as estimates of sampling uncertainty",
+        "location": "Methodology, p. 7 (PDF p. 7); Power analysis and Table 2, p. 9 (PDF p. 9); Table 3, p. 10 (PDF p. 10); Figures 3 and 4, p. 8 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T4",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/P033_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.clustered_variance_correction",
+          "line": 1914,
+          "module": "AronowAudit.P033.P033_Audit",
+          "status": "proved",
+          "target_id": "P033-T4",
+          "target_kind": "corrected_statement",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The correction qualifies the default variance for clustered designs in which records of a cluster share values of the running variable, and it changes the first rows of Table 2 and of the election panel of Table 3. The Lean statement asserts the mathematics behind it, in five parts. First, for $m\\ge2$ outcomes $y_1,\\dots,y_m$ with sum $S$, the residuals $r_i=\\sqrt{(m-1)/m}\\,\\bigl(y_i-(S-y_i)/(m-1)\\bigr)$ equal $\\sqrt{m/(m-1)}\\,(y_i-S/m)$ and sum to $0$. Second, if every cell is a finite set of at least four records that lies inside one cluster and carries one weight, then every cluster score and the variance estimate are $0$, for all outcomes and every real factor $f$; this is broader than the positive factor of the package. Third, for every $n\\ge3$, let each side of the cutoff have $n$ clusters of five records, at the distances $j/(n+1)$ for $j=1,\\dots,n$ in units of the bandwidth, with the triangular kernel and the outcomes of the counterexample. The conventional estimator has variance $V_n=\\frac{12(4n^2+5n-1)}{5n(n-1)(n+1)},\\qquad nV_n\\to\\frac{48}{5},$ and variance $6V_n/5$ with independent record noise, while the estimated variance is $0$ for every outcome. Fourth, let $Z_1,\\dots,Z_G$ be $G\\ge2$ independent cluster variables that are square-integrable and have a common mean and a common variance. Then $\\mathbb{E}\\Bigl[\\frac{G}{G-1}\\sum_g a_g^2(Z_g-\\bar Z)^2\\Bigr]=\\operatorname{Var}\\Bigl(\\sum_g a_gZ_g\\Bigr),$ and the left side equals $62/25$ and $10$ for the two estimators of the ten-cluster example without noise, and $372/125$ and $12$ with noise. Fifth, $1/6-1/36=5/36$, $11/72-1/36=1/8$ and $5/48-1/36=11/144$ for Table 2, and $1/13-1/26=1/26$ and $1/26-1/26=0$ for Table 3. The third part is the design of P033-N011 with bandwidth $1/n$, reduced to the clusters of positive kernel weight; the other clusters and the bandwidth itself do not appear. The fourth part concerns cluster means and is not a variance estimator for a general RD design. The fifth part is arithmetic only: the saved shares, the weight of Broockman and Ryan (2016) and the failure of its corrected power to reach 60% at $d=0.1$ are premises from the replication files and do not appear in the statement. The corrected sentence of p. 7 and the cells at effect size $0.2$ are not part of the statement.",
+        "headline": "The default variance of rdrobust in the clustered reanalyses (pp. 7 and 9) and the entries of Tables 2 and 3 that rest on it, as corrected",
+        "location": "Methodology, p. 7 (PDF p. 7); Table 2 and the sentence on 17% of the analyses, p. 9 (PDF p. 9); Table 3, p. 10 (PDF p. 10), panel “Studies using election data”"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T5",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/P033_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.count_standardization_counterexample",
+          "line": 635,
+          "module": "AronowAudit.P033.P033_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P033-T5",
+          "target_kind": "counterexample",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The paper defines the effect size as the treatment effect divided by the standard deviation of the outcome. For Coppock and Green (2016) the replication files divide an effect on the probability of voting by the standard deviation of counts of voters. The Lean statement gives an example in which this quotient is not Cohen’s $d$ and changes with the size of the cells. It is the two-cell example of P033-N010, which is my construction and is not in the paper. Each cell has 100 individuals with binary potential outcomes, and the two types of cell are equally likely. The statement asserts that the fuzzy RD effect is $(30-25)/(50-0)=1/10$ and that turnout without treatment has mean $1/4$ and variance $3/16$, so that $d^2=4/75$. The sample variances of the cell counts are $800$ on the eligible side and $450$ on the other side, and $(1/10)^2/800=1/80000\\ne4/75$. When every count is doubled, the effect and the mean $1/4$ are unchanged, the variance of the counts is $3200$, and the squared quotient is $1/320000$. In general, multiplying all outcome and treatment counts by $\\lambda>0$ leaves the ratio of the two differences unchanged and multiplies the sample standard deviation of the counts by $\\lambda$. The individuals are listed one by one, with 50 treated individuals in each eligible cell, five of whom are induced to vote in the future, and the variance $3/16$ enters as the value of $p(1-p)$ at $p=1/4$. The statement concerns this example and the scaling rule only, and it asserts nothing about the data of the study.",
+        "headline": "A counterexample to Cohen’s $d$ (p. 9) as computed for Coppock and Green (2016), where an effect on a probability is divided by the standard deviation of counts of voters",
+        "location": "Power analysis, p. 9 (PDF p. 9), left column; Table 2, p. 9, row 0.1; Table 3, p. 10 (PDF p. 10), panel “Studies not using election data”, row 0.1; Figure 4, p. 8 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T6",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/Wave1/Gap/GLP010P033P033B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.Wave1.binary_standardization_correction_proof",
+          "line": 696,
+          "module": "AronowAudit.P033.Wave1.Gap.GLP010P033P033B2",
+          "status": "proved",
+          "target_id": "P033-T6",
+          "target_kind": "corrected_statement",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The correction is P033-N010. The correction measures the outcome on the scale of the effect, which is an individual’s probability of voting, and it concludes that the study cannot reach 95% power at $d=0.1$. The Lean statement asserts the steps of this argument. A random variable $Y$ with values in $\\{0,1\\}$ and $P(Y=1)=p$ has variance $p(1-p)=1/4-(p-1/2)^2\\le1/4$, and $N\\ge2$ binary values have sample variance at most $N/(4(N-1))$. This implies that an effect of $0.1$ standard deviations is at most $1/20$ in the population, while the value $2.458$ that the counts give exceeds $1$, the largest difference of two probabilities. Let $f(a)=\\Phi(a-z)+\\Phi(-a-z)$ with $z=\\Phi^{-1}(0.975)$, which is the power of the two-sided 5% test under the normal approximation of p. 9. The statement asserts that $f(0)=1/20$ and that $f$ is strictly increasing on $[0,\\infty)$, with $f'(a)=\\varphi(a-z)-\\varphi(a+z)>0$ for $a>0$. Let $s=0.0154987506828555$ be the robust standard error that the replication files save for the study. For all $|\\tau|\\le1/20$, the statement asserts that $f(|\\tau|/s)\\le f\\bigl(1/(20s)\\bigr),\\qquad 0.8972619<f\\bigl(1/(20s)\\bigr)<0.8972620 .$ The standard deviations such that the power at $d=0.1$ equals 60%, 80% and 95% lie in the intervals $(0.3430295,0.3430296)$, $(0.4342101,0.4342102)$ and $(0.5587016,0.5587017)$, and the last exceeds $1/2$. When the standard deviation is that of a sample of $N\\ge31{,}731$ binary values, the power at $d=0.1$ is at most $0.8972711$. The two cells become $(15/4-1)/36=11/144$ and $(11/4-1)/10=7/40$, and $(|\\beta|/\\sigma)/(\\mathrm{SE}/\\sigma)=|\\beta|/\\mathrm{SE}$ for every $\\sigma>0$ and $\\mathrm{SE}>0$. The standard error $s$, the number $31{,}731$ and the shares $15/4$ of $36$ and $11/4$ of $10$ are premises from the replication files. The bound on the power holds under the normal approximation with this fixed standard error, and it is not a bound on the exact power of the test.",
+        "headline": "Cohen’s $d$ (p. 9) for Coppock and Green (2016) and the two cells of Tables 2 and 3 that depend on it, as corrected",
+        "location": "Power analysis, p. 9 (PDF p. 9), left column; Table 2, p. 9, row 0.1, column 95; Table 3, p. 10 (PDF p. 10), panel “Studies not using election data”, row 0.1, column 95"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T7",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/Wave1/Gap/GLP010P033P033B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.Wave1.caliper_counterexamples_proof",
+          "line": 1466,
+          "module": "AronowAudit.P033.Wave1.Gap.GLP010P033P033B2",
+          "status": "proved",
+          "target_id": "P033-T7",
+          "target_kind": "counterexample",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The paper computes the $p$-values of Table 1 from a binomial distribution with success probability $1/2$, on the ground that a study is equally likely to fall just above or just below $1.96$ when the threshold plays no part in publication. The Lean statement describes populations of independent studies, all of which are published, in which this probability is not $1/2$. They are the examples of P033-N004 and one further family, and they are my constructions. Let $c=49/25$, and let $p_h$ be the probability that a statistic in $[c-h,c+h]$ lies above $c$. For the density $x/8$ on $[0,4]$ and the three windows of the paper, the statement asserts that $p_h=21/40$, $43/80$ and $11/20$, and it states the binomial tails at the counts of Table 1 as exact fractions, among them $\\sum_{j=14}^{19}\\binom{19}{j}\\Bigl(\\frac{11}{20}\\Bigr)^{j}\\Bigl(\\frac{9}{20}\\Bigr)^{19-j}=\\frac{50930691593528557166389}{655360000000000000000000}>\\frac1{20}.$ With 19 studies in the 20% window, the test at the 5% level rejects exactly when at least 14 lie above $c$, and given 19 studies in the window it rejects with the probability displayed. For the densities $(m+1)x^m/4^{m+1}$ on $[0,4]$, which are smooth and positive on every window, $p_h\\to1$ as $m\\to\\infty$ at each fixed $0<h<c$. Last, if each statistic is $|T|$ with $T\\sim N(\\theta,1)$, then in the 20% window $p_h$ lies in $[0.644747758104,0.644747758105]$ for $\\theta=7/2$, where the tail at 14 of 19 lies in $[0.280413461677,0.280413461678]$, and in $[0.318944499071,0.318944499072]$ for $\\theta=0$. The studies are represented by independent draws from the density, with no selection step. The rejection probability given 19 studies in the window is stated under the hypothesis that this event has positive probability. The threshold is the printed $1.96$ and not the unrounded quantile, and the statement contains no value of $p_h$ for the 45 studies of the paper.",
+        "headline": "A counterexample to the equal success probability of the caliper test (p. 5) under the null hypothesis that the 5% level plays no part in publication",
+        "location": "p. 5 (PDF p. 5), left column, paragraph beginning “Table 1 presents the results from the caliper tests”, and Table 1"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T8",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/Wave1/Gap/GLP010P033P033B3.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.Wave1.caliper_correction_proof",
+          "line": 701,
+          "module": "AronowAudit.P033.Wave1.Gap.GLP010P033P033B3",
+          "status": "proved",
+          "target_id": "P033-T8",
+          "target_kind": "corrected_statement",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The correction says that the entries of Table 1 are binomial tails under a working null of equal probability mass on the two sides of $1.96$ within each window, and that the absence of selection does not imply this null. The Lean statement asserts the mathematics of the corrected passage in P033-N004. Let $f$ be a probability density on $[0,\\infty)$, let $c=49/25$, the printed threshold, and $0<h<c$, and let $A_h$ and $B_h$ be the integrals of $f$ over $[c,c+h]$ and $[c-h,c]$, with $A_h+B_h>0$ and $p_h=A_h/(A_h+B_h)$. Suppose that $M$ independent draws are taken from $f$, and let $n$ be an integer such that the event of $n$ draws in the window has positive probability. Given this event, the number of draws above $c$ is binomial with parameters $n$ and $p_h$. The statement asserts that $p_h=1/2$ if and only if $A_h=B_h$, and that this holds when $f(c+u)=f(c-u)$ for $0<u<h$. If $f$ is nonincreasing on the window, then $p_h\\le1/2$ and every upper tail is at most the tail at $1/2$; if $f$ is nondecreasing, the inequalities are reversed. If $f\\ge a>0$ and $f$ is $L$-Lipschitz on the window, then $|p_h-1/2|\\le Lh/(4a)$. If $f$ is continuous at $c$ and $f(c)>0$, then $p_h\\to1/2$ as $h\\downarrow0$, and if $f$ is also differentiable at $c$, then $p_h-1/2=hf'(c)/(4f(c))+o(h)$. Finally, the tails at $1/2$ for 9 of 12, 11 of 15 and 14 of 19 are $299/4096$, $1941/32768$ and $2083/65536$. The studies are represented by independent draws from $f$, all of them published, and a statistic equal to $c$ is counted above it, which has probability zero. The statement makes no claim about the density of the statistics of the 45 studies, and the corrected sentences on interpretation are not part of it.",
+        "headline": "The null hypothesis of the caliper test (p. 5) and the reading of the $p$-values of Table 1, as corrected",
+        "location": "p. 5 (PDF p. 5), left column, paragraph beginning “Table 1 presents the results from the caliper tests”, and Table 1"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T9",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P010/Wave1/Gap/GP010P033B2.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.Wave1.native_power_correction_proof",
+          "line": 225,
+          "module": "AronowAudit.P010.Wave1.Gap.GP010P033B2",
+          "status": "proved",
+          "target_id": "P033-T9",
+          "target_kind": "corrected_statement",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The correction is P033-E010. The correction computes the power of four clustered estimates with the robust standard error that the paper describes, which lowers six cells of Tables 2 and 3. The Lean statement asserts the mathematics behind it. If a statistic $T$ has the distribution $N(\\tau/s,1)$ with $s>0$, then $P(|T|>z)=f(|\\tau|/s)$, where $z=\\Phi^{-1}(0.975)$ and $f(a)=\\Phi(a-z)+\\Phi(-a-z)$. The function $f$ satisfies $f(0)=1/20$ and $f'(a)=\\varphi(a-z)-\\varphi(a+z)>0$ for $a>0$; it is strictly increasing on $[0,\\infty)$, and a value of $f$ in $(1/20,1)$ determines its argument. Next, let $\\mathcal L$ and $\\mathcal R$ be finite nonempty sets of cluster labels on the two sides of the cutoff, with $G_L=|\\mathcal L|$, $G_R=|\\mathcal R|$ and $G=|\\mathcal L\\cup\\mathcal R|$. Then the ratio $\\rho=G/(G_L+G_R)$ satisfies $1/2\\le\\rho\\le1$, and $\\rho<1$ if and only if some cluster lies on both sides. For $\\tau\\ne0$, $s>0$ and $0<\\rho<1$, the statement asserts that $f\\bigl(|\\tau|/(s\\sqrt\\rho)\\bigr)>f(|\\tau|/s)$. It then states the four ratios $19/23$, $185/199$, $139/214$ and $204/263$ and the arithmetic of the cells: $31/48-1/36=89/144$ and $113/144-1/36=109/144$ in Table 2, and $61/104-1/26=57/104$ and $81/104-1/26=77/104$ in Table 3. The effect is an arbitrary real number $\\tau$, and Cohen’s $d$ enters by taking $\\tau=d\\,\\sigma_0$. The cluster counts and the saved shares enter as numbers taken from the replication files, and the three crossings of a threshold are premises that do not appear in the statement. Nothing in the statement links the factor $\\sqrt\\rho$ to the saved powers, and it does not assert that the robust standard error measures the sampling variability of a clustered estimate.",
+        "headline": "The sentence on robust standard errors in the power analysis (p. 9) and six cells of Tables 2 and 3, as corrected for four clustered estimates",
+        "location": "Power analysis, p. 9 (PDF p. 9), left column; Table 2, p. 9; Table 3, p. 10 (PDF p. 10), panel “Studies using election data”"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T10",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/P033_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.funnel_counterexample",
+          "line": 174,
+          "module": "AronowAudit.P033.P033_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P033-T10",
+          "target_kind": "counterexample",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The paper says that the significance boundary of Figure 4 is a line through the origin with slope $1.96$, with the significant estimates to its right. It also says that the standardization uses the sample variance of the outcome among control units. The Lean statement gives two examples against this description; the first is the counterexample of P033-E003, and neither is in the paper. Let $x$ be the standardized estimate, on the horizontal axis, and $y$ the standardized standard error, on the vertical axis. The point $x=y=1/2$ lies inside the plotted ranges and has $|t|=x/y=1<49/25$, and the statement asserts that $(1/2)/(49/25)=25/98<1/2$. This implies that the line of slope $49/25$ reaches the height $1/2$ at $x=25/98$, and that the point lies to the right of that line although it is not significant. The second example is the three outcomes $0$, $2$ and $4$, with mean $2$, sample variance $4$ and sample standard deviation $2$. For an estimate $1$ with standard error $1/2$, dividing by the standard deviation gives the point $(1/2,1/4)$ and dividing by the variance gives $(1/4,1/8)$. The two points differ, and $x/y=2$ for both. The slope $1.96$ is written as $49/25$, and the examples contradict the printed description only: they do not concern the figure or the line that it draws.",
+        "headline": "A counterexample to the slope of $1.96$ and to the “sample variance” in the description of Figure 4 (p. 7)",
+        "location": "Results, p. 7 (PDF p. 7), right column, paragraph introducing Figure 4; Figure 4, p. 8 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T11",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/P033_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.funnel_correction",
+          "line": 191,
+          "module": "AronowAudit.P033.P033_Audit",
+          "status": "proved",
+          "target_id": "P033-T11",
+          "target_kind": "corrected_statement",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The correction is P033-E003. The corrected sentences say that Figure 4 is standardized by the sample standard deviation of the outcome among control units and that the boundary has slope $1/z_{.975}\\approx1/1.96$. The Lean statement asserts the algebra behind them, for the coordinates $x=|\\widehat\\tau|/s_0$ and $y=\\widehat{\\mathrm{SE}}/s_0$ and a critical value $\\zeta>0$. Dividing an estimate and its nonzero standard error by the same nonzero number leaves their ratio unchanged. For $y\\ne0$, $x/y=\\zeta$ if and only if $y=x/\\zeta$, and for $y>0$, $x/y\\ge\\zeta$ if and only if $y\\le x/\\zeta$, or equivalently $x\\ge\\zeta y$. The reciprocal of $49/25$ is $25/49$, and $25/49<1<49/25$. On the divisor, the statement asserts for $v\\ge0$ that $\\sqrt v=v$ if and only if $v\\in\\{0,1\\}$, and that $n\\ge2$ binary outcomes with $k$ ones have sample variance $k(n-k)/(n(n-1))$. For the 82 ones among the 568 control outcomes of Boas and Hidalgo (2011) this variance is $123/994$, and the saved divisor $\\delta=0.351770457441169$ satisfies $(\\delta-10^{-14})^2<\\frac{123}{994}<(\\delta+10^{-14})^2 .$ The critical value is an arbitrary positive number in the general parts, and $49/25$ stands for the printed $1.96$. The two counts and the saved divisor are premises from the replication files.",
+        "headline": "The two sentences on the standardization and the significance boundary of Figure 4 (p. 7), as corrected",
+        "location": "Results, p. 7 (PDF p. 7), right column, paragraph introducing Figure 4; Figure 4, p. 8 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T12",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/Wave1/Gap/GLP010P033P033B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.Wave1.pseudo_p_counterexample_proof",
+          "line": 645,
+          "module": "AronowAudit.P033.Wave1.Gap.GLP010P033P033B1",
+          "status": "proved",
+          "target_id": "P033-T12",
+          "target_kind": "counterexample",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "Figure S9 labels as a $p$-value the quantity $p_*=2\\Phi(-z|\\widehat\\theta|/h)$, where $h$ is the half-length of a 95% bias-aware interval and $z=\\Phi^{-1}(0.975)$. The Lean statement gives a model in which the interval has worst-case coverage exactly 95% and $p_*$ rejects a true null more often than the nominal level. It is the example of P033-E001, which is my construction and is not in the paper. Let $T\\sim N(\\theta+b,1)$ with $|b|\\le B$, and let $B=1$. The statement asserts that there exists a unique $H>0$ such that $\\Phi(H-1)-\\Phi(-H-1)=19/20$, and that $2.64614554821530<H<2.64614554821540$. For all $\\theta$ and all $|b|\\le1$, the interval $[T-H,T+H]$ covers $\\theta$ with probability at least $19/20$, with equality if and only if $|b|=1$. At $\\theta=0$ and $b=1$, with $p_*$ computed from $T$ and $H$, $0.23579196727091<P\\bigl(p_*\\le 1/5\\bigr)<0.23579196727101 .$ For $B=b=1/2$ the same probability lies between $0.20414905632765$ and $0.20414905632774$. In both models the statement asserts that $p_*$ is not a valid $p$-value for the null $\\theta=0$, where a valid $p$-value satisfies $P(p\\le\\alpha)\\le\\alpha$ under the null for every $|b|\\le B$ and every $\\alpha\\in(0,1)$. The half-length $H$ is defined as the smallest one whose coverage at $b=B$ is at least $19/20$, and all probabilities are those of the Gaussian law. The variance and the bound $B$ are known in the model. The intervals of the paper use a bound estimated from the data. The statement concerns the level $1/5$ in these two models, and it contains no rejection rate for the 46 estimates of the figure.",
+        "headline": "A counterexample to the label “RDHonest P-Value” of Figure S9 of the supplement",
+        "location": "Supplement, Figure S9, p. 18, and Section S9, p. 16; main text, p. 8 (PDF p. 8), right column"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T13",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/Wave1/Gap/GLP010P033P033B1.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.Wave1.pseudo_p_correction_proof",
+          "line": 877,
+          "module": "AronowAudit.P033.Wave1.Gap.GLP010P033P033B1",
+          "status": "proved",
+          "target_id": "P033-T13",
+          "target_kind": "corrected_statement",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The corrected labels call the vertical quantity of Figure S9 a pseudo $p$-value, which reproduces the 5% decision of the 95% interval and is not in general a valid $p$-value at other levels. The Lean statement asserts the facts on which the corrected caption rests. Let $t$ be an estimate, $h>0$ a half-length and $p_*=2\\Phi(-z|t|/h)$ with $z=\\Phi^{-1}(0.975)$. Then $p_*<1/20$ if and only if $|t|>h$, which holds if and only if $0\\notin[t-h,t+h]$, and $p_*\\le1/20$ if and only if $|t|\\ge h$. The other parts concern the model $T\\sim N(\\theta+b,1)$ with a known bound $|b|\\le B$, in which $H$ is the unique positive solution of $\\Phi(H-B)-\\Phi(-H-B)=19/20$ and $p_*$ is computed from $T$ and $H$. For all $B\\ge0$ and all $|b|\\le B$, the rule $p_*<1/20$ rejects the null $\\theta=0$ with probability at most $1/20$, with equality if and only if $|b|=B$. For $B=0$, the statement asserts that $H=z$ and that $p_*$ is the ordinary two-sided $p$-value, with $P(p_*\\le\\alpha)=\\alpha$ for every $\\alpha\\in(0,1)$. For $B=b=1$, it asserts that $P(p_*\\le1/5)>1/5$. Finally, for every $B\\ge0$, the function $p_B(t)=\\Phi(B-|t|)+\\Phi(-B-|t|)$ is continuous and strictly decreasing in $|t|$ from $1$ to $0$, it is a valid $p$-value for the null, and $p_B\\le1/20$ if and only if $p_*\\le1/20$. The model has variance $1$, while the corrected passage in P033-E001 states $p_B$ for a known variance $s^2$. The statement does not concern intervals whose bound is estimated from the data, and the 46 plotted values are not part of it.",
+        "headline": "The title, axis label and caption of Figure S9 of the supplement, as corrected",
+        "location": "Supplement, Figure S9, p. 18; main text, p. 8 (PDF p. 8)"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T14",
+      "kind": "counterexample",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/P033_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.interval_rule_counterexample",
+          "line": 220,
+          "module": "AronowAudit.P033.P033_Audit",
+          "status": "counterexample_proved",
+          "target_id": "P033-T14",
+          "target_kind": "counterexample",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "Section S4 says that a missing standard error was computed from the upper limit $U$ of a reported interval $[L,U]$ and the point estimate $\\beta$, which is the rule $s_U=(U-\\beta)/q$ with critical value $q$. The replication code computes $s_W=(U-L)/(2q)$. The Lean statement asserts, for two recorded rows, that the two rules give different numbers. For Klašnja and Titiunik (2017), the recorded values are $\\beta=-3/20$ and $[L,U]=[-213/1000,-101/1000]$. The statement asserts that $s_U=49/(1000q)$, $s_W=7/(125q)$ and $s_W/s_U=8/7$ for every $q>0$. At $q=49/25$ the two standard errors are $1/40$ and $1/35$ and the absolute $t$-statistics are $6$ and $21/4$, and the midpoint of the interval minus the estimate is $-7/1000$. For one estimate of Holbein (2016), the recorded values are $\\beta=79/1000$ and $[L,U]=[27/1000,132/1000]$. For all $q>0$, the statement asserts that $|t_W|/q=158/105$ lies strictly between $27/18$ and $28/18$ and that $|t_U|/q=79/53$ lies strictly between $26/18$ and $27/18$. If the bins are bounded by the multiples of $q/18$, as in the histograms of the paper, the two statistics then fall in adjacent bins. The first row is the example of P033-N003. The recorded estimates and intervals, the width of the bins and the rule that the code applies are premises from the replication files. The statement asserts nothing about which rule recovers the standard errors of the original studies.",
+        "headline": "A counterexample to the rule of Section S4 of the supplement for standard errors imputed from confidence intervals",
+        "location": "Supplement, Section S4, pp. 9–10; main text, p. 4 (PDF p. 4), right column, last sentence of the paragraph beginning “Figure 1 presents the distribution”"
+      }
+    },
+    {
+      "credited": true,
+      "excluded_associations": [],
+      "id": "P033-T15",
+      "kind": "corrected_statement",
+      "results": [
+        {
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext"
+          ],
+          "conditional_on": [],
+          "file": "AronowAudit/P033/P033_Audit.lean",
+          "highlight_ids": [],
+          "lean_name": "AronowAudit.P033.interval_rule_correction",
+          "line": 270,
+          "module": "AronowAudit.P033.P033_Audit",
+          "status": "proved",
+          "target_id": "P033-T15",
+          "target_kind": "corrected_statement",
+          "work_id": "P033"
+        }
+      ],
+      "text": {
+        "body": "The correction is P033-N003. The corrected entries say that the standard error is the width of the reported interval divided by twice the normal critical value. The Lean statement states this rule and relates it to the rule that Section S4 describes. For an interval $[L,U]$ of nominal level $1-\\alpha$ and $q=\\Phi^{-1}(1-\\alpha/2)$, the imputed standard error is $s_W=(U-L)/(2q)$, the statistic is $|t|=|\\beta|/s_W$, and a missing $p$-value is $2\\Phi(-|t|)$. The quantile is $\\Phi^{-1}(0.95)$ for a 90% interval and $\\Phi^{-1}(0.975)$ for a 95% interval. This first part is a definition, and it asserts no property of the rule. Let $s_U=(U-\\beta)/q$ be the rule of Section S4. For $L<U$ and $q>0$, the statement asserts that $2q\\,(s_W-s_U)=2\\beta-(L+U),$ which implies that the two rules agree if and only if $\\beta=(L+U)/2$, and that $s_W>s_U$ if and only if $\\beta>(L+U)/2$. If $L=\\beta-qs$ and $U=\\beta+qs$ for some $s>0$, then $s_W=s_U=s$. For the recorded row of Klašnja and Titiunik (2017), the statement asserts that $s_W=7/(125q)$ and $|t|=75q/28$ for every $q>0$, which are $1/35$ and $21/4$ at $q=49/25$. The definition is written for every $\\alpha$ such that the quantile is positive, which is broader than the two levels of the paper. The correction also deletes “reported $p$-values” from the sentence of p. 4, which has no formula and is not part of the statement.",
+        "headline": "The entries of Section S4 of the supplement on standard errors imputed from confidence intervals, as corrected",
+        "location": "Supplement, Section S4, pp. 9–10; main text, p. 4 (PDF p. 4), right column, last sentence of the paragraph beginning “Figure 1 presents the distribution”"
+      }
+    },
+    {
+      "credited": false,
+      "excluded_associations": [
+        {
+          "lean_name": null,
+          "status": "not_applicable"
+        }
+      ],
+      "id": "P033-T16",
+      "kind": "result_touched_by_finding",
+      "results": [],
+      "text": {
+        "body": "These passages state an empirical diagnosis of the 45 studies of the sample. The diagnosis is that the methods of inference of these studies were inappropriate and that more than half of them do not properly estimate their accuracy. What can be stated formally is the inference that the passages draw: a larger standard error and a smaller absolute $t$-statistic in the reanalysis show that the original analysis understated its uncertainty. This reading is mine, and the word “indicating” on p. 7 is evidential. The inference is the subject of the counterexample and of the corrected statement for P033-N006. The mathematical comparison alone does not determine whether the studies did understate their uncertainty.",
+        "headline": "The diagnosis of the original studies in the abstract and on pp. 2, 7 and 10, as printed",
+        "location": "Abstract, p. 1 (PDF p. 1); introduction, p. 2 (PDF p. 2); Results, p. 7 (PDF p. 7); Concluding remarks, p. 10 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": false,
+      "excluded_associations": [
+        {
+          "lean_name": null,
+          "status": "not_applicable"
+        }
+      ],
+      "id": "P033-T17",
+      "kind": "result_touched_by_finding",
+      "results": [],
+      "text": {
+        "body": "These passages describe a method and report tables of empirical shares. What the entries presuppose can be stated formally. It is that the default standard error of a clustered reanalysis estimates the sampling standard deviation of its estimator, so that the saved power is the normal power at that standard error. This reading is mine. For designs in which cells of the running variable lie inside clusters, it is the subject of the counterexample and of the corrected statement for P033-N011. The entries of the tables come from the data of the studies. The corrections P033-E010 and P033-N010 change other cells of the same tables and have their own formal statements.",
+        "headline": "The clustered reanalysis with the default settings of rdrobust (p. 7) and Tables 2 and 3, as printed",
+        "location": "Methodology, p. 7 (PDF p. 7); Power analysis and Table 2, p. 9 (PDF p. 9); Table 3, p. 10 (PDF p. 10)"
+      }
+    },
+    {
+      "credited": false,
+      "excluded_associations": [
+        {
+          "lean_name": null,
+          "status": "not_applicable"
+        }
+      ],
+      "id": "P033-T18",
+      "kind": "result_touched_by_finding",
+      "results": [],
+      "text": {
+        "body": "The first passage is a definition, which is correct in general. The others are two table cells, $0.10$ in Table 2 and $0.28$ in Table 3, which are empirical shares. What can be stated formally is the content of the definition: the standardized effect is the effect divided by the standard deviation of the same outcome on the same scale. For Coppock and Green (2016) the replication files do not compute this quantity, which is the subject of the counterexample and of the corrected statement for P033-N010. The sentence of p. 7 on Figure 4 uses a standardization of the same kind, and its word “variance” is the subject of P033-E003.",
+        "headline": "Cohen’s $d$ in the power analysis (p. 9) and the two cells of Tables 2 and 3 that it affects, as printed",
+        "location": "Power analysis, p. 9 (PDF p. 9), left column, and Table 2; Table 3, p. 10 (PDF p. 10)"
+      }
+    }
+  ],
+  "work": {
+    "arxiv_id": "2109.14526",
+    "authors": [
+      "Drew Stommes",
+      "P. M. Aronow",
+      "Fredrik Sävje"
+    ],
+    "citation": "Drew Stommes, P. M. Aronow, and Fredrik Sävje (2023). On the reliability of published findings using the regression discontinuity design in political science. Research and Politics 10(2):1–12.",
+    "doi": "10.1177/20531680231166457",
+    "title": "On the reliability of published findings using the regression discontinuity design in political science",
+    "type": "Journal article",
+    "venue": "Research and Politics",
+    "year": "2023"
+  },
+  "work_id": "P033"
+}

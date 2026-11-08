@@ -15,6 +15,8 @@ The source checker verifies exact imported source/evidence hashes, unchanged his
 
 The build command explicitly builds `AronowAudit.All`, then all 50 Challenge and Solution work entries separately. It also runs `#print axioms` for every current Solution theorem and rejects anything except `propext`, `Classical.choice` and `Quot.sound`. A bare `lake build` is not this complete check. `python3 scripts/build_current.py --work P038` checks only one work and is explicitly partial.
 
+CI provisions a disposable Ubuntu runner with additional swap for memory-intensive kernel computations. It checks P003 first, including its axioms, then completes the full library, all works and the complete axiom check. `--priority-work P003` changes the order without reducing that scope. Between completed build phases, the runner removes only generated setup JSON whose matching proof output and successful trace are complete; source, evidence and proof artifacts remain intact. Cleanup skips when a Lean/Lake compiler is active or its process state cannot be inspected. Runner resource provisioning is confined to GitHub-hosted Linux jobs.
+
 Challenge files intentionally contain `sorry` placeholders. The inherited supporting library also contains unused unfinished declarations. Successful compilation permits those declarations; the per-theorem axiom check is therefore essential to establish that a current proof does not rely on `sorryAx`. No source-wide absence of placeholders is claimed.
 
 ## Retained evidence

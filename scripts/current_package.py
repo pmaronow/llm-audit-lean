@@ -18,6 +18,17 @@ STANDARD_AXIOMS = {"propext", "Classical.choice", "Quot.sound"}
 DECISIONS = {"whole", "restricted", "refuted", "omitted"}
 CHALLENGE = re.compile(r"^SAP/P\d{3}[a-z]?/Challenge(?:/[^/]+)*\.lean$")
 
+# Reader annotations of the bound definitions, separate from certified outcomes.
+# P005b: Defs/Part7 and Defs/WholeW1; P015a: Defs/WholeW1.T8WholeStatement;
+# P029b: Defs/WholeW2.T27WholeStatement.
+READER_NOTES = {
+    "P005-T25": "The asymptotic result assumes invertibility of the noninteracted sample matrix for every treatment assignment at all sufficiently large sample sizes.",
+    "P005-T26": "The asymptotic result assumes invertibility of the noninteracted sample matrix for every treatment assignment at all sufficiently large sample sizes.",
+    "P005-T27": "The asymptotic result assumes invertibility of both arm sample matrices for every treatment assignment at all sufficiently large sample sizes.",
+    "P015-T8": "The square-link illustration permits misspecification of the working conditional-mean model.",
+    "P029-T27": "The counterexample refutes only the blanket claim that failure of Assumption 1 must cause bias. It does not refute the integral-limit or constant-score identities.",
+}
+
 
 def encoded(value):
     return (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode()
@@ -230,12 +241,13 @@ def work_guide(index, work):
         else:
             links = [f"[Explanation](../../{row['manifest']['path']})"]
         lines.append(f"| [{row['target_id']}](#{row['target_id'].lower()}) | {row['decision']} | {' · '.join(links)} |")
-    disclosures = [row for row in rows if row["restriction"] or row["omission_reason"]]
+    disclosures = [row for row in rows if row["restriction"] or row["omission_reason"] or row["target_id"] in READER_NOTES]
     if disclosures:
         lines += ["", "## Scope and restrictions", ""]
         for row in rows:
             lines += [f"<a id=\"{row['target_id'].lower()}\"></a>"]
-            disclosure = row["restriction"] or row["omission_reason"]
+            disclosure = " ".join(note for note in (
+                row["restriction"] or row["omission_reason"], READER_NOTES.get(row["target_id"])) if note)
             if disclosure:
                 lines += [f"**{row['target_id']} ({row['decision']}).** {disclosure}", ""]
     else:

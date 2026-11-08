@@ -16,7 +16,7 @@ Lean formalizations accompanying the [self-audit of P. M. Aronow’s work](https
 
 **Whole** covers the identified claim under its stated assumptions. **Restricted** proves a narrower statement or adds assumptions. **Refuted** supplies a counterexample to the precise formalized claim. **Omitted** has no current theorem. These labels do not certify an entire paper or every possible reading of its text.
 
-The code and statement reviews were produced with AI agents; adapted third-party code is credited in [NOTICE](NOTICE). A checked proof establishes its formal statement. Whether that statement captures the intended paper claim is a separate judgment. Some results explicitly assume a named published theorem; read the hypotheses.
+The code and statement reviews were produced with AI agents; adapted third-party code is credited in [NOTICE](NOTICE). A checked proof establishes its formal statement. Whether that statement captures the intended paper claim is a separate judgment. Some archived supporting results assume named published theorems; current target assumptions are stated in each Challenge and its definitions.
 
 ## Use a result
 

@@ -1,5 +1,13 @@
 name: Check repository
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      full_rebuild:
+        description: Rebuild all proof sources and recheck every current theorem's axioms
+        type: boolean
+        default: false
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
@@ -18,6 +26,8 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: "1"
   lean:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_rebuild }}
+    needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:

@@ -2,20 +2,29 @@
 
 The archive contains 988 proved formal statements for 1,021 targets. The [current index](../package/current-results.json) resolves every statement to its actual declaration file, corresponding proof, definitions and original manifest.
 
-## Check this checkout
+## Routine checks
 
 ```sh
 python3 scripts/check_repository.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
+```
+
+Pushes and pull requests run these checks. The source checker verifies exact imported source and retained certificate/evidence bytes, unchanged historical catalog bytes, complete target coverage, matching unit/work outcomes and actual statement/proof locations. It rejects Solution imports of Challenge files and proof placeholders in SAP proof modules. These checks preserve the source/evidence bindings; they do not repeat a kernel replay or review paper fidelity.
+
+## Optional fresh proof rebuild
+
+The unchanged proof sources can be rebuilt locally:
+
+```sh
 lake exe cache get
 python3 scripts/build_current.py
 ```
 
-The source checker verifies exact imported source/evidence hashes, unchanged historical catalog bytes, complete target coverage, matching unit/work outcomes and actual statement/proof locations. It rejects Solution imports of Challenge files and proof placeholders in SAP proof modules. These are structural checks, not a kernel replay or a new review of paper fidelity.
+To request the same full check in CI, run the workflow manually with `full_rebuild` enabled. It is off by default.
 
 The build command explicitly builds `AronowAudit.All`, then all 50 Challenge and Solution work entries separately. It also runs `#print axioms` for every current Solution theorem and rejects anything except `propext`, `Classical.choice` and `Quot.sound`. A bare `lake build` is not this complete check. `python3 scripts/build_current.py --work P038` checks only one work and is explicitly partial.
 
-CI provisions a disposable Ubuntu runner with additional swap for memory-intensive kernel computations. It checks P003 first, including its axioms, then completes the full library, all works and the complete axiom check. `--priority-work P003` changes the order without reducing that scope. Between completed build phases, the runner removes only generated setup JSON whose matching proof output and successful trace are complete; source, evidence and proof artifacts remain intact. Cleanup skips when a Lean/Lake compiler is active or its process state cannot be inspected. Runner resource provisioning is confined to GitHub-hosted Linux jobs.
+When requested, CI provisions a disposable Ubuntu runner with additional swap for memory-intensive kernel computations. It checks P003 first, including its axioms, then completes the full library, all works and the complete axiom check. `--priority-work P003` changes the order without reducing that scope. Between completed build phases, the runner removes only generated setup JSON whose matching proof output and successful trace are complete; source, evidence and proof artifacts remain intact. Cleanup skips when a Lean/Lake compiler is active or its process state cannot be inspected. Runner resource provisioning is confined to GitHub-hosted Linux jobs.
 
 Challenge files intentionally contain `sorry` placeholders. The inherited supporting library also contains unused unfinished declarations. Successful compilation permits those declarations; the per-theorem axiom check is therefore essential to establish that a current proof does not rely on `sorryAx`. No source-wide absence of placeholders is claimed.
 

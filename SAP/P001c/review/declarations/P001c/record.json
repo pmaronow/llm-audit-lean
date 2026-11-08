@@ -1,0 +1,377 @@
+[
+  {
+    "target_id": "P001-T39",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T39",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.Wave1.bivariate_normal_zero_correlation_independent_proof",
+      "AronowAudit.P001.nontrivial_independent_normal_sum",
+      "SAP.P001c.WH.W2.T39_whole",
+      "SAP.P001c.WH.W2.T39_assembly",
+      "SAP.P001c.WH.W2.T39_L1_proof",
+      "SAP.P001c.WH.W2.T39_L2_proof",
+      "SAP.P001c.WH.W2.T39_L3_proof",
+      "SAP.P001c.WH.W2.T39_L4_proof",
+      "AronowAudit.P001.Wave1.bivariate_normal_second_moments",
+      "AronowAudit.P001.Wave1.bivariate_normal_probability",
+      "AronowAudit.P001.Wave1.bivariate_normal_means_covariance",
+      "AronowAudit.P001.Wave1.bivariate_normal_variance_scales",
+      "AronowAudit.P001.Wave1.bivariate_normal_density_nonneg",
+      "AronowAudit.P001.Wave1.bivariate_normal_density_measurable",
+      "AronowAudit.P001.Wave1.bivariate_normal_eq_map",
+      "AronowAudit.P001.normalDensity_eq_gaussianPDFReal",
+      "SAP.P001c.Bridge.bivariatePDF_eq"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T39WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P001.Wave1.bivariate_normal_second_moments"
+    ]
+  },
+  {
+    "target_id": "P001-T40",
+    "decision": "restricted",
+    "theorem": "SAP.P001c.T40",
+    "restriction": "Omit the example's first-order differentiation calculation and certification of the actual drawn curve. Retain the general MSE decomposition and unique minimum, the fair-coin mean and variance, all specified loss and doubled-loss values, and the doubled-loss polynomial.",
+    "rows_used": [
+      "AronowAudit.P001.coin_mse_scale_correction",
+      "AronowAudit.P001.mse_general_identity_and_unique_minimum"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T40Statement"
+  },
+  {
+    "target_id": "P001-T41",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T41",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.correlation_not_pointwise_dependence",
+      "AronowAudit.P001.finite_correlation_counterexample_full"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T41Statement"
+  },
+  {
+    "target_id": "P001-T42",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T42",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.correlation_linear_dependence_ae"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T42Statement"
+  },
+  {
+    "target_id": "P001-T43",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T43",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.blp_corrected_derivatives_and_minimum",
+      "AronowAudit.P001.blp_hessian_and_cef_corollaries",
+      "SAP.P001c.WH.W2.T43_whole",
+      "SAP.P001c.WH.W2.T43_assembly",
+      "SAP.P001c.WH.W2.T43_L1_proof",
+      "SAP.P001c.WH.W2.T43_L2_proof",
+      "SAP.P001c.WH.W2.T43_L3_proof",
+      "AronowAudit.P001.linearRisk_mean_covariance_form",
+      "AronowAudit.P001.isCEF_condExp",
+      "AronowAudit.P001.mse_general_identity_and_unique_minimum"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T43WholeStatement"
+  },
+  {
+    "target_id": "P001-T44",
+    "decision": "refuted",
+    "theorem": "SAP.P001c.T44",
+    "restriction": "Retain only counterexample (a), the symmetric two-point population with equal covariances and risks zero and one. Omit counterexample (b), the uniform/Gaussian illustration, and the general covariance formula Cov(X,a+bX)=b Var(X).",
+    "rows_used": [
+      "AronowAudit.P001.covariance_does_not_fix_intercept"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T44Statement"
+  },
+  {
+    "target_id": "P001-T45",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T45",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.blp_two_equation_characterization"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T45Statement",
+    "supporting_declarations": [
+      "AronowAudit.P001.blp_corrected_derivatives_and_minimum"
+    ]
+  },
+  {
+    "target_id": "P001-T46",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T46",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.Wave1.uniform_quadratic_cef_unique_blp",
+      "AronowAudit.P001.quadratic_cef_factor_ten",
+      "SAP.P001c.WH.W2.T46_whole",
+      "SAP.P001c.WH.W2.T46_assembly",
+      "AronowAudit.P001.blp_corrected_derivatives_and_minimum",
+      "AronowAudit.P001.independent_constant_cef",
+      "AronowAudit.P001.isCEF_condExp",
+      "AronowAudit.P001.Wave1.QuadraticUniqueBlp.n1_proof"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P001.uniform_quadratic_cef_and_blp",
+        "reason": "Not separately invoked: the factor-ten row supplies these same numerical and CEF conclusions; the unique-minimum row separately supplies optimality."
+      }
+    ],
+    "statement_definition": "SAP.P001c.T46WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P001.Wave1.QuadraticUniqueBlp.n1_proof",
+      "MeasureTheory.MemLp.const_mul",
+      "MeasureTheory.MemLp.add"
+    ]
+  },
+  {
+    "target_id": "P001-T47",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T47",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.Wave1.independent_functions_cef_law_measurable",
+      "SAP.P001c.WH.W2.T47_whole",
+      "SAP.P001c.WH.W2.T47_assembly",
+      "AronowAudit.P001.independent_constant_cef",
+      "AronowAudit.P001.independent_affine_risk_minimum",
+      "AronowAudit.P001.blp_corrected_derivatives_and_minimum"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P001.Wave1.independent_functions_cef_law_scope",
+        "reason": "Not needed: its six conjuncts restate conclusions of independent_functions_cef_law_measurable under the same marginal-law measurability; final status wrong_credit."
+      },
+      {
+        "lean_name": "AronowAudit.P001.independence_variance_and_blp",
+        "reason": "Not needed: its original conditional-variance and affine-risk conclusions are conjuncts of independent_functions_cef_law_measurable, and its transformed risk result needs globally Borel g,h; final status wrong_credit."
+      }
+    ],
+    "statement_definition": "SAP.P001c.T47WholeStatement",
+    "supporting_declarations": [
+      "measurable_id",
+      "Measurable.aemeasurable"
+    ],
+    "row_use_note": "independent_functions_cef_law_measurable has final status wrong_credit; under the clarified rule it is used only for exactly its own Lean statement: conjuncts 1-4 with g=h=id for the original clauses, conjuncts 5-8 for the transformed clauses, with definitional transport (expectation=mean, variance=var, affineRisk=linearRisk, regressionSlope/Intercept=blpSlope/Intercept, isConditionalMean=IsCEF). It does not establish the unrestricted transformed component it was credited for."
+  },
+  {
+    "target_id": "P001-T48",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T48",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.covariance_matrix_symmetry_and_diagonal",
+      "AronowAudit.P001.multivariate_variance_rule"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T48Statement"
+  },
+  {
+    "target_id": "P001-T49",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T49",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.linear_predictor_coordinate_increment",
+      "AronowAudit.P001.linear_predictor_partial_derivative",
+      "SAP.P001c.WH.W1.T49_whole",
+      "SAP.P001c.WH.W1.T49_assembly",
+      "SAP.P001c.WH.W1.T49_L1_proof",
+      "SAP.P001c.WH.W1.T49_L2_proof"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P001.linear_predictor_update_identity",
+        "reason": "Update algebra is a helper; the coordinate-increment and derivative rows already export every stated conclusion."
+      }
+    ],
+    "statement_definition": "SAP.P001c.T49WholeStatement"
+  },
+  {
+    "target_id": "P001-T50",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T50",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.empirical_variance_identity",
+      "AronowAudit.P001.finite_population_example_moments",
+      "AronowAudit.P001.variance_functional_minus_sign"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P001.Wave1.finite_population_and_plugin_display_corrections",
+        "reason": "Not separately invoked: the finite-population, empirical-variance and variance-functional rows give the three components directly."
+      }
+    ],
+    "statement_definition": "SAP.P001c.T50Statement"
+  },
+  {
+    "target_id": "P001-T51",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T51",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.probability_convergence_eventual_levels",
+      "SAP.P001c.WH.W1.T51_whole",
+      "SAP.P001c.WH.W1.T51_assembly"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T51WholeStatement"
+  },
+  {
+    "target_id": "P001-T52",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T52",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.empirical_cdf_consistency",
+      "AronowAudit.P001.indicator_expectation"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T52Statement"
+  },
+  {
+    "target_id": "P001-T53",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T53",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.squares_missing_wlln_hypothesis",
+      "SAP.P001c.WH.W1.T53_whole",
+      "SAP.P001c.WH.W1.T53_assembly",
+      "SAP.P001c.WH.W1.T53_L1_proof",
+      "SAP.P001c.WH.W1.T53_L2_proof",
+      "AronowAudit.P001.weak_law_finite_variance",
+      "AronowAudit.P001.sample_variance_unbiased_factor_and_consistency",
+      "SAP.P001c.Bridge.powerTailMass_eq"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T53WholeStatement"
+  },
+  {
+    "target_id": "P001-T54",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T54",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.sample_variance_unbiased_factor_and_consistency",
+      "SAP.P001c.WH.W1.T54_whole",
+      "SAP.P001c.WH.W1.T54_assembly",
+      "AronowAudit.P001.probability_convergence_continuous_at"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T54WholeStatement"
+  },
+  {
+    "target_id": "P001-T55",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T55",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.Wave1.variance_estimate_scale_general_contract",
+      "SAP.P001c.WH.W2.T55_whole",
+      "SAP.P001c.WH.W2.T55_assembly",
+      "AronowAudit.P001.Wave1.sample_mean_unbiased_variance_contract",
+      "AronowAudit.P001.Wave1.UnbiasedMeanVariance.n1_proof",
+      "AronowAudit.P001.iid_sample_mean_finite_moments"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P001.Wave1.variance_estimator_consistency_contract",
+        "reason": "Not separately invoked: the general scaling contract already exports all three equivalences."
+      },
+      {
+        "lean_name": "AronowAudit.P001.probability_convergence_centering_equivalence",
+        "reason": "Centering is already included in the selected general contract."
+      },
+      {
+        "lean_name": "AronowAudit.P001.sample_mean_variance_estimate_scale",
+        "reason": "The selected general contract supplies both centering equivalences for the actual limit law."
+      },
+      {
+        "lean_name": "AronowAudit.P001.variance_se_consistency_equivalence",
+        "reason": "The selected general contract already includes the variance/standard-error equivalence."
+      }
+    ],
+    "statement_definition": "SAP.P001c.T55WholeStatement"
+  },
+  {
+    "target_id": "P001-T56",
+    "decision": "restricted",
+    "theorem": "SAP.P001c.T56",
+    "restriction": "Retain the constant functional with its explicit zero derivative and exclusion of every positive-variance normal limit, and the quadratic example with existential differentiability, exact second moment and convergence in probability to zero. Omit explicit CDF values and continuity at zero; for the quadratic example omit separate boundedness and nonconstancy assertions, F(0)=1/2, identification of its derivative as zero, the binomial law and convergence of the scalar second-moment formula to zero. No IID realization is constructed.",
+    "rows_used": [
+      "AronowAudit.P001.Wave1.quadratic_plugin_degenerate_counterexample_proof",
+      "AronowAudit.P001.constant_cdf_functional_hadamard",
+      "AronowAudit.P001.constant_functional_hadamard",
+      "AronowAudit.P001.constant_plugin_degenerate"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P001c.T56Statement"
+  },
+  {
+    "target_id": "P001-T57",
+    "decision": "whole",
+    "theorem": "SAP.P001c.T57",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P001.Wave1.TailA.empirical_cdf_delta_nondegenerate_final",
+      "SAP.P001c.WH.W1.T57_whole",
+      "SAP.P001c.WH.W1.T57_assembly",
+      "SAP.P001c.WH.W1.T57_L1_proof",
+      "SAP.P001c.WH.W1.T57_L2_proof",
+      "SAP.P001c.WH.W1.T57_L3_proof",
+      "AronowAudit.P001.Wave1.TailA.cdf_donsker_supported",
+      "AronowAudit.P001.Wave1.TailA.outer_weak_donor_iff",
+      "AronowAudit.P001.Wave1.TailA.outer_weak_real_CD",
+      "AronowAudit.P001.Wave1.TailA.cdf_bridge_linear_gaussian",
+      "AronowAudit.P001.Wave1.TailA.ta18_cdf_linear_approx",
+      "AronowAudit.P001.Wave1.TailA.ta18_centered_gaussian_ae_limit",
+      "AronowAudit.P001.Wave1.TailA.cdf_value_totallyBounded",
+      "AronowAudit.P001.Wave1.TailA.delta_hadamard_uniform_compact",
+      "AronowAudit.P001.Wave1.TailA.delta_outer_mass_eq",
+      "SAP.P001c.Bridge.hadamardDerivative_eq",
+      "SAP.P001c.Bridge.outerWeakConvergence_eq"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P001.Wave1.TailA.functional_delta_nondegenerate_correction_final",
+        "reason": "This is an alternative record name for the same complete final implication; no separate application is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P001.Wave1.TailA.iid_empirical_cdf_bridge_limit_final",
+        "reason": "The process-limit ingredient is used inside the selected final theorem; it is not applied separately."
+      },
+      {
+        "lean_name": "AronowAudit.P001.Wave1.TailA.kolmogorov_embedding_preserves_cdf_final",
+        "reason": "This final has the same full implication as the selected final; no separate application is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P001.Wave1.empirical_cdf_delta_nondegenerate_supporting_conditional",
+        "reason": "The conditional outer-delta ingredient is superseded by the selected proved final; no literature-theorem premise is added."
+      },
+      {
+        "lean_name": "AronowAudit.P001.Wave1.functional_delta_nondegenerate_correction_supporting_conditional",
+        "reason": "Not used: this narrower conditional result requires ambient Borel measurability of the empirical maps and a source-theorem premise."
+      },
+      {
+        "lean_name": "AronowAudit.P001.bounded_linear_functional_empirical_identity",
+        "reason": "The bounded-linear empirical identity is a helper component and is unnecessary for the selected full final implication."
+      }
+    ],
+    "statement_definition": "SAP.P001c.T57WholeStatement"
+  }
+]

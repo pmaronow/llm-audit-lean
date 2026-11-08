@@ -1,0 +1,46 @@
+import SAP.P003b.Defs
+
+open SAP.P003b
+set_option maxRecDepth 4096
+set_option maxHeartbeats 2000000
+attribute [local instance 0] Classical.propDecidable
+noncomputable section
+
+def auditCritical : ℝ := 1.959963984540055
+example : 1.95996398454005 < auditCritical ∧ auditCritical < 1.95996398454006 := by
+  norm_num [auditCritical]
+
+example : waldEstimateQ 25 12 = -1/25 ∧ waldVarianceQ 25 12 = 13/625 := by
+  norm_num [waldEstimateQ, waldVarianceQ]
+example : waldEstimateQ 50 25 = 0 ∧ waldVarianceQ 50 25 = 1/98 := by
+  norm_num [waldEstimateQ, waldVarianceQ]
+example : waldVarianceQ 25 10 = 1/50 ∧ waldVarianceQ 25 11 = 77/3750 ∧
+    waldVarianceQ 50 23 = 621/61250 := by norm_num [waldVarianceQ]
+example : waldCoverageQ 25 10 15 = 14399081696900/15801325804719 := by native_decide
+example : waldCoverageQ 50 21 29 = 3816125510529753382833452/4109292299835622081085553 := by native_decide
+
+lemma auditCovered : 0 ∈ waldInterval auditCritical 25 12 := by
+  have hz : (1 : ℝ) ≤ auditCritical := by norm_num [auditCritical]
+  have hs : (1/25 : ℝ) ≤ Real.sqrt (13/625) := by
+    apply (Real.le_sqrt (by norm_num) (by norm_num)).2
+    norm_num
+  have hmul : (1/25 : ℝ) ≤ auditCritical*Real.sqrt (13/625) := by
+    exact hs.trans (le_mul_of_one_le_left (Real.sqrt_nonneg _) hz)
+  change (0 : ℝ) ∈ Set.Icc
+    ((waldEstimateQ 25 12 : ℝ)-auditCritical*Real.sqrt (waldVarianceQ 25 12))
+    ((waldEstimateQ 25 12 : ℝ)+auditCritical*Real.sqrt (waldVarianceQ 25 12))
+  have ht : (waldEstimateQ 25 12 : ℝ) = -1/25 := by norm_num [waldEstimateQ]
+  have hv : (waldVarianceQ 25 12 : ℝ) = 13/625 := by norm_num [waldVarianceQ]
+  rw [ht, hv]
+  constructor <;> linarith
+
+-- The same singleton satisfies every finite-run antecedent, including >=0.925.
+example : let runs : List (Fin 26) := [12]
+    runs ≠ [] ∧
+    ((runs.filter fun k => decide (0 ∈ waldInterval auditCritical 25 k.val)).length : ℝ) /
+      runs.length ≥ 0.925 ∧
+    runs.length < 2*(runs.filter fun k => decide (0 ∈ waldInterval auditCritical 25 k.val)).length := by
+  classical
+  norm_num [auditCovered]
+
+example : (25 : ℕ) ≤ 25 ∧ (50 : ℕ) ≤ 50 ∧ 10 ≤ (12 : ℕ) ∧ (12 : ℕ) ≤ 15 := by decide

@@ -1,0 +1,684 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P008b.T20",
+   "target_id": "P008-T20",
+   "fingerprint": "df3e762e0eb91fbd75bac436ad1be8ccc6376500d2cc286eeeb6ae2959e85488",
+   "module": "SAP.P008b.Challenge.Part1",
+   "line": 58,
+   "closure": [
+    {
+     "line": 13,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.Assignment"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.BlockCell"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.expect"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.mass"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.mk"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.Plane"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.PolygonRasterCell"
+    },
+    {
+     "line": 69,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T20Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T20Statement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T20Statement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T20Statement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T20Statement._proof_4"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.bit"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.blockBoundary"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.blockBoundary._proof_1"
+    },
+    {
+     "line": 99,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.countMean"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P008b.Defs.Part4",
+     "name": "SAP.P008b.finiteAMR"
+    },
+    {
+     "line": 95,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.hajek"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.marginal"
+    },
+    {
+     "line": 93,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.nControl"
+    },
+    {
+     "line": 91,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.nTreated"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.polygonRasterAreaM"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.polygonRasterEdgeM"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.polygonRasterOutcome"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.rasterAreaAverage"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.rasterBoundary"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.rasterEdgeZeroAverage"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.rasterPolygonBoundary"
+    },
+    {
+     "line": 38,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.rasterPolygonCells"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.rasterPolygonLeft"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part3",
+     "name": "SAP.P008b.rasterPolygonLeft._proof_1"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.uniformLaw"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.uniformLaw._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.uniformLaw._proof_2"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P008b.T21",
+   "target_id": "P008-T21",
+   "fingerprint": "d023a6b1bffd69f89eb6acc1eb7e3c0c7f5fe808efe8120ace44d32947980c47",
+   "module": "SAP.P008b.Challenge.Part1",
+   "line": 63,
+   "closure": [
+    {
+     "line": 93,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T21Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T21Statement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T21Statement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T21Statement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T21Statement._proof_4"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P008b.T22",
+   "target_id": "P008-T22",
+   "fingerprint": "9e11ba3d3154caf5987377f6466ad3ab61ae87d80de1ee8f3c482a2a29134649",
+   "module": "SAP.P008b.Challenge.Part1",
+   "line": 68,
+   "closure": [
+    {
+     "line": 13,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.Assignment"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.mass"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.mk"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.prob"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.Plane"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel"
+    },
+    {
+     "line": 68,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.M"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.Y"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.average"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.circle"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.circleMass"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.circleMeasure"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.field"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.mk"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.node"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P008b.Defs.Part2",
+     "name": "SAP.P008b.SpatialModel.sharpNull"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P008b.Defs.Part4",
+     "name": "SAP.P008b.SpatialModel.validCircle"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.SpatialModel.ζ"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T18Statement._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T20Statement._proof_4"
+    },
+    {
+     "line": 96,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T22Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T22Statement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T22Statement._proof_2"
+    },
+    {
+     "line": 124,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T22WholeStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T22WholeStatement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T22WholeStatement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T22WholeStatement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T22WholeStatement._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T22WholeStatement._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T22WholeStatement._proof_6"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T22WholeStatement._proof_7"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.bit"
+    },
+    {
+     "line": 95,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.hajek"
+    },
+    {
+     "line": 93,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.nControl"
+    },
+    {
+     "line": 91,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.nTreated"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.uniformLaw"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.uniformLaw._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.uniformLaw._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeLine._proof_1"
+    },
+    {
+     "line": 100,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeQuantile7"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeQuantile7._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeQuantile7._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeSquare._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeSquareCenter._proof_1"
+    },
+    {
+     "line": 112,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeTestRadius"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeTestRadius._proof_1"
+    },
+    {
+     "line": 114,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeTestStatistic"
+    },
+    {
+     "line": 109,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeTreatedCount"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P008b.T23",
+   "target_id": "P008-T23",
+   "fingerprint": "72bcf90960f6bc8d6a9642e67bcd8030a0a1452470eca86cda6db82329d9dfee",
+   "module": "SAP.P008b.Challenge.Part1",
+   "line": 79,
+   "closure": [
+    {
+     "line": 17,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.cov"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.expect"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.mass"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.mk"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.var"
+    },
+    {
+     "line": 100,
+     "module": "SAP.P008b.Defs.Part6",
+     "name": "SAP.P008b.T23Statement"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P008b.T25",
+   "target_id": "P008-T25",
+   "fingerprint": "0f4be4131c8448b3249903d8489a2cfd46f22b6ccff34926bc2c3aac26bc3306",
+   "module": "SAP.P008b.Challenge.Part1",
+   "line": 84,
+   "closure": [
+    {
+     "line": 13,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.Assignment"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.expect"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.mass"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.FiniteLaw.mk"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.M"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.Y"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.amr"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.circle"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.coord"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.distance"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.m"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.marginalY"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.metric"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.mk"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.node"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.nodeEffect"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.pointEffect"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.regionAverage"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.validCircle"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.MetricSpatialModel.ζ"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.Plane"
+    },
+    {
+     "line": 158,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T25WholeStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.T25WholeStatement._proof_1"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P008b.Defs.Part4",
+     "name": "SAP.P008b.finiteAMR"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.marginal"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.uniformLaw"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.uniformLaw._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.Part1",
+     "name": "SAP.P008b.uniformLaw._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P008b.Defs.WholeW1",
+     "name": "SAP.P008b.wholeSquare._proof_2"
+    }
+   ]
+  }
+ ]
+}

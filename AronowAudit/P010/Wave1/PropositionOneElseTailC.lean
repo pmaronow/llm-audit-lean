@@ -202,3 +202,5 @@ theorem proposition_one_else_proof {K d : ℕ} (μ : Measure (State K d))
 
 end AronowAudit.P010.Wave1
 
+example : type_of% @AronowAudit.P010.proposition_one_else :=
+  AronowAudit.P010.Wave1.proposition_one_else_proof

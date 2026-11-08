@@ -1,8 +1,8 @@
 import AronowAudit.External.Causalean.Stat.OrderStatistic.Moments
 import AronowAudit.P009.Wave1.Lib.SimulationRecovered
 
-/-! Positive scaling of Causalean's uniform spacing moments to the normalized
-uniform laws used in P009. -/
+/-! Positive scaling of the proved CausalSmith spacing moments to the actual
+normalized uniform laws used in P009. -/
 namespace AronowAudit.P009.Wave1
 open MeasureTheory
 open Causalean.Stat.OrderStatistic
@@ -67,7 +67,7 @@ theorem scaled_uniform_gap_moment (n k : ℕ) (hk : k + 1 < n)
     push_cast
     ring
 
-/-- The uniform spacing second-moment identity. -/
+/-- The proposition recorded, but never assumed, in the archived attempt is now proved. -/
 theorem tc01_uniform_spacing_second_moment : t23_UniformSpacingSecondMoment := by
   intro n _ L hL j hj
   simpa only [sortedGap, dif_pos hj, sortedSample, Function.comp_apply,

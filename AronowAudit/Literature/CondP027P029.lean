@@ -6,9 +6,9 @@ import AronowAudit.External.Causalean.Stat.CLT.ChiSquaredProjection
 import AronowAudit.External.StatLean.HypothesisTesting.ForMathlib.CombinatorialCLT
 
 /-!
-Ordered-binomial likelihood optimization and a conditional saturated-likelihood
-characterization. The general optimization theorem is an explicit hypothesis
-of the characterization.
+Conditional assessment for cond-P027P029. No target is proved in this file.
+The sole proposed literature input is general ordered-binomial likelihood
+optimization. Existing probability inputs are checked below, not postulated.
 -/
 
 namespace AronowAudit.Literature
@@ -51,9 +51,9 @@ maximum assertion of Theorem I. The third is both alternatives of (2.1), for
 every irredundant restriction and every relaxed maximizer. R is the transitive
 numbered order; its covers are exactly the restrictions (1.9).
 
-The source maximizes the binomial log likelihood on the closed cube. The
-product likelihood here preserves boundary cases, rather than using Lean's
-totalized real logarithm. A feasible constant vector 1/2 has strictly positive likelihood;
+The source maximizes the binomial log likelihood on the CLOSED cube. We use its
+product likelihood, preserving boundary cases, rather than Lean's totalized
+real logarithm. A feasible constant vector 1/2 has strictly positive likelihood;
 thus maximizers have positive likelihood and taking log preserves their order.
 This change of objective has no effect on the maximum or its uniqueness.
 -/
@@ -76,8 +76,8 @@ end AronowAudit.Literature
 
 namespace AronowAudit.P029
 
-/-- Saturated-likelihood characterization conditional on a general published
-ordered-binomial likelihood theorem. -/
+/-- Held complete proposition, conditional only on a general published
+ordered-binomial likelihood theorem. No use of the held theorem constant. -/
 def saturated_ml_characterization_conditional_statement : Prop :=
   AronowAudit.Literature.VanEedenOrderedBinomialMLE →
   ∀ (n1 n0 k1 k0 : ℕ)
@@ -95,3 +95,20 @@ def saturated_ml_characterization_conditional_statement : Prop :=
 
 end AronowAudit.P029
 
+-- Inspect the closed literature proposition and the complete conditional type.
+#print AronowAudit.Literature.VanEedenOrderedBinomialMLE
+#check @AronowAudit.Literature.VanEedenOrderedBinomialMLE
+#print AronowAudit.P029.saturated_ml_characterization_conditional_statement
+#check @AronowAudit.P029.saturated_ml_characterization_conditional_statement
+
+#print axioms AronowAudit.Literature.VanEedenOrderedBinomialMLE
+#print axioms AronowAudit.P029.saturated_ml_characterization_conditional_statement
+
+-- Existing general results are evidence for no_gain, never additional hypotheses.
+#check Real.one_div_one_sub_rpow_hasFPowerSeriesOnBall_zero
+#check ProbabilityTheory.strong_law_ae_real
+#check ProbabilityTheory.HasGaussianLaw.iIndepFun_of_covariance_inner
+#check Causalean.Stat.stdGaussian_map_normSq_orthogonalProjection
+#check StatLean.HypothesisTesting.tendsto_perm_cdf_blockSum
+#print axioms Causalean.Stat.stdGaussian_map_normSq_orthogonalProjection
+#print axioms StatLean.HypothesisTesting.tendsto_perm_cdf_blockSum

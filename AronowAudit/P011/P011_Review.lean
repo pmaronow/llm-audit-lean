@@ -1,9 +1,10 @@
 import AronowAudit.P011.P011_Audit
 
 /-!
-The capacity-based PSD condition and invariance of maximization under a
-graph-independent correction. These finite statements do not establish the
-asymptotic compatible-graph construction, residual rates, or general condition (C).
+Finite components of the broader repair accepted in the 19 October review.
+This proves the capacity-based PSD route and invariance of maximization under
+a graph-independent correction. The asymptotic compatible-graph construction,
+residual rates, and general condition (C) are separate remaining obligations.
 -/
 
 namespace AronowAudit.P011
@@ -34,7 +35,7 @@ theorem signless_laplacian_psd {n : ℕ} (R : Graph n) :
     have hb := (abs_le.mp (adjacency_quadratic_bound R x)).1
     linarith
 
-/-- Finite decomposition for the capacity condition h_i ≥ 2r_i-1. -/
+/-- Exact finite decomposition used in the accepted h_i ≥ 2r_i-1 route. -/
 theorem recruitmentCapacityMatrix_decomposition {n : ℕ} (R : Graph n)
     (h : Fin n → ℕ) :
     recruitmentCapacityMatrix R h =
@@ -49,7 +50,7 @@ theorem recruitmentCapacityMatrix_decomposition {n : ℕ} (R : Graph n)
   · simp [recruitmentCapacityMatrix, oracleMatrix, Matrix.add_apply,
       Matrix.one_apply, Matrix.diagonal_apply, hij, Ne.symm hij]
 
-/-- The capacity condition h_i ≥ 2r_i-1 implies K_R is PSD. This finite
+/-- Review's sufficient capacity condition implies K_R is PSD. This finite
 matrix statement alone does not claim oracle consistency or the full
 asymptotic conservativeness theorem. -/
 theorem recruitmentCapacityMatrix_psd {n : ℕ} (R : Graph n)
@@ -72,7 +73,19 @@ theorem maximizes_add_constant_iff {n : ℕ} (R : Graph n) (d : Fin n → ℕ)
   · rintro ⟨ha, hm⟩
     exact ⟨ha, fun B hB => (add_le_add_iff_right c).mpr (hm B hB)⟩
 
+/-- A PSD capacity matrix makes every normalized relevant mean direction
+nonnegative, for each finite n. No restriction on the mean vector is added. -/
+theorem capacity_mean_direction_nonnegative {n : ℕ} (R : Graph n)
+    (h : Fin n → ℕ) (hc : ∀ i, 2 * (degree R i : ℝ) - 1 ≤ (h i : ℝ))
+    (δ : Fin n → ℝ) :
+    0 ≤ quadratic (recruitmentCapacityMatrix R h) δ / (n : ℝ) := by
+  exact div_nonneg ((recruitmentCapacityMatrix_psd R h hc).2 δ) (Nat.cast_nonneg n)
 
 end
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.signless_laplacian_psd
+#print axioms AronowAudit.P011.recruitmentCapacityMatrix_decomposition
+#print axioms AronowAudit.P011.recruitmentCapacityMatrix_psd
+#print axioms AronowAudit.P011.maximizes_add_constant_iff
+#print axioms AronowAudit.P011.capacity_mean_direction_nonnegative

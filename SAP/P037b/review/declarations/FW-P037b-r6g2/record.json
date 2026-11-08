@@ -1,0 +1,145 @@
+[
+ {
+  "target_id": "P037-T21",
+  "decision": "restricted",
+  "theorem": "SAP.P037b.T21",
+  "restriction": "Retains both exact local probability vectors, their raw exposure histograms, probability sums and positivity/cutoff comparisons, two supported seed/nonseed realizations, and the supported 10000-draw frequency witness. Omits the separate conditional mass 1/924 assertions for those two selections and the complete analysis-set membership-change assertion in W2(vii), including its outcome, baseline, school and simulated-frequency masks.",
+  "rows_used": [
+   "AronowAudit.P037.Wave1.cutoff_simulated_sequence_proof",
+   "AronowAudit.P037.Wave1.positivity_cutoff_counterexamples_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T21Statement",
+  "bridge": "SAP.P037b.Bridge.T21_correspondence",
+  "supporting_declarations": [
+   "AronowAudit.P037.Wave1.positivity_w1_counts",
+   "AronowAudit.P037.Wave1.positivity_w2_counts"
+  ]
+ },
+ {
+  "target_id": "P037-T22",
+  "decision": "whole",
+  "theorem": "SAP.P037b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P037.Wave1.analysis_set_inclusions_proof",
+   "AronowAudit.P037.Wave1.estimated_cutoff_random_proof",
+   "AronowAudit.P037.code_analysis_seed_exclusion",
+   "AronowAudit.P037.cutoff_integer_rule",
+   "SAP.P037b.WH.W2.T22_whole",
+   "SAP.P037b.WH.W2.T22_assembly",
+   "SAP.P037b.WH.W2.T22_L1_proof",
+   "SAP.P037b.WH.W2.T22_L2_proof",
+   "SAP.P037b.Bridge.T21_correspondence",
+   "SAP.P037b.Bridge.T22_correspondence",
+   "SAP.P037b.Bridge.toProject",
+   "SAP.P037b.Bridge.probability_correspondence",
+   "AronowAudit.P037.finite_product_factorization",
+   "AronowAudit.P037.designMean_const",
+   "AronowAudit.P037.product_design_coordinate_mean",
+   "AronowAudit.P037.Wave1.exposureMC_count",
+   "AronowAudit.P037.Wave1.exposureMC_zero",
+   "AronowAudit.P037.Wave1.estimated_cutoff_random_bounds",
+   "AronowAudit.P037.Wave1.estimated_cutoff_event_pos",
+   "AronowAudit.P037.Wave1.analysis_prob_positive_iff",
+   "AronowAudit.P037.Wave1.analysis_disjoint_bound",
+   "AronowAudit.P037.Wave1.cutoff_interval_card",
+   "AronowAudit.P037.Wave1.cutoff_simulated_sequence_proof",
+   "AronowAudit.P037.Wave1.positivity_cutoff_counterexamples_proof",
+   "AronowAudit.P037.Wave1.positivity_w1_counts",
+   "AronowAudit.P037.Wave1.positivity_w2_counts"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T22WholeStatement_W2",
+  "bridge": "SAP.P037b.Bridge.T22_correspondence"
+ },
+ {
+  "target_id": "P037-T29",
+  "decision": "whole",
+  "theorem": "SAP.P037b.T29",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P037.Wave1.rare_probability_design_counterexample_proof",
+   "AronowAudit.P037.rare_exposure_frequency_counterexample",
+   "SAP.P037b.WH.W1.T29_whole",
+   "SAP.P037b.WH.W1.T29_assembly",
+   "SAP.P037b.WH.W1.T29_L1_proof",
+   "AronowAudit.P037.finite_product_factorization",
+   "AronowAudit.P037.product_design_coordinate_pair",
+   "AronowAudit.P037.Wave1.exposureMC_count",
+   "AronowAudit.P037.Wave1.exposureMC_moments",
+   "AronowAudit.P037.Wave1.rare_probability_block_card",
+   "AronowAudit.P037.Wave1.rare_probability_block_sum",
+   "AronowAudit.P037.Wave1.rare_design_split"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P037.rare_zero_hit_probability",
+    "reason": "Not applied separately: the retained declaration already exports the same supporting bound."
+   }
+  ],
+  "statement_definition": "SAP.P037b.T29WholeStatement",
+  "bridge": "SAP.P037b.Bridge.T29_correspondence",
+  "declaration_review_round1": {
+   "reviewer": "r4g2",
+   "status": "addressed",
+   "issues_fixed": [
+    "Challenge docstring attributes 127007/161310320640000 to the school-exposure frequency, count divided by 10000.",
+    "T29WholeStatement docstring uses the same corrected count-versus-frequency description."
+   ],
+   "mathematical_statement_changed": false,
+   "proof_changed": false
+  }
+ },
+ {
+  "target_id": "P037-T30",
+  "decision": "whole",
+  "theorem": "SAP.P037b.T30",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P037.Wave1.blocked_school_exposure_formula_proof",
+   "AronowAudit.P037.Wave1.exposure_monte_carlo_law_proof",
+   "AronowAudit.P037.Wave1.monte_carlo_simultaneous_bound_proof",
+   "AronowAudit.P037.blocked_school_probability_examples",
+   "AronowAudit.P037.frequency_resolution"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P037.count_avoiding_seeds",
+    "reason": "Not applied separately: the proved blocked-exposure formula already incorporates the avoidance count."
+   }
+  ],
+  "statement_definition": "SAP.P037b.T30Statement",
+  "bridge": "SAP.P037b.Bridge.T30_correspondence",
+  "supporting_declarations": [
+   "AronowAudit.P037.Wave1.analysis_set_inclusions_proof",
+   "AronowAudit.P037.Wave1.rare_probability_design_counterexample_proof"
+  ]
+ },
+ {
+  "target_id": "P037-T31",
+  "decision": "restricted",
+  "theorem": "SAP.P037b.T31",
+  "restriction": "Retains actual 56-school support cardinalities and one pair probability for uniform 28-of-56 and 2-of-4 laws, the eight-school support witness and exact uncentered second-moment examples in both directions, and the general zero-mean/second-moment formula conditional on half school marginals. Omits the 56-school support inclusion and block-respecting probability, their exact ratio, universal school marginals/pairs/covariances, the complete eight-school pair-law family and explicit 34-state count, explicit zero means identifying the eight-school second moments as variances, and identification of the two 56-school outcome examples with their actual design variances.",
+  "rows_used": [
+   "AronowAudit.P037.Wave1.school_sampler_counterexample_proof",
+   "AronowAudit.P037.Wave1.school_statistic_variance_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P037.school_pair_probability_arithmetic",
+    "reason": "Arithmetic for additional support ratios, pair coefficients or 56-school variances is outside the retained actual-law certificate."
+   },
+   {
+    "lean_name": "AronowAudit.P037.school_support_count_arithmetic",
+    "reason": "Arithmetic for additional support ratios, pair coefficients or 56-school variances is outside the retained actual-law certificate."
+   },
+   {
+    "lean_name": "AronowAudit.P037.school_variance_moves_both_ways",
+    "reason": "Arithmetic for additional support ratios, pair coefficients or 56-school variances is outside the retained actual-law certificate."
+   }
+  ],
+  "statement_definition": "SAP.P037b.T31Statement",
+  "bridge": "SAP.P037b.Bridge.T31_correspondence"
+ }
+]

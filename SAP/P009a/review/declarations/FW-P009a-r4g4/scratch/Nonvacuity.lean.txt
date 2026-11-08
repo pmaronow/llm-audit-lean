@@ -1,0 +1,148 @@
+import SAP.P009a.Defs
+
+open scoped BigOperators Classical
+open SAP.P009a
+
+noncomputable section
+
+def cubeSuccEquiv (n : ℕ) : (Fin (n+1) → Bool) ≃ Bool × (Fin n → Bool) where
+  toFun z := (z 0, fun i => z i.succ)
+  invFun p := Fin.cons p.1 p.2
+  left_inv z := by
+    ext i
+    exact Fin.cases rfl (fun _ => rfl) i
+  right_inv p := by
+    rcases p with ⟨b, z⟩
+    rfl
+
+lemma cubeSumSucc {M : Type} [AddCommMonoid M] {n : ℕ}
+    (f : (Fin (n+1) → Bool) → M) :
+    (∑ z, f z) = ∑ b : Bool, ∑ z : Fin n → Bool, f (Fin.cons b z) := by
+  calc
+    _ = ∑ p : Bool × (Fin n → Bool), f (Fin.cons p.1 p.2) := by
+      apply Fintype.sum_equiv (cubeSuccEquiv n)
+      intro z
+      exact congrArg f ((cubeSuccEquiv n).left_inv z).symm
+    _ = _ := Fintype.sum_prod_type _
+
+lemma cubeSumZero {M : Type} [AddCommMonoid M]
+    (f : (Fin 0 → Bool) → M) : (∑ z, f z) = f Fin.elim0 :=
+  Fintype.sum_subsingleton _ _
+
+@[simp] lemma reviewConsTwo {n : ℕ} (b : Bool) (z : Fin (n+2) → Bool) :
+    Fin.cons (α := fun _ => Bool) b z (2 : Fin (n+3)) = z 1 := rfl
+
+@[simp] lemma reviewConsThree {n : ℕ} (b : Bool) (z : Fin (n+3) → Bool) :
+    Fin.cons (α := fun _ => Bool) b z (3 : Fin (n+4)) = z 2 := rfl
+
+-- Every explicit hypothesis of T16 has a concrete positive-size instance.
+example : ∃ (n : ℕ) (_hn : 0 < n) (_E : FiniteExperiment n)
+    (_b : Bool) (k : ℝ), 0 < k := by
+  exact ⟨1, by decide, identityPopulation 1, true, 2, by norm_num⟩
+
+-- A distribution on the sixteen cube points, supported uniformly on the six
+-- assignments with exactly two treated coordinates.
+def reviewDesign : FiniteDistribution (TreatmentVector 4) where
+  mass z := if (∑ i, if z i then (1 : ℕ) else 0) = 2 then 1/6 else 0
+  nonneg z := by split <;> norm_num
+  total := by
+    simp only [TreatmentVector, cubeSumSucc, cubeSumZero, Fin.sum_univ_succ,
+      Fin.sum_univ_zero, Fintype.sum_bool]
+    norm_num
+
+def reviewE : FiniteExperiment 4 :=
+  ⟨reviewDesign, fun i z => treatmentValue (z i) +
+    if i = 0 then treatmentValue (z 1) else 0⟩
+
+def reviewF : FiniteExperiment 4 :=
+  ⟨reviewDesign, fun i z => treatmentValue (z i)⟩
+
+lemma reviewFixedSize : FixedSizeDesign reviewE 2 ∧ FixedSizeDesign reviewF 2 := by
+  constructor <;> refine ⟨by decide, by decide, ?_⟩ <;>
+    intro z <;> norm_num [reviewE, reviewF, reviewDesign, Nat.choose]
+
+-- The same finite summation expansion will be used for the marginal and
+-- regularity checks below; no Challenge theorem is imported.
+lemma reviewMarginals : ∀ i b, armProbability reviewE i b = 1/2 ∧
+    armProbability reviewF i b = 1/2 := by
+  intro i b
+  fin_cases i <;> cases b
+  all_goals
+    simp only [armProbability, probability, expectation, reviewE, reviewF,
+      reviewDesign, TreatmentVector, cubeSumSucc, cubeSumZero,
+      Fin.sum_univ_succ, Fin.sum_univ_zero, Fintype.sum_bool]
+    norm_num
+
+lemma reviewRegularity : Regularity reviewE 2 4 1 ∧ Regularity reviewF 2 4 1 := by
+  constructor
+  · refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+    · intro i
+      norm_num [(reviewMarginals i true).1]
+    · intro i
+      fin_cases i
+      all_goals
+        simp only [expectation, reviewE, reviewDesign, TreatmentVector,
+          cubeSumSucc, cubeSumZero, Fin.sum_univ_succ, Fin.sum_univ_zero,
+          Fintype.sum_bool]
+        norm_num [treatmentValue, Real.rpow_natCast]
+    · intro i b
+      fin_cases i <;> cases b
+      all_goals
+        simp only [expectation, potentialResponse, reviewE, reviewDesign,
+          TreatmentVector, cubeSumSucc, cubeSumZero, Fin.sum_univ_succ,
+          Fin.sum_univ_zero, Fintype.sum_bool]
+        norm_num [treatmentValue, Function.update]
+  · refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+    · intro i
+      norm_num [(reviewMarginals i true).2]
+    · intro i
+      fin_cases i
+      all_goals
+        simp only [expectation, reviewF, reviewDesign, TreatmentVector,
+          cubeSumSucc, cubeSumZero, Fin.sum_univ_succ, Fin.sum_univ_zero,
+          Fintype.sum_bool]
+        norm_num [treatmentValue, Real.rpow_natCast]
+    · intro i b
+      fin_cases i <;> cases b
+      all_goals
+        simp only [expectation, potentialResponse, reviewF, reviewDesign,
+          TreatmentVector, cubeSumSucc, cubeSumZero, Fin.sum_univ_succ,
+          Fin.sum_univ_zero, Fintype.sum_bool]
+        norm_num [treatmentValue, Function.update]
+
+lemma reviewNoSpillovers : NoSpillovers reviewF := by
+  intro i z z' h
+  simp [reviewF, h]
+
+-- T16's instantiated covariance is nonzero, so the instance does not collapse
+-- through a deterministic arm or an empty sample.
+example : covariance (identityPopulation 1).design
+    (fun z => if z (0 : Fin 1) = true then (1 : ℝ) else 0)
+    (fun z => if z (0 : Fin 1) = true then (1 : ℝ) else 0) = 1/4 := by
+  simp only [covariance, expectation, identityPopulation, fairPopulation,
+    fairDistribution, TreatmentVector, cubeSumSucc, cubeSumZero,
+    Fintype.sum_bool]
+  norm_num
+
+example : ∃ E F : FiniteExperiment 4,
+    (∀ z, E.design.mass z =
+      if (∑ i, if z i then (1 : ℕ) else 0) = 2 then 1/6 else 0) ∧
+    (∀ i z, E.outcome i z = treatmentValue (z i) +
+      if i = 0 then treatmentValue (z 1) else 0) ∧
+    FixedSizeDesign E 2 ∧ Regularity E 2 4 1 ∧
+    (∀ i b, armProbability E i b = 1/2) ∧
+    (∀ z, F.design.mass z =
+      if (∑ i, if z i then (1 : ℕ) else 0) = 2 then 1/6 else 0) ∧
+    (∀ i z, F.outcome i z = treatmentValue (z i)) ∧
+    FixedSizeDesign F 2 ∧ Regularity F 2 4 1 ∧ NoSpillovers F ∧
+    (∀ i b, armProbability F i b = 1/2) := by
+  exact ⟨reviewE, reviewF, fun _ => rfl, fun _ _ => rfl,
+    reviewFixedSize.1, reviewRegularity.1, fun i b => (reviewMarginals i b).1,
+    fun _ => rfl, fun _ _ => rfl, reviewFixedSize.2, reviewRegularity.2,
+    reviewNoSpillovers, fun i b => (reviewMarginals i b).2⟩
+
+#print axioms reviewDesign
+#print axioms reviewFixedSize
+#print axioms reviewMarginals
+#print axioms reviewRegularity
+#print axioms reviewNoSpillovers

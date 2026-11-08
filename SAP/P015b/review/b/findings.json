@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P015-T9",
+    "theorem": "SAP.P015b.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed explicit example: both 3-by-2 binary-treatment group designs have Gram determinant 2, S=I_2 and both error variances are 1. Both individual slopes are zero, whereas raw GLS and precision pooling both give slope -10/61. Independent exact rational calculations verify the inverses, GLS equality and arbitrary-vector row formula; scratch/Check.lean also checks the Gram determinants. All inverses involved are genuine inverses. The example refutes the asserted exact scalar treatment-coefficient representation, without claiming bias or inconsistency.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T10",
+    "theorem": "SAP.P015b.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two groups in T9 instantiate G=q=2, n_g=3, full-rank Z_g, S=I_2 and sigma_g^2=1. A separate instance of the block-diagonal sufficient case is G=q=2, Z_g=I_2, S=0 and sigma_g^2=1: P_g=I_2, H=2I_2 and A_g=I_2/2. A positive-dimensional G=q=n_0=1 instance of the main premises is checked in scratch/Check.lean. Positive definiteness follows from the Gram, variance and nonempty-group hypotheses, so no singular inverse or zero scalar denominator is doing the work.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T20",
+    "theorem": "SAP.P015b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four masses 1/20,1/5,11/20,1/5 are strictly positive and sum to one; the profile masses are 1/4 and 3/4. The stated population moment inverse is an actual inverse. Exact independent rational checks verify every weight, leverage, conditional average and rounding, including the 22% increase and 51% reduction. This is precisely the canonical population interpretation of scaled leverage; no random finite-sample inverse expectation is asserted. The finite-law premise is also checked in Lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T14",
+    "theorem": "SAP.P015b.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take alpha=x=0, beta=1, d=0, d'=1 and p=1/2. The nonzero-slope and distinct-treatment hypotheses hold, and one logistic prediction equals p while the other is strictly larger. Injectivity of the sigmoid proves the universal impossibility observation. The corrected conditional-probability model and parameter-existence assertion are absent, exactly as the docstring and record disclose; T21 does not silently supply that omitted model definition.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T21",
+    "theorem": "SAP.P015b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For K=0 take four rows (1,0),(1,0),(1,1),(1,1), outcomes 0,1,0,1, b=1/2 and c=1/4. The intercept is one, outcomes are binary, the Gram determinant is 4 and c is nonzero. The logistic fit and affine root both exist at theta=(0,0). A smaller full-rank binary-outcome design satisfying the stub's hypotheses is checked in Lean. The rank restriction applies to the derivative clause as the docstring explicitly says; the independent affine identity remains unrestricted. The supplementary exact-ML remainder is not among the canonical expressly selected obligations (i)-(iii).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T11",
+    "theorem": "SAP.P015b.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two count-100 binomial rows exactly aggregate the prescribed 200 binary observations; both cells have successes and failures, and the full-data Gram determinant is 10000. The finite unique ML fit is (-log 99,2 log 99), with predictors +/-log 99 and sample mean 1/2. The statement includes the exact series radius pi, both probability-error bounds for every degree, and the actual treatment-score identity and bound. The coefficient-ratio and alternating-pair argument supplied with the canonical claim supports the all-degree bound. An independent diagnostic through degree 80 agrees; that finite computation is not used as an all-degree proof.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T15",
+    "theorem": "SAP.P015b.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use Omega=(R^2)^N with the product law of independent uniform[0,1] coordinates (D_i,C_i), K=1, X_i=(C_i), Y0_i=C_i^2, tau_i=1+C_i, and omega=(1/2,0). This is standard Borel; tuples are i.i.d.; conditional unconfoundedness and the affine treatment mean hold. All eight moment families are bounded and obey the LLN. The control moment determinant is 1/12, E[w]=1/12, E[w tau]=1/8, and all seven single-observation moment integrability premises hold. For every n>=3, the first three (1,D_i,C_i) rows have full rank almost surely, so the deterministic-threshold eventual condition holds. The main limit is 3/2. The added hypotheses and omitted residual-effect conditional-product factorization are accurately disclosed; finite proof auxiliaries are not credited as additional challenged conclusions.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T22",
+    "theorem": "SAP.P015b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the same explicit heterogeneous-effect model as T15: independent uniform D_i,C_i, K=1, X_i=(C_i), Y0_i=C_i^2 and tau_i=1+C_i on the standard Borel product space. Every required moment is bounded; the LLN supplies each moment convergence; E[w]=1/12 and E[w tau]=1/8. Independent continuously distributed points in the (D,C) square are noncollinear almost surely, giving full sample rank for every fixed n>=3. Thus all added hypotheses hold jointly, with main limit 3/2, and none assumes the target estimator convergence. The docstring accurately restricts the main Theorem A.1 limit; the finite identities and intermediate limits in claims.json are supporting lemmas, not further conclusions claimed by this stub.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T23",
+    "theorem": "SAP.P015b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On the product space of independent uniform D_i,C_i, take K=1, X_i=(C_i), Z_i=C_i and omega=(1/2,0). All seven component-moment families are bounded and obey the LLN; the control moment determinant is 1/12, E[w]=1/12 and E[wZ]=1/24. For every n>=3, the control Gram is nonsingular and the fitted-treatment residual sum is positive almost surely, because the full (1,D,C) design has rank three almost surely. The fitted-weight mean limit is 1/2. All explicit integrability and positivity premises are satisfied; the stronger eventual definition condition is disclosed rather than replaced by a probability-tending-to-one condition.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T24",
+    "theorem": "SAP.P015b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take independent uniform D_i,C_i, K=1, X_i=(C_i), Y0_i=C_i^2 and tau_i=1+C_i. Then D_i is independent of (Y0_i,tau_i,X_i), all regularity moments and the effect are integrable, and each sample design is almost surely nonsingular for n>=3 on a standard Borel product space. The estimator limit is E[tau]=3/2. The single-observation version also satisfies the separate population premises: D is L2 with variance 1/12, w=(D-1/2)^2, E[w tau]=1/8, and the ratio is 3/2. The omission of explicit weight-effect independence and of the intermediate fitted-weight-effect ratio convergence is accurately disclosed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T18",
+    "theorem": "SAP.P015b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The logistic stationarity antecedent has a finite balanced example with two successes and two failures in two treatment cells. For the square-link example all six masses are positive, the Gram matrix is diag(1,5/24,2/3), and the admissible point (1/2,0,0) is interior. For a=0 or 1/16 and |epsilon|<=1/16 every true cell probability is strictly between zero and one. The expected Bernoulli log likelihood is strictly concave on the convex admissible domain; its nonsingular score Jacobian gives unique maximizing branches by the implicit function theorem. Exact rational computation gives treatment derivatives 1 and 120/119, versus OLS derivative 1 in both cases, at the same outcome mean 1/4. Centering D by the affine propensity preserves its coefficient in the presence of intercept and X. Rational nearby epsilon values can be realized by finite binary cell counts, since all masses and success probabilities are rational. The explicit uniform-threshold probability model satisfies the claimed causal conditions. This refutes universal any-GLM clause (C); no refutation of every specifically named family in (B) is claimed, in agreement with the stated scope.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T17",
+    "theorem": "SAP.P015b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For (A), the uniform four-point binary-profile/binary-treatment law has both profile masses 1/2, endpoint conditional probabilities 1/2, conditional variance 1/4, and finite second moment. In the small-weight family, epsilon=1/4 supplies a concrete positive-mass member; arbitrarily small positive epsilon retains positivity. At epsilon=10^-6 the observed-data IPW variable is (0,10^6,-4,8), has mean 3/2 and finite variance 2000071/4, so Chebyshev proves the asserted consistency without extrapolation. The ordered fitted-zero sample (0,0,2,3) has probability 1/256 and full regression Gram determinant 2 despite zero fitted weights in profile zero. Finally the literal missing-pair probability law has E[w]=5/8, effective profile-one mass 4/5 and no treatment-one mass in that profile, while treatments zero and one both occur marginally. Relevant denominators are positive. These examples refute the specified readings of (B) and (C); the restricted domain of (A) and absence of a universal identification characterization are disclosed.",
+    "confidence": 0.99
+  }
+]

@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.LpSeminorm
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.Bracketing
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.FunctionClass
@@ -48,9 +44,9 @@ the `F − F` entropy to `F`'s own entropy via vdV Lemma 19.31. -/
 
 This is the index set of the localized empirical process in the vdV §19.2
 chaining argument before the `L²`-radius restriction is imposed; its bracketing
-entropy is controlled by `F`'s via vdV Lemma 19.31. The local helper
-`cover_lift_difference_class` constructs the paired brackets used by
-`bracketingEntropyIntegral_diff_le_class`. -/
+entropy is controlled by `F`'s via vdV Lemma 19.31
+(`hasFiniteBracketingCover_difference_class`). The set-builder shape matches the
+inline form used by that lemma. -/
 def differenceClass (F : Set (Ω → ℝ)) : Set (Ω → ℝ) :=
   {h : Ω → ℝ | ∃ f g, f ∈ F ∧ g ∈ F ∧ h = fun x => f x - g x}
 
@@ -108,6 +104,52 @@ lemma mem_localizedDifferenceClass {F : Set (Ω → ℝ)} {P : Measure Ω} {δq 
     (fun x => f x - g x) ∈ localizedDifferenceClass F P δq :=
   ⟨f, hf, g, hg, rfl, hradius⟩
 
+/-- **`eLpNorm`–`∫·²` bridge for the `L²`-good event.** For `MemLp f 2 P`,
+`(eLpNorm f 2 P).toReal = √(∫ f²)`. Proved inline (rather than importing the
+`ForMathlib.QMDAnalytic` clone) to keep the `EmpiricalProcess` import graph
+self-contained; same `MemLp.eLpNorm_eq_integral_rpow_norm` derivation. -/
+private lemma sqrt_integral_sq_eq_eLpNorm_toReal' {P : Measure Ω} {f : Ω → ℝ}
+    (hf : MemLp f 2 P) :
+    Real.sqrt (∫ ω, f ω ^ 2 ∂P) = (eLpNorm f 2 P).toReal := by
+  rw [hf.eLpNorm_eq_integral_rpow_norm (by norm_num) (by norm_num)]
+  have h2 : (2 : ℝ≥0∞).toReal = 2 := by norm_num
+  have h_int_eq :
+      (fun ω => ‖f ω‖ ^ (2 : ℝ≥0∞).toReal) = (fun ω => f ω ^ 2) := by
+    funext ω
+    rw [h2, Real.rpow_two, Real.norm_eq_abs, sq_abs]
+  rw [h_int_eq]
+  have h_int_nn : 0 ≤ ∫ ω, f ω ^ 2 ∂P :=
+    MeasureTheory.integral_nonneg (fun _ => sq_nonneg _)
+  rw [ENNReal.toReal_ofReal (Real.rpow_nonneg h_int_nn _), h2, Real.sqrt_eq_rpow]
+  norm_num
+
+/-- **L2′ (`∫·²`-form membership).** The form the consumer in `Maximal.lean`
+(~l.1786) produces: the `L²`-good event is stated as `∫ x, (f x − g x)² ∂P < δq²`.
+Bridged to the `eLpNorm` radius via `sqrt_integral_sq_eq_eLpNorm_toReal'`, which
+needs `MemLp (f − g) 2 P` (without it the Bochner integral of a non-`L²` square
+is `0` and the implication fails). The `<` good event gives `≤ δq` after `√`. -/
+lemma mem_localizedDifferenceClass_of_integral_sq {F : Set (Ω → ℝ)} {P : Measure Ω}
+    {δq : ℝ} (hδq : 0 ≤ δq) {f g : Ω → ℝ} (hf : f ∈ F) (hg : g ∈ F)
+    (hmem : MemLp (fun x => f x - g x) 2 P)
+    (hgood : ∫ x, (f x - g x) ^ 2 ∂P < δq ^ 2) :
+    (fun x => f x - g x) ∈ localizedDifferenceClass F P δq := by
+  refine mem_localizedDifferenceClass hf hg ?_
+  have hnorm := eLpNorm_two_eq_eLpNorm' hmem.aestronglyMeasurable
+  rw [← hnorm]
+  -- Bridge `∫(f−g)² < δq²` to `eLpNorm (f−g) 2 P ≤ ofReal δq`.
+  -- `(eLpNorm (f−g) 2 P).toReal = √(∫(f−g)²) ≤ √(δq²) = δq`, then back to `ℝ≥0∞`.
+  have htoReal : (eLpNorm (fun x => f x - g x) 2 P).toReal
+      = Real.sqrt (∫ x, (f x - g x) ^ 2 ∂P) :=
+    (sqrt_integral_sq_eq_eLpNorm_toReal' hmem).symm
+  have hsqrt_le : Real.sqrt (∫ x, (f x - g x) ^ 2 ∂P) ≤ δq := by
+    calc Real.sqrt (∫ x, (f x - g x) ^ 2 ∂P)
+        ≤ Real.sqrt (δq ^ 2) := Real.sqrt_le_sqrt hgood.le
+      _ = δq := by rw [Real.sqrt_sq hδq]
+  have htoReal_le : (eLpNorm (fun x => f x - g x) 2 P).toReal ≤ δq := by
+    rw [htoReal]; exact hsqrt_le
+  -- Lift `toReal ≤ δq` to `· ≤ ofReal δq` using finiteness of the L² norm.
+  rw [← ENNReal.ofReal_toReal hmem.eLpNorm_lt_top.ne]
+  exact ENNReal.ofReal_le_ofReal htoReal_le
 
 /-- **vdV Lemma 19.31, raw-cover-data core**.
 
@@ -122,7 +164,8 @@ This raw-data form is exactly the `hlift` hypothesis of
 `bracketingEntropyIntegral_diff_le` (`Bracketing.lean`), which feeds the lift the
 *minimal* cover at each scale and reads off the size-`k²` output to bound the
 bracketing number; the size `k * k` must therefore be preserved syntactically
-(the `HasFiniteBracketingCover` predicate would hide it behind an existential). -/
+(the `HasFiniteBracketingCover` wrapper would hide it behind an existential).
+`hasFiniteBracketingCover_difference_class` is the predicate-level wrapper. -/
 private lemma cover_lift_difference_class
     {F : Set (Ω → ℝ)} {P : Measure Ω} {η : ℝ} (hη : 0 < η) (k : ℕ)
     (h : ∃ l u : Fin k → Ω → ℝ,
@@ -194,6 +237,37 @@ private lemma cover_lift_difference_class
       have h2 := (hgj x).1
       linarith
 
+/-- **vdV Lemma 19.31: bracketing of the difference class**.
+
+If `F` has a finite `(η/2)`-bracketing cover in `L²(P)`, then the
+**difference class** `differenceClass F = F - F := {f - g : f, g ∈ F}` has a
+finite `η`-bracketing cover in `L²(P)`.
+
+The textbook construction (vdV §19.5): for each pair `(i, j)`
+of brackets `[l_i, u_i]`, `[l_j, u_j]` from the `(η/2)`-cover of `F`,
+the pair `[l_i - u_j, u_i - l_j]` brackets `f - g` whenever `f ∈ [l_i,
+u_i]` and `g ∈ [l_j, u_j]`. Its L² size is
+`‖(u_i - l_j) - (l_i - u_j)‖_2 = ‖(u_i - l_i) + (u_j - l_j)‖_2 ≤
+η/2 + η/2 = η`. Predicate-level wrapper over `cover_lift_difference_class`. -/
+private lemma hasFiniteBracketingCover_difference_class
+    {F : Set (Ω → ℝ)} {P : Measure Ω}
+    {η : ℝ} (hη : 0 < η)
+    (hF : HasFiniteBracketingCover F (η / 2) 2 P) :
+    HasFiniteBracketingCover (differenceClass F) η 2 P := by
+  obtain ⟨k, hk⟩ := hF
+  obtain ⟨l', u', hbr', hcov'⟩ := cover_lift_difference_class hη k hk
+  exact ⟨k * k, l', u', hbr', hcov'⟩
+
+/-- **Number-level difference-class bracketing bound** (vdV Lemma 19.31, raw count):
+`N_{[]}(η, F − F, L²(P)) ≤ N_{[]}(η/2, F, L²(P))²`.  Number-level companion of
+`bracketingEntropyIntegral_diff_le_class`.  Public wrapper feeding the relative-bracketing
+shell bound (`shell_localizedDiff_bracketingNumber_le`); must live here because the
+size-`k → k*k` cover lift `cover_lift_difference_class` is `private` to this file. -/
+lemma bracketingNumber_differenceClass_le_sq
+    {F : Set (Ω → ℝ)} {P : Measure Ω} {η : ℝ} (hη : 0 < η)
+    (hcover : HasFiniteBracketingCover F (η / 2) 2 P) :
+    bracketingNumber η (differenceClass F) 2 P ≤ (bracketingNumber (η / 2) F 2 P) ^ 2 :=
+  bracketingNumber_le_sq_of_cover_lift hcover (fun k hk => cover_lift_difference_class hη k hk)
 
 /-- **L4 wrapper: entropy-integral proportionality for the difference class.**
 
@@ -225,5 +299,51 @@ This reusable closure remains available to consumers that need VW pointwise dens
 The finite-entropy localized chaining bounds derive the measurability they use directly
 from class-member measurability and therefore carry no pointwise-density hypothesis. -/
 
+/-- **S6: difference-class closure of pointwise density.** If `F` is VW
+pointwise-dense (`EmpProcPointwiseDense`), so is its difference class
+`differenceClass F = {f − g : f, g ∈ F}`.
+
+Construction (mirrors `EmpProcPointwiseDense`'s three clauses):
+
+* **separant** `F'' = differenceClass F'` (the difference set of `F`'s countable
+  separant `F'`); countable as the `Set.image2`-subtraction of `F' × F'`, and
+  `⊆ differenceClass F` since `F' ⊆ F`;
+* **density**: each `h = f − g ∈ differenceClass F` (with `f, g ∈ F`) has
+  approximating `φ_k → f`, `ψ_k → g` in `F'`; then `φ_k − ψ_k → f − g` pointwise
+  (`Tendsto.sub`) with each `φ_k − ψ_k ∈ F''`;
+* **dominator** `2Φ`: `Integrable (2 · Φ) P` (`Integrable.const_mul`), and for
+  `h = f − g ∈ differenceClass F`, `|h x| = |f x − g x| ≤ |f x| + |g x| ≤ 2 Φ x`
+  (`abs_sub`). -/
+theorem EmpProcPointwiseDense_differenceClass {F : Set (Ω → ℝ)} {P : Measure Ω}
+    (h : EmpProcPointwiseDense F P) :
+    EmpProcPointwiseDense (differenceClass F) P := by
+  obtain ⟨F', hF'sub, hF'ct, hApprox, Φ, hΦ_int, hΦ_dom⟩ := h
+  -- separant: the difference set of `F'`
+  refine ⟨differenceClass F', ?_, ?_, ?_, ?_⟩
+  · -- `differenceClass F' ⊆ differenceClass F` since `F' ⊆ F`
+    rintro h' ⟨f', g', hf', hg', rfl⟩
+    exact ⟨f', g', hF'sub hf', hF'sub hg', rfl⟩
+  · -- countable: image of `F' × F'` under subtraction
+    have : differenceClass F'
+        = Set.image2 (fun f' g' => fun x => f' x - g' x) F' F' := by
+      ext h'
+      constructor
+      · rintro ⟨f', g', hf', hg', rfl⟩; exact ⟨f', hf', g', hg', rfl⟩
+      · rintro ⟨f', hf', g', hg', rfl⟩; exact ⟨f', g', hf', hg', rfl⟩
+    rw [this]
+    exact hF'ct.image2 hF'ct _
+  · -- density: `f − g` approximated by `φ_k − ψ_k`
+    rintro h' ⟨f, g, hf, hg, rfl⟩
+    obtain ⟨φ, hφmem, hφlim⟩ := hApprox f hf
+    obtain ⟨ψ, hψmem, hψlim⟩ := hApprox g hg
+    refine ⟨fun m x => φ m x - ψ m x, fun m => ?_, fun x => ?_⟩
+    · exact ⟨φ m, ψ m, hφmem m, hψmem m, rfl⟩
+    · exact (hφlim x).sub (hψlim x)
+  · -- dominator `2Φ`
+    refine ⟨fun x => 2 * Φ x, hΦ_int.const_mul 2, ?_⟩
+    rintro h' ⟨f, g, hf, hg, rfl⟩ x
+    calc |f x - g x| ≤ |f x| + |g x| := abs_sub (f x) (g x)
+      _ ≤ Φ x + Φ x := by gcongr <;> [exact hΦ_dom f hf x; exact hΦ_dom g hg x]
+      _ = 2 * Φ x := by ring
 
 end AsymptoticStatistics.EmpiricalProcess

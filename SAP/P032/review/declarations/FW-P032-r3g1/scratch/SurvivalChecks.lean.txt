@@ -1,0 +1,28 @@
+import SAP.P032.Defs
+set_option maxHeartbeats 1600000
+open scoped BigOperators
+open Matrix SAP.P032
+noncomputable section
+
+-- Check the actual record and id matrices of the fixed survival witness.
+example : quadForm (recordMask : Fin 10 → Fin 10 → ℝ) survivalInfluence = 19/432 ∧
+    quadForm (subjectMask (fun r => (survivalRecords r).id)) survivalInfluence = 5/144 ∧
+    (∑ i : Fin 4, quadForm (memberMask (fun r => (survivalRecords r).dyad) i)
+      survivalInfluence) = 17/108 ∧
+    quadForm (repeatedMask (fun r => (survivalRecords r).dyad)) survivalInfluence = 5/144 := by
+  have hp : ∀ r s : Fin 10,
+      (survivalRecords r).dyad.members = (survivalRecords s).dyad.members ↔
+        (survivalRecords r).id = (survivalRecords s).id := by decide
+  have hm : repeatedMask (fun r => (survivalRecords r).dyad) =
+      subjectMask (fun r => (survivalRecords r).id) := by
+    funext r s
+    simp only [repeatedMask, subjectMask, hp]
+  rw [hm]
+  simp only [quadForm, Fin.sum_univ_succ]
+  norm_num [recordMask, subjectMask, memberMask, repeatedMask, survivalRecords,
+    survivalInfluence, survivalScores, sixDyadData]
+
+-- The nontrivial id-substitution and residual-factor discrepancies are arithmetic.
+example : (17/108 : ℝ)-5/144-2*(5/144) = 23/432 ∧
+    (17/108 : ℝ)-5/144-2*(((10-1)/10)*(6/(6-1))*(5/144)) = 103/2160 ∧
+    (5/144 : ℝ) < 23/432 ∧ (5/144 : ℝ) < 103/2160 := by norm_num

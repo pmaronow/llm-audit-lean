@@ -1,0 +1,40 @@
+import SAP.P006b.Defs.WholeW1
+
+open SAP.P006b
+
+example : T17BadProbability 2 = (1/4 : ℝ) := by
+  norm_num [T17BadProbability]
+
+example : binaryUntreatedMass (1/4) (1,0) = (1/4 : ℝ) := by
+  norm_num [binaryUntreatedMass]
+
+example : binaryUntreatedMass (1/4) (0,1) = (3/4 : ℝ) := by
+  norm_num [binaryUntreatedMass]
+
+example : binaryFeasible ((0 : ℝ), 1) := by
+  norm_num [binaryFeasible]
+
+example : binaryFeasible ((1 : ℝ), 1) := by
+  norm_num [binaryFeasible]
+
+example : lowerBoundGamma 2 = (2 : ℝ) := by
+  norm_num [lowerBoundGamma, lowerBoundY0, Fin.sum_univ_two]
+
+example : lowerBoundReward 1 0 (1,0) = (1/2 : ℝ) := by
+  norm_num [lowerBoundReward, oneTT, wTT, wWeightedTT, bit,
+    coinMass, binaryRule, lowerBoundY1, Fin.sum_univ_one]
+
+example : empiricalMean (fun _ : Fin 2 => (0 : ℕ)) ![1,3] 0 = (2 : ℝ) := by
+  norm_num [empiricalMean, empiricalGroup, Fin.sum_univ_two]
+
+example : wATO ![true,false] ![(3/4 : ℝ),1] = 3/4 := by
+  have hc : treatedCount ![true,false] = 1 := by
+    simp [treatedCount, bit]
+    decide
+  norm_num [wATO, hc, bit, Fin.sum_univ_two]
+
+example : wATO ![true,true] ![(3/4 : ℝ),1] = 7/8 := by
+  have hc : treatedCount ![true,true] = 2 := by
+    simp [treatedCount, bit]
+    norm_cast
+  norm_num [wATO, hc, bit, Fin.sum_univ_two]

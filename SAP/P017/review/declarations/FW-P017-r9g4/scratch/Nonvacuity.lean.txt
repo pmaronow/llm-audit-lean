@@ -1,0 +1,83 @@
+import SAP.P017.Defs
+
+open MeasureTheory ProbabilityTheory Filter Set
+open scoped Topology ENNReal NNReal
+
+namespace T16Audit
+
+noncomputable section
+
+def normalEstimator (μ : ℝ) (n : ℕ) (z : ℝ) : ℝ :=
+  μ + z / SAP.P017.sqrtN n
+
+theorem normalEstimator_rootN (μ : ℝ) :
+    SAP.P017.RootNNormal (gaussianReal 0 1) (normalEstimator μ) μ := by
+  refine ⟨1, by norm_num, ?_⟩
+  apply tendstoInDistribution_of_ae_tendsto
+  · intro n
+    apply Measurable.aemeasurable
+    dsimp [normalEstimator]
+    fun_prop
+  · exact measurable_id.aemeasurable
+  · apply Filter.Eventually.of_forall
+    intro z
+    have heq : ∀ᶠ n : ℕ in atTop,
+        SAP.P017.sqrtN n * (normalEstimator μ n z - μ) = z := by
+      filter_upwards [eventually_ge_atTop 1] with n hn
+      have hn' : (0 : ℝ) < (n : ℝ) := by exact_mod_cast (show 0 < n by omega)
+      have hs : SAP.P017.sqrtN n ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hn')
+      dsimp [normalEstimator]
+      field_simp
+      ring
+    exact tendsto_const_nhds.congr' (heq.mono fun n hn => hn.symm)
+
+-- A population with constant effects satisfies all the theorem's hypotheses.
+example :
+    IsProbabilityMeasure (Measure.dirac (0 : ℝ)) ∧
+    Measurable (fun _ : ℝ => (0 : ℝ)) ∧
+    Integrable (fun _ : ℝ => (0 : ℝ)) (Measure.dirac 0) ∧
+    IsProbabilityMeasure (gaussianReal 0 1) ∧
+    SAP.P017.RootNNormal (gaussianReal 0 1)
+      (normalEstimator (SAP.P017.populationMean (Measure.dirac 0) (fun _ : ℝ => 0)))
+      (SAP.P017.populationMean (Measure.dirac 0) (fun _ : ℝ => 0)) := by
+  exact ⟨inferInstance, measurable_const, integrable_const _, inferInstance,
+    normalEstimator_rootN _⟩
+
+-- A population with unbounded, nonconstant effects also satisfies all hypotheses.
+example :
+    IsProbabilityMeasure (gaussianReal 0 1) ∧
+    Measurable (id : ℝ → ℝ) ∧
+    Integrable (id : ℝ → ℝ) (gaussianReal 0 1) ∧
+    SAP.P017.RootNNormal (gaussianReal 0 1)
+      (normalEstimator (SAP.P017.populationMean (gaussianReal 0 1) id))
+      (SAP.P017.populationMean (gaussianReal 0 1) id) := by
+  exact ⟨inferInstance, measurable_id, IsGaussian.integrable_id,
+    normalEstimator_rootN _⟩
+
+def twoPoint : Measure ℝ :=
+  (2 : ℝ≥0∞)⁻¹ • Measure.dirac (-1) + (2 : ℝ≥0∞)⁻¹ • Measure.dirac 1
+
+instance : IsProbabilityMeasure twoPoint where
+  measure_univ := by
+    norm_num [twoPoint, Measure.add_apply, Measure.smul_apply]
+    rw [← two_mul, ENNReal.mul_inv_cancel (by norm_num) (by norm_num)]
+
+theorem twoPoint_integrable : Integrable (id : ℝ → ℝ) twoPoint := by
+  apply Integrable.add_measure
+  · exact (integrable_dirac (by simp)).smul_measure (by norm_num)
+  · exact (integrable_dirac (by simp)).smul_measure (by norm_num)
+
+-- A bounded, heterogeneous population satisfies the same hypotheses.
+example :
+    IsProbabilityMeasure twoPoint ∧
+    Measurable (id : ℝ → ℝ) ∧
+    Integrable (id : ℝ → ℝ) twoPoint ∧
+    IsProbabilityMeasure (gaussianReal 0 1) ∧
+    SAP.P017.RootNNormal (gaussianReal 0 1)
+      (normalEstimator (SAP.P017.populationMean twoPoint id))
+      (SAP.P017.populationMean twoPoint id) := by
+  exact ⟨inferInstance, measurable_id, twoPoint_integrable, inferInstance,
+    normalEstimator_rootN _⟩
+
+end
+end T16Audit

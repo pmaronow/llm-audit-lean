@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P003-T9",
+    "theorem": "SAP.P003a.T9",
+    "fingerprint": "7789f4644073fdb4dceef26608bb49bfa7b5523c18f3ea396f51cfd28aa1ceff",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles independent proofs of IsSD fairMass (doubled center 1) and IsSD w2ThreeMass (doubled center 0), the second joint law's full marginal identities and positive normalized weights, the two sum means, and both negations of IsSD. Each witness is a genuine finite joint probability law with the required marginals; independence is absent from the printed assertion.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T10",
+    "theorem": "SAP.P003a.T10",
+    "fingerprint": "5c93d7f497838f9b9c71a5be0093c9414e8c690b598c3fd52e6a7af47a1bd3f3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs fairMass with IsSD and SDShape at doubled center 1 and supplies both p=0 and p=1. It checks the smoothing masses and a negative-index parity case. Thus the input conditions are satisfiable at a half-integer mean, and the parity cases are inhabited.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T15",
+    "theorem": "SAP.P003a.T15",
+    "fingerprint": "a6806da78285daeb7820b8240e245908855a2f68ec8fa73f214e44ac24d2e66d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs v=(1,1,0,0), m=1 for the general and d=1/base hypotheses; v=(0,2,0,0), m=1 for d=2; and v=(0,4,0,0), m=2 with feasible removal (0,2,0,0) and residual (0,2,0,0) for d>=3. It checks the seven- and four-row list lengths, legal state enumeration and a binomial assignment multiplicity of 6 with estimator 1. Feasible positive balanced populations give nonempty complete-randomization laws.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T16",
+    "theorem": "SAP.P003a.T16",
+    "fingerprint": "9397761ce3f0ccaaa1ccf1efbd900339aa2a3f499f90b50e9ed228c923a54157",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean explicitly constructs partner, residual assignment and source data at n=2,m=1 and n=4,m=2, opposite-assignment examples, and Fin(n-2) equivalences to the remaining labels. It verifies source cardinalities 2 and 12 and tests a pair case with signed value -1. Both the m=1 empty-residual branch and the m>1 branch have admissible data. Tables may be any binary-valued functions on these finite labels.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T17",
+    "theorem": "SAP.P003a.T17",
+    "fingerprint": "2501ae79df6801a2072a1b93daf1877a746735efeb9fecf2269eb6893e96caf2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs size-two assignments in the one-(0,1)-subject five-unit table yielding observations (0,2,0,3) and (0,2,1,2). Both arms are positive; the first has zero standard error and numerator 1/5, and the second has variance 2/27 and positive standard error. It checks the fixed-C zero-error branch and constructs legal n=5,m=2,K=1,alpha=1/2 validity parameters with a nonempty product assignment space. The uniform law on the entire product supplies the stipulated independent coordinates.",
+    "confidence": "high"
+  }
+]

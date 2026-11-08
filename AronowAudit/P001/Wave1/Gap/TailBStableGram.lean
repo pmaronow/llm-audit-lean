@@ -4,8 +4,8 @@ import Mathlib.Algebra.Polynomial.Sequence
 /-!
 # Stable-Gram polynomial-sieve consistency (P001-T6)
 
-The empirical-score proof uses compact containment.
-The fitted loss is controlled in outer probability by measurable Gram
+Adapt the empirical-score proof in `GP0013B1b.lean` to the exact compact-containment
+statement. The fitted loss is controlled in outer probability by measurable Gram
 and score events; the fit itself need not be measurable.
 -/
 
@@ -438,6 +438,8 @@ theorem TailB_sieve_consistency_stable_gram {Ω : Type*} [MeasurableSpace Ω] (�
     exact (ENNReal.toReal_mono (measure_ne_top μ _) hm).trans (measureReal_union_le _ _)
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hu
     (Filter.Eventually.of_forall (fun _ => ENNReal.toReal_nonneg)) hevent
+
+example : type_of% @AronowAudit.P001.sieve_consistency_stable_gram_supporting := AronowAudit.P001.Wave1.TailB_sieve_consistency_stable_gram
 
 end
 end AronowAudit.P001.Wave1

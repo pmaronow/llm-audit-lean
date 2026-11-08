@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P001-T1",
+    "theorem": "SAP.P001a.T1",
+    "fingerprint": "772dfda139cb1c35a0353e4e57792da2061149db12abc810a762a055665376c7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:13-37 compiles independent HasSum proofs for normalization and the first two geometric moments, FiniteMomentLaw geoMass, and explicit n=2 mixture cells. There are no external premises. For every n>=2 the defined mixture is a convex combination of the geometric law and its integer shift, hence is a genuine finite-second-moment probability law. The scale is positive, the asserted directions vanish uniformly, and the unit mean quotients genuinely contradict the zero-direction Hadamard requirement.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T2",
+    "theorem": "SAP.P001a.T2",
+    "fingerprint": "2a46403bad1a1ce941d99edfc3a1d78be0246d722de4e119eeda15db42d85cb5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:40 constructs, without importing Challenge, a probability space and an infinite iid standard Gaussian sequence satisfying every sampling premise: IID, MemLp at exponent 2, and strictly positive variance (equal to 1). The separate closed geometric witness is independently checked at scratch/Nonvacuity.lean:13-37.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T3",
+    "theorem": "SAP.P001a.T3",
+    "fingerprint": "5233cf3e8da177152729d8eb67328bd1abbdc87737b4863c7a66c36c5ec560df",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:65-103 independently proves normalization of the gap marginal and gapJointLaw; lines 122-146 check that the mean candidate 0 is outside the positive-density domain, that pdaBump vanishes everywhere the density is positive, and HasDerivAt pdaBump 1 0. Analytically, symmetry gives the genuine mean 0 and independence with the centered bounded uniform outcome gives the zero CEF; the bump and its derivative match zero at both joining points. The witness is admissible for the disclosed global-extension reading, not for a reading requiring the PDA point to be in the CEF domain.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T4",
+    "theorem": "SAP.P001a.T4",
+    "fingerprint": "d5853eb44e23fce04886f4fd084709be6307c15547f2c91dcd05db5f469f1427",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/NonvacuityT4.lean:55 compiles a nonempty dimension-one Gaussian-density model satisfying every hypothesis of the probability/CEF block, including a probability measure, measurable covariate, integrable coordinate, genuine positive vector PDF, an open neighborhood containing the mean, two continuous CEF representatives and an existing derivative. scratch/Nonvacuity.lean:149 also constructs a nonempty positive-dimensional instance of the local open-set block; line 156 checks the hole-density values.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T5",
+    "theorem": "SAP.P001a.T5",
+    "fingerprint": "3c9313082eb0c524b9785d2c53397ba6f226f0ee60f0d8259f0e6633209ada3e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:55-63 proves normalization of uniformLaw 0 1, and line 106 constructs an infinite iid pair experiment satisfying every sampling premise with exactly the independent uniform/Gaussian law. Both fit classes are explicitly asserted nonempty by the certified proposition. Independently, for each finite Vandermonde design, the limit of the positive-ridge coefficient vectors is a minimum-norm least-squares solution; its entries are Borel limits of continuous functions, including at singular designs, yielding sample-based Borel selections for both schedules. Polynomial squared error is genuinely integrable on each compact local interval. The endpoint assertion requires t>=2 and its finite-experiment law is an ordinary probability product measure.",
+    "confidence": 0.98
+  }
+]

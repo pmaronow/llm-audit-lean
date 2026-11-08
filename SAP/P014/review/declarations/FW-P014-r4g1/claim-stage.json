@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P014.T2",
+    "target_id": "P014-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both canonical components are present. WholeW1.lean:81-88 states the assignment identity under precisely A1, A2 and 0<m<n for an arbitrary measurable binary random vector on any probability space; the actual positive-atom assignmentLaw is used, with no restriction on outside allocation or dependence and no restriction on potential outcomes. WholeW1.lean:34-79 includes positive denominators, equality with genuine event conditional expectations, the observed estimator, all four derivation steps, and both bracketed forms of the target. WholeW1.lean:90-102 derives A1/A2 and the identity from the corrected uniform local score law. Measurability is inherent in the canonical random vectors, and finite-state outcomes give integrability; these are no substantive additional hypotheses. Natural m rather than integer m loses nothing under 0<m<n. The interior-count assumptions imply N>=2 and hence the canonical N>=1. The two-point probability model in scratch/Nonvacuity.lean realizes all substantive hypotheses."
+  },
+  {
+    "theorem": "SAP.P014.T8",
+    "target_id": "P014-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "Part5.lean:97-99 is exactly the canonical finite-sum identity on a nonempty set: the mean of the differences equals the difference of sums divided by the same positive cardinality. Encoding the two real families as f(i,true) and f(i,false), and finite subject sets as Finsets of Fin N, is lossless by reindexing. windowContrast at Part1.lean:70-71 explicitly brackets the difference. The statement does not assert unbiasedness independently of the averaging definition, which is consistent with the canonical grouping assertion. A two-subject instance with treatment entries 3 and control entries 2 has contrast 1, checked in scratch/Nonvacuity.lean."
+  },
+  {
+    "theorem": "SAP.P014.T3",
+    "target_id": "P014-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "All five canonical assertions (a)-(e) are present, respectively as T3ConditionalPart, T3UniformPart, T3FixedOutsidePart, T3NoninterferencePart and T3NecessityPart (Part4.lean:43-105). The finite assignment law is an exact representation of the law of a finite binary vector, not a restriction on the underlying sample space. The support average counts distinct full binary assignments once, while conditionalAverage uses their actual masses. The fixed-outside part permits arbitrary outside scores, assumes only almost surely fixed outside treatments, proves both the permutation multiplicities and the complete choose(n,m) support with its masses, A1/A2/U, and unbiasedness. Its window-membership and within-window score hypotheses express the canonical definition of S; b>0 is forced by distinct window values of both signs and the interior count. The no-interference part compares all full assignments with the same own treatment. The necessity premise quantifies all outcome arrays and is equivalent to quantifying every single-subject outcome function. Strict positivity of the relevant arm probabilities follows from A1/A2 and normalization, or is explicitly assumed in (e); no empty-arm arithmetic supplies a conclusion. All hypothesis families, including equality for every outcome in (e), are realized by the two equally likely assignments (true,false) and (false,true) in scratch/Nonvacuity.lean."
+  },
+  {
+    "theorem": "SAP.P014.T7",
+    "target_id": "P014-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "Part5.lean:69-95 includes all canonical parts (a)-(c): the literal condition is equivalent to an empty window, each diagonal event has probability one, the distinct-pair and diagonal decomposition is exact, an interior count forces a nonempty window of size at least two, corrected local randomization implies the distinct-pair condition, and the three specified example score laws satisfy it. GeneralPart is true for arbitrary S and even arbitrary score functions, so it covers the canonical measurable random-vector and window-set setting without an added restriction. LocalPart uses the corrected local-randomization setting and the standing interior-count condition; it does not assume the corrected no-ties conclusion. The Bool score model in scratch/Nonvacuity.lean has diagonal probability one and distinct-pair tie probability zero. The finite no-ties examples are independently checked in scratch/Counterexample.lean."
+  },
+  {
+    "theorem": "SAP.P014.T4",
+    "target_id": "P014-T4",
+    "my_reading_vs_claim": "different",
+    "reason": "This is an explicit refutation of the canonical printed unbiasedness assertion, rather than a theorem asserting it. It is a valid refutation of the assertion itself under the canonical standing assumptions: Part3.lean:40-50 verifies a normalized finite design satisfying every printed local clause with no ties read for distinct subjects as standing assumption R6 requires, and also every equiprobable local permutation required by the prose. The estimator has positive arm counts and all own-arm probabilities are positive. Its expectation is 0 while the canonical unweighted, distinct-full-assignment-support target is -1/18. Thus it contradicts the canonical unbiasedness equality, not just an interpretation of explanatory guidance. The outside treatment is allowed to depend on the local arrangement, as the canonical statement explicitly permits. Exact Fraction arithmetic independently reconstructed the four full assignment masses (1/6,1/3,1/6,1/3) and the discrepancy; scratch/Counterexample.lean checks the hypotheses and numerical values from definitions. The classification 'different' records the intentional reversal by refutation; it is not a fidelity defect if the record declares the decision 'refuted'."
+  }
+]

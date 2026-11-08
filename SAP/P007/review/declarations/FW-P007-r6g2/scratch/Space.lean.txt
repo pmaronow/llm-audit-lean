@@ -1,0 +1,50 @@
+import SAP.P007.Defs
+import SAP.P007.Defs.WholeW2
+open scoped BigOperators Classical
+open SAP.P007 MeasureTheory
+
+-- T10: a fully specified underlying probability space, measurable array,
+-- cell independence, observation bound and defined expectation (q=0).
+example : ∃ (μ : Measure (Fin 1)) (_ : IsProbabilityMeasure μ)
+    (M : Fin 1 → Array 2 2),
+    Measurable M ∧ cellsIndependentOnW2 μ M ∧
+    (∀ i j, eventOnW2 μ M (fun x => x i j = false) = 0) ∧
+    observationBoundOnW2 μ M 0 ∧
+    Integrable (fun ω => deletedFraction (M ω)) μ ∧
+    (∫ ω, deletedFraction (M ω) ∂μ) = 1 := by
+  let μ : Measure (Fin 1) := Measure.dirac 0
+  let M : Fin 1 → Array 2 2 := fun _ _ _ => true
+  haveI : IsProbabilityMeasure μ := by dsimp [μ]; infer_instance
+  have he (P : Array 2 2 → Prop) :
+      eventOnW2 μ M P = if P (fun _ _ => true) then 1 else 0 := by
+    by_cases hp : P (fun _ _ => true) <;> simp [eventOnW2, M, hp]
+  have hs (i : Fin 2) : survivalOnW2 μ M i 1 = 0 := by
+    rw [survivalOnW2, he]
+    norm_num [prefixObserved, Fin.forall_fin_succ]
+  have hf : (fun ω => deletedFraction (M ω)) = (fun _ : Fin 1 => (1 : ℝ)) := by
+    funext ω
+    norm_num [M, deletedFraction, deletedIndicator, prefixObserved,
+      Fin.sum_univ_succ, Fin.forall_fin_succ]
+  refine ⟨μ, inferInstance, M, measurable_const, ?_, ?_, ?_, ?_, ?_⟩
+  · intro E
+    simp_rw [he]
+    simp only [Finset.prod_ite_zero, Finset.mem_univ, true_implies]
+    simp
+  · intro i j
+    rw [he]
+    norm_num
+  · refine ⟨le_rfl, zero_lt_one, ?_⟩
+    intro i
+    constructor
+    · intro _; exact (hs i).le
+    · intro j hj hj' hp
+      have : j = 1 := by omega
+      subst j
+      rw [hs i] at hp
+      exact (lt_irrefl 0 hp).elim
+  · rw [hf]
+    exact integrable_const _
+  · rw [hf]
+    simp
+
+

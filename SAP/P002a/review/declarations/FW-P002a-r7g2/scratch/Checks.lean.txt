@@ -1,0 +1,265 @@
+import SAP.P002a.Challenge
+
+open SAP.P002a MeasureTheory ProbabilityTheory
+open scoped BigOperators ENNReal Matrix Classical Topology
+
+set_option maxRecDepth 3000
+set_option maxHeartbeats 1500000
+
+namespace Audit
+noncomputable section
+
+def liftCell (m : ℕ) (f : Fin 4 → ℝ) (i : Fin (m*4)) : ℝ :=
+  f ((finProdFinEquiv.symm i).2)
+
+lemma sum_lift (m : ℕ) (f : Fin 4 → ℝ) :
+    ∑ i : Fin (m*4), liftCell m f i = (m : ℝ) * ∑ a : Fin 4, f a := by
+  rw [← (finProdFinEquiv : Fin m × Fin 4 ≃ Fin (m*4)).sum_comp]
+  simp [liftCell, Fintype.sum_prod_type]
+
+def cellX : Fin 4 → ℝ := ![-1,1,-1,1]
+def cellY : Fin 4 → ℝ := ![-1,-1,1,1]
+
+def model (j : ℕ) : CovPopulation ((j+1)*4) 1 :=
+  ⟨⟨fun i _ => liftCell (j+1) cellY i, fun _ a => a, 2*(j+1)⟩,
+   fun i _ => liftCell (j+1) cellX i⟩
+
+lemma lift_comp (m : ℕ) (f : Fin 4 → ℝ) (g : ℝ → ℝ) :
+    (fun i => g (liftCell m f i)) = liftCell m (fun a => g (f a)) := rfl
+
+lemma sum_x (j : ℕ) : ∑ i, (model j).x i 0 = 0 := by
+  change ∑ i, liftCell (j+1) cellX i = 0
+  rw [sum_lift]
+  norm_num [cellX, Fin.sum_univ_succ]
+
+lemma sum_y (j : ℕ) : ∑ i, (model j).pop.y i false = 0 := by
+  change ∑ i, liftCell (j+1) cellY i = 0
+  rw [sum_lift]
+  norm_num [cellY, Fin.sum_univ_succ]
+
+lemma sum_pow (j : ℕ) (p : ℕ) (hp : p=2 ∨ p=4) (f : Fin 4 → ℝ)
+    (hf : f=cellX ∨ f=cellY) :
+    ∑ i : Fin ((j+1)*4), (liftCell (j+1) f i)^p = ((j+1)*4 : ℕ) := by
+  change (∑ i, liftCell (j+1) (fun a => f a ^ p) i) = _
+  rw [sum_lift]
+  rcases hp with rfl | rfl <;> rcases hf with rfl | rfl <;>
+    norm_num [cellX, cellY, Fin.sum_univ_succ]
+
+lemma sum_xy (j : ℕ) : ∑ i, (model j).x i 0 * (model j).pop.y i false = 0 := by
+  change ∑ i, liftCell (j+1) (fun a => cellX a * cellY a) i = 0
+  rw [sum_lift]
+  norm_num [cellX, cellY, Fin.sum_univ_succ]
+
+lemma size_pos (j : ℕ) : 0 < (((j+1)*4 : ℕ) : ℝ) := by positivity
+
+lemma mean_x (j : ℕ) : mean (fun i => (model j).x i 0) = 0 := by
+  simp [mean, sum_x]
+
+lemma mean_y (j : ℕ) : mean (fun i => (model j).pop.y i false) = 0 := by
+  simp [mean, sum_y]
+
+lemma mean_pow (j : ℕ) (p : ℕ) (hp : p=2 ∨ p=4) (f : Fin 4 → ℝ)
+    (hf : f=cellX ∨ f=cellY) :
+    mean (fun i : Fin ((j+1)*4) => (liftCell (j+1) f i)^p) = 1 := by
+  unfold mean
+  rw [sum_pow j p hp f hf, div_self (ne_of_gt (size_pos j))]
+
+lemma group_univ {n : ℕ} (f : Fin n → ℝ) : groupMean Finset.univ f = mean f := by
+  simp [groupMean, mean]
+
+lemma gram_one (j : ℕ) : gram (model j).x Finset.univ = 1 := by
+  ext s t
+  fin_cases s <;> fin_cases t
+  · simp [gram, augmented, group_univ, mean]
+    positivity
+  · simpa [gram, augmented, group_univ] using mean_x j
+  · simpa [gram, augmented, group_univ] using mean_x j
+  · simpa [gram, augmented, group_univ, model, pow_two] using
+      mean_pow j 2 (Or.inl rfl) cellX (Or.inl rfl)
+
+lemma score_zero (j : ℕ) : score (model j).x Finset.univ ((model j).pop.y · false) = 0 := by
+  ext s
+  fin_cases s
+  · simpa [score, augmented, group_univ] using mean_y j
+  · simp [score, augmented, groupMean, sum_xy]
+
+lemma ols_zero (j : ℕ) : ols (model j).x Finset.univ ((model j).pop.y · false) = 0 := by
+  simp [ols, gram_one, score_zero]
+
+lemma late_zero (j : ℕ) : late (model j).pop = 0 := by
+  simp [late, model, groupMean]
+
+lemma w_y (j : ℕ) (a : Bool) :
+    w (model j).pop a (late (model j).pop) = ((model j).pop.y · false) := by
+  rw [late_zero]
+  funext i
+  simp [w, model]
+
+lemma residual_y (j : ℕ) (a : Bool) :
+    residual (model j) a (late (model j).pop) = ((model j).pop.y · false) := by
+  unfold SAP.P002a.residual psi
+  rw [w_y, ols_zero]
+  simp only [dotProduct_zero, sub_zero]
+
+lemma variance_y (j : ℕ) :
+    popVar ((model j).pop.y · false) = (((j+1)*4 : ℕ) : ℝ) / ((((j+1)*4 : ℕ) : ℝ)-1) := by
+  unfold popVar
+  rw [mean_y]
+  simp only [sub_zero]
+  congr 1
+  exact sum_pow j 2 (Or.inl rfl) cellY (Or.inr rfl)
+
+lemma variance_ge_one (j : ℕ) : 1 ≤ popVar ((model j).pop.y · false) := by
+  rw [variance_y]
+  have hn : 1 < (((j+1)*4 : ℕ) : ℝ) := by push_cast; nlinarith
+  apply (le_div_iff₀ (sub_pos.mpr hn)).mpr
+  linarith
+
+lemma positive_residual (j : ℕ) (a : Bool) :
+    0 < popVar (residual (model j) a (late (model j).pop)) := by
+  rw [residual_y]
+  exact lt_of_lt_of_le zero_lt_one (variance_ge_one j)
+
+lemma model_Xi (j : ℕ) : Xi (model j) 0 1 1 1 (1/2) := by
+  have hn : 0 < (((j+1)*4 : ℕ) : ℝ) := size_pos j
+  have hC : compliers (model j).pop = Finset.univ := by
+    ext i
+    simp [compliers, model]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · dsimp [ValidDesign, model]
+    omega
+  · simp [MonotoneReceipt, model]
+  · rw [hC]
+    exact Finset.univ_nonempty
+  · dsimp [model]
+    push_cast
+    linarith
+  · dsimp [model]
+    push_cast
+    linarith
+  · rw [residual_y, residual_y]
+    simpa [popCov, popVar, pow_two] using le_trans zero_le_one (variance_ge_one j)
+  · intro a
+    rw [residual_y]
+    have hm : fourthNorm ((model j).pop.y · false) = 1 := by
+      unfold fourthNorm
+      change Real.sqrt (Real.sqrt (mean (fun i => (liftCell (j+1) cellY i)^4))) = 1
+      rw [mean_pow j 4 (Or.inr rfl) cellY (Or.inr rfl)]
+      norm_num
+    rw [hm, one_mul]
+    exact Real.one_le_sqrt.mpr (variance_ge_one j)
+  · intro s
+    fin_cases s
+    exact sum_x j
+  · intro s
+    fin_cases s
+    exact le_of_eq (mean_pow j 4 (Or.inr rfl) cellX (Or.inl rfl))
+  · intro b
+    have hb : (fun i => (dotProduct ((model j).x i) b)^2) =
+        (fun i => (model j).x i 0 ^ 2 * b 0 ^ 2) := by
+      funext i
+      simp [dotProduct, mul_pow]
+    rw [hb]
+    simp only [mean]
+    have hsum : ∑ i, (model j).x i 0 ^ 2 = (((j+1)*4 : ℕ) : ℝ) :=
+      sum_pow j 2 (Or.inl rfl) cellX (Or.inl rfl)
+    rw [← Finset.sum_mul, hsum]
+    rw [mul_comm _ (b 0 ^ 2), mul_div_cancel_right₀ _ (ne_of_gt hn)]
+    simp [normSq]
+
+-- Discrete finite assignment spaces and their independent product law.
+instance assignmentMeasurable (j : ℕ) :
+    MeasurableSpace (Finset (Fin ((j+1)*4))) := ⊤
+
+lemma design_nonempty (j : ℕ) : (assignments (model j).pop).Nonempty := by
+  apply Finset.powersetCard_nonempty.mpr
+  simp [model]
+  omega
+
+def marginal (j : ℕ) : Measure (Finset (Fin ((j+1)*4))) :=
+  (PMF.uniformOfFinset (assignments (model j).pop) (design_nonempty j)).toMeasure
+
+instance marginalProbability (j : ℕ) : IsProbabilityMeasure (marginal j) := by
+  unfold marginal
+  infer_instance
+
+def assignmentLaw : Measure (∀ j : ℕ, Finset (Fin ((j+1)*4))) :=
+  Measure.infinitePi marginal
+
+instance assignmentLawProbability : IsProbabilityMeasure assignmentLaw := by
+  unfold assignmentLaw
+  infer_instance
+
+lemma exact_marginals : RandomizationSequence (fun j => (model j).pop)
+    assignmentLaw (fun j ω => ω j) := by
+  intro j E
+  have ht : MeasurableSet {S : Finset (Fin ((j+1)*4)) | E S} := by trivial
+  refine ⟨(measurable_pi_apply j) ht, ?_⟩
+  change Measure.infinitePi marginal
+    ((Function.eval j) ⁻¹' {S : Finset (Fin ((j+1)*4)) | E S}) = _
+  rw [(measurePreserving_eval_infinitePi marginal j).measure_preimage ht.nullMeasurableSet]
+  change (PMF.uniformOfFinset (assignments (model j).pop) (design_nonempty j)).toMeasure
+    {S | E S} = _
+  rw [PMF.toMeasure_uniformOfFinset_apply (design_nonempty j) _ ht]
+  have hc : 0 < (((assignments (model j).pop).card : ℕ) : ℝ) := by
+    exact_mod_cast Finset.card_pos.mpr (design_nonempty j)
+  simp [probability, ENNReal.ofReal_div_of_pos hc]
+
+-- All hypotheses of T7, and hence of the sequence part of T9, hold jointly.
+example :
+    StrictMono (fun j : ℕ => (j+1)*4) ∧
+    (0 : ℝ) < 1 ∧ (0 : ℝ) < 1 ∧ (0 : ℝ) < 1 ∧
+    (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) ≤ 1/2 ∧ (0 : ℝ) < 1 ∧
+    (∀ j, Xi (model j) 0 1 1 1 (1/2)) ∧
+    (∀ j a, 0 < popVar (residual (model j) a (late (model j).pop))) ∧
+    IsProbabilityMeasure assignmentLaw ∧
+    RandomizationSequence (fun j => (model j).pop) assignmentLaw (fun j ω => ω j) ∧
+    StrictMono (fun j : ℕ => j) := by
+  refine ⟨?_, by norm_num, by norm_num, by norm_num,
+    by norm_num, le_rfl, by norm_num, model_Xi, positive_residual,
+    inferInstance, exact_marginals, strictMono_id⟩
+  intro i j hij
+  change (i+1)*4 < (j+1)*4
+  omega
+
+lemma mean_dot_sq (j : ℕ) (b : Fin 1 → ℝ) :
+    mean (fun i => (dotProduct ((model j).x i) b)^2) = normSq b := by
+  have hb : (fun i => (dotProduct ((model j).x i) b)^2) =
+      (fun i => (model j).x i 0 ^ 2 * b 0 ^ 2) := by
+    funext i
+    simp [dotProduct, mul_pow]
+  have hsum : ∑ i, (model j).x i 0 ^ 2 = (((j+1)*4 : ℕ) : ℝ) :=
+    sum_pow j 2 (Or.inl rfl) cellX (Or.inl rfl)
+  rw [hb, mean, ← Finset.sum_mul, hsum, mul_comm _ (b 0 ^ 2),
+    mul_div_cancel_right₀ _ (ne_of_gt (size_pos j))]
+  simp [normSq]
+
+lemma least_rayleigh_one (j : ℕ) : leastRayleigh (model j).x = 1 := by
+  have hs : {t : ℝ | ∃ b : Fin 1 → ℝ,
+      normSq b = 1 ∧ mean (fun i => (dotProduct ((model j).x i) b)^2) = t} = {1} := by
+    ext t
+    constructor
+    · rintro ⟨b, hb, ht⟩
+      rw [mean_dot_sq, hb] at ht
+      exact Set.mem_singleton_iff.mpr ht.symm
+    · intro ht
+      have ht' : t=1 := Set.mem_singleton_iff.mp ht
+      subst t
+      refine ⟨fun _ => 1, by simp [normSq], ?_⟩
+      simp [mean_dot_sq, normSq]
+  unfold leastRayleigh
+  rw [hs]
+  simp
+
+-- A genuine finite instance of every hypothesis of the spectral part of T9.
+example : ∃ x : Fin 4 → Fin 1 → ℝ,
+    (0:ℕ)<4 ∧ (0:ℕ)<1 ∧ (0:ℝ)<1 ∧
+    (∀ s, ∑ i, x i s = 0) ∧ (1:ℝ) ≤ leastRayleigh x := by
+  refine ⟨(model 0).x, by norm_num, by norm_num, by norm_num, ?_, ?_⟩
+  · intro s
+    fin_cases s
+    exact sum_x 0
+  · exact le_of_eq (least_rayleigh_one 0).symm
+
+end
+end Audit

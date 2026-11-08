@@ -1,21 +1,24 @@
 import AronowAudit.P031.Wave1.FootnoteThreeProbabilityBlueprint
 
 /-!
-# P031-T5: counterexample to the printed large-sample assertions
+# Blueprint: P031-T5, refutation of the printed large-sample coverage contract
 
-The target asserts that an explicit growing population sequence satisfies
-`StandardizedNormalLimit` and violates HR/HC2 equivalence, and negates
-the universal conjunction of three first-order equivalences and five
-coverage clauses. The theorem `assemble` derives this target conditional
-on the stated auxiliary propositions. No undercoverage theorem is claimed here.
+Record P031-T5 (`AronowAudit.P031.large_sample_coverage_as_printed`, resolution
+`refute`). The second conjunct of the target is the negation of the universal closure of
+the exact frozen header (all three first-order equivalences and all five coverage
+clauses). The first conjunct exhibits an explicit growing population sequence that
+satisfies the actual `StandardizedNormalLimit` and violates the HR/HC2 equivalence; that
+is enough to refute the conjunction. No undercoverage theorem is claimed.
 
-Witness: row `n` has `r = n+1`, `k = 4r²`,
+Witness (validator E001 §§2-4, 6; map §11): row `n` has `r = n+1`, `k = 4r²`,
 `N = 2^k`, `M = 2`; the `N` units are the `k`-digit binary vectors (`finFunctionFinEquiv`),
 `q_i = (Σ_j ±1)/(2r)`, `y1_i = q_i / 2^(2r²)`, `y0 = 0`. The standardized estimator of a
 treated pair is `(q_I+q_J)/√2 · √((N-1)/(N-2))`; comparing the distinct-pair design with
 independent uniform draws (error `≤ 1/N`) turns it into a normalized sum of `2k` fair
 signs, to which Mathlib's iid CLT applies. Ties `q_I = q_J` have probability
 `≤ C(2k,k)/4^k + 1/N → 0`, and off ties the HR/HC2 relative error is `1/2 > 1/4`.
+
+Imports: the P031 module (which itself imports Mathlib); no direct Mathlib import.
 -/
 
 namespace AronowAudit.P031.Wave1.LargeSampleRefutation
@@ -24,8 +27,7 @@ open scoped BigOperators Matrix Topology
 open Filter MeasureTheory
 attribute [local instance] Classical.propDecidable
 
-/-- A normally convergent population sequence violating HR/HC2 equivalence,
-and the resulting negation of the printed universal conjunction. -/
+/-- Frozen final statement of `AronowAudit.P031.Wave1.printed_large_sample_contract_refuted`. -/
 def Target : Prop :=
   (∃ P : ℕ → Population,
     GrowingPopulations P ∧ StandardizedNormalLimit P ∧
@@ -86,7 +88,7 @@ instance : IsProbabilityMeasure coinMeasure := by
   unfold coinMeasure
   infer_instance
 
-/-! ## Auxiliary statements -/
+/-! ## Statements used by the nodes -/
 
 /-- `N → ∞`. -/
 def HypercubeGrowth : Prop := GrowingPopulations hypercubePopulation
@@ -162,7 +164,8 @@ def StandardizationIdentity : Prop :=
         Real.sqrt (trueVariance (hypercubePopulation n)) =
       (∑ i ∈ s, hcQ n i) / Real.sqrt 2 * Real.sqrt (((hcN n : ℝ) - 1) / ((hcN n : ℝ) - 2))
 
-/-- Continuity of the standard normal CDF. -/
+/-- Continuity of the standard normal CDF (local `AronowAudit.P053.NormalCompletion`
+helpers, or atomlessness of `gaussianReal 0 1`). -/
 def NormalCDFContinuous : Prop := ∀ x : ℝ, ContinuousAt normalCDF x
 
 /-- On a treated pair the HR/HC2 relative-error event at `ε = 1/4` is exactly the
@@ -190,55 +193,55 @@ def TieProbabilityVanishes : Prop :=
   Tendsto (fun n => eventProbability (hypercubePopulation n)
     (fun s => ∃ i ∈ s, ∃ j ∈ s, i ≠ j ∧ hcQ n i = hcQ n j)) atTop (nhds 0)
 
-/-! ## Implications between auxiliary statements -/
+/-! ## Nodes -/
 
-/-- Growth of the witness population sizes. -/
+/-- Node 1 (growth; map node `rational_hypercube_population`). Proved (trivial) in
+`LargeSampleRefutation/N1.lean`. -/
 def N1 : Prop := HypercubeGrowth
-/-- Moments. -/
+/-- Node 2 (moments; map node `rational_hypercube_population`). -/
 def N2 : Prop := HypercubeMoments
-/-- Exact true variance. -/
+/-- Node 3 (exact true variance; map node `two_draw_comparison_and_variance`). -/
 def N3 : Prop := HypercubeMoments → HypercubeTrueVariance
-/-- Pair-law comparison. -/
+/-- Node 4 (pair-law comparison; map node `two_draw_comparison_and_variance`). -/
 def N4 : Prop := PairComparison
-/-- Pair count as a Rademacher count. -/
+/-- Node 5 (pair count as a Rademacher count; map node `iid_sign_normal_cdf_bridge`). -/
 def N5 : Prop := PairCountRademacher
-/-- The iid CLT for fair signs, expressed as convergence in distribution. -/
+/-- Node 6 (iid CLT for fair signs, convergence in distribution; standard input). -/
 def N6 : Prop := CoinCLTDistribution
-/-- CDF form of the coin CLT. -/
+/-- Node 7 (CDF form of the coin CLT). -/
 def N7 : Prop := CoinCLTDistribution → CoinCLTMeasure
-/-- Coin cylinder events as counts. -/
+/-- Node 8 (coin cylinder events as counts). -/
 def N8 : Prop := CoinCylinderCount
-/-- Threshold transfer. -/
+/-- Node 9 (threshold transfer). -/
 def N9 : Prop := ThresholdTransfer
-/-- Standardization identity. -/
+/-- Node 10 (standardization identity). -/
 def N10 : Prop := HypercubeTrueVariance → StandardizationIdentity
-/-- Continuity of the standard normal CDF. -/
+/-- Node 11 (normal CDF continuity). Proved (trivial) in `LargeSampleRefutation/N11.lean`. -/
 def N11 : Prop := NormalCDFContinuous
-/-- The full `StandardizedNormalLimit`: positivity from the variance formula;
-for each `x` the event is a symmetric pair event, compared with the coin count
-at `m = 2k` and threshold `√((N-2)/(N-1)) x`. -/
+/-- Node 12 (the full `StandardizedNormalLimit`, map node `iid_sign_normal_cdf_bridge`:
+positivity from the variance formula; for each `x` the event is a symmetric pair event,
+compared with the coin count at `m = 2k` and threshold `√((N-2)/(N-1)) x`). -/
 def N12 : Prop :=
   HypercubeTrueVariance → PairComparison → PairCountRademacher → CoinCLTMeasure →
     CoinCylinderCount → ThresholdTransfer → StandardizationIdentity → NormalCDFContinuous →
     StandardizedNormalLimit hypercubePopulation
-/-- HR/HC2 error event. -/
+/-- Node 13 (HR/HC2 error event; map node `HR_relative_error_and_full_negation`). -/
 def N13 : Prop := HypercubeErrorEvent
-/-- Tie count. -/
+/-- Node 14 (tie count; map node `distinct_pair_ties_vanish`). -/
 def N14 : Prop := TieCount
-/-- Central binomial decay. -/
+/-- Node 15 (central binomial decay; map node `distinct_pair_ties_vanish`). -/
 def N15 : Prop := CentralBinomDecay
-/-- Tie probability vanishes. -/
+/-- Node 16 (tie probability vanishes). -/
 def N16 : Prop :=
   FootnoteThreeProbability.EventCalculus → PairComparison → TieCount → CentralBinomDecay →
     TieProbabilityVanishes
-/-- The event calculus, the non-tie error identity, and vanishing tie
-probability imply failure of HR/HC2 first-order equivalence. -/
+/-- Node 17 (failure of HR/HC2 first-order equivalence; error probability `→ 1`). -/
 def N17 : Prop :=
   FootnoteThreeProbability.EventCalculus → HypercubeErrorEvent → TieProbabilityVanishes →
     ¬ FirstOrderEquivalent hypercubePopulation hrEstimator hc2Estimator
 
-/-- The auxiliary statements imply the target. `hEC` supplies the finite-design
-event inequalities (`FootnoteThreeProbability.EventCalculus`). -/
+/-- The nodes suffice. `hEC` is the shared Node 7 of the P031-T11 probability blueprint
+(`FootnoteThreeProbability.EventCalculus`). -/
 theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7 : N7)
     (h8 : N8) (h9 : N9) (h10 : N10) (h11 : N11) (h12 : N12) (h13 : N13) (h14 : N14)
     (h15 : N15) (h16 : N16) (h17 : N17) (hEC : FootnoteThreeProbability.N7) :

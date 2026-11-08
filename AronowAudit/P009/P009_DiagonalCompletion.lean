@@ -151,6 +151,7 @@ theorem diagonal_omission_family_completed :
       have he (i j : Fin (t+1)) : (if j=i then (0:ℝ) else alpha (fairLaw (t+1)) (fun z=>z i) (fun z=>z j))=0 := by
         by_cases hij : j=i <;> simp [hij,ha]
       simp [he]
+#print axioms diagonal_omission_family_completed
 end
 end AronowAudit.P009.DiagonalCompletion
 
@@ -169,5 +170,6 @@ theorem diagonal_omission_family :
       4*(∑ i, ∑ j, if j = i then 0 else alpha E.design (fun z => z i) (fun z => z j)) = 0 ∧
       0 < size identityStudy t) := by
   exact DiagonalCompletion.diagonal_omission_family_completed
+#print axioms diagonal_omission_family
 end
 end AronowAudit.P009

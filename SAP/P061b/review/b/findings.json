@@ -1,0 +1,102 @@
+[
+  {
+    "target_id": "P061-T12",
+    "theorem": "SAP.P061b.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, Ω={0,1}², g=y=housemateAssignment, h_i(t)=t. Take D=bothOrNeither and D'=independentHousehold: both labels 0 and 1 have margin 1/2 for each unit, global stability holds, and the contrast is 1 under both designs. These are nonempty, normalized explicit AtomicDesigns; the table values were checked by exact rational enumeration.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T13",
+    "theorem": "SAP.P061b.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, D=oneTreated, g=ownAssignment, y=housemateAssignment. Each unit's supported exposure cell is a singleton, so NURVA holds with margins 1/2 for both labels, although SUTVA fails. The globally stable extension y'_i(z)=1-ownAssignment i z agrees with y on both supported assignments and has exactly the same observed-data law. Thus the extension and law clauses are substantive, with original zero-mass assignments retained.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T14",
+    "theorem": "SAP.P061b.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed finite example, with no hypotheses to make vacuous: the supplied normalized designs on four assignments all give margins 1/2 at both own-exposure labels. Exact rational enumeration gives AEPOs 0 and 1 under oneTreated and contrasts -1, 1 and 0 under the three designs. The displayed assignments (1,0),(1,1) witness global instability, with the latter of zero mass under oneTreated.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T15",
+    "theorem": "SAP.P061b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed normalized finite designs on the full binary and ternary squares. Every relevant exposure margin is 1/2. Exact rational enumeration gives attenuation contrasts (1,0), amplification contrasts (0,1), and hidden-version contrasts (1,2). NURVA holds because each unit/category cell on each two-point support has one assignment. The full feasible sets contain explicit outcome variation within own-exposure/category fibres, and actual own-version outcomes have no interference.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T16",
+    "theorem": "SAP.P061b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Independent Lean proof in scratch/Check.lean, importing only Defs: Ω=ℕ, N=1, p(n)=(1/2)^n/2, g=0, d=e=0, y(n)=2^n·2. The design sums to 1 and its exposure margin is 1. The HT estimator equals y, and every term p(n)|HT(n)| is 1, so it has no first absolute moment. This directly contradicts the existence inherent in the canonical unqualified ordinary finite-mean unbiasedness assertion; it does not compare two finite unequal means or exploit a nonsummable tsum's fallback value. Axioms printed for the refutation contain no sorryAx.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T17",
+    "theorem": "SAP.P061b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, n=1, Ω=(Fin 2→Fin 2), p(z)=1/2 if z(0)≠z(1), zero otherwise. The normalized design cubeOne and UniformFixedCount cubeOne 1 are compiled in scratch/Check.lean with no sorryAx. Both margins are 1/2. Arbitrary interfering schedules are allowed; exact rational checks of completely randomized designs for N=2,...,6, every 0<n<N, confirm the difference-in-means equality for outcomes depending on other units. The first clause is also inhabited by this design with d=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T18",
+    "theorem": "SAP.P061b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, D=independentHousehold, g=y=ownAssignment, d=1, e=0. All marginal probabilities are 1/2 and y is globally, hence support, stable; these positivity and stability facts are checked in scratch/Check.lean. The two distinct exposure labels meet the joint premises. Stability bounds the finitely many relevant exposed-cell outcome values on support, ensuring all asserted means, variances and covariances are genuine finite sums even in the theorem's general infinite-support setting.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T19",
+    "theorem": "SAP.P061b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the joint-positive implication use N=2, independentHousehold, g=y=ownAssignment, d=1; diagonal joint probabilities are 1/2 and off-diagonal ones are 1/4, checked in Lean. For the zero-joint conservative branch use oneTreated with g=ownAssignment and y_i(z)=a_i z_i, (a_0,a_1)=(-2,3), d=1: NURVA and marginal positivity hold, while π_01=π_10=0. Independent rational enumeration gives true variance 25/4, conservative expected estimate 13/2, and slack 1/4, so conservativeness is not obtained by excluding missing pairs.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P061-T20",
+    "theorem": "SAP.P061b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, D=independentHousehold, g=ownAssignment, y=housemateAssignment, F_i=0, d=1. Every exposed-outcome/prediction first moment exists because the space is finite, calibration is 0=0, and constant predictions are independent and mean-independent of the indicator. The estimator and AEPO both have expectation 1/2. Lean checks in scratch/Check.lean establish the moment hypotheses, calibration and failure of SupportStable for this y, so the absence of a NURVA hypothesis is substantive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T21",
+    "theorem": "SAP.P061b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For each N take Ω_N={0,1}^N with independent fair binary assignments, D_N uniform with mass 2^(-N), g_i(z)=y_i(z)=z_i, and d=1. For N≥1 all π_i=1/2, NURVA holds, reweighted exposed outcomes are 0 or 2, and the absolute dependence sum is b_N=N/4 (diagonal contributions 1/4, off-diagonal zero). Choose c_N=2. Then b_N/N²=1/(4N) and b_N c_N²/N²=1/N tend to zero. At N=0 choose the unique empty assignment, so b_0=0 and all unit premises are harmless. This is a genuinely random positive-size sequence with Var(HT)=1/N.",
+    "confidence": 0.99
+  }
+]

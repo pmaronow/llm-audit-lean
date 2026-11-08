@@ -1,0 +1,59 @@
+[
+ {
+  "target_id": "P003-T21",
+  "decision": "whole",
+  "theorem": "SAP.P003a.T21",
+  "restriction": null,
+  "statement_definition": "SAP.P003a.T21WholeStatement",
+  "rows_used": [
+   "AronowAudit.P003.unbalanced_footnote_corrected",
+   "SAP.P003a.WH.W1.T21_whole",
+   "SAP.P003a.WH.W1.T21_assembly",
+   "SAP.P003a.WH.W1.T21_L1_proof"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P003-T22",
+  "decision": "whole",
+  "theorem": "SAP.P003a.T22",
+  "restriction": null,
+  "statement_definition": "SAP.P003a.T22WholeStatement",
+  "rows_used": [
+   "AronowAudit.P003.corrected_general_loop",
+   "AronowAudit.P003.omitted_loop_witness",
+   "SAP.P003a.WH.W1.T22_whole",
+   "SAP.P003a.WH.W1.T22_assembly",
+   "SAP.P003a.WH.W1.T22_L1_proof",
+   "SAP.P003a.WH.W1.T22_L2_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P003.first_on_line_spec",
+    "reason": "Auxiliary row is not invoked separately; the selected result establishes the packaged statement."
+   },
+   {
+    "lean_name": "AronowAudit.P003.minimum_b_spec",
+    "reason": "Auxiliary row is not invoked separately; the selected result establishes the packaged statement."
+   }
+  ]
+ },
+ {
+  "target_id": "P003-T23",
+  "decision": "whole",
+  "theorem": "SAP.P003a.T23",
+  "restriction": null,
+  "statement_definition": "SAP.P003a.T23WholeStatement",
+  "rows_used": [
+   "AronowAudit.P003.rejected_query_cuts_endpoint",
+   "SAP.P003a.WH.W1.T23_whole",
+   "SAP.P003a.WH.W1.T23_assembly",
+   "SAP.P003a.WH.W1.T23_L1_proof",
+   "SAP.P003a.WH.W1.T23_L2_proof",
+   "AronowAudit.P003.Wave1.GLP0032B6_upper_certificate",
+   "AronowAudit.P003.balanced_estimate_in_interval",
+   "AronowAudit.P003.Wave1.GLP0032B6_search_reply"
+  ],
+  "rows_not_used": []
+ }
+]

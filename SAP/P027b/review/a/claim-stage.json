@@ -1,0 +1,68 @@
+[
+  {
+    "theorem": "SAP.P027b.T14",
+    "target_id": "P027-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part4.lean T14Statement states every number and both strict bias comparisons in canonical C1, using exactly the prescribed M=5 populations and 25 equiprobable samples. It contains neither C2's two outcome-model-averaged comparisons nor C3's M=500 expectations and relative biases. The quoted simulation rows are comparative context, not an additional asserted identity. The finite calculations check exactly. No hypothesis or nonvacuity problem occurs. This supports the stated bias reading of the guidance, not a refutation of the canonical counterexample itself."
+  },
+  {
+    "theorem": "SAP.P027b.T15",
+    "target_id": "P027-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "StrataFixed, StrataModel and the three limits reproduce canonical (i)-(v), including the model expectations, all bias formulas, three parameter-qualified comparisons, heterogeneity threshold, finite ratio and asymptotic difference. M>=2 matches the claim and makes every finite denominator positive; CS=alpha^2+1/2 is positive. NoiseMoments requires exactly finite, centered, uncorrelated unit-variance second moments, sufficient for all displayed integrals. A probability space of 2M independent fair signs gives a nonempty model. Values at M=0 in the total functions used for limits do not affect their tails."
+  },
+  {
+    "theorem": "SAP.P027b.T16",
+    "target_id": "P027-T16",
+    "my_reading_vs_claim": "narrower",
+    "reason": "T16Statement certifies C1-C2's moments, correlation, printed ratio and difference at alpha=1/2 for an explicit eight-point product law of three independent symmetric signs. These signs meet the mean/variance/independence assumptions in the canonical model's moment-level description. It does not supply a Gaussian-law witness from the source model identified in definitions_needed, and it omits C3's divisor-1 versus divisor-2 interpretation and its numerical values. The correlation denominator is sqrt((5/4)^2)=5/4, positive. All numerical assertions hold by exact enumeration. The source description being challenged is explicitly its ordinary same-stratum Pearson-correlation reading, not the canonical assertion."
+  },
+  {
+    "theorem": "SAP.P027b.T17",
+    "target_id": "P027-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "PairMoments and PairCorrelation state canonical (i) with finite second moments; S=+/-1 almost surely and mean zero under a probability measure make S uniform on the two signs. The remaining conjuncts state (ii)-(iv), including divisor-1 mean variance, the exact difference and equality case, both conversions, strict monotonicity, the left limit at 1, and all six exact label conversions. The pair functions are centered and their integrable second and cross moments are actual variances and covariance. All denominators are positive on their claimed domains. Three independent fair signs give a nonempty PairMoments instance."
+  },
+  {
+    "theorem": "SAP.P027b.T18",
+    "target_id": "P027-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "The independent uniform product design yields all canonical first-order, diagonal, distinct same-stratum, and cross-stratum inclusion and covariance formulas for every M>=1, plus the explicit M=2 diagonal value 1/2. The model-index correction in canonical (d) is correctly rendered by stratumOutcomes using alpha indexed by the stratum and epsilon indexed by the complete unit; canonical (d) explicitly calls this a definition with no proposition to prove. Positivity M>0 avoids division by zero; M=1 is a legitimate certainty sample, and M=2 gives nontrivial zero joint inclusions."
+  },
+  {
+    "theorem": "SAP.P027b.T19",
+    "target_id": "P027-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "The eight component propositions cover canonical (i)-(vi): original-unit HT/C2/WR mean-scale identities; model moments including zero noise variance and a positive-expected-variance guard on the relative bias; orthogonal decomposition, dimensions, uniqueness, contrast and signal cancellation; independent chi-square laws with positive noise variance; the tail bound without independence between populations; all four row events, rational predictions, powers of two and rounding certificates. q=2r, r>0 and m>=2 parametrize exactly the claimed positive even q and sample sizes. The group indexing is a reindexing of the usual periodic PPS phase groups, with exactly the prescribed probabilities. Integrals follow from the integrable error products or Gaussian laws. GaussianNoise explicitly includes almost everywhere measurability, Gaussian variance is positive before toNNReal, and probabilities are finite before toReal. The natural subtractions used for dimensions are nonnegative on the stated domain; chi-square degree zero at r=1 is the ordinary degenerate law, not a missing case. A finite product of nondegenerate Gaussian coordinate laws gives all noise hypotheses, including each printed row. The exact numerical predictions, all rounding constants and exponents checked independently."
+  },
+  {
+    "theorem": "SAP.P027b.T20",
+    "target_id": "P027-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universal identity, common-sign nonnegative-bias implication, and existence of both bias signs exactly cover canonical (a)-(c). Finite arbitrary sample spaces with Boolean indicators represent every distribution on subsets of a finite population; duplicate or zero-weight sample labels add no restriction. Positive is exactly the standing first-order inclusion assumption. All zero pairs are distinct and ordered; the HT sum includes the positive diagonal. The compiled cluster3 design has pi=1/2, bias 4 for (1,1,1) and bias -1 for (1,1,-1/4), so neither the design hypotheses nor the sign examples are vacuous."
+  },
+  {
+    "theorem": "SAP.P027b.T21",
+    "target_id": "P027-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The ordered-pair corrections agree with the canonical formulas, including both fractions inside each sum. Mathlib Real.HolderConjugate means precisely positive finite real exponents with inverse sum 1, hence both exceed 1. The conclusion includes both bounds on A, unbiasedness of the correction, the exact corrected expectation, and conservativeness for arbitrary signs. Pair-dependent arrays are allowed without symmetry and constrained only on used zero pairs, just as claimed. Finite sums and positive inclusion probabilities leave no integrability or denominator convention doing the work. cluster3 with constant exponents 2,2 is a nontrivial satisfiable instance."
+  },
+  {
+    "theorem": "SAP.P027b.T22",
+    "target_id": "P027-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem has exactly Proposition 2's hypotheses plus canonical (i) equality of conjugate powers and (ii) -y_k*y_l=abs(y_k)*abs(y_l), on every ordered distinct zero-inclusion pair. It concludes unbiasedness and does not assert necessity. These are equality conditions from the claim, not an assumption of unbiasedness. A compiled M=2 independent-stratum design with within-stratum outcomes (3,-3) and (5,-5) and exponents 2,2 satisfies every hypothesis, contains actual zero pairs, and has nonzero total-estimator variance 136."
+  },
+  {
+    "theorem": "SAP.P027b.T23",
+    "target_id": "P027-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "The displayed quadratic correction is rendered verbatim with ordered zero pairs. The theorem states extensional equality with the positive-conjugate exponent-two specialization and conservativeness under only positive first-order inclusion probabilities and arbitrary fixed real outcomes. No unproved proof cross-reference is turned into a hypothesis. cluster3 with nonzero outcomes is a nonempty instance with zero pairs."
+  },
+  {
+    "theorem": "SAP.P027b.T24",
+    "target_id": "P027-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "For every population and sample outcome the theorem gives equality at 2,2 and a lower bound against every positive constant real conjugate pair, exactly the attained minimum in the canonical samplewise claim. It does not narrow the comparison to expectations or silently extend it to pair-dependent arrays. The symmetry of the ordered zero-pair set permits Young's inequality with the same nonnegative outcome as both arguments; the comparison holds even at zero-weight sample labels. cluster3, a nonzero outcome vector, sample label 0, and either 2,2 or 3,3/2 give satisfiable, nonempty comparison domains."
+  }
+]

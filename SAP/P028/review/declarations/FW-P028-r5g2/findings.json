@@ -1,0 +1,46 @@
+[
+  {
+    "target_id": "P028-T7",
+    "theorem": "SAP.P028.T7",
+    "fingerprint": "c5dda966367f4708a407c2caa7d72b4042033207d0c21e41b34605c6db378864",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:63 independently proves the entire T7Statement by unfolding its fixed finite witness and computing the rational probabilities, means, independence, arbitrary mixture-parameter identities and real interval endpoints. No Challenge theorem is used. scratch/Nonvacuity.lean:69 also constructs the corresponding fair-coin full-compliance CausalModel and checks its boundedness and means. Compilation with /home/ubuntu/sap/tools/sap-lean scratch/Nonvacuity.lean succeeded with exit code 0 and no diagnostics.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P028-T8",
+    "theorem": "SAP.P028.T8",
+    "fingerprint": "bd5abd0830e745edf2b118e9114c3021e1b98e1f6f8ace070b89a299129f7ecb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:69 constructs a CausalModel on a fair Bool space with S=2, Y(0)=0, Y(1)=1, Z the sample point, and proves all structure hypotheses. The example at line 87 checks boundedness, p=1, arm means (0,1) and complier means (0,1). The independent product models at line 103, with the boundedness and moment lemmas at lines 124 and 130, give p=1/2, e0=e1=3/4 and complier means (t,t) for every t in [1/2,1], genuinely attaining the whole intervals for this compatible triple. The definitions encode probability, measurability, independent assignment, positive arms and nonzero first stage rather than assuming their desired bounds. Compilation with /home/ubuntu/sap/tools/sap-lean scratch/Nonvacuity.lean succeeded with exit code 0 and no diagnostics.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P028-T9",
+    "theorem": "SAP.P028.T9",
+    "fingerprint": "12ca55bd98aa2263cdef808c6a47e683237c96409ac62c773422c5805831f953",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:161 constructs a T9Model using three independent fair coins. The first two coins select compliers with probability 1/2, always-takers with probability 1/4 and never-takers with probability 1/4; Y(d)=bit(d), and the third coin is Z. All structure hypotheses are proved, including the independent latent vector and nonzero first stage. The example at line 181 proves T9FiniteCells, including strict positivity and integrability in all four observed cells. Their joint masses are 3/8, 1/8, 1/8, 3/8 in the order (d,z)=(0,0),(1,0),(0,1),(1,1). Compilation with /home/ubuntu/sap/tools/sap-lean scratch/Nonvacuity.lean succeeded with exit code 0 and no diagnostics.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P028-T10",
+    "theorem": "SAP.P028.T10",
+    "fingerprint": "d763daaf7a3b2069616e476723973a30d7092f3073f6dffd3d6932ebb653a2f0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:151 independently constructs the exact nonidentificationOfLevels pair without using T10: half compliers with both potentials t, half never-takers with both potentials 3/2-t, independent fair assignment, at t=1/2 and t=1. Both bounded models have p=1/2, e0=e1=3/4 and CACE=0, with distinct complier levels. At line 190 a WholeCausalData model is constructed and line 203 proves its wholeArmMoments hypothesis. The sample at line 205 has observations (y,d,Z)=(0,0,0),(1,1,1); line 206 checks both arm counts equal one, sample first stage and Wald ratio equal one, and both IV cross-products equal 1/2. Compilation with /home/ubuntu/sap/tools/sap-lean scratch/Nonvacuity.lean succeeded with exit code 0 and no diagnostics.",
+    "confidence": "high"
+  }
+]

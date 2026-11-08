@@ -2,7 +2,10 @@ import AronowAudit.P001.P001_Foundations
 import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.Probability.Independence.Integration
 
-/-! The finite two-bootstrap-draw identity. -/
+/-!
+Draft of the finite two-bootstrap-draw identity, written without running Lean.
+All support is proved locally: neither held hot-deck theorem is used.
+-/
 
 namespace AronowAudit.P001.Wave1
 
@@ -11,7 +14,7 @@ open scoped BigOperators ENNReal NNReal Topology
 
 noncomputable section
 
-/-! Regrouping the pointwise hot-deck statistic does not require donor existence:
+/-! First regroup the pointwise hot-deck statistic.  Donor existence is unnecessary:
 an empty donor option contributes the constant 50 and hence zero centered noise. -/
 
 private theorem t14b3_donor_responds {n : ℕ} (p : Fin n → ℝ)
@@ -211,7 +214,7 @@ private theorem t14b3_sign_square {n : ℕ} (c : Fin n → ℝ) :
       intro j _
       simp [mul_ite, pow_two]
 
-/-! Centered finite variance equals one half of the average squared difference of two independent draws. -/
+/-! Centered finite variance equals the average squared difference of two draws. -/
 
 private theorem t14b3_two_draw_finite_variance {A : Type*} [Fintype A]
     (hcard : (Fintype.card A : ℝ) ≠ 0) (t : A → ℝ) :
@@ -293,7 +296,7 @@ private theorem t14b3_two_draw_sign_integral {n : ℕ} (hn : 0 < n)
   simp_rw [hdiff, div_pow]
   rw [integral_div, t14b3_sign_square]
 
-/-- P001-T14: the two-bootstrap-draw identity. -/
+/-- Exact frozen type of P001-T14's two-bootstrap-draw identity. -/
 theorem hot_deck_two_bootstrap_draw_reuse_identity_proof {n : ℕ} (hn : 0 < n)
   (p : Fin n → ℝ) (r : Fin n → Bool) :
   mean (signProductLaw n) (fun e => bootVar hotDeck (fun j => (p j,r j,e j))) =
@@ -340,6 +343,9 @@ theorem hot_deck_two_bootstrap_draw_reuse_identity_proof {n : ℕ} (hn : 0 < n)
           (2*(n : ℝ)^2*((n : ℝ)^n)^2) := by
       simp_rw [← Finset.sum_div]
       ring
+
+example : type_of% @AronowAudit.P001.hot_deck_two_bootstrap_draw_reuse_identity :=
+  hot_deck_two_bootstrap_draw_reuse_identity_proof
 
 end
 

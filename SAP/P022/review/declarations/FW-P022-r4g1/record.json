@@ -1,0 +1,83 @@
+[
+ {
+  "target_id": "P022-T11",
+  "decision": "whole",
+  "theorem": "SAP.P022.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P022.half_width_rounding",
+   "AronowAudit.P022.table1_ratio_lower_bound",
+   "AronowAudit.P022.table1_corrected_reduction",
+   "AronowAudit.P022.displayed_variance_reduction"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P022-T12",
+  "decision": "whole",
+  "theorem": "SAP.P022.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P022.Wave1.sharp_null_neyman_bias_proof",
+   "AronowAudit.P022.finite_wald_mean_width_squared_le",
+   "AronowAudit.P022.table1_multiplier_bound",
+   "AronowAudit.P022.reported_numbers_incompatible",
+   "AronowAudit.P022.fixed_multiplier_mean_lower"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P022.finite_sqrt_mean_squared_le_mean",
+    "reason": "The finite Wald-width row directly supplies part (b); its square-root helper is not separately invoked."
+   }
+  ]
+ },
+ {
+  "target_id": "P022-T2",
+  "decision": "whole",
+  "theorem": "SAP.P022.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P022.Wave1.lemma2_corrected_explicit_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P022.PaperDomains.cdf_partition_bracket",
+    "reason": "The explicit corrected-lemma row supplies the target; this scalar bracketing helper is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P022.Wave1.TailA.lemma2_corrected_final",
+    "reason": "The explicit corrected-lemma row also fixes the universal positive nonincreasing integer function."
+   },
+   {
+    "lean_name": "AronowAudit.P022.corrected_partition_integer_properties",
+    "reason": "Its positivity and monotonicity conclusions are already in the explicit corrected-lemma row."
+   }
+  ]
+ },
+ {
+  "target_id": "P022-T18",
+  "decision": "refuted",
+  "theorem": "SAP.P022.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P022.Wave1.lemma2_as_printed_refuted"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P022-T3",
+  "decision": "whole",
+  "theorem": "SAP.P022.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P022.Wave1.bounded_direct_finite_proof",
+   "AronowAudit.P022.Wave1.TailA.bounded_direct_asymptotic_final"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P022.finite_squared_markov",
+    "reason": "The finite and asymptotic bounded-outcome rows already supply the requested probability bounds."
+   }
+  ]
+ }
+]

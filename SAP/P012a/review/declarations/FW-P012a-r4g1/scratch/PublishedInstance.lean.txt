@@ -1,0 +1,52 @@
+import SAP.P012a.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 4096
+set_option synthInstance.maxSize 1000
+
+open SAP.P012a Finset
+
+namespace PublishedReview
+
+def observed : Data :=
+  ⟨range 527, range 6, fun i => if i < 266 then 0 else 1, id,
+    fun i => if i = 0 then 3705 else if i = 1 then 261
+      else if 6 ≤ i ∧ i < 527 then 1 else 0,
+    fun i => decide (i = 0 ∨ (6 ≤ i ∧ i < 266))⟩
+
+def cachedEdges := recruitmentEdges observed
+def cachedDegree (i : ℕ) := (cachedEdges.filter (fun e => s i ∈ e)).card
+
+theorem admissible : Admissible observed := by
+  refine ⟨by native_decide, by native_decide, by native_decide, ?_⟩
+  change ∀ i ∈ observed.sampled, cachedDegree i ≤ observed.degree i
+  native_decide
+
+run_cmd IO.println "Published admissibility checked"
+
+theorem degreeSum : (∑ i ∈ observed.sampled, observed.degree i) = 4487 := by
+  native_decide
+
+run_cmd IO.println "Published degree sum checked"
+
+theorem allHypotheses : Admissible observed ∧ observed.sampled.card = 527 ∧
+    observed.seeds.card = 6 ∧ (∑ i ∈ observed.sampled, observed.degree i) = 4487 :=
+  ⟨admissible, by decide, by decide, degreeSum⟩
+
+run_cmd IO.println "All published numerical hypotheses checked"
+
+theorem countChecks : a observed = 260 ∧ b observed = 261 ∧
+    cR observed = 0 ∧ totalSpare observed = 3445 := by
+  refine ⟨by native_decide, by native_decide, by native_decide, ?_⟩
+  change (∑ i ∈ observed.sampled, (observed.degree i - cachedDegree i)) = 3445
+  native_decide
+
+run_cmd IO.println "Published edge and spare counts checked"
+
+-- All numerical/data hypotheses above are independently computed. This final
+-- existence check uses certified T5 solely to supply the actual infimum.
+example : ∃ L : ℝ, IsGLB (hValues observed) L := by
+  have hreg : 0 < totalSpare observed := by rw [countChecks.2.2.2]; norm_num
+  exact ⟨hLower observed, (SAP.P012a.T5.1 observed admissible (Or.inl hreg)).1.isGLB⟩
+
+end PublishedReview

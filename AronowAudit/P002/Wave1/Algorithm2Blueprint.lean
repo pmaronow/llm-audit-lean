@@ -1,16 +1,17 @@
 import AronowAudit.P002.Wave1.AlgorithmSupportBlueprint
 
 /-!
-# Corrected Algorithm 2/4 (P002-T22)
+# Blueprint: P002-T22, corrected Algorithm 2/4 contract
 
-Main p. 16, Algorithm 2, Steps 3–6; Supplement p. 44, Algorithm 4, and p. 45,
-Section H.2. Step 5 processes the pairs exactly as Step 4 records them.
-The data-generated coefficients satisfy Assumptions 6/7 (`ARRegular` for the
-observed and every simulated curve).
+Record P002-T22 (`AronowAudit.P002.corrected_algorithm2`, resolution `repair_and_prove`).
+Main p. 16 Algorithm 2 Steps 3-6, Supplement p. 44 Algorithm 4 and p. 45 Section H.2,
+with Step 5 processing the pairs exactly as Step 4 records them. The data-generated
+coefficients satisfy Assumptions 6/7 (`ARRegular` for the observed and every simulated
+curve). Existence of a terminating run, every admissible run, finite crossing endpoints,
+coverage of the real line, closed-piece validity, the piece identities and the returned
+set are all retained. The frozen draft is admitted and is not used.
 
-The conclusions cover existence of a terminating run, every admissible run,
-finite crossing endpoints, coverage of the real line, validity of closed pieces,
-the piece identities, and the returned set.
+Nodes: shared `AlgorithmSupport.N1`-`N5` and `N10`-`N14`.
 -/
 
 namespace AronowAudit.P002.Wave1.Algorithm2
@@ -19,7 +20,7 @@ open scoped BigOperators ENNReal Matrix Topology
 open Filter MeasureTheory
 attribute [local instance] Classical.propDecidable
 
-
+/-- Frozen final statement of `AronowAudit.P002.Wave1.algorithm2_paper`. -/
 def Target : Prop :=
   ∀ (M : ℕ) (Qf : QuadraticAR) (Qg : Fin M → QuadraticAR) (α : ℝ),
     0 < M → (0 < α ∧ α < 1) → DataGeneratedCoefficients Qf Qg →

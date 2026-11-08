@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P004-T21",
+    "theorem": "SAP.P004b.T21",
+    "fingerprint": "33674a62a0e4f388de5ff6cff268cfb88b009e3f43e0e59f2f40bca91b004ad6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditChecks.lean:24: N=2, p=1/4, R=sahBoundWitness, B_i={i}; proves positivity, self-inclusion, symmetry, and no shared source outside B. Independently compiled the spatial hypotheses at scratch/AuditChecks.lean:147 using one singleton node, Dirac mass, radius d=h=0, and an integrable own-coin outcome. Exact rational enumeration in scratch/witness_checks.py verifies variance 1/6, printed bound 0, corrected bound 2/3, and the separate node values 3/4 and 15/16.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T22",
+    "theorem": "SAP.P004b.T22",
+    "fingerprint": "88198b743574064ffdaa3bcea97e7a1a098990e319d648a6175378c52dd0a7b3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditChecks.lean:35: N=3, p_i=1/2, k=1, O_i=1, B_i=univ, R=threeNodeVarianceTable, including IsUnit(det(projectionInformation)) with determinant 1/4 and all graph hypotheses. Exact rational enumeration in scratch/witness_checks.py confirms every term of the canonical witness: variance 2/9, unsigned printed pair term 2/9, printed sum 4/9, corrected sum 2/9. Also checked unequal interior propensities and different fits at neighboring nodes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T23",
+    "theorem": "SAP.P004b.T23",
+    "fingerprint": "8569122419b0cd37dc0389c60d4b2ef5aaae26cf73155b45343bf32f52ccccaf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditChecks.lean:52: N=3, z=(true,false,false), counts (1,2), p_i=phat_i=1/2, O_i=1, logistic parameter theta=0, alpha=1/2, and positive variance arguments 1 and 2. This satisfies all hypothesis-bearing blocks; beta and R are unrestricted. The quantile block has only 0<alpha<1 as its premise, not a quantile-existence premise. Exact rational enumeration also verifies the residual product identity for mixed arms and unequal fitted propensities.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T24",
+    "theorem": "SAP.P004b.T24",
+    "fingerprint": "44d338a4c44faac7adef29e98e2a8c819bf45a779188374cdcb3b0c212afa31b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditChecks.lean:101: N=3, z=(true,false,false), Q=I gives mu=1/6, nu=1/18 != 0 and effectiveDegreesOfFreedom=1; the Gram inverse and residual maker are computed independently in the same file. Compiled nonnegative metric distances |i-j| and bandwidth h=1 at scratch/AuditChecks.lean:109. Thus both the positive-arm and guarded nonzero-trace domains are inhabited; shape assertions have no premises.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T25",
+    "theorem": "SAP.P004b.T25",
+    "fingerprint": "5a1e795f36caf8069a807257d02fbbfcb9becac6702243dacc1b4970052f2edb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditChecks.lean:113: N=8, p=1/2 and zero metric diagonal. Compiled the full TableNED hypothesis at scratch/AuditChecks.lean:117 for all N with D_N(i,j)=|i-j|, R_N=0, psi=0, g_Ni=G=1, exponent 5, C=0, S=1; constants mu_1,mu_0 are arbitrary (for example 1,0). Exact rational enumeration in scratch/witness_checks.py checks the separate nonzero own-coin witness R_i(z)=z_i on all 256 independent assignments: tau_i=1, printed mean -7/8, corrected mean 0.",
+    "confidence": 0.99
+  }
+]

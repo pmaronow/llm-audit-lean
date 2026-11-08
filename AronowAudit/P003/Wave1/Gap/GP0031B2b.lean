@@ -190,8 +190,8 @@ lemma GP0031B2b_balanced_completion_inclusion_complement_deviation (v o : Counts
   rw [hZ]
   ring
 
-/-- The outcome-complementation p-value identity requires equal table totals,
-even when both observed arms are positive. -/
+/-- The total equality is indispensable even when the observed arms are
+positive. This is the precise corrected S2 p-value identity. -/
 lemma GP0031B2b_balanced_completion_inclusion_complement_pValue (v o : Counts)
     (ho : 0 < o.a+o.b ∧ 0 < o.c+o.d) (hn : v.total = o.total) :
     pValue (⟨v.d,v.c,v.b,v.a⟩ : Counts) (complementObserved o) = pValue v o := by
@@ -287,7 +287,8 @@ lemma GP0031B2b_balanced_completion_inclusion_completion_arms (o r c : Counts)
   dsimp
   constructor <;> omega
 
-/-- The guards needed for complementation in the lower-endpoint argument. -/
+/-- Explicitly packages every guard needed for complementation in the
+lower-endpoint argument, without changing any frozen Wave1 statement. -/
 lemma GP0031B2b_balanced_completion_inclusion_plus_mem (o r : Counts)
     (hr : r ∈ missingMasks o) : plusCompletion o r ∈ completions o r := by
   obtain ⟨ha,hb,hc,hd⟩ := missing_mask_facts o r hr
@@ -343,7 +344,7 @@ lemma GP0031B2b_balanced_completion_inclusion_complement_endpoint (α : ℝ) (o 
     rw [if_neg hneC, if_neg hne,
       GP0031B2b_balanced_completion_inclusion_complement_estimate o ho]
 
-/-! The observed arms in the balanced design both have size `m`; they are positive when `0 < m`. -/
+/-! The observed arms in the balanced design have equal positive sizes. -/
 
 lemma GP0031B2b_balanced_missing_coverage_observed_arms (v : Counts) (m : ℕ)
     (hn : v.total = 2*m) (q : Counts) (hq : q ∈ randomStates v m) :
@@ -353,6 +354,7 @@ lemma GP0031B2b_balanced_missing_coverage_observed_arms (v : Counts) (m : ℕ)
   dsimp [observed]
   dsimp [Counts.total] at hn ht
   constructor <;> omega
+
 
 
 /-! A one-individual decomposition of the actual binomial weights. -/
@@ -838,6 +840,8 @@ theorem balanced_completion_inclusion_proof (o r : Counts) (α : ℝ)
   · exact le_trans (GP0031B2b_accepted_lower c _ m hm hcM hloM ha he α l hl) hlt
   · exact le_trans htu (GP0031B2b_accepted_upper c _ m hm hcM hhiM hb hd α u hu)
 
+example : type_of% @AronowAudit.P003.balanced_completion_inclusion := balanced_completion_inclusion_proof
+
 theorem balanced_missing_coverage_proof (v : Counts) (m : ℕ) (α : ℝ)
     (hm : 0 < m) (hn : v.total = 2*m) (hα : 0 < α ∧ α < 1)
     (μ : Counts → Counts → ℝ) (hμ : IsMissingLaw v m μ) :
@@ -853,5 +857,7 @@ theorem balanced_missing_coverage_proof (v : Counts) (m : ℕ) (α : ℝ)
   apply balanced_completion_inclusion_proof (observed v q) r α hα
     ⟨by omega,by omega⟩ hr
   exact complete_interval_subset_union α (observed v q) r hr ht
+
+example : type_of% @AronowAudit.P003.balanced_missing_coverage := balanced_missing_coverage_proof
 
 end AronowAudit.P003.Wave1

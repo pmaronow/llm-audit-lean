@@ -14,7 +14,7 @@ set_option linter.unusedVariables false
 set_option linter.unnecessarySeqFocus false
 
 /- The finite-design bridge and contrast variance below are adapted from
-this repository's `GP0022B2.lean`. -/
+`P002/Wave1/Gap/GP0022B2.lean`, with all helper names prefixed for this record. -/
 private theorem NDS_mem_assignments {n} (P : Population n) (S : Finset (Fin n)) :
     S ∈ assignments P ↔ S.card = P.n1 := by
   simp only [assignments, Finset.mem_powersetCard, Finset.subset_univ, true_and]
@@ -444,7 +444,7 @@ theorem NDS_tau_as_contrast {n} (P : Population n) (h : ValidDesign P)
   field_simp [hm, hn, hc]
   <;> ring
 
-/-- Supporting variance identity for P002-T29: Supplement Lemma 2. -/
+/-- Exact frozen statement of P002-T29. -/
 theorem NDS_neyman_variance {n} (P : Population n) (h : ValidDesign P) (β : ℝ) :
     designVariance P (tau P β) = S2 P β true / (P.n1 : ℝ) +
       S2 P β false / controlSize P - Sdiff2 P β / (n : ℝ) := by
@@ -538,6 +538,8 @@ theorem negative_delta_sequence_proof (m : ℕ) (hm : 1 ≤ m) :
     simp only [negativeDeltaModel, Nat.cast_mul, Nat.cast_ofNat]
     field_simp [hm0, hd]
     <;> ring
+
+example : type_of% @AronowAudit.P002.negative_delta_sequence := negative_delta_sequence_proof
 
 /-! Corrected Lemma 5: transfer from the complier covariance to population squares. -/
 
@@ -715,6 +717,8 @@ theorem corrected_lemma5_proof {n} (P : Population n) (δ r A : ℝ)
       field_simp [hn.ne', ht.ne', hc.ne']
       <;> ring
     _ ≤ _ := sub_le_sub_left hbound _
+
+example : type_of% @AronowAudit.P002.corrected_lemma5 := corrected_lemma5_proof
 
 end
 end AronowAudit.P002.Wave1

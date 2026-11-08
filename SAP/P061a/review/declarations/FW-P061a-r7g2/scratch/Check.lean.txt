@@ -1,0 +1,89 @@
+import SAP.P061a.Defs
+import SAP.P061a.Defs.WholeW1
+
+open SAP.P061a Filter Asymptotics
+open scoped BigOperators Topology Classical
+
+/- Independent nonvacuity and witness checks: no Challenge theorem is imported. -/
+namespace Review
+
+noncomputable def fair : AtomicDesign (Fin 2) where
+  mass := fun _ => 1/2
+  mass_nonnegative := by intro z; norm_num
+  mass_summable := hasSum_fintype _ |>.summable
+  mass_total := by norm_num [tsum_fintype, Fin.sum_univ_succ]
+
+def g : Exposures (Fin 2) 1 := fun _ z => (z.val : ℝ)
+def y : Responses (Fin 2) 1 := fun _ z => 3 + (z.val : ℝ)
+
+-- T6: a nonempty finite assignment set, positive population, both target cells.
+example : 0 < (1 : ℕ) ∧
+    (∀ i, 0 < exposureProbability fair g i 1) ∧
+    (∀ i, 0 < exposureProbability fair g i 0) := by
+  norm_num [exposureProbability, eventProbability, fair, g, tsum_fintype,
+    Fin.sum_univ_succ]
+
+-- T8: every first-target and second-target hypothesis, both sufficient conditions.
+example : 0 < (1 : ℕ) ∧
+    (∀ i, 0 < exposureProbability fair g i 1) ∧ targetMoment fair g y 1 ∧
+    (∀ i, 0 < exposureProbability fair g i 0) ∧ targetMoment fair g y 0 ∧
+    {z : Fin 2 | supported fair z}.Finite ∧
+    (∀ i z z', supported fair z → supported fair z' →
+      g i z = 1 → g i z' = 1 → y i z = y i z') := by
+  refine ⟨by decide, ?_, ?_, ?_, ?_, Set.toFinite _, ?_⟩
+  · norm_num [exposureProbability, eventProbability, fair, g, tsum_fintype,
+      Fin.sum_univ_succ]
+  · intro i; exact hasSum_fintype _ |>.summable
+  · norm_num [exposureProbability, eventProbability, fair, g, tsum_fintype,
+      Fin.sum_univ_succ]
+  · intro i; exact hasSum_fintype _ |>.summable
+  · intro i z z' _ _ hz hz'
+    fin_cases z <;> fin_cases z' <;> norm_num [g, y] at *
+
+-- The expectations in this instance have ordinary finite, nonzero values.
+example : exposureMean fair g y 0 1 = 4 ∧
+    exposureMean fair g y 0 0 = 3 ∧ populationContrast fair g y 1 0 = 1 := by
+  norm_num [exposureMean, exposureProbability, eventProbability, mean, fair,
+    g, y, populationContrast, populationExposureMean, tsum_fintype,
+    Fin.sum_univ_succ]
+
+-- T10: nonzero real sequences satisfy all universal antecedents.
+example : (∀ N : ℕ, 0 ≤ (1 : ℝ)) ∧ (∀ N : ℕ, 0 ≤ (2 : ℝ)) := by
+  constructor <;> intro N <;> norm_num
+
+-- N=0 gives a totalized quotient, confined to a single initial index.
+example : (7 : ℝ) / Real.rpow (0 : ℝ) (1/4 : ℝ) = 0 := by norm_num
+
+-- T6's binary-cube branch also has both positive target probabilities.
+noncomputable def cubeFair : AtomicDesign (Fin 1 → Fin 2) where
+  mass := fun _ => 1/2
+  mass_nonnegative := by intro z; norm_num
+  mass_summable := hasSum_fintype _ |>.summable
+  mass_total := by norm_num [tsum_fintype]
+
+theorem cube_probability (i : Fin 1) (t : ℝ) :
+    exposureProbability cubeFair (fun i z => (z i).val) i t =
+      exposureProbability fair g 0 t := by
+  simp only [exposureProbability, eventProbability, cubeFair, fair, g, tsum_fintype]
+  apply Fintype.sum_equiv (Equiv.funUnique (Fin 1) (Fin 2))
+  intro z
+  have hi : i = default := Subsingleton.elim _ _
+  subst i
+  rfl
+
+example : 0 < (1 : ℕ) ∧
+    (∀ i, 0 < exposureProbability cubeFair (fun i z => (z i).val) i 1) ∧
+    (∀ i, 0 < exposureProbability cubeFair (fun i z => (z i).val) i 0) := by
+  simp_rw [cube_probability]
+  norm_num [exposureProbability, eventProbability, fair, g, tsum_fintype,
+    Fin.sum_univ_succ]
+
+-- An edgeless graph's zero degree sequences satisfy all three rate predicates.
+example : IsLittleO atTop (fun _ : ℕ => (0 : ℝ))
+      (fun N => Real.rpow (N : ℝ) (1/4 : ℝ)) ∧
+    IsBigO atTop (fun _ : ℕ => (0 : ℝ)) (fun _ => (1 : ℝ)) ∧
+    IsBigO atTop (fun _ : ℕ => (0 : ℝ))
+      (fun N => Real.rpow (N : ℝ) (1/2 : ℝ)) := by
+  exact ⟨isLittleO_zero _ _, isBigO_zero _ _, isBigO_zero _ _⟩
+
+end Review

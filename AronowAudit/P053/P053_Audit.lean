@@ -6,9 +6,10 @@ import Mathlib.Data.Finset.Powerset
 import Mathlib.Logic.Equiv.Fintype
 
 /-!
-Formalization of Aronow and Offer-Westort (2017), pp. 346–348.
-The published comment imports Ding's notation without defining it. The definitions
-below make the finite-population and asymptotic conventions explicit.
+Formal audit of Aronow and Offer-Westort (2017), pp. 346–348.
+The comment imports Ding's notation without defining it. Definitions below use
+the conventions fixed in targets.json (S4–S5), rather than claiming those
+definitions are printed in the comment. No external papers are assumed.
 -/
 
 namespace AronowAudit.P053
@@ -31,7 +32,7 @@ def successes {ι : Type*} [DecidableEq ι] (y : ι → Bool) (s : Finset ι) : 
   (s.filter (fun i => y i = true)).card
 
 /-- Total observed successes M under the binary sharp null (Section 4, p. 348;
-target T1). -/
+explicit notation is the validator's, target T1). -/
 def totalSuccesses {ι : Type*} [Fintype ι] [DecidableEq ι] (y : ι → Bool) : ℕ :=
   successes y Finset.univ
 
@@ -48,7 +49,8 @@ def binaryTau {ι : Type*} [Fintype ι] [DecidableEq ι]
   (successes y s : ℝ) / n1 -
     ((totalSuccesses y : ℝ) - successes y s) / n0
 
-/-- The real reconstruction A(t) from T1(a), for the corrected claim in Section 4, p. 348. -/
+/-- The real reconstruction A(t) from T1(a), validator formula for the
+replacement sentence in Section 4, p. 348. -/
 def reconstruct (n1 n0 M : ℕ) (t : ℝ) : ℝ :=
   ((n1 : ℝ) * n0 * t + n1 * M) / ((n1 : ℝ) + n0)
 
@@ -62,7 +64,8 @@ def tableFactor {S : Type*} (n1 n0 M : ℕ) (h : (ℤ × ℤ × ℤ × ℤ) → 
 
 /-- T1(a): the difference in means equals (Na−N1M)/(N1N0), and the
 reconstruction recovers the treated success count. 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem binary_reconstruction {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n1 n0 : ℕ) (h1 : 0 < n1) (h0 : 0 < n0)
     (y : ι → Bool) (s : Finset ι) :
@@ -105,7 +108,8 @@ theorem binary_equal_iff {ι : Type*} [Fintype ι] [DecidableEq ι]
 /-- T1(a)–(b) with the paper's complete hypothesis list: positive fixed
 arm sizes, N=N1+N0 binary sharp-null units, and every pair of assignments in
 the full support. Tau-hat reconstructs the success count and identifies the table. 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem binary_support_identification (n1 n0 : ℕ) (h1 : 0 < n1) (h0 : 0 < n0)
     (y : Fin (n1+n0) → Bool) :
     (∀ s ∈ support n1,
@@ -149,7 +153,8 @@ theorem table_statistic_factors {S : Type*}
 /-- T1(e): an arbitrary statistic factors through the difference in means
 exactly when it is constant on equal tables (Section 4 clarification).
 The codomain may be any type, with no externally imposed inhabitation. 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem factor_iff_table_constant {S : Type*} (n1 n0 : ℕ)
     (h1 : 0 < n1) (h0 : 0 < n0) (y : Fin (n1 + n0) → Bool)
     (T : {s : Finset (Fin (n1 + n0)) // s.card = n1} → S) :
@@ -176,12 +181,13 @@ theorem factor_iff_table_constant {S : Type*} (n1 n0 : ℕ)
     exact ⟨g, fun s => congrFun hg s⟩
 
 /-- Canonical binary outcome sample: k ones followed by n−k zeros (T1(d),
-the two-sample statistic class). -/
+validator's explicit expansion of the two-sample statistic class). -/
 def canonical (n k : ℕ) : Fin n → Bool := fun i => decide (i.val < k)
 
 /-- Finite lemma for T1(d): a binary sample's success count is unchanged
 by a permutation of its indices. 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem successes_permutation {ι : Type*} [Fintype ι] [DecidableEq ι]
     (x : ι → Bool) (p : Equiv.Perm ι) : totalSuccesses (x ∘ p) = totalSuccesses x := by
   unfold totalSuccesses successes
@@ -191,7 +197,8 @@ theorem successes_permutation {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- Finite lemma for T1(d): every binary outcome sample is a permutation
 of the canonical sample with the same number of ones. 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem canonical_permutation (n : ℕ) (x : Fin n → Bool) :
     ∃ p : Equiv.Perm (Fin n), x ∘ p = canonical n (totalSuccesses x) := by
   classical
@@ -215,7 +222,8 @@ theorem canonical_permutation (n : ℕ) (x : Fin n → Bool) :
 /-- T1(d), the sample-symmetry assertion: statistics of the two binary
 samples that are invariant under independent permutations in each arm are
 functions of their success counts, with the displayed canonical h_F. 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem symmetric_binary_samples {S : Type*} (n1 n0 : ℕ)
     (F : (Fin n1 → Bool) → (Fin n0 → Bool) → S)
     (hinv : ∀ x1 x0 (p1 : Equiv.Perm (Fin n1)) (p0 : Equiv.Perm (Fin n0)),
@@ -269,7 +277,8 @@ def orderedBinarySample {N n : ℕ} (y : Fin N → Bool) (s : Finset (Fin N))
 
 /-- Increasingly listing a binary sample preserves its number of successes;
 finite bridge between the population table and T1(d)'s sample statistic. 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem ordered_sample_successes {N n : ℕ} (y : Fin N → Bool)
     (s : Finset (Fin N)) (hs : s.card=n) :
     totalSuccesses (orderedBinarySample y s hs)=successes y s := by
@@ -291,7 +300,8 @@ theorem ordered_sample_successes {N n : ℕ} (y : Fin N → Bool)
 
 /-- Control successes equal M minus treated successes under a fixed binary
 sharp-null outcome schedule; table identity used in T1(d). 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem successes_compl {N : ℕ} (y : Fin N → Bool) (s : Finset (Fin N)) :
     successes y sᶜ=totalSuccesses y-successes y s := by
   have hh : successes y s+successes y sᶜ=totalSuccesses y := by
@@ -300,7 +310,8 @@ theorem successes_compl {N : ℕ} (y : Fin N → Bool) (s : Finset (Fin N)) :
   omega
 
 /-- A supported binary experiment has exactly N0 control units (T1(d)). 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem binary_control_card (n1 n0 : ℕ) (s : Finset (Fin (n1+n0)))
     (hs : s ∈ support n1) : sᶜ.card=n0 := by
   have hcard : s.card=n1 := (Finset.mem_powersetCard.mp hs).2
@@ -311,7 +322,8 @@ theorem binary_control_card (n1 n0 : ℕ) (s : Finset (Fin (n1+n0)))
 statistic of the two outcome samples listed in increasing unit order equals
 the canonical table statistic and factors through tau-hat on all assignments.
 The same single g works throughout the complete randomization support. 
-Auxiliary component of Section 4, p. 348, corrected table-statistic claim. -/
+Auxiliary component of Section 4, p. 348, corrected table-statistic claim;
+this lemma is not separately printed in the comment. -/
 theorem ordered_sample_statistic_factors {S : Type*}
     (n1 n0 : ℕ) (h1 : 0 < n1) (h0 : 0 < n0) (y : Fin (n1+n0) → Bool)
     (F : (Fin n1 → Bool) → (Fin n0 → Bool) → S)
@@ -344,10 +356,10 @@ theorem ordered_sample_statistic_factors {S : Type*}
   rw [← hh]
   exact hg s hs
 
-/-- The concrete binary sharp-null population y=(1,1,0,0)
+/-- The validator's concrete binary sharp-null population y=(1,1,0,0)
 and fixed covariate x=(1,0,1,0), Section 4 unrestricted reading, T2. -/
 def fourY : Fin 4 → Bool := ![true, true, false, false]
-/-- Fixed pretreatment covariate x=(1,0,1,0) in target T2(iii), p. 348. -/
+/-- Fixed pretreatment covariate x=(1,0,1,0) in validator target T2(iii), p. 348. -/
 def fourX : Fin 4 → Bool := ![true, false, true, false]
 /-- T2 assignment z_A=(1,0,1,0), p. 348 unrestricted-reading witness. -/
 def fourA : Finset (Fin 4) := {0, 2}
@@ -360,7 +372,8 @@ def labelStatistic (s : Finset (Fin 4)) : ℝ := if 0 ∈ s then 1 else 0
 /-- T2(i)–(iii): both assignments are on the full six-assignment support,
 have tau-hat zero and table (1,1,1,1), but L=1 versus 0 and the
 covariate-weighted difference is 1/2 versus −1/2. 
-Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2. -/
+Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2;
+this lemma is not separately printed in the comment. -/
 theorem four_counterexample_values :
     (support (ι := Fin 4) 2).card = 6 ∧
     fourA ∈ support 2 ∧ fourB ∈ support 2 ∧
@@ -412,7 +425,8 @@ noncomputable def upperP {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- T3(c): a transformation strictly increasing on the attainable statistic
 values leaves every inclusive upper-tail p-value unchanged. 
-Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences. -/
+Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences;
+this lemma is not separately printed in the comment. -/
 theorem increasing_same_p {ι : Type*} [Fintype ι] [DecidableEq ι]
     (k : ℕ) (T : Finset ι → ℝ) (g : ℝ → ℝ)
     (hg : StrictMonoOn g (T '' {z | z ∈ support k})) (z : Finset ι)
@@ -457,7 +471,8 @@ theorem apparent_paradox_condition (p S1 S0 : ℝ) (hp : 0 < p) (hp1 : p < 1)
 
 /-- Finite algebra for T3(c): positive fixed arm sizes make the binary
 difference in means strictly increasing in the treated success count. 
-Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences. -/
+Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences;
+this lemma is not separately printed in the comment. -/
 theorem binary_order_iff {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n1 n0 : ℕ) (h1 : 0 < n1) (h0 : 0 < n0) (y : ι → Bool) (s t : Finset ι) :
     binaryTau n1 n0 y s ≤ binaryTau n1 n0 y t ↔ successes y s ≤ successes y t := by
@@ -475,7 +490,8 @@ theorem binary_order_iff {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- T3's signed upper-tail probability can be counted by treated successes;
 this uses the full uniform assignment support and includes ties. 
-Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences. -/
+Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences;
+this lemma is not separately printed in the comment. -/
 theorem binary_upperP_count {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n1 n0 : ℕ) (h1 : 0 < n1) (h0 : 0 < n0) (y : ι → Bool) (z : Finset ι) :
     upperP n1 (binaryTau n1 n0 y) z =
@@ -492,7 +508,8 @@ theorem binary_upperP_count {ι : Type*} [Fintype ι] [DecidableEq ι]
 /-- A small certificate for T3: with two or three successes and equally
 sized arms, the maximal absolute difference selects success count 0 or n.
 This is proved by inequalities, not real-number computation. 
-Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences. -/
+Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences;
+this lemma is not separately printed in the comment. -/
 theorem balanced_absolute_tail (n : ℕ) (hn : 0 < n) (a : ℕ) (ha : a ≤ n) :
     (1 : ℝ) ≤ |(a : ℝ)/n-((n : ℝ)-a)/n| ↔ a=0 ∨ a=n := by
   have hnr : 0 < (n : ℝ) := by exact_mod_cast hn
@@ -523,7 +540,7 @@ def sixY : Fin 6 → Bool := ![true,true,true,false,false,false]
 /-- T3(a)'s observed assignment (1,1,1,0,0,0). -/
 def sixTop : Finset (Fin 6) := {0,1,2}
 
-/-- T3(a), p. 348 absolute-value example on six units:
+/-- T3(a), p. 348 absolute-value example on the validator's six units:
 20 equiprobable assignments, signed p=1/20, absolute p=1/10, and different
 rejection decisions at alpha=1/20. -/
 theorem six_upper_tail_difference :
@@ -562,7 +579,8 @@ theorem six_upper_tail_difference :
 
 /-- T3(a)'s exact randomization distribution: treated successes 0,1,2,3
 occur at 1,9,9,1 of the 20 assignments, and tau-hat=(2k−3)/3. 
-Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences. -/
+Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences;
+this lemma is not separately printed in the comment. -/
 theorem six_difference_distribution :
     ((support (ι := Fin 6) 3).filter (fun z => successes sixY z=0)).card=1 ∧
     ((support (ι := Fin 6) 3).filter (fun z => successes sixY z=1)).card=9 ∧
@@ -585,7 +603,8 @@ def fourBottom : Finset (Fin 4) := {2,3}
 
 /-- The absolute-value endpoint p-value on four units, counted on the full
 six-assignment support (finite lemma for T3(b)). 
-Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences. -/
+Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences;
+this lemma is not separately printed in the comment. -/
 theorem four_absolute_endpoint (z : Finset (Fin 4))
     (hz : binaryTau 2 2 fourY z=1 ∨ binaryTau 2 2 fourY z=-1) :
     upperP 2 (fun w => |binaryTau 2 2 fourY w|) z=1/3 := by
@@ -613,7 +632,8 @@ theorem four_absolute_endpoint (z : Finset (Fin 4))
 /-- T3(b), the full four-unit upper-tail comparison: signed p=1/6 at tau=1,
 1 at tau=−1, 5/6 at tau=0; absolute-value p=1/3 at either extreme and 1
 at the four central assignments. 
-Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences. -/
+Auxiliary component of Section 4, p. 348, comparison of binary randomization inferences;
+this lemma is not separately printed in the comment. -/
 theorem four_upper_tail_difference :
     fourTop ∈ support 2 ∧ fourBottom ∈ support 2 ∧
     binaryTau 2 2 fourY fourTop=1 ∧ binaryTau 2 2 fourY fourBottom=-1 ∧
@@ -669,7 +689,8 @@ def repeatLabel (m : ℕ) (hm : 0 < m) (s : Finset (Fin m × Fin 4)) : ℝ :=
 
 /-- A reusable exact count: repeating a binary block m times multiplies
 every selected-sample success count by m. 
-Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2. -/
+Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2;
+this lemma is not separately printed in the comment. -/
 theorem product_successes (m : ℕ) (y : Fin 4 → Bool) (s : Finset (Fin 4)) :
     successes (fun i : Fin m × Fin 4 => y i.2) (Finset.univ.product s) =
       m * successes y s := by
@@ -680,7 +701,8 @@ theorem product_successes (m : ℕ) (y : Fin 4 → Bool) (s : Finset (Fin 4)) :
   simp only [Finset.product_eq_sprod, Finset.card_product, Finset.card_univ, Fintype.card_fin]
 
 /-- Repetition multiplies the total number of successes by m (T2(v)). 
-Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2. -/
+Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2;
+this lemma is not separately printed in the comment. -/
 theorem repeated_total (m : ℕ) (y : Fin 4 → Bool) :
     totalSuccesses (fun i : Fin m × Fin 4 => y i.2) = m*totalSuccesses y := by
   unfold totalSuccesses
@@ -690,7 +712,8 @@ theorem repeated_total (m : ℕ) (y : Fin 4 → Bool) :
 /-- T2(v)'s exact witnesses at every m≥1: equal zero differences, tables
 (m,m,m,m), labelled values 1 and 0, covariate differences ±1/2, and exact
 allocation/success proportions 1/2. This uses all subsets of 2m of 4m units. 
-Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2. -/
+Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2;
+this lemma is not separately printed in the comment. -/
 theorem repeated_counterexample_values (m : ℕ) (hm : 0 < m) :
     repeatA m ∈ support (2*m) ∧ repeatB m ∈ support (2*m) ∧
     binaryTau (2*m) (2*m) (repeatY m) (repeatA m)=0 ∧
@@ -760,7 +783,8 @@ theorem repeated_counterexample_values (m : ℕ) (hm : 0 < m) :
 
 /-- T2(v): no single g represents the labelled or covariate statistic on
 the unrestricted complete randomization support at any repeated block size. 
-Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2. -/
+Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2;
+this lemma is not separately printed in the comment. -/
 theorem unrestricted_repeated_counterexample (m : ℕ) (hm : 0 < m) :
     (¬ ∃ g : ℝ → ℝ, ∀ z ∈ support (ι := Fin m × Fin 4) (2*m),
       repeatLabel m hm z = g (binaryTau (2*m) (2*m) (repeatY m) z)) ∧
@@ -806,7 +830,8 @@ theorem repeated_fourth_moments (m : ℕ) (hm : 0 < m) :
 /-- T2(v)'s standing asymptotic checks: repeated counterexamples have sizes
 4(k+1)→∞, treatment and binary-success fractions tending to 1/2, and a
 uniform fourth-moment bound. The exact counterexamples persist at every k. 
-Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2. -/
+Auxiliary component of Section 4, p. 348, unrestricted-reading counterexample fixed in T2;
+this lemma is not separately printed in the comment. -/
 theorem repeated_counterexample_scaling :
     Tendsto (fun k : ℕ => 4*(k+1)) atTop atTop ∧
     Tendsto (fun k : ℕ => ((2*(k+1) : ℕ) : ℝ)/(4*(k+1) : ℕ)) atTop (nhds (1/2)) ∧
@@ -833,7 +858,7 @@ theorem repeated_counterexample_scaling :
   · simpa only [hq] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (1/2 : ℝ)) atTop (nhds (1/2)))
 
 /-- "Finite population of potential outcomes", the Ding notation used on
-p. 347. The conventions are fixed real Y_i(1),Y_i(0), N=N1+N0.
+p. 347. This is targets.json S4: fixed real Y_i(1),Y_i(0), N=N1+N0.
 Only the assignment is random; both potential-outcome vectors are fixed. -/
 structure Population where
   n1 : ℕ
@@ -841,7 +866,7 @@ structure Population where
   Y1 : Fin (n1 + n0) → ℝ
   Y0 : Fin (n1 + n0) → ℝ
 
-/-- Total population size N (notation imported on p. 347). -/
+/-- Total population size N (S4, notation imported on p. 347). -/
 abbrev Population.size (P : Population) : ℕ := P.n1 + P.n0
 
 /-- A finite sample mean, used for both potential and observed outcomes
@@ -849,20 +874,21 @@ abbrev Population.size (P : Population) : ℕ := P.n1 + P.n0
 def sampleMean {ι : Type*} [DecidableEq ι] (s : Finset ι) (y : ι → ℝ) : ℝ :=
   (∑ i ∈ s, y i) / (s.card : ℝ)
 
-/-- Sum of squared deviations around a finite sample's own mean
-(the published comment gives no divisor convention). -/
+/-- Sum of squared deviations around a finite sample's own mean (S4;
+the comment gives no divisor convention). -/
 def centeredSS {ι : Type*} [DecidableEq ι] (s : Finset ι) (y : ι → ℝ) : ℝ :=
   ∑ i ∈ s, (y i - sampleMean s y)^2
 
-/-- Sample variance with divisor sample size minus one. -/
+/-- Sample variance with divisor sample size minus one, targets.json S4.
+Every theorem using arm variances assumes arm sizes at least two. -/
 def sampleVariance {ι : Type*} [DecidableEq ι] (s : Finset ι) (y : ι → ℝ) : ℝ :=
   centeredSS s y / ((s.card : ℝ) - 1)
 
-/-- Finite-population mean Y-bar (tau=Y-bar_1−Y-bar_0 is printed p. 347). -/
+/-- Finite-population mean Y-bar (S4; tau=Y-bar_1−Y-bar_0 is printed p. 347). -/
 def populationMean (P : Population) (y : Fin P.size → ℝ) : ℝ :=
   sampleMean Finset.univ y
 
-/-- Finite-population variance S², divisor N−1. -/
+/-- Finite-population variance S², divisor N−1, targets.json S4. -/
 def populationVariance (P : Population) (y : Fin P.size → ℝ) : ℝ :=
   sampleVariance Finset.univ y
 
@@ -876,10 +902,10 @@ def unitEffects (P : Population) : Fin P.size → ℝ := fun i => P.Y1 i - P.Y0 
 def SharpNull (P : Population) : Prop := ∀ i, P.Y1 i = P.Y0 i
 
 /-- "Constant effects", pp. 346–348: all unit effects equal the population
-average causal effect. The common effect need not be zero. -/
+average causal effect. This is stronger than Neyman's zero-average null. -/
 def ConstantEffects (P : Population) : Prop := ∀ i, unitEffects P i = averageEffect P
 
-/-- Observed outcome Z_iY_i(1)+(1−Z_i)Y_i(0);
+/-- Observed outcome Z_iY_i(1)+(1−Z_i)Y_i(0), targets.json S4;
 Z is represented by its treated subset of all units. -/
 def observed (P : Population) (z : Finset (Fin P.size)) : Fin P.size → ℝ :=
   fun i => if i ∈ z then P.Y1 i else P.Y0 i
@@ -893,7 +919,7 @@ def difference (P : Population) (z : Finset (Fin P.size)) (y : Fin P.size → �
 def estimate (P : Population) (z : Finset (Fin P.size)) : ℝ := difference P z (observed P z)
 
 /-- Expectation over all complete-randomization assignments, each weighted
-1/#Ω. This is an actual finite probability distribution. -/
+1/#Ω (S2–S4). This is an actual finite probability distribution. -/
 def randomizationMean (P : Population) (X : Finset (Fin P.size) → ℝ) : ℝ :=
   (∑ z ∈ support P.n1, X z) / ((support (ι := Fin P.size) P.n1).card : ℝ)
 
@@ -902,30 +928,30 @@ p. 347. It is the average squared centered random variable, not an axiom. -/
 def randomizationVariance (P : Population) (X : Finset (Fin P.size) → ℝ) : ℝ :=
   randomizationMean P (fun z => (X z - randomizationMean P X)^2)
 
-/-- Probability of an event under complete randomization. -/
+/-- Probability of an event under complete randomization (S2–S5). -/
 def randomizationProbability (P : Population) (event : Finset (Fin P.size) → Prop) : ℝ := by
   classical
   exact ((support P.n1).filter event).card /
     ((support (ι := Fin P.size) P.n1).card : ℝ)
 
-/-- SSR from the intercept-plus-treatment regression:
+/-- SSR from the intercept-plus-treatment regression, targets.json S4:
 within-treated plus within-control centered sums of squares. -/
 def residualSS (P : Population) (z : Finset (Fin P.size)) : ℝ :=
   centeredSS z (observed P z) + centeredSS zᶜ (observed P z)
 
 /-- V-hat(OLS), "equivalent to a pooled-variance two-sample z-test", p. 346.
-The conventional residual divisor is N−2. -/
+The conventional residual divisor is N−2 (targets.json S4). -/
 def olsVariance (P : Population) (z : Finset (Fin P.size)) : ℝ :=
   residualSS P z / ((P.size : ℝ) - 2) * (1/(P.n1 : ℝ) + 1/(P.n0 : ℝ))
 
 /-- V-hat(Neyman), "one of Neyman's variance estimators", p. 347:
-s1²/N1+s0²/N0, with the sample variance conventions above. -/
+s1²/N1+s0²/N0, with the S4 sample variance conventions. -/
 def neymanVariance (P : Population) (z : Finset (Fin P.size)) : ℝ :=
   sampleVariance z (observed P z) / P.n1 +
     sampleVariance zᶜ (observed P z) / P.n0
 
 /-- V-hat(Fisher), "variance of the FRT reference distribution", p. 347.
-Represented by its standard closed form N*s²/(N1*N0).
+Represented by its standard closed form N*s²/(N1*N0) (targets.json S4).
 `frt_reference_variance` separately states equality with the actual uniform
 reference-distribution variance, so that equality is not silently assumed proved. -/
 def fisherVariance (P : Population) (z : Finset (Fin P.size)) : ℝ :=
@@ -933,7 +959,8 @@ def fisherVariance (P : Population) (z : Finset (Fin P.size)) : ℝ :=
 
 /-- Generic finite lemma: centered sum of squares equals raw second moment
 minus squared raw first moment divided by the sample size. Used for L1. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem centeredSS_raw {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (y : ι → ℝ) (hs : s.card ≠ 0) :
     centeredSS s y = (∑ i ∈ s, (y i)^2) - (∑ i ∈ s, y i)^2/(s.card : ℝ) := by
@@ -951,7 +978,8 @@ theorem centeredSS_raw {ι : Type*} [DecidableEq ι] (s : Finset ι)
 
 /-- Complete-randomization support really has positive cardinality, including
 all feasible assignments; uniform expectations therefore normalize to one. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem support_positive (P : Population) : 0 < (support (ι := Fin P.size) P.n1).card := by
   change 0 < (Finset.univ.powersetCard P.n1 : Finset (Finset (Fin P.size))).card
   rw [Finset.card_powersetCard, Finset.card_univ, Fintype.card_fin]
@@ -960,7 +988,8 @@ theorem support_positive (P : Population) : 0 < (support (ι := Fin P.size) P.n1
 
 /-- On the complete-randomization support, treated and control subsets have
 their prescribed sizes, including every unit exactly once. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem arm_cards (P : Population) (z : Finset (Fin P.size)) (hz : z ∈ support P.n1) :
     z.card=P.n1 ∧ (zᶜ).card=P.n0 := by
   have hs := (Finset.mem_powersetCard.mp hz).2
@@ -970,7 +999,7 @@ theorem arm_cards (P : Population) (z : Finset (Fin P.size)) (hz : z ∈ support
   omega
 
 /-- SSR is exactly (N1−1)s1²+(N0−1)s0² at every admissible assignment,
-the residual degrees-of-freedom convention above (pp. 346–347). -/
+the residual degrees-of-freedom convention in S4 (pp. 346–347). -/
 theorem residualSS_sample_variances (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 ≤ P.n0)
     (z : Finset (Fin P.size)) (hz : z ∈ support P.n1) :
     residualSS P z = ((P.n1 : ℝ)-1)*sampleVariance z (observed P z) +
@@ -988,7 +1017,8 @@ theorem residualSS_sample_variances (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 �
 
 /-- Adding a constant to every outcome shifts the sample mean by that
 constant whenever the sample is nonempty; used for the constant-effect claim. 
-Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons. -/
+Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons;
+this lemma is not separately printed in the comment. -/
 theorem sampleMean_add_constant {ι : Type*} [DecidableEq ι]
     (s : Finset ι) (y : ι → ℝ) (c : ℝ) (hs : s.card ≠ 0) :
     sampleMean s (fun i => y i+c) = sampleMean s y+c := by
@@ -999,7 +1029,8 @@ theorem sampleMean_add_constant {ι : Type*} [DecidableEq ι]
 
 /-- Adding a constant to every outcome leaves a sample variance unchanged,
 including empty samples where the finite-sum convention gives zero. 
-Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons. -/
+Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons;
+this lemma is not separately printed in the comment. -/
 theorem sampleVariance_add_constant {ι : Type*} [DecidableEq ι]
     (s : Finset ι) (y : ι → ℝ) (c : ℝ) :
     sampleVariance s (fun i => y i+c) = sampleVariance s y := by
@@ -1015,7 +1046,8 @@ theorem sampleVariance_add_constant {ι : Type*} [DecidableEq ι]
     ring
 
 /-- The sample variance of a constant vector is zero, for every sample size. 
-Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons. -/
+Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons;
+this lemma is not separately printed in the comment. -/
 theorem sampleVariance_constant {ι : Type*} [DecidableEq ι]
     (s : Finset ι) (c : ℝ) : sampleVariance s (fun _ => c) = 0 := by
   have hz : sampleVariance s (fun _ : ι => (0 : ℝ))=0 := by
@@ -1041,7 +1073,7 @@ theorem constant_effect_variances (P : Population) (hc : ConstantEffects P) :
 
 
 /-- Complete-randomization expectation of a constant is that constant;
-the genuine uniform design is normalized (p. 347). -/
+the genuine uniform design is normalized (S2–S4, p. 347). -/
 theorem randomizationMean_constant (P : Population) (c : ℝ) :
     randomizationMean P (fun _ => c)=c := by
   have hd : ((support (ι := Fin P.size) P.n1).card : ℝ) ≠ 0 := by
@@ -1052,7 +1084,8 @@ theorem randomizationMean_constant (P : Population) (c : ℝ) :
 
 /-- Probability one for the full complete-randomization space, verifying
 that none of the convergence-in-probability statements uses a zero measure. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationProbability_univ (P : Population) :
     randomizationProbability P (fun _ => True)=1 := by
   have hd : ((support (ι := Fin P.size) P.n1).card : ℝ) ≠ 0 := by
@@ -1060,20 +1093,23 @@ theorem randomizationProbability_univ (P : Population) :
   simp [randomizationProbability, hd]
 
 /-- Finite linearity of the actual complete-randomization expectation. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationMean_sub (P : Population) (X Y : Finset (Fin P.size) → ℝ) :
     randomizationMean P (fun z => X z-Y z)=randomizationMean P X-randomizationMean P Y := by
   simp only [randomizationMean, Finset.sum_sub_distrib, sub_div]
 
 /-- A constant multiple pulls through the uniform finite expectation. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationMean_mul (P : Population) (c : ℝ) (X : Finset (Fin P.size) → ℝ) :
     randomizationMean P (fun z => c*X z)=c*randomizationMean P X := by
   simp only [randomizationMean, ← Finset.mul_sum]
   ring
 
 /-- Finite sums commute with expectation over complete randomization. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationMean_sum (P : Population)
     (X : Fin P.size → Finset (Fin P.size) → ℝ) :
     randomizationMean P (fun z => ∑ i, X i z)=∑ i, randomizationMean P (X i) := by
@@ -1082,7 +1118,8 @@ theorem randomizationMean_sum (P : Population)
 
 /-- A function equal on all supported assignments has the same finite
 randomization expectation; off-support choices are irrelevant. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationMean_congr (P : Population) (X Y : Finset (Fin P.size) → ℝ)
     (h : ∀ z ∈ support P.n1, X z=Y z) : randomizationMean P X=randomizationMean P Y := by
   unfold randomizationMean
@@ -1091,7 +1128,8 @@ theorem randomizationMean_congr (P : Population) (X Y : Finset (Fin P.size) → 
 
 /-- Each unit has marginal treatment probability N1/N under the full uniform
 complete-randomization design. This is proved by binomial subset counting. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem marginal_treatment_mean (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (i : Fin P.size) :
     randomizationMean P (fun z => if i ∈ z then 1 else 0)=(P.n1 : ℝ)/P.size := by
@@ -1121,7 +1159,8 @@ theorem marginal_treatment_mean (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
 
 /-- The expected sum in the treated subset is N1/N times the population
 sum, for any fixed real vector; finite ingredient of L5 and L2. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomization_sample_sum (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (y : Fin P.size → ℝ) :
     randomizationMean P (fun z => ∑ i ∈ z, y i) =
@@ -1175,7 +1214,8 @@ theorem difference_in_means_unbiased (P : Population) (h1 : 0 < P.n1) (h0 : 0 < 
 
 /-- Distinct units are jointly treated with probability
 N1(N1−1)/(N(N−1)); exact sampling without replacement, used for L2/L5/L6. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem joint_treatment_mean (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (i j : Fin P.size) (hij : i ≠ j) :
     randomizationMean P (fun z => if i ∈ z ∧ j ∈ z then 1 else 0) =
@@ -1233,7 +1273,8 @@ theorem joint_treatment_mean (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
 
 /-- The second inclusion moment, including the diagonal term, for the full
 uniform design; used when expanding the square of a treated-sample sum. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem treatment_product_mean (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (i j : Fin P.size) :
     randomizationMean P (fun z => (if i ∈ z then 1 else 0)*(if j ∈ z then 1 else 0)) =
@@ -1252,7 +1293,8 @@ theorem treatment_product_mean (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
 
 /-- Raw second moment of a treated-sample sum, derived by diagonal and
 off-diagonal inclusion probabilities; finite ingredient of L2/L5/L6. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomization_sample_square (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (y : Fin P.size → ℝ) :
     let r := (P.n1 : ℝ)/P.size
@@ -1294,7 +1336,8 @@ theorem randomization_sample_square (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P
 
 /-- Variance equals E[X²]−E[X]² for the finite normalized randomization law.
 This is proved from the squared-deviation definition, not stipulated. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationVariance_raw (P : Population) (X : Finset (Fin P.size) → ℝ) :
     randomizationVariance P X=randomizationMean P (fun z => (X z)^2)-(randomizationMean P X)^2 := by
   have he : (fun z => (X z-randomizationMean P X)^2) =
@@ -1312,7 +1355,8 @@ theorem randomizationVariance_raw (P : Population) (X : Finset (Fin P.size) → 
 
 /-- Exact variance of a sum over a simple random sample of size N1:
 Var(sum_treated y)=N1*N0/N * S_y². All arm sizes may be one. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomization_sample_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (y : Fin P.size → ℝ) :
     randomizationVariance P (fun z => ∑ i ∈ z, y i) =
@@ -1335,7 +1379,8 @@ theorem randomization_sample_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 <
 
 /-- Finite sample means are linear, including empty samples under Lean's
 zero-division convention (no theorem uses that case for an arm mean). 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem sampleMean_linear {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (y w : ι → ℝ) (a b : ℝ) :
     sampleMean s (fun i => a*y i+b*w i)=a*sampleMean s y+b*sampleMean s w := by
@@ -1345,7 +1390,8 @@ theorem sampleMean_linear {ι : Type*} [DecidableEq ι] (s : Finset ι)
 
 /-- Finite-population variances of a scaled vector scale by the square of
 the coefficient, used to certify the heterogeneous witness (T8). 
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem sampleVariance_scale {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (y : ι → ℝ) (a : ℝ) :
     sampleVariance s (fun i => a*y i)=a^2*sampleVariance s y := by
@@ -1364,7 +1410,8 @@ theorem sampleVariance_scale {ι : Type*} [DecidableEq ι] (s : Finset ι)
 
 /-- Equality on all supported assignments implies equality of actual
 randomization variances, including the equality of their finite means. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationVariance_congr (P : Population) (X Y : Finset (Fin P.size) → ℝ)
     (h : ∀ z ∈ support P.n1, X z=Y z) : randomizationVariance P X=randomizationVariance P Y := by
   unfold randomizationVariance
@@ -1375,7 +1422,8 @@ theorem randomizationVariance_congr (P : Population) (X Y : Finset (Fin P.size) 
 
 /-- Shifting every value of a randomization statistic by a constant does
 not change its actual variance, an ingredient of L5 and the imputation claim. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationVariance_sub_constant (P : Population)
     (X : Finset (Fin P.size) → ℝ) (c : ℝ) :
     randomizationVariance P (fun z => X z-c)=randomizationVariance P X := by
@@ -1388,7 +1436,8 @@ theorem randomizationVariance_sub_constant (P : Population)
 
 /-- The deterministic quadratic identity translating a sample-sum variance
 into Neyman's potential-outcome and effect-variance formula (L5). 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem weighted_potential_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0) :
     ((P.n1 : ℝ)*P.n0/P.size)*
       populationVariance P (fun i => P.Y1 i/(P.n1 : ℝ)+P.Y0 i/(P.n0 : ℝ)) =
@@ -1429,7 +1478,8 @@ theorem weighted_potential_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P
 
 /-- L5's full actual variance identity: the randomization variance of
 tau-hat equals S1²/N1+S0²/N0−S_tau²/N for every positive-arm population. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem difference_in_means_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0) :
     randomizationVariance P (estimate P)=
       populationVariance P P.Y1/P.n1+populationVariance P P.Y0/P.n0-
@@ -1441,14 +1491,16 @@ theorem difference_in_means_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 < 
 
 /-- Finite expectation also commutes with division by a fixed scalar;
 the proof uses the actual normalized uniform finite sum. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationMean_div (P : Population) (X : Finset (Fin P.size) → ℝ) (c : ℝ) :
     randomizationMean P (fun z => X z/c)=randomizationMean P X/c := by
   simp only [randomizationMean, ← Finset.sum_div]
   ring
 
 /-- Scaling a randomization statistic by c scales its actual variance by c². 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationVariance_scale (P : Population) (X : Finset (Fin P.size) → ℝ) (c : ℝ) :
     randomizationVariance P (fun z => c*X z)=c^2*randomizationVariance P X := by
   rw [randomizationVariance_raw, randomizationVariance_raw]
@@ -1458,7 +1510,8 @@ theorem randomizationVariance_scale (P : Population) (X : Finset (Fin P.size) �
 
 /-- With fixed outcomes y, the reference difference equals a scaled treated
 sum minus a fixed population-total term (finite ingredient of L2). 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem difference_sample_sum (P : Population) (z : Finset (Fin P.size))
     (hz : z ∈ support P.n1) (y : Fin P.size → ℝ) :
     difference P z y = (1/(P.n1 : ℝ)+1/(P.n0 : ℝ))*(∑ i ∈ z, y i)-
@@ -1470,7 +1523,8 @@ theorem difference_sample_sum (P : Population) (z : Finset (Fin P.size))
 
 /-- The reference difference has mean zero under the full uniform fresh
 assignment distribution, for every fixed real outcome vector (L2). 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem reference_difference_mean (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (y : Fin P.size → ℝ) : randomizationMean P (fun z => difference P z y)=0 := by
   have ha : (P.n1 : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt h1)
@@ -1484,7 +1538,8 @@ theorem reference_difference_mean (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n
 
 /-- The actual FRT reference variance is N*S_y²/(N1*N0), proved by
 sampling-without-replacement second moments for all fixed real y (L2). 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem reference_difference_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (y : Fin P.size → ℝ) :
     randomizationVariance P (fun z => difference P z y)=
@@ -1500,7 +1555,8 @@ theorem reference_difference_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 <
 
 /-- A sample variance depends only on the values at the sampled units;
 used to replace observed outcomes by the appropriate potential outcomes. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem sampleVariance_congr {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (y w : ι → ℝ) (h : ∀ i ∈ s, y i=w i) : sampleVariance s y=sampleVariance s w := by
   have hm : sampleMean s y=sampleMean s w := by
@@ -1515,7 +1571,8 @@ theorem sampleVariance_congr {ι : Type*} [DecidableEq ι] (s : Finset ι)
 
 /-- Unbiasedness of a treated arm sample variance under the uniform fixed-size
 design, divisor N1−1; exact first/second-moment ingredient of L6. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem treated_sample_variance_unbiased (P : Population) (h1 : 2 ≤ P.n1) (h0 : 0 < P.n0)
     (y : Fin P.size → ℝ) :
     randomizationMean P (fun z => sampleVariance z y)=populationVariance P y := by
@@ -1545,7 +1602,8 @@ theorem treated_sample_variance_unbiased (P : Population) (h1 : 2 ≤ P.n1) (h0 
 
 /-- Complementary-sample sum expectation: the control arm samples each
 fixed vector with fraction N0/N, without any independent-Bernoulli model. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomization_control_sum (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (y : Fin P.size → ℝ) :
     randomizationMean P (fun z => ∑ i ∈ zᶜ, y i)=
@@ -1561,7 +1619,8 @@ theorem randomization_control_sum (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n
 
 /-- A control sample sum has the same variance as the complementary treated
 sum; this follows from their sum being the fixed population total. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomization_control_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (y : Fin P.size → ℝ) :
     randomizationVariance P (fun z => ∑ i ∈ zᶜ, y i)=
@@ -1577,7 +1636,8 @@ theorem randomization_control_variance (P : Population) (h1 : 0 < P.n1) (h0 : 0 
 
 /-- Raw second moment of the control sum, deduced from its genuine variance
 and mean, for the arm-variance unbiasedness lemma L6. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomization_control_square (P : Population) (h1 : 0 < P.n1) (h0 : 0 < P.n0)
     (y : Fin P.size → ℝ) :
     randomizationMean P (fun z => (∑ i ∈ zᶜ, y i)^2)=
@@ -1589,7 +1649,8 @@ theorem randomization_control_square (P : Population) (h1 : 0 < P.n1) (h0 : 0 < 
 
 /-- The control arm sample variance is unbiased for the fixed vector's
 population variance, divisor N0−1; L6 under complete randomization. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem control_sample_variance_unbiased (P : Population) (h1 : 0 < P.n1) (h0 : 2 ≤ P.n0)
     (y : Fin P.size → ℝ) :
     randomizationMean P (fun z => sampleVariance zᶜ y)=populationVariance P y := by
@@ -1619,7 +1680,8 @@ theorem control_sample_variance_unbiased (P : Population) (h1 : 0 < P.n1) (h0 : 
 
 /-- Observation restriction for the treated sample variance: at every
 sampled unit Y_obs=Y1; finite modelling lemma for L6. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem treated_variance_observed (P : Population) (z : Finset (Fin P.size)) :
     sampleVariance z (observed P z)=sampleVariance z P.Y1 := by
   apply sampleVariance_congr
@@ -1628,7 +1690,8 @@ theorem treated_variance_observed (P : Population) (z : Finset (Fin P.size)) :
 
 /-- Observation restriction for the control sample variance: at every
 control unit Y_obs=Y0; finite modelling lemma for L6. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem control_variance_observed (P : Population) (z : Finset (Fin P.size)) :
     sampleVariance zᶜ (observed P z)=sampleVariance zᶜ P.Y0 := by
   apply sampleVariance_congr
@@ -1637,7 +1700,8 @@ theorem control_variance_observed (P : Population) (z : Finset (Fin P.size)) :
 
 /-- Additivity of finite randomization means, used to combine variance
 estimators without introducing any independence hypothesis. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem randomizationMean_add (P : Population) (X Y : Finset (Fin P.size) → ℝ) :
     randomizationMean P (fun z => X z+Y z)=randomizationMean P X+randomizationMean P Y := by
   simp only [randomizationMean, Finset.sum_add_distrib, add_div]
@@ -1645,7 +1709,8 @@ theorem randomizationMean_add (P : Population) (X Y : Finset (Fin P.size) → �
 
 /-- Nonnegative finite-population variance, supporting Neyman's bound.
 The size hypothesis excludes the undefined divisor convention at N=1. 
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem populationVariance_nonnegative (P : Population) (hN : 2 ≤ P.size)
     (y : Fin P.size → ℝ) : 0 ≤ populationVariance P y := by
   unfold populationVariance sampleVariance centeredSS
@@ -1723,7 +1788,8 @@ theorem ols_pooled_formula (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 ≤ P.n0)
 
 /-- L4: the exact Fisher–OLS difference is (tau-hat²−V-hat(OLS))/(N−1),
 the finite identity underlying the Section 2 asymptotic comparison. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem fisher_ols_exact (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 ≤ P.n0)
     (z : Finset (Fin P.size)) (hz : z ∈ support P.n1) :
     fisherVariance P z = (P.size : ℝ)*residualSS P z /
@@ -1762,7 +1828,8 @@ theorem neyman_randomization_identity (P : Population)
 
 /-- L6: the arm sample variances are unbiased and Neyman's variance estimate
 is conservative in expectation; finite basis for the Section 3 comparisons. 
-Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons. -/
+Auxiliary component of Section 2, p. 347, unnumbered Fisher/OLS variance comparisons;
+this lemma is not separately printed in the comment. -/
 theorem arm_variances_unbiased (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 ≤ P.n0) :
     randomizationMean P (fun z => sampleVariance z (observed P z)) = populationVariance P P.Y1 ∧
     randomizationMean P (fun z => sampleVariance zᶜ (observed P z)) = populationVariance P P.Y0 ∧
@@ -1824,14 +1891,16 @@ theorem constant_effect_finite (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 ≤ P.
 
 
 /-- Sample means agree when the outcome vectors agree at every sampled unit. 
-Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons. -/
+Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons;
+this lemma is not separately printed in the comment. -/
 theorem sampleMean_congr {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (y w : ι → ℝ) (h : ∀ i ∈ s, y i=w i) : sampleMean s y=sampleMean s w := by
   unfold sampleMean
   rw [Finset.sum_congr rfl h]
 
 /-- Centered sums of squares depend only on sampled outcomes. 
-Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons. -/
+Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons;
+this lemma is not separately printed in the comment. -/
 theorem centeredSS_congr {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (y w : ι → ℝ) (h : ∀ i ∈ s, y i=w i) : centeredSS s y=centeredSS s w := by
   unfold centeredSS
@@ -1857,7 +1926,8 @@ theorem centeredSS_add_constant {ι : Type*} [DecidableEq ι]
 
 /-- L1 for any fixed real vector, obtained by making both potential outcomes
 that vector; this is the decomposition needed for the imputed reference. 
-Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons. -/
+Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons;
+this lemma is not separately printed in the comment. -/
 theorem fixed_outcome_decomposition (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 ≤ P.n0)
     (z : Finset (Fin P.size)) (hz : z ∈ support P.n1) (y : Fin P.size → ℝ) :
     ((P.size : ℝ)-1)*populationVariance P y =
@@ -1875,7 +1945,8 @@ theorem fixed_outcome_decomposition (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 �
 /-- L8's imputed control outcomes r_i=y_i−t*z_i, with t=D(z,y), have
 population variance SSR_y/(N−1). Equal imputed arm means make the between-arm
 term vanish; no equality with the N−2 OLS divisor is asserted. 
-Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons. -/
+Auxiliary component of Section 2, pp. 346–347, constant-effect and Wald-reference comparisons;
+this lemma is not separately printed in the comment. -/
 theorem imputation_population_variance (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 ≤ P.n0)
     (z : Finset (Fin P.size)) (hz : z ∈ support P.n1) (y : Fin P.size → ℝ) :
     populationVariance P (fun i => y i-difference P z y*(if i ∈ z then 1 else 0)) =
@@ -1910,7 +1981,7 @@ theorem imputation_population_variance (P : Population) (h1 : 2 ≤ P.n1) (h0 : 
   simp only [Population.size,Nat.cast_add] at hh ⊢
   nlinarith [hh]
 
-/-- L8, p. 346: imputing a constant effect t=tau-hat,
+/-- L8, p. 346 clarification N001: imputing a constant effect t=tau-hat,
 the fresh randomization statistic has mean t and variance
 N*SSR/(N1*N0*(N−1))=(N−2)/(N−1)*V-hat(OLS). Equality with OLS is asymptotic. -/
 theorem imputed_reference_variance (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 ≤ P.n0)
@@ -1970,7 +2041,8 @@ theorem wald_leading_zero_iff (n1 n0 u v : ℝ) (h1 : 0 < n1) (h0 : 0 < n0) :
 
 /-- L9's exact algebra for arbitrary arm sample variances, the finite
 coefficient responsible for the Section 3 OLS–Neyman difference. 
-Auxiliary component of Section 3, p. 347, unnumbered OLS/Neyman comparison. -/
+Auxiliary component of Section 3, p. 347, unnumbered OLS/Neyman comparison;
+this lemma is not separately printed in the comment. -/
 theorem pooled_minus_unpooled (n1 n0 u v : ℝ) (h1 : 2 ≤ n1) (h0 : 2 ≤ n0) :
     (((n1-1)*u+(n0-1)*v)/(n1+n0-2))*(1/n1+1/n0) - (u/n1+v/n0) =
       ((n1+n0-1)/(n1+n0-2))*(1/n0-1/n1)*(u-v) := by
@@ -1994,7 +2066,7 @@ theorem ols_neyman_exact (P : Population) (h1 : 2 ≤ P.n1) (h0 : 2 ≤ P.n0)
     (pooled_minus_unpooled (P.n1 : ℝ) (P.n0 : ℝ)
       (sampleVariance z (observed P z)) (sampleVariance zᶜ (observed P z)) hh1 hh0)
 
-/-- Asymptotic allocation, variance-limit and moment assumptions.
+/-- The asymptotic allocation p=N1/N and second-moment limits from S2–S5.
 Populations are indexed by k with N_k→∞, allowing subsequences such as N=10m.
 Initial small populations are unrestricted; both arms eventually have ≥2 units.
 The bounded fourth-moment assumption bounds both marginal fourth moments
@@ -2014,7 +2086,7 @@ structure Regularity (E : ℕ → Population) (p v1 v0 vt tauInf : ℝ) : Prop w
       ((E k).size : ℝ) ≤ B
 
 /-- Convergence in probability on the varying, genuine finite randomization
-spaces: P(|X_k−c|>epsilon)→0 for every epsilon>0. -/
+spaces: P(|X_k−c|>epsilon)→0 for every epsilon>0, targets.json S5. -/
 def InProbability (E : ℕ → Population)
     (X : (k : ℕ) → Finset (Fin (E k).size) → ℝ) (c : ℝ) : Prop :=
   ∀ ε : ℝ, 0 < ε → Tendsto
@@ -2059,7 +2131,8 @@ theorem unequal_wald_limits_necessary (p v1 v0 : ℝ)
 /-- L10's numeric comparison of limiting coefficients: the stated witness
 has actual leading coefficient 81/4, OLS 10, and Neyman 85/4. This arithmetic
 certificate is separate from the population and randomization assertions. 
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem witness_limit_numbers :
     olsLimit (1/5) 4 1=10 ∧ neymanLimit (1/5) 4 1=85/4 ∧
       (10 : ℝ) < 81/4 ∧ (81/4 : ℝ) < 85/4 := by
@@ -2138,7 +2211,7 @@ theorem constant_effect_deterministic_limits (E : ℕ → Population)
     unfold neymanLimit olsLimit
     ring
 
-/-- T8(c)'s explicit population witness:
+/-- T8(c)'s explicit population witness (validator/Sol construction):
 N=10m, N1=2m, N0=8m, half Y0=1 and half Y0=−1, Y1=2Y0.
 Index k uses m=k+1, avoiding the empty population. -/
 def heterogeneousWitness (k : ℕ) : Population where
@@ -2151,7 +2224,8 @@ def heterogeneousWitness (k : ℕ) : Population where
 /-- Half the witness outcomes are +1 and half −1, so their population mean
 is zero and their N−1-divisor variance is N/(N−1) (T8(c), L10). This proves
 the moment assertions by counting units, without enumerating assignments. 
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem witness_potential_moments (k : ℕ) :
     let P := heterogeneousWitness k
     populationMean P P.Y0=0 ∧ populationMean P P.Y1=0 ∧
@@ -2218,7 +2292,8 @@ theorem witness_potential_moments (k : ℕ) :
 /-- L10, each fixed m=k+1: the actual witness has Neyman's null tau=0,
 variances 4N/(N−1), N/(N−1), N/(N−1), and randomization variance
 81/(4(N−1)) greater than the OLS leading form 10/(N−1). 
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem heterogeneous_witness_finite (k : ℕ) :
     let P := heterogeneousWitness k
     averageEffect P = 0 ∧
@@ -2267,7 +2342,8 @@ theorem heterogeneous_witness_finite (k : ℕ) :
 
 
 /-- The explicit T8(c) witness sizes N=10(k+1) diverge. 
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem witness_size_diverges : Tendsto (fun k => (heterogeneousWitness k).size) atTop atTop := by
   apply tendsto_atTop.2
   intro b
@@ -2279,7 +2355,8 @@ theorem witness_size_diverges : Tendsto (fun k => (heterogeneousWitness k).size)
 
 /-- The witness's finite-population variance base N/(N−1) tends to one;
 T8(c) needs this ordinary limit in addition to the finite moment certificate. 
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem witness_variance_base_limit :
     Tendsto (fun k => ((heterogeneousWitness k).size : ℝ)/
       (((heterogeneousWitness k).size : ℝ)-1)) atTop (nhds 1) := by
@@ -2301,7 +2378,8 @@ theorem witness_variance_base_limit :
 /-- The T8(c) witness's fourth moments are uniformly bounded: the average
 of Y1^4+Y0^4 is exactly 17. Thus the finite example satisfies the standing
 moment condition for its entire diverging sequence, not just one population. 
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem witness_fourth_moments (k : ℕ) :
     (∑ i : Fin (heterogeneousWitness k).size,
       (((heterogeneousWitness k).Y1 i)^4+((heterogeneousWitness k).Y0 i)^4)) /
@@ -2318,8 +2396,9 @@ theorem witness_fourth_moments (k : ℕ) :
   field_simp
 
 /-- The concrete heterogeneous Neyman-null sequence in T8(c) satisfies
-every condition of Regularity, with p=1/5, variances (4,1,1), and tau limit 0. 
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+every standing S5 condition, with p=1/5, variances (4,1,1), and tau limit 0. 
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem witness_regular : Regularity heterogeneousWitness (1/5) 4 1 1 0 := by
   have ha : ∀ k, ((heterogeneousWitness k).n1 : ℝ)/(heterogeneousWitness k).size=1/5 := by
     intro k
@@ -2361,8 +2440,9 @@ theorem witness_regular : Regularity heterogeneousWitness (1/5) 4 1 1 0 := by
 
 /-- For the actual complete-randomization variances of the T8(c) witness,
 N*V(tau-hat) tends to 81/4, strictly above the OLS leading coefficient 10.
-
-Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects. -/
+The separate full target also asserts the unproved OLS probability limit. 
+Auxiliary component of Section 3, pp. 347–348, Neyman bound and constant/heterogeneous effects;
+this lemma is not separately printed in the comment. -/
 theorem witness_actual_scaled_limit :
     Tendsto (fun k => ((heterogeneousWitness k).size : ℝ)*
       randomizationVariance (heterogeneousWitness k) (estimate (heterogeneousWitness k)))
@@ -2372,5 +2452,111 @@ theorem witness_actual_scaled_limit :
   refine ⟨?_,by norm_num⟩
   simpa only [Population.size,Nat.cast_add] using hh
 
+#print axioms binary_reconstruction
+#print axioms binary_equal_iff
+#print axioms binary_support_identification
+#print axioms explicit_table_factor
+#print axioms table_statistic_factors
+#print axioms factor_iff_table_constant
+#print axioms successes_permutation
+#print axioms canonical_permutation
+#print axioms symmetric_binary_samples
+#print axioms table_samples_invariant
+#print axioms symmetric_samples_table_iff
+#print axioms ordered_sample_successes
+#print axioms successes_compl
+#print axioms binary_control_card
+#print axioms ordered_sample_statistic_factors
+#print axioms four_counterexample_values
+#print axioms unrestricted_counterexample
+#print axioms increasing_same_p
+#print axioms limit_difference_identity
+#print axioms apparent_paradox_condition
+#print axioms binary_order_iff
+#print axioms binary_upperP_count
+#print axioms balanced_absolute_tail
+#print axioms six_upper_tail_difference
+#print axioms six_difference_distribution
+#print axioms four_absolute_endpoint
+#print axioms four_upper_tail_difference
+#print axioms product_successes
+#print axioms repeated_total
+#print axioms repeated_counterexample_values
+#print axioms unrestricted_repeated_counterexample
+#print axioms repeated_fourth_moments
+#print axioms repeated_counterexample_scaling
+#print axioms centeredSS_raw
+#print axioms support_positive
+#print axioms arm_cards
+#print axioms residualSS_sample_variances
+#print axioms sampleMean_add_constant
+#print axioms sampleVariance_add_constant
+#print axioms sampleVariance_constant
+#print axioms constant_effect_variances
+#print axioms randomizationMean_constant
+#print axioms randomizationProbability_univ
+#print axioms randomizationMean_sub
+#print axioms randomizationMean_mul
+#print axioms randomizationMean_sum
+#print axioms randomizationMean_congr
+#print axioms marginal_treatment_mean
+#print axioms randomization_sample_sum
+#print axioms estimate_sample_sum
+#print axioms difference_in_means_unbiased
+#print axioms joint_treatment_mean
+#print axioms treatment_product_mean
+#print axioms randomization_sample_square
+#print axioms randomizationVariance_raw
+#print axioms randomization_sample_variance
+#print axioms sampleMean_linear
+#print axioms sampleVariance_scale
+#print axioms randomizationVariance_congr
+#print axioms randomizationVariance_sub_constant
+#print axioms weighted_potential_variance
+#print axioms difference_in_means_variance
+#print axioms randomizationMean_div
+#print axioms randomizationVariance_scale
+#print axioms difference_sample_sum
+#print axioms reference_difference_mean
+#print axioms reference_difference_variance
+#print axioms sampleVariance_congr
+#print axioms treated_sample_variance_unbiased
+#print axioms randomization_control_sum
+#print axioms randomization_control_variance
+#print axioms randomization_control_square
+#print axioms control_sample_variance_unbiased
+#print axioms treated_variance_observed
+#print axioms control_variance_observed
+#print axioms randomizationMean_add
+#print axioms populationVariance_nonnegative
+#print axioms combined_variance_decomposition
+#print axioms frt_reference_variance
+#print axioms ols_pooled_formula
+#print axioms fisher_ols_exact
+#print axioms neyman_randomization_identity
+#print axioms arm_variances_unbiased
+#print axioms constant_effect_finite
+#print axioms sampleMean_congr
+#print axioms centeredSS_congr
+#print axioms centeredSS_add_constant
+#print axioms fixed_outcome_decomposition
+#print axioms imputation_population_variance
+#print axioms imputed_reference_variance
+#print axioms wald_leading_difference
+#print axioms wald_leading_zero_iff
+#print axioms pooled_minus_unpooled
+#print axioms ols_neyman_exact
+#print axioms wald_limit_identity
+#print axioms unequal_wald_limits_necessary
+#print axioms witness_limit_numbers
+#print axioms actual_variance_limit_bound
+#print axioms constant_effect_deterministic_limits
+#print axioms witness_potential_moments
+#print axioms heterogeneous_witness_finite
+#print axioms witness_size_diverges
+#print axioms witness_variance_base_limit
+#print axioms witness_fourth_moments
+#print axioms witness_regular
+#print axioms witness_actual_scaled_limit
 end
 end AronowAudit.P053

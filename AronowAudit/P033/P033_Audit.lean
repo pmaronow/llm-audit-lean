@@ -9,11 +9,13 @@ import Mathlib.Analysis.Asymptotics.Defs
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 /-!
-# P033: mathematical models and corrections
+# P033: target-by-target audit
 
-Exact numerical data values below are premises, not conclusions inferred
-from a dataset. The models M1 and M2 and the explicit counterexamples
-are distinguished from the published claims.
+All exact data values below are premises from targets.json, not conclusions about
+an unstaged dataset. The source has no mathematical headline theorem. Models
+introduced by validators are explicitly distinguished from the published claims.
+The complete probability and asymptotic targets remain stated even where their
+proof is unfinished; the finite lemmas do not replace those targets.
 -/
 namespace AronowAudit.P033
 
@@ -26,29 +28,32 @@ noncomputable section
 cutoff" (main p. 3, identification). The arguments are the two conditional mean functions. -/
 def rdEffect (μ₁ μ₀ : ℝ → ℝ) (c : ℝ) : ℝ := μ₁ c - μ₀ c
 
+/-- "Treatment assignment changes in a discontinuous fashion" (main p. 3).
+The targets specialize to sharp assignment D = 1{X ≥ c}. -/
+def sharpTreatment (c x : ℝ) : ℝ := if c ≤ x then 1 else 0
 
-/-- Normal CDF Φ of N(0,1), notation used here, not notation printed in the paper.
+/-- Normal CDF Φ of N(0,1), notation of targets (S7), not notation printed in the paper.
 This is a genuine probability measure, not an uninterpreted function. -/
 def normalCDF (x : ℝ) : ℝ := (gaussianReal 0 1).real (Iic x)
 
-/-- Φ⁻¹(p), the infimum quantile of the actual standard Gaussian, notation used here.
-At the levels used below, the Gaussian CDF is strictly increasing and continuous. -/
+/-- Φ⁻¹(p), the infimum quantile of the actual standard Gaussian, target notation (S7).
+For the levels in this audit the Gaussian CDF is strictly increasing and continuous. -/
 def normalQuantile (p : ℝ) : ℝ := sInf {x : ℝ | p ≤ normalCDF x}
 
 /-- "A two-tailed test at the 5% significance level" (main p. 9).
 Its unrounded normal critical value is Φ⁻¹(39/40), as read from replication code. -/
 def normalCritical : ℝ := normalQuantile (39/40)
 
-/-- φ, the standard-normal density. -/
+/-- φ, the standard-normal density, notation of the targets (S7). -/
 def normalDensity (x : ℝ) : ℝ := gaussianPDFReal 0 1 x
 
-/-- The normal-approximation power described on main p. 9:
+/-- The normal-approximation power described on main p. 9, targets (S6)-(S7):
 "based on a central limit approximation for the sampling distribution". -/
 def normalPower (a : ℝ) : ℝ := normalCDF (a - normalCritical) +
   normalCDF (-a - normalCritical)
 
 /-- Expectation under a finite, equally likely randomization distribution.
-Used for the 1024 equally likely cluster shocks (T3), not as an
+Used for the validator's 1024 equally likely cluster shocks (T3), not as an
 assumption that the original paper is a finite-population analysis. -/
 def finiteMean {Ω : Type*} [Fintype Ω] (Y : Ω → ℝ) : ℝ :=
   (∑ ω, Y ω) / (Fintype.card Ω : ℝ)
@@ -57,7 +62,8 @@ def finiteMean {Ω : Type*} [Fintype Ω] (Y : Ω → ℝ) : ℝ :=
 def finiteVariance {Ω : Type*} [Fintype Ω] (Y : Ω → ℝ) : ℝ :=
   finiteMean (fun ω => (Y ω - finiteMean Y)^2)
 
-/-- The sample mean is the arithmetic mean of n records. -/
+/-- "The sample standard deviation of the outcome" (main p. 9, corrected p. 7).
+The sample mean is the arithmetic mean of n records. -/
 def sampleMean {n : ℕ} (Y : Fin n → ℝ) : ℝ := (∑ i, Y i) / n
 
 /-- Sample variance with divisor n-1; the paper's p. 7 wording says "sample variance"
@@ -73,11 +79,11 @@ axes" (main p. 7). The horizontal estimate is absolute, as in the plotting code.
 def funnelPoint (β se s₀ : ℝ) : ℝ × ℝ := (|β| / s₀, se / s₀)
 
 /-- The S4-described upper-endpoint SE: "using the upper bound of a 95% CI and the
-point estimate ... critical value" (supplement S4, pp. 9-10). -/
+point estimate ... critical value" (supplement S4, pp. 9-10, text extraction only). -/
 def upperSE (β U q : ℝ) : ℝ := (U - β) / q
 
 /-- Corrected S4 description of the released rule: full interval width divided by
- twice the normal critical value (T15; main p. 4 and supplement S4). -/
+ twice the normal critical value (T15; main p. 4 and supplement S4 text only). -/
 def widthSE (L U q : ℝ) : ℝ := (U - L) / (2 * q)
 
 /-- "Reconstruct t-statistics using the ratio of coefficients and standard errors"
@@ -85,7 +91,7 @@ def widthSE (L U q : ℝ) : ℝ := (U - L) / (2 * q)
 def absoluteT (β se : ℝ) : ℝ := |β| / se
 
 /-- Missing p-values in the released cleaning workflow are normal-tail transforms
-2 Φ(-|t|), as specified in corrected T15 (supplement S4). -/
+2 Φ(-|t|), as specified in corrected T15 (supplement S4, text only). -/
 def reconstructedP (β L U q : ℝ) : ℝ :=
   2 * normalCDF (-absoluteT β (widthSE L U q))
 
@@ -122,14 +128,12 @@ theorem sqrt_eq_variance (v : ℝ) (hv : 0 ≤ v) :
     · exact Or.inr (by linarith)
   · rintro (rfl | rfl) <;> norm_num
 
-/-- Binary sample-variance formula in terms of n records and k ones, as in
-T11(v), p. 7 corrected. For natural counts n≥2 and k≤n this describes an
-actual binary multiset; the definition extends the expression to arbitrary reals. -/
+/-- Binary sample variance expressed through the n records and k ones, as in
+T11(v), p. 7 corrected; n≥2 and 0≤k≤n give an actual binary multiset. -/
 def binarySampleVariance (n k : ℝ) : ℝ :=
   (k * (1 - k/n)^2 + (n-k) * (k/n)^2) / (n-1)
 
-/-- T11(v): algebraic identity for arbitrary real n≠0,1 and k; for natural
-counts n≥2 and k≤n, it is the variance formula for k ones and n-k zeros. -/
+/-- T11(v) finite identity for the multiset of k ones and n-k zeros. -/
 theorem binary_sample_variance_formula (n k : ℝ) (hn : n ≠ 0) (hn1 : n ≠ 1) :
     binarySampleVariance n k = k*(n-k)/(n*(n-1)) := by
   unfold binarySampleVariance
@@ -168,7 +172,7 @@ theorem binary_sample_variance_actual {n : ℕ} (hn : 2 ≤ n)
   field_simp
   <;> ring
 
-/-- T10, exact witnesses for main p. 7 and Figure 4 p. 8: the printed
+/-- T10, exact validator witnesses for main p. 7 and Figure 4 p. 8: the printed
 slope misclassifies (1/2,1/2); sample variance and sample SD give different points.
 This does not assert that the actual figure or its code uses the wrong line. -/
 theorem funnel_counterexample :
@@ -214,8 +218,8 @@ theorem funnel_correction :
   · norm_num [binarySampleVariance]
   · norm_num
 
-/-- T14, exact Klašnja-Titiunik and Holbein witnesses for the two interval
-SE functions (supplement S4; the numbers and code rule are
+/-- T14, exact recorded Klašnja-Titiunik and Holbein witnesses for the two interval
+SE functions (supplement S4 text only; the recorded numbers and code rule are
 premises). The two rules put Holbein b on opposite sides of the 27q/18 bin edge. -/
 theorem interval_rule_counterexample :
     (∀ q : ℝ, 0 < q →
@@ -264,7 +268,7 @@ theorem interval_rule_difference (β L U q : ℝ) (hq : q ≠ 0) :
   <;> ring
 
 /-- T15, the complete corrected interval-imputation formula (main p. 4,
-supplement S4 pp. 9-10). The quantile choices and the normal-tail
+supplement S4 pp. 9-10, text only). The quantile choices and the normal-tail
 p-value are definitions of a reconstruction, not claims of exact inference for
 arbitrary reported confidence intervals. -/
 theorem interval_rule_correction :
@@ -309,34 +313,41 @@ theorem interval_rule_correction :
     constructor <;> field_simp <;> ring
   · norm_num [widthSE, absoluteT]
 
-/-! ## The diagnostic comparison (T1-T2) -/
+/-! ## Priority 1: the diagnostic comparison (T1-T2) -/
 
-/-- Model M1 (T1), illustrating main p. 3's continuity assumption:
-the control conditional mean is 2+x. This model is not in the paper. -/
+/-- Validator Model M1 (T1; adjudicator §3.1), attached to main p. 3's continuity
+assumption: the control conditional mean is 2+x. This model is not in the paper. -/
 def m1Control (x : ℝ) : ℝ := 2+x
 
-/-- Model M1's treated conditional mean 6+x (T1). -/
+/-- Validator Model M1's treated conditional mean 6+x (T1, adjudicator §3.1). -/
 def m1Treated (x : ℝ) : ℝ := 6+x
 
 /-- The eight fixed scores ±j/5, j=1,...,4, used for a regular conditional
 Gaussian outcome law, not conditioning by division on a probability-zero event. -/
 def m1Distance : Fin 4 → ℝ := ![1/5,2/5,3/5,4/5]
 
+/-- M1 kernel K(u)=1-u, triangular with h=b=1, validator §3.1 (T1). -/
+def m1Kernel (i : Fin 4) : ℝ := 1-m1Distance i
 
-/-- Original local linear intercept weights a (T1(i)). -/
+/-- The kernel-weighted Gram matrix for (1,u,...,u^degree), T1(i)-(ii).
+This definition connects the numerical weights to the actual WLS fit. -/
+def m1Gram (degree : ℕ) : Matrix (Fin (degree+1)) (Fin (degree+1)) ℝ :=
+  fun p q => ∑ i, m1Kernel i * m1Distance i ^ (p.val+q.val)
+
+/-- Original local linear intercept weights a (validator §3.2, T1(i)). -/
 def m1Linear : Fin 4 → ℝ := ![6/5,3/10,-1/5,-3/10]
 
-/-- Quadratic curvature coefficient weights c (T1(ii)). -/
+/-- Quadratic curvature coefficient weights c (validator §3.3, T1(ii)). -/
 def m1Curvature : Fin 4 → ℝ := ![50/7,-125/14,-25/7,75/14]
 
 /-- Original intercept's second moment m=-21/125, estimated-bias multiplier
-at h=b=1 (T1(ii)). -/
+at h=b=1, validator §3.3 (T1(ii)). -/
 def m1BiasMoment : ℝ := -21/125
 
-/-- Estimated-bias weights d=m c (T1(ii)). -/
+/-- Estimated-bias weights d=m c, validator §3.3 (T1(ii)). -/
 def m1Bias (i : Fin 4) : ℝ := m1BiasMoment * m1Curvature i
 
-/-- Bias-corrected intercept weights b=a-d (T1(ii)). -/
+/-- Bias-corrected intercept weights b=a-d, validator §3.3 (T1(ii)). -/
 def m1Corrected (i : Fin 4) : ℝ := m1Linear i - m1Bias i
 
 /-- A or B is a weighted right-minus-left intercept on the same eight outcomes.
@@ -344,6 +355,20 @@ Side index 0 is left and 1 is right; T1(iii). -/
 def rdEstimator (w : Fin 4 → ℝ) (Y : (Fin 2 × Fin 4) → ℝ) : ℝ :=
   ∑ i, w i * (Y (1,i) - Y (0,i))
 
+/-- Population score law Uniform(-1,1), independent of Gaussian unit errors,
+validator Model M1 §3.1. The conditional fixed-design law below is its explicit
+Gaussian regression kernel; it is not a discrete-score population. -/
+def m1ScoreLaw : Measure ℝ := ProbabilityTheory.cond volume (Ioo (-1) 1)
+
+/-- Full independent population coordinates (X_i,ε_i), with X_i uniform on
+(-1,1), ε_i~N(0,1), and unit independence (validator M1, T1). -/
+def m1PopulationLaw : Measure ((Fin 2 × Fin 4) → ℝ × ℝ) :=
+  Measure.pi (fun _ => m1ScoreLaw.prod (gaussianReal 0 1))
+
+/-- Y_i(d)=μ_d(X_i)+ε_i in Models M1/M2; D=1{X_i≥0}, T1 and T2.
+The same error is shared between the two potential outcomes of one unit. -/
+def potentialOutcome (μ₁ μ₀ : ℝ → ℝ) (treated : Bool) (x ε : ℝ) : ℝ :=
+  (if treated then μ₁ x else μ₀ x) + ε
 
 /-- Independent conditional outcomes at the eight scores in T1 and T2:
 left mean μ₀(-u), right mean μ₁(u), unit variance one known. -/
@@ -351,32 +376,128 @@ def rdConditionalLaw (μ₁ μ₀ : ℝ → ℝ) : Measure ((Fin 2 × Fin 4) →
   Measure.pi (fun si => gaussianReal
     (if si.1 = 0 then μ₀ (-m1Distance si.2) else μ₁ (m1Distance si.2)) 1)
 
-/-- S_A=√83/5, the reported exact SD in Model M1 (T1(iv)). -/
+/-- s_A=√83/5, the reported exact SD in Model M1 (validator §3.4, T1(iv)). -/
 def m1SELinear : ℝ := Real.sqrt 83 / 5
 
-/-- S_B=√410/5, the reported exact SD in Model M1 (T1(iv)). -/
+/-- s_B=√410/5, the reported exact SD in Model M1 (validator §3.4, T1(iv)). -/
 def m1SECorrected : ℝ := Real.sqrt 410 / 5
 
 /-- Probability that a symmetric interval about an estimator contains its target;
-main pp. 3-4's inference discussion, specialized to the explicit models. -/
+main pp. 3-4's inference discussion, specialized to the validator models. -/
 def intervalCoverage {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (T : Ω → ℝ) (θ halfLength : ℝ) : ℝ :=
   μ.real {ω | θ ∈ Icc (T ω-halfLength) (T ω+halfLength)}
 
-/-- The numerical realization of eight outcomes in T1(vi). -/
+/-- The numerical realization of eight outcomes in T1(vi), validator §3.6. -/
 def m1Observed (si : Fin 2 × Fin 4) : ℝ :=
   if si.1 = 0 then ![19/10,3/2,8/5,1] si.2 else ![63/10,63/10,34/5,33/5] si.2
 
+/-- T1 finite WLS certificates: full-rank Grams, intercept and curvature rows,
+reproduction moments, exact variances, covariance correction and the observed
+loss of significance. These are supporting identities, not the full Gaussian
+counterexample or an assertion about the 45 historical studies. -/
+theorem m1_exact_certificate :
+    m1Gram 1 = !![2,4/5;4/5,2/5] ∧
+    Matrix.det (m1Gram 1) = 4/25 ∧
+    m1Gram 2 = !![2,4/5,2/5;4/5,2/5,146/625;2/5,146/625,94/625] ∧
+    Matrix.det (m1Gram 2) = 168/390625 ∧
+    (∀ i, m1Linear i = m1Kernel i * ((5/2 : ℝ)-5*m1Distance i)) ∧
+    (∀ i, m1Curvature i = m1Kernel i *
+      ((125/2 : ℝ)-(14375/42)*m1Distance i+(15625/42)*m1Distance i^2)) ∧
+    (∀ i, m1Corrected i = m1Kernel i *
+      ((13 : ℝ)-(125/2)*m1Distance i+(125/2)*m1Distance i^2)) ∧
+    (∑ i, m1Linear i) = 1 ∧ (∑ i, m1Linear i*m1Distance i) = 0 ∧
+    (∑ i, m1Linear i*m1Distance i^2) = m1BiasMoment ∧
+    (∑ i, m1Curvature i) = 0 ∧ (∑ i, m1Curvature i*m1Distance i) = 0 ∧
+    (∑ i, m1Curvature i*m1Distance i^2) = 1 ∧
+    (∑ i, m1Corrected i) = 1 ∧ (∑ i, m1Corrected i*m1Distance i) = 0 ∧
+    (∑ i, m1Corrected i*m1Distance i^2) = 0 ∧
+    (2*∑ i, m1Linear i^2) = 83/25 ∧ (2*∑ i, m1Corrected i^2) = 82/5 ∧
+    (∑ i, m1Bias i^2) = 243/50 ∧ (∑ i, m1Linear i*m1Bias i) = -21/25 ∧
+    ((83/50 : ℝ)+(243/50)-2*(-21/25) = 41/5) ∧
+    (∑ i, m1Linear i*m1Observed (0,i)) = 211/100 ∧
+    (∑ i, m1Linear i*m1Observed (1,i)) = 611/100 ∧
+    (∑ i, m1Corrected i*m1Observed (0,i)) = 52/25 ∧
+    (∑ i, m1Corrected i*m1Observed (1,i)) = 152/25 ∧
+    rdEstimator m1Linear m1Observed = 4 ∧ rdEstimator m1Corrected m1Observed = 4 ∧
+    ((16 : ℝ)/(83/25) = 400/83 ∧ (16 : ℝ)/(82/5) = 40/41 ∧
+      (40/41 : ℝ) < (49/25)^2 ∧ (49/25 : ℝ)^2 < 400/83) := by
+  have hg1 : m1Gram 1 = !![2,4/5;4/5,2/5] := by
+    ext p q
+    fin_cases p <;> fin_cases q <;>
+      norm_num [m1Gram, m1Kernel, m1Distance, Fin.sum_univ_succ]
+  have hg2 : m1Gram 2 = !![2,4/5,2/5;4/5,2/5,146/625;2/5,146/625,94/625] := by
+    ext p q
+    fin_cases p <;> fin_cases q <;>
+      norm_num [m1Gram, m1Kernel, m1Distance, Fin.sum_univ_succ]
+  rw [hg1, hg2]
+  norm_num [Matrix.det_fin_two, Matrix.det_fin_three, m1Linear, m1Curvature,
+    m1Corrected, m1Bias, m1BiasMoment, m1Kernel, m1Distance, m1Observed,
+    rdEstimator, Fin.sum_univ_succ]
+  repeat' constructor
+  all_goals first
+    | (rw [Matrix.det_fin_two]; norm_num)
+    | (rw [Matrix.det_fin_three]; norm_num)
+    | (intro i; fin_cases i <;> norm_num)
 
-/-- M2's smooth polynomial perturbation q(x), T2(b). It vanishes
+/-- T1 full counterexample to the diagnostic implication in main p. 7 (with
+abstract p. 1, introduction p. 2 and conclusion p. 10). Its score/error law and
+WLS objects are those defined above; it includes unbiasedness, actual sampling
+variances, normal pivots and exact coverage, not just bigger numerical SEs. -/
+theorem diagnostic_counterexample :
+    Continuous m1Control ∧ Continuous m1Treated ∧
+    rdEffect m1Treated m1Control 0 = 4 ∧
+    (∫ Y, rdEstimator m1Linear Y ∂rdConditionalLaw m1Treated m1Control) = 4 ∧
+    (∫ Y, rdEstimator m1Corrected Y ∂rdConditionalLaw m1Treated m1Control) = 4 ∧
+    variance (rdEstimator m1Linear) (rdConditionalLaw m1Treated m1Control) = 83/25 ∧
+    variance (rdEstimator m1Corrected) (rdConditionalLaw m1Treated m1Control) = 82/5 ∧
+    m1SELinear = Real.sqrt (variance (rdEstimator m1Linear)
+      (rdConditionalLaw m1Treated m1Control)) ∧
+    m1SECorrected = Real.sqrt (variance (rdEstimator m1Corrected)
+      (rdConditionalLaw m1Treated m1Control)) ∧
+    HasLaw (fun Y => (rdEstimator m1Linear Y-4)/m1SELinear)
+      (gaussianReal 0 1) (rdConditionalLaw m1Treated m1Control) ∧
+    HasLaw (fun Y => (rdEstimator m1Corrected Y-4)/m1SECorrected)
+      (gaussianReal 0 1) (rdConditionalLaw m1Treated m1Control) ∧
+    intervalCoverage (rdConditionalLaw m1Treated m1Control) (rdEstimator m1Linear)
+      4 (normalCritical*m1SELinear) = 19/20 ∧
+    intervalCoverage (rdConditionalLaw m1Treated m1Control) (rdEstimator m1Corrected)
+      4 (normalCritical*m1SECorrected) = 19/20 ∧
+    intervalCoverage (rdConditionalLaw m1Treated m1Control) (rdEstimator m1Linear)
+      4 ((49/25)*m1SELinear) = 2*normalCDF (49/25)-1 ∧
+    intervalCoverage (rdConditionalLaw m1Treated m1Control) (rdEstimator m1Corrected)
+      4 ((49/25)*m1SECorrected) = 2*normalCDF (49/25)-1 ∧
+    0 < m1SELinear ∧ m1SELinear < m1SECorrected ∧
+    rdEstimator m1Linear m1Observed = 4 ∧ rdEstimator m1Corrected m1Observed = 4 ∧
+    absoluteT (rdEstimator m1Corrected m1Observed) m1SECorrected < 49/25 ∧
+    (49/25 : ℝ) < absoluteT (rdEstimator m1Linear m1Observed) m1SELinear := by
+  sorry
+
+/-- M2's smooth polynomial perturbation q(x), T2(b), adjudicator §4. It vanishes
 at every observed treated score but changes the cutoff mean by twenty. -/
 def m2Perturbation (x : ℝ) : ℝ :=
   20*(1-5*x)*(1-(5/2)*x)*(1-(5/3)*x)*(1-(5/4)*x)
 
 /-- Treated conditional mean 6+x+q(x) in M2; control mean and error law are M1's,
-T2(b). -/
+validator §4, T2(b). -/
 def m2Treated (x : ℝ) : ℝ := m1Treated x + m2Perturbation x
 
+/-- T2(b) finite non-identification certificate: the perturbation is exactly zero
+at all four observed treated scores, equals 20 at the cutoff, and hence changes
+the RD effect to 24 while preserving those conditional means. -/
+theorem m2_polynomial_certificate :
+    (∀ x, m2Perturbation x = 20-(625/3)*x+(4375/6)*x^2-(3125/3)*x^3+(3125/6)*x^4) ∧
+    Continuous m2Treated ∧
+    (∀ i, m2Perturbation (m1Distance i) = 0) ∧
+    m2Perturbation 0 = 20 ∧ rdEffect m2Treated m1Control 0 = 24 ∧
+    (∀ i, m2Treated (m1Distance i) = m1Treated (m1Distance i)) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x; unfold m2Perturbation; ring
+  · unfold m2Treated m1Treated m2Perturbation; fun_prop
+  · intro i; fin_cases i <;> norm_num [m2Perturbation, m1Distance]
+  · norm_num [m2Perturbation]
+  · norm_num [rdEffect, m2Treated, m2Perturbation, m1Control, m1Treated]
+  · intro i; fin_cases i <;> norm_num [m2Treated, m2Perturbation, m1Distance]
 
 /-- T2(f), general square-integrable variance identity behind main pp. 4 and 8's
 "added imprecision ... bias adjustment". No independence is assumed between the
@@ -400,16 +521,64 @@ def studyDataLaw (N : ℕ) (S : Finset (Fin N)) :
 /-- The true study-specific cutoff effect is 24 in M2 and 4 in M1 (T2(e)). -/
 def studyEffect {N : ℕ} (S : Finset (Fin N)) (j : Fin N) : ℝ := if j ∈ S then 24 else 4
 
+/-- T2(a)-(f), complete formal content of the weaker corrected diagnosis.
+No count of the surveyed studies' invalid procedures is asserted. Gaussian
+coverage is unconditional on the A/B ratio; M1/M2 equivalence is conditional
+on the stipulated scores, not an equality of their full population laws. -/
+theorem diagnostic_correction :
+    (∀ (Ω : Type*) [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+      (A B : Ω → ℝ) (τ σA σB c : ℝ), 0 < σA → 0 < σB → 0 < c →
+      HasLaw A (gaussianReal τ ⟨σA^2, sq_nonneg σA⟩) μ →
+      HasLaw B (gaussianReal τ ⟨σB^2, sq_nonneg σB⟩) μ →
+      intervalCoverage μ A τ (c*σA) = 2*normalCDF c-1 ∧
+      intervalCoverage μ B τ (c*σB) = 2*normalCDF c-1) ∧
+    rdConditionalLaw m2Treated m1Control = rdConditionalLaw m1Treated m1Control ∧
+    (∀ (E : Type*) [MeasurableSpace E] (F : ((Fin 2 × Fin 4) → ℝ) → E),
+      Measurable F → (rdConditionalLaw m2Treated m1Control).map F =
+        (rdConditionalLaw m1Treated m1Control).map F) ∧
+    (∫ Y, rdEstimator m1Linear Y ∂rdConditionalLaw m2Treated m1Control) -
+      rdEffect m2Treated m1Control 0 = -20 ∧
+    (∀ κ : ℝ, 0 < κ → {Y | 24 ∈ Icc (rdEstimator m1Linear Y-κ*m1SELinear)
+      (rdEstimator m1Linear Y+κ*m1SELinear)} ⊆
+      {Y | 20/m1SELinear-κ ≤ (rdEstimator m1Linear Y-4)/m1SELinear}) ∧
+    ((20/m1SELinear)^2 = (10000/83 : ℝ) ∧
+      (5+(49/25 : ℝ))^2 = 30276/625 ∧ (30276/625 : ℝ) < 10000/83) ∧
+    (0 < normalCritical ∧ normalCritical < 5 ∧ (10:ℝ) < 20/m1SELinear) ∧
+    intervalCoverage (rdConditionalLaw m2Treated m1Control) (rdEstimator m1Linear)
+      24 ((49/25)*m1SELinear) ≤ 1/25 ∧
+    intervalCoverage (rdConditionalLaw m2Treated m1Control) (rdEstimator m1Linear)
+      24 (normalCritical*m1SELinear) ≤ 1/25 ∧
+    (1776/2401 : ℝ) ≤ intervalCoverage (rdConditionalLaw m1Treated m1Control)
+      (rdEstimator m1Linear) 4 ((49/25)*m1SELinear) ∧
+    (1/25 : ℝ) < 1776/2401 ∧
+    intervalCoverage (rdConditionalLaw m1Treated m1Control) (rdEstimator m1Linear)
+      4 (normalCritical*m1SELinear) = 19/20 ∧
+    (∀ N : ℕ, 1 ≤ N →
+      (∀ S : Finset (Fin N), studyDataLaw N S = studyDataLaw N ∅) ∧
+      (∀ S : Finset (Fin N),
+        (Finset.univ.filter (fun j => intervalCoverage
+          (if j ∈ S then rdConditionalLaw m2Treated m1Control else rdConditionalLaw m1Treated m1Control)
+          (rdEstimator m1Linear) (studyEffect S j) (normalCritical*m1SELinear) ≤ 1/25)).card = S.card ∧
+        (Finset.univ.filter (fun j => intervalCoverage
+          (if j ∈ S then rdConditionalLaw m2Treated m1Control else rdConditionalLaw m1Treated m1Control)
+          (rdEstimator m1Linear) (studyEffect S j) (normalCritical*m1SELinear) = 19/20)).card = N-S.card) ∧
+      ¬ ∃ F : (Fin N → (Fin 2 × Fin 4) → ℝ) → ℕ, Measurable F ∧
+        ∀ S : Finset (Fin N), ∀ᵐ Y ∂studyDataLaw N S, F Y = S.card) ∧
+    (∀ (Ω : Type*) [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+      (L βhat : Ω → ℝ), MemLp L 2 μ → MemLp βhat 2 μ →
+      variance (fun ω => L ω-βhat ω) μ = variance L μ + variance βhat μ -
+        2*covariance L βhat μ) := by
+  sorry
 
-/-! ## Clustered nearest-neighbour variance (T3-T4) -/
+/-! ## Priority 2: clustered nearest-neighbour variance (T3-T4) -/
 
 /-- Nearest-neighbour residual within a tied running-variable cell of m records,
-T3/T4, as specified by rdrobust's default nnmatch=3. The paper (p. 7)
+T3/T4, read by validators from rdrobust's default nnmatch=3. The paper (p. 7)
 only says "default settings". When m≥4 all other records are the neighbours. -/
 def nnResidual {m : ℕ} (y : Fin m → ℝ) (i : Fin m) : ℝ :=
   Real.sqrt (((m:ℝ)-1)/m) * (y i - ((∑ j, y j)-y i)/((m:ℝ)-1))
 
-/-- Cluster-robust score variance f∑g score_g², T3/T4.
+/-- Cluster-robust score variance f∑g score_g², T3/T4 (validator's source reading).
 Finite-sample f cannot restore a cluster score erased by cell residualization. -/
 def clusterScoreVariance {G : ℕ} (f : ℝ) (score : Fin G → ℝ) : ℝ :=
   f * ∑ g, score g ^ 2
@@ -454,15 +623,26 @@ theorem nested_cells_zero_variance {C G : ℕ} (m : Fin C → ℕ)
   exact ⟨hg, by simp [clusterScoreVariance, hg]⟩
 
 /-- Independent uniform {-1,+1} shocks are functions on a uniform finite
-Boolean cube. False maps to -1 and true to +1 (T3's 1024 outcomes). -/
+Boolean cube. False maps to -1 and true to +1 (validator T3's 1024 outcomes). -/
 def signShock (u : Bool) : ℝ := if u then 1 else -1
 
+/-- Ten cluster scores -5,...,-1,1,...,5, each with five records; T3 design.
+Cutoff 0, triangular kernel, h=b=6. -/
+def clusterRunning : Fin 10 → ℝ := ![-5,-4,-3,-2,-1,1,2,3,4,5]
 
-/-- Conventional right-minus-left cluster weights in T3(i). -/
+/-- Cluster kernel 1-|x|/6 in the validator's T3 fixed-bandwidth design. -/
+def clusterKernel (g : Fin 10) : ℝ := 1-|clusterRunning g|/6
+
+/-- Right-side Gram including five records at each distance 1,...,5,
+T3(i)-(ii). -/
+def clusterGram (degree : ℕ) : Matrix (Fin (degree+1)) (Fin (degree+1)) ℝ :=
+  fun p q => ∑ j : Fin 5, 5*(1-((j:ℝ)+1)/6)*((j:ℝ)+1)^(p.val+q.val)
+
+/-- Conventional right-minus-left cluster weights in T3(i), validator §3. -/
 def clusterLinear : Fin 10 → ℝ := ![1/5,1/5,0,-2/5,-1,1,2/5,0,-1/5,-1/5]
 
 /-- Bias-corrected cluster weights in T3(ii), with h=b so the intercept is
-that of the quadratic fit. -/
+that of the quadratic fit (validator §3). -/
 def clusterCorrected : Fin 10 → ℝ := ![-2/5,1/5,4/5,2/5,-2,2,-2/5,-4/5,-1/5,2/5]
 
 /-- T3 estimator as a linear combination of the ten independent cluster signs. -/
@@ -490,8 +670,38 @@ def noisyClusterEstimator (a : Fin 10 → ℝ)
 def finiteCovariance {Ω : Type*} [Fintype Ω] (X Y : Ω → ℝ) : ℝ :=
   finiteMean (fun ω => (X ω-finiteMean X)*(Y ω-finiteMean Y))
 
+/-- T3 finite Gram and variance-coefficient certificate. The sums of squares
+become actual sampling variances only with the independent sign model. -/
+theorem cluster_exact_certificate :
+    clusterGram 1 = !![25/2,175/6;175/6,175/2] ∧
+    Matrix.det (clusterGram 1) = 4375/18 ∧
+    clusterGram 2 = !![25/2,175/6,175/2;175/6,175/2,1855/6;175/2,1855/6,2415/2] ∧
+    Matrix.det (clusterGram 2) = 61250/9 ∧
+    (∑ g, clusterLinear g^2) = 62/25 ∧
+    (∑ g, clusterCorrected g^2) = 10 ∧
+    (6/5 : ℝ)*(62/25) = 372/125 ∧ (6/5 : ℝ)*10 = 12 ∧
+    (∀ ω g i, nnResidual (clusterOutcome ω g) i = 0) := by
+  have hg1 : clusterGram 1 = !![25/2,175/6;175/6,175/2] := by
+    ext p q
+    fin_cases p <;> fin_cases q <;> norm_num [clusterGram, Fin.sum_univ_succ]
+  have hg2 : clusterGram 2 = !![25/2,175/6,175/2;175/6,175/2,1855/6;175/2,1855/6,2415/2] := by
+    ext p q
+    fin_cases p <;> fin_cases q <;> norm_num [clusterGram, Fin.sum_univ_succ]
+  rw [hg1,hg2]
+  norm_num [Matrix.det_fin_two,Matrix.det_fin_three,clusterLinear,clusterCorrected,
+    Fin.sum_univ_succ]
+  repeat' constructor
+  all_goals first
+    | (rw [Matrix.det_fin_two]; norm_num)
+    | (rw [Matrix.det_fin_three]; norm_num)
+    | (intro ω g i
+       unfold nnResidual
+       simp only [clusterOutcome, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+       simp only [Nat.cast_ofNat]
+       have hz : signShock (ω g)-(5*signShock (ω g)-signShock (ω g))/(5-1) = 0 := by ring
+       rw [hz, mul_zero])
 
-/-- Shrinking-bandwidth design of T4(iii): n(n+1) clusters per
+/-- Shrinking-bandwidth design of T4(iii), validator §4: n(n+1) clusters per
 side, five records each, at ±j/[n(n+1)], h=b=1/n; local normalized distances
 j/(n+1) and triangular weights for j=1,...,n. -/
 def shrinkingDistance (n : ℕ) (j : Fin n) : ℝ := ((j:ℝ)+1)/((n:ℝ)+1)
@@ -540,7 +750,7 @@ theorem clustered_table_arithmetic :
     ((1/26 : ℝ)-1/26 = 0) := by
   norm_num
 
-/-! ## Individual outcomes versus cell counts (T5-T6) -/
+/-! ## Priority 2: individual outcomes versus cell counts (T5-T6) -/
 
 /-- Wald ratio of the outcome and treatment discontinuities, the fuzzy-RD
 estimand read from the reanalysis of Coppock-Green (T5; main p. 9 defines
@@ -551,12 +761,12 @@ def waldRatio (yE yI dE dI : ℝ) : ℝ := (yE-yI)/(dE-dI)
 The population law on two cell types is uniform and each cell has 100 people. -/
 def binaryIndicator {n : ℕ} (k : ℕ) (i : Fin n) : ℝ := if i.val < k then 1 else 0
 
-/-- Eligible cells' untreated future-voter counts 5 and 45 (T5).
+/-- Eligible cells' untreated future-voter counts 5 and 45 (validator T5).
 The first 50 individuals are compliers; the next five untreated nonvoters in
 this ordering are induced by treatment, yielding observed counts 10 and 50. -/
 def eligibleBaseline : Fin 2 → ℕ := ![5,45]
 
-/-- Ineligible cells' observed future-voter counts 10 and 40 (T5). -/
+/-- Ineligible cells' observed future-voter counts 10 and 40 (validator T5). -/
 def ineligibleBaseline : Fin 2 → ℕ := ![10,40]
 
 /-- Individual potential outcomes in T5's fuzzy example. The first 50 people
@@ -567,7 +777,7 @@ def countToyPotential (eligible treated : Bool) (cell : Fin 2) (i : Fin 100) : �
     (if treated then 5 else 0)) i
 
 /-- Observed treatment in the fuzzy count toy: 50 on the eligible side and
-zero on the ineligible side, T5. -/
+zero on the ineligible side, validator T5. -/
 def countToyTreatment (eligible : Bool) (i : Fin 100) : ℝ :=
   if eligible then binaryIndicator 50 i else 0
 
@@ -627,11 +837,11 @@ theorem wald_count_scale (yE yI dE dI sd scale : ℝ) (hscale : 0 < scale) :
   rw [hw]
   simp [div_div, mul_comm]
 
-/-- T5 complete count-standardization counterexample using a toy model.
-Explicit binary individual potentials, monotone compliance, actual observed
-counts, both count variances, doubling and arbitrary positive scaling are
-included. Squared Cohen d avoids unnecessary square-root arithmetic while
-specifying the same nonnegative standardized effect. -/
+/-- T5 complete count-standardization counterexample (validator's toy, not
+historical study data). Explicit binary individual potentials, monotone
+compliance, actual observed counts, both count variances, doubling and the
+arbitrary positive scaling are included. Squared Cohen d avoids unnecessary
+square-root arithmetic while specifying the same nonnegative standardized effect. -/
 theorem count_standardization_counterexample :
     (∀ eligible treated cell i,
       countToyPotential eligible treated cell i = 0 ∨ countToyPotential eligible treated cell i = 1) ∧
@@ -728,8 +938,50 @@ theorem binary_table_arithmetic :
     (((15/4 : ℝ)/36 = 5/48) ∧ ((11/4 : ℝ)/10 = 11/40)) ∧
     (((15/4 : ℝ)-1)/36 = 11/144) ∧ (((11/4 : ℝ)-1)/10 = 7/40) := by norm_num
 
+/-- T6(i)-(v), complete correction of individual binary-outcome standardization
+(main p. 9; Tables 2-3 pp. 9-10). The normal power bounds are conditional on the
+fixed stored SE, not universal bounds on actual power. The empirical SD bound
+uses its own N-1 divisor and the stipulated local-pool N≥31731. -/
+theorem binary_standardization_correction :
+    (∀ (Ω : Type*) [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+      (Y : Ω → ℝ) (p : ℝ), Measurable Y →
+      (∀ᵐ ω ∂μ, Y ω = 0 ∨ Y ω = 1) → μ.real {ω | Y ω = 1} = p →
+      variance Y μ = p*(1-p) ∧ variance Y μ = 1/4-(p-1/2)^2 ∧
+      variance Y μ ≤ 1/4 ∧ Real.sqrt (variance Y μ) ≤ 1/2) ∧
+    (∀ N : ℕ, 2 ≤ N → ∀ Y : Fin N → ℝ,
+      (∀ i, Y i = 0 ∨ Y i = 1) →
+      sampleVariance Y = (N:ℝ)/((N:ℝ)-1)*sampleMean Y*(1-sampleMean Y) ∧
+      sampleVariance Y ≤ (N:ℝ)/(4*((N:ℝ)-1)) ∧
+      (1/10:ℝ)*sampleSD Y ≤ (1/20:ℝ)*Real.sqrt ((N:ℝ)/((N:ℝ)-1))) ∧
+    (∀ p : ℝ, 0 ≤ p → p ≤ 1 →
+      (1/10:ℝ)*Real.sqrt (binaryPopulationVariance p) ≤ 1/20) ∧
+    (∀ p q : ℝ, 0 ≤ p → p ≤ 1 → 0 ≤ q → q ≤ 1 → |p-q| ≤ 1) ∧
+    (1:ℝ) < 1229/500 ∧ normalPower 0 = 1/20 ∧
+    (∀ a : ℝ, 0 < a → HasDerivAt normalPower
+      (normalDensity (a-normalCritical)-normalDensity (a+normalCritical)) a ∧
+      0 < normalDensity (a-normalCritical)-normalDensity (a+normalCritical) ∧
+      normalPower a < normalCDF (a-normalCritical)+1/40) ∧
+    StrictMonoOn normalPower (Ici 0) ∧
+    (∀ τ : ℝ, |τ| ≤ 1/20 → normalPower (|τ|/binaryStudySE) ≤
+      normalPower (1/(20*binaryStudySE)) ∧ normalPower (|τ|/binaryStudySE) < 19/20) ∧
+    ((8972619/10^7 : ℝ) < normalPower (1/(20*binaryStudySE)) ∧
+      normalPower (1/(20*binaryStudySE)) < (8972620/10^7 : ℝ)) ∧
+    (∃ σ60 σ80 σ95 : ℝ,
+      normalPower ((1/10)*σ60/binaryStudySE) = 3/5 ∧
+      normalPower ((1/10)*σ80/binaryStudySE) = 4/5 ∧
+      normalPower ((1/10)*σ95/binaryStudySE) = 19/20 ∧
+      (3430295/10^7:ℝ) < σ60 ∧ σ60 < 3430296/10^7 ∧
+      (4342101/10^7:ℝ) < σ80 ∧ σ80 < 4342102/10^7 ∧
+      (5587016/10^7:ℝ) < σ95 ∧ σ95 < 5587017/10^7 ∧ (1/2:ℝ) < σ95) ∧
+    (∀ N : ℕ, 31731 ≤ N →
+      (1/2:ℝ)*Real.sqrt ((N:ℝ)/((N:ℝ)-1)) ≤ 5000079/10^7 ∧
+      normalPower ((1/20)*Real.sqrt ((N:ℝ)/((N:ℝ)-1))/binaryStudySE) ≤ 8972711/10^7 ∧
+      normalPower ((1/20)*Real.sqrt ((N:ℝ)/((N:ℝ)-1))/binaryStudySE) < 19/20) ∧
+    (((15/4 : ℝ)-1)/36 = 11/144) ∧ (((11/4 : ℝ)-1)/10 = 7/40) ∧
+    (∀ β se σ : ℝ, 0 < σ → 0 < se → (|β|/σ)/(se/σ) = |β|/se) := by
+  sorry
 
-/-! ## Caliper null and correction (T7-T8) -/
+/-! ## Priority 3: caliper null and correction (T7-T8) -/
 
 /-- Printed caliper cutoff 1.96, main p. 5, Table 1; the replication uses the
 unrounded normal quantile, whose distinction is retained in other targets. -/
@@ -744,18 +996,18 @@ def caliperBelow (f : ℝ → ℝ) (h : ℝ) : ℝ :=
   ∫ x in caliperCutoff-h..caliperCutoff, f x
 
 /-- Conditional chance of being above the threshold in the caliper,
-p_h=A_h/(A_h+B_h), a mathematical interpretation of main p. 5. -/
+p_h=A_h/(A_h+B_h), validator's mathematical interpretation of main p. 5. -/
 def caliperProbability (f : ℝ → ℝ) (h : ℝ) : ℝ :=
   caliperAbove f h/(caliperAbove f h+caliperBelow f h)
 
 /-- "A binomial distribution with equal success probability", "one-tailed"
-(main p. 5): G_n,k(p) is its upper tail, notation used here. -/
+(main p. 5): G_n,k(p) is its upper tail, target notation (S7). -/
 def binomialTail (n k : ℕ) (p : ℝ) : ℝ :=
   ∑ j ∈ Finset.Icc k n, (n.choose j:ℝ)*p^j*(1-p)^(n-j)
 
 /-- Actual probability measure for independent absolute t-statistics having a
 density f and all being published; T7/T8. Positivity/normalization of f are
-explicit hypotheses, rather than assumed equal side masses. -/
+hypotheses of the law theorem, not axioms or assumed equal side masses. -/
 def caliperDataLaw (M : ℕ) (f : ℝ → ℝ) : Measure (Fin M → ℝ) :=
   Measure.pi (fun _ => volume.withDensity (fun x => ENNReal.ofReal (f x)))
 
@@ -768,7 +1020,7 @@ null events under a density, T8(i). -/
 def caliperSuccesses {M : ℕ} (h : ℝ) (X : Fin M → ℝ) : ℕ :=
   (Finset.univ.filter (fun i => X i ∈ Icc caliperCutoff (caliperCutoff+h))).card
 
-/-- T7(i)'s selection-free density x/8 on [0,4], zero elsewhere.
+/-- Validator T7(i)'s selection-free density x/8 on [0,4], zero elsewhere.
 This is not an estimate of the distribution of the 45 surveyed studies. -/
 def linearCaliperDensity (x : ℝ) : ℝ := if x ∈ Icc 0 4 then x/8 else 0
 
@@ -813,11 +1065,113 @@ theorem equal_caliper_mass_iff (A B : ℝ) (hAB : 0 < A+B) :
   rw [div_eq_iff (ne_of_gt hAB)]
   constructor <;> intro h <;> linarith
 
+/-- T7 complete counterexamples to the publication-independence calibration
+of the finite caliper tests on main p. 5. All studies are published in the
+product density models; the exact finite tails, smooth fixed-width family,
+its limit and the well-calibrated Gaussian-study examples are all stated. -/
+theorem caliper_counterexamples :
+    (∫ x in (0:ℝ)..4, x/8) = 1 ∧
+    (∀ r ∈ ({(1/10:ℝ),3/20,1/5} : Finset ℝ),
+      let h := caliperCutoff*r;
+      0 < h ∧ h < caliperCutoff ∧
+      (∀ x ∈ Icc (caliperCutoff-h) (caliperCutoff+h), 0 < linearCaliperDensity x) ∧
+      caliperAbove linearCaliperDensity h = (2*caliperCutoff*h+h^2)/16 ∧
+      caliperBelow linearCaliperDensity h = (2*caliperCutoff*h-h^2)/16 ∧
+      caliperProbability linearCaliperDensity h = 1/2+r/4 ∧
+      ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) linearCaliperDensity (Ioo (caliperCutoff-h) (caliperCutoff+h))) ∧
+    caliperProbability linearCaliperDensity (caliperCutoff/10) = 21/40 ∧
+    caliperProbability linearCaliperDensity (caliperCutoff*3/20) = 43/80 ∧
+    caliperProbability linearCaliperDensity (caliperCutoff/5) = 11/20 ∧
+    caliperAbove linearCaliperDensity (caliperCutoff/5) = 26411/250000 ∧
+    caliperBelow linearCaliperDensity (caliperCutoff/5) = 21609/250000 ∧
+    ((caliperCutoff-caliperCutoff/10 = 441/250 ∧ caliperCutoff+caliperCutoff/10 = 539/250) ∧
+      (caliperCutoff-caliperCutoff*3/20 = 833/500 ∧ caliperCutoff+caliperCutoff*3/20 = 1127/500) ∧
+      (caliperCutoff-caliperCutoff/5 = 196/125 ∧ caliperCutoff+caliperCutoff/5 = 294/125)) ∧
+    (∀ k : ℕ, k ≤ 19 → (binomialTail 19 k (1/2) ≤ 1/20 ↔ 14 ≤ k)) ∧
+    (∀ M : ℕ, 19 ≤ M →
+      let μ := caliperDataLaw M linearCaliperDensity;
+      μ.real {X | caliperCount (caliperCutoff/5) X = 19} > 0 →
+      μ.real ({X | caliperCount (caliperCutoff/5) X = 19} ∩
+        {X | binomialTail 19 (caliperSuccesses (caliperCutoff/5) X) (1/2) ≤ 1/20}) /
+        μ.real {X | caliperCount (caliperCutoff/5) X = 19} = binomialTail 19 14 (11/20)) ∧
+    (1/20:ℝ) < binomialTail 19 14 (11/20) ∧
+    binomialTail 12 9 (1/2) = 299/4096 ∧
+    binomialTail 12 9 (21/40) = 336637329302285487/3355443200000000000 ∧
+    binomialTail 15 11 (1/2) = 1941/32768 ∧
+    binomialTail 15 11 (43/80) = 3589476431322242287677900507/35184372088832000000000000000 ∧
+    binomialTail 19 14 (1/2) = 2083/65536 ∧
+    binomialTail 19 14 (11/20) = 50930691593528557166389/655360000000000000000000 ∧
+    (∀ m : ℕ, 1 ≤ m →
+      (∫ x in (0:ℝ)..4, ((m:ℝ)+1)*x^m/4^(m+1)) = 1 ∧
+      (∀ h : ℝ, 0 < h → h < caliperCutoff →
+        (∀ x ∈ Icc (caliperCutoff-h) (caliperCutoff+h), 0 < powerCaliperDensity m x) ∧
+        ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (powerCaliperDensity m) (Ioo (caliperCutoff-h) (caliperCutoff+h)) ∧
+        caliperProbability (powerCaliperDensity m) h =
+          ((caliperCutoff+h)^(m+1)-caliperCutoff^(m+1))/
+          ((caliperCutoff+h)^(m+1)-(caliperCutoff-h)^(m+1)))) ∧
+    (∀ h : ℝ, 0 < h → h < caliperCutoff →
+      Tendsto (fun m : ℕ => caliperProbability (powerCaliperDensity m) h) atTop (𝓝 1)) ∧
+    caliperProbability (powerCaliperDensity 9) (49/125) = 4609141/5401600 ∧
+    (∀ θ x : ℝ, 0 ≤ x → (gaussianReal θ 1).real {t | |t| ≤ x} = foldedNormalCDF θ x) ∧
+    (∀ θ : ℝ, intervalCoverage (gaussianReal θ 1) id θ normalCritical = 19/20) ∧
+    ((644747758104/10^12:ℝ) ≤ foldedCaliperProbability (7/2) (49/125) ∧
+      foldedCaliperProbability (7/2) (49/125) ≤ 644747758105/10^12) ∧
+    ((280413461677/10^12:ℝ) ≤ binomialTail 19 14 (foldedCaliperProbability (7/2) (49/125)) ∧
+      binomialTail 19 14 (foldedCaliperProbability (7/2) (49/125)) ≤ 280413461678/10^12) ∧
+    ((318944499071/10^12:ℝ) ≤ foldedCaliperProbability 0 (49/125) ∧
+      foldedCaliperProbability 0 (49/125) ≤ 318944499072/10^12) := by
+  sorry
 
-/-! ## Saved normal powers (T9) -/
+/-- T8(i)-(vi), complete corrected caliper interpretation, main p. 5.
+The global hypotheses make f a genuine density on nonnegative absolute
+statistics. The original counts and benchmark tails remain; exact calibration
+requires equal mass, conservativeness needs a monotonicity condition, and both
+shrinking-window statements are actual filter/asymptotic propositions. -/
+theorem caliper_correction (f : ℝ → ℝ) (hf0 : ∀ x, 0 ≤ f x)
+    (hfs : ∀ x, x < 0 → f x = 0) (hfi : Integrable f volume)
+    (hfn : (∫ x, f x) = 1) :
+    (∀ h : ℝ, 0 < h → h < caliperCutoff → 0 < caliperAbove f h+caliperBelow f h →
+      (∀ M n : ℕ, (caliperDataLaw M f).real {X | caliperCount h X = n} > 0 →
+        (∀ j : ℕ, j ≤ n →
+          (caliperDataLaw M f).real ({X | caliperCount h X = n} ∩ {X | caliperSuccesses h X = j}) /
+            (caliperDataLaw M f).real {X | caliperCount h X = n} =
+          (n.choose j:ℝ)*caliperProbability f h^j*(1-caliperProbability f h)^(n-j)) ∧
+        (∀ k : ℕ, k ≤ n →
+          (caliperDataLaw M f).real ({X | caliperCount h X = n} ∩ {X | k ≤ caliperSuccesses h X}) /
+            (caliperDataLaw M f).real {X | caliperCount h X = n} =
+          binomialTail n k (caliperProbability f h))) ∧
+      (caliperProbability f h = 1/2 ↔ caliperAbove f h = caliperBelow f h) ∧
+      ((∀ u : ℝ, 0 < u → u < h → f (caliperCutoff+u) = f (caliperCutoff-u)) →
+        caliperAbove f h = caliperBelow f h) ∧
+      (AntitoneOn f (Icc (caliperCutoff-h) (caliperCutoff+h)) →
+        caliperAbove f h ≤ caliperBelow f h ∧ caliperProbability f h ≤ 1/2 ∧
+        ∀ n k : ℕ, k ≤ n → binomialTail n k (caliperProbability f h) ≤ binomialTail n k (1/2)) ∧
+      (MonotoneOn f (Icc (caliperCutoff-h) (caliperCutoff+h)) →
+        caliperBelow f h ≤ caliperAbove f h ∧ 1/2 ≤ caliperProbability f h ∧
+        ∀ n k : ℕ, k ≤ n → binomialTail n k (1/2) ≤ binomialTail n k (caliperProbability f h)) ∧
+      (∀ a L : ℝ, 0 < a →
+        (∀ x ∈ Icc (caliperCutoff-h) (caliperCutoff+h), a ≤ f x) →
+        (∀ x ∈ Icc (caliperCutoff-h) (caliperCutoff+h),
+          ∀ y ∈ Icc (caliperCutoff-h) (caliperCutoff+h), |f x-f y| ≤ L*|x-y|) →
+        |caliperAbove f h-caliperBelow f h| ≤ L*h^2 ∧
+        2*h*a ≤ caliperAbove f h+caliperBelow f h ∧
+        |caliperProbability f h-1/2| = |caliperAbove f h-caliperBelow f h|/
+          (2*(caliperAbove f h+caliperBelow f h)) ∧
+        |caliperProbability f h-1/2| ≤ L*h/(4*a))) ∧
+    (∀ n k : ℕ, k ≤ n → MonotoneOn (binomialTail n k) (Icc 0 1)) ∧
+    (ContinuousAt f caliperCutoff → 0 < f caliperCutoff →
+      Tendsto (caliperProbability f) (𝓝[>] (0:ℝ)) (𝓝 (1/2))) ∧
+    (∀ f' : ℝ, HasDerivAt f f' caliperCutoff → 0 < f caliperCutoff →
+      Asymptotics.IsLittleO (𝓝[>] (0:ℝ))
+        (fun h => caliperProbability f h-1/2-h*f'/(4*f caliperCutoff)) (fun h => h)) ∧
+    (binomialTail 12 9 (1/2) = 299/4096 ∧ binomialTail 15 11 (1/2) = 1941/32768 ∧
+      binomialTail 19 14 (1/2) = 2083/65536) := by
+  sorry
+
+/-! ## Priority 3: saved normal powers (T9) -/
 
 /-- ρ=G/(G_L+G_R), with finite sets of distinct cluster labels on both sides.
-Target T9(iii), interpreting saved powers; no formula is printed on p. 9. -/
+Target T9(iii), validator's reading of saved powers; no formula is printed on p. 9. -/
 def clusterCountRatio {α : Type*} [DecidableEq α] (L R : Finset α) : ℝ :=
   ((L ∪ R).card:ℝ)/((L.card:ℝ)+(R.card:ℝ))
 
@@ -865,21 +1219,49 @@ theorem native_power_arithmetic :
     ((31/48:ℝ)-1/36 = 89/144 ∧ (113/144:ℝ)-1/36 = 109/144 ∧
       (61/104:ℝ)-1/26 = 57/104 ∧ (81/104:ℝ)-1/26 = 77/104) := by norm_num
 
+/-- T9(i)-(v), complete current-design native-SE power correction (main p. 9,
+Tables 2-3 pp. 9-10). The two-sided Gaussian probability, monotonicity and
+cluster overlap factor are retained. Six table-cell changes follow from the
+stipulated threshold crossings; the earlier full-table repair is not asserted. -/
+theorem native_power_correction :
+    (∀ (Ω : Type*) [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+      (T : Ω → ℝ) (τ s : ℝ), 0 < s → HasLaw T (gaussianReal (τ/s) 1) μ →
+      μ.real {ω | normalCritical < |T ω|} = normalPower (|τ|/s)) ∧
+    normalPower 0 = 1/20 ∧
+    (∀ a : ℝ, 0 < a → HasDerivAt normalPower
+      (normalDensity (a-normalCritical)-normalDensity (a+normalCritical)) a ∧
+      0 < normalDensity (a-normalCritical)-normalDensity (a+normalCritical)) ∧
+    StrictMonoOn normalPower (Ici 0) ∧
+    (∀ a b : ℝ, 0 ≤ a → 0 ≤ b → 1/20 < normalPower a → normalPower a < 1 →
+      normalPower a = normalPower b → a = b) ∧
+    (∀ (α : Type*) [DecidableEq α] (L R : Finset α), L.Nonempty → R.Nonempty →
+      L.card+R.card = (L ∪ R).card+(L ∩ R).card ∧
+      1/2 ≤ clusterCountRatio L R ∧ clusterCountRatio L R ≤ 1 ∧
+      (clusterCountRatio L R < 1 ↔ L ∩ R ≠ ∅)) ∧
+    (∀ τ s ρ : ℝ, τ ≠ 0 → 0 < s → 0 < ρ → ρ < 1 →
+      normalPower (|τ|/s) < normalPower (|τ|/(s*Real.sqrt ρ))) ∧
+    ((57/(23+46):ℝ) = 19/23 ∧ (185/(98+101):ℝ) = 185/199 ∧
+      (278/(202+226):ℝ) = 139/214 ∧ (204/(133+130):ℝ) = 204/263) ∧
+    ((31/48:ℝ)-1/36 = 89/144 ∧ (113/144:ℝ)-1/36 = 109/144 ∧
+      (31/48:ℝ)-1/36 = 89/144 ∧ (61/104:ℝ)-1/26 = 57/104 ∧
+      (81/104:ℝ)-1/26 = 77/104 ∧ (61/104:ℝ)-1/26 = 57/104) := by
+  sorry
 
-/-! ## Interval-based pseudo p-values (T12-T13) -/
+/-! ## Priority 3: interval-based pseudo p-values (T12-T13) -/
 
 /-- "Pseudo t-statistics based on the width of the confidence intervals"
-(main p. 8, supplement S9 p. 16). The normal-tail transform
-p_star is specified by the replication code (Figure S9; T12/T13). -/
+(main p. 8, supplement S9 p. 16 text extraction). The normal-tail transform
+p_star is read from code; Figure S9's labels are text-only evidence (T12/T13). -/
 def pseudoP (estimate halfLength : ℝ) : ℝ :=
   2*normalCDF (-normalCritical*|estimate|/halfLength)
 
-/-- Fixed-variance, fixed-bias-bound model T=θ+b+Z, Z~N(0,1).
+/-- Validator's fixed-variance, fixed-bias-bound model T=θ+b+Z, Z~N(0,1).
 This is not a claim about the paper's data-estimated smoothness bound. -/
 def biasModelLaw (θ b : ℝ) : Measure ℝ := gaussianReal (θ+b) 1
 
 /-- Coverage C_b(H) of a centered interval in the unit-variance Gaussian bias
-model, T12/T13. -/
+model, T12/T13, validator §2. It is a formula whose connection to the actual
+probability is included in the full theorems below. -/
 def biasCoverage (b H : ℝ) : ℝ := normalCDF (H-b)-normalCDF (-H-b)
 
 /-- Worst-case 95% half-length H for known bound B≥0 in T12/T13: infimum of
@@ -894,8 +1276,8 @@ def ValidBiasP (B : ℝ) (P : ℝ → ℝ) : Prop :=
   ∀ b : ℝ, |b| ≤ B → ∀ α : ℝ, 0 < α → α < 1 →
     (biasModelLaw 0 b).real {t | P t ≤ α} ≤ α
 
-/-- Valid worst-case null-tail p_B(t)=Φ(B-|t|)+Φ(-B-|t|), T13(v).
-Known variance is one and B is fixed, not estimated. -/
+/-- Valid worst-case null-tail p_B(t)=Φ(B-|t|)+Φ(-B-|t|), T13(v),
+validator §5. Known variance is one and B is fixed, not estimated. -/
 def biasAwareP (B t : ℝ) : ℝ := normalCDF (B-|t|)+normalCDF (-B-|t|)
 
 /-- T13(i), supporting interval geometry: the symmetric closed interval
@@ -905,8 +1287,76 @@ theorem zero_in_interval (t h : ℝ) :
   simp only [mem_Icc, abs_le]
   constructor <;> rintro ⟨h1,h2⟩ <;> constructor <;> linarith
 
+/-- T12(i)-(v), complete Gaussian bias-aware counterexample to Figure S9's
+unqualified p-value label (supplement p. 18 text extraction; main p. 8 calls
+them pseudo t-statistics). The honest 95% interval, exact root, all normal
+quantiles/enclosures and overrejection at α=1/5 for B=1 and B=1/2 are retained. -/
+theorem pseudo_p_counterexample :
+    (∃! H : ℝ, 0 < H ∧ biasCoverage 1 H = 19/20) ∧
+    0 < honestHalfLength 1 ∧ biasCoverage 1 (honestHalfLength 1) = 19/20 ∧
+    ((264614554821530/10^14:ℝ) < honestHalfLength 1 ∧
+      honestHalfLength 1 < 264614554821540/10^14) ∧
+    (∀ θ b : ℝ, |b| ≤ 1 →
+      intervalCoverage (biasModelLaw θ b) id θ (honestHalfLength 1) =
+        biasCoverage b (honestHalfLength 1) ∧
+      19/20 ≤ intervalCoverage (biasModelLaw θ b) id θ (honestHalfLength 1) ∧
+      (intervalCoverage (biasModelLaw θ b) id θ (honestHalfLength 1) = 19/20 ↔ |b| = 1)) ∧
+    ((195996398454000/10^14:ℝ) < normalCritical ∧ normalCritical < 195996398454010/10^14) ∧
+    ((128155156554460/10^14:ℝ) < normalQuantile (9/10) ∧
+      normalQuantile (9/10) < 128155156554470/10^14) ∧
+    (let C := honestHalfLength 1 * normalQuantile (9/10)/normalCritical;
+      (173022157382648/10^14:ℝ) < C ∧ C < 173022157382677/10^14 ∧
+      {t | pseudoP t (honestHalfLength 1) ≤ 1/5} = {t | C ≤ |t|} ∧
+      (biasModelLaw 0 1).real {t | pseudoP t (honestHalfLength 1) ≤ 1/5} =
+        normalCDF (1-C)+normalCDF (-1-C)) ∧
+    ((23579196727091/10^14:ℝ) <
+      (biasModelLaw 0 1).real {t | pseudoP t (honestHalfLength 1) ≤ 1/5} ∧
+      (biasModelLaw 0 1).real {t | pseudoP t (honestHalfLength 1) ≤ 1/5} < 23579196727101/10^14) ∧
+    (∃! H : ℝ, 0 < H ∧ biasCoverage (1/2) H = 19/20) ∧
+    0 < honestHalfLength (1/2) ∧ biasCoverage (1/2) (honestHalfLength (1/2)) = 19/20 ∧
+    ((218147744232810/10^14:ℝ) < honestHalfLength (1/2) ∧
+      honestHalfLength (1/2) < 218147744232820/10^14) ∧
+    ((20414905632765/10^14:ℝ) <
+      (biasModelLaw 0 (1/2)).real {t | pseudoP t (honestHalfLength (1/2)) ≤ 1/5} ∧
+      (biasModelLaw 0 (1/2)).real {t | pseudoP t (honestHalfLength (1/2)) ≤ 1/5} < 20414905632774/10^14) ∧
+    ¬ ValidBiasP 1 (fun t => pseudoP t (honestHalfLength 1)) ∧
+    ¬ ValidBiasP (1/2) (fun t => pseudoP t (honestHalfLength (1/2))) := by
+  sorry
 
-/-! ## Additional finite probability proofs for T1–T6 -/
+/-- T13(i)-(v), complete correction of Figure S9's p-value wording. It retains
+the numbers and the algebraic 5% decision equivalence, makes inheritance of
+size depend on the interval model, states the no-bias special case and the
+failure at other levels, and gives a valid known-bound p-value in that model.
+It does not certify the actual paper's data-dependent intervals. -/
+theorem pseudo_p_correction :
+    (∀ t h : ℝ, 0 < h →
+      ((|t|/(h/normalCritical)) = normalCritical*|t|/h) ∧
+      (pseudoP t h < 1/20 ↔ h < |t|) ∧
+      (pseudoP t h < 1/20 ↔ 0 ∉ Icc (t-h) (t+h)) ∧
+      (pseudoP t h ≤ 1/20 ↔ h ≤ |t|)) ∧
+    (∀ B : ℝ, 0 ≤ B → (∃! H : ℝ, 0 < H ∧ biasCoverage B H = 19/20) ∧
+      0 < honestHalfLength B ∧ biasCoverage B (honestHalfLength B) = 19/20 ∧
+      (∀ b : ℝ, |b| ≤ B →
+        (biasModelLaw 0 b).real {t | pseudoP t (honestHalfLength B) < 1/20} =
+          1-biasCoverage b (honestHalfLength B) ∧
+        (biasModelLaw 0 b).real {t | pseudoP t (honestHalfLength B) < 1/20} ≤ 1/20 ∧
+        ((biasModelLaw 0 b).real {t | pseudoP t (honestHalfLength B) < 1/20} = 1/20 ↔ |b| = B))) ∧
+    honestHalfLength 0 = normalCritical ∧
+    (∀ t : ℝ, pseudoP t (honestHalfLength 0) = 2*normalCDF (-|t|)) ∧
+    (∀ α : ℝ, 0 < α → α < 1 →
+      (biasModelLaw 0 0).real {t | pseudoP t (honestHalfLength 0) ≤ α} = α) ∧
+    (1/5:ℝ) < (biasModelLaw 0 1).real {t | pseudoP t (honestHalfLength 1) ≤ 1/5} ∧
+    (∀ B : ℝ, 0 ≤ B →
+      biasAwareP B 0 = 1 ∧ Continuous (biasAwareP B) ∧
+      StrictAntiOn (biasAwareP B) (Ici 0) ∧
+      Tendsto (biasAwareP B) atTop (𝓝 0) ∧ ValidBiasP B (biasAwareP B) ∧
+      (∀ b α : ℝ, |b| = B → 0 < α → α < 1 →
+        (biasModelLaw 0 b).real {t | biasAwareP B t ≤ α} = α) ∧
+      (∀ t : ℝ, (biasAwareP B t ≤ 1/20 ↔ honestHalfLength B ≤ |t|) ∧
+        (biasAwareP B t ≤ 1/20 ↔ pseudoP t (honestHalfLength B) ≤ 1/20))) := by
+  sorry
+
+/-! ## Additional finite probability proofs for the priority 1-2 targets -/
 
 /-- T2(b): M1 and M2 have exactly the same regular conditional outcome law at
 the eight stipulated scores. This is an equality of actual product Gaussian
@@ -1041,7 +1491,8 @@ theorem weighted_sign_moments {ι : Type*} [Fintype ι] [DecidableEq ι] (a : ι
 
 /-- T3(i)-(iii), the exact core counterexample: under independent uniform
 cluster signs, both actual variances are positive, but both reported clustered
-NN variances are identically zero. -/
+NN variances are identically zero. Counts and the noisy extension remain in
+the full drafted T3 theorem. -/
 theorem clustered_zero_vs_positive :
     finiteMean (clusterEstimator clusterLinear) = 0 ∧
     finiteMean (clusterEstimator clusterCorrected) = 0 ∧
@@ -1907,7 +2358,38 @@ theorem linear_caliper_witness :
   · rw [hp3]
     exact caliper_exact_tails.2.2.2.2.2.2.2.2.2
 
+/-- T1(i)-(ii), the displayed rows solve the WLS normal equations for the
+linear intercept, quadratic curvature and corrected intercept. Combined with
+the nonzero Gram determinants and weight certificates, they identify the
+actual least-squares fits, not just arbitrary linear combinations. -/
+theorem m1_wls_rows :
+    (∀ p : Fin 2, (∑ q : Fin 2, ![(5/2:ℝ),-5] q*m1Gram 1 q p) =
+      if p=0 then 1 else 0) ∧
+    (∀ p : Fin 3, (∑ q : Fin 3, ![(125/2:ℝ),-14375/42,15625/42] q*m1Gram 2 q p) =
+      if p=2 then 1 else 0) ∧
+    (∀ p : Fin 3, (∑ q : Fin 3, ![(13:ℝ),-125/2,125/2] q*m1Gram 2 q p) =
+      if p=0 then 1 else 0) := by
+  repeat' constructor
+  all_goals intro p
+  all_goals fin_cases p <;> norm_num [m1Gram,m1Kernel,m1Distance,Fin.sum_univ_succ]
 
+/-- T3(i)-(ii), exact normal-equation inverse rows and their cluster weights,
+including the ten triangular kernel weights. With the nonzero determinants,
+these certificates connect both estimators to the stipulated WLS fits. -/
+theorem cluster_wls_rows :
+    (∀ g, clusterKernel g = ![(1/6:ℝ),1/3,1/2,2/3,5/6,5/6,2/3,1/2,1/3,1/6] g) ∧
+    (∀ p : Fin 2, (∑ q : Fin 2, ![(9/25:ℝ),-3/25] q*clusterGram 1 q p) =
+      if p=0 then 1 else 0) ∧
+    (∀ p : Fin 3, (∑ q : Fin 3, ![(37/25:ℝ),-6/5,1/5] q*clusterGram 2 q p) =
+      if p=0 then 1 else 0) ∧
+    (∀ j : Fin 5, clusterLinear ⟨j.val+5,by omega⟩ =
+      5*(1-((j:ℝ)+1)/6)*(9/25-(3/25)*((j:ℝ)+1))) ∧
+    (∀ j : Fin 5, clusterCorrected ⟨j.val+5,by omega⟩ =
+      5*(1-((j:ℝ)+1)/6)*(37/25-(6/5)*((j:ℝ)+1)+(1/5)*((j:ℝ)+1)^2)) := by
+  repeat' constructor
+  all_goals intro p
+  all_goals fin_cases p <;> norm_num [clusterKernel,clusterRunning,clusterGram,
+    clusterLinear,clusterCorrected,Fin.sum_univ_succ]
 /-- T4(i)-(v), complete corrected clustered-variance statement, including the
 shrinking-bandwidth asymptotic statement without replacing it by finite checks.
 Default residual applicability is restricted to tied cells m≥4 nested in clusters. -/
@@ -2068,3 +2550,82 @@ theorem binary_sample_bound {n : ℕ} (hn : 2 ≤ n) (Y : Fin n → ℝ)
 end
 end AronowAudit.P033
 
+#print axioms AronowAudit.P033.standardized_ratio
+#print axioms AronowAudit.P033.significance_boundary
+#print axioms AronowAudit.P033.significance_side
+#print axioms AronowAudit.P033.sqrt_eq_variance
+#print axioms AronowAudit.P033.binary_sample_variance_formula
+#print axioms AronowAudit.P033.binary_sample_variance_actual
+#print axioms AronowAudit.P033.funnel_counterexample
+#print axioms AronowAudit.P033.funnel_correction
+#print axioms AronowAudit.P033.interval_rule_counterexample
+#print axioms AronowAudit.P033.interval_rule_difference
+#print axioms AronowAudit.P033.interval_rule_correction
+#print axioms AronowAudit.P033.m1_exact_certificate
+#print axioms AronowAudit.P033.diagnostic_counterexample
+#print axioms AronowAudit.P033.m2_polynomial_certificate
+#print axioms AronowAudit.P033.bias_adjustment_variance
+#print axioms AronowAudit.P033.diagnostic_correction
+#print axioms AronowAudit.P033.nn_residual_sum
+#print axioms AronowAudit.P033.nested_cells_zero_variance
+#print axioms AronowAudit.P033.cluster_exact_certificate
+#print axioms AronowAudit.P033.clustered_table_arithmetic
+#print axioms AronowAudit.P033.sum_binary_indicator
+#print axioms AronowAudit.P033.sample_variance_scale
+#print axioms AronowAudit.P033.sample_sd_scale
+#print axioms AronowAudit.P033.wald_count_scale
+#print axioms AronowAudit.P033.count_standardization_counterexample
+#print axioms AronowAudit.P033.binary_variance_bound
+#print axioms AronowAudit.P033.binary_table_arithmetic
+#print axioms AronowAudit.P033.binary_standardization_correction
+#print axioms AronowAudit.P033.caliper_exact_tails
+#print axioms AronowAudit.P033.equal_caliper_mass_iff
+#print axioms AronowAudit.P033.caliper_counterexamples
+#print axioms AronowAudit.P033.caliper_correction
+#print axioms AronowAudit.P033.cluster_count_ratio
+#print axioms AronowAudit.P033.native_power_arithmetic
+#print axioms AronowAudit.P033.native_power_correction
+#print axioms AronowAudit.P033.zero_in_interval
+#print axioms AronowAudit.P033.pseudo_p_counterexample
+#print axioms AronowAudit.P033.pseudo_p_correction
+#print axioms AronowAudit.P033.m2_conditional_law_eq
+#print axioms AronowAudit.P033.study_laws_identical
+#print axioms AronowAudit.P033.finite_mean_sum
+#print axioms AronowAudit.P033.finite_mean_mul
+#print axioms AronowAudit.P033.flip_sign_involution
+#print axioms AronowAudit.P033.sign_shock_not
+#print axioms AronowAudit.P033.sum_sign_shock_zero
+#print axioms AronowAudit.P033.finite_sign_product
+#print axioms AronowAudit.P033.weighted_sign_moments
+#print axioms AronowAudit.P033.clustered_zero_vs_positive
+#print axioms AronowAudit.P033.nn_residual_centered
+#print axioms AronowAudit.P033.finite_power_sums
+#print axioms AronowAudit.P033.gaussian_product_moments
+#print axioms AronowAudit.P033.m1_probability_moments
+#print axioms AronowAudit.P033.weighted_sign_covariance
+#print axioms AronowAudit.P033.noisy_cluster_moments
+#print axioms AronowAudit.P033.noisy_covariance_positive
+#print axioms AronowAudit.P033.shrinking_wls_certificate
+#print axioms AronowAudit.P033.shrinking_variance_limit
+#print axioms AronowAudit.P033.integer_cluster_zero
+#print axioms AronowAudit.P033.cluster_coverage_counts
+#print axioms AronowAudit.P033.noisy_record_covariance
+#print axioms AronowAudit.P033.gaussian_product_law
+#print axioms AronowAudit.P033.no_uniform_subset_count
+#print axioms AronowAudit.P033.clustered_variance_counterexample
+#print axioms AronowAudit.P033.independent_weighted_moments
+#print axioms AronowAudit.P033.centered_cluster_weights
+#print axioms AronowAudit.P033.centered_cluster_sum
+#print axioms AronowAudit.P033.centered_cluster_moments
+#print axioms AronowAudit.P033.finite_plugin_moment
+#print axioms AronowAudit.P033.finite_toy_plugin_moment
+#print axioms AronowAudit.P033.toy_plugin_moments
+#print axioms AronowAudit.P033.shrinking_sampling_moments
+#print axioms AronowAudit.P033.shrinking_noisy_sampling_moments
+#print axioms AronowAudit.P033.linear_caliper_masses
+#print axioms AronowAudit.P033.linear_caliper_witness
+#print axioms AronowAudit.P033.m1_wls_rows
+#print axioms AronowAudit.P033.cluster_wls_rows
+#print axioms AronowAudit.P033.clustered_variance_correction
+#print axioms AronowAudit.P033.binary_probability_variance
+#print axioms AronowAudit.P033.binary_sample_bound

@@ -1,0 +1,182 @@
+[
+  {
+    "target_id": "P022-T11",
+    "theorem": "SAP.P022.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: Va=(437/980)^2, VH=(423/980)^2, z=49/25, L=-3111/2000, U=385/2000, LH=-3055/2000, UH=329/2000. Both variance bins and all four endpoint bins hold simultaneously; half-widths are .874 and .846. Thus neither the main implication nor its further variance-bin condition is empty.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T12",
+    "theorem": "SAP.P022.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the full design (4,2,2) and any nonconstant y for the sharp-null assertion. For the finite mean inequality use s=univ in Fin 2, v(0)=0,v(1)=1,c=1 (compiled). The multiplier hypotheses allow q=1,c=d=0. The incompatible combined numerical hypotheses in part (d) intentionally have no instance: proving their inconsistency IS that canonical subclaim. Part (e) has w=3447/2000 and v=w^2/(98/25)^2. All separate non-contradiction parts have instances.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T2",
+    "theorem": "SAP.P022.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "zeroWitness, originLaw, theta=1,rho=1/2. Row sizes are N=q+4,m=floor(N/2),k=N-m; every outcome is zero. Both the CDFs and their left CDFs equal the limiting ones identically, and weak convergence is constant. Conditions123 and AtomLeftConvergence for this instance compile in scratch/AsymptoticNonvacuity.lean. Positive sample sizes and finite probability laws protect every CDF supremum.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T18",
+    "theorem": "SAP.P022.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The unchanged negative theorem now has decision=refuted. Its negation covers the printed universal-law/existential-K-functions/universal-sequence assertion. For H=originLaw and reciprocalWitness, conditions 1-3 hold at theta=1,rho=1/2. At -1/(2N), every population/sample CDF is one and the limiting CDF is zero. At eta=1/2 the event has probability one and N times the probability diverges, exceeding every finite proposed K bound. This genuinely refutes the printed assertion even if K were selected after the sequence. Under the unchanged findings schema, correct_whole denotes the full accepted refutation; the positive printed lemma is not claimed proved.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T3",
+    "theorem": "SAP.P022.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled finite instance: N=4,m=k=2,C=1,c=1/2, with each population vector (0,1,1,1). All finite assumptions, including N>=2/c, hold and the vector is nonconstant. The balanced periodic corner sequence, C=1, theta=1,rho=1/2, and any 0<c<1/2 instantiate the asymptotic part. The independent exact-rational checks include nonconstant fully and partially sampled populations.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T4",
+    "theorem": "SAP.P022.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For (N,m,k)=(4,2,2), y1=(0,0,1,1), y0=(0,1,0,1), threshold 0, each population CDF is 1/2 and each sampled-CDF variance is 1/12. Assignments contain the identity and have 24 permutations, each unordered group assignment appearing with the same multiplicity. Additional partial-sampling instances were checked exactly.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T5",
+    "theorem": "SAP.P022.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The unconditional example is unchanged: N=4,m=k=2, all outcomes one, threshold zero gives sampled-CDF variance zero and printed expression 1/12. The added universal equality characterization is nonvacuous in both directions: for y=(0,0,1,1),x=0 the CDF is 1/2 and variance is 1/12; for y=(1,1,1,1),x=0 the CDF is zero and equality fails. Every valid Design has m<N because k>=2 and m+k<=N, so the coefficient (N-m)/((N-1)m) is strictly positive. scratch/DeltaCheck.lean compiles the general characterization from the corrected variance formula; 90 exact finite instances passed. Decision refuted is valid under the updated rule; correct_whole records the complete accepted refutation, not an affirmative proof of equation (11).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T8",
+    "theorem": "SAP.P022.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For m=2,k=3,a=(0,2),b=(-1,0,3),N=5, the partition is 0,1/3,1/2,2/3,1 with positive widths and valid midpoint ranks. The revised variance-substitution clause requires m+k<=N; together with m,k>=2 this gives N>=4 and strictly positive N,N-1. All valid population sizes in the canonical claim remain covered. The new domain lemma compiles in scratch/DeltaCheck.lean. The earlier rank, covariance and overlap checks for 2<=m,k<=7 continue to apply because their definitions and statements are unchanged.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T9",
+    "theorem": "SAP.P022.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=4,m=k=2,a=b=(1,1) has partition widths 1/2>2e. The correct estimates and true variance are zero; both code expressions are -1/50331648, checked with exact rational arithmetic. Nonconstant samples and unequal sample sizes also satisfied the general discrepancy identities in the finite audit.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T10",
+    "theorem": "SAP.P022.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For fixed observations a=b=(0,1),m=k=2, the revised limit runs through all valid N=r+4, r>=0, and tends to 1/2. The shift r+(m+k) enumerates every integer N>=m+k exactly once; no valid population-size tail is dropped. For the fixed-arm part, a nested sequence with N=q+4,m=k=2 and zero outcomes has bounded population variances. The explicit new m,k>=2 hypotheses were already forced by eventual equality to Design arm sizes, as compiled in scratch/DeltaCheck.lean. The declared omissions of the exact actual-variance remainder and special numerical examples remain accurate.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T13",
+    "theorem": "SAP.P022.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take (4,2,2), y1=(0,1,2,3), y0=(3,-1,0,2). Both empirical laws exist and their compatible coupling set contains the empirical joint law, the independent product law, and the sorted and reverse-sorted pairings. Each is a genuine finite-support probability measure with integrable products. Uniform assignment gives nontrivial actual variance; direct exact finite checks agree with the variance formula and sharp bounds.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T14",
+    "theorem": "SAP.P022.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The equality m+k=N is compiled for fourUnitDesign. With y1=(0,1,2,3),y0=(3,-1,0,2), the identity permutation gives nonconstant treatment and control observations. All sample-size denominators are positive. The same full-sampling condition is explicitly part of the canonical formal reading, so it is not a hidden extra restriction.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T15",
+    "theorem": "SAP.P022.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "zeroWitness with originLaw,theta=1,rho=1/2 satisfies Conditions123 and UniformSquareIntegrability; these instances compile in scratch/AsymptoticNonvacuity.lean. For a nondegenerate example use cornerWitness/cornerLaw: periodic frequencies converge, outcomes lie in [0,1], and all square tails vanish for beta>1. The covariance supremum/infimum is over a nonempty set and is bounded by the finite marginal second moments, so the real extrema do not use unbounded-set defaults.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P022-T16",
+    "theorem": "SAP.P022.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cornerWitness,cornerLaw,theta=1,rho=1/2,C=1 satisfy all sequence hypotheses; choose any positive tolerance split. The kappa functions can be finite and uniform in the sequence: for valid allocation parameters set c=min(theta*rho,theta*(1-rho))/2, A=16(16/c+8)^2/c and kappa1(s)=kappa2(s)=A/s^2,kappa3(s)=0 for s>0. Canonical T3 bounds both errors and epsilon>=epsilon1,epsilon2. C=0 is also legitimate: then every outcome and error is zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T17",
+    "theorem": "SAP.P022.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use cornerWitness,cornerLaw,theta=1,rho=1/2. Periodic frequencies give conditions 1-3, all third moments are <=1, and the limiting covariance matrix is diag(1/4,1/4), so the law is nonsingular. Every compatible law has Bernoulli(1/2) coordinates and finite support in {0,1}^2; all coordinate and centered integrals in LawFunctionalsDefined are proper. Its covariance lies in [-1/4,1/4], with both extrema attained, so the covariance image is nonempty and bounded. The limiting upper variance is 1 and true-variance limit is 1/2. Every row contains all four corners and has m+k=N. If both observed arms were constant, the population would be covered by one line y1=a and one line y0=b, which is impossible for all four corners. Thus at least one sample variance is positive. For binary observed success fractions p,q, sharpCovariance_H=min(p,q)-p*q>=0. The strictly positive variance coefficients then imply estimatedVariance_H>0 for every row and assignment. The line-cover contradiction and coefficient-positivity step compile in scratch/DeltaCheck.lean; 1905 actual assignments for N=4,...,12 were checked exactly. NormalCriticalDefined alpha is proved in the same Lean file for every 0<alpha<1. All added hypotheses are jointly satisfiable. The new all-row positivity premise is a genuine disclosed restriction: four initial all-zero units followed by periodic corners have the original canonical assumptions but fail it at q=0.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P022-T1",
+    "theorem": "SAP.P022.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every N=q+4, reciprocalWitness uses m=floor(N/2),k=N-m, so both arms have at least two units. Its fixed outcomes -1/(i+1) converge to zero, giving weak empirical convergence by Cesaro averaging; at the only limiting atom 0 the population CDF equals one exactly. At -1/(2N), both population/sample CDFs equal one and the limiting CDF zero. Therefore the relevant event contains every actual permutation and the ENNReal scaled tail truly diverges.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T6",
+    "theorem": "SAP.P022.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the newly guarded finite reciprocal implication, use d=(4,2,2), C=1, corner outcomes y1=(0,0,1,1),y0=(0,1,0,1), and permutation (0,2,1,3). Treatment observations are (0,1), control observations (1,1), and lastIntegralTerm=-4/3 (checked exactly). Thus x=1 satisfies the positive-threshold antecedent; the control/population CDF distance is 1/2. The other finite clauses still allow C=0 with zero outcomes. For the conditional limit assembly use zeroWitness,originLaw,theta=1,rho=1/2,C=1,epsilon1=1,xi=1/32,nu_i=1/16. K1=K0=1 supplies Lemma2Conclusions and all six positive-threshold rate premises hold because the terms vanish. The revised docstring discloses C>0 for precisely the reciprocal implication, all earlier fixed-parameter restrictions, and omission of the lower-endpoint allocation.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T7",
+    "theorem": "SAP.P022.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual periodic corner sequence has limiting frequencies 1/4 at each point, the required atom and atom-left limits, and absolute outcomes at most one. The first event uses threshold 1-1=0 and is certain, legitimately refuting a printed formula that permits epsilon1=1. On N divisible by four, N(V_H-V)=N/(2(N-1)) tends to 1/2, while the direct bound gives N(hat_V_H-V_H)->0 in probability. This independently explains the second refutation without assuming it.",
+    "confidence": 0.99
+  }
+]

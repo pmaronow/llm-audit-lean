@@ -1,0 +1,185 @@
+[
+ {
+  "target_id": "P002-T21",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T21",
+  "restriction": null,
+  "rows_used": [
+   "SAP.P002b.WH.W2.T21_whole",
+   "SAP.P002b.WH.W2.T21_assembly",
+   "AronowAudit.P002.Wave1.corrected_theorem7_limsup_of_finitePopulationCLT",
+   "AronowAudit.P002.Wave1.finitePopulationCLT",
+   "SAP.P002b.Bridge.adjustedTailSupremum_eq"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.Wave1.corrected_theorem7_limsup",
+    "reason": "Not invoked separately; its restricted inner-limsup result is obtained by applying the existing conditional tail theorem to the existing finite-population CLT."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T21WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P002.Wave1.corrected_theorem7_limsup_of_finitePopulationCLT",
+   "AronowAudit.P002.Wave1.finitePopulationCLT"
+  ],
+  "bridge": "SAP.P002b.Bridge.adjustedTailSupremum_eq"
+ },
+ {
+  "target_id": "P002-T22",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.algorithm2_paper",
+   "SAP.P002b.WH.W1.T22_whole",
+   "SAP.P002b.WH.W1.T22_assembly",
+   "SAP.P002b.WH.W1.T22_L1_proof",
+   "SAP.P002b.WH.W1.algorithm2_contract",
+   "AronowAudit.P002.arFamily_regular",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.glue_algorithm2_props",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n2_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n3_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n4_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n5_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n11_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n12_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n13_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n14_proof",
+   "SAP.P002b.Bridge.toQuadratic",
+   "SAP.P002b.Bridge.algorithm2Run_map",
+   "SAP.P002b.Bridge.returnedSet_map"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.adjustedSigma2_affine",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.adjusted_ar_bridge",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.adjusted_coefficients_formula",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.data_ar_nonvacuous",
+    "reason": "The target does not assert existence of a dataset; algorithm2_paper supplies the conclusions for every admitted dataset."
+   },
+   {
+    "lean_name": "AronowAudit.P002.fitted_residual_linear",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.rawSigma2_affine",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.rawTau_linear",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.raw_ar_bridge",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.raw_coefficients_formula",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.sum_affine_square",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T22WholeStatement"
+ },
+ {
+  "target_id": "P002-T23",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.H1_paper"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.Wave1.corrected_H1_AR_proof",
+    "reason": "H1_paper already exports the full required closed-gap conclusions."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T23Statement"
+ },
+ {
+  "target_id": "P002-T24",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T24",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.corrected_I1_I2"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.adjustedWith_linear",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.ols_linear",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.score_linear",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T24Statement"
+ },
+ {
+  "target_id": "P002-T25",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T25",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.constant_effect_adjusted_outcomes",
+   "AronowAudit.P002.constant_effect_coverage"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.assignment_marginal",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.expectation_const",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.expectation_div",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.expectation_mul",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.expectation_sub",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.expectation_sum",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.quantile_valid",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.tau_expectation",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.tau_mean_zero",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T25Statement"
+ }
+]

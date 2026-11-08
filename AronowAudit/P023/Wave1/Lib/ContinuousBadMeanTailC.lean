@@ -106,6 +106,8 @@ def tc10_biasLinear (J : ℕ) : tc10_C0 →ₗ[ℝ] ℝ where
 def tc10_biasCLM (J : ℕ) : tc10_C0 →L[ℝ] ℝ :=
   (tc10_biasLinear J).mkContinuous (amplification uniformMargins J) (tc10_bias_bound J)
 
+theorem tc10_biasCLM_apply (J : ℕ) (f : tc10_C0) :
+    tc10_biasCLM J f = biasFunctional uniformMargins J (tc10_extend f) := rfl
 
 theorem tc10_projection_zero (J : ℕ) : (projection uniformMargins J).eval 0 = 1/2 := by
   rw [tc04_uniform_projection_expansion]
@@ -196,6 +198,7 @@ theorem tc10_ramp_integral_limit (J : ℕ) :
   exact congrArg (fun t => t / residualVariance uniformMargins J) (integral_congr_ae (he n)).symm
 
 
+
 /-- Exact operator norm on the Banach space of continuous functions vanishing at zero. -/
 theorem tc10_biasCLM_norm (J : ℕ) : ‖tc10_biasCLM J‖ = amplification uniformMargins J := by
   apply le_antisymm
@@ -205,7 +208,7 @@ theorem tc10_biasCLM_norm (J : ℕ) : ‖tc10_biasCLM J‖ = amplification unifo
     intro n
     exact (le_abs_self _).trans ((tc10_biasCLM J).unit_le_opNorm (x := tc10_rampC0 J n) (tc10_rampC0_norm J n))
 
-/-- The precise supremum over the real-function domain. -/
+/-- The precise supremum clause, with the original real-function domain. -/
 theorem continuous_bias_norm (J : ℕ) (hJ : 1 ≤ J) :
     sSup {t | ∃ h : ℝ → ℝ, ContinuousOn h (Set.Icc (-1) 1) ∧ h 0 = 0 ∧
       (∀ x ∈ Set.Icc (-1) 1, |h x| ≤ 1) ∧ t = biasFunctional uniformMargins J h} =
@@ -333,7 +336,7 @@ theorem tc10_fixed_bad_mean_global (h_amp : Filter.Tendsto (amplification unifor
     exact population_fwl uniformMargins uniform_law_normalized.2 J hJ (uniform_full_rank J)
       _ (tc10_extend g).continuous.continuousOn
 
-/-- A fixed continuous bounded mean with growing bias, assuming amplification diverges. -/
+/-- The exact planned fixed-function contract. -/
 theorem fixed_bad_mean (h_amp : Filter.Tendsto (amplification uniformMargins)
     Filter.atTop Filter.atTop) :
     ∃ h : ℝ → ℝ, ∃ degrees : ℕ → ℕ,
@@ -344,6 +347,13 @@ theorem fixed_bad_mean (h_amp : Filter.Tendsto (amplification uniformMargins)
   obtain ⟨h,degrees,hc,h0,hb,hm,hgrow,hfwl⟩ := tc10_fixed_bad_mean_global h_amp
   exact ⟨h,degrees,hc,h0,fun x _ => hb x,hm,hgrow,hfwl⟩
 
+/-- Global boundedness as well as global continuity, with no amplification premise. -/
+theorem fixed_bad_mean_globally_bounded :
+    ∃ h : ℝ → ℝ, ∃ degrees : ℕ → ℕ,
+      Continuous h ∧ h 0 = 0 ∧ (∀ x, |h x| ≤ 1/12) ∧
+      StrictMono degrees ∧ (∀ m : ℕ, 1 ≤ m → (m : ℝ)/4 ≤ biasFunctional uniformMargins (degrees m) h) ∧
+      (∀ J, 1 ≤ J → populationCoefficient uniformMargins J (fun x => 1/2+h x) =
+        biasFunctional uniformMargins J h) := tc10_fixed_bad_mean_global uniform_amplification_diverges
 
 /-- The amplification premise is discharged by the proved analytic divergence theorem. -/
 theorem fixed_bad_mean_unconditional :

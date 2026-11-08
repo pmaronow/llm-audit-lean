@@ -2,9 +2,8 @@ import AronowAudit.P045.Wave1.BernoulliUnbiasednessBlueprint
 import AronowAudit.P045.Wave1.BernoulliUnbiasedness.N1
 import AronowAudit.P045.Wave1.BernoulliUnbiasedness.N2
 
-/-!
-P045-T25: a counterexample to conditional Bernoulli arm-mean unbiasedness.
--/
+/-! Final assembly of the BernoulliUnbiasedness refutation. The statement below is the
+literal body of the blueprint's Target, not an abbreviation for it. -/
 
 set_option autoImplicit false
 
@@ -13,7 +12,7 @@ namespace AronowAudit.P045.Wave1
 open AronowAudit.P045 Finset
 open scoped BigOperators
 
-/-- The conditional arm-mean unbiasedness proposition fails. -/
+/-- Refutation of the exact frozen contract, from the blueprint nodes. -/
 theorem bernoulli_unbiasedness_as_printed_refuted :
   ¬ (
     (∀ n : ℕ, 0 < n → ∀ p : ℝ, 0 < p → p < 1 →
@@ -43,5 +42,7 @@ theorem bernoulli_unbiasedness_as_printed_refuted :
   exact BernoulliUnbiasedness.assemble
     BernoulliUnbiasedness.n1_proof
     BernoulliUnbiasedness.n2_proof
+
+example : AronowAudit.P045.Wave1.BernoulliUnbiasedness.Target := bernoulli_unbiasedness_as_printed_refuted
 
 end AronowAudit.P045.Wave1

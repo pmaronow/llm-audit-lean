@@ -1,0 +1,22 @@
+import SAP.P023.Challenge
+
+open SAP.P023 Set
+
+-- This check uses the supplied T6 continuous-function witness. It does not
+-- use T12 or reconstruct the infinite IID probability space.
+example : ∃ h : ℝ → ℝ,
+    ContinuousOn h (Icc (-1) 1) ∧ h 0 = 0 ∧
+    (∀ x ∈ Icc (-1) 1, |h x| ≤ 1/12) ∧
+    ¬ (∀ ε : ℝ, 0 < ε → ∃ J₀ : ℕ, ∀ J ≥ J₀, 1 ≤ J →
+      |populationCoefficient uniformMargins J (fun x => 1/2+h x)| < ε) := by
+  have hc : ContinuityWitness := SAP.P023.T6.2.2.1
+  rcases hc.2.2.2 with
+    ⟨h, degrees, hcon, hzero, hbound, hmono, hbias, heq, hgrowth, htail, hrest⟩
+  refine ⟨h, hcon, hzero, hbound, ?_⟩
+  intro hsmall
+  obtain ⟨J₀, hJ₀⟩ := hsmall 1 (by norm_num)
+  obtain ⟨J, hJ, hlarge⟩ := htail 1 (max J₀ 1)
+  have hlt := hJ₀ J (le_trans (le_max_left _ _) hJ)
+    (le_trans (le_max_right _ _) hJ)
+  have habs := le_abs_self (populationCoefficient uniformMargins J (fun x => 1/2+h x))
+  linarith

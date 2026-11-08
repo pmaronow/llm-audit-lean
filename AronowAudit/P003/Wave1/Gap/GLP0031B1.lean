@@ -132,6 +132,12 @@ noncomputable def discordant_estimator_sd_count (a d z : ℕ) (t s : ℤ) : ℝ 
 
 local notation "C" => discordant_estimator_sd_count
 
+lemma discordant_estimator_sd_count_nonneg (a d z : ℕ) (t s : ℤ) :
+    0 ≤ C a d z t s := by
+  apply tsum_nonneg
+  intro x
+  exact mul_nonneg (discordant_estimator_sd_binom_nonneg _ _)
+    (mul_nonneg (discordant_estimator_sd_binom_nonneg _ _) (discordant_estimator_sd_binom_nonneg _ _))
 
 lemma discordant_estimator_sd_count_symm (a d z m : ℕ) (hn : a+d+z = 2*m) (s : ℤ) :
     C a d z m ((d : ℤ)-s) = C a d z m s := by
@@ -832,5 +838,7 @@ theorem discordant_estimator_sd_proof (v : Counts) (m : ℕ) (hm : 0 < m)
       exact hcan.2 (i+v.c) (j+v.c) (by push_cast; omega) (by omega)
   exact ⟨hmass, (v.b : ℤ)-v.c,
     discordant_estimator_sd_mean_of_symmetry _ hmass _ hshape.1, hshape⟩
+
+example : type_of% @AronowAudit.P003.discordant_estimator_sd := discordant_estimator_sd_proof
 
 end AronowAudit.P003.Wave1

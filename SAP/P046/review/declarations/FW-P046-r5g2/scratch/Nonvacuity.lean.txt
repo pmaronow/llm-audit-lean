@@ -1,0 +1,139 @@
+import SAP.P046.Challenge
+
+set_option autoImplicit false
+
+open MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators ENNReal
+open SAP.P046
+
+noncomputable section
+
+-- Independent certified declarations T1/T4 supply explicit laws/partitions.
+-- None of the five targets under review is used in these constructions.
+theorem concrete_valid : ValidStudy IntervalExample.study := SAP.P046.T1.1.1
+
+-- T6: a genuine strict-exclusion witness, with every printed hypothesis.
+example : ∃ (M : Study) (n : ℕ) (alpha : ℝ),
+    ValidStudy M ∧ 0 < n ∧ 0 < alpha ∧ alpha < 1 ∧
+    alpha < strictNoncoverage M n alpha := by
+  rcases SAP.P046.T1.1 with ⟨hv, _, _, _, _, hlow, halpha, _⟩
+  exact ⟨IntervalExample.study, 100, 1/10000000, hv, by norm_num,
+    by norm_num, by norm_num, lt_trans halpha hlow⟩
+
+-- T7: the class for a fixed common positive delta is inhabited.
+example : ∃ M : Study, ValidStudy M ∧ 0 < M.delta ∧ M.delta = 1/200 := by
+  exact ⟨IntervalExample.study, concrete_valid, by norm_num [IntervalExample.study], rfl⟩
+
+def fixedFits (h : Bool → ℝ → ℝ) (hh : ∀ j, Measurable (h j))
+    (n : ℕ) : CrossFit n where
+  fold := (RegressionExample.fits n).fold
+  g j _ := h j
+  measurable_g j := (hh j).comp measurable_snd
+  opposite_fold _ _ _ _ := rfl
+
+theorem fixedFits_balanced (h : Bool → ℝ → ℝ) (hh : ∀ j, Measurable (h j)) :
+    Balanced (fixedFits h hh) := by
+  change Balanced RegressionExample.fits
+  exact SAP.P046.T4.1.2.2.2.1
+
+theorem fixedFits_zero_error (M : Study) (h : Bool → ℝ → ℝ)
+    (hh : ∀ j, Measurable (h j)) (n : ℕ) (j : Bool) (a : Sample n) :
+    wholeL2Error M (fixedFits h hh n) j (h j) a = 0 := by
+  simp [wholeL2Error, fixedFits]
+
+def halfTerm (o : SAP.P046.Unit) : ℝ :=
+  adjustedTerm (IntervalExample.study.pi (W o)) (X o) (Y o) (1/2)
+
+theorem halfTerm_measurable : Measurable halfTerm := by
+  have hb : Measurable bit := measurable_of_finite bit
+  have hx : Measurable X := hb.comp (measurable_fst.comp measurable_snd)
+  have h0 : Measurable Y0 :=
+    hb.comp (measurable_fst.comp (measurable_snd.comp measurable_snd))
+  have h1 : Measurable Y1 :=
+    hb.comp (measurable_snd.comp (measurable_snd.comp measurable_snd))
+  have hy : Measurable Y :=
+    ((measurable_const.sub hx).mul h0).add (hx.mul h1)
+  have hp : Measurable (fun o => IntervalExample.study.pi (W o)) :=
+    concrete_valid.measurable_pi.comp measurable_fst
+  exact ((hx.mul (hy.sub measurable_const)).div hp).add measurable_const
+
+theorem halfTerm_bound (o : SAP.P046.Unit) : ‖halfTerm o‖ ≤ 2 := by
+  rcases o with ⟨w, x, y0, y1⟩
+  cases x <;> cases y0 <;> cases y1 <;> by_cases hw : w ≤ (3/5 : ℝ) <;>
+    norm_num [halfTerm, adjustedTerm, IntervalExample.study, IntervalExample.score,
+      W, X, Y, Y0, Y1, bit, hw]
+
+theorem half_adjusted_integrable (n : ℕ) :
+    Integrable (adjusted IntervalExample.study
+      (fixedFits (fun _ _ => 1/2) (fun _ => measurable_const) n))
+      (sampleLaw IntervalExample.study n) := by
+  letI := concrete_valid.probability
+  unfold adjusted
+  apply Integrable.div_const
+  apply integrable_finsetSum
+  intro i hi
+  change Integrable (fun a : Sample n => halfTerm (a i)) (sampleLaw IntervalExample.study n)
+  exact (integrable_const (2 : ℝ)).mono'
+    ((halfTerm_measurable.comp (measurable_pi_apply i)).aestronglyMeasurable)
+    (Filter.Eventually.of_forall (fun a => halfTerm_bound (a i)))
+
+-- T8: a positive sample size and nonempty opposite folds; bounded predictions.
+example : ∃ F : CrossFit 2,
+    Integrable (adjusted IntervalExample.study F) (sampleLaw IntervalExample.study 2) ∧
+    (∀ i, Integrable (wholePrediction F i) (sampleLaw IntervalExample.study 2)) ∧
+    (∃ i, F.fold i = false) ∧ (∃ i, F.fold i = true) := by
+  letI := concrete_valid.probability
+  refine ⟨fixedFits (fun _ _ => 1/2) (fun _ => measurable_const) 2,
+    half_adjusted_integrable 2, ?_, ?_, ?_⟩
+  · intro i
+    change Integrable (fun _ : Sample 2 => (1/2 : ℝ)) (sampleLaw IntervalExample.study 2)
+    exact integrable_const _
+  · exact ⟨0, rfl⟩
+  · exact ⟨1, rfl⟩
+
+-- T9(b): distinct fixed L2 limits, exact fits, balanced folds and zero error.
+example : ∃ (M : Study) (F : ∀ n, CrossFit n) (h : Bool → ℝ → ℝ),
+    ValidStudy M ∧ Balanced F ∧ (∀ j, Measurable (h j)) ∧
+    (∀ j, MemLp (fun o => h j (W o)) 2 M.law) ∧
+    (∀ j, WholeL2InMeanSquare M F j (h j)) ∧ h false 0 ≠ h true 0 := by
+  letI := concrete_valid.probability
+  let h : Bool → ℝ → ℝ := fun j _ => bit j
+  have hh : ∀ j, Measurable (h j) := fun _ => measurable_const
+  refine ⟨IntervalExample.study, fixedFits h hh, h, concrete_valid,
+    fixedFits_balanced h hh, hh, ?_, ?_, ?_⟩
+  · intro j
+    exact memLp_const (bit j)
+  · intro j
+    unfold WholeL2InMeanSquare
+    simp only [fixedFits_zero_error, lintegral_zero]
+    exact tendsto_const_nhds
+  · norm_num [h, bit]
+
+-- T9(d): the true conditional-mean function, with identically zero L2 error.
+example : ∃ (M : Study) (F : ∀ n, CrossFit n),
+    ValidStudy M ∧ Balanced F ∧ (∀ j, WholeL2InProbability_W2 M F j M.m) := by
+  let M := IntervalExample.study
+  let h : Bool → ℝ → ℝ := fun _ => M.m
+  have hh : ∀ j, Measurable (h j) := fun _ => concrete_valid.measurable_m
+  refine ⟨M, fixedFits h hh, concrete_valid, fixedFits_balanced h hh, ?_⟩
+  intro j eps heps
+  change Tendsto (fun n => (sampleLaw M n
+    {a | ENNReal.ofReal eps < wholeL2Error M (fixedFits h hh n) j (h j) a}).toReal)
+      atTop (nhds 0)
+  simp only [fixedFits_zero_error, not_lt_zero, Set.ofPred_false, measure_empty,
+    ENNReal.toReal_zero]
+  exact tendsto_const_nhds
+
+-- T10: the premise is inhabited, and its failure witnesses can be explicit.
+def zeroEstimator : ObservationalEstimator := fun _ _ => 0
+
+example : (∀ n, Measurable (zeroEstimator n)) ∧
+    ∃ eps > 0, ∃ c > 0, ∀ N : ℕ, ∃ n ≥ N, 0 < n ∧
+      ∃ M : Study, ValidStudy M ∧ (sampleLaw M n
+        {a | eps < |zeroEstimator n (fun i => observe (a i)) - mu M|}).toReal ≥ c := by
+  letI := concrete_valid.probability
+  refine ⟨fun _ => measurable_const, 1/4, by norm_num, 1, by norm_num, ?_⟩
+  intro N
+  refine ⟨N+1, by omega, by omega, IntervalExample.study, concrete_valid, ?_⟩
+  have hmu : mu IntervalExample.study = 3/5 := SAP.P046.T1.1.2.2.1
+  norm_num [zeroEstimator, hmu]

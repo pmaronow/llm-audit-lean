@@ -1,0 +1,33 @@
+[
+ {
+  "target_id": "P015-T18",
+  "decision": "refuted",
+  "theorem": "SAP.P015b.T18",
+  "restriction": "Retains clause (A) and an explicit counterexample to universal clause (C); omits an assessment of score substitution for every specifically listed nonlogistic family in (B), and does not assert a separate counterexample for each named family.",
+  "rows_used": [
+   "AronowAudit.P015.PaperAssessments.nonlinear_extension_assessment"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P015.InverseLinkMLCounterexample.printed_inverse_link_claim_false",
+    "reason": "Final status wrong_credit: its identity-link witness does not refute score substitution for any specifically listed model family."
+   }
+  ]
+ },
+ {
+  "target_id": "P015-T17",
+  "decision": "refuted",
+  "theorem": "SAP.P015b.T17",
+  "restriction": "The positive implication (A) requires countable covariates with measurable singletons and a global finite treatment second moment; omits its remaining meaningful cases. Clauses (B) and (C) are refuted by explicit examples, without a universal characterization of identification or an applied country-specific conclusion.",
+  "rows_used": [
+   "AronowAudit.P015.PaperAssessments.positivity_passage_assessment",
+   "AronowAudit.P015.PositivityRefutation.printed_effective_positivity_refuted"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P015.PaperAssessments.positivity_implies_variance",
+    "reason": "Duplicate correction bundle; the used passage-assessment row supplies the same restricted positive implication and concrete refutations."
+   }
+  ]
+ }
+]

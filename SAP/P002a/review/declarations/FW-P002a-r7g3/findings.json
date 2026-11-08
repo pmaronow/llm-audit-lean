@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P002-T11",
+    "theorem": "SAP.P002a.T11",
+    "fingerprint": "b897c529acad8889f1b83762585bd37db73cc4322b81fb3f64162fcfe17f25de",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: the two-unit all-complier population with outcomes (-1,+1), n1=1 and beta=LATE=0 has a valid assignment and positive S_1 squared. Audit.complete_hypotheses constructs sizes j=2*(j+2), P_j=signModel(j+2), delta=0, r=1/2, A=1, positive variances, positive S_1 squared and an increasing identity subsequence. Independently, scratch/finite_checks.py verifies the centering sign at nonzero beta=2 and its exact expectation 1/3.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T12",
+    "theorem": "SAP.P002a.T12",
+    "fingerprint": "c81f8467d55dafca9ae6d3c87f30986baf201b9a2540f78ae8b1504a4331f217",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: signModel 4 lies in Theta(0,1/2,1), has LATE=0, both adjusted variances positive, admits original assignment {0,1,2,3}, and has exactly 70 reassignments. Independent Fraction enumeration in scratch/finite_checks.py checks all 70 assignments: bracket=-2, conditional variance=1/28, printed RHS=1/14, corrected RHS=1/28. The original assignment has positive mass 1/70.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T13",
+    "theorem": "SAP.P002a.T13",
+    "fingerprint": "216e3e0c270229adfe7500abfb6b098b004ebfda4dcd652004b2db7e410544fc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: n=3, n1=1, all compliers, q=(-2,1,1), S={0}, r=1/3 satisfies every design, membership and balance hypothesis. Independent exact enumeration gives conditional variance=2/9, first lower bound=2/9, and balance lower bound=4/27. This is a nonconstant, unbalanced instance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T14",
+    "theorem": "SAP.P002a.T14",
+    "fingerprint": "3393c25e8f587fe2a446c958c37c0ddbe0e4ce65c44ad60af75233fd1b3b56d3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: Audit.sign_hypotheses proves Theta(0,1/2,1) and both positive adjusted variances for every signModel m with m>=2; Audit.complete_hypotheses constructs increasing sizes and an independent product of exact uniform assignments. Independent Fraction enumeration for every even n from 4 through 16 checks every reassignment, including the n=8 set of 70: hypergeometric counts, exact variance and estimator, E[q^2], U=0 or U>=3, probability one of printed error at tolerance 1/2, range of the variance ratio and mean deficit 2/n. claim-analysis.md also supplies an extension to odd sizes in one fixed weaker Theta class.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T15",
+    "theorem": "SAP.P002a.T15",
+    "fingerprint": "aa98115ebc09109f24881b9067c593c1b35fb31c0c5757106ff96617c57da822",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: Audit.complete_hypotheses supplies sizes j=2*(j+2), P_j=signModel(j+2), delta=0, r=1/2, A=1, both population variances positive, identity subsequence, and the coordinate assignments on the countable product of their uniform finite design measures. Audit.witness_probability constructs IsProbabilityMeasure; AuditUniform.randomization proves every measurable-event marginal equality, and independence is also proved. No audited theorem is used in these nonvacuity proofs.",
+    "confidence": 0.99
+  }
+]

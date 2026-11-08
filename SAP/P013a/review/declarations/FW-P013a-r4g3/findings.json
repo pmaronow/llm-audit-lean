@@ -1,0 +1,46 @@
+[
+  {
+    "target_id": "P013-T11",
+    "theorem": "SAP.P013a.T11",
+    "fingerprint": "000b8e03cebd77184bcd1f87d45b7dd150b208e620cedec08c2e039a690976da",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditChecks.lean:12: U=Finset.range 45, neighbors=Finset.range 39, i=39, n=4 satisfy all six outer hypotheses and the additional U.card<=10*n+5 premise. The neighbor set has 39 distinct members, excludes i, and is a subset of U; 1<=n<=45-39. All counting and ratio denominators are positive on the complete quantified domain.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T12",
+    "theorem": "SAP.P013a.T12",
+    "fingerprint": "8151e97e20a092487021d61bb9286bf705cfb6b73679a2361246be68215791f6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditChecks.lean:24, :53, :64, :74, :86 and :93. A two-unit, two-exposure population has exposure-1 marginals (1/3,2/3), outcomes (2,-1), minimum p0=1/3 and nonzero total 1. R=1 is drawn independently of the actual assignment using the exact product law. Enumeration gives expected simulated HT total 2/9 and relative bias 7/9>4/9. For b=2/3 the logarithmic threshold is 0<=R, but 7/9>b. The file directly proves both negations from this witness without using SAP.P013a.T12. The printed reading and condition-by-condition witness audit are in claim-stage.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T13",
+    "theorem": "SAP.P013a.T13",
+    "fingerprint": "2a8f59501127e5a4e3e61759ea59bc114b7a6569f1426243c86a4e038dd0fb5c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditChecks.lean:107, :117 and :121. The two-unit design selects exposure vectors (1,0) and (0,1), each with probability 1/2; both distinct exposures have strict positive marginals for every unit. Outcomes at exposure 1 are (2,-1), and at exposure 0 are (1,3). Computed total expectation=1, total variance=9, contrast expectation=-3/2, contrast variance=1/4 and cross-total covariance=6. Both independently quantified branches therefore have nontrivial satisfying instances.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T14",
+    "theorem": "SAP.P013a.T14",
+    "fingerprint": "cd1479902613f7054b6fbf93a3f2875625b8973ea2fd44cb2c2f4adc1efc199b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditChecks.lean:129, :141, :151, :160, :165, :172 and :179. The exposure example has positive marginals, a genuinely missing off-diagonal joint, signed outcomes, variance 9, missing-pair sum -4, expected uncorrected estimate 5 and expected quadratic corrected estimate 10. A separate four-atom example satisfies all-joint positivity. The general three-unit sampling law has marginals (1,1/2,1/2), zero joint for units 1 and 2, weights (1/2,1/2,0), and signed values (5,2,-1); it realizes the same variance and correction values. Its zero-weight atom selects both mutually exclusive-on-support units, checking the explicit omission convention. Constant conjugate exponents a=3 and b=3/2 satisfy every Young-correction hypothesis.",
+    "confidence": "high"
+  }
+]

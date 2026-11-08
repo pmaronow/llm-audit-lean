@@ -21,50 +21,50 @@ least-squares identities that identify them with the daily-sales regressions.
 -/
 
 namespace AronowAudit.P040
-
+-- Structured finite certificates may contain 120 small cell proofs in one declaration.
 set_option maxHeartbeats 2000000
 open scoped BigOperators
 open MeasureTheory
 noncomputable section
 
 /-- "two-tailed" and "normal approximation" (paper p.4, left column;
-normal reference): p_N(q)=1-sqrt(2/pi)∫₀^sqrt(q) exp(-u²/2)du.
+E003 derivation, Normal reference): p_N(q)=1-sqrt(2/pi)∫₀^sqrt(q) exp(-u²/2)du.
 This is the actual normal tail integral, not a rational proxy. -/
 def normalReferenceP (q : ℝ) : ℝ :=
   1 - Real.sqrt (2 / Real.pi) * ∫ u in (0 : ℝ)..Real.sqrt q, Real.exp (-u ^ 2 / 2)
 
 /-- "f_nu(t) = Gamma((nu+1)/2)/(sqrt(nu*pi) Gamma(nu/2)) ..."
-(targets S7). Student-t reference density for nu>0. -/
+(targets S7; E003 derivation). Student-t reference density for nu>0. -/
 def studentReferenceDensity (nu t : ℝ) : ℝ :=
   Real.Gamma ((nu + 1) / 2) / (Real.sqrt (nu * Real.pi) * Real.Gamma (nu / 2)) *
     (1 + t ^ 2 / nu) ^ (-((nu + 1) / 2))
 
-/-- "p_T(q;nu)=1-2∫₀^sqrt(q) f_nu(t)dt" (targets S7).
+/-- "p_T(q;nu)=1-2∫₀^sqrt(q) f_nu(t)dt" (targets S7; E003 derivation).
 This specifies the reference used for p values, not the null law of a robust t statistic. -/
 def studentReferenceP (q nu : ℝ) : ℝ :=
   1 - 2 * ∫ t in (0 : ℝ)..Real.sqrt q, studentReferenceDensity nu t
 
 /-- "q_café = 12767624825803755635000/42131842162249950707521"
-(T4 B1). Identification with the fitted regression is
-a separate assertion; this definition records the exact witness. -/
+(T4 B1; E003 exact recalculation). Identification with the fitted regression is
+a separate assertion; this definition records the validator's exact witness. -/
 def cafeSquaredStatistic : ℝ := 12767624825803755635000 / 42131842162249950707521
 
 /-- "q_bulk = 12396039010057804992800/10415886991743115636339"
-(T4 B2). Uses unrounded data, not 23.2/21.2. -/
+(T4 B2; E003 exact recalculation). Uses unrounded data, not 23.2/21.2. -/
 def bulkSquaredStatistic : ℝ := 12396039010057804992800 / 10415886991743115636339
 
-/-- "beta_T = -146561/16484" (T4 B1). -/
+/-- "beta_T = -146561/16484" (T4 B1; E003 exact recalculation of adjusted café sales). -/
 def cafeCoefficientWitness : ℝ := -146561 / 16484
 
 /-- "v = 42131842162249950707521/161509653387533360000"
-(T4 B1), the adjusted café HC1 variance witness. -/
+(T4 B1; E003 exact recalculation), the adjusted café HC1 variance witness. -/
 def cafeVarianceWitness : ℝ := 42131842162249950707521 / 161509653387533360000
 
-/-- "beta_T = 955199/41210" (T4 B2). -/
+/-- "beta_T = 955199/41210" (T4 B2; E003 exact recalculation of adjusted bulk sales). -/
 def bulkCoefficientWitness : ℝ := 955199 / 41210
 
 /-- "v = 10415886991743115636339/23072807626790480000"
-(T4 B2), the adjusted bulk HC1 variance witness. -/
+(T4 B2; E003 exact recalculation), the adjusted bulk HC1 variance witness. -/
 def bulkVarianceWitness : ℝ := 10415886991743115636339 / 23072807626790480000
 
 /-- Two-decimal rounding from targets S7, as applied to the printed p values
@@ -83,12 +83,12 @@ theorem regression_witness_arithmetic :
     bulkCoefficientWitness, cafeSquaredStatistic, bulkSquaredStatistic]
 
 /-- Finite Taylor polynomial for exp(-u²/2), used to certify the normal-tail
-integrals of T4. The Mathlib exponential remainder estimate supplies a
-two-sided error bound. -/
+integrals of T4. E003 derivation uses an alternating series; here the Mathlib
+exponential remainder estimate supplies a two-sided error bound instead. -/
 def normalKernelPolynomial (u : ℝ) : ℝ :=
   ∑ k ∈ Finset.range 10, (-u ^ 2 / 2) ^ k / (Nat.factorial k : ℝ)
 
-/-- Integral coefficients of the Taylor polynomial (normal reference). -/
+/-- Integral coefficients of the Taylor polynomial (E003 derivation, Normal reference). -/
 def normalIntegratedSeries (q : ℝ) : ℝ :=
   ∑ k ∈ Finset.range 10,
     (-1 : ℝ) ^ k * q ^ k / ((2 : ℝ) ^ k * (Nat.factorial k : ℝ) * (2 * k + 1 : ℕ))
@@ -222,7 +222,7 @@ theorem normal_decimal_certificate {q alo ahi plo phi : ℝ}
   constructor <;> linarith [he.1, he.2]
 
 /-- P040-T4 B3–B4: rigorous decimal enclosures of the actual normal-reference
-tail integrals for the two exact squared statistics. Identifying
+tail integrals for the validator's two exact squared statistics. Identifying
 these rationals with the regressions is stated separately. -/
 theorem normal_reference_counterexample_bounds :
     (58198 / 100000 : ℝ) < normalReferenceP cafeSquaredStatistic ∧
@@ -270,7 +270,7 @@ theorem normal_reference_rounding_mismatch :
   · intro hh; linarith [hh.1, h.2.2.2]
 
 /-- "f_21(t) = 4^10/(pi choose(20,10) sqrt(21)) (1+t²/21)^(-11)"
-(T5(ii)). Integer-power form for the same Student-t density. -/
+(T5(ii); E003 derivation). Integer-power form for the same Student-t density. -/
 def student21Density (t : ℝ) : ℝ :=
   (4 : ℝ) ^ 10 / (Real.pi * (Nat.choose 20 10 : ℝ) * Real.sqrt 21) /
     (1 + t ^ 2 / 21) ^ 11
@@ -293,18 +293,18 @@ theorem student21_density_identity (t : ℝ) :
   nlinarith [hsqpi]
 
 /-- Finite polynomial of degree n in the binomial expansion of (1+x)^(-11)
-(Student-t reference). A polynomial remainder certificate,
+(E003 derivation, Student-t reference). A polynomial remainder certificate,
 rather than an assumed infinite-series identity, supplies the bounds below. -/
 def student21Taylor (n : ℕ) (x : ℝ) : ℝ :=
   ∑ k ∈ Finset.range (n + 1), (-1 : ℝ) ^ k * (Nat.choose (10 + k) k : ℝ) * x ^ k
 
 /-- The integrated coefficients of the Student-t polynomial certificate
-(Student-t reference). -/
+(E003 derivation, Student-t reference). -/
 def student21IntegratedSeries (n : ℕ) (q : ℝ) : ℝ :=
   ∑ k ∈ Finset.range (n + 1),
     (-1 : ℝ) ^ k * (Nat.choose (10 + k) k : ℝ) * (q / 21) ^ k / (2 * k + 1 : ℕ)
 
-/-- "A = 2 * 4^10 / choose(20,10)" (Student-t reference). -/
+/-- "A = 2 * 4^10 / choose(20,10)" (E003 derivation, Student-t reference). -/
 def student21Scale : ℝ := 2 * (4 : ℝ) ^ 10 / (Nat.choose 20 10 : ℝ)
 
 /-- Rigorous polynomial bounds for the Student-t(21) kernel (T5(ii)).
@@ -474,7 +474,7 @@ theorem corrected_student_reference_bounds :
   exact ⟨hc.1, hc.2, hb.1, hb.2⟩
 
 /-- P040-T5(ii): the Student-t(21) values round to the paper's .59 and .29,
-in contrast to the alternative normal-reference correction. -/
+in contrast to the alternative normal-reference repair. -/
 theorem corrected_student_reference_rounding :
     pValueRoundsTwo (studentReferenceP cafeSquaredStatistic 21) (59 / 100) ∧
     pValueRoundsTwo (studentReferenceP bulkSquaredStatistic 21) (29 / 100) := by
@@ -539,7 +539,7 @@ def adjustedDesign : Matrix (Fin 30) (Fin 9) ℝ :=
     centeredWeekday 3 i, centeredWeekday 4 i, centeredWeekday 5 i]
 
 /-- The original script's "ten columns ... and seven centred indicators"
-(T5(i), targets S6(c), S7). The alias is retained to state its rank. -/
+(T5(i), targets S6(c), S7). The alias is retained to state its rank honestly. -/
 def originalAdjustedDesign : Matrix (Fin 30) (Fin 10) ℝ :=
   fun i => ![1, salesTreatment i, (salesDay i : ℝ) - meanSalesDay,
     centeredWeekday 0 i, centeredWeekday 1 i, centeredWeekday 2 i,
@@ -667,26 +667,26 @@ theorem corrected_regression_degrees_of_freedom :
     exact ha
   exact ⟨by simp, hu, ha, ho, by rw [hu], by rw [ho]⟩
 
-/-- "G=(XᵀX)^(-1) Xᵀ" (targets S7), the OLS
+/-- "G=(XᵀX)^(-1) Xᵀ" (targets S7; E003 exact recalculation), the OLS
 operator for the recorded daily-sales outcomes. Used with full-column-rank designs. -/
 def olsOperator {K : ℕ} (X : Matrix (Fin 30) (Fin K) ℝ) : Matrix (Fin K) (Fin 30) ℝ :=
   (X.transpose * X)⁻¹ * X.transpose
 
-/-- "beta_hat=Gy" (targets S7), OLS coefficients. -/
+/-- "beta_hat=Gy" (targets S7; E003 exact recalculation), OLS coefficients. -/
 def olsCoefficients {K : ℕ} (X : Matrix (Fin 30) (Fin K) ℝ) (y : Fin 30 → ℝ) : Fin K → ℝ :=
   (olsOperator X).mulVec y
 
-/-- "e=y-X beta_hat" (targets S7), OLS residuals. -/
+/-- "e=y-X beta_hat" (targets S7; E003 exact recalculation), OLS residuals. -/
 def olsResidual {K : ℕ} (X : Matrix (Fin 30) (Fin K) ℝ) (y : Fin 30 → ℝ) (i : Fin 30) : ℝ :=
   y i - X.mulVec (olsCoefficients X y) i
 
-/-- "v=N/(N-K) sum_i (G_Ti e_i)^2" (targets S7),
+/-- "v=N/(N-K) sum_i (G_Ti e_i)^2" (targets S7; E003 derivation),
 HC1 variance of a specified coefficient; the treatment coordinate is 1. -/
 def hc1Variance {K : ℕ} (X : Matrix (Fin 30) (Fin K) ℝ) (y : Fin 30 → ℝ) (t : Fin K) : ℝ :=
   (30 : ℝ) / (30 - (K : ℝ)) *
     ∑ i : Fin 30, (olsOperator X t i * olsResidual X y i) ^ 2
 
-/-- "q=beta_hat_T²/v" (targets S7), the squared HC1 statistic. -/
+/-- "q=beta_hat_T²/v" (targets S7; E003 derivation), the squared HC1 statistic. -/
 def olsSquaredStatistic {K : ℕ} (X : Matrix (Fin 30) (Fin K) ℝ)
     (y : Fin 30 → ℝ) (t : Fin K) : ℝ := olsCoefficients X y t ^ 2 / hc1Variance X y t
 
@@ -709,21 +709,21 @@ theorem table_statistics_bounded :
   · intro a o
     cases a <;> fin_cases o <;> norm_num [tableSquaredStatistic, cafeSquaredStatistic, bulkSquaredStatistic]
 
-/-- Exact arithmetic witness for "XᵀX" (targets S7),
+/-- Exact arithmetic witness for "XᵀX" (targets S7, E003 derivation),
 for the unadjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def unadjustedGramCertificate : Matrix (Fin 2) (Fin 2) ℝ :=
   ![![30, 16],
     ![16, 16]]
 
-/-- Exact arithmetic witness for "(XᵀX)^(-1)" (targets S7),
+/-- Exact arithmetic witness for "(XᵀX)^(-1)" (targets S7, E003 derivation),
 for the unadjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def unadjustedInverseCertificate : Matrix (Fin 2) (Fin 2) ℝ :=
   ![![(1 / 14), (-1 / 14)],
     ![(-1 / 14), (15 / 112)]]
 
-/-- Exact arithmetic witness for "Xᵀy" (targets S7),
+/-- Exact arithmetic witness for "Xᵀy" (targets S7, E003 derivation),
 for the unadjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def unadjustedCrossproductCertificate : Fin 4 → Fin 2 → ℝ :=
@@ -732,7 +732,7 @@ def unadjustedCrossproductCertificate : Fin 4 → Fin 2 → ℝ :=
     ![(995423 / 100), (263389 / 50)],
     ![(269331 / 50), (60499 / 20)]]
 
-/-- Exact arithmetic witness for "beta_hat=Gy" (targets S7),
+/-- Exact arithmetic witness for "beta_hat=Gy" (targets S7, E003 derivation),
 for the unadjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def unadjustedCoefficientCertificate : Fin 4 → Fin 2 → ℝ :=
@@ -741,13 +741,13 @@ def unadjustedCoefficientCertificate : Fin 4 → Fin 2 → ℝ :=
     ![(93729 / 280), (-30857 / 5600)],
     ![(236167 / 1400), (228129 / 11200)]]
 
-/-- Exact arithmetic witness for "G_Ti" (targets S7),
+/-- Exact arithmetic witness for "G_Ti" (targets S7, E003 derivation),
 for the unadjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def unadjustedTreatmentWeightsCertificate : Fin 30 → ℝ :=
   ![(-1 / 14), (-1 / 14), (1 / 16), (-1 / 14), (1 / 16), (-1 / 14), (1 / 16), (1 / 16), (1 / 16), (1 / 16), (1 / 16), (-1 / 14), (-1 / 14), (-1 / 14), (1 / 16), (-1 / 14), (-1 / 14), (1 / 16), (1 / 16), (-1 / 14), (1 / 16), (1 / 16), (1 / 16), (1 / 16), (-1 / 14), (-1 / 14), (-1 / 14), (1 / 16), (-1 / 14), (1 / 16)]
 
-/-- Exact arithmetic witness for "e=y-X beta_hat" (targets S7),
+/-- Exact arithmetic witness for "e=y-X beta_hat" (targets S7, E003 derivation),
 for the unadjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def unadjustedResidualCertificate : Fin 4 → Fin 30 → ℝ :=
@@ -756,14 +756,14 @@ def unadjustedResidualCertificate : Fin 4 → Fin 30 → ℝ :=
     ![(82283 / 1400), (45953 / 1400), (-28709 / 800), (-185957 / 1400), (-28821 / 800), (-41603 / 1400), (73379 / 800), (-4217 / 160), (41563 / 800), (-61349 / 800), (-5297 / 160), (26097 / 280), (33731 / 1400), (8853 / 1400), (-9 / 160), (-33357 / 1400), (-124119 / 1400), (-11397 / 800), (-7749 / 800), (38813 / 1400), (47811 / 800), (-1901 / 800), (57003 / 800), (-76989 / 800), (6791 / 280), (-1609 / 280), (3991 / 280), (79363 / 800), (-947 / 1400), (-34589 / 800)],
     ![(18227 / 1400), (-48077 / 1400), (-8163 / 320), (-116257 / 1400), (-15091 / 320), (3233 / 1400), (-22131 / 320), (25133 / 320), (32349 / 320), (-6739 / 320), (19197 / 320), (79603 / 1400), (-55147 / 1400), (38793 / 1400), (3581 / 320), (356817 / 1400), (22483 / 1400), (-3331 / 320), (-33651 / 320), (-50877 / 1400), (-24643 / 320), (-21891 / 320), (16761 / 64), (-18659 / 320), (-100717 / 1400), (-1107 / 1400), (-34847 / 1400), (3501 / 320), (-112127 / 1400), (-13267 / 320)]]
 
-/-- Exact arithmetic witness for "v=N/(N-K) sum_i (G_Ti e_i)^2" (targets S7),
+/-- Exact arithmetic witness for "v=N/(N-K) sum_i (G_Ti e_i)^2" (targets S7, E003 derivation),
 for the unadjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def unadjustedVarianceCertificate : Fin 4 → ℝ :=
   ![(20919983648007 / 7867596800), (3028218459603 / 9834496000), (4389901237299 / 9834496000), (40286829179979 / 39337984000)]
 
 /-- Finite lemma for T4/T5: the unadjusted Gram certificate equals XᵀX,
-with entries given by 30-term sums. -/
+checked cell by cell with 30-term sums. -/
 theorem unadjusted_gram_certificate :
     unadjustedDesign.transpose * unadjustedDesign = unadjustedGramCertificate := by
   ext i j
@@ -781,7 +781,7 @@ theorem unadjusted_inverse_product_certificate :
     simp only [Matrix.mul_apply, Fin.sum_univ_succ, Fin.sum_univ_zero] <;>
     norm_num [unadjustedInverseCertificate, unadjustedGramCertificate]
 
-/-- Finite lemma for T4/T5: the inverse certificate is the genuine
+/-- Finite lemma for T4/T5: the checked inverse certificate is the genuine
 inverse in the paper’s unadjusted OLS operator. -/
 theorem unadjusted_gram_inverse :
     (unadjustedDesign.transpose * unadjustedDesign)⁻¹ = unadjustedInverseCertificate := by
@@ -789,7 +789,7 @@ theorem unadjusted_gram_inverse :
   exact Matrix.inv_eq_left_inv unadjusted_inverse_product_certificate
 
 /-- Finite lemma for T4/T5: the unadjusted Xᵀy certificate for all four
-outcomes, computed from the exact recorded CAD values. -/
+outcomes, checked from the exact recorded CAD values. -/
 theorem unadjusted_crossproduct_certificate (o : Fin 4) :
     unadjustedDesign.transpose.mulVec (tableOutcome o) = unadjustedCrossproductCertificate o := by
   ext j
@@ -799,7 +799,7 @@ theorem unadjusted_crossproduct_certificate (o : Fin 4) :
       recorded_day_summary.2, salesDay, salesTreatment, tableOutcome, salesTotal,
       salesBook, salesCafe, salesBulk]
 
-/-- Finite lemma for T4/T5: all unadjusted OLS coefficients, using exact
+/-- Finite lemma for T4/T5: all unadjusted OLS coefficients, using checked
 Gram and crossproduct certificates rather than an assumed fit. -/
 theorem unadjusted_coefficients_certificate (o : Fin 4) :
     olsCoefficients unadjustedDesign (tableOutcome o) = unadjustedCoefficientCertificate o := by
@@ -823,7 +823,7 @@ theorem unadjusted_treatment_weights_certificate :
       centeredWeekday, recorded_day_summary.1, recorded_day_summary.2, salesDay, salesTreatment]
 
 /-- Finite lemma for T4/T5: every residual of the unadjusted regression
-is computed from the exact coefficients and recorded outcomes. -/
+is computed from the checked coefficients and recorded outcomes. -/
 theorem unadjusted_residuals_certificate (o : Fin 4) (i : Fin 30) :
     olsResidual unadjustedDesign (tableOutcome o) i = unadjustedResidualCertificate o i := by
   unfold olsResidual
@@ -835,7 +835,7 @@ theorem unadjusted_residuals_certificate (o : Fin 4) (i : Fin 30) :
       tableOutcome, salesTotal, salesBook, salesCafe, salesBulk]
 
 /-- Finite lemma for T4/T5: the exact unadjusted HC1 treatment variance
-for each outcome, expressed as a 30-term sum of squares. -/
+for each outcome, checked as a 30-term sum of squares. -/
 theorem unadjusted_hc1_variance_certificate (o : Fin 4) :
     hc1Variance unadjustedDesign (tableOutcome o) 1 = unadjustedVarianceCertificate o := by
   unfold hc1Variance
@@ -852,7 +852,7 @@ theorem unadjusted_squared_statistics_certificate (o : Fin 4) :
   fin_cases o <;> norm_num [unadjustedCoefficientCertificate, unadjustedVarianceCertificate,
     tableSquaredStatistic, cafeSquaredStatistic, bulkSquaredStatistic]
 
-/-- Exact arithmetic witness for "XᵀX" (targets S7),
+/-- Exact arithmetic witness for "XᵀX" (targets S7, E003 derivation),
 for the adjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def adjustedGramCertificate : Matrix (Fin 9) (Fin 9) ℝ :=
@@ -866,7 +866,7 @@ def adjustedGramCertificate : Matrix (Fin 9) (Fin 9) ℝ :=
     ![0, (-2 / 15), (-112 / 15), (-8 / 15), (-2 / 3), (-2 / 3), (-2 / 3), (52 / 15), (-2 / 5)],
     ![0, (2 / 5), (79 / 10), (-2 / 5), (-1 / 2), (-1 / 2), (-1 / 2), (-2 / 5), (27 / 10)]]
 
-/-- Exact arithmetic witness for "(XᵀX)^(-1)" (targets S7),
+/-- Exact arithmetic witness for "(XᵀX)^(-1)" (targets S7, E003 derivation),
 for the adjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def adjustedInverseCertificate : Matrix (Fin 9) (Fin 9) ℝ :=
@@ -880,7 +880,7 @@ def adjustedInverseCertificate : Matrix (Fin 9) (Fin 9) ℝ :=
     ![(16 / 28847), (-30 / 28847), (176 / 201929), (200805 / 807716), (203069 / 807716), (202365 / 807716), (201829 / 807716), (202633 / 403858), (200309 / 807716)],
     ![(1256 / 86541), (-785 / 28847), (-405 / 403858), (191749 / 807716), (50728 / 201929), (101861 / 403858), (52232 / 201929), (200309 / 807716), (119214 / 201929)]]
 
-/-- Exact arithmetic witness for "Xᵀy" (targets S7),
+/-- Exact arithmetic witness for "Xᵀy" (targets S7, E003 derivation),
 for the adjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def adjustedCrossproductCertificate : Fin 4 → Fin 9 → ℝ :=
@@ -889,7 +889,7 @@ def adjustedCrossproductCertificate : Fin 4 → Fin 9 → ℝ :=
     ![(995423 / 100), (263389 / 50), (4553357 / 3000), (18041 / 375), (188371 / 600), (913 / 600), (7747 / 600), (-295253 / 750), (-25303 / 1000)],
     ![(269331 / 50), (60499 / 20), (-126598 / 125), (-70883 / 500), (-8771 / 100), (-2158 / 25), (14451 / 25), (-74533 / 500), (-3553 / 250)]]
 
-/-- Exact arithmetic witness for "beta_hat=Gy" (targets S7),
+/-- Exact arithmetic witness for "beta_hat=Gy" (targets S7, E003 derivation),
 for the adjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def adjustedCoefficientCertificate : Fin 4 → Fin 9 → ℝ :=
@@ -898,13 +898,13 @@ def adjustedCoefficientCertificate : Fin 4 → Fin 9 → ℝ :=
     ![(1386920861 / 4121000), (-146561 / 16484), (91121 / 164840), (-5919137 / 1648400), (222075693 / 4121000), (-18853569 / 2060500), (-930779 / 164840), (-35582999 / 329680), (-3124423 / 164840)],
     ![(1148029367 / 6181500), (-9529079 / 824200), (-94973 / 144235), (-182570873 / 11538800), (212543853 / 28847000), (239557919 / 28847000), (519776832 / 3605875), (-3194383 / 230776), (68013299 / 2884700)]]
 
-/-- Exact arithmetic witness for "G_Ti" (targets S7),
+/-- Exact arithmetic witness for "G_Ti" (targets S7, E003 derivation),
 for the adjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def adjustedTreatmentWeightsCertificate : Fin 30 → ℝ :=
   ![(-393 / 4121), (-393 / 4121), (171 / 4121), (-330 / 4121), (375 / 4121), (45 / 8242), (297 / 4121), (297 / 4121), (12 / 317), (360 / 4121), (250 / 4121), (-345 / 4121), (15 / 8242), (-423 / 4121), (282 / 4121), (-564 / 4121), (-360 / 4121), (235 / 4121), (345 / 4121), (-15 / 8242), (267 / 4121), (267 / 4121), (126 / 4121), (330 / 4121), (-485 / 4121), (-375 / 4121), (-45 / 8242), (252 / 4121), (-453 / 4121), (111 / 4121)]
 
-/-- Exact arithmetic witness for "e=y-X beta_hat" (targets S7),
+/-- Exact arithmetic witness for "e=y-X beta_hat" (targets S7, E003 derivation),
 for the adjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def adjustedResidualCertificate : Fin 4 → Fin 30 → ℝ :=
@@ -913,14 +913,14 @@ def adjustedResidualCertificate : Fin 4 → Fin 30 → ℝ :=
     ![(2732881 / 2060500), (78015309 / 2060500), (-3247636 / 103025), (-49635493 / 1648400), (-16058593 / 412100), (-54398457 / 1648400), (139240077 / 4121000), (-89862797 / 4121000), (665037 / 12680), (42100629 / 1648400), (-16822037 / 824200), (68418237 / 824200), (27923477 / 1648400), (-121286519 / 2060500), (321666 / 515125), (-12603207 / 412100), (2083479 / 329680), (-223343 / 41210), (-4196557 / 206050), (27528699 / 1648400), (-24359433 / 4121000), (-22933567 / 4121000), (10551199 / 164840), (-2882531 / 1648400), (21288897 / 824200), (-19514823 / 824200), (-1053719 / 1648400), (15278329 / 515125), (-22903791 / 2060500), (-22397949 / 412100)],
     ![(14599021 / 4121000), (-181717177 / 4121000), (-570833173 / 4121000), (-57143547 / 824200), (-11576323 / 824200), (6584919 / 329680), (-86739997 / 2060500), (108511517 / 1030250), (-2316921 / 317000), (12028661 / 412100), (60560553 / 824200), (6454731 / 103025), (-5643169 / 329680), (113125711 / 4121000), (87745659 / 2060500), (245505921 / 2060500), (32132513 / 824200), (6335793 / 824200), (-51782083 / 824200), (-3118077 / 329680), (-41960161 / 1030250), (-66772841 / 2060500), (670526027 / 4121000), (119214 / 103025), (-33448173 / 412100), (5860279 / 412100), (2176327 / 329680), (106797953 / 2060500), (-294274527 / 4121000), (-560584723 / 4121000)]]
 
-/-- Exact arithmetic witness for "v=N/(N-K) sum_i (G_Ti e_i)^2" (targets S7),
+/-- Exact arithmetic witness for "v=N/(N-K) sum_i (G_Ti e_i)^2" (targets S7, E003 derivation),
 for the adjusted recorded design. Its identification is proved below;
 this internal certificate is not an additional modelling assumption. -/
 def adjustedVarianceCertificate : Fin 4 → ℝ :=
   ![(280628848000463708694463 / 161509653387533360000), (10415886991743115636339 / 23072807626790480000), (42131842162249950707521 / 161509653387533360000), (24391999904970062376441 / 23072807626790480000)]
 
 /-- Finite lemma for T4/T5: the adjusted Gram certificate equals XᵀX,
-with entries given by 30-term sums. -/
+checked cell by cell with 30-term sums. -/
 theorem adjusted_gram_certificate :
     adjustedDesign.transpose * adjustedDesign = adjustedGramCertificate := by
   ext i j
@@ -938,7 +938,7 @@ theorem adjusted_inverse_product_certificate :
     simp only [Matrix.mul_apply, Fin.sum_univ_succ, Fin.sum_univ_zero] <;>
     norm_num [adjustedInverseCertificate, adjustedGramCertificate]
 
-/-- Finite lemma for T4/T5: the inverse certificate is the genuine
+/-- Finite lemma for T4/T5: the checked inverse certificate is the genuine
 inverse in the paper’s adjusted OLS operator. -/
 theorem adjusted_gram_inverse :
     (adjustedDesign.transpose * adjustedDesign)⁻¹ = adjustedInverseCertificate := by
@@ -946,7 +946,7 @@ theorem adjusted_gram_inverse :
   exact Matrix.inv_eq_left_inv adjusted_inverse_product_certificate
 
 /-- Finite lemma for T4/T5: the adjusted Xᵀy certificate for all four
-outcomes, computed from the exact recorded CAD values. -/
+outcomes, checked from the exact recorded CAD values. -/
 theorem adjusted_crossproduct_certificate (o : Fin 4) :
     adjustedDesign.transpose.mulVec (tableOutcome o) = adjustedCrossproductCertificate o := by
   ext j
@@ -956,7 +956,7 @@ theorem adjusted_crossproduct_certificate (o : Fin 4) :
       recorded_day_summary.2, salesDay, salesTreatment, tableOutcome, salesTotal,
       salesBook, salesCafe, salesBulk]
 
-/-- Finite lemma for T4/T5: all adjusted OLS coefficients, using exact
+/-- Finite lemma for T4/T5: all adjusted OLS coefficients, using checked
 Gram and crossproduct certificates rather than an assumed fit. -/
 theorem adjusted_coefficients_certificate (o : Fin 4) :
     olsCoefficients adjustedDesign (tableOutcome o) = adjustedCoefficientCertificate o := by
@@ -980,7 +980,7 @@ theorem adjusted_treatment_weights_certificate :
       centeredWeekday, recorded_day_summary.1, recorded_day_summary.2, salesDay, salesTreatment]
 
 /-- Finite lemma for T4/T5: every residual of the adjusted regression
-is computed from the exact coefficients and recorded outcomes. -/
+is computed from the checked coefficients and recorded outcomes. -/
 theorem adjusted_residuals_certificate (o : Fin 4) (i : Fin 30) :
     olsResidual adjustedDesign (tableOutcome o) i = adjustedResidualCertificate o i := by
   unfold olsResidual
@@ -992,7 +992,7 @@ theorem adjusted_residuals_certificate (o : Fin 4) (i : Fin 30) :
       tableOutcome, salesTotal, salesBook, salesCafe, salesBulk]
 
 /-- Finite lemma for T4/T5: the exact adjusted HC1 treatment variance
-for each outcome, expressed as a 30-term sum of squares. -/
+for each outcome, checked as a 30-term sum of squares. -/
 theorem adjusted_hc1_variance_certificate (o : Fin 4) :
     hc1Variance adjustedDesign (tableOutcome o) 1 = adjustedVarianceCertificate o := by
   unfold hc1Variance
@@ -1206,7 +1206,7 @@ theorem table_effects_not_significant (a : Bool) (o : Fin 4) :
 
 
 /-- Auxiliary Taylor coefficients for (1+x)^(-29/2), the Student-t(28) kernel
-(targets S7, T5(iii)). The polynomial bounds below are proved by squaring and
+(targets S7, T5(iii)). The polynomial bounds below are checked by squaring and
 finite identities; these coefficients do not substitute a new density. -/
 def student28TaylorCoefficient : Fin 12 → ℝ :=
   ![1, (-29 / 2), (899 / 8), (-9889 / 16), (346115 / 128), (-2561251 / 256), (33296263 / 1024), (-195020969 / 2048), (8385901667 / 32768), (-41929508335 / 65536), (394137378349 / 262144), (-1755702867191 / 524288)]
@@ -1966,8 +1966,8 @@ theorem student28_decimal_certificate {q alo ahi plo phi : ℝ}
   constructor <;> linarith [he.1, he.2]
 
 /-- P040-T5(iii): the two smallest reference values, both from unadjusted
-bulk sales, have the printed target's narrow brackets. The t(28) bound follows
-from a finite polynomial certificate. -/
+bulk sales, have the printed target's narrow brackets. The t(28) bound is a
+new rigorous finite certificate, not the validator's numerical integration. -/
 theorem smallest_reference_p_bounds :
     (22533 / 100000 : ℝ) < studentReferenceP (tableSquaredStatistic false 1) 28 ∧
     studentReferenceP (tableSquaredStatistic false 1) 28 < (22534 / 100000 : ℝ) ∧
@@ -2124,3 +2124,112 @@ theorem recorded_table_cells_round :
 end
 end AronowAudit.P040
 
+#print axioms AronowAudit.P040.regression_witness_arithmetic
+#print axioms AronowAudit.P040.normal_polynomial_integral
+#print axioms AronowAudit.P040.normal_kernel_error
+#print axioms AronowAudit.P040.normal_integral_enclosure
+#print axioms AronowAudit.P040.normal_p_enclosure
+#print axioms AronowAudit.P040.normal_decimal_certificate
+#print axioms AronowAudit.P040.normal_reference_counterexample_bounds
+#print axioms AronowAudit.P040.normal_reference_rounding_mismatch
+
+#print axioms AronowAudit.P040.student21_density_identity
+#print axioms AronowAudit.P040.student21_kernel_bracket
+
+#print axioms AronowAudit.P040.student21_polynomial_integral
+
+#print axioms AronowAudit.P040.student21_p_enclosure
+
+#print axioms AronowAudit.P040.student21_decimal_certificate
+
+#print axioms AronowAudit.P040.corrected_student_reference_bounds
+
+#print axioms AronowAudit.P040.corrected_student_reference_rounding
+
+#print axioms AronowAudit.P040.recorded_day_summary
+
+#print axioms AronowAudit.P040.unadjusted_columns_independent
+
+#print axioms AronowAudit.P040.adjusted_columns_independent
+
+#print axioms AronowAudit.P040.centered_weekdays_sum_zero
+
+#print axioms AronowAudit.P040.adjusted_design_same_range
+
+#print axioms AronowAudit.P040.corrected_regression_degrees_of_freedom
+
+#print axioms AronowAudit.P040.table_statistics_bounded
+
+#print axioms AronowAudit.P040.recorded_regression_identification
+
+#print axioms AronowAudit.P040.unadjusted_gram_certificate
+
+#print axioms AronowAudit.P040.unadjusted_inverse_product_certificate
+
+#print axioms AronowAudit.P040.unadjusted_gram_inverse
+
+#print axioms AronowAudit.P040.unadjusted_crossproduct_certificate
+
+#print axioms AronowAudit.P040.unadjusted_coefficients_certificate
+
+#print axioms AronowAudit.P040.unadjusted_treatment_weights_certificate
+
+#print axioms AronowAudit.P040.unadjusted_residuals_certificate
+
+#print axioms AronowAudit.P040.unadjusted_hc1_variance_certificate
+
+#print axioms AronowAudit.P040.unadjusted_squared_statistics_certificate
+
+#print axioms AronowAudit.P040.adjusted_gram_certificate
+
+#print axioms AronowAudit.P040.adjusted_inverse_product_certificate
+
+#print axioms AronowAudit.P040.adjusted_gram_inverse
+
+#print axioms AronowAudit.P040.adjusted_crossproduct_certificate
+
+#print axioms AronowAudit.P040.adjusted_coefficients_certificate
+
+#print axioms AronowAudit.P040.adjusted_treatment_weights_certificate
+
+#print axioms AronowAudit.P040.adjusted_residuals_certificate
+
+#print axioms AronowAudit.P040.adjusted_hc1_variance_certificate
+
+#print axioms AronowAudit.P040.adjusted_squared_statistics_certificate
+
+#print axioms AronowAudit.P040.normal_reference_antitone
+
+#print axioms AronowAudit.P040.student_density_regular
+
+#print axioms AronowAudit.P040.student_reference_antitone
+
+#print axioms AronowAudit.P040.reference_p_at_max_21
+
+#print axioms AronowAudit.P040.student28_density_identity
+
+#print axioms AronowAudit.P040.student28_kernel_upper
+
+#print axioms AronowAudit.P040.student28_polynomial_integral
+
+#print axioms AronowAudit.P040.reference_p_at_max_28
+
+#print axioms AronowAudit.P040.table_effects_not_significant
+
+#print axioms AronowAudit.P040.student28_square_certificate_10
+
+#print axioms AronowAudit.P040.student28_square_certificate_11
+
+#print axioms AronowAudit.P040.student28_upper_polynomial_nonneg
+#print axioms AronowAudit.P040.student28_kernel_bracket
+#print axioms AronowAudit.P040.student28_taylor_integral
+#print axioms AronowAudit.P040.student28_p_enclosure
+#print axioms AronowAudit.P040.student28_decimal_certificate
+#print axioms AronowAudit.P040.smallest_reference_p_bounds
+#print axioms AronowAudit.P040.unadjusted_bulk_minimizes_reference_p
+#print axioms AronowAudit.P040.recorded_statistic_identity
+#print axioms AronowAudit.P040.recorded_df_identity
+#print axioms AronowAudit.P040.recorded_normal_counterexample
+#print axioms AronowAudit.P040.recorded_corrected_p_values
+#print axioms AronowAudit.P040.recorded_effects_not_significant
+#print axioms AronowAudit.P040.recorded_table_cells_round

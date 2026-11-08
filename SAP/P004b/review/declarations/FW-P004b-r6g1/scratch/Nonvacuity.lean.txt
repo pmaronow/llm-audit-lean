@@ -1,0 +1,151 @@
+import SAP.P004b.Defs
+import SAP.P004b.Defs.WholeW2
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+open MeasureTheory Filter
+open scoped BigOperators Classical Topology
+namespace Review
+open SAP.P004b
+noncomputable section
+
+-- A nonempty compact-node instance for every hypothesis of DiameterCutoff.
+def onePoint : SpatialPopulation 1 ℕ where
+  node := fun _ => {0}
+  node_nonempty := fun _ => Set.singleton_nonempty _
+  zeta := Measure.count
+  outcome := fun _ _ => 0
+  bands := fun _ => {0}
+
+example : (∀ i, IsCompact (onePoint.node i)) ∧
+    (0 : ℝ) ≤ 0 ∧ (0 : ℝ) ≤ 0 ∧ (0 : ℝ) ≤ 0 ∧
+    onePoint.bands 0 ⊆ Set.Icc 0 0 ∧ WellDefined onePoint 0 ∧
+    FiniteSourceRange onePoint 0 ∧
+    (∀ i, ∀ x ∈ onePoint.node i, ∀ y ∈ onePoint.node i, dist x y ≤ (0 : ℝ)) := by
+  have hregion (i : Fin 1) : region onePoint i 0 = {0} := by
+    ext x
+    simp [region, nodeDistance, onePoint, Metric.infDist_singleton]
+  refine ⟨fun _ => isCompact_singleton, le_rfl, le_rfl, le_rfl, ?_, ?_, ?_, ?_⟩
+  · simp [onePoint]
+  · intro i
+    rw [hregion]
+    simp [onePoint]
+  · intro l x z z' _ _
+    rfl
+  · intro i x hx y hy
+    simp only [onePoint, Set.mem_singleton_iff] at hx hy
+    simp [hx, hy]
+
+-- Nodes are at i*N in the countable metric space ℕ. All fixed-radius balls
+-- are eventually singletons, so this checks all C2--C4 hypotheses jointly.
+def spaced (N : ℕ) : SpatialPopulation N ℕ where
+  node := fun i => {i.val*N}
+  node_nonempty := fun _ => Set.singleton_nonempty _
+  zeta := Measure.count
+  outcome := fun _ _ => 0
+  bands := fun _ => {0}
+
+lemma spaced_distance (N : ℕ) (i j : Fin N) :
+    nodeSeparation (spaced N) i j = dist (i.val*N) (j.val*N) := by
+  simp [nodeSeparation, spaced]
+
+lemma zero_average (N : ℕ) (d : ℝ) : circleAverage (spaced N) d = fun _ _ => 0 := by
+  funext i z
+  simp [circleAverage, spaced]
+
+lemma zero_interference {N : ℕ} (i j : Fin N) :
+    interferes (fun (_ : Fin N) (_ : Assignment N) => 0) i j ↔ i = j := by
+  simp [interferes]
+
+lemma zero_shared {N : ℕ} (i j : Fin N) :
+    sharesSource (fun (_ : Fin N) (_ : Assignment N) => 0) i j ↔ i = j := by
+  simp [sharesSource, zero_interference, eq_comm]
+
+lemma spaced_wellDefined (N : ℕ) (d : ℝ) : WellDefined (spaced N) d := by
+  intro i
+  have hregion : region (spaced N) i d = {i.val*N} := by
+    ext x
+    simp [region, nodeDistance, spaced, Metric.infDist_singleton]
+  rw [hregion]
+  simp [spaced]
+
+lemma spaced_local : SpatialLocalConditions spaced := by
+  refine ⟨⟨1, by norm_num, Filter.Eventually.of_forall ?_⟩,
+    ⟨fun _ => 0, fun _ _ => le_rfl, ?_⟩, ⟨fun _ => 1, ?_⟩⟩
+  · intro N x z
+    norm_num [spaced]
+  · intro d _
+    filter_upwards [] with N
+    intro i j hdist hshared
+    rw [zero_average, zero_shared] at hshared
+    subst j
+    simpa [spaced_distance] using hdist
+  · intro r hr
+    obtain ⟨K, hK⟩ := exists_nat_gt r
+    filter_upwards [eventually_ge_atTop (K+1)] with N hN
+    have hNpos : 0 < N := by omega
+    have hrN : r < (N : ℝ) := lt_of_lt_of_le hK (by exact_mod_cast (show K ≤ N by omega))
+    intro i
+    have hball : ball (nodeSeparation (spaced N)) i r = {i} := by
+      ext j
+      simp only [ball, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+      constructor
+      · intro hd
+        by_contra hne
+        have hv : i.val ≠ j.val := fun heq => hne (Fin.ext heq.symm)
+        have habs : (1 : ℝ) ≤ |(i.val : ℝ) - (j.val : ℝ)| := by
+          rcases lt_or_gt_of_ne hv with hij | hji
+          · have hh : (i.val : ℝ)+1 ≤ (j.val : ℝ) := by exact_mod_cast hij
+            rw [abs_of_nonpos (by linarith)]
+            linarith
+          · have hh : (j.val : ℝ)+1 ≤ (i.val : ℝ) := by exact_mod_cast hji
+            rw [abs_of_nonneg (by linarith)]
+            linarith
+        have hd' : |(i.val : ℝ) - (j.val : ℝ)| * (N : ℝ) ≤ r := by
+          rw [spaced_distance, Nat.dist_eq] at hd
+          push_cast at hd
+          simpa only [Nat.cast_mul, ← sub_mul, abs_mul,
+            abs_of_nonneg (show (0 : ℝ) ≤ N by positivity)] using hd
+        nlinarith [show (0 : ℝ) < N by exact_mod_cast hNpos]
+      · intro h
+        subst j
+        simpa [spaced_distance] using hr
+    simp [hball]
+
+example : (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) < 1 ∧ (0 : ℝ) ≤ 0 ∧
+    SpatialLocalConditions spaced ∧ (∀ᶠ N in atTop, WellDefined (spaced N) 0) := by
+  exact ⟨by norm_num, by norm_num, le_rfl, spaced_local,
+    Filter.Eventually.of_forall (fun N => spaced_wellDefined N 0)⟩
+
+lemma sum_assign_succ {N : ℕ} (f : Assignment (N+1) → ℝ) :
+    (∑ z, f z) = ∑ a : Bool, ∑ z : Assignment N, f (Fin.cons a z) := by
+  rw [← (Fin.consEquiv (fun _ : Fin (N+1) => Bool)).sum_comp]
+  rw [Fintype.sum_prod_type]
+  rfl
+
+-- Independent exact checks of the two-point and cancelling-pair laws.
+example : variance (fun _ => 1/2) (fun z : Assignment 2 =>
+    ∑ i, loneRademacher 2 i z) = 1 := by
+  norm_num [variance, cov, expect, designWeight, sum_assign_succ,
+    Fin.prod_univ_succ, Fin.sum_univ_succ, Fintype.sum_bool, loneRademacher, coin, bit]
+
+example : (∀ z : Assignment 3, (∑ i, cancellingArray 1 i z) = 2*bit (z 0)-1) ∧
+    variance (fun _ => 1/2) (fun z : Assignment 3 => ∑ i, cancellingArray 1 i z) = 1 := by
+  constructor
+  · intro z
+    norm_num [Fin.sum_univ_succ, cancellingArray, cancellingSource]
+  · norm_num [variance, cov, expect, designWeight, sum_assign_succ,
+      Fin.prod_univ_succ, Fin.sum_univ_succ, Fintype.sum_bool, cancellingArray,
+      cancellingSource, coin, bit]
+
+-- The exact nonzero scaled variance of the balanced N=2 display error.
+example : (2 : ℝ)*variance (fun _ => 1/4) (fun z : Assignment 2 =>
+    printedLinear (1/4) (balancedTable 2) z -
+      linearHajek (fun _ => 1/4) (balancedTable 2) z) = 4/3 := by
+  norm_num [variance, cov, expect, designWeight, sum_assign_succ,
+    Fin.prod_univ_succ, Fin.sum_univ_succ, Fintype.sum_bool, printedLinear,
+    linearHajek, augmented, ame, nodeEffect, marginal, barMu,
+    balancedTable, balancedSign, coin, bit]
+
+end
+end Review

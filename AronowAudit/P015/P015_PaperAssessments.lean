@@ -6,8 +6,9 @@ open Matrix MeasureTheory ProbabilityTheory Filter
 open scoped BigOperators Topology
 noncomputable section
 
-/-- Mathematical clauses A-C of T17: the positivity correction and
-its three concrete counterexamples. -/
+/-- Mathematical clauses A-C of T17, using the complete correction and
+its three concrete counterexamples. Applied country-specific prose is outside
+the quantified target, as its validator note states. -/
 theorem positivity_passage_assessment : PositivityCorrection := PositivityCorrection_checked
 
 theorem positivity_implies_variance : PositivityCorrection := PositivityCorrection_checked
@@ -55,5 +56,12 @@ theorem binomial_probability_unique_max : TaylorCounterexample := TaylorCountere
 
 theorem binomial_logistic_unique_max : TaylorCounterexample := TaylorCounterexample_checked
 
+#print axioms positivity_implies_variance
+#print axioms positivity_passage_assessment
+#print axioms nonlinear_extension_assessment
+#print axioms root_link_matrix_arithmetic
+#print axioms root_ols_arithmetic
+#print axioms root_uniform_is_probability
+#print axioms root_unit_is_probability
 end
 end AronowAudit.P015.PaperAssessments

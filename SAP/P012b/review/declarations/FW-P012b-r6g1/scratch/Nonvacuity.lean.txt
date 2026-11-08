@@ -1,0 +1,172 @@
+import SAP.P012b.Defs
+import SAP.P012b.Defs.WholeW1
+
+open SAP.P012b Finset
+
+set_option maxRecDepth 4096
+set_option maxHeartbeats 1500000
+
+noncomputable section
+
+namespace Audit
+
+def recruiterData (b : Bool) : Data :=
+  ⟨{1,2,3}, {1}, fun _ => 1, id,
+    fun i => if i = 1 then 3 else 1, fun _ => b⟩
+
+def recruiterState (b leaf : Bool) : State :=
+  ⟨{s 1,s 2,s 3,u 1 0},
+    {{s 1,s 2},{s 1,s 3},{s 1,u 1 0}},
+    fun v => if v = u 1 0 then leaf else b⟩
+
+macro "finite_check" : tactic => `(tactic|
+  simp +decide [Finset.filter_insert, Finset.filter_empty, Finset.filter_singleton,
+    Finset.sdiff_singleton_eq_erase, Finset.sdiff_insert,
+    Finset.image_insert, Finset.insert_subset_iff, Finset.card_insert_eq_ite,
+    Admissible, Compatible, GraphCompatible, InducedCompatible,
+    Augmented, Simple, nonseeds, sampledVertices, recruitmentEdges,
+    recruitmentDegree, graphDegree, unsampled, induced,
+    sampledTraitDegree, traitDegree, children,
+    domainA, domainB, domainC, domainCState, domainD, domainDState,
+    dyad, commonNeighbourState, oneLeafData, oneLeafState,
+    recruiterData, recruiterState, s, u] <;> norm_num)
+
+-- T13: both universal implications have all hypotheses realized, with two children.
+example : Admissible (recruiterData true) ∧
+    1 ∈ (recruiterData true).sampled ∧
+    2 ∈ nonseeds (recruiterData true) ∧
+    (recruiterData true).parent 2 = 1 ∧
+    recruitmentDegree (recruiterData true) 1 < (recruiterData true).degree 1 ∧
+    Compatible (recruiterData true) (recruiterState true true) ∧
+    u 1 0 ∈ unsampled (recruiterData true) (recruiterState true true) ∧
+    (∀ k ∈ (recruiterData true).sampled,
+      {s k,u 1 0} ∈ (recruiterState true true).edges ↔ k = 1) ∧
+    (recruiterState true true).trait (u 1 0) = true := by
+  finite_check
+
+-- Also realize the sign branch with observed trait zero.
+example : Admissible (recruiterData false) ∧
+    Compatible (recruiterData false) (recruiterState false true) ∧
+    recruitmentDegree (recruiterData false) 1 < (recruiterData false).degree 1 ∧
+    2 ∈ children (recruiterData false) 1 := by
+  finite_check
+
+macro "stat_check" : tactic => `(tactic|
+  simp +decide [Finset.filter_insert, Finset.filter_empty, Finset.filter_singleton,
+    Finset.sdiff_singleton_eq_erase, Finset.sdiff_insert,
+    Finset.image_insert, Finset.insert_subset_iff, Finset.card_insert_eq_ite,
+    homophily, preferential, HomophilyDefined, PreferentialDefined,
+    hValue, hNumerator, hDenominator, adjacency, z,
+    pValue, pSum, susceptible, sameSusceptible, notYetSampled,
+    graphDegree, nonseeds, domainA, domainB, domainC, domainCState,
+    domainD, domainDState, dyad, oneLeafData, oneLeafState,
+    recruiterData, recruiterState, s, u] <;> norm_num)
+
+-- T13: direct exact values independently verify the full sum in both sign cases.
+example : pValue (recruiterData true) (recruiterState true true) = 0 ∧
+    pValue (recruiterData true) (recruiterState true false) = 5/12 ∧
+    pValue (recruiterData false) (recruiterState false true) = 5/12 ∧
+    pValue (recruiterData false) (recruiterState false false) = 0 := by
+  stat_check
+
+-- T14: all four concrete domains have genuine compatible witnesses.
+example : Admissible domainA ∧ Compatible domainA (dyad false false) ∧
+    Admissible domainB ∧ Compatible domainB (dyad false true) ∧
+    Admissible domainC ∧ Compatible domainC domainCState ∧
+    Admissible domainD ∧ Compatible domainD (domainDState true true true) := by
+  finite_check
+
+example (b c d : Bool) : Compatible domainD (domainDState b c d) := by
+  finite_check
+
+-- Undefined quotients are checked by raw numerator/denominator plus Option.none.
+example : hNumerator (dyad false false) = 0 ∧
+    hDenominator (dyad false false) = 0 ∧
+    homophily (dyad false false) = none ∧
+    preferential domainA (dyad false false) = some 0 ∧
+    hNumerator (dyad false true) = -1/2 ∧
+    hDenominator (dyad false true) = 1/2 ∧
+    preferential domainB (dyad false true) = none ∧
+    homophily domainCState = none ∧
+    preferential domainC domainCState = none := by
+  stat_check
+
+example : homophily (domainDState false false false) = some (-3/5) ∧
+    homophily (domainDState true false false) = some (-1/3) ∧
+    homophily (domainDState true true false) = some (-1/7) ∧
+    hNumerator (domainDState true true true) = 0 ∧
+    hDenominator (domainDState true true true) = 0 ∧
+    homophily (domainDState true true true) = none := by
+  stat_check
+
+-- T15: one admissible input meets both independent whole-set domain conditions.
+example : Admissible oneLeafData ∧ Compatible oneLeafData (oneLeafState false) ∧
+    Simple (oneLeafState false) ∧ 0 < (oneLeafState false).edges.card ∧
+    0 < sampledTraitDegree oneLeafData false ∧
+    0 < sampledTraitDegree oneLeafData true ∧
+    oneLeafData.seeds.card < oneLeafData.sampled.card := by
+  finite_check
+
+example : HomophilyDefined (oneLeafState false) ∧
+    PreferentialDefined oneLeafData (oneLeafState false) ∧
+    homophily (oneLeafState false) = some (-1) ∧
+    preferential oneLeafData (oneLeafState false) = some 0 := by
+  stat_check
+
+-- T15: the separate h condition can hold with no recruitment event (Result 2 input).
+example : 0 < sampledTraitDegree domainB false ∧
+    0 < sampledTraitDegree domainB true ∧
+    ¬ domainB.seeds.card < domainB.sampled.card ∧
+    (∃ i ∈ domainB.sampled, ∃ j ∈ domainB.sampled,
+      recruitmentDegree domainB i < domainB.degree i ∧
+      recruitmentDegree domainB j < domainB.degree j ∧
+      domainB.trait i ≠ domainB.trait j) := by
+  refine ⟨?_, ?_, ?_, 1, ?_, 2, ?_, ?_, ?_, ?_⟩ <;> finite_check
+
+-- T16: hypotheses of the impossibility and corrected-schedule parts are nonempty.
+example : ∃ T : ℕ → ℝ, (∀ n, 0 < T n) ∧ Monotone T := by
+  exact ⟨fun _ => 1, by norm_num, fun _ _ _ => le_rfl⟩
+example : ∃ ε T₁ : ℝ, 0 < ε ∧ 1/(ε*Real.log 2) ≤ T₁ := by
+  exact ⟨1, 1/Real.log 2, by norm_num⟩
+example : ∃ ε D t : ℝ, 0 < ε ∧ 2 ≤ t ∧ 0 ≤ D*ε ∧ D*ε ≤ 1 := by
+  exact ⟨1, 1, 2, by norm_num⟩
+example : (0 : ℝ) ≤ 0*1 ∧ 0*1 ≤ 1 ∧
+    (0 : ℝ) ≤ (1/2)*1 ∧ (1/2)*1 ≤ 1 := by norm_num
+
+-- T17: nonempty graph-compatible examples, including loss of exact degrees.
+example : Admissible domainB ∧ GraphCompatible domainB commonNeighbourState ∧
+    GraphCompatible domainB (dyad false true) ∧
+    InducedCompatible domainB (induced domainB commonNeighbourState) ∧
+    graphDegree commonNeighbourState (s 1) = 1 ∧
+    graphDegree commonNeighbourState (s 2) = 1 ∧
+    graphDegree (induced domainB commonNeighbourState) (s 1) = 0 ∧
+    graphDegree (induced domainB commonNeighbourState) (s 2) = 0 ∧
+    ¬ GraphCompatible domainB (induced domainB commonNeighbourState) ∧
+    GraphCompatible domainB (induced domainB (dyad false true)) := by
+  finite_check
+
+-- T13 existential witness: both displayed trait assignments are compatible,
+-- related by the required single flip, and define genuine partial p values.
+example (b leaf : Bool) :
+    Compatible (recruiterData b) (recruiterState b leaf) := by
+  finite_check
+
+example (b : Bool) : flipTrait (recruiterState b true) (u 1 0) =
+    recruiterState b false := by
+  unfold flipTrait recruiterState
+  congr 1
+  funext v
+  by_cases hv : v = u 1 0 <;> simp [Function.update, hv]
+
+example : preferential (recruiterData true) (recruiterState true true) = some 0 ∧
+    preferential (recruiterData true) (recruiterState true false) = some (5/12) ∧
+    preferential (recruiterData false) (recruiterState false true) = some (5/12) ∧
+    preferential (recruiterData false) (recruiterState false false) = some 0 := by
+  stat_check
+
+example (b leaf : Bool) :
+    (susceptible (recruiterData b) (recruiterState b leaf) 1 2).card = 3 ∧
+    (susceptible (recruiterData b) (recruiterState b leaf) 1 3).card = 2 := by
+  stat_check
+
+end Audit

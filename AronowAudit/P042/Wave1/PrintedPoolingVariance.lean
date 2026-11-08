@@ -3,7 +3,7 @@ import AronowAudit.P042.Wave1.SixAtomic.N1
 import AronowAudit.P042.Wave1.SixAtomic.N2
 import AronowAudit.P042.Wave1.PrintedPoolingVariance.N3
 
-/-! Refutation of the unrestricted pooling-variance assertion (P042-T5). -/
+/-! Refutation of the exact unrestricted pooling-variance contract. -/
 
 set_option autoImplicit false
 
@@ -22,6 +22,9 @@ theorem printed_pooling_variance_refuted :
           (totalWeight (fun j => variance (D j) μ))⁻¹ := by
   exact PrintedPoolingVariance.assemble
     SixAtomic.n1_proof SixAtomic.n2_proof PrintedPoolingVariance.n3_proof
+
+example : AronowAudit.P042.Wave1.PrintedPoolingVariance.Target :=
+  printed_pooling_variance_refuted
 
 end
 

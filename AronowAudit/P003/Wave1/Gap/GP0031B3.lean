@@ -3,7 +3,10 @@ import Mathlib.Data.List.Nodup
 import Mathlib.Data.List.Perm.Basic
 import Mathlib.Order.ConditionallyCompleteLattice.Finset
 
-
+/-!
+Drafts for GP0031B3. No Lean process was used to prepare this module.
+The local decidability convention is the one in P003_Audit.
+-/
 
 namespace AronowAudit.P003.Wave1
 
@@ -247,5 +250,7 @@ theorem balanced_mean_symmetry_proof (v : Counts) (m : ℕ) (hm : 0 < m)
     have he : estimate (observed v (t24_complement v q)) = tau v-t ↔
         estimate (observed v q) = tau v+t := by constructor <;> intro h <;> linarith
     simp only [he]
+
+example : type_of% @AronowAudit.P003.balanced_mean_symmetry := balanced_mean_symmetry_proof
 
 end AronowAudit.P003.Wave1

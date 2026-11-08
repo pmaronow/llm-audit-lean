@@ -2,8 +2,9 @@ import AronowAudit.P018.P018_Audit
 import Mathlib.Probability.Independence.Basic
 
 /-!
-Repeated and record-weighted finite target corrections using a common
-finite projection argument.
+Drafts for the repeated and record-weighted finite target corrections.
+No Lean process was run while preparing this file.  The common finite
+projection argument below does not use either held correction theorem.
 -/
 
 noncomputable section
@@ -17,7 +18,7 @@ set_option maxHeartbeats 2000000
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 
-/-! Common finite projection helpers, followed by the repeated theorem. -/
+/-! Record 3: common finite projection helpers, followed by the repeated theorem. -/
 
 private theorem repeatedCorrection_endpoints_ne {N : ℕ} (d : Dyad N) :
     firstUnit d ≠ secondUnit d := by
@@ -270,9 +271,9 @@ private theorem repeatedCorrection_finite_contract {Ω : Type*} [MeasurableSpace
     field_simp [hc] <;> ring
   rw [hscalar]
 
-/-- Finite projection identities instantiated by the finite record sums.
-The normalization is a parameter so that repeated and weighted targets use
-their respective denominators. -/
+/-- The shared contract instantiated by the finite record sums.  Its
+normalization is a parameter so that repeated and weighted targets use
+their respective literal denominators. -/
 private theorem repeatedCorrection_record_contract {U : Type*} [MeasurableSpace U]
     {k N : ℕ} (R : RepeatedKernel U k) (hR : RepeatedAtSize R N)
     (w : (d : Dyad N) → Fin (R.T N d) → ℝ)
@@ -374,7 +375,10 @@ theorem repeated_target_correction_proof {U : Type*} [MeasurableSpace U] {k N : 
   intro S
   exact ⟨h1, h2, h3, h4⟩
 
-/-! Finite projection identities with the dyad normalization. -/
+example : type_of% @AronowAudit.P018.repeated_target_correction :=
+  repeated_target_correction_proof
+
+/-! Record 4: the same contract with the literal dyad normalization. -/
 
 private theorem weightedCorrection_D_pos (N : ℕ) (hN : 2 ≤ N) : 0 < Dreal N := by
   have hn : (2 : ℝ) ≤ N := by exact_mod_cast hN
@@ -399,5 +403,8 @@ theorem weighted_target_correction_proof {U : Type*} [MeasurableSpace U] {k N : 
   have hc : Dreal N ≠ 0 := ne_of_gt (weightedCorrection_D_pos N hN)
   have h := repeatedCorrection_record_contract R hR w (Dreal N) hc hH
   simpa only [recordWeightedH, recordWeightedTarget] using h
+
+example : type_of% @AronowAudit.P018.weighted_target_correction :=
+  weighted_target_correction_proof
 
 end AronowAudit.P018.Wave1

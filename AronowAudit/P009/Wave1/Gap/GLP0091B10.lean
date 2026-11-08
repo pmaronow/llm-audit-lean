@@ -11,10 +11,11 @@ noncomputable section
 attribute [local instance] Classical.propDecidable
 set_option maxHeartbeats 1500000
 
-/- The following measure-theoretic covariance lemmas are adapted from
-StatLean/Stat-Lean, StatLean/TimeSeries/Mixing/Inequalities.lean and Defs.lean
-(Apache-2.0; see AronowAudit/External/StatLean/LICENSE and NOTICE at the repository
-root). Only the bounded covariance and Davydov proofs and their helpers are included. -/
+/- The following measure-theoretic covariance lemmas are extracted from
+StatLean/Stat-Lean, commit e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2,
+StatLean/TimeSeries/Mixing/Inequalities.lean and Defs.lean (Apache-2.0;
+see AronowAudit/External/StatLean/LICENSE). Only the bounded covariance
+and Davydov proofs and their helpers are included. -/
 namespace t45_donor
 open MeasureTheory ProbabilityTheory
 open scoped ProbabilityTheory ENNReal
@@ -109,13 +110,13 @@ private lemma abs_integral_mul_sub_le_of_setIntegral_bound
     _ ≤ C * (2 * K) := mul_le_mul_of_nonneg_left hW2K hC
     _ = 2 * C * K := by ring
 
-/-- Billingsley’s bounded covariance inequality: `m₁`/`m₂`-measurable bounded factors have
+/-- **FY Proposition 2.5(ii) (Billingsley)**: `m₁`/`m₂`-measurable bounded factors have
 covariance at most `4 α C₁ C₂`. -/
 theorem abs_covariance_le_of_bounded {m₁ m₂ mΩ : MeasurableSpace Ω} {μ : Measure Ω}
     [IsProbabilityMeasure μ] (h₁ : m₁ ≤ mΩ) (h₂ : m₂ ≤ mΩ)
     {f g : Ω → ℝ} (hf : Measurable[m₁] f) (hg : Measurable[m₂] g)
     {C₁ C₂ : ℝ}
-    -- Almost-sure bounds on the two factors.
+    -- USER-INPUT: uniform bounds; FY Prop 2.5(ii)
     (hfC : ∀ᵐ ω ∂μ, |f ω| ≤ C₁) (hgC : ∀ᵐ ω ∂μ, |g ω| ≤ C₂) :
     |cov[f, g; μ]| ≤ 4 * alphaMixCoeff μ m₁ m₂ * C₁ * C₂ := by
   set α := alphaMixCoeff μ m₁ m₂ with hα
@@ -286,16 +287,16 @@ private lemma covariance_eq_sub' {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
   ring
 
 set_option maxHeartbeats 1000000 in
--- Davydov's truncation argument uses four Hölder applications and a limit.
-
-/-- Davydov’s covariance inequality: for `p, q > 1` with `1/p + 1/q < 1`,
-`|Cov(f, g)| ≤ 8 α^{1 − 1/p − 1/q} ‖f‖_p ‖g‖_q`. The proof uses truncation against the
-bounded case; see Doukhan §1.2.2. -/
+-- Davydov's truncation argument is long (four Hölder applications and a limit);
+-- the default heartbeat budget is not enough.
+/-- **FY Proposition 2.5(i) (Davydov)**: for `p, q > 1` with `1/p + 1/q < 1`,
+`|Cov(f, g)| ≤ 8 α^{1 − 1/p − 1/q} ‖f‖_p ‖g‖_q`. Built in full (truncation against the
+bounded case; FY cites Doukhan §1.2.2). -/
 theorem abs_covariance_le_davydov {m₁ m₂ mΩ : MeasurableSpace Ω} {μ : Measure Ω}
     [IsProbabilityMeasure μ] (h₁ : m₁ ≤ mΩ) (h₂ : m₂ ≤ mΩ)
     {f g : Ω → ℝ} (hf : Measurable[m₁] f) (hg : Measurable[m₂] g)
     {p q : ℝ}
-    -- Integrability exponents.
+    -- USER-INPUT: integrability exponents; FY Prop 2.5(i)
     (hp : 1 < p) (hq : 1 < q) (hpq : 1 / p + 1 / q < 1)
     (hfLp : MemLp f (ENNReal.ofReal p) μ) (hgLq : MemLp g (ENNReal.ofReal q) μ) :
     |cov[f, g; μ]|
@@ -1426,6 +1427,7 @@ theorem t45_hajek_op (S : Study) (k : ℝ) (q s : MomentIndex)
     _ ≤ ε := by linarith only [hA true, hA false, hD true, hD false]
 
 
+
 /-- A deterministic centering error of order a preserves stochastic order a. -/
 theorem t45_op_recenter (S : Study) (T : (t : ℕ) → Assignment (S.N t) → ℝ)
     (θ φ a : ℕ → ℝ) (B : ℝ) (hB : 0 ≤ B)
@@ -1445,7 +1447,7 @@ theorem t45_op_recenter (S : Study) (T : (t : ℕ) → Assignment (S.N t) → �
       _ ≤ _ := abs_add_le _ _
   nlinarith [hshift t]
 
-/-- P009-T45: arbitrary-design consistency and stochastic rates for EATE. -/
+/-- P009-T45 with the frozen statement and no added hypotheses. -/
 theorem arbitrary_EATE_consistency_proof (S : Study) (k : ℝ) (q s : MomentIndex)
     (hReg : RegularMix S k q s) (hMax : MaximalMoments S q s)
     (hRestricted : Restricted S)
@@ -1484,6 +1486,8 @@ theorem arbitrary_EATE_consistency_proof (S : Study) (k : ℝ) (q s : MomentInde
     (6*k^2) (by positivity) hb hHJa
   exact ⟨BernoulliCompletion.probability_of_op_zero S _ a hlim hHT,
     BernoulliCompletion.probability_of_op_zero S _ a hlim hHJ, hHT, hHJ⟩
+
+example : type_of% @AronowAudit.P009.arbitrary_EATE_consistency := arbitrary_EATE_consistency_proof
 
 end
 end AronowAudit.P009.Wave1

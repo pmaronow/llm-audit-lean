@@ -1,0 +1,210 @@
+import SAP.P007.Defs
+open scoped BigOperators
+open SAP.P007 Classical
+
+noncomputable def pointLaw {α : Type*} [Fintype α] [DecidableEq α] (a : α) : Law α where
+  weight x := if x = a then 1 else 0
+  nonneg x := by split <;> norm_num
+  total := by simp
+
+lemma point_probability {α : Type*} [Fintype α] [DecidableEq α]
+    (a : α) (P : α → Prop) :
+    probability (pointLaw a) P = if P a then 1 else 0 := by
+  classical
+  unfold probability pointLaw
+  have he : ∀ x, (if P x then (if x = a then (1:ℝ) else 0) else 0) =
+      if x = a then (if P a then 1 else 0) else 0 := by
+    intro x
+    by_cases h : x = a <;> simp_all
+  simp_rw [he]
+  simp
+
+noncomputable def firstNull : Law (SAP.P007.Array 1 2) :=
+  pointLaw (fun _ j => decide (j.val = 0))
+
+lemma firstNull_s1 : survival firstNull 0 1 = 0 := by
+  simp [survival, firstNull, point_probability, prefixObserved, Fin.forall_fin_two]
+
+lemma firstNull_s2 : survival firstNull 0 2 = 0 := by
+  simp [survival, firstNull, point_probability, prefixObserved, Fin.forall_fin_two]
+
+#print axioms point_probability
+
+lemma point_rowIndependent {n h : ℕ} (a : SAP.P007.Array n h) :
+    rowIndependent (pointLaw a) := by
+  intro E
+  simp only [point_probability]
+  by_cases hh : ∀ i, E i (a i)
+  · simp only [if_pos hh]
+    symm
+    apply Finset.prod_eq_one
+    intro i _
+    exact if_pos (hh i)
+  · obtain ⟨i, hi⟩ := not_forall.mp hh
+    rw [if_neg hh]
+    symm
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+
+lemma firstNull_weight : firstNull.weight = nullFirstWeights := by
+  funext x
+  simp [firstNull, pointLaw, nullFirstWeights, funext_iff]
+
+lemma firstNull_bound (q : ℝ) (hq : 0 ≤ q) (hqlt : q < 1) : observationBound firstNull q := by
+  refine ⟨hq, hqlt, ?_⟩
+  intro i
+  have hi : i = 0 := Fin.eq_zero i
+  subst i
+  refine ⟨by simp [firstNull_s1, hq], ?_⟩
+  intro j hj hjlt hpos
+  have he : j = 1 := by omega
+  subst j
+  rw [firstNull_s1] at hpos
+  norm_num at hpos
+
+example : ∃ L : Law (SAP.P007.Array 1 2), L.weight = nullFirstWeights ∧
+    rowIndependent L ∧ observationBound L 0 ∧ survival L 0 1 = 0 ∧
+    survival L 0 2 = 0 ∧ probability L (fun x => x 0 1 = false) = 1 ∧
+    probability L (fun x => x 0 1 = true) = 0 ∧
+    allDeleted L = 1 ∧ (1 - (0 : ℝ)^2)^1 = 1 := by
+  refine ⟨firstNull, firstNull_weight, point_rowIndependent _, firstNull_bound 0 (by norm_num) (by norm_num),
+    firstNull_s1, firstNull_s2, ?_, ?_, ?_, by norm_num⟩
+  · simp [firstNull, point_probability]
+  · simp [firstNull, point_probability]
+  · simp [allDeleted, firstNull, point_probability, prefixObserved]
+
+noncomputable def allNull : Law (SAP.P007.Array 1 2) := pointLaw (fun _ _ => true)
+
+lemma allNull_bound (q : ℝ) (hq : 0 ≤ q) (hqlt : q < 1) : observationBound allNull q := by
+  refine ⟨hq, hqlt, ?_⟩
+  intro i
+  have hi : i = 0 := Fin.eq_zero i
+  subst i
+  have hs : ∀ j, 0 < j → survival allNull 0 j = 0 := by
+    intro j hj
+    simp [survival, allNull, point_probability, prefixObserved, Fin.forall_fin_two, hj]
+  refine ⟨by simp [hs 1 (by norm_num), hq], ?_⟩
+  intro j hj hjlt hpos
+  rw [hs j (by omega)] at hpos
+  norm_num at hpos
+
+example : ∃ L : Law (SAP.P007.Array 1 2), L.weight = fullyMissingWeights ∧
+    ∀ q : ℝ, 0 ≤ q → q < 1 → rowIndependent L ∧ observationBound L q ∧
+      ∀ j : Fin 2, probability L (fun x => x 0 j = true) = 1 := by
+  refine ⟨allNull, ?_, ?_⟩
+  · funext x
+    simp [allNull, pointLaw, fullyMissingWeights, funext_iff]
+  · intro q hq hqlt
+    refine ⟨point_rowIndependent _, allNull_bound q hq hqlt, ?_⟩
+    intro j
+    simp [allNull, point_probability]
+
+example : ∃ L : Law (SAP.P007.Array 1 2), L.weight = nullFirstWeights ∧
+    rowIndependent L ∧ observationBound L (1/2) ∧
+    survival L 0 1 = 0 ∧ survival L 0 2 = 0 ∧
+    (∀ v : ℝ, 0 ≤ v → v ≤ 1 → survival L 0 2 = v * survival L 0 1) ∧
+    (1/2 : ℝ) < 1 ∧ survival L 0 2 ≤ (1/2 : ℝ)^2 ∧
+    allDeleted L = 1 ∧ (3/4 : ℝ) ≤ allDeleted L := by
+  refine ⟨firstNull, firstNull_weight, point_rowIndependent _,
+    firstNull_bound (1/2) (by norm_num) (by norm_num), firstNull_s1, firstNull_s2, ?_⟩
+  simp only [firstNull_s1, firstNull_s2]
+  norm_num [allDeleted, firstNull, point_probability, prefixObserved]
+
+-- All hypotheses of T5, including the independence needed by its final clause.
+example : ∃ (n h : ℕ), 0 < n ∧ 0 < h ∧ ∃ (L : Law (SAP.P007.Array n h)) (q : ℝ),
+    observationBound L q ∧ rowIndependent L := by
+  exact ⟨1, 2, by norm_num, by norm_num, firstNull, 1/2,
+    firstNull_bound (1/2) (by norm_num) (by norm_num), point_rowIndependent _⟩
+
+noncomputable def mixLaw {α : Type*} [Fintype α] (L R : Law α) : Law α where
+  weight x := (L.weight x + R.weight x) / 2
+  nonneg x := div_nonneg (add_nonneg (L.nonneg x) (R.nonneg x)) (by norm_num)
+  total := by
+    rw [← Finset.sum_div, Finset.sum_add_distrib, L.total, R.total]
+    norm_num
+
+lemma mix_probability {α : Type*} [Fintype α] (L R : Law α) (P : α → Prop) :
+    probability (mixLaw L R) P = (probability L P + probability R P) / 2 := by
+  unfold probability mixLaw
+  have he x : (if P x then (L.weight x + R.weight x) / 2 else 0) =
+      ((if P x then L.weight x else 0) + (if P x then R.weight x else 0)) / 2 := by
+    split <;> simp_all
+  simp_rw [he]
+  rw [← Finset.sum_div, Finset.sum_add_distrib]
+
+noncomputable def rowA : Row 3 := fun j => decide (j.val = 0)
+noncomputable def rowB : Row 3 := fun j => decide (j.val = 1)
+
+noncomputable def laterLaw : Law (SAP.P007.Array 2 3) :=
+  mixLaw (mixLaw (pointLaw ![rowA, rowA]) (pointLaw ![rowA, rowB]))
+         (mixLaw (pointLaw ![rowB, rowA]) (pointLaw ![rowB, rowB]))
+
+lemma laterLaw_independent : rowIndependent laterLaw := by
+  intro E
+  simp only [laterLaw, mix_probability, point_probability, Fin.forall_fin_two,
+    Fin.prod_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]
+  by_cases h0a : E 0 rowA <;> by_cases h0b : E 0 rowB <;>
+    by_cases h1a : E 1 rowA <;> by_cases h1b : E 1 rowB <;> norm_num [*]
+
+lemma laterLaw_weight : laterLaw.weight = laterNullWeights := by
+  have hab : rowA ≠ rowB := by
+    intro hh
+    have he0 := congrFun hh (0 : Fin 3)
+    norm_num [rowA, rowB] at he0
+  have hba : rowB ≠ rowA := Ne.symm hab
+  funext x
+  have he (a b : Row 3) : (x = ![a, b]) ↔ x 0 = a ∧ x 1 = b := by
+    constructor
+    · intro h
+      subst x
+      simp
+    · rintro ⟨ha, hb⟩
+      funext i
+      fin_cases i <;> simp_all
+  simp only [laterLaw, mixLaw, pointLaw, laterNullWeights, Fin.prod_univ_two]
+  change
+    (((if x = ![rowA, rowA] then (1:ℝ) else 0) + (if x = ![rowA, rowB] then 1 else 0)) / 2 +
+     ((if x = ![rowB, rowA] then 1 else 0) + (if x = ![rowB, rowB] then 1 else 0)) / 2) / 2 =
+    ((1/2) * (if x 0 = rowA then 1 else 0) + (1 - 1/2) * (if x 0 = rowB then 1 else 0)) *
+    ((1/2) * (if x 1 = rowA then 1 else 0) + (1 - 1/2) * (if x 1 = rowB then 1 else 0))
+  simp_rw [he]
+  by_cases h0a : x 0 = rowA <;> by_cases h0b : x 0 = rowB <;>
+    by_cases h1a : x 1 = rowA <;> by_cases h1b : x 1 = rowB <;> norm_num [*]
+
+lemma laterLaw_s (i : Fin 2) : survival laterLaw i 1 = 1/2 ∧
+    survival laterLaw i 2 = 0 ∧ survival laterLaw i 3 = 0 := by
+  fin_cases i <;>
+    norm_num [survival, laterLaw, mix_probability, point_probability, prefixObserved,
+      rowA, rowB, Fin.forall_fin_succ]
+
+lemma laterLaw_bound : observationBound laterLaw (1/2) := by
+  refine ⟨by norm_num, by norm_num, ?_⟩
+  intro i
+  obtain ⟨h1, h2, h3⟩ := laterLaw_s i
+  refine ⟨by simp [h1], ?_⟩
+  intro j hj hjlt hpos
+  have hc : j = 1 ∨ j = 2 := by omega
+  rcases hc with rfl | rfl
+  · norm_num [h1, h2]
+  · rw [h2] at hpos
+    norm_num at hpos
+
+lemma laterLaw_deleted : allDeleted laterLaw = 1 := by
+  norm_num [allDeleted, laterLaw, mix_probability, point_probability, prefixObserved,
+    rowA, rowB, Fin.forall_fin_succ]
+
+example : ∃ L : Law (SAP.P007.Array 2 3), L.weight = laterNullWeights ∧
+    rowIndependent L ∧ observationBound L (1/2) ∧
+    (∀ i, survival L i 1 = 1/2 ∧ survival L i 2 = 0 ∧ survival L i 3 = 0 ∧
+      0 < survival L i 1 ∧ survival L i 2 / survival L i 1 = 0 ∧
+      survival L i 3 ≤ (1/8 : ℝ)) ∧
+    allDeleted L = 1 ∧ (49/64 : ℝ) ≤ allDeleted L := by
+  refine ⟨laterLaw, laterLaw_weight, laterLaw_independent, laterLaw_bound, ?_, laterLaw_deleted, ?_⟩
+  · intro i
+    obtain ⟨h1, h2, h3⟩ := laterLaw_s i
+    norm_num [h1, h2, h3]
+  · rw [laterLaw_deleted]
+    norm_num
+
+#print axioms laterLaw_independent
+#print axioms laterLaw_bound
+#print axioms laterLaw_deleted

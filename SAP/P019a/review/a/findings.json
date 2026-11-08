@@ -1,0 +1,114 @@
+[
+  {
+    "target_id": "P019-T1",
+    "theorem": "SAP.P019a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No antecedent. The five binomial masses are nonnegative and sum to 1; their mean and variance are 8/5 and 24/25. Exact arithmetic gives 3109/3125 and 3734/3125 for the two mixtures at rho=1/5. Independent Bernoulli affected status and fair assignment could realize the mixture on a finite product space; no such identification is claimed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T2",
+    "theorem": "SAP.P019a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "rho=1/5 satisfies both real interval hypotheses. Both endpoints rho=0,1 are allowed as well. The underlying five-point binomial probability law is genuine; the contrast identities also follow by expanding the finite sum as an affine function of rho.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T3",
+    "theorem": "SAP.P019a.T3",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "Challenge/Part1.lean:25 and record.json[P019-T3].restriction say that the numerical population-cell means are omitted. Defs/Part5.lean:59 explicitly retains S.listMean true false=5/6, which is E[V | Z=1,Y=0]. The restriction must distinguish this retained mean from the omitted other means. The theorem itself and its retained counterexamples are correct."
+    ],
+    "fix": "Restriction: Retains the treated negative-cell population mean E[V | Z=1,Y=0]=5/6, but omits the other numerical population-cell means, all numerical population-cell probabilities and variances, marginal variances, mu and truth-rate values, and the nine-atom observable-law table. Omits the n=1 individual expectations, the general conditional-binomial law and missing-mass formula for arbitrary k, and the assertion that the missing-mass factor is never one. The k=0,1,2,4 factors are numerical expressions; the actual conditioned count probability is asserted only for n=1. Omits the n=4 individual conditional moments and the separate equality of the conditional variances of muHat and AB. Empty means are explicitly completed by zero.",
+    "nonvacuity": "The 16 equiprobable atoms are four independent fair bits X,C,W,Z, with Y=XC and V=W+XZ. In (z,y) order 00,01,10,11 the cell masses are 3/8,1/8,3/8,1/8 and variances are 1/4,1/4,17/36,1/4; Var(Y)=3/16 and Var(Z)=1/4. Exact enumeration gives P_4(occupied)=1431/2048, the stated conditional variance 141205/404496, and product-formula discrepancy -1157/44944. The conditional denominators are positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T4",
+    "theorem": "SAP.P019a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "finiteSampleWitness satisfies all standing assumptions (exactly checked). At n=2 an ordered pair of atoms from cells 10 and 00 has positive mass, so occupied conditioning is nonempty. All four population cells have positive mass, hence every label-pattern fibre has positive mass and every K=k with 0<=k<=n has positive probability. At sample sizes n+2 the covariance is always conditioned on a positive-mass event. The conditional formulas are independent of the arbitrary real empty-mean completions c1,c0.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P019-T5",
+    "theorem": "SAP.P019a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The eight equiprobable atoms have independent fair X,W,Z, Y=X, V=W+XZ. Each (Z,Y) cell has probability 1/4 and conditional variance 1/4, and Var(Y)=Var(Z)=1/4. Standing was proved in scratch/Nonvacuity.lean using only Defs. The three point probabilities are respectively 1/2,0,1/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T6",
+    "theorem": "SAP.P019a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "distributionWitness satisfies monotonicity, the design identity and whole-triple treatment independence; both affirmative cells have probability 1/4. Those premises and standing were independently Lean-checked in scratch/Nonvacuity.lean. For this instance P(Y=1)=1/2, so all displayed conditional probabilities are ordinary positive-denominator conditional probabilities.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T7",
+    "theorem": "SAP.P019a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The 16 equiprobable atoms have independent B,C,X,Z, W=B+C, Y=X*1{C=Z}, V=W+XZ. Cell probabilities are 3/8,1/8,3/8,1/8; cell variances are 17/36,1/4,17/36,1/4. Exact enumeration verifies delta=0, beta=2 and failure of independence of Z and (W,X,Y). Assumptions 1,2,4 are jointly satisfied; Assumption 3 is not assumed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T8",
+    "theorem": "SAP.P019a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "distributionWitness has both affirmative cells of mass 1/4 and satisfies Assumptions 1-3. diagnosisWitness has both affirmative cells of mass 1/8, satisfies Assumptions 1,2 and beta!=1, and fails Assumption 3; thus the nontrivial diagnostic antecedents are also inhabited. The finite exact checks establish these facts.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T9",
+    "theorem": "SAP.P019a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All 128 atoms have mass 1/128. Exact enumeration verifies all five standing-assumption conjunctions, beta_j=1, each assignment-vector probability 1/32, the pointwise influence identities, and the complete second-moment matrix (diagonal 4,4,4,4,2; off-diagonal 2). The limiting law is the stated genuine Gaussian pushforward; its p-values are strictly positive at every finite real input, and the displayed first and second moment integrability conclusions give an ordinary finite variance.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P019-T10",
+    "theorem": "SAP.P019a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take 128 equiprobable atoms consisting of independent fair bits D,B,Z0,...,Z4. For every list set X_j=Y_j=D, W_j=1+B, V_j=W_j+D*Z_j, and use the same law. Each list has four cells of mass 1/4 and conditional variance 1/4. The latent vector is a function of (D,B), independent of the full product assignment vector, so the factorization against every real f holds. scratch/exact_audit.py verifies the full joint distribution factorization, not only pairwise independence.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P019-T11",
+    "theorem": "SAP.P019a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "distributionWitness satisfies standing, has both assignment arms and all four cells of positive mass, and P(Y=1)=1/2. For alpha=1/2, the quantile set is nonempty and bounded below because the standard normal CDF tends to 1 at +infinity and to 0 at -infinity; the same argument works for every 0<alpha<1. The asymptotic variance is 3/4>0. A Lean check on the n=8 identity sample gives muVarianceHat=5/32, confirming that the n-normalization is active on a sample with two observations in every cell. That normalization agrees with the published page-49 display n*estimatedVar=plug-in bracket.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P015b.T9",
+    "target_id": "P015-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the specified two full-rank groups, identity coefficient covariance and unit noise variances, group OLS vectors, precision matrices, raw GLS value (68/61,-10/61), impossibility of scalar slope pooling and arbitrary-vector slope formula. The matrix inverse/normalization checks are ordinary nonsingular operations, independently verified in scratch/exact_checks.py."
+  },
+  {
+    "theorem": "SAP.P015b.T10",
+    "target_id": "P015-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All four mandatory finite-matrix obligations (i)-(iv) are faithfully present, including the scalar-row iff for every coefficient collection and the block-diagonal sufficient case. The theorem exports the finite algebra, without the separate within-group causal probability-limit assertion in the corrected prose. The optional vanishing-off-treatment limit is explicitly not required by the canonical note. There is no claim about consistency of a feasible estimator with estimated covariance components. Hypotheses are realized by G=q=n_0=1, Z_0=[1], S=[1], variance 1."
+  },
+  {
+    "theorem": "SAP.P015b.T20",
+    "target_id": "P015-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the canonical population interpretation of scaled leverage, every exact rational, both conditional averages and every requested decimal/percentage rounding. The canonical definitions expressly exclude a finite-iid-sample expected-leverage interpretation. Positive profile masses are 1/4 and 3/4 and the moment determinant is 7/200; these facts were checked in Lean, with the full numerical calculation also checked independently."
+  },
+  {
+    "theorem": "SAP.P015b.T14",
+    "target_id": "P015-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains the injectivity-based impossibility of one constant p equaling two logistic predictions at fixed controls, nonzero treatment coefficient and distinct treatments. It omits the corrected conditional-probability logistic model and its parameter-existence/model-specification component. The scalar x can represent any fixed control contribution; unrestricted p strengthens the retained impossibility harmlessly. The premises have the instance beta=1,d=0,dprime=1."
+  },
+  {
+    "theorem": "SAP.P015b.T21",
+    "target_id": "P015-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The affine predictor/normal-equation identity and unique affine root with OLS treatment scaling match (ii)-(iii). The logistic directional derivative for every theta and direction represents the gradient in (i), but only under nonsingular W-transpose-W, unit intercept, binary outcomes and nonzero c in the shared second conjunct, whereas (i) has no rank requirement. The unrestricted first conjunct does cover (ii), including c=0. The exact-ML remainder identity and illustrative 20-observation comparison in finite_lemmas are not separate exported conclusions; the numbered exact content is (i)-(iii). Full-rank hypotheses are realized by W=[[1,0],[1,1]], K=0, binary Y and c=1."
+  },
+  {
+    "theorem": "SAP.P015b.T11",
+    "target_id": "P015-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "All parts (a)-(e) of the canonical counterexample are stated: the two grouped binomial cells encode the 200 binary observations, the unique finite fit and full-rank Gram determinant, the correct center and predictors, exact complex radius pi, both errors for every genuine Taylor degree, and the nonzero treatment-equation error. No surrogate polynomial or invalid predictor domain is used. The two grouped counts are interior; all degrees through 80 were additionally checked numerically without treating that finite check as a proof of the universal bound."
+  },
+  {
+    "theorem": "SAP.P015b.T15",
+    "target_id": "P015-T15",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Implements the actual OLS coefficient from the locally linear outcome, conditional unconfoundedness, linear treatment mean, iid sampling and the eight-family regularity. Adds standard Borel ambient space and eventual almost-sure full-sample nonsingularity, plus explicit treatment and weighted-effect integrability. Its separate moment proposition gives the DY0 conditional product and residual-effect conditional zero, but not the separately written residual-effect conditional-product factorization. The supporting finite partial-regression/decomposition identities and intermediate limits in the brief are not separately exported. No counterexample to (1)+(3) alone is stated. These are genuine restrictions, particularly eventual finite-sample almost-sure rank, which excludes nondegenerate iid binary treatments. Nonvacuity is supplied by iid Uniform[0,1] treatment, K=0, Y0=0 and constant effect on the standard Borel infinite product."
+  },
+  {
+    "theorem": "SAP.P015b.T22",
+    "target_id": "P015-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The headline probability limit and all eight sufficient moment families are faithfully represented. The ambient space must additionally be standard Borel and every sufficiently large finite sample must have full-rank regression almost surely; explicit treatment and weighted-effect integrability are also present. This is stronger than the canonical population rank and probability-limit reading. The finite partial-regression/decomposition identities, conditional-variance identity and intermediate estimator limits listed as proof lemmas are not additional conclusions of this stub. Its premises are jointly realized by the continuous iid example described for T15."
+  },
+  {
+    "theorem": "SAP.P015b.T23",
+    "target_id": "P015-T23",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Exactly the ratio using squared fitted treatment residuals and its effective-population mean limit, with the seven sufficient moment families. Adds eventual almost-sure nonsingularity of the control regression and positivity of the fitted weight sum, plus explicit treatment/population-weight/weighted-covariate integrability and positive population mean weight. This excludes ordinary finite binary samples having a nonzero chance of a zero fitted residual sum, even though the canonical sufficient reading admits them. The expansion identities in finite_lemmas are supporting material, not exported conclusions. Premises hold for iid Uniform[0,1] treatment, K=0 and Z=D, with all polynomial moments bounded."
+  },
+  {
+    "theorem": "SAP.P015b.T24",
+    "target_id": "P015-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains common independent random assignment, the actual OLS limit E[tau], and the population conditional-mean, centered-weight, product-expectation and cancellation identities. The limit adds a standard Borel ambient space and eventual almost-sure sample nonsingularity, with integrable effect. The identities explicitly impose finite second moment and positive variance. It does not separately state independence of weight and effect or the printed intermediate fitted-weight effect-ratio limit. Independent Uniform[0,1] treatment and constant outcome/effect on the countable product satisfy the limit premises; a two-point treatment with constant effect satisfies the separate population identity premises."
+  },
+  {
+    "theorem": "SAP.P015b.T18",
+    "target_id": "P015-T18",
+    "my_reading_vs_claim": "different",
+    "reason": "The target includes false printed universal statements. The stub retains the valid logistic-ML stationarity implication and supplies a genuine causal Bernoulli square-link maximum-likelihood counterexample to universal mean-only first-order scaling, rather than affirming that scaling. The two populations have mean 1/4 and the same OLS treatment derivative 1, while their unique admissible ML-branch derivatives are 1 and 120/119. Exact score/Hessian checks support these numbers; positive cell masses, interior means and a literal unit law avoid degenerate conventions. It omits the separate substitution claim (B) for the specifically named nonlogistic families, and does not refute every listed family separately. The refutation really contradicts the universal-any-GLM reading of (C)."
+  },
+  {
+    "theorem": "SAP.P015b.T17",
+    "target_id": "P015-T17",
+    "my_reading_vs_claim": "different",
+    "reason": "The target includes false printed implications. The stub proves (A) only for positive-mass profiles of countable measurable-singleton covariates with global finite treatment second moment. It refutes approximately zero effective weight implying failed positivity using an unconfounded family and a consistent fixed-population IPW estimator, refutes exactly zero fitted weight with a positive-probability full-rank sample, and refutes universal pair-specific positivity of the effective law with a multivalued treatment. All cell denominators and density normalizations are positive in these examples. It does not prove a complete identification characterization, all meaningful domains of (A), the exactly-zero population implication, the binary-treatment positive result, or the applied country assertions. The examples refute the printed readings that are actually challenged, without asserting that exactly zero population weight is innocuous."
+  }
+]

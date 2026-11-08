@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P037b.T18",
+    "target_id": "P037-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The full-rank OLS, residual, HC0 and coordinate-integral covariance definitions match the canonical mathematics. Fixed X,y represent the conditional bootstrap calculation, and explicit first/product integrability ensures that totalized Bochner integrals are not used outside their domains. The theorem states the multiplier mean/covariance, all leverage facts, the homoskedastic expected-HC0 shortfall and its positive semidefiniteness, and the positive-norm weighted-row identity/equality criterion. It does not state the second expanded sandwich, coefficient standard-error/normal-Wald formulae, code identification, or the explicit identification of the arbitrary weighted-row ratio with the expected-to-true coefficient variance ratio. These omissions are disclosed in the theorem docstring. Using uncorrelated errors/multipliers is a valid generalization of the benchmark, not a hidden added condition."
+  },
+  {
+    "theorem": "SAP.P037b.T23",
+    "target_id": "P037-T23",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The six group sizes, treatment/composition/outcome rows, coefficient candidates, Gram inverse candidates and HC0 candidate match the canonical data exactly. The inverse/normal-equation/sandwich identities check the hard-coded candidates rather than assuming their correctness. Both levels, all three main quadratic forms, their cross form and comparisons, the residual-control arithmetic 1/5400 and centered-fit certificates are present. The theorem does not separately state rank 3, the predicted difference and variance decomposition, the control residual mean/sample variance, or the square-root interval-width and released-code interpretations. These are the omissions disclosed by the docstring. Its closed finite assertions have no incompatible premises or junk denominators."
+  },
+  {
+    "theorem": "SAP.P037b.T24",
+    "target_id": "P037-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem retains canonical (a)'s prediction expansions and difference, (c)'s decomposition and equality criterion, and the same-sample full-column-rank OLS recentering, residual and HC0 coefficient-variance identities of (d). Quantification over arbitrary coefficients, nuisance averages, real treatment values and symmetric matrices is sound algebraic generalization, and specializes to the canonical fitted model. The theorem omits (b)'s intervals, realized examples of both variance orderings in (c), (e)-(f)'s residual-control failures/certificate, explicit identification of the centered variance with d' V d, and code verification. The docstring expressly lists these omissions. The indexed natural subtraction is guarded by j>=3; both Gram inverses are genuine under the full-rank premise."
+  },
+  {
+    "theorem": "SAP.P037b.T19",
+    "target_id": "P037-T19",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The model uses exactly the canonical potential outcomes and threshold, with school labels shifted from 1..4 to 0..3, all six two-of-four assignments, the correct kept sets, table, expectations, positive weights and constant effect on every nonempty subset. The limit sums over every length-B assignment vector with mass (1/6)^B; it therefore uses independent identically distributed blocks as required by the canonical statement and finite lemmas. The profiling crossproducts and weighted-ratio probability limit are present, but its identification with the OLS treatment coefficient for a general regression on block indicators is omitted, as the docstring discloses. Every finite contrast is defined; the B=0 block-ratio convention is irrelevant to convergence at infinity. This is the canonical constructed counterexample, not a claim that the publication's own printed assertion is false."
+  },
+  {
+    "theorem": "SAP.P037b.T20",
+    "target_id": "P037-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "ProbabilityDesign models a normalized strictly positive finite support, exactly the canonical support convention. The theorem states the fixed-inclusion unit and kept-population IPW identities in (a), the varying-inclusion joint/marginal factor identity in (b), and the same-side threshold sufficiency in (c). The joint/marginal ratio is precisely a conditional probability because its marginal denominator is assumed positive. Fixed inclusion can be represented directly by the parameter a; varying inclusion is represented by A. The sharp-null specialization, T19 instance and its two conditional inclusion probabilities in (d), and code/descriptive assertions are omitted and disclosed. Excluded zero-probability units contribute a zero term under Lean's 0/0 convention; kept-unit denominators and the population cardinality are positive, so this convention does not alter the canonical kept-population identity."
+  }
+]

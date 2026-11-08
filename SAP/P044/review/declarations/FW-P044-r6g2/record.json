@@ -1,0 +1,101 @@
+[
+ {
+  "target_id": "P044-T6",
+  "decision": "whole",
+  "theorem": "SAP.P044.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P044.corrected_baseline_moments",
+   "AronowAudit.P044.halfNormal_mean",
+   "AronowAudit.P044.halfNormal_second_moment",
+   "AronowAudit.P044.baseline_memLp",
+   "AronowAudit.P044.dilated_effects",
+   "AronowAudit.P044.triangle_realized_effects",
+   "AronowAudit.P044.generated_effect_mean",
+   "AronowAudit.P044.generated_effect_scale",
+   "AronowAudit.P044.halfNormal_population_effect"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P044.baseline_mean_shift",
+    "reason": "Not invoked separately; its relevant component is already supplied by a selected aggregate row or its dependencies."
+   },
+   {
+    "lean_name": "AronowAudit.P044.gaussian_halfline_moment",
+    "reason": "Not invoked separately; its relevant component is already supplied by a selected aggregate row or its dependencies."
+   },
+   {
+    "lean_name": "AronowAudit.P044.halfNormal_variance",
+    "reason": "Not invoked separately; its relevant component is already supplied by a selected aggregate row or its dependencies."
+   }
+  ]
+ },
+ {
+  "target_id": "P044-T7",
+  "decision": "whole",
+  "theorem": "SAP.P044.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P044.cycle8_smoothing_counterexample",
+   "AronowAudit.P044.cycle8_profile_counts",
+   "AronowAudit.P044.cycle8_contrast_biases",
+   "SAP.P044.WH.W1.T7_whole",
+   "SAP.P044.WH.W1.T7_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P044.T7WholeStatement"
+ },
+ {
+  "target_id": "P044-T8",
+  "decision": "whole",
+  "theorem": "SAP.P044.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P044.exhaustive_probabilities",
+   "AronowAudit.P044.htMean_expectation",
+   "AronowAudit.P044.exhaustive_smoothing_bias",
+   "AronowAudit.P044.smoothing_bias_multiplier",
+   "AronowAudit.P044.smoothed_not_distribution",
+   "AronowAudit.P044.IndependentBank.independent_bank_expectation"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P044-T9",
+  "decision": "whole",
+  "theorem": "SAP.P044.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P044.interference_iff_not",
+   "AronowAudit.P044.noInterference_iff_same_own",
+   "AronowAudit.P044.peerCount_is_count",
+   "AronowAudit.P044.peerCount_own_independent",
+   "AronowAudit.P044.exposure_cases",
+   "SAP.P044.WH.W1.T9_whole",
+   "SAP.P044.WH.W1.T9_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P044.T9WholeStatement",
+  "declaration_review_round_2": {
+   "finding_source": "fw/round2/T9/r5g2/findings.json",
+   "finding": "not_faithful/minor: both docstrings incorrectly described interference as equivalent to invariance at fixed own treatment.",
+   "resolution": "Corrected both docstrings: interference is the negation of no interference; no interference is equivalent to invariance at fixed own treatment.",
+   "mathematical_statement_changed": false,
+   "proof_changed": false,
+   "decision_changed": false
+  }
+ },
+ {
+  "target_id": "P044-T10",
+  "decision": "restricted",
+  "theorem": "SAP.P044.T10",
+  "restriction": "The finite-law consequences assume zero crossing-edge marginals or explicit accepted-graph no-isolate and no-crossing conditions. Retains identity-block probability algebra, support consequences, edge counts, shares and both expected ratios and their 3/10 gaps. Does not construct the generator law or derive these law hypotheses from the source-code premise and rejection loop.",
+  "rows_used": [
+   "AronowAudit.P044.crossCommunity_probability_zero",
+   "AronowAudit.P044.no_cross_edges_on_support",
+   "AronowAudit.P044.within_community_share",
+   "AronowAudit.P044.returned_graph_expectations"
+  ],
+  "rows_not_used": []
+ }
+]

@@ -1,0 +1,144 @@
+[
+  {
+    "target_id": "P011-T29",
+    "theorem": "SAP.P011c.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For a nondegenerate dependent example, take n=2, p=1, D=(1,1)^T, b=0, Y_1=Y_2 a fair sign, and theta=(1,1). The Gram matrix is 2, all coordinates are square integrable, and both the estimator variance and its covariance-sum expression equal 1. scratch/Check.lean also compiles an explicit n=p=1 Dirac mean model with invertible Gram matrix.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T30",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is asserted. Feasibility of optional edges can be encoded without establishing an objective-preserving reduction, a complexity classification, or an approximation scheme. The canonical claim itself permits omission when the complexity assertion cannot be faithfully stated; the visible package supplies no such complexity definitions or theorem.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P011-T31",
+    "theorem": "SAP.P011c.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A full refutation witness exists with n_k=4(k+1), G_k disjoint K_{2,2} blocks, s=(1,1,-1,-1) per block, independent fair signs epsilon_i, theta_i=s_i, and raw Y_i=2+s_i epsilon_i. Weighted X_i=2s_i+epsilon_i, beta=0, and n var(betaHat)=1. These are genuinely nested full and observed graphs. Scaling holds with (c1,c2,c3,c4)=(3,2,1,2). The identity n V1=-3-4 sum_i(s_i epsilon_i)/n+2 sum_edges(epsilon_i epsilon_j)/n-3 betaHat^2 gives n V1 -> -3 in probability. Thus, for epsilon=2, the printed inconsistency event has probability tending to 1. Finite quadratic algebra is compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T32",
+    "theorem": "SAP.P011c.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the T31 witness and set R_k=G_k and every d_i=2. Each mandatory graph already saturates all degrees, so it is the unique compatible graph and supplies a maximizer for every raw outcome. Weighted coordinate variances are all 1. Since n(var-V1) -> 4, the underestimation probability for epsilon=1 tends to 1. This refutes the combined printed contract, exactly as recorded; the theorem does not separately assert a negation of the homoskedastic specialization.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T33",
+    "theorem": "SAP.P011c.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the T32 witness. Its unique maximizing estimate satisfies n V1 -> -3. For every alpha in (0,1), printedCoverage is at most Pr(V1>=0), which tends to 0, below 1-alpha. This is a refutation of the actual printed-interval interpretation, not an artifact of Real.sqrt on negative numbers.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T34",
+    "theorem": "SAP.P011c.T34",
+    "verdict": "restriction_inaccurate",
+    "severity": "major",
+    "issues": [
+      "The declared P3-only restriction is incomplete. Defs/Part2.lean:21-28 additionally requires an induced embedding of each observed dependency graph G_S into the next observed graph. Canonical standing assumption S5 nests the full graphs G; it does not require nested observed vertex sets or induced observed graphs. The Challenge docstring and record omit this additional hypothesis. For example, nested full graphs may accumulate disjoint blocks H_n, while the observed sample is the newest block: H_2 is an edge and H_3 is empty. Independent fair-sign outcomes satisfy all printed scaling bounds, but H_2 cannot embed into H_3."
+    ],
+    "fix": "Append to the existing restriction: 'Additionally restricted to nondecreasing sample sizes whose observed induced dependency graphs admit induced embeddings into their successors. This observed-graph nesting is an extra assumption beyond nesting of the full graphs in Assumption 2.' Alternatively remove Nested F from Scaling and prove the retained degree bound under the remaining hypotheses; the finite degree bound does not require nesting.",
+    "nonvacuity": "The retained finite inequality is true and nonvacuous. Take n_k=k+1, independent fair-sign outcomes, theta_i=1, empty G_k and R_k, and d_i=0. Scaling holds with (1,1,1,2), and gFactor=1 for every row. The issue is undisclosed scope, not an inconsistent antecedent or false inequality.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P011-T35",
+    "theorem": "SAP.P011c.T35",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The T31/T32 construction is an exact OLS slope example: p=2, j=1 in zero-based Fin 2 indexing, D_i=(1,s_i), and b=(2,0), fixed for every row. E[Y_i]=2=(D b)_i, all moments are finite, D^T D=n I_2, and olsTheta(D)_{1i}=s_i=theta_i. Therefore the estimator is that actual unbiased OLS coefficient. R=G,d=2 force the unique maximizer, with n V1 -> -3 and n var=1; conservativeness and printed coverage both fail. The n=4 Gram matrix, nonsingularity, and exact slope weights compile in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T36",
+    "theorem": "SAP.P011c.T36",
+    "verdict": "restriction_inaccurate",
+    "severity": "major",
+    "issues": [
+      "Omitting the introductory nonconsistency assertion is accurately disclosed, but the restriction list is incomplete. Scaling in Defs/Part2.lean:21-28 also imposes induced nesting of the observed G_S graphs. S5 only requires nesting of full graphs G and does not require nested observed samples. The accumulating-full-blocks/newest-observed-block example with independent fair signs is homoskedastic and satisfies the printed assumptions, but an observed edge at n=2 cannot embed into the empty observed graph at n=3. Neither the Challenge docstring nor the record discloses this exclusion."
+    ],
+    "fix": "Retain the existing omission of the nonconsistency assertion and add: 'Additionally require nondecreasing sample sizes and induced embeddings of each observed dependency graph into its successor; this is stronger than the printed nesting assumption on full graphs.' Alternatively state and prove the displayed conservativeness limit without Nested F, which is unnecessary for that result.",
+    "nonvacuity": "For n_k=k+1, independent fair-sign raw outcomes, theta_i=1 and empty observed graphs, the constants (1,1,1,2) satisfy Scaling, and all weighted coordinate variances equal 1. The displayed conservativeness theorem is mathematically true under these and the other stated hypotheses; equal individual means are not required in general.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P011-T37",
+    "theorem": "SAP.P011c.T37",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "The architect's whole decision overlooks an extra hypothesis in Scaling: the observed dependency graphs must nest by induced embeddings (Defs/Part2.lean:21-28). Canonical S5 nests the full graphs, with no requirement that observed samples or their induced subgraphs nest. Accumulate disjoint full-graph blocks and observe only the newest block, taking H_2 to be an edge and H_3 empty, independent fair-sign outcomes, R_n=H_n, and actual degrees as caps. All canonical assumptions, homoskedasticity, validity and maximization hold, but formal Nested fails. The theorem is a true restricted form whose extra restriction is not disclosed."
+    ],
+    "fix": "Change the decision to restricted and add to the docstring: 'Both conclusions are retained, additionally restricted to nondecreasing sample sizes and induced embeddings of each observed dependency graph into the next. The printed assumption nests only the full graphs.' Alternatively remove Nested F from Scaling and prove both conclusions under the remaining assumptions.",
+    "nonvacuity": "Take the n_k=k+1 independent fair-sign family with theta=1, G=R empty, and d=0. Scaling (1,1,1,2), Valid, and homoskedasticity all hold. The empty graph is the unique compatible maximizer for every raw outcome, and V2 and V2prime both equal sampleVariance/n. There is no hidden bound on the supplied degree caps and no empty-feasible-set issue.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P011-T38",
+    "theorem": "SAP.P011c.T38",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "The CLT and eventual-positive-variance conclusions are correct, but the architect's whole decision misses induced nesting of observed G_S graphs in Scaling (Defs/Part2.lean:21-28). The canonical S5 requires nested full graphs without requiring nested observed samples. The accumulating-full-blocks/newest-observed-block family satisfies all printed numerical and dependency assumptions with independent bounded outcomes but fails formal Nested when an observed edge is followed by an empty observed graph. The Challenge docstring gives no restriction covering this extra hypothesis."
+    ],
+    "fix": "Mark restricted and add: 'The CLT is formalized here only for nondecreasing sample sizes with induced embeddings of each observed dependency graph into its successor, an additional restriction beyond nesting of the full graphs.' Preferably prove the same cdf convergence and eventual positivity under Scaling with Nested F removed; neither conclusion needs nesting.",
+    "nonvacuity": "For n_k=k+1 independent fair signs, theta=1, and empty G_k, Scaling holds with (1,1,1,2), var(betaHat)=1/n_k>0, and standardized is sum_i Y_i/sqrt(n_k). Thus the antecedent has nondegenerate examples. Bounded-degree dependency gives the asserted CLT after centering each coordinate at its own mean, even with unequal means.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P011-T39",
+    "theorem": "SAP.P011c.T39",
+    "verdict": "restriction_inaccurate",
+    "severity": "major",
+    "issues": [
+      "The Borel-measurability restriction and exclusion of completed-law-only statistics are accurately disclosed. The list is incomplete because Scaling additionally requires induced nesting of observed dependency graphs, whereas canonical S5 nests only the full graphs. In the independent accumulating-full-blocks/newest-observed-block family, V_n=1/n is Borel measurable and satisfies both scaled consistency and conservativeness exactly, but an observed edge followed by an empty observed graph fails formal Nested. Thus this exclusion remains even within the declared Borel class and is absent from both docstring and record."
+    ],
+    "fix": "Keep the existing Borel restriction and add: 'Additionally restricted to nondecreasing sample sizes and induced embeddings between successive observed dependency graphs; the printed assumption only nests the full graphs.' Alternatively prove the same two measurable-statistic coverage implications with Nested F removed from Scaling.",
+    "nonvacuity": "Use n_k=k+1, independent fair signs, theta=1, empty G_k, and constants (1,1,1,2). The deterministic Borel statistic V_k(y)=1/n_k has n_k V_k=n_k var(betaHat)=1, so its consistency and conservativeness premises both hold with zero bad-event probability. Coverage probabilities lie in [0,1], so their real liminf has its ordinary meaning.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P011-T40",
+    "theorem": "SAP.P011c.T40",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "Both nonnegative-estimator coverage conclusions are true, but the architect's whole decision ignores the observed-graph induced-nesting requirement in Scaling (Defs/Part2.lean:21-28). Canonical S5 nests the full graphs and imposes no nesting of the observed samples. The accumulating-full-blocks/newest-observed-block example with independent fair signs, R_n=G_S,n and actual degree caps satisfies the printed homoskedasticity, valid constraints and maximization conditions, yet is excluded by formal Nested. This additional restriction is not stated in the Challenge docstring."
+    ],
+    "fix": "Change to restricted and add: 'Both intervals are covered only for nondecreasing sample sizes whose observed dependency graphs admit induced embeddings into their successors, an extra condition beyond full-graph nesting.' Alternatively prove the same two coverage conclusions with Nested F removed from Scaling.",
+    "nonvacuity": "The independent fair-sign family with n_k=k+1, theta=1, empty G=R and d=0 has Scaling (1,1,1,2), equal weighted variances, valid constraints, and a unique maximizing empty graph for every raw outcome. Both estimates equal sampleVariance/n and are everywhere nonnegative, so no undefined square root, nonmeasurable selector value or vacuous maximization supports the result.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P011-T41",
+    "theorem": "SAP.P011c.T41",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=4 and R=K_{2,2}, with every h_i=3. Then degrees are 2 and h_i=2r_i-1; the capacity matrix is 2I+A_R, a nonzero PSD matrix with the alternating sign vector in its kernel. The capacity condition and this exact matrix identity compile in scratch/Check.lean. For nonconstant maximization, n=2, R empty, d=(1,1), and f(B)=adjacency(B)_{01} give the edge as unique maximizer both before and after any fixed real shift. The omitted decomposition and the n>0 condition for normalization are accurately disclosed; the empty-index case is not doing the work.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P029-T1",
+    "theorem": "SAP.P029a.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit six atoms have masses 1/4,1/4,1/8,1/8,1/8,1/8. All receipt/assignment events have probability 1/2, the complier probability is 1/2 and the first stage is 1/2. Independently checked by scratch/exact_checks.py.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T2",
+    "theorem": "SAP.P029a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both six-atom witnesses are normalized. A simultaneous model of the universal one-sided premises is Omega=Bool with fair Bernoulli measure, X=Unit, U=((),false,true,0,1) constant and Z=id. Then P(X=())=c(())=1, both receipt arms have probability 1/2, receipt mean equality holds and first stage is 1. Checked in scratch/Nonvacuity.lean.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P029-T3",
+    "theorem": "SAP.P029a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Each binary construction gives 32 strictly positive atoms, total mass one, assignment probability 1/2, complier mass 1/2 and strictly positive covariate/complier cells. Exact finite independence and all four relevant weighted arm differences were independently checked; every Wald denominator is positive.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T4",
+    "theorem": "SAP.P029a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair all-complier model in scratch/Nonvacuity.lean simultaneously satisfies IV, positive compliance, positive weight w=1 and both joint-independence alternatives. The two nonconstant binary examples additionally give nontrivial heterogeneous population identities. Finite support makes covariate weights bounded; all used outcomes/products are integrable. Null covariate cells contribute only zero.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T5",
+    "theorem": "SAP.P029a.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "NoiseRecord has 500 rows and the explicit design Gram determinant is 3906250000. Both outcome vectors and their cross-products were checked exactly. The sample values lie in the stated supports; zero coefficient/noise coordinates and the specified balanced assignment are admissible input realizations, without requiring positive singleton probability for continuous draws. Positive row weights, for example w=1, preserve full column rank.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T6",
+    "theorem": "SAP.P029a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=R=1 for the algebraic sample/run statements and a probability space with Y0=0 and C=univ for the constant population effect. For the benchmark-moment hypotheses take the product of 3n Uniform(-1,1) probability laws and its coordinate projections, for any n>0. For the L2 identity t=B=5 is a model; the finite-law analogue admits a singleton of mass one. The explicit noise realizations supply both discrepancy signs.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T7",
+    "theorem": "SAP.P029a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use a nonempty finite observation set, positive L_i=1/2 and positive w_i (and arbitrary nonempty parameter type) for the objective identities; a singleton with weight zero realizes the extended-infinity case. The prescribed 16-row witness has positive scores and arm normalizers. Its Wald values, ordered two-sided rates and likelihood ratio were checked exactly. For perturbations any t>0, including t=1, leaves both weighted success and failure totals positive.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T8",
+    "theorem": "SAP.P029a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A concrete nonempty generic fitting model has observations Bool x Bool, cell=first coordinate, receipt=second coordinate and all weights one: every cell has S=F=1 and qhat=1/2. These hypotheses compile in scratch/Nonvacuity.lean. All three concrete fits have strictly positive success/failure totals; for the perturbation family they are (1,2+t) and (3,1), t>0. The two-sided success/failure totals are 9k and 4-k for k=1,2,3.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T9",
+    "theorem": "SAP.P029a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The nine cells have total cardinality 18933. For A and B the White/non-White counts are (3884,15049) and (18157,776), and contact/noncontact counts are (2551,16382), so every comparison is nondegenerate. Take Y=0 and raw R=some \"W\" in the first three cells, some \"B\" in the next three and none in the last three to satisfy raw compatibility. e=1/2 makes every factor of the assignment-support product positive. Exact forward/reverse signs were independently checked.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T10",
+    "theorem": "SAP.P029a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the generic binary identities take two equally weighted units and C=W=(true,false); all four count inequalities hold (compiled count witness in scratch/Nonvacuity.lean). For grouping take two nonempty groups, or a single inhabited group; the distinguished group has positive probability and the outside-group constancy condition can hold. The 18933-record completions and both rate differences were checked exactly.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T11",
+    "theorem": "SAP.P029a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Witness A has four strictly positive atoms, Var(Z)=Var(u)=3/16 and Cov(Z,D)=3/32. Witness B has four atoms of mass 1/4, Var(Z)=1/4, Var(u)=5/2 and Cov(Z,D)=1/8. Thus all correlation and IV-ratio denominators are genuine. The defier probability/dependence and all displayed exogeneity/endogeneity moments were independently checked.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T12",
+    "theorem": "SAP.P029a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two SEM counterexamples are normalized with positive variances and relevance. The heterogeneous IV example has four atoms of mass 1/4, all units comply, effects 1 and 2 each have probability 1/2, and first stage is 1. A nonempty model of the general SEM equations is I=Unit, K=Unit, zero coefficients/baseline/error and Y1=beta1; no empty type is needed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T13",
+    "theorem": "SAP.P029a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The receipt law has positive masses 3/16,1/16,9/16,3/16 and the six-atom underlying IV population has positive compliance 1/2. All four displayed fits lie in the nonempty closed triangle; natural powers supply the expressly claimed 0^0=1 boundary convention. The five-per-arm count law has 36 strictly positive atoms totaling one, with nonzero fixed denominators five; its expectation and bias were checked exactly.",
+    "confidence": 0.98
+  }
+]

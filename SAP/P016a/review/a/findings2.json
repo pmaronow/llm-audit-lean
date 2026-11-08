@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P016-T1",
+    "theorem": "SAP.P016a.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional finite witnesses: n=4, outcome (0,1,2,3), observed assignment 1100, six complete and four blocked assignments, with two treated and two controls in each. The paired examples also have two observations in each group. Exact-rational checks verify the tables, tails and covariances.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T2",
+    "theorem": "SAP.P016a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=4, u=(0,1,2,3), observed assignment complete4(1), Omega=Fin 6 with uniformLaw and assign=complete4, and n0=n1=2. This gives positive groups and nonconstant group means; use w=z and v=u when checking the margin hypotheses. The network and equal-KS examples are explicit unconditional witnesses. scratch/Check.lean checks positive groups, existence of a nonuniform law, and nonemptiness/boundedness of every least-squares objective range.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T3",
+    "theorem": "SAP.P016a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All examples are unconditional and use nonempty finite indices. At the displayed four-unit assignment the centered exposure has sample variance 1/48; the six-unit example has sample variance 49/960. Thus its standardization is legitimate. The four- and eight-assignment bank conditionals have positive denominators. Exact rational arithmetic verifies the affine obstructions, recorded-table determinant, regression minima and cutoff witnesses; four-unit SD positivity is also checked in Lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T4",
+    "theorem": "SAP.P016a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Lean-checked instance: n=N=4, S=similarity(scores4), bank=matchedBank4, nonempty design Omega={complete4(1)}, y0=u4, b1=2, b2=3, and y(z)=y0+2z+3*codedExposure(S,bank,z). S is symmetric with zero diagonal, every unit has both statuses in the bank, and the design exposure has positive SD. For orientation every bank assignment and z has m=2 treated; both centered SDs are positive at z. The other clauses have the same positive-SD witness, B=1000 for tails, and unrestricted real p,alpha. The record and docstring disclose the common-count and two-SD hypotheses, and the omitted application/procedure identifications. The disclosure of the bank-count assumption is read as an added hypothesis of this theorem, not as a claim that the raw algebraic identity mathematically needs a bank.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P016-T5",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is asserted for this target, so theorem-hypothesis satisfiability is not applicable. The earlier omission-rationale finding is fixed by architect-report.md:14 and 52-56, which explain the target-level fidelity gap independently of the rejected source row. The governing statement in claims.json is the printed information/reference-distribution comparison. Invariance when both empirical group margins are fixed does not by itself negate that entire comparison, and equal scalar KS is a weaker condition: the existing T2(G) example has KS=1/2 for both assignments but RSS=4 and 5. The proposed fixed-margin negation remains true and already follows from T2; no equivalence with the entire printed passage has been established. Omitting the underspecified passage avoids certifying a substituted claim or an unsupported refutation. The source-row status and external instruction/certificate links in the report were not independently inspected and are not needed for this judgment.",
+    "confidence": 0.92
+  },
+  {
+    "target_id": "P016-T6",
+    "theorem": "SAP.P016a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Lean-checked genuine raw-distance normalization instance: n=3, scores (0,1,2), Gamma_ij=|s_i-s_j|, Omega=Fin 2, assignments 100 and 001, and g=standardize. The raw exposures are (0,1,2) and (2,1,0); their sample variance is 1, and standardization yields (-1,0,1) and (1,0,-1), also with sample variance 1. Choose y0=score3, b1=2, b2=3 and generate y by the stated model. Gamma satisfies all four distance-matrix requirements. The statement proves cancellation for arbitrary g meeting its variance hypothesis; it makes no identification with the released exposure or actual application. The sample-variance convention and omission of regression/testing and empirical claims are accurately disclosed.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P016-T7",
+    "theorem": "SAP.P016a.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit complete four-unit design with additive effect 10 and balanced eight-unit design with additive effect -100. Balanced(8,4) has an explicit Lean-checked inhabitant 11110000. Independent enumeration gives exactly 70 assignments, verifies strict raw treated/control separation and KS=1, and verifies reference/rejection probabilities 1/70 and 1/35. In all assignments both groups are nonempty; alpha>0 has, for example, alpha=1/20.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T8",
+    "theorem": "SAP.P016a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For instance n=4, y0=u4, design Fin 6 with assign=complete4 and uniform law, t=10 and alpha=1/20; an arbitrary statistic such as the mean difference is allowed. Both-group positivity needed only for the last conjunct holds. scratch/Check.lean also constructs a normalized nonuniform law on Fin 3 with weights (1/2,1/3,1/6) and proves the baseline-adjustment identity. Exact arithmetic checks inclusive upper-tail calibration on tied and untied nonuniform examples. FiniteLaw cannot have an empty index type, as checked in Lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T9",
+    "theorem": "SAP.P016a.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four-unit KS/TSS examples use two units per group and a uniform six-point law. The explicit six-unit graph has one edge, assignment 101010, and constant nonzero response; its regression minima are exactly 0 with and 2 without the intercept. The general constant-statistic clause is inhabited by n=4, u=u4, assign=complete4, uniformLaw(Fin 6), observed index 0. All fixed numeric witnesses were recomputed exactly.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T10",
+    "theorem": "SAP.P016a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=4, u=u4, z=complete4(1), with both group sizes 2. BasicX supplies a full-rank basic example; a zero or zero-column X supplies a rank-deficient example, so full rank is not an implicit condition. The least-squares range is nonempty and bounded below even at k=0, checked in Lean; exact arithmetic checks the zero-column minimum. Binary symmetric network examples are explicitly available in T2 and T9. ECDF differences are bounded by 1 and indexed by all real thresholds, so the real supremum is legitimate even when outcomes have ties.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T11",
+    "theorem": "SAP.P016a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The displayed n=4 assignment 1100 has two positive groups. Both KS examples satisfy the stated weak or strict directional changes. The two RSS examples hold controls fixed and increase a treated response, yielding respectively 5/2<4 and 13/2>4. All inequalities and numeric values were checked with exact rational arithmetic, so the four negations of the correctly defined EffectIncreasing property have actual witnesses.",
+    "confidence": 0.99
+  }
+]

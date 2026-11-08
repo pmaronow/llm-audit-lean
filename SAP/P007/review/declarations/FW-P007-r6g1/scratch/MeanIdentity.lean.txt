@@ -1,0 +1,21 @@
+import SAP.P007.Defs
+open scoped BigOperators
+open SAP.P007 Classical
+
+lemma missingAverage_count {n : ℕ} {J : Type*} [Fintype J]
+    (m : Fin n → J → Bool) :
+    missingAverage m = (missingCount m : ℝ) / ((n : ℝ) * Fintype.card J) := by
+  have hc : (missingCount m : ℝ) = ∑ j, ∑ i, if m i j then (1 : ℝ) else 0 := by
+    unfold missingCount
+    rw [Nat.cast_sum]
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [Nat.cast_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    split <;> norm_num
+  unfold missingAverage
+  rw [← Finset.sum_div, div_div, hc]
+
+
+#print axioms missingAverage_count

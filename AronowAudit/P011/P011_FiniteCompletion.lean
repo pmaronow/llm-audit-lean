@@ -166,6 +166,9 @@ theorem clique_characterization {n : ℕ} (A : Graph n) :
   exact CliqueCompletion.clique_characterization_completed A
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.clique_characterization
+
+
 namespace AronowAudit.P011.LpCompletion
 open scoped BigOperators
 noncomputable section
@@ -296,6 +299,9 @@ theorem relaxation_upper_bound {n : ℕ} (hn : 0 < n) (R : Graph n) (d : Fin n �
   exact LpCompletion.relaxation_upper_bound_completed hn R d w U hU
 
 end AronowAudit.P011
+
+#print axioms AronowAudit.P011.relaxation_upper_bound
+
 
 namespace AronowAudit.P011.UpperCompletion
 open scoped BigOperators
@@ -436,6 +442,9 @@ theorem upper_program_equivalence {n : ℕ} (hn : 0 < n) :
   exact UpperCompletion.upper_program_completed hn
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.upper_program_equivalence
+
+
 namespace AronowAudit.P011.GapCompletion
 open scoped BigOperators
 noncomputable section
@@ -551,6 +560,12 @@ theorem six_relaxed : RelaxedFeasible (emptyGraph 6) (fun _ => 1)
     norm_num only [Nat.cast_one]
     fin_cases i <;> norm_num [upperSum, Finset.sum_filter, Fin.sum_univ_succ, x6]
 
+theorem six_relaxed_objective : relaxedObjective
+    (fun e => if x6 e.val.1=x6 e.val.2 then 1/2 else 0)
+    (fun e => x6 e.val.1*x6 e.val.2) = 3 := by
+  unfold relaxedObjective
+  rw [edge_sum_any]
+  norm_num [upperSum, Finset.sum_filter, Fin.sum_univ_succ, x6]
 
 theorem six_witness : Compatible (emptyGraph 6) (fun _ => 1) (fromUpper a6) ∧
     upperObjective a6 (fun e => x6 e.val.1*x6 e.val.2) = 2 ∧
@@ -657,3 +672,4 @@ theorem relaxation_gaps :
   exact GapCompletion.relaxation_gaps_completed
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.relaxation_gaps

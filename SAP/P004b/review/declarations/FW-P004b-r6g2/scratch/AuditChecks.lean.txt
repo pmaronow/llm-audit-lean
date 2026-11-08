@@ -1,0 +1,162 @@
+import SAP.P004b.Challenge
+
+open SAP.P004b MeasureTheory Filter
+open scoped BigOperators Matrix Classical Topology
+noncomputable section
+namespace Audit
+
+-- Every own-coin table has precisely the forced diagonal interference graph.
+lemma own_interferes {N : ℕ} (f : Fin N → Bool → ℝ) (i j : Fin N) :
+    interferes (fun k z => f k (z k)) i j ↔ i = j := by
+  constructor
+  · rintro (h | ⟨z, z', hz, hne⟩)
+    · exact h
+    · by_contra hij
+      exact hne (congrArg (f i) (hz i hij))
+  · exact Or.inl
+
+lemma own_no_shared {N : ℕ} (f : Fin N → Bool → ℝ) (i j : Fin N)
+    (hij : i ≠ j) : ¬ sharesSource (fun k z => f k (z k)) i j := by
+  rintro ⟨l, hi, hj⟩
+  exact hij ((own_interferes f i l).mp hi |>.trans ((own_interferes f j l).mp hj).symm)
+
+-- T21: all finite-bound hypotheses hold for the actual nonzero witness.
+example : (0 < (2 : ℕ)) ∧ (0 < (1/4 : ℝ) ∧ (1/4 : ℝ) < 1) ∧
+    (∀ i : Fin 2, i ∈ ({i} : Finset (Fin 2))) ∧
+    (∀ i j : Fin 2, j ∈ ({i} : Finset (Fin 2)) ↔ i ∈ ({j} : Finset (Fin 2))) ∧
+    (∀ i j : Fin 2, j ∉ ({i} : Finset (Fin 2)) → ¬ sharesSource sahBoundWitness i j) := by
+  refine ⟨by norm_num, by norm_num, by simp, by simp [eq_comm], ?_⟩
+  intro i j hij
+  change ¬ sharesSource (fun k z => (if k = 0 then 1 else -1)*(1-bit (z k))) i j
+  apply own_no_shared (fun k a => (if k = 0 then 1 else -1)*(1-bit a))
+  simpa [eq_comm] using hij
+
+-- T22: nonempty, nonsingular population projection, with genuine interference.
+example : (0 < (3 : ℕ)) ∧
+    (∀ _i : Fin 3, 0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    IsUnit (projectionInformation (fun _ : Fin 3 => 1/2)
+      (fun (_ : Fin 3) (_ : Fin 1) => 1)).det ∧
+    (∀ i : Fin 3, i ∈ (Finset.univ : Finset (Fin 3))) ∧
+    (∀ i j : Fin 3, j ∉ (Finset.univ : Finset (Fin 3)) →
+      ¬ sharesSource threeNodeVarianceTable i j) := by
+  refine ⟨by norm_num, by norm_num, ?_, by simp, by simp⟩
+  norm_num [projectionInformation, Matrix.det_fin_one, Fin.sum_univ_succ]
+
+def z3 : Assignment 3 := ![true, false, false]
+
+lemma counts3 : armCount z3 true = 1 ∧ armCount z3 false = 2 := by
+  simp only [armCount, Fin.sum_univ_succ, Fin.sum_univ_zero]
+  norm_num [z3]
+
+-- T23: both arms, both propensity vectors, logistic fit, and both variance domains.
+example : (0 < (3 : ℕ)) ∧ ValidArms z3 ∧
+    (∀ _i : Fin 3, 0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    (∀ i : Fin 3, logisticPropensity (fun (_ : Fin 3) (_ : Fin 1) => 1)
+      (fun _ => 0) i = 1/2) ∧
+    (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧ (0 < (1 : ℝ)) ∧ (0 < (2 : ℝ)) := by
+  norm_num [ValidArms, counts3.1, counts3.2, logisticPropensity]
+
+lemma gram3 : (designMatrix z3).transpose * designMatrix z3 =
+    (!![3,1;1,1] : Matrix (Fin 2) (Fin 2) ℝ) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp only [Matrix.mul_apply, designMatrix, Matrix.transpose_apply,
+      Fin.sum_univ_succ, Fin.sum_univ_zero] <;>
+    norm_num [bit, z3]
+
+lemma gram3_inv : ((designMatrix z3).transpose * designMatrix z3)⁻¹ =
+    (!![1/2,-1/2;-1/2,3/2] : Matrix (Fin 2) (Fin 2) ℝ) := by
+  rw [gram3]
+  apply Matrix.inv_eq_left_inv
+  ext i j
+  fin_cases i <;> fin_cases j <;> norm_num [Matrix.mul_apply, Fin.sum_univ_succ]
+
+lemma residual3 : residualMaker z3 =
+    (!![0,0,0;0,1/2,-1/2;0,-1/2,1/2] : Matrix (Fin 3) (Fin 3) ℝ) := by
+  dsimp only [residualMaker]
+  rw [gram3_inv]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul_apply, Matrix.vecMul, dotProduct,
+      designMatrix, bit, z3, Fin.sum_univ_succ]
+
+lemma lambda3 : lambda z3 = (![1,-1/2,-1/2] : Fin 3 → ℝ) := by
+  funext i
+  fin_cases i <;> simp only [lambda, counts3.1, counts3.2] <;> norm_num [z3, bit]
+
+lemma leverage3 : leverageKernel z3 (1 : Matrix (Fin 3) (Fin 3) ℝ) =
+    (!![1,0,0;0,1/4,0;0,0,1/4] : Matrix (Fin 3) (Fin 3) ℝ) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> norm_num [leverageKernel, lambda3]
+
+lemma trace3 : traceAdjustment z3 (1 : Matrix (Fin 3) (Fin 3) ℝ) =
+    (!![0,0,0;0,1/12,-1/12;0,-1/12,1/12] : Matrix (Fin 3) (Fin 3) ℝ) := by
+  simp only [traceAdjustment, counts3.1, counts3.2, residual3, leverage3]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul_apply, Matrix.vecMul, dotProduct,
+      Fin.sum_univ_succ]
+
+-- T24: the nu != 0 domain is inhabited, with a residual degree of freedom.
+example : ValidArms z3 ∧ traceMu z3 (1 : Matrix (Fin 3) (Fin 3) ℝ) = 1/6 ∧
+    traceNu z3 (1 : Matrix (Fin 3) (Fin 3) ℝ) = 1/18 ∧
+    traceNu z3 (1 : Matrix (Fin 3) (Fin 3) ℝ) ≠ 0 ∧
+    effectiveDegreesOfFreedom z3 (1 : Matrix (Fin 3) (Fin 3) ℝ) = 1 := by
+  norm_num [ValidArms, counts3.1, counts3.2, traceMu, traceNu,
+    effectiveDegreesOfFreedom, trace3, Matrix.trace, Matrix.mul_apply, Fin.sum_univ_succ]
+
+-- T24: a metric distance and strictly positive bandwidth satisfy the kernel domain.
+example : (∀ i j : Fin 3, 0 ≤ |(i : ℝ)-(j : ℝ)|) ∧ (0 < (1 : ℝ)) := by
+  exact ⟨fun _ _ => abs_nonneg _, by norm_num⟩
+
+-- T25: both finite and array hypotheses, with an actual metric on each row.
+example : (0 < (8 : ℕ)) ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    (∀ i : Fin 8, |(i : ℝ)-(i : ℝ)| = 0) := by
+  norm_num
+
+example : TableNED (1/2) (fun N (i j : Fin N) => |(i : ℝ)-(j : ℝ)|)
+    (fun N (_ : Fin N) _ => 0) := by
+  refine ⟨fun _ => 0, fun _ _ => 1, 1, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simp
+  · intro a ha b hb hab
+    exact le_rfl
+  · exact tendsto_const_nhds
+  · refine ⟨5, by norm_num, 0, 1, by norm_num, ?_⟩
+    intro s hs
+    simp
+  · intro N i
+    norm_num
+  · intro N i s hs
+    simp [l2Norm, conditionOn, expect]
+
+-- T21: its spatial specialization has a genuine positive-mass, integrable model.
+def P1 : SpatialPopulation 1 ℝ where
+  node := fun _ => {0}
+  node_nonempty := fun _ => Set.singleton_nonempty _
+  zeta := Measure.dirac 0
+  outcome := fun _ z => bit (z 0)
+  bands := fun d => {d}
+
+lemma region1 (i : Fin 1) : region P1 i 0 = {0} := by
+  ext x
+  simp [region, nodeDistance, P1, Metric.infDist_singleton]
+
+lemma separation1 (i j : Fin 1) : nodeSeparation P1 i j = 0 := by
+  simp [nodeSeparation, P1]
+
+example : (0 < (1 : ℕ)) ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    (0 ≤ (0 : ℝ)) ∧ (0 ≤ (0 : ℝ)) ∧ WellDefined P1 0 ∧
+    LocalAt (circleAverage P1 0) (nodeSeparation P1) 0 := by
+  refine ⟨by norm_num, by norm_num, le_rfl, le_rfl, ?_, ?_⟩
+  · intro i
+    rw [region1]
+    refine ⟨measurableSet_singleton _, ?_, ?_, ?_⟩
+    · simp [P1]
+    · simp [P1]
+    · intro z
+      exact integrableOn_singleton (hx := by simp [P1])
+  · intro i j hij
+    rw [separation1] at hij
+    exact (lt_irrefl _ hij).elim
+
+end Audit

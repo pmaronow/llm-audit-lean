@@ -1,0 +1,145 @@
+[
+  {
+    "target_id": "P011-T15",
+    "theorem": "SAP.P011b.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No external hypotheses. For each K=k+1>=1 the input type has 3072^K equally likely states and n=4K>0. The two explicit block laws realize the stated Scaling/validity assumptions. Independent exact enumeration confirms the means, lower covariance matrix, both scaled true variances, mean biases, raw limits and expectation coefficients; see scratch/exact-results.json. Conditional probabilities stay within [0,1].",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P011-T16",
+    "theorem": "SAP.P011b.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take signFamily, Scaling constants (1,1,1,2), p=1, j=0, D_k the all-ones column, and b=0. Then D_k^T D_k=[k+1] is invertible, E Y=0, and every olsTheta entry is 1. Bx=By=lambdaMin=1 satisfies the conditional design premises. Empty R and zero caps give a unique compatible maximizing graph, so the final implication also has a true antecedent. See scratch/nonvacuity.md; the one-point intercept Gram determinant is additionally compiled in scratch/Check.lean.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P011-T17",
+    "theorem": "SAP.P011b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=4, constantWitness, and i,j,k,l=0,1,2,3. All separate weighted, raw and constant moment premises hold: scratch/Check.lean compiles integrability of every real-valued function under this Dirac law. A nondegenerate alternative is signModel 4, whose finite support supplies all required moments. Repeated indices are also covered; positional subsets never have cardinality above four.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T18",
+    "theorem": "SAP.P011b.T18",
+    "verdict": "not_faithful",
+    "severity": "minor",
+    "issues": [
+      "Canonical part (d) is not stated as an assertion about the bracket-only repaired moment expression. SAP/P011b/Defs/Part7.lean:18 states only the numerical identity (9/16-(9/16+140-70):R)=-70; line 24 only compares cwTrueCovariance with the number -70. Neither identifies that number with the partially repaired expansion. The defined printedBracket and cwPrintedLast in Defs/Part4.lean represent the completely uncorrected printed bracket, and no SAP definition represents the bracket-only repair.",
+      "record.json labels P011-T18 whole with restriction=null, while the Challenge docstring at SAP/P011b/Challenge/Part1.lean:30 says the bracket-only repair is shown to disagree with the true covariance. That part of the claimed coverage is absent from the theorem statement. Parts (a), (b), (c) and (e), including equality with Mathlib covariance, are represented correctly; no false numerical value or vacuous model was found."
+    ],
+    "fix": "Add a real definition cwBracketOnlyRepair := F - (J + 119 * E(fun y => y 0*y 1) * E(fun y => y 2*y 3)), where E=expectation constantWitness, B=betaHat constantWitness, F=fourthMoment E (fun y => 2*y 0) (fun y => 3*y 1) (fun y => 4*y 2) (fun y => 5*y 3) B, and J=printedBracket E (fun y => y 0) (fun y => y 1) (fun y => y 2) (fun y => y 3) B 2 3 4 5. Conjoin cwBracketOnlyRepair=-70 and cwActualCovariance!=cwBracketOnlyRepair to T18Statement. Adding 119 times the first raw pair-moment product changes its bracket coefficient from 1 to 120, exactly moving the opening bracket while retaining the missing theta_i in the fifth term. The complete definition and a successful Lean proof of its value appear as bracketOnlyRepair in scratch/Check.lean. Alternatively mark the target restricted and replace the docstring with: 'A constant-outcome witness refutes both expressions exactly as printed and evaluates the fully corrected expression. Restriction: The bracket-only repaired moment expression and its disagreement with the true covariance are omitted; only the standalone rational identity involving -70 is retained.'",
+    "nonvacuity": "No external hypotheses. n=4 with deterministic Y=(1,1,1,1), weights (2,3,4,5), empty graphs and zero caps is a genuine probability model; every needed integral exists. Degeneracy is legitimate for refuting a universally asserted moment identity. Both exact enumeration in scratch/exact_checks.py and the compiled explicit bracketOnlyRepair in scratch/Check.lean confirm that the missing expression really is -70. The issue is its absence from the exported proposition.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T19",
+    "theorem": "SAP.P011b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "signFamily satisfies Scaling (1,1,1,2), has common variance 1>0 at every k and zero meanSpread. Thus all outer premises and the consistency implication's premise hold simultaneously. The explicit positive-variance assumption agrees with the canonical domain; it is not an additional restriction left undisclosed. See scratch/nonvacuity.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T20",
+    "theorem": "SAP.P011b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No external hypotheses. The nonempty uniform fair-sign law has 2^n atoms and n=k+1>0, satisfies Scaling (1,1,1,2), validity and homoskedasticity, and has n Var(betaHat)=1. Independent exact binomial counting with the strict inside event gives 1/2, 7/8 and 32631/32768. Markov's bound and limit one refute the same strict-sign universal assertion that is printed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T21",
+    "theorem": "SAP.P011b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "pathModel 0 1 is an n=3 finite-support, positive-variance instance. With independent fair U,V it has X=(U,3U/5+4V/5,V), so the endpoint subvectors are independent, the path is a dependency graph, each coordinate is L2 and all variances equal one. The adjacent correlations 3/5 and 4/5 differ. The separate zero-variance rho=0 convention is expressly canonical and causes no division artifact.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T22",
+    "theorem": "SAP.P011b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=3 has three upper-edge positions and eight simple graphs. For example the Boolean vector selecting only (1,2) maps to edge23, and with empty R and unit caps its feasible set is nonempty. Thus the positive-size universal statement includes genuinely nonempty edge types and optimization problems; the legitimate n=1 empty-edge case does not do the work.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T23",
+    "theorem": "SAP.P011b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No external hypotheses. With n=3, empty R and unit caps, the feasible graphs are the empty graph and the three individual edges. For x=(-2,1/2,3/2), independent enumeration gives objectives 0,-1,-3,3/4 and a unique edge23 optimum. The second x=(0,1,-1) instance has a real mandatory edge omitted by the nonzero rule; caps two themselves are feasible.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T24",
+    "theorem": "SAP.P011b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=3, R=G=emptyGraph 3 and d_i=0 satisfy the validity premise, as compiled in scratch/Check.lean. Unit caps instead give a nontrivial four-element feasible set. The unrestricted natural n also admits n=0, but this retained graph-only equivalence has no denominators or statistical objects and remains meaningful there.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T25",
+    "theorem": "SAP.P011b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=3, empty R, zero caps, x=(0,1,2) has S=2>0, a nonempty compatible set and bounded-data premise beta=c=1. All denominators are positive. scratch/Check.lean compiles the differing V1 values 2/9 and 1/3; scratch/exact_checks.py verifies the corresponding V2 and V2prime values and further examples. No infeasible-set optimizer equivalence is needed to witness the strict cases.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T26",
+    "theorem": "SAP.P011b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No external hypotheses. All witnesses use three actual coordinates and compatible graph/cap configurations. Independent uniform outcomes on {0,1,2} give beta=1, common variance 2/3, n Var(betaHat)=2/3, Scaling constants (1,1,2/3,2), and probability 1/27 for (0,1,2). Every helper example is independently checked using exact rational arithmetic; the unbounded multiplicative discrepancy is expressed without dividing by V1=0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T27",
+    "theorem": "SAP.P011b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=3, R=G empty and d_i=1 have four compatible graphs, so validity, nonempty finite maximization and the integer programs are substantive. Taking x=(-2,1/2,3/2) makes the sample variance positive, realizing the V2 converse's premise. Zero caps give a separately compiled compatible instance. The assumed true-graph compatibility is exactly the canonical valid-constraints domain and does not assume a variance bound.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T28",
+    "theorem": "SAP.P011b.T28",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=3, R=G=A empty, d_i=0, x=(0,1,2): A is the unique compatible graph, hence a V2 maximizer; its degrees equal all truncated caps and sampleVariance=2/3>0. Thus the main and equality premises hold without zero data. scratch/Check.lean additionally compiles a maximizing premise at x=0. Neither Scaling nor homoskedasticity is imposed.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "theorem": "SAP.P012b.T13",
+    "target_id": "P012-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "The two blocks give both existence of the private-neighbor construction and the arbitrary-compatible-private-neighbor calculation, with the corrected sum over all children, sign for both recruiter traits, nonidentification, strictly negative normalized bound, and equality exactly for a sole child. Admissibility is precisely standing assumption R3; j in nonseeds and parent(j)=i imply i differs from j and a nonempty average. Compatibility forces each susceptible denominator positive. The raw p differences therefore concern defined p values, rather than division by zero. The compiled spareRecruiter example has S={1,2}, M={1}, parent(2)=1, d=(2,1), so the hypotheses are satisfiable. No omitted mathematical clause of the canonical statement was found."
+  },
+  {
+    "theorem": "SAP.P012b.T14",
+    "target_id": "P012-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All four explicit counterexample families are correctly represented, including all eight compatible D trait assignments and p=0 throughout D. Option-valued statistics and explicit zero denominators prevent Mathlib's x/0=0 convention from supplying spurious correlation values. The statement omits compatible-pair uniqueness in A and C, the raw -1/2 and 1/2 computations in B, the inner 0/0 assertions in C, the classification of all D graphs and general dependence on the sum of the three traits, and explicit failure of whole-space h intervals for A and D. These are the omissions identified in its Challenge docstring. Admissibility/compatibility for A, B and C have been compiled; independent exact arithmetic checks all eight D h values."
+  },
+  {
+    "theorem": "SAP.P012b.T15",
+    "target_id": "P012-T15",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The denominator identities, individual h-domain criterion, exact individual p-domain criterion under compatible admissible data, exact observable whole-compatible-set criteria, and Result 2/3 implications all match the claim. It also separates the two parameter domains and excludes FullHomophilyRegion when the observable h condition fails. Full-region equivalences only characterize predicates conditional on endpoints and do not prove existence or attainment of such endpoints. It omits the assertion that the h-defined-only set can be empty and the A illustration. Those omissions are disclosed. The first block validly generalizes the algebra to all finite simple graphs. Admissible data always admit a private-leaf completion, so the universally quantified domain equivalences do not exploit an empty compatible class. Compiled examples cover defined and undefined domains."
+  },
+  {
+    "theorem": "SAP.P012b.T16",
+    "target_id": "P012-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The impossibility of a positive nondecreasing null sequence, noninvertibility at log(1)=0, repaired schedule with first temperature at least 1/(epsilon log 2), strict decrease on the logarithmic tail, zero limit, pointwise exponential/power identities and harmonic lower comparison, and divergence after adding any finite first term match parts (a)-(c). Natural index n is paper time t=n+1; the series uses t=n+2. Every logarithm/power used analytically has positive base at least 2, and every temperature in those assertions is positive. The noninvertibility assertion uses T*(epsilon log 1)=1 rather than accepting a totalized reciprocal. Parameters epsilon=1, T1=1/log 2, depth D=1 satisfy the hypotheses. It makes no optimization-convergence claim, which is separately target T24."
+  },
+  {
+    "theorem": "SAP.P012b.T17",
+    "target_id": "P012-T17",
+    "my_reading_vs_claim": "narrower",
+    "reason": "GraphCompatible exactly implements the graph-only compatibility of the corrected proof, and InducedCompatible its degree-at-most induced-graph notion. The theorem gives the general induced compatibility result and exact-degree equivalence with absence of unsampled vertices. The equivalence of equal vertex sets with equality to the induced graph follows because every edge lies in the original vertex set. It omits the explicit two-seed shared-neighbor/comparison-edge example and degree computations. Admissibility is the standing observed-data assumption, not an additional network model. The compatible dyad and mixedRecruiter private-leaf examples witness respectively absence and presence of unsampled vertices."
+  },
+  {
+    "theorem": "SAP.P012b.T18",
+    "target_id": "P012-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It correctly expresses independence of partial homophily from recruitment history when augmented vertices, edges and on-vertex traits agree, specialized to two admissible histories and states compatible with them. Its use of Option includes undefined states without treating them as numeric zero. It omits the canonical contrasting dependence of p on recruitment graph and time. The compatible dyad, taken twice, satisfies all its hypotheses; the same augmented mixed dyad is also compatible with distinct admissible seed/recruitment histories. The omissions and specialization are stated in the Challenge docstring."
+  },
+  {
+    "theorem": "SAP.P012b.T19",
+    "target_id": "P012-T19",
+    "my_reading_vs_claim": "different",
+    "reason": "This is explicitly the negation/refutation of the printed universal preservation claim, not a proof of it. The literal false-branch proposal correctly leaves line 22 outside the j-sampled conditional, computes replacement pools at the original state, and removes isolated sampled vertices as well as unsampled vertices. A genuine execution from S={1,2}, M={1}, parent(2)=1, d=(2,1), traits=(0,1), with edges {1,2},{1,a}, deletes {1,a}, invents b, and inserts {1,b},{a,b}. The resulting unsampled-unsampled edge violates augmented compatibility. Both parameters are defined at the start, so this refutes even preservation restricted to the intended common parameter domain. The docstring accurately labels the printed claim false. No refutation of a repaired mechanism is substituted."
+  },
+  {
+    "theorem": "SAP.P012b.T20",
+    "target_id": "P012-T20",
+    "my_reading_vs_claim": "different",
+    "reason": "This is explicitly a refutation: it says no shared admissible study data with n=527, six seeds and total sampled degree 4487 can have all three printed full homophily intervals, allowing half a fourth-decimal unit of rounding. It does not assert or recompute unobserved study records. The refutation is substantive: there are 521 recruitment edges and 3445 spare stubs; give each spare stub a private leaf with the opposite trait. The completion has m=3966 edges and c>=3445 mixed edges, so h=1-2mc/(D0 D1)<=1-2c/m<=-1462/1983. This defined witness is below every claimed lower limit even after rounding, independently for each trait. It therefore refutes the printed reading and even a defined-only interpretation. The counts and shared-data hypotheses themselves are satisfiable: a 521-child star at vertex 1, five other seeds, degree 3966 at vertex 1, degree 1 at each child, degree 0 at other seeds, and increasing times has the required totals."
+  },
+  {
+    "theorem": "SAP.P012b.T22",
+    "target_id": "P012-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "On exactly the canonical observable domain it gives joint point identification iff zero spare degree iff every compatible graph is the recruitment graph; graph and on-vertex-trait uniqueness at zero spare degree; h nonidentification for any spare degree; the concrete same-trait leaf-completion flip with distinct h values; and the recruiter-only criterion for p identification. PointIdentified means a nonempty singleton, and compatibility is not assumed unique in the hypotheses. It omits the illustrative (d1,d2)=(1,2), traits=(0,1) graph classification, p/h values, and intervals. The omission is disclosed. The compiled mixedRecruiter example satisfies all domain hypotheses with positive spare degree at an actual recruiter; the mixed dyad satisfies the zero-spare case."
+  },
+  {
+    "theorem": "SAP.P012b.T23",
+    "target_id": "P012-T23",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The fixed data exactly encode the caption's recruitment edges, degree sequence, traits and recruitment order. The two FullRegion predicates assert all four extrema with actual attainment, not merely enclosing bounds; all compatible values are explicitly in the rectangle and defined. Independent rational enumeration of 762 private-leaf representatives gives exactly -5/8, 79/105, -11/80, 49/120. Splitting each shared unsampled vertex into private leaves of its trait preserves h and p, so these representatives cover all attainable statistic pairs. The canonical caption's nonuniqueness of some extremizers is omitted, as disclosed in the docstring. No assertion that the whole rectangle is attainable is made."
+  }
+]

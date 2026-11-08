@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P032-T1",
+    "theorem": "SAP.P032.T1",
+    "fingerprint": "509914e760b402e7e8fb5280e47eaf7219ad45435ddecf9ed516776ecd305db2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:15-59 with sap-lean, importing only Defs and Defs.WholeW1. The probability measure on N -> S is the infinite product of distributionMeasure w; coordinate evaluations are measurable, jointly independent, and have every prescribed atom probability. Instantiating S=Fin 16 and S=(Fin 13 -> Fin 2) constructs both iidRealizationExists conjuncts and satisfies every probability/block hypothesis of the two replication implications. The same file independently verifies strict positivity of every atom of the negative-pair, four-record and six-sign laws. The finite error and design data are specified outright, with no existence or integrability hypotheses left unsupported. Bounded finite-valued errors make all actual moments finite.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T5",
+    "theorem": "SAP.P032.T5",
+    "fingerprint": "a4690164817c8f2cdfc74700f3b2b31a4f10cf4ba3b5569c6f168a7134609858",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:61-88: the negative-pair intercept design has nonzero Gram determinant, a positive-semidefinite covariance with nonzero covariance between disjoint dyads, full quadratic value 1/4 and restricted value 1/2. Its h=(1/2,1/2) follows from the independently checked bread 1/2. This genuinely violates both weak and strict population readings. Compiled scratch/T5Witness.lean:45-81: on the actual negative-pair probability law, all errors are L2 and mean zero, a nonincident second moment is nonzero, and the actual residual-sandwich expectation is 3/8 while the OLS sampling variance is 1/4 (take beta=0 and contrast 1). For the limit reading use the independently constructed four-block product law, R_m=Fin(m+1) x Fin 4, M_m=Fin(m+1) x Fin 6, and the intercept design: cardinalities grow, Gram determinants are positive, errors are bounded and mean zero, a nonincident covariance in block zero equals -1/4, the sampling variance is 3/(16(m+1))>0, and T1's certified actual-estimator probability limit is 5/3>1. Thus every asymptotic hypothesis is jointly satisfiable; no nonmeasurable function or undefined moment is involved.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T3",
+    "theorem": "SAP.P032.T3",
+    "fingerprint": "560b81ea5791ba1f7bfdcff043d9b305d9fab76bd8b2c89d0b8137cb433d7df4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed concrete counterexample with no assumptions. Compiled scratch/Nonvacuity.lean:90-136 independently from the definitions: both risk sets, all ten efficient-score values, the complete covariance-component conjunction, and equality of the subject and repeated-dyad partitions. The compiled score computation uses risk counts 6 and 4, event counts 2 and 2, and risk means zero. The ten records explicitly supply the witness; the original statement additionally certifies the unique fitted coefficient, information 12, both incorrect subtractions and inactive clipping. Positive risk counts and positive exponential risk sums exclude division/logarithm junk values.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T6",
+    "theorem": "SAP.P032.T6",
+    "fingerprint": "9a395cdb3c2bf789edcc46a02e5cbfd448612ce0ad756caef2cb68340f1509d5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed concrete OLS counterexample with no assumptions. Compiled scratch/T6Witness.lean:16-27 independently from the data definitions: the Gram determinant is 416, the actual dyadic score middle factor has the specified entries, both actual covariance diagonal entries are strictly positive, and the contrast (1,6) has value -237755/3655808. The nonzero determinant makes the inverse ordinary. The input has ten distinct two-member dyads and coefficient dimension two, so it cannot rely on an empty index type or an absent symmetry witness; symmetry is explicitly included in T6Statement.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T9",
+    "theorem": "SAP.P032.T9",
+    "fingerprint": "2085478407cbf6ea8f7a75064da90a3bd09ecf1b3885cd34283952d9c533b33a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:138-150: one coefficient and one component, m=2, weight 1, factor 1/2, symmetric completed-data matrices U=0, and common estimates b=(0,2). The example constructs every hypothesis, computes Rubin's full between-imputation term Q=3, and computes pooled-first minus combined-first as -3/2. Thus the factors are nonzero and the gap is genuinely nonzero. The DCR specialization uses its explicitly given finite component type and weights; at k=4, Gi=13, GD=6, n=24 the factors are 12/13, 5/6 and 23/24, all nonzero. The separate scalar identity's extension to zero denominators is explicitly disclosed and is not used to justify the statistical pooling identities.",
+    "confidence": 0.99
+  }
+]

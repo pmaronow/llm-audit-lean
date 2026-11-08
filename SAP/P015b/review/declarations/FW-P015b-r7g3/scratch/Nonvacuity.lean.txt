@@ -1,0 +1,166 @@
+import SAP.P015b.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxHeartbeats 800000
+open SAP.P015b MeasureTheory ProbabilityTheory Matrix Filter
+open scoped BigOperators ENNReal NNReal Topology
+
+namespace Audit
+
+lemma log_pair_bound (p : ℝ) (hp : 0 < p) (hq : p < 1) :
+    Real.log p + Real.log (1-p) ≤ Real.log (1/2) + Real.log (1/2) := by
+  rw [← Real.log_mul (ne_of_gt hp) (ne_of_gt (sub_pos.mpr hq)),
+    ← Real.log_mul (by norm_num : (1/2 : ℝ) ≠ 0) (by norm_num : (1/2 : ℝ) ≠ 0)]
+  apply Real.log_le_log (mul_pos hp (sub_pos.mpr hq))
+  nlinarith [sq_nonneg (p-1/2)]
+
+def logisticW : Matrix (Fin 4) (Fin 2) ℝ := !![1,0;1,0;1,1;1,1]
+def logisticY : Fin 4 → ℝ := ![0,1,0,1]
+
+-- All premises of the universal logistic implication, with a nonempty full-rank sample.
+example : (∀ i, logisticY i = 0 ∨ logisticY i = 1) ∧
+    (logisticW.transpose * logisticW).det ≠ 0 ∧
+    (∀ γ : Fin 2 → ℝ,
+      binaryLogLikelihood logisticW (fun _ => 1) logisticY sigmoidMean γ ≤
+      binaryLogLikelihood logisticW (fun _ => 1) logisticY sigmoidMean 0) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num [logisticY]
+  · norm_num [logisticW, Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_succ]
+  · intro γ
+    have h0 := log_pair_bound (Real.sigmoid (γ 0))
+      (Real.sigmoid_pos _) (Real.sigmoid_lt_one _)
+    have h1 := log_pair_bound (Real.sigmoid (γ 0 + γ 1))
+      (Real.sigmoid_pos _) (Real.sigmoid_lt_one _)
+    norm_num [binaryLogLikelihood, binomialLogLikelihoodSAP, logisticW, logisticY,
+      sigmoidMean, Matrix.mulVec, dotProduct, Fin.sum_univ_succ, Real.sigmoid_zero] at *
+    linarith
+
+-- Independent checks of the fixed square-link data, with no Challenge import.
+example : IsFiniteLaw squarePopulation ∧ SquareAdmissible (![1/2,0,0] : Fin 3 → ℝ) ∧
+    (fun j k => finiteMean squarePopulation (fun i => squareDesign i j * squareDesign i k)) =
+      (!![1,0,0;0,5/24,0;0,0,2/3] : Matrix (Fin 3) (Fin 3) ℝ) := by
+  refine ⟨⟨?_, ?_⟩, ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num [squarePopulation]
+  · norm_num [squarePopulation, Fin.sum_univ_succ]
+  · intro i; fin_cases i <;> norm_num [SquareAdmissible, squareDesign, squareProfile,
+      squareTreatment, squarePropensity, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+  · ext j k; fin_cases j <;> fin_cases k <;>
+      norm_num [finiteMean, squarePopulation, squareDesign, squareProfile,
+        squareTreatment, squarePropensity, Fin.sum_univ_succ]
+
+example (a ε : ℝ) (ha : a = 0 ∨ a = 1/16) (hε : |ε| ≤ 1/16) :
+    ∀ i, 0 < squareProbability a ε i ∧ squareProbability a ε i < 1 := by
+  have hb := abs_le.mp hε
+  rcases ha with rfl | rfl <;> intro i <;> fin_cases i <;>
+    norm_num [squareProbability, squareBaseline, squareProfile, squareTreatment,
+      squarePropensity] <;> constructor <;> linarith
+
+-- Rational score-Hessian treatment entry and perturbation entry at theta=(1/2,0,0).
+example :
+    (∑ i : Fin 6, squarePopulation i * (squareDesign i 1)^2 *
+      (-(16/3) - (32/9)*(1/16)*(3*(squareProfile i)^2-2))) = -(119/108 : ℝ) ∧
+    (∑ i : Fin 6, squarePopulation i * (squareDesign i 1)^2 * (16/3)) = (10/9 : ℝ) ∧
+    (10/9 : ℝ) / (119/108) = 120/119 := by
+  norm_num [squarePopulation, squareDesign, squareProfile, squareTreatment,
+    squarePropensity, Fin.sum_univ_succ]
+
+-- Positive and normalized finite law at epsilon=1/4, and a nonzero effective denominator.
+example : IsFiniteLaw (smallWeightPopulation (1/4)) ∧
+    0 < finiteMean (smallWeightPopulation (1/4))
+      (finiteWeight (smallWeightPopulation (1/4)) binaryProfile binaryTreatment) ∧
+    finiteMass (finiteEffective (smallWeightPopulation (1/4)) binaryProfile binaryTreatment)
+      (fun a => binaryProfile a = 0) = 3/7 := by
+  refine ⟨⟨?_, ?_⟩, ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num [smallWeightPopulation]
+  · norm_num [smallWeightPopulation, Fin.sum_univ_succ]
+  · norm_num [finiteMean, finiteWeight, finiteCellMean, finiteMass, smallWeightPopulation,
+      binaryProfile, binaryTreatment, Fin.sum_univ_succ]
+  · norm_num [finiteMass, finiteEffective, finiteMean, finiteWeight, finiteCellMean,
+      smallWeightPopulation, binaryProfile, binaryTreatment, Fin.sum_univ_succ]
+
+-- The exact independent-draw sample has positive probability and genuine zero residuals.
+example : productMass uniformFourPopulation 4 (![0,0,2,3] : Fin 4 → Fin 4) = 1/256 ∧
+    (0 : ℝ) < 1/256 ∧
+    treatmentResidual zeroWeightControlDesign zeroWeightTreatment ![0,1/2] = ![0,0,-1/2,1/2] ∧
+    (zeroWeightControlDesign.transpose * zeroWeightControlDesign).det = 4 ∧
+    (zeroWeightRegressionDesign.transpose * zeroWeightRegressionDesign).det = 2 := by
+  refine ⟨?_, by norm_num, ?_, ?_, ?_⟩
+  · norm_num [productMass, uniformFourPopulation, Fin.prod_univ_succ]
+  · ext i; fin_cases i <;>
+      norm_num [treatmentResidual, zeroWeightControlDesign, zeroWeightTreatment,
+        Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+  · norm_num [zeroWeightControlDesign, Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_succ]
+  · norm_num [zeroWeightRegressionDesign, Matrix.det_fin_three, Matrix.mul_apply, Fin.sum_univ_succ]
+
+-- The small-overlap consistency example uses a bounded real IPW variable of the right mean.
+example : finiteMean (smallWeightPopulation (1/1000000)) (smallWeightIPW (1/1000000)) = 3/2 := by
+  norm_num [finiteMean, smallWeightPopulation, smallWeightIPW, inverseWeightedOutcome,
+    smallWeightOutcome, binaryTreatment, binaryProfile, Fin.sum_univ_succ]
+
+-- A literal finite probability space meeting all substantive hypotheses of the positive implication.
+lemma missingPair_prob : IsProbabilityMeasure missingPairPopulation := by
+  constructor
+  norm_num [missingPairPopulation, Measure.smul_apply, Measure.add_apply]
+  calc
+    _ = (4 : ℝ≥0∞) * 4⁻¹ := by ring
+    _ = 1 := ENNReal.mul_inv_cancel (by norm_num) (by norm_num)
+
+instance : IsProbabilityMeasure missingPairPopulation := missingPair_prob
+
+example : Measurable missingPairProfile ∧ Measurable missingPairTreatment ∧
+    MemLp missingPairTreatment 2 missingPairPopulation ∧
+    (0 < missingPairPopulation {s | missingPairProfile s = (0 : Fin 2)}) ∧
+    (0 : ℝ) ≠ 1 ∧
+    0 < profileProbability missingPairPopulation missingPairProfile missingPairTreatment 0 0 ∧
+    0 < profileProbability missingPairPopulation missingPairProfile missingPairTreatment 0 1 := by
+  refine ⟨measurable_of_finite _, measurable_of_finite _, ?_, ?_, by norm_num, ?_, ?_⟩
+  · apply MemLp.of_bound (measurable_of_finite _).aestronglyMeasurable 2
+    exact Filter.Eventually.of_forall (fun i => by fin_cases i <;> norm_num [missingPairTreatment])
+  · norm_num [missingPairPopulation, missingPairProfile, Measure.smul_apply,
+      Measure.add_apply, Measure.dirac_apply', Set.indicator]
+  · norm_num [profileProbability, profileLaw, missingPairPopulation, missingPairProfile,
+      missingPairTreatment, Measure.smul_apply, Measure.add_apply, Measure.restrict_apply,
+      Measure.dirac_apply', Set.indicator, ENNReal.toReal_add, ENNReal.toReal_inv]
+  · norm_num [profileProbability, profileLaw, missingPairPopulation, missingPairProfile,
+      missingPairTreatment, Measure.smul_apply, Measure.add_apply, Measure.restrict_apply,
+      Measure.dirac_apply', Set.indicator, ENNReal.toReal_add, ENNReal.toReal_inv]
+
+-- Check that the displayed zero weights come from the actual inverse-based OLS fit.
+example : sampleCoefficients zeroWeightControlDesign zeroWeightTreatment = ![0,1/2] := by
+  ext j
+  fin_cases j <;>
+    norm_num [sampleCoefficients, Matrix.inv_def, Ring.inverse_eq_inv, Matrix.det_fin_two,
+      Matrix.adjugate_fin_two, zeroWeightControlDesign, zeroWeightTreatment,
+      Matrix.mul_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+
+-- Realize the population objective as normalized finite binary likelihoods along epsilon=1/(16m).
+-- The total number of observations is 768m; each row-type count is 64m times cellUnits.
+def cellUnits : Fin 6 → ℤ := ![3,1,2,2,1,3]
+def baselineUnits : Fin 6 → ℤ := ![5,5,2,2,5,5]
+def residualUnits : Fin 6 → ℤ := ![-1,3,-2,2,-3,1]
+def rowCount (m : ℕ) (i : Fin 6) : ℤ := 64*(m : ℤ)*cellUnits i
+def successes (m : ℕ) (i : Fin 6) : ℤ :=
+  cellUnits i * (4*(m : ℤ)*baselineUnits i+residualUnits i)
+def flatSuccesses (m : ℕ) (i : Fin 6) : ℤ :=
+  cellUnits i * (16*(m : ℤ)+residualUnits i)
+
+example (m : ℕ) (hm : 1 ≤ m) : ∀ i,
+    0 ≤ successes m i ∧ successes m i ≤ rowCount m i ∧
+    0 ≤ flatSuccesses m i ∧ flatSuccesses m i ≤ rowCount m i ∧
+    ((rowCount m i : ℤ) : ℝ) = (768*(m : ℝ))*squarePopulation i ∧
+    ((successes m i : ℤ) : ℝ) =
+      (768*(m : ℝ))*squarePopulation i*squareProbability (1/16) (1/(16*(m : ℝ))) i ∧
+    ((flatSuccesses m i : ℤ) : ℝ) =
+      (768*(m : ℝ))*squarePopulation i*squareProbability 0 (1/(16*(m : ℝ))) i := by
+  have hmi : (1 : ℤ) ≤ m := by exact_mod_cast hm
+  have hmr : (0 : ℝ) < m := by exact_mod_cast (lt_of_lt_of_le (by decide : 0 < 1) hm)
+  intro i
+  fin_cases i <;>
+    norm_num [successes, flatSuccesses, rowCount, cellUnits, baselineUnits, residualUnits,
+      squarePopulation, squareProbability, squareBaseline, squareProfile, squareTreatment,
+      squarePropensity] <;>
+    (repeat' constructor) <;>
+    first | omega | (field_simp [ne_of_gt hmr] <;> ring)
+
+end Audit

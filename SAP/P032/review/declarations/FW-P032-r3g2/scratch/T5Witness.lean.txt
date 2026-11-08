@@ -1,0 +1,82 @@
+import SAP.P032.Defs
+import SAP.P032.Defs.WholeW1
+
+open scoped BigOperators
+open MeasureTheory ProbabilityTheory Matrix Filter
+open SAP.P032
+
+noncomputable section
+set_option maxRecDepth 4096
+set_option maxHeartbeats 800000
+set_option backward.isDefEq.respectTransparency false
+
+-- These checks use definitions and Mathlib only, never the Challenge stubs.
+
+lemma law_probability {S : Type} [Fintype S] [MeasurableSpace S]
+    (w : FiniteDistribution S) : IsProbabilityMeasure (distributionMeasure w) := by
+  constructor
+  simp only [distributionMeasure, Measure.finsetSum_apply, Measure.smul_apply,
+    Measure.dirac_apply_of_mem (Set.mem_univ _), smul_eq_mul, mul_one]
+  rw [← ENNReal.ofReal_sum_of_nonneg (fun s _ => w.nonneg s), w.total]
+  norm_num
+
+lemma law_atom {S : Type} [Fintype S] [DecidableEq S] [MeasurableSpace S]
+    [MeasurableSingletonClass S] (w : FiniteDistribution S) (a : S) :
+    distributionMeasure w {a} = ENNReal.ofReal (w.weight a) := by
+  simp [distributionMeasure, Measure.finsetSum_apply, Measure.smul_apply,
+    Measure.dirac_apply, Set.indicator_apply, eq_comm]
+
+lemma pair_bread : olsBread pairIntercept = (fun _ _ => (1/2 : ℝ)) := by
+  unfold olsBread
+  apply Matrix.inv_eq_left_inv
+  ext i j
+  fin_cases i
+  fin_cases j
+  norm_num [Matrix.mul_apply, Matrix.transpose_apply, pairIntercept, Fin.sum_univ_succ]
+
+lemma integral_law {S : Type} [Fintype S] [DecidableEq S] [MeasurableSpace S]
+    [MeasurableSingletonClass S] (w : FiniteDistribution S) (f : S → ℝ) :
+    (∫ s, f s ∂distributionMeasure w) = finiteMean w f := by
+  letI := law_probability w
+  rw [integral_fintype Integrable.of_finite]
+  simp [measureReal_def, law_atom, ENNReal.toReal_ofReal (w.nonneg _), finiteMean]
+
+-- Every hypothesis of the expectation reading holds, and both quantities are defined.
+example :
+    let μ := distributionMeasure negativePairDistribution
+    let u := fun r ω => pairErrorValues ω r
+    (pairIntercept.transpose * pairIntercept).det ≠ 0 ∧
+    IsProbabilityMeasure μ ∧
+    (∀ r, MemLp (u r) 2 μ) ∧
+    (∀ r, ∫ ω, u r ω ∂μ = 0) ∧
+    (∃ r s, ¬((pairDyads r).members ∩ (pairDyads s).members).Nonempty ∧
+      errorMoments μ u r s ≠ 0) ∧
+    (∫ ω, quadForm (plugInCovariance pairIntercept
+      (fitResidual pairIntercept (pairErrorValues ω)) (dyadicMask pairDyads))
+      (fun _ => 1) ∂μ) = 3/8 ∧
+    variance (fun ω => (leastSquares pairIntercept (pairErrorValues ω)) 0) μ = 1/4 := by
+  letI := law_probability negativePairDistribution
+  dsimp only
+  refine ⟨?_, inferInstance, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [pairIntercept, Matrix.mul_apply, Matrix.det_fin_one, Fin.sum_univ_succ]
+  · intro r
+    exact MemLp.of_discrete
+  · intro r
+    rw [integral_law]
+    fin_cases r <;> norm_num [finiteMean, negativePairDistribution, pairErrorValues,
+      Fin.sum_univ_succ]
+  · refine ⟨0,1,by decide,?_⟩
+    unfold errorMoments
+    rw [integral_law]
+    norm_num [finiteMean, negativePairDistribution, pairErrorValues, Fin.sum_univ_succ]
+  · rw [integral_law]
+    norm_num [finiteMean, negativePairDistribution, pairErrorValues,
+      plugInCovariance, sandwichCovariance, patternMeat, fitResidual, leastSquares,
+      pair_bread, pairIntercept, dyadicMask, pairDyads, quadForm,
+      Matrix.mul_apply, Matrix.mulVec, Matrix.vecMul, dotProduct, Fin.sum_univ_succ]
+  · rw [variance_eq_integral (measurable_of_finite _).aemeasurable, integral_law]
+    simp_rw [integral_law]
+    norm_num [finiteMean, negativePairDistribution, pairErrorValues, leastSquares,
+      pair_bread, pairIntercept, Matrix.mul_apply, Matrix.mulVec, dotProduct,
+      Fin.sum_univ_succ]
+

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P053-T1",
+    "theorem": "SAP.P053.T1",
+    "fingerprint": "73bb6041bdbfd6a113ead31c5d8db334f79e62b05ca66e9fd02da3c9411b8abb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean, lines 17-34: S=R, n1=n0=2, fixed binary outcomes fourY, and supported assignments fourA and fourB. The statistic F(x1,x0)=sum_i binaryReal(x1 i)-sum_i binaryReal(x0 i) is invariant under every pair of arm permutations and takes distinct values 2 and -2. The unrestricted table functions and assignment statistics also have concrete real-valued instances, for example the first table coordinate and the treated success count. Floor is only an extension off the attained statistic values; positive arm sizes prevent zero divisions, and control-count subtraction cannot truncate.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T2",
+    "theorem": "SAP.P053.T2",
+    "fingerprint": "860d3cbfd33020bb00ff0732b22679141d98cdd023d5a9308e872c8a92957269",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem has no hypotheses. Independent proofs in scratch/Nonvacuity.lean:36 and :51 verify FourCounterexample and both nonfactorizations directly from the definitions, without using a Challenge theorem; :74 verifies the positive-block repetition at m=1. The indicator used for L is checked to equal z_1*y_1. For arbitrary m>0, the fixed repeated population has 2m ones and 2m zeros, mean 1/2, centered sum of squares m, variance m/(4m-1), zero individual effects, and combined raw fourth-moment average 1. Thus N=4m tends to infinity, allocation is 1/2, and the stated S5 limits are genuine. Both assignments lie in the full uniform complete-randomization support. This verifies the canonical counterexample's unrestricted labelled/covariate reading; it does not refute the corrected table-statistic claim.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T3",
+    "theorem": "SAP.P053.T3",
+    "fingerprint": "afe2dbf2622f813bb2e5ebf9eb6f963ea6eb8f48c274a8cbd5356a9d3bd4fc0a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed examples have no hypotheses. scratch/Nonvacuity.lean:91 independently proves SixDistribution. scratch/PValues.lean:23 and :111 independently prove the complete SixInference and FourInference propositions, including every stated inclusive upper-tail p-value and the level-1/20 rejection distinction. These proofs retain every supported reference assignment. scratch/Nonvacuity.lean:131 constructs the strictly increasing transformation g(t)=2t+1 on the attained image for positive arms and real-valued outcomes, inhabiting the universal part's monotonicity hypothesis. Both probability denominators and all relevant arm means are defined.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T4",
+    "theorem": "SAP.P053.T4",
+    "fingerprint": "b935776a79b701513523907eeb2879a83ac6a9ef39f6d3d2acf99014307ac492",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:139, :143, and :147. The parameters (p,S1,S0)=(3/4,2,1) and (1/4,1,2) satisfy every hypothesis and inhabit the two strict sign cases. The balanced case p=1/2 with S1=2,S0=0 satisfies the hypotheses and gives equality. The entire scalar domain permits zero standard deviations, while 0<p<1 excludes every zero probability denominator.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T5",
+    "theorem": "SAP.P053.T5",
+    "fingerprint": "ae856f202ac7bbd767dbcfddf94e33214a091cee9f21be53dd7f19007a41e603",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled the independent construction AuditP053.location_regularity in scratch/Nonvacuity.lean:174: n1=n0=k+2, Y1 identically 1, Y0 identically 0, and parameters (p,v1,v0,vt,tauInf)=(1/2,0,0,0,1). The proof constructs every Regularity field, with divergent size, both arms at least two, exact allocation 1/2, zero potential-outcome/effect variances, average effect 1, and combined raw fourth-moment bound B=1. It uses no Challenge theorem. This also shows that no positivity of variance limits or estimated OLS variance is being assumed. For general S5 sequences, zero-divisor conventions are excluded eventually and cannot change any of the five asserted limits.",
+    "confidence": 0.99
+  }
+]

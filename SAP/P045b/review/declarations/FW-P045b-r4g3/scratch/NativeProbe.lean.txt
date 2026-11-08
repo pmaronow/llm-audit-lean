@@ -1,0 +1,5 @@
+import SAP.P045b.Defs
+#eval IO.println "starting native probe"
+example : (2 : Nat) + 3 = 5 := by native_decide
+#eval IO.println "native arithmetic passed"
+#check Fintype.decidableInjectiveFintype

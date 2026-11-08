@@ -1,0 +1,100 @@
+import SAP.P014.Defs
+
+open scoped BigOperators
+open SAP.P014
+
+namespace AuditCounterexample
+noncomputable section
+
+lemma univ6 : (Finset.univ : Finset (Fin 6)) = {0, 1, 2, 3, 4, 5} := by decide
+lemma univ4 : (Finset.univ : Finset (Fin 4)) = {0, 1, 2, 3} := by decide
+
+lemma sum_local (f : Fin 4 → ℝ) : (∑ i ∈ localThree, f i) = f 0 + f 1 + f 2 := by
+  simp [localThree, add_assoc]
+
+lemma sample_valid : IsDistribution uniformSix := by
+  norm_num [IsDistribution, uniformSix]
+
+lemma thresholds : (fun ω => thresholdAssignment (scores1 ω)) = allocations := by
+  funext ω i
+  fin_cases ω <;> fin_cases i <;>
+    norm_num [thresholdAssignment, scores1, allocations]
+
+lemma counts : CommonWitnessCounts ∧ PositiveArms assignmentDistribution localThree := by
+  classical
+  norm_num [CommonWitnessCounts, PositiveArms, armProbability, armAssignments,
+    armSize, localThree, assignmentDistribution, pushforward, probability,
+    uniformSix, allocations, univ6, Finset.filter_insert, Finset.filter_singleton,
+    funext_iff, Fin.forall_fin_succ]
+  intro z hz
+  rcases hz with h | h | h | h <;> rcases h with ⟨h0, h1, h2, h3⟩ <;>
+    norm_num [h0, h1, h2, Finset.filter_insert, Finset.filter_singleton]
+
+lemma values :
+    expectation assignmentDistribution (differenceOfMeans localThree outcomes1) = 0 ∧
+    windowContrast localThree (supportAverage assignmentDistribution outcomes1) = -1 / 18 := by
+  classical
+  norm_num [expectation, differenceOfMeans, observedArmTotal, armSize, windowContrast,
+    supportAverage, armAssignments, localThree, assignmentDistribution, pushforward,
+    probability, uniformSix, allocations, outcomes1, binaryValue, univ6,
+    Finset.filter_insert, Finset.filter_singleton, funext_iff, Fin.forall_fin_succ]
+
+lemma assignment_valid : IsDistribution assignmentDistribution := by
+  classical
+  norm_num [IsDistribution, assignmentDistribution, pushforward, probability,
+    uniformSix, allocations, univ6, funext_iff, Fin.forall_fin_succ]
+  intro z hz
+  rcases hz with h | h | h | h <;> rcases h with ⟨h0, h1, h2, h3⟩ <;>
+    norm_num [h0, h1, h2, h3]
+
+lemma printed_conditions : PrintedLocalConditions uniformSix scores1 2 localThree := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro ω hω
+    fin_cases ω <;> norm_num [windowSubjects, insideWindow, scores1, localThree,
+      univ4, Finset.filter_insert, Finset.filter_singleton]
+  · refine ⟨fun t => ((if (-2 : ℝ) ≤ t then 1 else 0) +
+      (if (-1 : ℝ) ≤ t then 1 else 0) + (if (1 : ℝ) ≤ t then 1 else 0)) / 3, ?_⟩
+    intro ω hω t
+    fin_cases ω <;> simp only [windowCDF, sum_local] <;>
+      norm_num [localThree, scores1] <;> ring
+  · intro ω hω
+    fin_cases ω <;> norm_num [probability, uniformSix, univ6, scores1,
+      funext_iff, Fin.forall_fin_succ, localThree]
+  · intro i hi j hj hij
+    norm_num [localThree] at hi hj
+    rcases hi with rfl | rfl | rfl <;> rcases hj with rfl | rfl | rfl <;>
+      first | exact (hij rfl).elim | norm_num [probability, uniformSix, univ6, scores1]
+  · intro ω hω
+    fin_cases ω <;> simp only [armSize, sum_local] <;>
+      norm_num [localThree, thresholdAssignment, scores1]
+
+lemma local_permutations : ∀ σ : Equiv.Perm (Fin 3), probability uniformSix (fun ω => ∀ i : Fin 3,
+    scores1 ω (Fin.castSucc i) = (![-2,-1,1] : Fin 3 → ℝ) (σ i)) = 1 / 6 := by
+  intro σ
+  have h01 : σ 0 ≠ σ 1 := σ.injective.ne (by decide)
+  have h02 : σ 0 ≠ σ 2 := σ.injective.ne (by decide)
+  have h12 : σ 1 ≠ σ 2 := σ.injective.ne (by decide)
+  generalize h0 : σ 0 = j0 at h01 h02
+  generalize h1 : σ 1 = j1 at h01 h12
+  generalize h2 : σ 2 = j2 at h02 h12
+  fin_cases j0 <;> fin_cases j1 <;> fin_cases j2 <;>
+    simp_all [probability, uniformSix, univ6, scores1, Fin.forall_fin_succ] <;> norm_num
+
+lemma other_designs_ties : DistinctNoTies uniformSix scores5 localThree ∧
+    DistinctNoTies uniformSix scores9 localThree := by
+  classical
+  constructor <;> intro i hi j hj hij <;>
+    norm_num [localThree] at hi hj <;>
+    rcases hi with rfl | rfl | rfl <;> rcases hj with rfl | rfl | rfl <;>
+      first | exact (hij rfl).elim | norm_num [probability, uniformSix, univ6, scores5, scores9]
+
+-- The complete explicit refutation, rebuilt from definitions without any Challenge stub.
+example : T4Statement := by
+  refine ⟨sample_valid, assignment_valid, printed_conditions, thresholds,
+    local_permutations, counts.1, counts.2, values.1, values.2, ?_⟩
+  rw [values.1, values.2]
+  norm_num
+
+end
+end AuditCounterexample

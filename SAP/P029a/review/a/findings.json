@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P029-T1",
+    "theorem": "SAP.P029a.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional assertion about six explicit atoms: masses 1/4,1/4,1/8,1/8,1/8,1/8. Both assignment and receipt arms have mass 1/2, the compliance probability and first stage are 1/2, and the Wald denominators are nonzero. Independent exact-rational checks confirm the law, full-pair independence, receipt means and Wald values (scratch/arithmetic_check.py).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T2",
+    "theorem": "SAP.P029a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both incomparability laws have the six positive atom masses of T1. For the general implication, take Omega=Bool with its uniform probability measure, X=Unit, Z=id, and the constant response D0=false,D1=true,Y0=0,Y1=1. Profile probability and compliance are one; both receipt arms have probability 1/2; receipt mean equality holds and the first stage is one. These premises are checked in scratch/Nonvacuity.lean. The extra no-defiers/relevance clauses are consequences of the canonical premises, as explained in REPORT.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T3",
+    "theorem": "SAP.P029a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both 32-atom constructions have strictly positive masses summing to one. All covariate cells have positive mass, and compliance probabilities are (2/5,2/3) or (1/4,3/4). Assignment is an independent fair coin. The inverse-score first stages are 8/17 and 3/8. Exact-rational checks confirm full-type marginal/conditional independence and its failure where asserted, profile effects, arm differences and Wald values (scratch/arithmetic_check.py).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T4",
+    "theorem": "SAP.P029a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled uniform-Bool, all-complier, constant-response model from scratch/Nonvacuity.lean, X=Unit and w=2. It satisfies full IV, positive profile compliance, positive weights and both joint-independence alternatives; the weighted first stage is one. The two retained counterexample laws also have positive masses and nonzero first stages. Finite X makes the relevant weight and profile functions bounded, so all integrals and inverse-score ratios are legitimate.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T5",
+    "theorem": "SAP.P029a.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The defined design has 500 actual rows, 250 assignments in each arm, interior covariate support values and all-complier latent indices 2,-2. Both specified outcome inputs are points in the canonical design's support. The exact Gram matrix, determinant 3906250000 and outcome cross-products are independently checked in scratch/arithmetic_check.py. Positive-weight premises have the instance w=1; full column rank makes every positive-weight Gram matrix invertible.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T6",
+    "theorem": "SAP.P029a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Positive sample and replicate counts include n=R=1. The benchmark assumptions are realized by the coordinate maps on the finite product of 3n copies of the uniform probability measure on (-1,1). For the expected-error identities, t=B=5 on a one-point probability space satisfies every L2 and mean premise; C=univ realizes the conditional constant-effect claim. T5's explicit inputs give both discrepancy signs. No integrability of Y0 is needed when the actual integrand is the constant (Y0+5)-Y0=5.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T7",
+    "theorem": "SAP.P029a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general positive-log/minimizer assertions, take one observation, Theta=Bool, likelihoods L(false)=1/4,L(true)=1/2, and weight 2; a minimizer exists at true. For the extended zero-weight case take two observations with L=1/2 and weights 0,1. The explicit 16-record witness uses strictly positive masses and weights; its normalized Wald stages are nonzero. Every t>0 gives positive prescribed scores and a nonempty perturbation model; the exact values are independently checked at positive t instances (scratch/arithmetic_check.py).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T8",
+    "theorem": "SAP.P029a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A nonempty fitting instance has observations Unit x Bool, cell=first coordinate, receipt=second coordinate, and unit weights: each cell has S=F=1 and optimum 1/2. The positive-total premises are compiled in scratch/Nonvacuity.lean. The three concrete fitting datasets likewise have positive success and failure totals in every cell. Taking constant positive weights supplies the equivalence instance; the numerical Wald statements have nonzero denominators checked by exact arithmetic.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T9",
+    "theorem": "SAP.P029a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All nine record cells have positive integer sizes and their sum is 18933. Both race groups and both contact groups are nonempty in each completion. Set Y=0 and choose raw codes W for recorded true, O for recorded false and none outside those recorded cells; this satisfies the raw-code compatibility premise. For e=1/2 the recorded assignment pattern has probability (1/2)^18933>0 under independent assignment. Exact counts, cross-products and conditional mean differences are independently checked in scratch/arithmetic_check.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T10",
+    "theorem": "SAP.P029a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the sign identity take N=2 and C=W=(true,false), so each true count is one and both groups have positive mass; these count bounds are compiled in scratch/Nonvacuity.lean. A nontrivial grouped instance has four records, groups (a,a,b,b), s=(0,1,2,3), A=(0,1,0,0), with the distinguished group a of probability 1/2 and A constant in b. The nine-cell completions have all relevant positive denominators. Both Raleigh arithmetic differences and the completion signs are independently checked in scratch/arithmetic_check.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T11",
+    "theorem": "SAP.P029a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Witness A has positive masses 9/16,3/16,3/16,1/16; witness B has four masses 1/4. Instrument/error variances are respectively (3/16,3/16) and (1/4,5/2), so correlation denominators are strictly positive. Relevance covariances are 3/32 and 1/8. Their structural, exogeneity and endogeneity moments are independently checked with exact rational arithmetic (scratch/arithmetic_check.py).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T12",
+    "theorem": "SAP.P029a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two SEM laws are the concrete nondegenerate T11 witnesses. The common-error SEM equations have, for example, I=K=Unit, Q=0,u=0,beta0=0,beta1=1,Y0=0,Y1=1 as a satisfiable instance. The heterogeneous IV witness has four atoms of mass 1/4, D=Z, effects one and two each with mass 1/2, first stage one and covariance 1/4; thus both noninclusion directions use actual laws.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T13",
+    "theorem": "SAP.P029a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The one-profile IV law has compliance 1/2 and receipt rates 3/4,1/4. The independent receipt pair has four positive masses 3/16,1/16,9/16,3/16 summing to one, and each displayed fit belongs to the explicitly closed triangle. Boundary natural powers are the canonical convention. The five-per-arm binomial product is normalized and has the stated mean and tail probability, checked exactly in scratch/arithmetic_check.py. Every empirical-rate divisor used here is five, and k<=n prevents truncated binomial exponents.",
+    "confidence": 0.99
+  }
+]

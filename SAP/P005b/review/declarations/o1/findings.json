@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P005-T15",
+    "theorem": "SAP.P005b.T15",
+    "fingerprint": "4933d4f649e9c551713e238021019a6a4185db8be2cbba1d402a8b01412dba4a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean (compiles): `∃ t c : ℕ, 2 ≤ t ∧ 2 ≤ c ∧ (design (t+c) t).Nonempty` with t = c = 2, S = {0,1}; also `controlCoefficient 2 3 = 1/3`, `treatedCoefficient 2 3 = -1/3`, `controlCoefficient 3 2 = 1/3 ∧ treatedCoefficient 3 2 = -1/3` by norm_num, which confirms the definitions are the printed expressions and not encodings of the conclusion.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T16",
+    "theorem": "SAP.P005b.T16",
+    "fingerprint": "715d161a6efdc5851a6608153c5ffaf890a34f8a6296223e4d405dde954752b4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean (compiles): n = 3, m = 1 satisfy 3 ≤ n, 0 < m < n; a = b = c = ![2,-1,-1] is centred with Σ a_i^3 = 6 ≠ 0, so the hypotheses hold with nondegenerate third moments.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T17",
+    "theorem": "SAP.P005b.T17",
+    "fingerprint": "d006992dedbae063d1cacfdccfa7394445647313119458d4357cc16108197af4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean (compiles): P2 : Population 2 1 with x = (1,-1), yT = (3,0), yC = (1,5) is proved `standardized` (hence gram P2 = 1), with n = 2, m = 1, so every finite part (A), (B), (C), (E) has satisfiable hypotheses with d = 1. For the asymptotic parts (D), (F) the sequence d ≡ 0, m(n) = n/2, zero outcomes is proved to satisfy `wholeW1Standing` (equal to the hypothesis of (D)) with K = 0, lo = 1/4, hi = 3/4. That instance is degenerate ((*) ≡ 0). Sequences with d = 1 also exist, e.g. x_i = sqrt(12/(n^2-1))·(i-(n-1)/2), which is centred with Σx_i^2 = n and |x_i| ≤ sqrt(3), and pT = 1/2 ± O(1/n) with bounded outcomes; this one is argued, not compiled.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T18",
+    "theorem": "SAP.P005b.T18",
+    "fingerprint": "829d46385cc6331ab2ddc08bf685ef9bc14fc4133184a1b04febcd661f4c3a3f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean (compiles): n = 2, m = 1, standardized P2 (x = (1,-1)), S = {0} ∈ design 2 1 satisfy every hypothesis of part (H). Part (G) is satisfiable with any P, |S| = m and eT = eC = 0, which trivially satisfies the normal equation; nontrivial instances are the common residuals of any standardized population, which satisfy it by (H2).",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T19",
+    "theorem": "SAP.P005b.T19",
+    "fingerprint": "d83aeac59ec5183af6ec3a65273799f86bf0949c6f0d750411c97b667c8f3a94",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Refutation; witness checked independently of the packaged proof in scratch/T19W.lean (compiles, proves `T19Statement` from the witness): n = 4, m = 3, t = treated, a = b = ![-1,-1,-1,1]. `design 4 3` is enumerated by decide. The variance of sampleCov is 4/27 > 8/81 = covarianceBound, and the expectation identity (i) holds at the witness (theorem w_exp). The printed reading has these conditions: n ≥ 4, 1 ≤ n_T ≤ n-1, t ∈ {T,C}, arbitrary fixed (not necessarily centred) a, b, uniform complete randomization. The witness meets all of them, since the canonical statement explicitly says the vectors are not required to be centred. For centred vectors the bound appears to hold: numerical hill-climbing for n ≤ 8 gives max ratio ≈ 0.69, and the centred version of this witness has bound 2/9 ≥ 4/27.",
+    "confidence": "high"
+  }
+]

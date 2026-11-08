@@ -1,0 +1,194 @@
+[
+  {
+    "target_id": "P010-T1", "decision": "refuted",
+    "theorem": "SAP.P010.T1", "restriction": null,
+    "rows_used": ["AronowAudit.P010.empirical_overlap_counterexample"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T1_correspondence", "statement_definition": "SAP.P010.T1Statement"
+  },
+  {
+    "target_id": "P010-T2", "decision": "whole",
+    "theorem": "SAP.P010.T2", "restriction": null,
+    "rows_used": ["AronowAudit.P010.empirical_cutoff_certificate", "AronowAudit.P010.empirical_exact_certificate", "AronowAudit.P010.empirical_overlap_corrected"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T2_correspondence", "statement_definition": "SAP.P010.T2Statement"
+  },
+  {
+    "target_id": "P010-T3", "decision": "refuted",
+    "theorem": "SAP.P010.T3", "restriction": null,
+    "rows_used": ["AronowAudit.P010.Wave1.missing_passing_condition_counterexample_proof"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T3_correspondence", "statement_definition": "SAP.P010.T3Statement"
+  },
+  {
+    "target_id": "P010-T4", "decision": "whole",
+    "theorem": "SAP.P010.T4", "restriction": null,
+    "rows_used": ["AronowAudit.P010.Wave1.proposition_one_finite_proof"],
+    "rows_not_used": [{"lean_name": "AronowAudit.P010.always_passer_union_bound", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}, {"lean_name": "AronowAudit.P010.trimming_mass_identity", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T4_correspondence", "statement_definition": "SAP.P010.T4Statement"
+  },
+  {
+    "target_id": "P010-T5", "decision": "refuted",
+    "theorem": "SAP.P010.T5", "restriction": null,
+    "rows_used": ["AronowAudit.P010.Wave1.infinite_sharp_bounds_counterexample_proof"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T5_correspondence", "statement_definition": "SAP.P010.T5Statement"
+  },
+  {
+    "target_id": "P010-T6", "decision": "whole",
+    "theorem": "SAP.P010.T6", "restriction": null,
+    "rows_used": ["AronowAudit.P010.Wave1.proposition_one_else_proof"],
+    "rows_not_used": [{"lean_name": "AronowAudit.P010.else_branch_criterion", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T6_correspondence", "statement_definition": "SAP.P010.T6Statement"
+  },
+  {
+    "target_id": "P010-T7", "decision": "whole",
+    "theorem": "SAP.P010.T7", "restriction": null,
+    "rows_used": ["AronowAudit.P010.joint_independence_step_counterexample"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T7_correspondence", "statement_definition": "SAP.P010.T7Statement",
+    "declaration_review_round_4": {"finding": "label_wrong/minor: the theorem establishes the canonical counterexample rather than refuting that counterexample assertion.", "resolution": "Relabelled whole and rewrote the docstring to identify the canonical counterexample and the specific printed assertion it refutes. Formal statement, proof, theorem name and row accounting unchanged.", "source": "fw/round4/T7/r6g2/findings.json", "status": "resolved"}
+  },
+  {
+    "target_id": "P010-T8", "decision": "whole",
+    "theorem": "SAP.P010.T8", "restriction": null,
+    "rows_used": ["AronowAudit.P010.corollary_one_corrected_proof"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T8_correspondence", "statement_definition": "SAP.P010.T8Statement"
+  },
+  {
+    "target_id": "P010-T9", "decision": "whole",
+    "theorem": "SAP.P010.T9", "restriction": null,
+    "rows_used": ["AronowAudit.P010.Wave1.simulation_width_counterexample_proof"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T9_correspondence", "statement_definition": "SAP.P010.T9Statement",
+    "declaration_review_round_4": {"finding": "label_wrong/minor: the theorem establishes the canonical counterexample rather than refuting that counterexample assertion.", "resolution": "Relabelled whole and rewrote the docstring to identify the canonical counterexample and the specific printed assertion it refutes. Formal statement, proof, theorem name and row accounting unchanged.", "source": "fw/round4/T9/r6g2/findings.json", "status": "resolved"}
+  },
+  {
+    "target_id": "P010-T10", "decision": "whole",
+    "theorem": "SAP.P010.T10", "restriction": null,
+    "rows_used": ["AronowAudit.P010.Wave1.simulation_invariance_corrected_proof"],
+    "rows_not_used": [{"lean_name": "AronowAudit.P010.bounds_fixed_observables", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}, {"lean_name": "AronowAudit.P010.bounds_fixed_observables_actual", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}, {"lean_name": "AronowAudit.P010.simulation_mean_formula_injective", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T10_correspondence", "statement_definition": "SAP.P010.T10Statement",
+    "declaration_review_round_1": {"finding": "not_faithful/minor: docstring omitted the nonzero-lambda qualification for simulation sensitivity.", "resolution": "Added λ ≠ 0 and feasible correlation to the prose summary; stated the two specified designs have different widths. Formal statement and whole decision unchanged.", "source": "fw/round1/T10/r1g2/findings.json", "status": "resolved"}
+  },
+  {
+    "target_id": "P010-T11", "decision": "whole",
+    "theorem": "SAP.P010.T11", "restriction": null,
+    "rows_used": ["AronowAudit.P010.transport_logistic_certificate", "AronowAudit.P010.transport_odds_counterexample"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T11_correspondence", "statement_definition": "SAP.P010.T11Statement",
+    "declaration_review_round_2": {"finding": "label_wrong/minor: the refuted label and docstring opening overstated a counterexample to an explicit formal reading of the printed weighting guidance.", "resolution": "Relabelled whole and named the exact-distribution-matching reading with replication membership coded 1; all counterexample facts, formal statement, proof and row credits unchanged.", "source": "fw/round2/T11/r3g2/findings.json", "status": "resolved"}
+  },
+  {
+    "target_id": "P010-T12", "decision": "whole",
+    "theorem": "SAP.P010.T12", "restriction": null,
+    "rows_used": ["AronowAudit.P010.transport_bayes", "AronowAudit.P010.transport_corrected_density", "AronowAudit.P010.transport_mass_factors", "AronowAudit.P010.square_density_normalization"],
+    "rows_not_used": [{"lean_name": "AronowAudit.P010.transport_corrected_finite", "reason": "Finite-support specialization adds nothing to the general dominating-measure statement."}, {"lean_name": "AronowAudit.P010.transport_printed_finite", "reason": "Finite-support specialization adds nothing to the general dominating-measure statement."}],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T12_correspondence", "statement_definition": "SAP.P010.T12WholeStatement",
+    "supporting_declarations": ["AronowAudit.P010.transport_mass_factors", "AronowAudit.P010.square_density_normalization"]
+  },
+  {
+    "target_id": "P010-T13", "decision": "refuted",
+    "theorem": "SAP.P010.T13", "restriction": null,
+    "rows_used": ["AronowAudit.P010.Wave1.lower_tail_upper_bound_counterexample_proof"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T13_correspondence", "statement_definition": "SAP.P010.T13Statement"
+  },
+  {
+    "target_id": "P010-T14", "decision": "whole",
+    "theorem": "SAP.P010.T14", "restriction": null,
+    "rows_used": ["AronowAudit.P010.Wave1.upper_tail_proof_corrected_proof"],
+    "rows_not_used": [{"lean_name": "AronowAudit.P010.other_arm_conditional_union_bound", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}, {"lean_name": "AronowAudit.P010.upper_tail_fixed_mass", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T14_correspondence", "statement_definition": "SAP.P010.T14Statement"
+  },
+  {
+    "target_id": "P010-T15", "decision": "whole",
+    "theorem": "SAP.P010.T15", "restriction": null,
+    "rows_used": ["AronowAudit.P010.Wave1.observable_upper_bound_corrected_proof"],
+    "rows_not_used": [{"lean_name": "AronowAudit.P010.conditional_law_consistency", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}, {"lean_name": "AronowAudit.P010.eventMean_eventLaw", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}, {"lean_name": "AronowAudit.P010.passer_tail_mean_formula", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}, {"lean_name": "AronowAudit.P010.potential_trim_consistency", "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."}],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T15_correspondence", "statement_definition": "SAP.P010.T15Statement"
+  },
+  {
+    "target_id": "P010-T16", "decision": "whole",
+    "theorem": "SAP.P010.T16", "restriction": null,
+    "rows_used": ["AronowAudit.P010.selection_counterexample_corrected"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T16_correspondence", "statement_definition": "SAP.P010.T16Statement"
+  },
+  {
+    "target_id": "P010-T17", "decision": "whole",
+    "theorem": "SAP.P010.T17", "restriction": null,
+    "rows_used": ["AronowAudit.P010.nonzero_passing_corrected", "AronowAudit.P010.measurable_observedS", "AronowAudit.P010.measurable_assignment"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T17_correspondence", "statement_definition": "SAP.P010.T17WholeStatement",
+    "declaration_review_round_3": {"finding": "not_faithful/major: the former characterization allowed both positivity predicates to be false and did not impose the canonical all-arm passing requirement; the whole label overstated coverage.", "resolution": "Replaced the characterization by the explicit corrected conditional-probability requirement under positive potential passing in every arm, using only the existing equivalence in the sufficient direction. Relabelled restricted and disclosed every condition. Only T17Statement changes among shared definitions.", "source": "fw/round3/T17/r4g4/findings.json", "status": "resolved", "shared_definition_changed": "SAP.P010.T17Statement", "declarations_requiring_review": ["SAP.P010.T17"]}
+  },
+  {
+    "target_id": "P010-T18", "decision": "whole",
+    "theorem": "SAP.P010.T18", "restriction": null,
+    "rows_used": ["AronowAudit.P010.corollary_one"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T18_correspondence", "statement_definition": "SAP.P010.T18Statement"
+  },
+  {
+    "target_id": "P010-T19", "decision": "whole",
+    "theorem": "SAP.P010.T19", "restriction": null,
+    "rows_used": ["AronowAudit.P010.lemma_one"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T19_correspondence", "statement_definition": "SAP.P010.T19Statement"
+  },
+  {
+    "target_id": "P010-T20", "decision": "whole",
+    "theorem": "SAP.P010.T20", "restriction": null,
+    "rows_used": ["AronowAudit.P010.corollary_two"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T20_correspondence", "statement_definition": "SAP.P010.T20Statement"
+  },
+  {
+    "target_id": "P010-T21", "decision": "whole",
+    "theorem": "SAP.P010.T21", "restriction": null,
+    "rows_used": [],
+    "rows_not_used": [{"lean_name": "AronowAudit.P010.corollary_three", "reason": "Its existential conclusion omits the required integrability certificates; use the already proved concrete finite witness instead."}],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T21_correspondence", "statement_definition": "SAP.P010.T21Statement",
+    "supporting_declarations": ["AronowAudit.P010.selection_counterexample_corrected", "AronowAudit.P010.finiteLaw_apply_real", "MeasureTheory.integrable_dirac", "MeasureTheory.Integrable.smul_measure", "MeasureTheory.integrable_finsetSum_measure", "MeasureTheory.Integrable.restrict"]
+  },
+  {
+    "target_id": "P010-T22", "decision": "whole",
+    "theorem": "SAP.P010.T22", "restriction": null,
+    "rows_used": ["AronowAudit.P010.corollary_four"],
+    "rows_not_used": [],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T22_correspondence", "statement_definition": "SAP.P010.T22Statement"
+  },
+  {
+    "target_id": "P010-T23", "decision": "whole",
+    "theorem": "SAP.P010.T23", "restriction": null,
+    "rows_used": [],
+    "rows_not_used": [{"lean_name": "AronowAudit.P010.corollary_five", "reason": "Its existential conclusion omits the required integrability certificates; use the already proved concrete finite witness instead."}],
+    "proof_status": "proved", "proof_plan": null, "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "bridge": "SAP.P010.Bridge.T23_correspondence", "statement_definition": "SAP.P010.T23Statement",
+    "supporting_declarations": ["AronowAudit.P010.selection_counterexample_corrected", "AronowAudit.P010.finiteLaw_apply_real", "MeasureTheory.integrable_dirac", "MeasureTheory.Integrable.smul_measure", "MeasureTheory.integrable_finsetSum_measure", "MeasureTheory.Integrable.restrict", "AronowAudit.P010.finiteLaw_ae", "AronowAudit.P010.eventMean_congr_set"]
+  }
+]

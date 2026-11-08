@@ -6,6 +6,8 @@ import Mathlib.Analysis.Real.Sqrt
 P009-T43: bounded average dependence gives the root-n rate for either design.
 
 Finite permutation averaging supplies the disjoint-mask second-moment bound.
+The remaining finite and asymptotic steps reuse the preceding writer's checked arguments.
+The original held root-n declaration is used only for the final type comparison.
 -/
 
 namespace AronowAudit.P009.Wave1
@@ -103,8 +105,7 @@ theorem GP0091B2b_complete_rate_root_n (S : Study)
     _ = (Real.sqrt B + B) * (1 / Real.sqrt (size S t)) := by ring
 
 
-/-- Under nondegenerate complete randomization, each inverse-probability-weighted
-arm population-size estimate equals the full population size n. -/
+/-- Exact arm sizes under arbitrary nondegenerate complete randomization. -/
 theorem GP0091B2b_complete_counts {n : ℕ} (E : Experiment n) (m : ℕ)
     (hCR : Complete E m) (z : Assignment n) (hz : 0 < E.design.mass z)
     (b : Bool) : nHat E b z = n := by
@@ -660,8 +661,7 @@ theorem GP0091B2b_complete_nonedge_covariance {n : ℕ} (hn : 0 < n)
       mul_le_mul_of_nonneg_left hpow hδ
     _ = _ := by ring
 
-/-- Finite complete-design bias and variance bounds, exact inverse-probability-weighted
-arm population-size estimates, and equality of the HT and Hajek estimators on support. -/
+/-- Assemble the finite inputs without invoking either held complete theorem. -/
 theorem GP0091B2b_complete_finite_input {n : ℕ} (hn : 0 < n) (E : Experiment n)
     (m : ℕ) (hCR : Complete E m) (k q s : ℝ) (hReg : Regular E k q s) :
     (∑ i, (incoming E i:ℝ))/(n:ℝ) = C1 E ∧
@@ -765,7 +765,7 @@ private theorem GP0091B2b_HT_mse_bound (S : Study) (k q s : ℝ)
   ring_nf at hv hbias2 hDmul hCmul hrate ⊢
   linarith only [hv, hbias2, hDmul, hCmul, hrate]
 
--- P009-T42.
+-- Record 10 / P009-T42.
 theorem GP0091B2b_complete_consistency (S : Study) (k q s : ℝ)
     (hReg : RegularSequence S k q s) (hCR : CompleteSequence S)
     (hRestricted : Restricted S)
@@ -834,6 +834,8 @@ theorem root_n_consistency_proof (S : Study) (k q s : ℝ)
         (fun t => 1 / Real.sqrt (size S t)) :=
       BernoulliCompletion.op_change_rate S _ _ _ C hC hRate hClaims.2.2.2
     exact ⟨hClaims.1, hClaims.2.1, hHT, hHajek⟩
+
+example : type_of% @AronowAudit.P009.root_n_consistency := root_n_consistency_proof
 
 end
 

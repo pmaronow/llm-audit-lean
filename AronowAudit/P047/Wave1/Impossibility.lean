@@ -34,7 +34,7 @@ noncomputable section
 
 /-- Unknown propensities preclude uniform consistency, including with an arbitrary
 independent auxiliary seed; honest extended-real intervals have positive width probability
-under the one fixed baseline law. -/
+under the one fixed baseline law. This is the full body of the blueprint's `Target`. -/
 theorem unknown_propensity_impossibility_randomized :
     ∀ {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q],
       (∀ E : (n : ℕ) → ((Fin n → ObservedUnit) × R) → ℝ,
@@ -50,6 +50,9 @@ theorem unknown_propensity_impossibility_randomized :
   Impossibility.assemble n1_proof n2_proof n3_proof n4_proof n5_proof
     n6_proof n7_proof n8_proof n9_proof n10_proof n11_proof n12_proof n13_proof
     n14_proof n15_proof n16_proof n17_proof n18_proof n19_proof n20_proof
+
+example : AronowAudit.P047.Wave1.Impossibility.Target.{u} :=
+  unknown_propensity_impossibility_randomized
 
 end
 

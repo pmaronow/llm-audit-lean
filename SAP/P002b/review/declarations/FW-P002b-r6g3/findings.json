@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P002-T26",
+    "theorem": "SAP.P002b.T26",
+    "fingerprint": "515a851a084eb286ce49fa0e69651ea28552f899764757fbc17a1daa34631256",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: n=6, k=1, n1=3, all-complier receipt, y_i(d)=i^2, x_i=2i-5, and observed set {0,1,2}; proves validity, monotonicity, compliers, centering, full rank for all assignments, nonzero adjusted receipt contrast, and both IV determinants nonzero. Exact rational enumeration in scratch/WitnessChecks.py validates the separate eight-unit noninterval witness at -12, 10 and -7 over all 70 assignments.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T27",
+    "theorem": "SAP.P002b.T27",
+    "fingerprint": "3bfee7520c884826bbaca77effa8516992d81900a57f9d31ce5c316ad508ec89",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: both the raw four-unit two-curve dataset and a centered full-rank six-unit one-covariate dataset generate the stated regular coefficients. The adjusted example has M=1, alpha=1/2, Q=(1,0,0,0,0,4/27) and a crossing-free interval (0,1), satisfying every premise. The raw example has genuine crossings, independently checked at -4 and -1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T28",
+    "theorem": "SAP.P002b.T28",
+    "fingerprint": "7522fbd1f4f26b59dfead3ce4c3baee4c96556663dacde43d04faa870755d1ef",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean supplies raw and adjusted data-generated regular families, positive M and an interior level. Exact rational checks in scratch/WitnessChecks.py verify a raw family with complete crossing list [-4,-1] and legitimate corrected Step-4 records with indices 1,0,1; the adjusted M=1 instance inhabits the no-intersection branch. These checks do not assume the confidence-set equality in a run predicate.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P002-T29",
+    "theorem": "SAP.P002b.T29",
+    "fingerprint": "66013783d602aab7895def4b52d66e803e04c787aa3739debb9f69e0f02bbb84",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/RefutationChecks.lean: for every n>=2, zero potential outcomes, all-complier receipt and n1=floor(n/2) satisfy Theta at delta=0, r=1/4, A=1/2, and have coverage 1. scratch/RefutationAudit.md checks all printed conditions and proves that the same small moment bound forces every model in this nonempty class to have coverage 1; alpha=1/2 therefore contradicts the printed exact limit.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T30",
+    "theorem": "SAP.P002b.T30",
+    "fingerprint": "569664a0965cd7e41ac5d171628a03e332e7949bbf635f900eeba9d444f4bb9b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/RefutationChecks.lean: n=4, k=1, n1=2, zero potential outcomes, all-complier receipt, and covariates (-3/4,-1/4,1/4,3/4) satisfy Xi at delta=0, e=1/4, A=4, B=1/2, r=1/4. scratch/RefutationAudit.md checks eventual nonemptiness using distinct centered grids and the uniform argument forcing the coverage infimum to 1 for these constants. The witness is independent of singular-arm choices and uses alpha=1/2.",
+    "confidence": 0.98
+  }
+]

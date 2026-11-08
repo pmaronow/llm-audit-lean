@@ -1,0 +1,162 @@
+[
+ {
+  "target_id": "P013-T15",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.covarianceA_conservative",
+   "AronowAudit.P013.covarianceHT_conservative",
+   "AronowAudit.P013.covarianceHT_unbiased_no_effect",
+   "AronowAudit.P013.effectVariance_conservative"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.covarianceA_expectation",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.covarianceHT_expectation",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.covariance_split_zeros",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   }
+  ],
+  "statement_definition": "SAP.P013b.T15Statement",
+  "statement_summary": "Under the standing assumptions, positive off-diagonal cross-exposure joint probabilities give the first covariance estimator an expectation at most the true covariance, with equality when every unit has equal selected potential outcomes. For arbitrary joint probabilities, the adjusted covariance estimator has expectation at most the true covariance and the effect variance estimator has expectation at least the true variance."
+ },
+ {
+  "target_id": "P013-T16",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.differenceTotal_residual",
+   "AronowAudit.P013.differenceTotal_unbiased",
+   "AronowAudit.P013.hajek_bias_bound",
+   "AronowAudit.P013.htCount_unbiased"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.auxiliary_unbiased",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.covariance_abs_bound",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.covariance_centered",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.hajek_bias_covariance",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.hajek_product_identity",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.htTotal_zero_of_count_zero",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.indicator_nonneg",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   }
+  ],
+  "statement_definition": "SAP.P013b.T16Statement"
+ },
+ {
+  "target_id": "P013-T17",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.misspecified_contrast",
+   "AronowAudit.P013.misspecified_expectation"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P013b.T17Statement"
+ },
+ {
+  "target_id": "P013-T18",
+  "decision": "refuted",
+  "theorem": "SAP.P013b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.Wave1.printed_wald_coverage_refuted"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.graph_quadruple_count",
+    "reason": "Final wrong_credit: the symmetric counting lemma does not supply the printed directed counting claim; the independent refutation row suffices."
+   }
+  ],
+  "statement_definition": "SAP.P013b.T18Statement",
+  "statement_summary": "Refutes the recorded universal Wald coverage assertion under printed Condition 5. Negative variance estimates count as noncoverage. In the source paired witness their probability is at most 1/N along the even-size subsequence establishing undercoverage, so undefined intervals do not cause the limiting failure."
+ },
+ {
+  "target_id": "P013-T19",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.htEffect_consistency"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.both_means_consistent",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.bounded_htMean_consistency",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.convergence_difference",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.difference_probability_bound",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.finite_chebyshev",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.htMean_chebyshev",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.htMean_variance_bound",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.jointPi_bounds",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.joint_covariance_abs_le_one",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.linear_count_is_little_o",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.pi_bounds",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.variance_div",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   }
+  ],
+  "statement_definition": "SAP.P013b.T19Statement"
+ }
+]

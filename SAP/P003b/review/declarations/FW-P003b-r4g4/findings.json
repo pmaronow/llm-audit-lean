@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P003-T36",
+    "theorem": "SAP.P003b.T36",
+    "fingerprint": "ba1b0cf813c48847e2375e89cc3eebab3f4cebfd2a535539763341a484805a74",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean. The observed counts (1,1,1,1) have total 4 and two positive arms. At effect numerator 0 and j=2, both selectors return the genuinely possible vector (2,0,0,2), and both reuse lists are exactly [1,2]. For K=2 both schedule choices have strictly positive draw and update counts; coefficients (1,1,1) satisfy all cost hypotheses. The family o(n)=(0,floor(n/2),0,n-floor(n/2)) has total n at every index and both arms eventually positive. It supplies the product-index families and, with K(n)=1, the eventually positive sequence instance. No audited theorem is used to construct these instances.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T18",
+    "theorem": "SAP.P003b.T18",
+    "fingerprint": "220daebd9ed4d4ecc99e3be9cad7123912f1caf12a60bdd7656795a5611e68bd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean. A nonzero upper-bound instance uses alpha=1/2, epsilon=1/8, c=1, tests(n)=n and operations(n)=n^2*recommendedK(1/8,n); every nonnegativity, eventual test-budget and cost premise is proved. A finite arithmetic instance uses n=16,K=2,t=16,c=1,O=512. Existence of positive K satisfying the expected-cost threshold at r=6 is proved. For the actual probabilistic lower-bound definitions, n=16,m=8 and observed counts (0,8,0,8) arise from a legitimate all-zero table. The first query's candidate list is proved to be exactly (0,4,0,12),(0,5,1,10),(0,6,2,8),(0,7,3,6),(0,8,4,4). An explicit pool of size-two batches causes at least five actual tests and at least 150 shuffle iterations. A finite-cardinality proof gives this event strictly positive probability under uniform probability on the full function type of pools, which is the independent uniform product law. The realized repetitions in this support point do not change that law. No audited theorem is used to construct these instances.",
+    "confidence": "high"
+  }
+]

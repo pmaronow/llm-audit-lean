@@ -1,15 +1,19 @@
 import AronowAudit.P029.Wave1.FiniteMeasureBlueprint
 
 /-!
-# P029-T21: conditional independence does not identify the unweighted IV ratio
+# Wave1 blueprint: P029-T21, `AronowAudit.P029.printed_conditional_sufficiency` (refute)
 
 Paper: P029 p. 499 (PDF p. 8), last sentence of the sufficiency paragraph, read with
-independence of effects and compliance type conditional on X (T21(c)).
-Witness: the T3(B) law `conditionalJoint` with units
+independence of effects and compliance type conditional on X (T21(c)). Resolution: `refute`.
+Witness (mapper record 3): the T3(B) law `conditionalJoint` with units
 `liftUnit independenceUnit`; (C,T) tables (9,3,3,1)/32 at X=0 and (1,3,3,9)/32 at X=1,
 independent fair H and Z. Conditional independence holds under the literal normalized
 restriction, latent ignorability and ICSW = ATE hold, but the unweighted IV ratio is 5/8
 while the ATE is 1/2. The refutation negates the middle conjunct of the printed conclusion.
+
+`Target` is the negation of the universe-0 instance of the held contract (checked by `rfl`).
+Final theorem (writers): `AronowAudit.P029.Wave1.printed_conditional_sufficiency_refuted`
+in `AronowAudit/P029/Wave1/ConditionalSufficiency.lean`.
 -/
 
 namespace AronowAudit.P029.Wave1.ConditionalSufficiency
@@ -20,10 +24,8 @@ open AronowAudit.P029 AronowAudit.P029.Wave1.FiniteMeasure
 
 noncomputable section
 
-/-- Negation of the claim that conditional independence implies latent
-ignorability and equality of both the unweighted and inverse-score weighted IV ratios
-with the ATE
-(universe-0 instance). -/
+/-- The frozen final statement: the negation of the printed contract
+`printed_conditional_sufficiency` (universe-0 instance). -/
 def Target : Prop :=
   ¬ (∀ {Ω X : Type} [MeasurableSpace Ω]
       [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X]
@@ -37,10 +39,14 @@ def Target : Prop :=
       mWald μ U Z (fun _ => 1) = (∫ ω, (U ω).tau ∂μ) ∧
       mWald μ U Z (fun ω => 1 / scoreAt μ U (U ω).x) = (∫ ω, (U ω).tau ∂μ))
 
+/-- Fidelity check: `Target` is literally the negation of the held declaration's statement. -/
+theorem target_eq_negated_printed :
+    Target = ¬ (type_of% @AronowAudit.P029.printed_conditional_sufficiency.{0, 0}) := rfl
 
-/-- Under the atomic T3(B) law: probability measure, all IV assumptions, positive scores
+/-- **Node R3-N1** (`conditional_sufficiency_witness`; mapper record 3, paper-proof steps 1-2,
+4 and 6). Under the atomic T3(B) law: probability measure, all IV assumptions, positive scores
 at positive-mass profiles (scores 1/4 and 3/4), and unweighted IV `mWald (·↦1) = 5/8 ≠ 1/2 =
-∫ τ`. Transfer `conditional_independence_counterexample` with `FiniteMeasure.N1`, `FiniteMeasure.N3` and `FiniteMeasure.N6`. -/
+∫ τ`. Transfer `conditional_independence_counterexample` with FM-N1, FM-N3 and FM-N6. -/
 def N1 : Prop :=
   FiniteMeasure.N1 → FiniteMeasure.N2 → FiniteMeasure.N3 → FiniteMeasure.N6 →
     IsProbabilityMeasure (atomicMeasure conditionalJoint) ∧
@@ -50,11 +56,12 @@ def N1 : Prop :=
     mWald (atomicMeasure conditionalJoint) (liftUnit independenceUnit) Prod.snd (fun _ => 1) ≠
       ∫ i, (liftUnit independenceUnit i).tau ∂(atomicMeasure conditionalJoint)
 
-/-- The printed conditional-independence premise holds at every positive-mass profile,
-for the literal normalized restricted measure of the statement. From the `FCondIndep`
-part of `conditional_independence_counterexample` (with `T = i.1.1.2.1`), `FiniteMeasure.N5` at
+/-- **Node R3-N2** (`conditional_finite_to_measure_independence` instance; mapper record 3,
+step 3). The printed conditional-independence premise holds at every positive-mass profile,
+for the literal normalized restricted measure of the held contract. From the `FCondIndep`
+part of `conditional_independence_counterexample` (with `T = i.1.1.2.1`), FM-N5 at
 `p = conditionalJoint`, then `IndepFun.comp` with `bit` (`τ = bit T - 0`); rewrite
-`mP = fP` by `FiniteMeasure.N1` to match the scaling constant. -/
+`mP = fP` by FM-N1 to match the scaling constant. -/
 def N2 : Prop :=
   FiniteMeasure.N1 → FiniteMeasure.N2 → FiniteMeasure.N4 → FiniteMeasure.N5 →
     ∀ x : Bool, 0 < mP (atomicMeasure conditionalJoint) {i | (liftUnit independenceUnit i).x = x} →
@@ -64,7 +71,7 @@ def N2 : Prop :=
             {i | (liftUnit independenceUnit i).x = x})⁻¹) •
           (atomicMeasure conditionalJoint).restrict {i | (liftUnit independenceUnit i).x = x})
 
-/-- The intermediate propositions imply the conclusion. -/
+/-- The nodes suffice. -/
 theorem assemble (hFM1 : FiniteMeasure.N1) (hFM2 : FiniteMeasure.N2)
     (hFM3 : FiniteMeasure.N3) (hFM4 : FiniteMeasure.N4) (hFM5 : FiniteMeasure.N5)
     (hFM6 : FiniteMeasure.N6) (h1 : N1) (h2 : N2) : Target := by

@@ -1,0 +1,84 @@
+[
+ {
+  "target_id": "P003-T26",
+  "decision": "refuted",
+  "theorem": "SAP.P003b.T26",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.ConfidenceFollowup.printed_missing_coverage_refuted"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P003.ConfidenceFollowup.badJointLaw_coverage",
+   "AronowAudit.P003.ConfidenceFollowup.badJointLaw_probability",
+   "AronowAudit.P003.ConfidenceFollowup.real_extrema_of_intervalQ",
+   "AronowAudit.P003.bad_mask_legal",
+   "AronowAudit.P003.bad_random_states_certificate",
+   "AronowAudit.P003.interval_obs_0_3_14_3",
+   "AronowAudit.P003.interval_obs_0_3_13_4",
+   "AronowAudit.P003.interval_obs_0_3_12_5",
+   "AronowAudit.P003.interval_obs_0_3_11_6",
+   "AronowAudit.P003.interval_obs_0_3_10_7",
+   "AronowAudit.P003.interval_obs_1_2_13_4",
+   "AronowAudit.P003.interval_obs_1_2_12_5",
+   "AronowAudit.P003.interval_obs_1_2_11_6",
+   "AronowAudit.P003.interval_obs_2_1_12_5",
+   "AronowAudit.P003.interval_obs_2_1_11_6",
+   "AronowAudit.P003.interval_obs_3_0_11_6"
+  ],
+  "row_usage": "Uses the existing explicit counterexample certificates underlying this credited refutation, so the Challenge can also state that every extremal endpoint exists."
+ },
+ {
+  "target_id": "P003-T27",
+  "decision": "refuted",
+  "theorem": "SAP.P003b.T27",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.ConfidenceFollowup.printed_search_claim_refuted"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P003-T30",
+  "decision": "whole",
+  "theorem": "SAP.P003b.T30",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.balanced_estimate_in_interval",
+   "SAP.P003b.WH.W2.T30_whole",
+   "SAP.P003b.WH.W2.T30_assembly",
+   "SAP.P003b.WH.W2.T30_L1_proof",
+   "AronowAudit.P003.possible_table_facts",
+   "AronowAudit.P003.design_weight_total",
+   "AronowAudit.P003.binomial_eq_choose",
+   "AronowAudit.P003.corrected_sate"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P003b.T30WholeStatement"
+ },
+ {
+  "target_id": "P003-T31",
+  "decision": "whole",
+  "theorem": "SAP.P003b.T31",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.Wave1.interval_length_bound_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P003.Wave1.neyman_finite_identity_proof",
+    "reason": "The interval-length result already incorporates the required moment facts; the variance identities are not separate clauses of this Challenge."
+   }
+  ]
+ },
+ {
+  "target_id": "P003-T33",
+  "decision": "whole",
+  "theorem": "SAP.P003b.T33",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.Wave1.balanced_pvalue_monotonicity_proof"
+  ],
+  "rows_not_used": []
+ }
+]

@@ -35,7 +35,7 @@ theorem momentSameLabel_reduction (a : Exposure) (ha : a = .d01 ∨ a = .d00)
   intro j _
   have hJ := momentObservationJoint_eq t i j a a ha ha
   have hq := momentJoints_eq t i j a a ha ha
-  -- Express `i ≠ j` as `e = false` for the Boolean equality flag.
+  -- Turn the source's `i ≠ j` into the type variable's `e = false`.
   simp only [momentSameLabelTerm, hJ, hq, momentTypeWeight_eq,
     momentObservationMarginal_eq, cliqueY, one_pow, one_mul] <;>
     (by_cases hij : i = j <;> simp [hij])

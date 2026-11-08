@@ -537,5 +537,15 @@ theorem uniform_reuse_fourth_moments :
         mean (MatchProduct n) (fun z => mean (UniformResampling (n+1))
           (fun a => (U (pin n p z) a 0)^4)) ≤ C) := uniform_reuse_moments 4 (by norm_num)
 
+/-- Convenient eighth-order specialization for later products and local limits. -/
+theorem uniform_reuse_eighth_moments :
+    ∃ C : ℝ, 0 < C ∧
+      (∀ (n : ℕ) (j : Fin n),
+        mean (MatchProduct n) (fun z => (W z j)^8) ≤ C ∧
+        mean (MatchProduct n) (fun z => mean (UniformResampling n) (fun a => (U z a j)^8)) ≤ C) ∧
+      (∀ (n : ℕ) (p : ℝ), p ∈ Set.Icc (1/4 : ℝ) (3/4) →
+        mean (MatchProduct n) (fun z => (W (pin n p z) 0)^8) ≤ C ∧
+        mean (MatchProduct n) (fun z => mean (UniformResampling (n+1))
+          (fun a => (U (pin n p z) a 0)^8)) ≤ C) := uniform_reuse_moments 8 (by norm_num)
 
 end AronowAudit.P001.TailA

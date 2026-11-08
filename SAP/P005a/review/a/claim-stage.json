@@ -1,0 +1,80 @@
+[
+  {
+    "theorem": "SAP.P005a.T1",
+    "target_id": "P005-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The same six-unit, four-treated fixed arrays and uniform design give the retained means, covariance, expectation, variance, printed RHS and strict violation. Exact rational enumeration of all 15 assignments agrees. The stub omits the separate product mean and expectation-factor equality, coefficient/moment decomposition, numerical gap, and canonical (v)'s translation/centering comparisons. The genuine printed arbitrary-vector covariance bound is refuted; no zero denominator or empty design is used."
+  },
+  {
+    "theorem": "SAP.P005a.T2",
+    "target_id": "P005-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "For all n>=4, 0<m<n, both arms and arbitrary real vectors, the expectation factor and repaired centered RHS agree exactly with canonical (i)-(ii). The additional proof-step assertions (a)-(d), including the exact centered-sum-product variance formula, are absent. The hypotheses are satisfied, for example, at n=6,m=2 by the nonconstant rational sign arrays. All design and arm denominators are positive. The retained bound is the standard centered finite-sampling bound and passed the independent finite checks."
+  },
+  {
+    "theorem": "SAP.P005a.T3",
+    "target_id": "P005-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The standardized 16-unit, one-coordinate witness, all-assignment invertibility, exact variance and first two printed bounds match the canonical counterexample. All 12870 assignments were enumerated in rational coordinates, with strictly positive within-arm and pooled variances. The exact outcome moment and p=1/2, explicit leverage entries/mean, zero product variance, category law, gaps and part (vi) comparisons are absent. The first two claimed bounds really are contradicted under the paper's conditions."
+  },
+  {
+    "theorem": "SAP.P005a.T4",
+    "target_id": "P005-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both arms have the correct centered finite chain through the numerical bound and both actual variance orders. Canonical (b)'s intervening M(u^2)<=M(h^2)<=n*kappa*d chain, the BigO assertion for the numerical RHS itself and the two explicit allocation-coefficient bounds are missing. standingAssumptions also imposes positive dimension and the size/moment/allocation requirements from n=3; standardization is eventual. This is nonvacuous: a normalized centered equally spaced scalar grid, floor(n/2) allocation and zero outcomes works with uniform K=1. The second variance order is correctly the variance of covariance/n."
+  },
+  {
+    "theorem": "SAP.P005a.T5",
+    "target_id": "P005-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The same standardized rational six-unit population and nonempty 2/4 allocation produce actual third-component difference 217/2500 versus printed coefficient expression -217/2500. Enumeration agrees, and the minimum treated/control variances are 1/100 and 3/16. Exact second moments, exact allocation fraction, separate positive-variance/mean/leverage/coefficient identities, individual component expectations and reversed-sign numerical formula are not asserted. The retained strict inequality refutes the printed sign."
+  },
+  {
+    "theorem": "SAP.P005a.T6",
+    "target_id": "P005-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universal centered-covariate hypotheses, both exact third moments, both negative nu3 expectations and the control-minus-treatment formula are precisely canonical (i)-(iii). NTTT's n-2m and n-2 are real subtractions; the control size n-m is an ordinary positive integer under m<n. No Gram, invertibility or moment condition has been added. The standardized rational n=6,d=1,m=2 sign population is a nontrivial instance, and the identities also pass the independent checks over allocations and both arms."
+  },
+  {
+    "theorem": "SAP.P005a.T7",
+    "target_id": "P005-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The explicit scalar spike sequence matches the canonical formulas and has a correctly quantified failure of O_p(sqrt(kappa/n)), equal to the printed sqrt(kappa*d/n) since d=1. The finite-grid sums, closed formulas, fitted-line and leading-term details, separate rate/ratio/probability-one statements and n=6,12 numerical checks are absent. Q>0 is asserted only for n>=6, with harmless initial total-function values. Algebra gives Q=(n-1)/n^2*(1+1/(3(n-2)n^2)) and kappa=3n(n-1)(n-2)/(3n^2(n-2)+1); all covariates are distinct, yielding regular arms for n>=6. Exact enumeration at n=6,7,8,10,12 confirms regularity and the asserted even-n remainder bound. log(1)=0 is the ordinary logarithm, not a total-function artifact. The nonzero rate and all-assignment growing remainder genuinely refute the printed expansion."
+  },
+  {
+    "theorem": "SAP.P005a.T9",
+    "target_id": "P005-T9",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All the logarithm inequalities and equivalence/implication clauses (a)-(c) are present for eventually positive integer dimensions and eventually nonnegative real leverage sequences. These tail hypotheses preserve their limit content, and all log arguments are eventually positive. The main corrected interacted-estimator expansion and its stochastic remainder conclusion are entirely absent. For example d_n=1 and kappa_n=1/(n+1) satisfy the lemma's hypotheses and limit condition. The retained analysis lemma is true but does not prove the estimator expansion."
+  },
+  {
+    "theorem": "SAP.P005a.T10",
+    "target_id": "P005-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The same normalized six-unit scalar population has expectation 4913/1200 for the printed 1/8 weight and 20/3 for the correct 1/2 weight, with population mean 20/3. Exact rational enumeration of all 15 assignments confirms these, standardization, and strictly positive arm variances. The assignment count, separate variance/leverage/covariance identities, assignmentwise difference, exact expectation gap and rational-coordinate identities are absent. The retained counterexample contradicts the paper's printed treated-arm expectation."
+  },
+  {
+    "theorem": "SAP.P005a.T11",
+    "target_id": "P005-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The assignmentwise inverse cancellation and population-slope split, exact treated/control expectation formulas, cancelling coefficients, unbiasedness, printed treated-weight bias and both-arm O_p(sqrt(kappa/n)) remainder agree with the canonical content retained. The unsimplified alternative treated weight and separate leverage-range assertion are absent. The generic control expectation and uniqueness/unbiasedness require n-m>=2, whereas the analogous control clauses are stated without that explicit requirement in the canonical text; the strengthened sequence predicate is imposed from n=3 with positive dimension. The finite hypotheses are jointly met by the n=6,d=1,m=2 sign population; a normalized scalar grid with zero outcomes supplies a nonvacuous sequence. No stochastic-order or cancellation conclusion is assumed as a premise."
+  },
+  {
+    "theorem": "SAP.P005a.T12",
+    "target_id": "P005-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The standardized scalar weight witness, positive arm variances, exact actual expectation 31085815448171/17062566567774, wrong-inverse expectation 12010469/846720, repaired equality and strict mismatch all agree with canonical (i)-(iv) after expanding scalar OLS. Exact rational enumeration confirms all three expectations over 15 assignments. The explicit assignment count, mean leverage, equality with the sum of three nu components and rational-coordinate scaling identities are omitted. Scalar notation still denotes precisely the paper's one-covariate OLS expressions because both variance denominators are explicitly positive."
+  },
+  {
+    "theorem": "SAP.P005a.T13",
+    "target_id": "P005-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "The hypotheses n>=3, 0<m<n, standardization and all-assignment control invertibility and all expectation-chain, component and coefficient identities match the canonical corrected statement. No treated inverse has been substituted, and NCCC carries the correct sign. Positive-dimensional hypotheses are jointly satisfiable: n=6,d=1,m=2 with the rational sign covariates has all control variances at least 3/16. The independent scalar checks confirm the full chain on nonconstant data. Allowing d=0 does not make the general assertion vacuous or invalidate it; positive-dimensional instances exist."
+  },
+  {
+    "theorem": "SAP.P005a.T14",
+    "target_id": "P005-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The corrected control-set residual sum, transpose-as-dot-product, inverse cancellation, arbitrary-vector residual identities, centered mean equalities, actual bias identity and observed-data factorization match the retained canonical mathematics. The separate assertion that the wrongly printed treated-set control sum can differ is absent. The actual-bias identity requires standardization and regularity under every assignment, and factorization requires standardization; these are explicit extra hypotheses relative to the respective canonical clauses. F is correctly quantified before P, so it cannot depend on unobserved outcomes. The sign population n=6,d=1,m=2 gives strictly positive pooled Lhat under every assignment (minimum 31/200); finite algebra and bias checks pass."
+  }
+]

@@ -1,6 +1,6 @@
 import AronowAudit.P001.Wave1.Lib.TailA.MatchingEndpoints
 
-/-! Matching-bootstrap counterexamples, corrections, and refutations of universal assurances. -/
+/-! Exact held-statement matching finals and universal assurance refutations. -/
 noncomputable section
 open MeasureTheory ProbabilityTheory Filter
 open scoped Topology
@@ -10,109 +10,74 @@ namespace AronowAudit.P001.Wave1.TailA
 
 universe u
 
-/-- Hot deck in the explicit uniform-score, Bernoulli-response, independent sign-noise design is exactly unbiased. Its sampling variance multiplied by `n` has a positive limit, while its bootstrap variance multiplied by `n` has a smaller limiting expectation and does not converge in probability to that positive limit.
-Target P001-T14: Footnote 15, corrected: for hot deck (nearest-neighbour) imputation the ordinary bootstrap can give inconsistent standard errors even without bias.
-Location: p. 233 (PDF p. 251), footnote 15; Table 6.3.1, row 'Hot Deck Imputation'. -/
 theorem hot_deck_bootstrap_counterexample_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (Z : ℕ → Ω → ℝ × Bool × Bool)
-      (hiid : IID μ Z)
-      (hlaw : μ.map (Z 0) = matchingUnitLaw),
-      MatchingFailure μ Z false) := by
+    type_of% @AronowAudit.P001.hot_deck_bootstrap_counterexample := by
   intro Ω _ μ _ Z hiid hlaw
   exact (matching_failure_both μ Z hiid hlaw).1
+
+example : type_of% @AronowAudit.P001.hot_deck_bootstrap_counterexample := AronowAudit.P001.Wave1.TailA.hot_deck_bootstrap_counterexample_final
 
 theorem hot_deck_bootstrap_correction_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (Z : ℕ → Ω → ℝ × Bool × Bool)
-      (hiid : IID μ Z)
-      (hlaw : μ.map (Z 0) = matchingUnitLaw),
-      MatchingFailure μ Z false) := by
+    type_of% @AronowAudit.P001.hot_deck_bootstrap_correction := by
   intro Ω _ μ _ Z hiid hlaw
   exact (matching_failure_both μ Z hiid hlaw).1
 
-/-- Causal nearest-neighbor matching in the explicit uniform-score, Bernoulli-response, independent sign-noise design is exactly unbiased. Its sampling variance multiplied by `n` has a positive limit, while its bootstrap variance multiplied by `n` has a smaller limiting expectation and does not converge in probability to that positive limit.
-Target P001-T16: Section 7.2.4 and footnote 20, corrected: for nearest-neighbour matching the ordinary bootstrap can give inconsistent standard errors even without bias, and root-$n$ consistency and bootstrap validity are separate questions.
-Location: p. 264 (PDF p. 282), end of Section 7.2.4 and footnote 13; p. 279 (PDF p. 297), footnote 20. -/
+example : type_of% @AronowAudit.P001.hot_deck_bootstrap_correction := AronowAudit.P001.Wave1.TailA.hot_deck_bootstrap_correction_final
+
 theorem matching_bootstrap_counterexample_supporting_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (Z : ℕ → Ω → ℝ × Bool × Bool)
-      (hiid : IID μ Z)
-      (hlaw : μ.map (Z 0) = matchingUnitLaw),
-      MatchingFailure μ Z true) := by
+    type_of% @AronowAudit.P001.matching_bootstrap_counterexample_supporting := by
   intro Ω _ μ _ Z hiid hlaw
   exact (matching_failure_both μ Z hiid hlaw).2
+
+example : type_of% @AronowAudit.P001.matching_bootstrap_counterexample_supporting := AronowAudit.P001.Wave1.TailA.matching_bootstrap_counterexample_supporting_final
 
 theorem matching_bootstrap_correction_supporting_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (Z : ℕ → Ω → ℝ × Bool × Bool)
-      (hiid : IID μ Z)
-      (hlaw : μ.map (Z 0) = matchingUnitLaw),
-      MatchingFailure μ Z true) := by
+    type_of% @AronowAudit.P001.matching_bootstrap_correction_supporting := by
   intro Ω _ μ _ Z hiid hlaw
   exact (matching_failure_both μ Z hiid hlaw).2
 
-/-- The nearest-neighbor causal matching statistic with a consistent score recomputed on each sample and bootstrap resample is unbiased. Its sampling variance multiplied by `n` has a finite positive limit, while its bootstrap variance multiplied by `n` does not converge in probability to that limit.
-Target P001-T16: Section 7.2.4 and footnote 20, corrected: for nearest-neighbour matching the ordinary bootstrap can give inconsistent standard errors even without bias, and root-$n$ consistency and bootstrap validity are separate questions.
-Location: p. 264 (PDF p. 282), end of Section 7.2.4 and footnote 13; p. 279 (PDF p. 297), footnote 20. -/
+example : type_of% @AronowAudit.P001.matching_bootstrap_correction_supporting := AronowAudit.P001.Wave1.TailA.matching_bootstrap_correction_supporting_final
+
 theorem estimated_matching_bootstrap_failure_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (Z : ℕ → Ω → ℝ × Bool × Bool)
-      (hiid : IID μ Z)
-      (hlaw : μ.map (Z 0)=matchingUnitLaw),
-      (∀ n,0 < n → mean μ (fun ω => causalMatchEstimated (firstSample Z n ω))=0) ∧
-   Tendsto (fun (n : ℕ) => (n : ℝ)*var μ (fun ω => causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchV) ∧
-   Tendsto (fun (n : ℕ) => mean μ (fun ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchVB) ∧
-   0 < matchVB ∧ matchVB < matchV ∧
-   ¬ CP μ (fun n ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω)) matchV) := by
+    type_of% @AronowAudit.P001.estimated_matching_bootstrap_failure := by
   intro Ω _ μ _ Z hiid hlaw
   simpa only [MatchingFailure,ite_true,estimated_matching_statistic_equal,bootVar,bootMean]
     using (matching_failure_both μ Z hiid hlaw).2
 
+example : type_of% @AronowAudit.P001.estimated_matching_bootstrap_failure := AronowAudit.P001.Wave1.TailA.estimated_matching_bootstrap_failure_final
+
 theorem matching_bootstrap_counterexample_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (Z : ℕ → Ω → ℝ × Bool × Bool)
-      (hiid : IID μ Z)
-      (hlaw : μ.map (Z 0)=matchingUnitLaw),
-      (∀ n,0 < n → mean μ (fun ω => causalMatchEstimated (firstSample Z n ω))=0) ∧
-   Tendsto (fun (n : ℕ) => (n : ℝ)*var μ (fun ω => causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchV) ∧
-   Tendsto (fun (n : ℕ) => mean μ (fun ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchVB) ∧
-   0 < matchVB ∧ matchVB < matchV ∧
-   ¬ CP μ (fun n ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω)) matchV) :=
+    type_of% @AronowAudit.P001.matching_bootstrap_counterexample :=
   estimated_matching_bootstrap_failure_final
+
+example : type_of% @AronowAudit.P001.matching_bootstrap_counterexample := AronowAudit.P001.Wave1.TailA.matching_bootstrap_counterexample_final
 
 theorem matching_bootstrap_correction_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (Z : ℕ → Ω → ℝ × Bool × Bool)
-      (hiid : IID μ Z)
-      (hlaw : μ.map (Z 0)=matchingUnitLaw),
-      (∀ n,0 < n → mean μ (fun ω => causalMatchEstimated (firstSample Z n ω))=0) ∧
-   Tendsto (fun (n : ℕ) => (n : ℝ)*var μ (fun ω => causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchV) ∧
-   Tendsto (fun (n : ℕ) => mean μ (fun ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchVB) ∧
-   0 < matchVB ∧ matchVB < matchV ∧
-   ¬ CP μ (fun n ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω)) matchV) :=
+    type_of% @AronowAudit.P001.matching_bootstrap_correction :=
   estimated_matching_bootstrap_failure_final
 
+example : type_of% @AronowAudit.P001.matching_bootstrap_correction := AronowAudit.P001.Wave1.TailA.matching_bootstrap_correction_final
+
+theorem printed_hot_deck_bootstrap_assurance_refutation :
+    ¬ (type_of% @AronowAudit.P001.printed_hot_deck_bootstrap_assurance.{u}) := by
+  intro h
+  have hf := (matching_failure_both matchingCanonicalLiftedLaw.{u}
+    (fun n ω => ω.down n) matching_endpoint_canonical_lifted_iid
+    (matching_endpoint_canonical_lifted_law 0)).1
+  exact hf.2.2.2.2.2 (h matchingCanonicalLiftedLaw.{u} (fun n ω => ω.down n)
+    matching_endpoint_canonical_lifted_iid (matching_endpoint_canonical_lifted_law 0))
+
+example : ¬ (type_of% @AronowAudit.P001.printed_hot_deck_bootstrap_assurance) := AronowAudit.P001.Wave1.TailA.printed_hot_deck_bootstrap_assurance_refutation
+
+theorem printed_matching_bootstrap_assurance_refutation :
+    ¬ (type_of% @AronowAudit.P001.printed_matching_bootstrap_assurance.{u}) := by
+  intro h
+  have hf := (matching_failure_both matchingCanonicalLiftedLaw.{u}
+    (fun n ω => ω.down n) matching_endpoint_canonical_lifted_iid
+    (matching_endpoint_canonical_lifted_law 0)).2
+  exact hf.2.2.2.2.2 (h matchingCanonicalLiftedLaw.{u} (fun n ω => ω.down n)
+    matching_endpoint_canonical_lifted_iid (matching_endpoint_canonical_lifted_law 0))
+
+example : ¬ (type_of% @AronowAudit.P001.printed_matching_bootstrap_assurance) := AronowAudit.P001.Wave1.TailA.printed_matching_bootstrap_assurance_refutation
 
 end AronowAudit.P001.Wave1.TailA

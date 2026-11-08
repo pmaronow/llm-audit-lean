@@ -1,0 +1,90 @@
+[
+ {
+  "target_id": "P001-T63",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T63",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.cluster_mean_properties",
+   "AronowAudit.P001.cluster_variance_double_covariance_sum"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "ProbabilityTheory.iIndepFun.comp",
+   "ProbabilityTheory.IdentDistrib.comp"
+  ]
+ },
+ {
+  "target_id": "P001-T64",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T64",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.canonical_block_bootstrap_law",
+   "AronowAudit.P001.intracluster_variance_correct_diagonal",
+   "SAP.P001d.WH.W3.T64_whole",
+   "SAP.P001d.WH.W3.T64_assembly",
+   "AronowAudit.P001.cluster_variance_double_covariance_sum"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.block_bootstrap_draw_count",
+    "reason": "Already used internally by the stronger canonical independent-uniform draw-law declaration; not needed separately."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P001.cluster_variance_double_covariance_sum"
+  ],
+  "statement_definition": "SAP.P001d.T64WholeStatement"
+ },
+ {
+  "target_id": "P001-T65",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T65",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.ols_correct_rows_solution_residuals",
+   "SAP.P001d.WH.W3.T65_whole",
+   "SAP.P001d.WH.W3.T65_assembly",
+   "SAP.P001d.WH.W3.T65_L1_proof",
+   "AronowAudit.P016.least_squares_attained"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001d.T65WholeStatement"
+ },
+ {
+  "target_id": "P001-T66",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T66",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.standard_error_diagonal_index",
+   "SAP.P001d.WH.W1.T66_whole",
+   "SAP.P001d.WH.W1.T66_assembly",
+   "AronowAudit.P001.ols_correct_rows_solution_residuals"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "Matrix.mul_apply",
+   "Matrix.mul_diagonal",
+   "Matrix.inv_smul'",
+   "Matrix.smul_mul",
+   "Matrix.mul_smul",
+   "Finset.sum_congr",
+   "div_mul_cancel₀",
+   "inv_mul_cancel₀"
+  ],
+  "statement_definition": "SAP.P001d.T66WholeStatement"
+ },
+ {
+  "target_id": "P001-T67",
+  "decision": "restricted",
+  "theorem": "SAP.P001d.T67",
+  "restriction": "Only the exact conditional-second-moment, population factorization, and sandwich identities are formalized. The corrected large-sample OLS covariance approximation and asymptotic normality are omitted; the equivalence between linearity of the response CEF and zero conditional BLP residual mean is not asserted.",
+  "rows_used": [
+   "AronowAudit.P001.homoskedastic_population_moments",
+   "AronowAudit.P001.homoskedastic_sandwich_identity"
+  ],
+  "rows_not_used": []
+ }
+]

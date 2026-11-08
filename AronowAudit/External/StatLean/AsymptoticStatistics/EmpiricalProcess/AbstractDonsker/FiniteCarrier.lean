@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -296,6 +295,17 @@ theorem isPBrownianBridge_finiteGaussianPBridge
           _ = ε := by field_simp
   exact ⟨hprob, hcov, hmean, hfdd, htight, huc⟩
 
+/-- Explicit rank-zero check: the same standard-Gaussian pushforward is a
+Brownian bridge when the centred carrier has no nonzero coordinates. -/
+private theorem exists_pBrownianBridge_finrank_zero
+    {F : Set (Ω → ℝ)} {P : Measure Ω} [IsProbabilityMeasure P]
+    {G : Ω → ℝ} (hG_env : IsEnvelope F G) (hG : MemLp G 2 P)
+    (hF_meas : ∀ f ∈ F, Measurable f)
+    [FiniteDimensional ℝ ↥(gpH ⟨G, hG_env, hG⟩ hF_meas)]
+    (_hzero : Module.finrank ℝ ↥(gpH ⟨G, hG_env, hG⟩ hF_meas) = 0) :
+    ∃ ν : Measure (LinfF F), IsPBrownianBridge F P ν :=
+  ⟨finiteGaussianPBridge hG_env hG hF_meas,
+    isPBrownianBridge_finiteGaussianPBridge hG_env hG hF_meas⟩
 
 /-- The point mass at the zero path is the `P`-Brownian bridge indexed by the
 empty class. -/

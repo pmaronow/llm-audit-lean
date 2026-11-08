@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P018-T15",
+    "theorem": "SAP.P018b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "V=Fin 3, E=Dyad 3, s=members, k=1, T_d=1, q_dt=1, P=[1]. Each edge has two members, s is injective, and there are three edges, so PIP=[3] is nonzero and N>=3. The concrete six-dyad scores 1,...,6 independently give all the printed numbers. See scratch/Check.lean and scratch/exact-results.json.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T16",
+    "theorem": "SAP.P018b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the same three-unit, three-edge, one-dimensional, one-record, nonzero-score instance as T15. The graph hypotheses have a compiled Lean witness in scratch/Check.lean. The formula follows by counting each edge diagonal twice, each distinct overlapping ordered pair once, and each record N-2 times in nonincident sums.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T17",
+    "theorem": "SAP.P018b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual six-row design has Gram [[6,10],[10,20]], determinant 20, fitted coefficient (3,2/5), and the stated nonzero negative-diagonal covariance. The eight-state iid unit law has population Gram determinant 15/16 and event probability (1/8)^4=1/4096. All retained OLS/population/projection matrices and the event data were recomputed with exact rational arithmetic in scratch/audit_exact.py.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T18",
+    "theorem": "SAP.P018b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For matrix structure use three distinct two-unit edges, k=1, q=1 and symmetric P=[1]. For convergence use singleton probability spaces, fixed V=4, and v_N=4/N for N>=1; the scaled error is eventually zero. The probability bound can also be nontrivial: a fair coin v=+/-1 with N=V=1 gives both events probability 1/2. The guarded square root has nonempty domain, e.g. v=1.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T19",
+    "theorem": "SAP.P018b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the canonical countable iid unit law P(M=m,C=c,A=a,B=b)=2^(-m)/(4m), 1<=c<=m, a,b=+/-1, and the two common symmetric small-dyad records. Bounded X,Y and an intercept hold; det(sample Gram)=4D sum s_d^2>0 for every N>=2 sample, and the fitted residual bound is 8. On the positive-probability all-small events the reciprocal-delta coefficient and sandwich formulas give the required divergent moments; off those events the absolute slope sandwich is bounded by 16D^2. Bounded pair kernels have positive q and projection variance H, so v=4H/q^2>0 gives the retained Gaussian and sandwich limits. See scratch/nonvacuity.md. This is a mathematical construction check, not a compiled formal proof of the existential theorem.",
+    "confidence": "medium-high"
+  },
+  {
+    "target_id": "P018-T20",
+    "theorem": "SAP.P018b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "k=1, singleton probability spaces, xi_N=0 and nu=Dirac(0) satisfy weak convergence, all source/limit coordinate L2 conditions, zero limit mean and the UI tail bound for any C>0. A nondegenerate instance is the constant sequence of standard normal laws/maps, whose squared variables have one fixed integrable distribution.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T21",
+    "theorem": "SAP.P018b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The sign kernel at N=3 has an actual probability law, G=1, bounded data, an intercept and genuine conditional covariance 1 between different neighboring errors, since its design is constant. The Standing premise is compiled in scratch/Check.lean. Thus both nonempty dyad sums and nonzero statistical terms are present.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T22",
+    "theorem": "SAP.P018b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=3,T=2 under the specified product of 12 independent standard real normal coordinates: three covariates, three unit effects, six observation shocks. The six errors have variance 3, same-dyad different-record covariance 2, and distinct-dyad covariance 1. All integrals are finite Gaussian moments; N=4 additionally gives disjoint-dyad covariance zero.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T23",
+    "theorem": "SAP.P018b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For calculus take k=2, x=(1,2), y=1, beta=(0,0), so p=1/2 and the negative Jacobian is the nonzero PSD matrix xx^T/4. For the generic expectation take a fair two-point probability space with scores +/-(1,2), and a singleton parameter type. Coordinate L2 holds and the expected outer product is [[1,2],[2,4]].",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T24",
+    "theorem": "SAP.P018b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual nine printed positive-H triples are explicit rational constants; every H-1/2000 is strictly positive. For the simultaneous significance premises use b=-11/1000, dyadic=8/1000 and hc=2/1000. All table ratios/extrema/rounding bounds were independently checked by fractions in scratch/audit_exact.py; these interval premises are also checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T25",
+    "theorem": "SAP.P018b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "At N=3 compare dyads {0,1} and {1,2}. Their shared-unit covariance entry is 1; they share neither first endpoints nor second endpoints and are distinct, so the corresponding two-role entry is identically 0 for every parameter triple. This explicitly witnesses the negated universal. Both covariance matrices are of size 3, with no empty indexing or degenerate variance trick.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T26",
+    "theorem": "SAP.P018b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take U uniform[-1,1], X(u,v)=(1,u+v), Y(u,v)=u^2+v^2. Standing holds with G=diag(1,2/3), beta=(2/3,0). For every N>=3 sample rank fails only when all U_i coincide, a null event, so SampleRank holds with N0=3. At N=3 the full design reconstructs each U_i, making every conditional centered residual zero and printedSigma=0. The intercept entry of unconditional Var(score sum) is 4*3*(1/5-1/9)=16/15>0. This is an explicit mathematical counterexample to the finite conditional identity within the required rank class; see scratch/nonvacuity.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T27",
+    "theorem": "SAP.P018b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair-sign kernel satisfies Standing (compiled) and SampleRank with N0=2 (compiled): its scalar sample Gram is D>0. For N>=2 betahat=2 mean(s), ehat_ij=s_i+s_j-2 mean(s), hence |ehat|<=4. Population Gram and shared-unit design moments are all 1; E[ehat_ij^2]=2(N-2)/N and E[ehat_ij ehat_il]=(N-4)/N, both nonzero for all N>=5. Thus Proposition1Extra and the other premises hold jointly, and trueTarget=4. Exact enumeration checked the two moment formulas at N=3,...,7; the general identities are derived in scratch/nonvacuity.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T28",
+    "theorem": "SAP.P018b.T28",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same explicit fair-sign k=1 model, with one record per dyad, is an admissible repeated-data specialization. It has beta=0, bounded data/residuals, full sample rank for N>=2 and nonzero fitted second/neighbor moments for N>=5. The literal unsummed target equals 4/D, while N Var(betahat)=4 for every N>=2, so the first asserted limit fails. All coefficient moments are genuinely finite. See scratch/nonvacuity.md for the exact formulas.",
+    "confidence": "high"
+  }
+]

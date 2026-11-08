@@ -1,10 +1,11 @@
 import Mathlib
 
 /-!
-Exact finite witness for P035-T1 and the mathematical clauses of the correction P035-T2.
-These constructions are not potential-outcome definitions or
-theorems printed in the paper. All expectations and laws below are rational
-finite sums.
+Exact finite witness for P035-T1 and the mathematical clauses of the repair P035-T2.
+Source: P035-E001/v2/artifact/derivation.md, sections 1--4; the repair is also
+in P035-E001/v1/artifact/derivation.md, sections 3 and 6. These are validator
+constructions, not potential-outcome definitions or theorems printed in the paper.
+All expectations and laws below are rational finite sums.
 -/
 
 namespace AronowAudit.P035
@@ -25,34 +26,35 @@ Methods, p. 3/6. `true` means the implemented Obama porch package; `false` means
 the pooled Comparison package. This does not isolate a photograph component. -/
 abbrev PorchAssignment := Bool
 
-/-- `A=1` denotes presence of the Let's Move initiative and `A=0` its absence;
-`true` is presence. This is a policy counterfactual, not a measured exposure
-or a definition supplied by the paper. -/
+/-- "A=1 for the historical presence of the Let's Move initiative and A=0 for
+its absence": validator v2, section 2. `true` is presence. This is a policy
+counterfactual, not a measured exposure or a definition supplied by the paper. -/
 abbrev Campaign := Bool
 
 /-- "fruit (a box of raisins) or candy": Methods, p. 3/6. `true` is raisins;
 `false` is candy, so every modeled potential outcome is binary. -/
 abbrev Choice := Bool
 
-/-- The numerical coding “1 means choosing raisins, 0 means candy” for the
-choice described in Methods, p. 3/6. -/
+/-- The numerical coding "1 means choosing raisins, 0 means candy": validator
+v2, section 2, for the choice described in Methods, p. 3/6. -/
 def fruitValue (b : Choice) : ℚ := if b then 1 else 0
 
-/-- A single child's binary potential choices `Y_y(z,a;r)`.
-The latent child is `r`; there is no argument for other children's assignments (no interference). Observed choice is evaluation at the assigned
+/-- A single child's binary potential choices `Y_y(z,a;r)` (validator v2,
+section 2). The latent child is `r`; there is no argument for other children's
+assignments (no interference). Observed choice is evaluation at the assigned
 `z` and `a=true` (consistency). These assumptions are granted in the witness,
 not claimed to have been verified for the actual queue assignment. -/
 abbrev PotentialOutcome := Year → PorchAssignment → Campaign → ℕ → Choice
 
-/-- Raw arm sizes, “Raw comparison N” and “Raw Obama N”.
-The 2012 Obama size includes the one missing outcome (Methods, p. 3/6). -/
+/-- Raw arm sizes, "Raw comparison N" and "Raw Obama N": validator v2,
+section 1. The 2012 Obama size includes the one missing outcome (Methods, p. 3/6). -/
 def enrolled (y : Year) (z : PorchAssignment) : ℕ :=
   match y, z with
   | .y2012, false => 69 | .y2012, true => 96
   | .y2014, false => 265 | .y2014, true => 157
   | .y2015, false => 444 | .y2015, true => 192
 
-/-- "Complete comparison N" and "Complete Obama N".
+/-- "Complete comparison N" and "Complete Obama N": validator v2, section 1.
 The 2012 Obama denominator is 95 after excluding the missing choice. -/
 def completeCases (y : Year) (z : PorchAssignment) : ℕ :=
   match y, z with
@@ -60,167 +62,168 @@ def completeCases (y : Year) (z : PorchAssignment) : ℕ :=
   | .y2014, false => 265 | .y2014, true => 157
   | .y2015, false => 444 | .y2015, true => 192
 
-/-- “Comparison fruit k” and “Obama fruit k”: the released fruit counts.
-No comparison sub-arm allocation is used. -/
+/-- "Comparison fruit k" and "Obama fruit k": validator v2, section 1,
+extracted there from the release. No comparison sub-arm allocation is used. -/
 def fruitCounts (y : Year) (z : PorchAssignment) : ℕ :=
   match y, z with
   | .y2012, false => 14 | .y2012, true => 24
   | .y2014, false => 58 | .y2014, true => 37
   | .y2015, false => 113 | .y2015, true => 61
 
-/-- “p0” and “p1”: the six released complete-case fruit frequencies.
-They calibrate a hypothetical population; equating these frequencies with
-actual unknown population probabilities is not assumed. -/
+/-- "p0" and "p1": the six released complete-case fruit frequencies,
+validator v2, section 2. They calibrate a hypothetical population; equating
+these frequencies with actual unknown population probabilities is not assumed. -/
 def releasedFrequency (y : Year) (z : PorchAssignment) : ℚ :=
   (fruitCounts y z : ℚ) / (completeCases y z : ℚ)
 
 /-- The reduced denominator of `p_yz`, used in "L is the least common multiple
-of the reduced denominators". -/
+of the reduced denominators": validator v2, section 2. -/
 def reducedDenominator (y : Year) (z : PorchAssignment) : ℕ :=
   completeCases y z / Nat.gcd (fruitCounts y z) (completeCases y z)
 
-/-- “R uniform on {1,...,L}”, with L=6555,41605,7104.
-These are latent population sizes, not enrollment sizes. -/
+/-- "R uniform on {1,...,L}", with L=6555,41605,7104:
+validator v2, section 2. These are latent population sizes, not enrollment sizes. -/
 def latentSize : Year → ℕ
   | .y2012 => 6555 | .y2014 => 41605 | .y2015 => 7104
 
-/-- “t0=L p0” and “t1=L p1”: integer thresholds. -/
+/-- "t0=L p0" and "t1=L p1": validator v2, section 2, integer thresholds. -/
 def threshold (y : Year) (z : PorchAssignment) : ℕ :=
   match y, z with
   | .y2012, false => 1330 | .y2012, true => 1656
   | .y2014, false => 9106 | .y2014, true => 9805
   | .y2015, false => 1808 | .y2015, true => 2257
 
-/-- Binary numeric coding of `z` and `a` in the indicator formulas; its range is {0,1}. -/
+/-- Binary numeric coding of `z` and `a` in the validator's indicator formulas
+(v2, section 2); its range is {0,1}. -/
 def bit (b : Bool) : ℕ := if b then 1 else 0
 
 /-- "D_y(z,a;r)=1{r <= t_y0 + z(t_y1-t_y0)}": the direct-display
-world. It ignores campaign presence. -/
+world, validator v2, section 2. It ignores campaign presence. -/
 def D : PotentialOutcome := fun y z _ r =>
   decide (r ≤ threshold y false + bit z * (threshold y true - threshold y false))
 
 /-- "C_y(z,a;r)=1{r <= t_y0 + az(t_y1-t_y0)}": the campaign-enabled
-world. Natural subtraction equals the integer
+world, validator v2, section 2. Natural subtraction equals the integer
 difference here because all three `t_y1` exceed `t_y0`. -/
 def C : PotentialOutcome := fun y z a r =>
   decide (r ≤ threshold y false + bit a * bit z *
     (threshold y true - threshold y false))
 
-/-- The latent support "{1,...,L}"; children with
+/-- The latent support "{1,...,L}" (validator v2, section 2); children with
 indices outside this finite set have no probability mass in the witness. -/
 def latentPopulation (y : Year) : Finset ℕ := Icc 1 (latentSize y)
 
-/-- Uniform latent expectation “R uniform on {1,...,L}”, represented by
-a rational finite sum divided by L. -/
+/-- Uniform latent expectation "R uniform on {1,...,L}": validator v2,
+sections 2--4, represented by a rational finite sum divided by L. -/
 def uniformMean (y : Year) (f : ℕ → ℚ) : ℚ :=
   (∑ r ∈ latentPopulation y, f r) / (latentSize y : ℚ)
 
-/-- The mean binary choice at fixed `(y,z,a)`. -/
+/-- The mean binary choice at fixed `(y,z,a)` (validator v2, sections 3--4). -/
 def outcomeMean (Y : PotentialOutcome) (y : Year) (z : PorchAssignment)
     (a : Campaign) : ℚ := uniformMean y (fun r => fruitValue (Y y z a r))
 
 /-- "Exactly t0 [or t1] of the L values ... yield outcome 1": the count
-of raisins under the observed setting `A=1`. -/
+of raisins under the observed setting `A=1`, validator v2, section 3. -/
 def successCount (Y : PotentialOutcome) (y : Year) (z : PorchAssignment) : ℕ :=
   ((latentPopulation y).filter (fun r => Y y z true r = true)).card
 
 /-- "Y(z,1;r)-Y(z,0;r)": the individual policy-counterfactual campaign
-effect in numeric choice units. -/
+effect in numeric choice units, validator v2, section 4. -/
 def campaignDifference (Y : PotentialOutcome) (y : Year)
     (z : PorchAssignment) (r : ℕ) : ℚ :=
   fruitValue (Y y z true r) - fruitValue (Y y z false r)
 
-/-- “E[Y(1,1;R)-Y(1,0;R)]”, and its analogue at comparison assignment,
-as a uniform finite mean. -/
+/-- "E[Y(1,1;R)-Y(1,0;R)]", and its analogue at comparison assignment:
+validator v2, section 4, as a uniform finite mean. -/
 def campaignMean (Y : PotentialOutcome) (y : Year) (z : PorchAssignment) : ℚ :=
   uniformMean y (campaignDifference Y y z)
 
 /-- The exact year-specific campaign effects in C: "326/6555, 699/41605,
-449/7104". -/
+449/7104", validator v2, section 4. -/
 def exactEffect : Year → ℚ
   | .y2012 => 326 / 6555 | .y2014 => 699 / 41605 | .y2015 => 449 / 7104
 
-/-- “Year probabilities N_y/1223”: the illustrative population mixture;
-this is not the paper's reported IPW estimand. -/
+/-- "Year probabilities N_y/1223": the illustrative population mixture,
+validator v2, section 4; this is not the paper's reported IPW estimand. -/
 def yearMass (y : Year) : ℚ :=
   ((enrolled y false + enrolled y true : ℕ) : ℚ) / 1223
 
-/-- Assignment probabilities equal to raw Obama N_y/N_y and their comparison
-complements. Assignment is independent of R. -/
+/-- "Assignment probabilities equal to raw Obama N_y/N_y": validator v2,
+section 4, and their comparison complements. Assignment is independent of R. -/
 def assignmentMass (y : Year) (z : PorchAssignment) : ℚ :=
   (enrolled y z : ℚ) / ((enrolled y false + enrolled y true : ℕ) : ℚ)
 
-/-- Uniform mass of each supported latent child.
+/-- Uniform mass of each supported latent child, validator v2, section 2.
 All sums using this mass are restricted to `latentPopulation y`. -/
 def latentMass (y : Year) : ℚ := 1 / (latentSize y : ℚ)
 
-/-- The conditional joint mass of `(Z,R)` given year, under the independent
-randomization in the witness. -/
+/-- The conditional joint mass of `(Z,R)` given year, the independent
+randomization granted in validator v2, section 2. -/
 def conditionalMass (y : Year) (z : PorchAssignment) (_r : ℕ) : ℚ :=
   assignmentMass y z / (latentSize y : ℚ)
 
-/-- Joint mass of `(year,Z,R)` on the finite supports.
-It uses the enrolled year and arm shares. -/
+/-- Joint mass of `(year,Z,R)` on the finite supports: validator v2,
+sections 2 and 4. It uses the enrolled year and arm shares. -/
 def jointMass (y : Year) (z : PorchAssignment) (r : ℕ) : ℚ :=
   yearMass y * conditionalMass y z r
 
 /-- "The same law ... for any assignment mechanism": the pushforward law
-of `(year,Z,observed choice)` under `A=1`.
+of `(year,Z,observed choice)` under `A=1`, validator v2, section 3.
 `w` may be any weights on the finite support; equality for all such weights
 includes every probability law and permits assignment to depend on R. -/
 def observedLawWith (Y : PotentialOutcome) (w : Year → Bool → ℕ → ℚ)
     (y : Year) (z : PorchAssignment) (b : Choice) : ℚ :=
   ∑ r ∈ latentPopulation y, w y z r * if Y y z true r = b then 1 else 0
 
-/-- The observed law under the explicit independent randomization witness.
-Consistency is evaluation of `Y` at `(z,A=1)`. -/
+/-- The observed law under the explicit independent randomization witness,
+validator v2, sections 2--4. Consistency is evaluation of `Y` at `(z,A=1)`. -/
 def observedLaw (Y : PotentialOutcome) : Year → Bool → Bool → ℚ :=
   observedLawWith Y jointMass
 
-/-- “Matches each of the six ... outcome frequencies exactly”: calibration
-stated as conditional uniform means. -/
+/-- "Matches each of the six ... outcome frequencies exactly": calibration
+in validator v2, section 3, stated as conditional uniform means. -/
 def Calibrated (Y : PotentialOutcome) : Prop :=
   ∀ y z, outcomeMean Y y z true = releasedFrequency y z
 
-/-- “The overall campaign effect ... with year probabilities N_y/1223 and
-assignment probabilities equal to raw Obama N_y/N_y”.
-This average is an illustration, not the reported IPW effect. -/
+/-- "The overall campaign effect ... with year probabilities N_y/1223 and
+assignment probabilities equal to raw Obama N_y/N_y": validator v2,
+section 4. This average is an illustration, not the reported IPW effect. -/
 def overallCampaignEffect (Y : PotentialOutcome) : ℚ :=
   ∑ y ∈ years, yearMass y *
     (assignmentMass y false * campaignMean Y y false +
      assignmentMass y true * campaignMean Y y true)
 
-/-- Identification means that observationally identical allowed models
-agree on the target causal quantity. All models here have binary, local
-potential outcomes, with the same independent design and consistency.
-Restricting to `Calibrated` models requires the observed six frequencies
-in the target. -/
+/-- "Identification means that observationally identical allowed models
+agree on the target causal quantity": validator v1, section 3, and v2,
+section 4. All models here have binary, local potential outcomes, with the
+same independent design and consistency. Restricting to `Calibrated` models
+requires the observed six frequencies in the target. -/
 def CampaignIdentified : Prop :=
   ∀ U V : PotentialOutcome, Calibrated U → Calibrated V →
     observedLaw U = observedLaw V → ∀ y, campaignMean U y true = campaignMean V y true
 
 /-- The latent sizes are the least common multiples of the reduced frequency
-denominators, as specified in P035-T1. -/
+denominators, as specified in P035-T1 (validator v2, section 2). -/
 theorem latent_sizes_are_lcm (y : Year) :
     latentSize y = Nat.lcm (reducedDenominator y false) (reducedDenominator y true) := by
   cases y <;> decide
 
 /-- All three threshold pairs are ordered and within the nonempty latent
-support; P035-T1. -/
+support; P035-T1, validator v2, section 2. -/
 theorem threshold_bounds (y : Year) :
     0 < latentSize y ∧ threshold y false ≤ threshold y true ∧
     threshold y true ≤ latentSize y := by
   cases y <;> norm_num [latentSize, threshold]
 
 /-- Each integer threshold is exactly L times its released frequency;
-P035-T1. -/
+P035-T1, validator v2, section 2. -/
 theorem threshold_calibration (y : Year) (z : Bool) :
     (threshold y z : ℚ) = (latentSize y : ℚ) * releasedFrequency y z := by
   cases y <;> cases z <;>
     norm_num [threshold, latentSize, releasedFrequency, fruitCounts, completeCases]
 
 /-- A count of the initial segment is its threshold, avoiding enumeration
-of latent children; finite counting lemma for P035-T1. -/
+of latent children; finite counting lemma for P035-T1, validator v2, section 3. -/
 theorem initial_segment_card (L t : ℕ) (h : t ≤ L) :
     ((Icc 1 L).filter (fun r => r ≤ t)).card = t := by
   have heq : (Icc 1 L).filter (fun r => r ≤ t) = Icc 1 t := by
@@ -231,25 +234,25 @@ theorem initial_segment_card (L t : ℕ) (h : t ≤ L) :
   omega
 
 /-- The direct model's binary formula reduces to its arm-specific threshold;
-P035-T1. -/
+P035-T1, validator v2, section 2. -/
 theorem D_threshold (y : Year) (z a : Bool) (r : ℕ) :
     D y z a r = decide (r ≤ threshold y z) := by
   cases y <;> cases z <;> simp [D, threshold, bit] <;> rfl
 
 /-- Both models agree for every child and every assignment in the observed
-setting A=1; P035-T1(i). -/
+setting A=1; P035-T1(i), validator v2, section 3. -/
 theorem observed_choices_equal (y : Year) (z : Bool) (r : ℕ) :
     C y z true r = D y z true r := by
   simp [C, D, bit]
 
 /-- With the initiative absent, the campaign-enabled model always has the
-comparison threshold; P035-T1(iv). -/
+comparison threshold; P035-T1(iv), validator v2, sections 2 and 4. -/
 theorem C_absent (y : Year) (z : Bool) (r : ℕ) :
     C y z false r = D y false true r := by
   simp [C, D, bit]
 
 /-- Exactly t_yz children choose raisins in D at A=1;
-P035-T1(ii). -/
+P035-T1(ii), validator v2, section 3. -/
 theorem D_success_count (y : Year) (z : Bool) :
     successCount D y z = threshold y z := by
   unfold successCount
@@ -260,13 +263,13 @@ theorem D_success_count (y : Year) (z : Bool) :
   · exact (threshold_bounds y).2.2
 
 /-- The same exact count holds in C by pointwise observation equality;
-P035-T1(i--ii). -/
+P035-T1(i--ii), validator v2, section 3. -/
 theorem C_success_count (y : Year) (z : Bool) :
     successCount C y z = threshold y z := by
   simpa only [successCount, observed_choices_equal] using D_success_count y z
 
 /-- For a binary choice the uniform mean is its success count divided by L;
-finite lemma for P035-T1(ii). -/
+finite lemma for P035-T1(ii), validator v2, section 3. -/
 theorem observed_mean_eq_count (Y : PotentialOutcome) (y : Year) (z : Bool) :
     outcomeMean Y y z true = (successCount Y y z : ℚ) / (latentSize y : ℚ) := by
   have hv (b : Bool) : fruitValue b = if b = true then (1 : ℚ) else 0 := by
@@ -276,7 +279,7 @@ theorem observed_mean_eq_count (Y : PotentialOutcome) (y : Year) (z : Bool) :
   rw [Finset.sum_boole]
 
 /-- Counts/L reproduce all six released frequencies in both worlds;
-P035-T1(ii). -/
+P035-T1(ii), validator v2, section 3. -/
 theorem six_frequencies_calibrated : Calibrated D ∧ Calibrated C := by
   constructor <;> intro y z
   · rw [observed_mean_eq_count, D_success_count]
@@ -287,42 +290,42 @@ theorem six_frequencies_calibrated : Calibrated D ∧ Calibrated C := by
       norm_num [threshold, latentSize, releasedFrequency, fruitCounts, completeCases]
 
 /-- No child's choice in D changes when the campaign is removed, under either
-porch assignment; P035-T1(iii). -/
+porch assignment; P035-T1(iii), validator v2, section 4. -/
 theorem D_individual_campaign_zero (y : Year) (z : Bool) (r : ℕ) :
     campaignDifference D y z r = 0 := by
   simp [campaignDifference, D]
 
 /-- At comparison assignment C also has zero campaign effect for every child;
-P035-T1(iv). -/
+P035-T1(iv), validator v2, section 4. -/
 theorem C_comparison_campaign_zero (y : Year) (r : ℕ) :
     campaignDifference C y false r = 0 := by
   simp [campaignDifference, C, bit]
 
 /-- Finite expectation is linear for the campaign contrast;
-P035-T1(iv). -/
+P035-T1(iv), validator v2, section 4. -/
 theorem campaign_mean_sub (Y : PotentialOutcome) (y : Year) (z : Bool) :
     campaignMean Y y z = outcomeMean Y y z true - outcomeMean Y y z false := by
   simp [campaignMean, campaignDifference, outcomeMean, uniformMean,
     Finset.sum_sub_distrib, sub_div]
 
 /-- D has zero mean campaign effect in every year and arm;
-P035-T1(iii--iv). -/
+P035-T1(iii--iv), validator v2, section 4. -/
 theorem D_mean_campaign_zero (y : Year) (z : Bool) : campaignMean D y z = 0 := by
   simp [campaignMean, D_individual_campaign_zero, uniformMean]
 
 /-- C has zero mean campaign effect in the comparison arm;
-P035-T1(iv). -/
+P035-T1(iv), validator v2, section 4. -/
 theorem C_comparison_mean_zero (y : Year) : campaignMean C y false = 0 := by
   simp [campaignMean, C_comparison_campaign_zero, uniformMean]
 
 /-- The mean under absent campaign in C is the observed comparison mean,
-regardless of assignment; finite lemma for P035-T1(iv). -/
+regardless of assignment; finite lemma for P035-T1(iv), validator v2, section 4. -/
 theorem C_absent_mean (y : Year) (z : Bool) :
     outcomeMean C y z false = releasedFrequency y false := by
   simpa only [outcomeMean, C_absent] using six_frequencies_calibrated.1 y false
 
 /-- The exact positive differences of the released arm frequencies;
-P035-T1(iv). -/
+P035-T1(iv), validator v2, section 4. -/
 theorem frequency_contrast (y : Year) :
     releasedFrequency y true - releasedFrequency y false = exactEffect y ∧
     exactEffect y = ((threshold y true - threshold y false : ℕ) : ℚ) /
@@ -332,7 +335,7 @@ theorem frequency_contrast (y : Year) :
 
 /-- In C the mean campaign effect at the Obama condition equals the entire
 positive porch contrast, with the three specified exact values;
-P035-T1(iv) and P035-T2(b). -/
+P035-T1(iv) and P035-T2(b), validator v2, section 4. -/
 theorem C_obama_campaign_effect (y : Year) :
     campaignMean C y true = exactEffect y ∧
     campaignMean C y true = releasedFrequency y true - releasedFrequency y false ∧
@@ -343,8 +346,9 @@ theorem C_obama_campaign_effect (y : Year) :
   exact ⟨rfl, rfl, (frequency_contrast y).2.2⟩
 
 /-- D has a strictly positive causal contrast between the implemented porch
-conditions in every year despite its zero campaign effect; P035-T1(v).
-These are potential-outcome population means in the witness, not a claim that the sample estimates equal the actual effects. -/
+conditions in every year despite its zero campaign effect; P035-T1(v),
+validator v2, sections 3--4. These are potential-outcome population means in
+the witness, not a claim that the sample estimates equal the actual effects. -/
 theorem D_porch_contrast_positive (y : Year) :
     outcomeMean D y true true - outcomeMean D y false true = exactEffect y ∧
     0 < outcomeMean D y true true - outcomeMean D y false true := by
@@ -353,7 +357,7 @@ theorem D_porch_contrast_positive (y : Year) :
   exact ⟨rfl, (frequency_contrast y).2.2⟩
 
 /-- The raw shares form positive year and arm distributions;
-P035-T1's randomized finite witness. -/
+P035-T1's randomized finite witness, validator v2, sections 2 and 4. -/
 theorem design_masses_valid :
     (∀ y z, 0 < assignmentMass y z) ∧
     (∀ y, assignmentMass y false + assignmentMass y true = 1) ∧
@@ -365,7 +369,7 @@ theorem design_masses_valid :
   · norm_num [years, yearMass, enrolled]
 
 /-- Summing the conditional joint mass over R gives the assignment mass;
-P035-T1's finite randomization. -/
+P035-T1's finite randomization, validator v2, section 2. -/
 theorem assignment_marginal (y : Year) (z : Bool) :
     (∑ r ∈ latentPopulation y, conditionalMass y z r) = assignmentMass y z := by
   have hL : (latentSize y : ℚ) ≠ 0 := by
@@ -377,14 +381,14 @@ theorem assignment_marginal (y : Year) (z : Bool) :
     _ = assignmentMass y z := by field_simp
 
 /-- Summing the conditional joint mass over Z gives uniform mass on R;
-P035-T1's finite randomization. -/
+P035-T1's finite randomization, validator v2, section 2. -/
 theorem latent_marginal (y : Year) (r : ℕ) :
     conditionalMass y false r + conditionalMass y true r = latentMass y := by
   unfold conditionalMass latentMass
   rw [← add_div, design_masses_valid.2.1 y]
 
 /-- Within year, the joint mass factors as the product of its two marginals,
-proving randomized assignment independent of R; P035-T1. -/
+proving randomized assignment independent of R; P035-T1, validator v2, section 2. -/
 theorem randomized_independently (y : Year) (z : Bool) (r : ℕ) :
     conditionalMass y z r =
       (∑ s ∈ latentPopulation y, conditionalMass y z s) *
@@ -393,7 +397,7 @@ theorem randomized_independently (y : Year) (z : Bool) (r : ℕ) :
   simp [conditionalMass, latentMass, div_eq_mul_inv]
 
 /-- The joint masses are nonnegative and normalize to one on their finite
-support; P035-T1's explicit probability space. -/
+support; P035-T1's explicit probability space, validator v2, sections 2 and 4. -/
 theorem joint_mass_is_probability :
     (∀ y z r, 0 ≤ jointMass y z r) ∧
     (∑ y ∈ years, ((∑ r ∈ latentPopulation y, jointMass y false r) +
@@ -407,9 +411,19 @@ theorem joint_mass_is_probability :
     simp_rw [← mul_add, design_masses_valid.2.1, mul_one]
     exact design_masses_valid.2.2.2
 
+/-- The raisin cell of the observed joint law is the year/arm mass times the
+conditional fruit probability; P035-T1(ii,v), validator v2, section 3. -/
+theorem observed_law_fruit (Y : PotentialOutcome) (y : Year) (z : Bool) :
+    observedLaw Y y z true = yearMass y * assignmentMass y z * outcomeMean Y y z true := by
+  have hv (b : Bool) : (if b = true then (1 : ℚ) else 0) = fruitValue b := by
+    cases b <;> simp [fruitValue]
+  unfold observedLaw observedLawWith jointMass conditionalMass outcomeMean uniformMean
+  simp_rw [hv]
+  rw [← Finset.mul_sum]
+  ring
 
 /-- D and C give the same entire observed law for every weighting of years,
-assignments and latent children; P035-T1(v).
+assignments and latent children; P035-T1(v), validator v2, section 3.
 No independence restriction is needed for this equality. -/
 theorem same_observed_law_any_mechanism (w : Year → Bool → ℕ → ℚ) :
     observedLawWith D w = observedLawWith C w := by
@@ -418,17 +432,17 @@ theorem same_observed_law_any_mechanism (w : Year → Bool → ℕ → ℚ) :
   simp_rw [observed_choices_equal]
 
 /-- In particular the independent randomized witness has the same observed
-law in both worlds; P035-T1(v). -/
+law in both worlds; P035-T1(v), validator v2, sections 3--4. -/
 theorem same_observed_law : observedLaw D = observedLaw C :=
   same_observed_law_any_mechanism jointMass
 
 /-- The campaign effect averaged over years and raw arm shares is zero in D;
-P035-T1(iv). -/
+P035-T1(iv), validator v2, section 4. -/
 theorem D_overall_campaign_zero : overallCampaignEffect D = 0 := by
   simp [overallCampaignEffect, D_mean_campaign_zero]
 
 /-- The raw-share illustration in C equals exactly 83755728/5240292055 and
-is strictly positive; P035-T1(iv). -/
+is strictly positive; P035-T1(iv), validator v2, section 4. -/
 theorem C_overall_campaign_positive :
     overallCampaignEffect C =
       (96 / 1223 : ℚ) * (326 / 6555) + (157 / 1223) * (699 / 41605) +
@@ -441,7 +455,8 @@ theorem C_overall_campaign_positive :
     yearMass, assignmentMass, enrolled, exactEffect]
 
 /-- Even among models calibrated to all six frequencies, campaign effects
-are not determined by the observed law; P035-T1(v) and P035-T2(a). -/
+are not determined by the observed law; P035-T1(v) and P035-T2(a),
+validator v2, section 4. -/
 theorem campaign_not_identified : ¬ CampaignIdentified := by
   intro h
   have heq := h D C six_frequencies_calibrated.1 six_frequencies_calibrated.2
@@ -451,7 +466,7 @@ theorem campaign_not_identified : ¬ CampaignIdentified := by
   linarith
 
 /-- There is no function of the observed law giving the raw-share overall
-campaign effect for all calibrated models; P035-T1(v). -/
+campaign effect for all calibrated models; P035-T1(v), validator v2, section 4. -/
 theorem overall_effect_not_function_of_law :
     ¬ ∃ f : (Year → Bool → Bool → ℚ) → ℚ,
       ∀ Y : PotentialOutcome, Calibrated Y → f (observedLaw Y) = overallCampaignEffect Y := by
@@ -465,7 +480,7 @@ theorem overall_effect_not_function_of_law :
 /-- The complete concrete witness: ordered LCM populations, exact six-count
 calibration, independent valid randomization, identical observed choices/laws,
 zero campaign effect in D, positive specified effects in C, and nonidentification.
-This is P035-T1(i--v), refuting the inference behind
+This is P035-T1(i--v), validator v2, sections 2--4, refuting the inference behind
 the Abstract Conclusions attribution (printed p. 2/6), not its real-world truth. -/
 theorem campaign_nonidentification_counterexample :
     (∀ y, latentSize y = Nat.lcm (reducedDenominator y false) (reducedDenominator y true)) ∧
@@ -515,14 +530,14 @@ theorem campaign_nonidentification_counterexample :
     exact ⟨(C_obama_campaign_effect y).1, (frequency_contrast y).2.1,
       (C_obama_campaign_effect y).2.2⟩
 
-/-- “Campaign reinforcement is a possible explanation; the experiment does
-not establish that the initiative or its health message caused the difference.”
-P035-T2(a--b): the mathematical clauses of the correction to Abstract Conclusions
-(p. 2/6) and “the treatment effect of her campaign” (p. 5/6).
-Two calibrated, observationally identical local binary models have zero versus
-positive campaign effects; in the latter the whole porch contrast is enabled
-by the campaign and disappears when it is absent. The empirical first
-sentence of the correction is not a theorem. -/
+/-- "Campaign reinforcement is a possible explanation; the experiment does
+not establish that the initiative or its health message caused the difference."
+P035-T2(a--b): the mathematical clauses of Sol's repair of Abstract Conclusions
+(p. 2/6) and "the treatment effect of her campaign" (p. 5/6), validator v1,
+sections 3 and 6, using the v2 finite witness. Two calibrated, observationally
+identical local binary models have zero versus positive campaign effects; in
+the latter the whole porch contrast is enabled by the campaign and disappears
+when it is absent. The empirical first sentence of the repair is not a theorem. -/
 theorem corrected_campaign_interpretation :
     (∃ U V : PotentialOutcome,
       Calibrated U ∧ Calibrated V ∧ observedLaw U = observedLaw V ∧
@@ -540,3 +555,37 @@ theorem corrected_campaign_interpretation :
 
 end AronowAudit.P035
 
+#print axioms AronowAudit.P035.latent_sizes_are_lcm
+#print axioms AronowAudit.P035.threshold_bounds
+#print axioms AronowAudit.P035.threshold_calibration
+#print axioms AronowAudit.P035.initial_segment_card
+#print axioms AronowAudit.P035.D_threshold
+#print axioms AronowAudit.P035.observed_choices_equal
+#print axioms AronowAudit.P035.C_absent
+#print axioms AronowAudit.P035.D_success_count
+#print axioms AronowAudit.P035.C_success_count
+#print axioms AronowAudit.P035.observed_mean_eq_count
+#print axioms AronowAudit.P035.six_frequencies_calibrated
+#print axioms AronowAudit.P035.D_individual_campaign_zero
+#print axioms AronowAudit.P035.C_comparison_campaign_zero
+#print axioms AronowAudit.P035.campaign_mean_sub
+#print axioms AronowAudit.P035.D_mean_campaign_zero
+#print axioms AronowAudit.P035.C_comparison_mean_zero
+#print axioms AronowAudit.P035.C_absent_mean
+#print axioms AronowAudit.P035.frequency_contrast
+#print axioms AronowAudit.P035.C_obama_campaign_effect
+#print axioms AronowAudit.P035.D_porch_contrast_positive
+#print axioms AronowAudit.P035.design_masses_valid
+#print axioms AronowAudit.P035.assignment_marginal
+#print axioms AronowAudit.P035.latent_marginal
+#print axioms AronowAudit.P035.randomized_independently
+#print axioms AronowAudit.P035.joint_mass_is_probability
+#print axioms AronowAudit.P035.observed_law_fruit
+#print axioms AronowAudit.P035.same_observed_law_any_mechanism
+#print axioms AronowAudit.P035.same_observed_law
+#print axioms AronowAudit.P035.D_overall_campaign_zero
+#print axioms AronowAudit.P035.C_overall_campaign_positive
+#print axioms AronowAudit.P035.campaign_not_identified
+#print axioms AronowAudit.P035.overall_effect_not_function_of_law
+#print axioms AronowAudit.P035.campaign_nonidentification_counterexample
+#print axioms AronowAudit.P035.corrected_campaign_interpretation

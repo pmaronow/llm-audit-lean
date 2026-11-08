@@ -117,26 +117,26 @@ def fvar {n : ℕ} (P : FiniteLaw n) (X : Fin n → ℝ) : ℝ :=
 def fcov {n : ℕ} (P : FiniteLaw n) (X Y : Fin n → ℝ) : ℝ :=
   fmean P (fun i => (X i - fmean P X)*(Y i - fmean P Y))
 
-/-- Counterexample with "qₖ = 2^{−(k+1)}" on k = 0,1,...
-(T1; refutes p. 120). -/
+/-- Validator's witness: "qₖ = 2^{−(k+1)}" on k = 0,1,... (T1,
+adjudicated artifact, Sections 2–4; refutes p. 120). -/
 def geoMass (k : ℕ) : ℝ := (1/2 : ℝ)^(k+1)
-/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and P001-C03-E001): massCDF. -/
+/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and validator P001-C03-E001): massCDF. -/
 def massCDF (q : ℕ → ℝ) (x : ℝ) : ℝ := ∑' k : ℕ, if (k : ℝ)  ≤  x then q k else 0
-/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and P001-C03-E001): mixMass. -/
+/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and validator P001-C03-E001): mixMass. -/
 def mixMass (n k : ℕ) : ℝ :=
   (1 - (n : ℝ)⁻¹^3)*geoMass k + (n : ℝ)⁻¹^3 *
     (if n  ≤  k then geoMass (k-n) else 0)
-/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and P001-C03-E001): massMean. -/
+/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and validator P001-C03-E001): massMean. -/
 def massMean (q : ℕ → ℝ) : ℝ := ∑' k : ℕ, (k : ℝ)*q k
-/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and P001-C03-E001): massSecond. -/
+/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and validator P001-C03-E001): massSecond. -/
 def massSecond (q : ℕ → ℝ) : ℝ := ∑' k : ℕ, (k : ℝ)^2*q k
-/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and P001-C03-E001): FiniteMomentLaw. -/
+/-- Auxiliary representation used for "qₖ = 2^{−(k+1)}" (T1; p. 120 and validator P001-C03-E001): FiniteMomentLaw. -/
 def FiniteMomentLaw (q : ℕ → ℝ) : Prop :=
   (∀ k, 0  ≤  q k) ∧ Summable q ∧ (∑' k, q k) = 1 ∧
     Summable (fun k : ℕ => (k : ℝ)*q k) ∧ Summable (fun k : ℕ => (k : ℝ)^2*q k)
 
 /-- "f_X(x) = 1/2 for x ∈ [−2,−1] ∪ [1,2]" and
-"m₁(x) = x(1−x²)² for |x| < 1" (T3 counterexample). -/
+"m₁(x) = x(1−x²)² for |x| < 1" (T3 validator witness). -/
 def gapPDF (x : ℝ) : ℝ := if x ∈ Set.Icc (-2) (-1) ∪ Set.Icc 1 2 then 1/2 else 0
 /-- Auxiliary representation used for "f_X(x) = 1/2 for x ∈ [−2,−1] ∪ [1,2]" (T3; pp. 166–168): pdaBump. -/
 def pdaBump (x : ℝ) : ℝ := if |x|  <  1 then x*(1-x^2)^2 else 0
@@ -144,6 +144,9 @@ def pdaBump (x : ℝ) : ℝ := if |x|  <  1 then x*(1-x^2)^2 else 0
 def partialAt {K : ℕ} (m : (Fin K → ℝ) → ℝ) (x : Fin K → ℝ) (k : Fin K) : ℝ :=
   deriv (fun t : ℝ => m (Function.update x k (x k + t))) 0
 
+/-- "∑ₖ₌₀ᴶ β̂ₖ xᵏ", minimizing the sum of squared residuals
+(Definition 4.3.9, pp. 168–169; missing square supplied by T70). -/
+def sieveFit (b : ℕ → ℝ) (J : ℕ) (x : ℝ) : ℝ := ∑ k ∈ Finset.range (J+1), b k * x^k
 /-- Auxiliary representation used for "∑ₖ₌₀ᴶ β̂ₖ xᵏ" (pp. 168–169, Definition 4.3.9, corrected): IsSieveLS. -/
 def IsSieveLS {Ω : Type*} (X Y : ℕ → Ω → ℝ) (J : ℕ → ℕ)
     (fit : ℕ → Ω → Polynomial ℝ) : Prop :=
@@ -190,7 +193,7 @@ def mixtureRestriction (B S δ a b : ℝ) : Set (Fin 7 → ℝ) :=
   {θ | MixtureAdmissible θ ∧ |θ 2|  ≤  B ∧ |θ 4|  ≤  B ∧
     δ  ≤  θ 3 ∧ θ 3  ≤  S ∧ δ  ≤  θ 5 ∧ θ 5  ≤  S ∧ a  ≤  θ 6 ∧ θ 6  ≤  b}
 
-/-- Two-component PMF: "(p(1−a), pa, (1−p)(1−b), (1−p)b)"
+/-- Validator's two-component PMF: "(p(1−a), pa, (1−p)(1−b), (1−p)b)"
 on outcomes 0,1,2,3 (T11; refutes p. 199). -/
 def disjointMixture (p a b : ℝ) : Fin 4 → ℝ := ![p*(1-a),p*a,(1-p)*(1-b),(1-p)*b]
 
@@ -232,11 +235,11 @@ def matchingUnitLaw : Measure (ℝ × Bool × Bool) :=
       then (if u.2.1 then u.1 else 1-u.1) else 0))
 /-- Auxiliary representation used for "Impute ... the unit with ... nearest [propensity score]" (pp. 224–225 and 262–264; T13–T16): matchV. -/
 def matchV : ℝ := 3*Real.log 3-1/4
-/-- "s=1−e⁻¹" (T13–T16 bootstrap occupancy constants). -/
+/-- "s=1−e⁻¹" (T13–T16 validator bootstrap occupancy constants). -/
 def matchS : ℝ := 1-Real.exp (-1)
-/-- "A=2/s−s/(2−s)" (T13–T16 occupancy constant). -/
+/-- "A=2/s−s/(2−s)" (T13–T16 validator occupancy constant). -/
 def matchA : ℝ := 2/matchS-matchS/(2-matchS)
-/-- "B=3/(2s)−(4−s)/(2(2−s))" (T13–T16 constant). -/
+/-- "B=3/(2s)−(4−s)/(2(2−s))" (T13–T16 validator constant). -/
 def matchB : ℝ := 3/(2*matchS)-(4-matchS)/(2*(2-matchS))
 /-- Auxiliary representation used for "Impute ... the unit with ... nearest [propensity score]" (pp. 224–225 and 262–264; T13–T16): matchVB. -/
 def matchVB : ℝ := 1/2+matchA/2+matchB*(2*Real.log 3-3/2)
@@ -299,7 +302,7 @@ def linearPredictor {K : ℕ} (b : Fin (K+1) → ℝ) (x : Fin K → ℝ) : ℝ 
   b 0 + ∑ k, b k.succ * x k
 
 /-- "Pr[X=k,D=1]=3^{−k}, Pr[X=k,D=0]=2^{−(k+1)}" for k≥1
-(T19; refutes uniform-positivity converse on p. 271). -/
+(T19 validator; refutes uniform-positivity converse on p. 271). -/
 def overlapT (k : ℕ) : ℝ := (1/3 : ℝ)^(k+1)
 /-- Auxiliary representation used for "Pr[X=k,D=1]=3^{−k}, Pr[X=k,D=0]=2^{−(k+1)}" (T19; pp. 271–272): overlapC. -/
 def overlapC (k : ℕ) : ℝ := (1/2 : ℝ)^(k+2)
@@ -307,7 +310,7 @@ def overlapC (k : ℕ) : ℝ := (1/2 : ℝ)^(k+2)
 def overlapPropensity (k : ℕ) : ℝ := overlapT k/(overlapT k+overlapC k)
 
 /-- "Y(d)=20+40U+5d" with X=0 and the four masses 3/8,1/8,1/8,3/8
-(T21). Each electorate has 100 voters and only displayed gender
+(T21 validator). Each electorate has 100 voters and only displayed gender
 and voters' preferences enter its rule. -/
 def electorateU : Fin 4 → ℝ := ![0,0,1,1]
 /-- Auxiliary representation used for "Y(d)=20+40U+5d" (T21; p. 278): electorateD. -/
@@ -315,7 +318,7 @@ def electorateD : Fin 4 → ℝ := ![0,1,0,1]
 /-- Auxiliary representation used for "Y(d)=20+40U+5d" (T21; p. 278): electorateOutcome. -/
 def electorateOutcome (d : ℝ) (i : Fin 4) : ℝ := 20+40*electorateU i+5*d
 
-/-- "X(ω₀)=0" on a one-atom probability space (T25). -/
+/-- "X(ω₀)=0" on a one-atom probability space (T25 validator). -/
 def zeroAtom : FiniteLaw 1 where
   weight _ := 1
   nonneg _ := by norm_num
@@ -324,7 +327,7 @@ def zeroAtom : FiniteLaw 1 where
 def intMassCDF (q : ℤ → ℝ) (x : ℝ) : ℝ := ∑' k : ℤ, if (k : ℝ)  ≤  x then q k else 0
 
 /-- "X(m,k)=(2k+1)/2^{m+1}, P{(m,k)}=2^{−(2m+1)}"
-on m≥0 and k<2^m (T27). -/
+on m≥0 and k<2^m (T27 validator). -/
 def dyadicValue (i : Σ m : ℕ, Fin (2^m)) : ℝ := (2*(i.2 : ℝ)+1)/(2 : ℝ)^(i.1+1)
 /-- Auxiliary representation used for "X(m,k)=(2k+1)/2^{m+1}, P{(m,k)}=2^{−(2m+1)}" (T27; p. 23): dyadicMass. -/
 def dyadicMass (i : Σ m : ℕ, Fin (2^m)) : ℝ := (1/2 : ℝ)^(2*i.1+1)
@@ -348,10 +351,10 @@ def HasJointPDF (ν : Measure (ℝ × ℝ)) (f : (ℝ × ℝ) → ℝ) : Prop :=
     ν=volume.withDensity (fun x => ENNReal.ofReal (f x))
 
 /-- "f(x,y)=1 on (0,1)×(−1,0) and 0 otherwise"
-(T34). -/
+(T34 validator). -/
 def rectanglePDF (z : ℝ × ℝ) : ℝ := if z.1∈Set.Ioo 0 1 ∧ z.2∈Set.Ioo (-1) 0 then 1 else 0
 
-/-- "(1/π)(eˣ/(1+eˣ))²/(1+y²e^{2x})" (T36). -/
+/-- "(1/π)(eˣ/(1+eˣ))²/(1+y²e^{2x})" (T36 validator). -/
 def smoothSlicePDF (z : ℝ × ℝ) : ℝ :=
   (Real.exp z.1/(1+Real.exp z.1))^2/(Real.pi*(1+z.2^2*Real.exp (2*z.1)))
 
@@ -359,7 +362,7 @@ def smoothSlicePDF (z : ℝ × ℝ) : ℝ :=
 (Example 2.1.25, p. 58). -/
 def coinLoss (c : ℝ) : ℝ := (0-c)^2/2+(1-c)^2/2
 
-/-- "P{u}=P{v}=1/2, P{n}=0" (T41).
+/-- "P{u}=P{v}=1/2, P{n}=0" (T41 validator).
 The null point remains in the sample space, as pointwise equality requires. -/
 def nullPointLaw : FiniteLaw 3 where
   weight := ![1/2,1/2,0]
@@ -379,13 +382,13 @@ def blpSlope {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) (X Y : Ω → �
 def blpIntercept {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) (X Y : Ω → ℝ) : ℝ := mean μ Y-blpSlope μ X Y*mean μ X
 
 /-- "X=Y takes values −1 and 1 with probability 1/2 each"
-(T44). -/
+(T44 validator). -/
 def signLaw : FiniteLaw 2 where
   weight _ := 1/2
   nonneg _ := by norm_num
   total := by norm_num [Fin.sum_univ_succ]
 
-/-- "Pr[X=2ᵏ]=7/8^{k+1}" (T53). -/
+/-- "Pr[X=2ᵏ]=7/8^{k+1}" (T53 validator). -/
 def heavyMomentMass (k : ℕ) : ℝ := 7*(1/8 : ℝ)^(k+1)
 
 /-- "V̂[X]=X²̄−X̄²" (Definition 3.2.18, p. 106). -/
@@ -471,7 +474,7 @@ def lassoCriterion {n K : ℕ} (X : Matrix (Fin n) (Fin (K+1)) ℝ) (Y : Fin n �
     (lam : ℝ) (b : Fin (K+1) → ℝ) : ℝ := olsRSS X Y b/(n : ℝ)+lam*slopePenalty b
 
 /-- "(X,Y)=(0,1),(0,3),(1,0),(1,6), each with probability 1/4"
-(T73). The linear CEF is 2+X. -/
+(T73 validator). The linear CEF is 2+X. -/
 def heteroskedasticLaw : FiniteLaw 4 where
   weight _ := 1/4
   nonneg _ := by norm_num
@@ -523,11 +526,11 @@ def fcond2 {n : ℕ} (P : FiniteLaw n) (Y X D : Fin n → ℝ) (x d : ℝ) : ℝ
   (∑ i,if X i=x ∧ D i=d then P.weight i*Y i else 0)/fprob P (fun i => X i=x ∧ D i=d)
 
 /-- "Y_A(d)=0, Y_B(d)=I{d=1/2}" with D uniform [0,1]
-(T90). Both potential-outcome processes are deterministic. -/
+(T90 validator). Both potential-outcome processes are deterministic. -/
 def doseSpike (d : ℝ) : ℝ := if d=1/2 then 1 else 0
 
 /-- "(13563,6178,−759,−1778)/2437" fitted to the six units with
-X_[1]3=10 (T92; Example 7.2.2, p. 259). -/
+X_[1]3=10 (T92 validator; Example 7.2.2, p. 259). -/
 def causalExampleBeta : Fin 4 → ℝ := ![13563/2437,6178/2437,-759/2437,-1778/2437]
 /-- Auxiliary representation used for "(13563,6178,−759,−1778)/2437" (T92–T93; p. 259, Example 7.2.2): causalExampleY. -/
 def causalExampleY : Fin 6 → ℝ := ![2,5,3,10,2,0]
@@ -553,14 +556,14 @@ def mlPotentialMean {n K τ : ℕ} (g : ℝ → ℝ → (Fin K → ℝ) → (Fin
     (d : ℝ) (X : Fin n → Fin K → ℝ) (θ : Fin τ → ℝ) : ℝ :=
   (∑ i,modelConditionalMean g d (X i) θ)/(n : ℝ)
 
-/-- "Y(0)=0,Y(1)=1,X=0,Pr[D=1]=1/4" (T99). -/
+/-- "Y(0)=0,Y(1)=1,X=0,Pr[D=1]=1/4" (T99 validator). -/
 def attWitness : FiniteLaw 2 where
   weight := ![3/4,1/4]
   nonneg := by intro i; fin_cases i <;> norm_num
   total := by norm_num [Fin.sum_univ_succ]
 
 /-- "At step n remove from each component the open middle interval
-of length 4^{−n}" (T31). Bits choose a left or right component. -/
+of length 4^{−n}" (T31 validator). Bits choose a left or right component. -/
 def fatInterval : List Bool → ℝ × ℝ
   | [] => (0,1)
   | b :: w =>
@@ -569,35 +572,35 @@ def fatInterval : List Bool → ℝ × ℝ
     let halfGap := (1/4 : ℝ)^(w.length+1)/2
     if b then (middle+halfGap,I.2) else (I.1,middle-halfGap)
 /-- Auxiliary representation used for "At step n remove from each component the open middle interval
-of length 4^{−n}" (T31; p. 24 and P001-C01-E004): fatStage. -/
+of length 4^{−n}" (T31; p. 24 and validator P001-C01-E004): fatStage. -/
 def fatStage (n : ℕ) : Set ℝ :=
   {x | ∃ w : List Bool,w.length=n ∧ x∈Set.Icc (fatInterval w).1 (fatInterval w).2}
 /-- Auxiliary representation used for "At step n remove from each component the open middle interval
-of length 4^{−n}" (T31; p. 24 and P001-C01-E004): fatCantor. -/
+of length 4^{−n}" (T31; p. 24 and validator P001-C01-E004): fatCantor. -/
 def fatCantor : Set ℝ := ⋂ n : ℕ,fatStage n
 /-- Auxiliary representation used for "At step n remove from each component the open middle interval
-of length 4^{−n}" (T31; p. 24 and P001-C01-E004): fatPDF. -/
+of length 4^{−n}" (T31; p. 24 and validator P001-C01-E004): fatPDF. -/
 def fatPDF (x : ℝ) : ℝ := if x∈fatCantor then 2 else 0
 /-- Auxiliary representation used for "At step n remove from each component the open middle interval
-of length 4^{−n}" (T31; p. 24 and P001-C01-E004): fatSampleMeasure. -/
+of length 4^{−n}" (T31; p. 24 and validator P001-C01-E004): fatSampleMeasure. -/
 def fatSampleMeasure : Measure fatCantor := (2 : ℝ≥0∞) • volume.comap (fun x : fatCantor => x.val)
 
-/-- "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61).
-Endpoint U=0 is null and uses Lean's total reciprocal. -/
+/-- "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61 validator,
+highest-effort check). Endpoint U=0 is null and uses Lean's total reciprocal. -/
 def heavyBootstrapLaw : Measure ℝ :=
   (1/2 : ℝ≥0∞) • uniformLaw (-1) 1 +
   (1/4 : ℝ≥0∞) • (uniformLaw 0 1).map (fun u : ℝ => (2 : ℝ)^(1/u^2)) +
   (1/4 : ℝ≥0∞) • (uniformLaw 0 1).map (fun u : ℝ => -((2 : ℝ)^(1/u^2)))
-/-- Auxiliary representation used for "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61; p. 131 and P001-C03-N016): sampleMedian. -/
+/-- Auxiliary representation used for "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61; p. 131 and validator P001-C03-N016): sampleMedian. -/
 def sampleMedian {n : ℕ} (X : Fin n → ℝ) : ℝ :=
   ((List.ofFn X).mergeSort (fun a b => a ≤ b)).getD (n/2) 0
-/-- Auxiliary representation used for "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61; p. 131 and P001-C03-N016): regularHeavyStatistic. -/
+/-- Auxiliary representation used for "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61; p. 131 and validator P001-C03-N016): regularHeavyStatistic. -/
 def regularHeavyStatistic {n : ℕ} (X : Fin n → ℝ) : ℝ :=
   let a := ((Finset.univ.filter (fun i => X i ≤ 0)).card : ℝ)/(n : ℝ)
   if a∈Set.Icc (1/4 : ℝ) (3/4) then a-1/2 else sampleMedian X
-/-- Auxiliary representation used for "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61; p. 131 and P001-C03-N016): medianCDF. -/
+/-- Auxiliary representation used for "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61; p. 131 and validator P001-C03-N016): medianCDF. -/
 def medianCDF (G : ℝ → ℝ) : ℝ := sInf {x : ℝ | 1/2 ≤ G x}
-/-- Auxiliary representation used for "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61; p. 131 and P001-C03-N016): regularHeavyFunctional. -/
+/-- Auxiliary representation used for "1/2 U[-1,1], 1/4 times ±2^{1/U²}" (T61; p. 131 and validator P001-C03-N016): regularHeavyFunctional. -/
 def regularHeavyFunctional (G : ℝ → ℝ) : ℝ :=
   if G 0∈Set.Icc (1/4 : ℝ) (3/4) then G 0-1/2 else medianCDF G
 
@@ -711,23 +714,23 @@ def mixtureFamily {M K τ : ℕ} (p : (Fin τ → ℝ) → Fin M → ℝ)
 For a cell of N units and r successes its contribution to log likelihood is
 r log p+(N−r)log(1−p). These are the actual likelihoods for T84 and T96. -/
 def logitProbability (a b x : ℝ) : ℝ := Real.exp (a+b*x)/(1+Real.exp (a+b*x))
-/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; finite examples): groupedLogitLikelihood. -/
+/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; validator finite examples): groupedLogitLikelihood. -/
 def groupedLogitLikelihood (N r : Fin 3 → ℝ) (a b : ℝ) : ℝ :=
   ∑ j, (r j*Real.log (logitProbability a b ((![-1,0,1] : Fin 3 → ℝ) j))+
     (N j-r j)*Real.log (1-logitProbability a b ((![-1,0,1] : Fin 3 → ℝ) j)))
-/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; finite examples): missingCellSize. -/
+/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; validator finite examples): missingCellSize. -/
 def missingCellSize : Fin 3 → ℝ := fun _ => 4
-/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; finite examples): missingCellResponse. -/
+/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; validator finite examples): missingCellResponse. -/
 def missingCellResponse : Fin 3 → ℝ :=![2,3,2]
-/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; finite examples): missingCellOutcomeSum. -/
+/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; validator finite examples): missingCellOutcomeSum. -/
 def missingCellOutcomeSum : Fin 3 → ℝ :=![3/4,3/2,3/4]
-/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; finite examples): causalCellSize. -/
+/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; validator finite examples): causalCellSize. -/
 def causalCellSize : Fin 3 → ℝ := fun _ => 6
-/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; finite examples): causalCellTreatment. -/
+/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; validator finite examples): causalCellTreatment. -/
 def causalCellTreatment : Fin 3 → ℝ :=![3,1,5]
-/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; finite examples): causalCellTreatedSum. -/
+/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; validator finite examples): causalCellTreatedSum. -/
 def causalCellTreatedSum : Fin 3 → ℝ :=![12,3,20]
-/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; finite examples): causalCellControlSum. -/
+/-- Auxiliary representation used for "h(xβ)=exp(xβ)/(1+exp(xβ))" (T84, T96; pp. 229–230, 265–266; validator finite examples): causalCellControlSum. -/
 def causalCellControlSum : Fin 3 → ℝ :=![9,10,3]
 
 /-- "Take a with replacement sample of size n" (Section 3.4.3, p. 131).
@@ -737,7 +740,7 @@ def bootstrapTestMean {n : ℕ} (T : (Fin n → ℝ) → ℝ) (X : Fin n → ℝ
     (f : ℝ → ℝ) : ℝ :=
   (∑ a : Fin n → Fin n,
     f (Real.sqrt n*(T (fun i => X (a i))-T X)))/((n : ℝ)^n)
-/-- Auxiliary representation used for "Take a with replacement sample of size n" (p. 131; T61–T62 conditional weak-limit formulation): BootstrapWeakCP. -/
+/-- Auxiliary representation used for "Take a with replacement sample of size n" (p. 131; T61–T62 validator conditional weak-limit formulation): BootstrapWeakCP. -/
 def BootstrapWeakCP {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
     (X : ℕ → Ω → ℝ) (sizes : ℕ → ℕ)
     (T : {n : ℕ} → (Fin n → ℝ) → ℝ) (ν : Measure ℝ) : Prop :=
@@ -789,27 +792,27 @@ def modelScore {K τ : ℕ}
     (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
     (y : ℝ) (x : Fin K → ℝ) (t : Fin τ → ℝ) : Fin τ → ℝ :=
   fun j => fderiv ℝ (fun u => Real.log (g y x u)) t (Pi.single j 1)
-/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5, p. 199; information-bound clause): modelHessian. -/
+/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5; p. 199 and validator information-bound clause): modelHessian. -/
 def modelHessian {K τ : ℕ}
     (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
     (y : ℝ) (x : Fin K → ℝ) (t : Fin τ → ℝ) : Matrix (Fin τ) (Fin τ) ℝ :=
   fun j k => fderiv ℝ (fun u => modelScore g y x u j) t (Pi.single k 1)
-/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5, p. 199; information-bound clause): informationMatrix. -/
+/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5; p. 199 and validator information-bound clause): informationMatrix. -/
 def informationMatrix {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
     {K τ : ℕ} (X : Ω → Fin K → ℝ) (Y : Ω → ℝ)
     (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ) (t : Fin τ → ℝ) : Matrix (Fin τ) (Fin τ) ℝ :=
   fun j k => mean μ (fun ω => modelScore g (Y ω) (X ω) t j*modelScore g (Y ω) (X ω) t k)
-/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5, p. 199; information-bound clause): populationHessian. -/
+/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5; p. 199 and validator information-bound clause): populationHessian. -/
 def populationHessian {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
     {K τ : ℕ} (X : Ω → Fin K → ℝ) (Y : Ω → ℝ)
     (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ) (t : Fin τ → ℝ) : Matrix (Fin τ) (Fin τ) ℝ :=
   fun j k => mean μ (fun ω => modelHessian g (Y ω) (X ω) t j k)
-/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5, p. 199; information-bound clause): sampleHessian. -/
+/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5; p. 199 and validator information-bound clause): sampleHessian. -/
 def sampleHessian {Ω : Type*} {K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
     (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
     (n : ℕ) (ω : Ω) (t : Fin τ → ℝ) : Matrix (Fin τ) (Fin τ) ℝ :=
   fun j k => (∑ i∈Finset.range n,modelHessian g (Y i ω) (X i ω) t j k)/(n : ℝ)
-/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5, p. 199; information-bound clause): normalVectorLaw. -/
+/-- Auxiliary representation used for "s=∇ log g" (T12, corrected Section 5.2.5; p. 199 and validator information-bound clause): normalVectorLaw. -/
 def normalVectorLaw {τ : ℕ} (S : Matrix (Fin τ) (Fin τ) ℝ) : Measure (Fin τ → ℝ) :=
   (multivariateGaussian (0 : EuclideanSpace ℝ (Fin τ)) S).map (fun z => fun j => z j)
 
@@ -824,18 +827,18 @@ def cdfMeanFunctional (F : KolmogorovSpace) : ℝ :=
   if h : finiteSecondCDF F then mean h.choose id else 0
 
 /-- "â_n=clip_[1/8,3/8](D̄−X̄), p̂_n(x)=â_n+x"
-(T15). The stored first component is P=1/4+X. -/
+(T15 validator). The stored first component is P=1/4+X. -/
 def estimatedMatchIntercept {n : ℕ} (s : Fin n → ℝ × Bool × Bool) : ℝ :=
   clip (1/8) (3/8) ((∑ i,((if (s i).2.1 then (1 : ℝ) else 0)-((s i).1-1/4)))/(n : ℝ))
-/-- Auxiliary representation used for "â_n=clip_[1/8,3/8](D̄−X̄), p̂_n(x)=â_n+x" (T15–T16; p. 264; exact estimated-score counterexample): estimatedMatchScore. -/
+/-- Auxiliary representation used for "â_n=clip_[1/8,3/8](D̄−X̄), p̂_n(x)=â_n+x" (T15–T16; p. 264 and validator exact estimated-score witness): estimatedMatchScore. -/
 def estimatedMatchScore {n : ℕ} (s : Fin n → ℝ × Bool × Bool) (i : Fin n) : ℝ :=
   estimatedMatchIntercept s+((s i).1-1/4)
-/-- Auxiliary representation used for "â_n=clip_[1/8,3/8](D̄−X̄), p̂_n(x)=â_n+x" (T15–T16; p. 264; exact estimated-score counterexample): causalMatchEstimated. -/
+/-- Auxiliary representation used for "â_n=clip_[1/8,3/8](D̄−X̄), p̂_n(x)=â_n+x" (T15–T16; p. 264 and validator exact estimated-score witness): causalMatchEstimated. -/
 def causalMatchEstimated {n : ℕ} (s : Fin n → ℝ × Bool × Bool) : ℝ :=
   causalMatch (fun i => (estimatedMatchScore s i,(s i).2))
 
 /-- "W_j=1+(number ... matched to respondent/control j)"
-(T14, T16 formulas). Non-donors have zero weight. -/
+(T14, T16 validator formulas). Non-donors have zero weight. -/
 def donorReuseWeight {n : ℕ} (p : Fin n → ℝ) (r : Fin n → Bool) (j : Fin n) : ℝ :=
   if r j then 1+((Finset.univ.filter (fun i => r i=false ∧ nearestDonor p r i=some j)).card : ℝ) else 0
 /-- Auxiliary representation used for "W_j=1+(number ... matched to respondent/control j)" (T14, T16; corrected finite conditional-variance formulas): signProductLaw. -/
@@ -847,6 +850,10 @@ def signProductLaw (n : ℕ) : Measure (Fin n → Bool) :=
 E indexes the covariate support and κ x is a conditional binary probability law. -/
 def kernelPropensity {E : Type*} (κ : E → Measure Bool) (x : E) : ℝ := prob (κ x) {true}
 
+/-- "V̂[X̄]=V̂[X]/n" (sample-mean variance formula applied to the
+plug-in population variance, pp. 106, 113–114). -/
+def sampleMeanVarianceEstimate {Ω : Type*} (X : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  sampleVariance X n ω/(n : ℝ)
 
 /-- "The roll of a fair die", with values 1,...,6 and PMF 1/6
 (Example 1.2.6, p. 18; corrected CDF examples T28). -/
@@ -878,15 +885,15 @@ def poststratifiedMissingMean {n : ℕ} {E : Type*} [Fintype E] [DecidableEq E]
 the response vector in the earlier six-unit stable-outcome example. -/
 def binaryCausalExampleY : Fin 6 → ℝ := ![1,1,1,0,1,0]
 
-/-- "Θ=[0,1]×[0,1]×[1/4,3/4]" (T11).
+/-- "Θ=[0,1]×[0,1]×[1/4,3/4]" (T11 validator).
 The coordinatewise closed interval is exactly this three-coordinate box. -/
 def disjointMixtureParameterSet : Set (Fin 3 → ℝ) :=
   Set.Icc (![0,0,1/4]) (![1,1,3/4])
-/-- Auxiliary representation used for "Θ=[0,1]×[0,1]×[1/4,3/4]" (T11; p. 199; parameter box [0,1] × [0,1] × [1/4,3/4]): disjointMixtureLikelihood. -/
+/-- Auxiliary representation used for "Θ=[0,1]×[0,1]×[1/4,3/4]" (T11; p. 199 and validator [0,1] × [0,1] × [1/4,3/4]): disjointMixtureLikelihood. -/
 def disjointMixtureLikelihood {n : ℕ} (y : Fin n → Fin 4) (t : Fin 3 → ℝ) : ℝ :=
   ∏ i,disjointMixture (t 0) (t 1) (t 2) (y i)
 
-/-- "T_1(G)=(G(0)−1/2)^2" (T56(b)). -/
+/-- "T_1(G)=(G(0)−1/2)^2" (T56(b) validator). -/
 def quadraticCDFFunctional (G : ℝ → ℝ) : ℝ := (G 0-1/2)^2
 
 /-- "(Y(0),Y(1),X(1),X(0),D)" at the six equally weighted points
@@ -925,10 +932,10 @@ def fixedDesignGram {n K : ℕ} (P : Matrix (Fin n) (Fin K) ℝ) : Matrix (Fin K
 /-- "Regression of D on (1,X,W)" (p. 270, placebo test passage).
 The target's full coefficients are (29/68,0,4/17). -/
 def placeboRegressor (i : Fin 12) : Fin 3 → ℝ := ![1,placeboX i,placeboW i]
-/-- Auxiliary representation used for "Regression of D on (1,X,W)" (p. 270 and T17 twelve-point regression calculations): placeboMoment. -/
+/-- Auxiliary representation used for "Regression of D on (1,X,W)" (p. 270 and T17 validator twelve-point regression calculations): placeboMoment. -/
 def placeboMoment : Matrix (Fin 3) (Fin 3) ℝ :=
   fun j k => fmean placeboLaw (fun i => placeboRegressor i j*placeboRegressor i k)
-/-- Auxiliary representation used for "Regression of D on (1,X,W)" (p. 270 and T17 twelve-point regression calculations): placeboRisk. -/
+/-- Auxiliary representation used for "Regression of D on (1,X,W)" (p. 270 and T17 validator twelve-point regression calculations): placeboRisk. -/
 def placeboRisk (a b c : ℝ) : ℝ :=
   fmean placeboLaw (fun i => (placeboD i-a-b*placeboX i-c*placeboW i)^2)
 
@@ -941,7 +948,7 @@ def sampleLikelihood {Ω : Type*} {K τ : ℕ}
   ∏ i∈Finset.range n,g (Y i ω) (X i ω) t
 
 /-- "For every n and every sample, the joint probability is the product of the four masses"
-(T11). This is the actual finite iid sample probability, including null samples. -/
+(T11 validator). This is the actual finite iid sample probability, including null samples. -/
 def finiteMixtureSampleProb {n : ℕ} (t : Fin 3 → ℝ)
     (A : (Fin n → Fin 4) → Prop) : ℝ :=
   ∑ y : Fin n → Fin 4,if A y then disjointMixtureLikelihood y t else 0
@@ -1030,6 +1037,19 @@ theorem chebyshev_probability {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω
   have hnon : 0 ≤ variance X μ/ε^2 := div_nonneg (variance_nonneg _ _) (sq_nonneg _)
   exact (ENNReal.toReal_mono ENNReal.ofReal_ne_top h).trans_eq (ENNReal.toReal_ofReal hnon)
 
+/-- The geometric law has mean 1 and variance 2; the explicit translated mixtures have finite second moments, converge in the scaled Kolmogorov distance to direction zero, but their mean difference quotients equal 1.
+Target P001-T1: Section 3.3.1, the sentence 'our assumption about finite variance was sufficient to imply that the population mean is well behaved', read with footnote 31, as printed.
+Location: p. 120 (PDF p. 138), paragraph after Theorem 3.3.6, and footnote 31. The mean functional $T_{\mathrm{E}}$: p. 118 (PDF p. 136). -/
+theorem geometric_mean_perturbation : FiniteMomentLaw geoMass ∧ massMean geoMass = 1 ∧ massSecond geoMass = 3 ∧
+   (∀ n, 2  ≤  n → FiniteMomentLaw (mixMass n) ∧ (∀ k, 0  <  mixMass n k) ∧
+     massMean (mixMass n) = 1 + (n : ℝ)⁻¹^2 ∧
+     massSecond (mixMass n) = 3 + (n : ℝ)⁻¹ + 2*(n : ℝ)⁻¹^2 ∧
+     (massMean (mixMass n) - massMean geoMass) / ((n : ℝ)⁻¹^2) = 1) ∧
+   Tendsto (fun (n : ℕ) => massSecond (mixMass n) - (massMean (mixMass n))^2) atTop (nhds 2) ∧
+   Tendsto (fun n : ℕ => (n : ℝ)⁻¹^2) atTop (nhds 0) ∧
+   (∀ ε : ℝ, 0  <  ε → ∀ᶠ n in atTop, ∀ x : ℝ,
+     |(massCDF (mixMass n) x - massCDF geoMass x) / ((n : ℝ)⁻¹^2)|  <  ε) := by
+  sorry
 
 /-- The first K+1 geometric masses sum exactly to 1 minus the tail mass.
 Target P001-T1: Section 3.3.1, the sentence 'our assumption about finite variance was sufficient to imply that the population mean is well behaved', read with footnote 31, as printed.
@@ -1042,8 +1062,16 @@ theorem geometric_partial_mass (K : ℕ) : ∑ k ∈ Finset.range (K+1), geoMass
     simp only [geoMass, pow_succ]
     ring
 
+/-- The specified gap density has integral one and mean zero, and the zero extension and smooth bump have different derivatives there while agreeing on positive-density covariates.
+Target P001-T3: Definition 4.3.7 (Partial Derivative at the Average) and the remark that the PDA 'has a well-defined meaning', as printed: a joint distribution for which the PDA is not determined.
+Location: Definition 4.3.7: p. 167 (PDF p. 185). Remark: p. 168 (PDF p. 186). Footnote 13: p. 166 (PDF p. 184). Definition 2.2.15: p. 69 (PDF p. 87). -/
+theorem pda_extrapolation_witness_supporting : (∫ x, gapPDF x) = 1 ∧ (∫ x, x*gapPDF x) = 0 ∧ gapPDF 0 = 0 ∧
+   ContDiff ℝ 1 pdaBump ∧ (∀ x, 0  <  gapPDF x → pdaBump x = 0) ∧
+   deriv (fun _ : ℝ => (0 : ℝ)) 0 = 0 ∧ deriv pdaBump 0 = 1 ∧
+   (∀ a : ℝ, deriv (fun x => a*pdaBump x) 0 = a) := by
+  sorry
 
-/-- Continuous functions that agree Lebesgue-almost everywhere on an open set agree throughout it; their totalized coordinate-derivative values at any point of that set are equal. This supporting lemma does not assert derivative existence.
+/-- Continuous CEF representatives that agree almost everywhere on an open neighborhood of the covariate mean agree throughout it, so their coordinate derivatives at the mean agree.
 Target P001-T4: Definition 4.3.7 (Partial Derivative at the Average), corrected with a support condition at the covariate mean.
 Location: p. 167 (PDF p. 185), Definition 4.3.7; p. 168 (PDF p. 186), first paragraph. -/
 theorem pda_unique_on_open_support_supporting {K : ℕ} (U : Set (Fin K → ℝ)) (hU : IsOpen U) (x : Fin K → ℝ)
@@ -1062,6 +1090,42 @@ theorem pda_unique_on_open_support_supporting {K : ℕ} (U : Set (Fin K → ℝ)
   filter_upwards [hmem] with t ht
   exact he ht
 
+/-- With independent uniform covariates and standard Gaussian noise, least squares at degree floor(n^(3/4)) fails local L2 consistency along n=t^4 although J tends to infinity and J/n tends to zero.
+Target P001-T5: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator), the rate condition '$J_n \to \infty$ and $\frac{1}{n}J_n \to 0$' as a sufficient condition for consistency, as printed.
+Location: Section 4.3.5: p. 168 (PDF p. 186); Definition 4.3.9: pp. 168–169 (PDF pp. 186–187); the paragraph after it: p. 169 (PDF p. 187). -/
+theorem sieve_degree_counterexample {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X Y : ℕ → Ω → ℝ) (hiid : IID μ (fun i ω => (X i ω, Y i ω)))
+   (hlaw : μ.map (fun ω => (X 0 ω, Y 0 ω)) = (uniformLaw 0 1).prod (gaussianReal 0 1))
+   (fit : ℕ → Ω → Polynomial ℝ)
+   (hfit : IsSieveLS X Y (fun (n : ℕ) => Nat.floor ((n : ℝ)^(3/4 : ℝ))) fit) :
+   Tendsto (fun (n : ℕ) => Nat.floor ((n : ℝ)^(3/4 : ℝ))) atTop atTop ∧
+   Tendsto (fun (n : ℕ) => (Nat.floor ((n : ℝ)^(3/4 : ℝ)) : ℝ) / n) atTop (nhds 0) ∧
+   ∀ δ : ℝ, 0  <  δ → δ  ≤  1 → ∀ ε : ℝ, 0  <  ε →
+     1/2  ≤  Filter.liminf (fun t : ℕ =>
+       prob μ {ω | ε  <  ∫ x in Set.Icc 0 δ, ((fit (t^4) ω).eval x)^2}) atTop := by
+  sorry
+
+/-- A broader polynomial-sieve lemma needs only almost-sure compact containment, continuity of the CEF, bounded conditional variance, a vanishing dimension ratio and stable population-normalized Gram matrices to give L2 consistency.
+Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem sieve_consistency_stable_gram_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X Y : ℕ → Ω → ℝ) (hiid : IID μ (fun i ω => (X i ω, Y i ω)))
+   (a b V : ℝ) (hab : a  <  b) (hV : 0  ≤  V) (hY2 : MemLp (Y 0) 2 μ)
+   (hsupp : ∀ᵐ ω ∂μ, X 0 ω ∈ Set.Icc a b)
+   (m : ℝ → ℝ) (hm : ContinuousOn m (Set.Icc a b)) (hcef : IsCEF μ (X 0) (Y 0) m)
+   (hvar : ∀ A : Set ℝ, MeasurableSet A →
+     (∫ ω in (X 0) ⁻¹' A, (Y 0 ω-m (X 0 ω))^2 ∂μ)  ≤  V * prob μ ((X 0) ⁻¹' A))
+   (p : ℕ → Polynomial ℝ) (hdeg : ∀ k, (p k).natDegree = k)
+   (horth : ∀ j k, mean μ (fun ω => (p j).eval (X 0 ω)*(p k).eval (X 0 ω)) = if j=k then 1 else 0)
+   (J : ℕ → ℕ) (hJ : Tendsto J atTop atTop)
+   (hrate : Tendsto (fun (n : ℕ) => ((J n+1 : ℕ) : ℝ)/n) atTop (nhds 0))
+   (c : ℝ) (hc : 0  <  c)
+   (hgram : Tendsto (fun (n : ℕ) => prob μ {ω | ∀ v : Fin (J n+1) → ℝ,
+     c*(∑ k, (v k)^2)  ≤  (∑ i ∈ Finset.range n,
+       (∑ k : Fin (J n+1), v k*(p k).eval (X i ω))^2)/(n : ℝ)}) atTop (nhds 1))
+   (fit : ℕ → Ω → Polynomial ℝ) (hfit : IsSieveLS X Y J fit) :
+   CP μ (fun n ω => ∫ x, ((fit n ω).eval x-m x)^2 ∂(μ.map (X 0))) 0 := by
+  sorry
 
 /-- Uniform objective error Δ and optimization error e bound the population objective loss by 2Δ+e.
 Target P001-T8: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), corrected: the KL divergence averaged over the distribution of $\mathbf{X}$.
@@ -1111,8 +1175,33 @@ theorem separated_argmax_consistency {Ω E : Type*} [MeasurableSpace Ω] [Pseudo
   exact squeeze_zero' (Eventually.of_forall (fun (n : ℕ) => ENNReal.toReal_nonneg))
     (Eventually.of_forall hbound) hlim
 
+/-- The explicit four-atom joint law has success rates 1/4 and 3/4 in the two covariate cells but pooled success rate 1/2 and pooled variance 1/4.
+Target P001-T7: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), with the target defined by the KL divergence at a fixed $\mathbf{x}$, as printed.
+Location: p. 195 (PDF p. 213), Theorem 5.2.8 and Definition 5.2.7. -/
+theorem conditional_kl_counterexample_finite_supporting : fmean binaryJoint ![0,1,0,1] = 1/2 ∧ fvar binaryJoint ![0,1,0,1] = 1/4 ∧
+   fprob binaryJoint (fun i => i=0 ∨ i=1) = 1/2 ∧
+   fprob binaryJoint (fun i => i=1) / fprob binaryJoint (fun i => i=0 ∨ i=1) = 1/4 ∧
+   fprob binaryJoint (fun i => i=3) / fprob binaryJoint (fun i => i=2 ∨ i=3) = 3/4 := by
+  norm_num [fmean, fvar, fprob, binaryJoint, Fin.sum_univ_succ]
 
 
+/-- The likelihood at sample (1,2,3) exceeds every bound along the admissible path (1/2,1/4,1,σ,0,1,1); consequently it has no maximizer.
+Target P001-T9: Section 5.2.5 and Example 5.2.11: 'the product can be maximized to find the ML estimate', applied to the normal/log-normal/exponential mixture, as printed.
+Location: Section 5.2.5: pp. 198–199 (PDF pp. 216–217). Example 5.2.11: pp. 199–200 (PDF pp. 217–218). Figure 5.2.5: p. 201 (PDF p. 219). -/
+theorem mixture_three_point_unbounded : (∀ B : ℝ, ∃ σ : ℝ, 0  <  σ ∧ MixtureAdmissible ![1/2,1/4,1,σ,0,1,1] ∧
+   B  <  mixtureLikelihood ![1,2,3] ![1/2,1/4,1,σ,0,1,1]) ∧
+   ¬ ∃ θ : Fin 7 → ℝ, MixtureAdmissible θ ∧ ∀ θ', MixtureAdmissible θ' →
+     mixtureLikelihood ![1,2,3] θ'  ≤  mixtureLikelihood ![1,2,3] θ := by
+  sorry
+
+/-- The unrestricted mixture likelihood is unbounded for every nonempty positive sample.
+Target P001-T10: Section 5.2.5 and Example 5.2.11, corrected: maximization of the mixture likelihood qualified by existence of a maximum; the unrestricted mixture has unbounded likelihood on positive samples; a compact restriction under which a maximum is attained.
+Location: pp. 198–200 (PDF pp. 216–218); Figure 5.2.5, p. 201 (PDF p. 219). -/
+theorem mixture_unbounded_positive_sample {n : ℕ} (hn : 0  <  n) (y : Fin n → ℝ) (hy : ∀ i, 0  <  y i) :
+   ∀ B : ℝ, ∃ θ : Fin 7 → ℝ, MixtureAdmissible θ ∧ B  <  mixtureLikelihood y θ := by
+  sorry
+
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem integral_affine_iic (K : ℝ → ℝ) (a h x : ℝ) (hh : 0<h) :
     (∫ u in Set.Iic x,K ((u-a)/h))=
       h*(∫ t in Set.Iic ((x-a)/h),K t) := by
@@ -1290,6 +1379,50 @@ theorem unused_component_nonidentification_supporting : disjointMixture 1 (1/3) 
     have h2 := (abs_lt.mp h.2).1
     linarith
 
+/-- Changing only a zero-weight mixture component leaves the conditional model unchanged everywhere.
+Target P001-T12: Section 5.2.5, the 'any subset' sentence, corrected: consistency and efficiency of the mixture ML estimator under identification of the full parameter vector.
+Location: p. 199 (PDF p. 217), second paragraph. -/
+theorem zero_weight_component_irrelevant_supporting {M : ℕ} (p : Fin M → ℝ) (g g' : Fin M → ℝ → ℝ → ℝ)
+   (j : Fin M) (hp : p j = 0) (heq : ∀ k, k ≠ j → g k = g' k) :
+   ∀ y x, (∑ k, p k*g k y x) = ∑ k, p k*g' k y x := by
+  intro y x
+  apply Finset.sum_congr rfl
+  intro k hk
+  by_cases h : k=j
+  · subst k; simp [hp]
+  · rw [heq k h]
+
+/-- Hot deck in the explicit uniform-score, Bernoulli-response, independent sign-noise design is exactly unbiased with positive root-n variance, but its ordinary bootstrap variance has a smaller expectation limit and is inconsistent.
+Target P001-T13: Footnote 15 (hot deck imputation: 'the bootstrap standard errors are likely to adequately characterize sampling variability', with the bootstrap's failure attributed to slowly converging bias), as printed.
+Location: p. 233 (PDF p. 251), footnote 15, attached to the hot deck estimate; Table 6.3.1, row 'Hot Deck Imputation'. Hot deck imputation: Section 6.2.3, pp. 224–225 (PDF pp. 242–243). The bootstrap: Section 3.4.3, p. 131 (PDF p. 149). -/
+theorem hot_deck_bootstrap_counterexample {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z)
+   (hlaw : μ.map (Z 0) = matchingUnitLaw) : MatchingFailure μ Z false := by
+  sorry
+
+/-- Hot deck in the explicit uniform-score, Bernoulli-response, independent sign-noise design is exactly unbiased with positive root-n variance, but its ordinary bootstrap variance has a smaller expectation limit and is inconsistent.
+Target P001-T14: Footnote 15, corrected: for hot deck (nearest-neighbour) imputation the ordinary bootstrap can give inconsistent standard errors even without bias.
+Location: p. 233 (PDF p. 251), footnote 15; Table 6.3.1, row 'Hot Deck Imputation'. -/
+theorem hot_deck_bootstrap_correction {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z)
+   (hlaw : μ.map (Z 0) = matchingUnitLaw) : MatchingFailure μ Z false := by
+  sorry
+
+/-- Causal nearest-neighbor matching in the explicit uniform-score, Bernoulli-response, independent sign-noise design is exactly unbiased with positive root-n variance, but its ordinary bootstrap variance has a smaller expectation limit and is inconsistent.
+Target P001-T15: Section 7.2.4 (matching with estimated propensity scores: the bootstrap's failure attributed to slowly shrinking bias) and footnote 20 ('the bootstrap standard errors are likely to adequately characterize sampling variability'), as printed.
+Location: p. 264 (PDF p. 282), end of Section 7.2.4, with footnote 13; p. 279 (PDF p. 297), footnote 20; p. 280 (PDF p. 298), Table 7.5.1, row 'Matching'. Matching: Section 7.2.4, pp. 262–263 (PDF pp. 280–281). -/
+theorem matching_bootstrap_counterexample_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z)
+   (hlaw : μ.map (Z 0) = matchingUnitLaw) : MatchingFailure μ Z true := by
+  sorry
+
+/-- Causal nearest-neighbor matching in the explicit uniform-score, Bernoulli-response, independent sign-noise design is exactly unbiased with positive root-n variance, but its ordinary bootstrap variance has a smaller expectation limit and is inconsistent.
+Target P001-T16: Section 7.2.4 and footnote 20, corrected: for nearest-neighbour matching the ordinary bootstrap can give inconsistent standard errors even without bias, and root-$n$ consistency and bootstrap validity are separate questions.
+Location: p. 264 (PDF p. 282), end of Section 7.2.4 and footnote 13; p. 279 (PDF p. 297), footnote 20. -/
+theorem matching_bootstrap_correction_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z)
+   (hlaw : μ.map (Z 0) = matchingUnitLaw) : MatchingFailure μ Z true := by
+  sorry
 
 /-- The twelve-atom design satisfies the placebo conditional-independence null and has Cov(W,D)=1/9 and Var(W)=17/36; the two specified population residual formulas have mean squares 35/144 and 59/272.
 Target P001-T17: Section 7.2.8 (Placebo Testing): the $F$-test comparing a regression of $D_i$ on $\mathbf{W}_i$ and $\mathbf{X}_i$ with a regression of $D_i$ on $\mathbf{X}_i$ alone, as a test of $\mathbf{W}_i \perp\!\!\!\perp D_i|\mathbf{X}_i$, as printed.
@@ -1327,6 +1460,21 @@ theorem placebo_linear_test_counterexample_supporting : FCondIndep placeboLaw pl
         · norm_num [fprob,placeboLaw,placeboX,Fin.sum_univ_succ,hx1,hx0,hx2,eq_comm] at hx
   · norm_num [fmean,fvar,fcov,placeboLaw,placeboX,placeboZ,placeboW,placeboD,Fin.sum_univ_succ]
 
+/-- Conditional independence and a CEF linear in the included X regressors give the same CEF after adding W and give zero W coefficients in the unique population linear predictor.
+Target P001-T18: Section 7.2.8, the regression implementation of the placebo test, corrected: valid when $\mathrm{E}[D_i|\mathbf{X}_i]$ is linear in the included regressors.
+Location: p. 270 (PDF p. 288), Section 7.2.8. -/
+theorem placebo_linear_cef_correction_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K L : ℕ} (X : Ω → Fin K → ℝ) (W : Ω → Fin L → ℝ) (D : Ω → ℝ)
+   (hX : Measurable X) (hW : Measurable W) (hD : Measurable D)
+   (hX2 : ∀ k, MemLp (fun ω => X ω k) 2 μ)
+   (hW2 : ∀ k, MemLp (fun ω => W ω k) 2 μ) (hD2 : MemLp D 2 μ)
+   (hind : CI μ X hX W D) (γ : Fin (K+1) → ℝ)
+   (hcef : IsCEF μ X D (linearPredictor γ)) :
+   IsCEF μ (fun ω => (X ω,W ω)) D (fun xw => linearPredictor γ xw.1) ∧
+   ∀ a : ℝ, ∀ b : Fin K → ℝ, ∀ c : Fin L → ℝ,
+     mean μ (fun ω => (D ω-linearPredictor γ (X ω))^2)  ≤ 
+     mean μ (fun ω => (D ω-(a+(∑ k,b k*X ω k)+(∑ k,c k*W ω k)))^2) := by
+  sorry
 
 /-- The normalized countable joint PMF has mass 1/2 in each arm and every covariate value in both supports, but no common positive lower propensity bound.
 Target P001-T19: Section 7.3: 'a failure of the positivity assumption logically implies incomplete (or “limited”) overlap', and the converse of Theorem 7.3.2 that 'can almost be stated', as printed.
@@ -1519,6 +1667,35 @@ theorem basic_probability_rules {Ω : Type*} [MeasurableSpace Ω] (μ : Measure 
     change μ.real (A∪B)=μ.real A+μ.real B-μ.real (A∩B)
     linarith
 
+/-- A countable measurable nonempty partition gives total probability; with strictly positive cell masses it also gives the conditional-probability formula.
+Target P001-T24: Theorem 1.1.13 (Law of Total Probability): the positivity condition in its proof and the partition remark after the proof, corrected.
+Location: Theorem 1.1.13: p. 12 (PDF p. 30). Proof and the remark after it: p. 13 (PDF p. 31). Definition 1.1.12: p. 12 (PDF p. 30). Definition 1.1.8 and Theorem 1.1.9: p. 10 (PDF p. 28). -/
+theorem total_probability_partition_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (A : ℕ → Set Ω) (hA : ∀ i, MeasurableSet (A i)) (hne : ∀ i, (A i).Nonempty)
+   (hdis : Pairwise (fun i j => Disjoint (A i) (A j))) (hcover : (⋃ i, A i)=Set.univ)
+   (B : Set Ω) (hB : MeasurableSet B) :
+   prob μ B = ∑' i, prob μ (B ∩ A i) ∧
+   ((∀ i, 0  <  prob μ (A i)) → prob μ B = ∑' i,
+     (prob μ (B ∩ A i)/prob μ (A i))*prob μ (A i)) := by
+  have hdis' : Pairwise (fun i j => Disjoint (B ∩ A i) (B ∩ A j)) := by
+    intro i j hij
+    exact (hdis hij).mono Set.inter_subset_right Set.inter_subset_right
+  have hcover' : (⋃ i, B ∩ A i)=B := by
+    rw [← Set.inter_iUnion,hcover,Set.inter_univ]
+  have hμ : μ B=∑' i, μ (B ∩ A i) := by
+    calc
+      μ B=μ (⋃ i, B ∩ A i) := by rw [hcover']
+      _=∑' i, μ (B ∩ A i) := measure_iUnion hdis' (fun i => hB.inter (hA i))
+  have hr : prob μ B=∑' i, prob μ (B ∩ A i) := by
+    unfold prob
+    rw [hμ,ENNReal.tsum_toReal_eq (fun i => measure_ne_top μ _)]
+  refine ⟨hr,?_⟩
+  intro hp
+  rw [hr]
+  apply tsum_congr
+  intro i
+  exact (div_mul_cancel₀ _ (ne_of_gt (hp i))).symm
+
 
 /-- The two events A and its complement are nonempty precisely when A is neither empty nor the whole sample space.
 Target P001-T24: Theorem 1.1.13 (Law of Total Probability): the positivity condition in its proof and the partition remark after the proof, corrected.
@@ -1578,6 +1755,14 @@ theorem integer_lower_tail_correction (q : ℤ → ℝ) (hq : ∀ k, 0  ≤  q k
   refine ⟨hfirst,by linarith,?_⟩
   constructor <;> intro h <;> linarith
 
+/-- The countable dyadic PMF is normalized, has strictly increasing CDF on (0,1), and that CDF is continuous at 1/3 but locally constant on no neighborhood there.
+Target P001-T27: Example 1.2.13, first sentence (the CDF of a discrete random variable 'is necessarily a step function ... flat everywhere except where it jumps'), as printed.
+Location: p. 23 (PDF p. 41), Example 1.2.13, first sentence. Definition 1.2.4: p. 18 (PDF p. 36). -/
+theorem dense_discrete_cdf_counterexample : Summable dyadicMass ∧ (∑' i,dyadicMass i)=1 ∧
+   (∀ a b : ℝ, 0 < a → a < b → b < 1 → dyadicCDF a < dyadicCDF b) ∧
+   ContinuousAt dyadicCDF (1/3) ∧
+   ¬ ∃ ε : ℝ, 0 < ε ∧ ∀ x : ℝ, |x-1/3| < ε → dyadicCDF x=dyadicCDF (1/3) := by
+  sorry
 
 /-- The CDF of a countable-range random variable is the sum of its point masses through x.
 Target P001-T28: Example 1.2.13, first sentence, corrected: the CDF of a discrete random variable as a sum of jumps, and its step shape when the range is finite.
@@ -1632,7 +1817,7 @@ theorem finite_cdf_constant_between_values {n : ℕ} (P : FiniteLaw n) (X : Fin 
       exact hgap i ⟨lt_of_not_ge hn,h⟩
   simp only [hiff]
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem uniform_cdf_reflection (x : ℝ) : uniformCDF (1-x) = 1-uniformCDF x := by
   unfold uniformCDF
   by_cases h0 : x ≤ 0
@@ -1833,8 +2018,15 @@ theorem continuous_rv_range_uncountable {Ω : Type*} [MeasurableSpace Ω] (μ : 
   have : Countable Ω := hcount
   exact hrange (Set.countable_range X)
 
+/-- A probability law with an integral density can be supported on a measurable set of measure 1/2 that contains no nontrivial interval.
+Target P001-T32: Section 1.2.4, the description of the range of a continuous random variable, corrected.
+Location: p. 24 (PDF p. 42), paragraph before Definition 1.2.14. -/
+theorem continuous_range_without_interval_supporting : ∃ C : Set ℝ, MeasurableSet C ∧ volume C=1/2 ∧
+   (∀ a b : ℝ, a < b → ¬ Set.Icc a b ⊆ C) ∧
+   IsProbabilityMeasure (volume.withDensity (fun x => ENNReal.ofReal (if x∈C then (2 : ℝ) else 0))) := by
+  sorry
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem joint_pdf_event_probability (ν : Measure (ℝ×ℝ)) (f : (ℝ×ℝ) → ℝ)
     (hf : HasJointPDF ν f) (A : Set (ℝ×ℝ)) (hA : MeasurableSet A) :
     prob ν A=∫ z in A,f z := by
@@ -1965,6 +2157,54 @@ theorem triangular_region_correction (ν : Measure (ℝ × ℝ)) [IsProbabilityM
   rw [measure_union hdis hN,ENNReal.toReal_add (measure_ne_top ν T) (measure_ne_top ν N)]
   exact congrArg (fun t => t+prob ν N) htprob
 
+/-- The explicit smooth strictly positive joint density integrates to one but its nonnegative slice integral at y=0 is infinite.
+Target P001-T36: Theorem 1.3.13 (Marginal PDF), the identity 'for all $y$', as printed.
+Location: p. 37 (PDF p. 55), Theorem 1.3.13. -/
+theorem infinite_marginal_slice_counterexample : ContDiff ℝ ⊤ smoothSlicePDF ∧ (∀ z, 0 < smoothSlicePDF z) ∧
+   Integrable smoothSlicePDF volume ∧ (∫ z, smoothSlicePDF z)=1 ∧
+   (∫⁻ x : ℝ, ENNReal.ofReal (smoothSlicePDF (x,0)))=∞ ∧
+   (∀ y : ℝ, y≠0 → Integrable (fun x => smoothSlicePDF (x,y)) volume) := by
+  sorry
+
+/-- A joint PDF has finite slice integral almost everywhere, and any measurable finite nonnegative version of that slice integral is a marginal PDF.
+Target P001-T37: Theorem 1.3.13 (Marginal PDF), corrected to hold for Lebesgue-almost every $y$.
+Location: p. 37 (PDF p. 55), Theorem 1.3.13; the conditional PDF of Definition 1.3.14, p. 38 (PDF p. 56). -/
+theorem marginal_pdf_ae_correction (ν : Measure (ℝ × ℝ)) [IsProbabilityMeasure ν] (f : (ℝ × ℝ) → ℝ)
+   (hf : HasJointPDF ν f) :
+   (∀ᵐ y ∂volume, (∫⁻ x : ℝ, ENNReal.ofReal (f (x,y))) < ∞) ∧
+   ∀ g : ℝ → ℝ, Measurable g → (∀ y, 0 ≤ g y) →
+     (∀ᵐ y ∂volume, ENNReal.ofReal (g y)=(∫⁻ x : ℝ, ENNReal.ofReal (f (x,y)))) →
+       HasPDF (ν.map Prod.snd) g := by
+  have hfi : Integrable f ((volume : Measure ℝ).prod volume) := hf.2.2.1
+  have hslice := hfi.prod_left_ae
+  constructor
+  · filter_upwards [hslice] with y hy
+    rw [← ofReal_integral_eq_lintegral_ofReal hy (ae_of_all _ (fun x => hf.2.1 (x,y)))]
+    simp
+  · intro g hgm hgn hge
+    have he : g =ᵐ[volume] (fun y => ∫ x,f (x,y)) := by
+      filter_upwards [hge,hslice] with y hy hiy
+      have hh := congrArg ENNReal.toReal hy
+      rw [ENNReal.toReal_ofReal (hgn y)] at hh
+      exact hh.trans (integral_eq_lintegral_of_nonneg_ae
+        (ae_of_all _ (fun x => hf.2.1 (x,y))) hiy.aestronglyMeasurable).symm
+    have hgi : Integrable g volume := hfi.integral_prod_right.congr he.symm
+    refine ⟨hgm.aemeasurable,hgn,hgi,?_⟩
+    apply Measure.ext
+    intro B hB
+    have hpre : MeasurableSet (Prod.snd ⁻¹' B : Set (ℝ×ℝ)) := measurable_snd hB
+    rw [Measure.map_apply measurable_snd hB,hf.2.2.2,
+      withDensity_apply _ hpre,withDensity_apply _ hB,
+      ← lintegral_indicator hpre,← lintegral_indicator hB]
+    change (∫⁻ z : ℝ×ℝ,(Prod.snd ⁻¹' B).indicator (fun z => ENNReal.ofReal (f z)) z
+      ∂((volume : Measure ℝ).prod volume))=_
+    rw [lintegral_prod_symm (μ := (volume : Measure ℝ)) (ν := (volume : Measure ℝ))
+      _ (hf.1.ennreal_ofReal.indicator hpre)]
+    apply lintegral_congr_ae
+    filter_upwards [hge] with y hy
+    by_cases hBy : y∈B
+    · simpa [Set.indicator,hBy] using hy.symm
+    · simp [Set.indicator,hBy]
 
 /-- Multiplying a standard normal variable by zero yields an atom at zero and cannot give a positive-variance normal law; the bivariate density denominator also vanishes at rho=±1.
 Target P001-T38: The sentence after Theorem 2.1.21 ('any linear combination of any number of mutually independent normal random variables must itself be normal') and the parameter range of the bivariate normal PDF in footnote 13, as printed.
@@ -2072,7 +2312,7 @@ theorem correlation_not_pointwise_dependence : fvar nullPointLaw ![0,1,0]=1/4 �
     norm_num at h0 h2
     linarith
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem correlation_affine {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
     (X Y : Ω→ℝ) (hX : MemLp X 2 μ) (hvX : 0<var μ X) (a b : ℝ) (hb : b≠0)
     (hAE : Y =ᵐ[μ] (fun ω=>a+b*X ω)) : correlation μ X Y=b/|b|:=by
@@ -2416,6 +2656,23 @@ theorem independent_constant_cef {Ω E : Type*} [MeasurableSpace Ω] [Measurable
 
 
 /-- For independent mean-zero noise, the CEF of g(X) plus the noise is g(X); evaluating it at a fixed covariate value uses that value.
+Target P001-T46: Example 2.2.24 (BLP under Nonlinearity), the CEF formula, corrected; with the CEF and BLP of Example 2.2.23.
+Location: Example 2.2.24: p. 82 (PDF p. 100), second sentence. Example 2.2.23: pp. 79–81 (PDF pp. 97–99). -/
+theorem quadratic_cef_factor_ten_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X W : Ω → ℝ) (hX : Measurable X) (hW : Measurable W)
+   (hi : IndepFun X W μ) (hWi : Integrable W μ) (hW0 : mean μ W=0)
+   (g : ℝ → ℝ) (hg : Measurable g) (hgi : Integrable (g ∘ X) μ) :
+   IsCEF μ X (fun ω => g (X ω)+W ω) g := by
+  have hc := independent_constant_cef μ X W hX hW hWi hi
+  refine ⟨hg, hgi.add hWi, hgi, ?_⟩
+  intro A hA
+  have hiA : IntegrableOn (fun ω => g (X ω)) (X ⁻¹' A) μ := hgi.integrableOn
+  rw [integral_add hiA hWi.integrableOn]
+  have hz : (∫ ω in X ⁻¹' A, W ω ∂μ)=0 := by
+    simpa [hW0] using hc.2.2.2 A hA
+  rw [hz, add_zero]
+
+/-- For independent mean-zero noise, the CEF of g(X) plus the noise is g(X); evaluating it at a fixed covariate value uses that value.
 Target P001-T68: Example 4.3.5 (Overfitting with a Nonlinear CEF), the CEF identity, corrected ($g(x)$ for $g(X)$).
 Location: p. 163 (PDF p. 181), Example 4.3.5, first two sentences. -/
 theorem additive_independent_noise_cef {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
@@ -2432,6 +2689,16 @@ theorem additive_independent_noise_cef {Ω : Type*} [MeasurableSpace Ω] (μ : M
     simpa [hW0] using hc.2.2.2 A hA
   rw [hz, add_zero]
 
+/-- Functions of independent random variables remain independent and the CEF of h(Y) given g(X) is the constant E[h(Y)].
+Target P001-T47: Theorem 2.2.25 (Implications of Independence, Part III), fourth bullet, first sub-bullet, corrected.
+Location: pp. 82–83 (PDF pp. 100–101). -/
+theorem independent_functions_cef_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X Y : Ω → ℝ) (hX : Measurable X) (hY : Measurable Y) (hi : IndepFun X Y μ)
+   (g h : ℝ → ℝ) (hg : Measurable g) (hh : Measurable h) (hint : Integrable (h ∘ Y) μ) :
+   IndepFun (g ∘ X) (h ∘ Y) μ ∧ IsCEF μ (g ∘ X) (h ∘ Y) (fun _ => mean μ (h ∘ Y)) := by
+  have hic := hi.comp hg hh
+  exact ⟨hic, independent_constant_cef μ (g ∘ X) (h ∘ Y)
+    (hg.comp hX) (hh.comp hY) hint hic⟩
 
 /-- Every covariance-matrix entry uses its own two component indices; the matrix is symmetric, has variances on the diagonal, and the variance of the component sum is the sum of all entries.
 Target P001-T48: Definition 2.3.1 (Covariance Matrix), the index quantifier, corrected; with Theorem 2.3.2 (Multivariate Variance Rule).
@@ -2485,6 +2752,11 @@ theorem variance_functional_minus_sign {Ω : Type*} [MeasurableSpace Ω] (μ : M
    var μ X=mean μ (fun ω => (X ω)^2)-(mean μ X)^2 := by
   exact variance_eq_sub hX
 
+/-- Uniform sampling of the printed population (3,4,3,10) has mean 5 and variance 17/2.
+Target P001-T50: Three misprinted displays, corrected: the variance in Example 3.1.3 (p. 94); the variance functional $T_{\mathrm{V}}(F)$ (p. 118, repeated in Example 3.3.5, p. 119); the last line of Example 3.3.4 (p. 119).
+Location: (a) p. 94 (PDF p. 112), Example 3.1.3 (continued), second bullet. (b) p. 118 (PDF p. 136), display for $\mathrm{V}[X] = T_{\mathrm{V}}(F)$, last line; p. 119 (PDF p. 137), first display of Example 3.3.5. (c) p. 119 (PDF p. 137), Example 3.3.4, last line of the display. Definition 3.1.2 and Example 3.1.3: p. 93 (PDF p. 111). -/
+theorem finite_population_example_moments_supporting : ((3+4+3+10 : ℝ)/4)=5 ∧ ((3-5)^2+(4-5)^2+(3-5)^2+(10-5)^2 : ℝ)/4=17/2 := by
+  norm_num
 
 /-- Convergence in probability is equivalent to eventual within-epsilon probability at least p for every p in [0,1).
 Target P001-T51: The verbal gloss of convergence in probability after Definition 3.2.6, corrected ($p \in [0, 1)$).
@@ -2727,6 +2999,36 @@ theorem kernel_cdf_correct_integrand {n : ℕ} (hn : 0 < n) (X : Fin n → ℝ) 
   rw [integral_div,integral_affine_iic K (X i) h x hh]
   field_simp [hh.ne']
 
+/-- Conditional bootstrap weak convergence together with conditional second-moment tails vanishing in probability yields variance and standard-error consistency; variance consistency under weak convergence also forces those tails to vanish.
+Target P001-T62: Section 3.4.3, consistency of the bootstrap standard deviation for the standard error, corrected: the added moment condition.
+Location: p. 131 (PDF p. 149), sentence after the four bootstrap steps; Definition 3.2.32, pp. 113–114 (PDF pp. 131–132). -/
+theorem bootstrap_moments_correction {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (ν : ℕ → Ω → Measure ℝ) (hν : ∀ n ω, IsProbabilityMeasure (ν n ω))
+   (hKernel : ∀ n (A : Set ℝ),MeasurableSet A → Measurable (fun ω => ν n ω A))
+   (h2 : ∀ n ω, MemLp id 2 (ν n ω)) (φ : ℝ) (hφ : 0 < φ)
+   (hweak : ∀ f : ℝ → ℝ, Continuous f → (∃ C : ℝ, ∀ x, |f x| ≤ C) →
+     CP μ (fun n ω => mean (ν n ω) f) (mean (gaussianReal 0 ⟨φ^2,sq_nonneg _⟩) f)) :
+   ( (∀ ε : ℝ, 0 < ε → Tendsto (fun K : ℕ => Filter.limsup
+       (fun (n : ℕ) => prob μ {ω | ε  <  ∫ x, if (K : ℝ) <  |x| then x^2 else 0 ∂(ν n ω)}) atTop)
+       atTop (nhds 0)) ↔ CP μ (fun n ω => var (ν n ω) id) (φ^2)) ∧
+   (CP μ (fun n ω => var (ν n ω) id) (φ^2) →
+     CP μ (fun n ω => Real.sqrt (var (ν n ω) id)) φ) := by
+  sorry
+
+/-- For a Hadamard differentiable functional, an empirical-process Gaussian limit supported on the tangent space gives an asymptotically normal plug-in estimator when the derivative image has positive finite variance.
+Target P001-T57: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators), corrected with the non-degeneracy condition.
+Location: p. 120 (PDF p. 138), Theorem 3.3.6 and footnote 31; Definition 3.2.28, p. 112 (PDF p. 130). -/
+theorem functional_delta_nondegenerate_correction_supporting {Ω E : Type*} [MeasurableSpace Ω] [NormedAddCommGroup E] [NormedSpace ℝ E]
+   [MeasurableSpace E] [BorelSpace E] [CompleteSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (D H : Set E) (F : E)
+   (T : E → ℝ) (L : E →L[ℝ] ℝ) (hd : HadamardAt D H T F L)
+   (Fhat : ℕ → Ω → E) (hmeas : ∀ n, Measurable (Fhat n))
+   (hvalid : ∀ n ω, 0 < n → Fhat n ω ∈ D) (νB : Measure E) [IsProbabilityMeasure νB]
+   (htangent : νB Hᶜ=0)
+   (hprocess : WeakLimit μ (fun n ω => Real.sqrt n • (Fhat n ω-F)) νB)
+   (v : ℝ≥0) (hv : 0 < v) (hgauss : νB.map L=gaussianReal 0 v) :
+   CD μ (fun n ω => Real.sqrt n*(T (Fhat n ω)-T F)) (gaussianReal 0 v) := by
+  sorry
 
 /-- For every positive sample size, the iid sample mean is unbiased and its variance is population variance divided by n.
 Target P001-T108: Theorem 3.2.3 (The Expected Value of the Sample Mean Is the Population Mean), Theorem 3.2.4 (Sampling Variance of the Sample Mean) and Theorem 3.2.5 (Chebyshev's Inequality for the Sample Mean).
@@ -3165,7 +3467,7 @@ theorem normal_joint_ml_scale_square {n K : ℕ} (hn : 0 < n) (X : Matrix (Fin n
   rw [hQs, hQσ]
   linarith
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem ols_fitted_sum_squares_le {n K : ℕ} (P : Matrix (Fin n) (Fin K) ℝ) (r : Fin n → ℝ) :
     (∑ i, (P.mulVec (olsCoef P r) i)^2) ≤ ∑ i, (r i)^2 := by
   by_cases hP : IsUnit (P.transpose*P).det
@@ -3343,6 +3645,40 @@ theorem matching_correct_donor_comparison : |(33/100 : ℝ)-14/100|=19/100 ∧ |
    |(35/100 : ℝ)-70/100|=35/100 ∧ |(78/100 : ℝ)-70/100|=8/100 ∧ (∑ i : Fin 6,((![2,2,3,10,2,3] : Fin 6 → ℝ) i-(![5,5,0,5,0,0] : Fin 6 → ℝ) i))/6=7/6 := by
   norm_num [Fin.sum_univ_succ]
 
+/-- A conditional response probability belongs to [0,1]; impossible numerical predictions are precisely those greater than one or less than zero.
+Target P001-T82: Section 6.2.4, the range of the response propensity and the description of impossible estimates, corrected.
+Location: p. 225 (PDF p. 243), Section 6.2.4, first paragraph, last sentence on the page. -/
+theorem propensity_range_correction_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (A B : Set Ω) (hA : MeasurableSet A) (hB : MeasurableSet B) (hp : 0 < prob μ B) :
+   prob μ (A ∩ B)/prob μ B ∈ Set.Icc 0 1 ∧
+   ∀ q : ℝ, q∉Set.Icc (0 : ℝ) 1 ↔ 1 < q ∨ q < 0 := by
+  
+  constructor
+  · refine ⟨div_nonneg ENNReal.toReal_nonneg (le_of_lt hp), ?_⟩
+    apply (div_le_iff₀ hp).2
+    simpa only [one_mul,AronowAudit.P001.prob] using
+      ENNReal.toReal_mono (measure_ne_top μ B) (measure_mono Set.inter_subset_right)
+  · intro q
+    simp only [Set.mem_Icc,not_and_or,not_le,or_comm]
+
+/-- When Y is MAR conditional on X and response probability is bounded below, the expectation of Y equals the expectation of the observed outcome weighted by R/p(X).
+Target P001-T83: Theorem 6.2.6 (Reweighting under MAR), with its hypothesis corrected ('$Y_i$ is MAR conditional on $\mathbf{X}_i$').
+Location: p. 226 (PDF p. 244); proof on pp. 226–227 (PDF pp. 244–245). -/
+theorem mar_reweighting_corrected_hypothesis {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R) (hYi : Integrable Y μ)
+   (hbinary : ∀ ω,R ω=0 ∨ R ω=1) (p : E → ℝ) (hp : IsCEF μ X R p)
+   (hpos : ∃ ε : ℝ,0 < ε ∧ ∀ ω,ε < p (X ω)) (hmar : CI μ X hX Y R) :
+   mean μ Y=mean μ (fun ω => censored (Y ω) (R ω)*R ω/p (X ω)) := by
+  sorry
+
+/-- The twelve-unit example with fitted probability 7/12 gives IPW mean 3/7 and post-stratified mean 5/12, differing by 1/84.
+Target P001-T84: Section 6.2.5, the sentence 'In the case where there is a discrete and finite number of values for $\mathbf{X}_i$, the IPW estimator is logically equivalent to the plug-in estimator from Section 6.2.1', as printed.
+Location: p. 228 (PDF p. 246), first paragraph. Definition 6.2.7: p. 227 (PDF p. 245). Section 6.2.1 plug-in estimator: p. 219 (PDF p. 237). Section 6.2.4: pp. 225–226 (PDF pp. 243–244). -/
+theorem missing_ipw_not_poststratified_supporting : ((1/4+1/2+1/4+1/2+3/4+1/4+1/2 : ℝ)/(7/12))/12=3/7 ∧
+   ((3/8)*(4/12)+(1/2)*(4/12)+(3/8)*(4/12) : ℝ)=5/12 ∧
+   (3/7-5/12 : ℝ)=1/84 ∧ (3/7 : ℝ)≠5/12 := by
+  norm_num
 
 /-- In each positive-response cell, division by the observed response fraction equals multiplication by cell size over respondent count; summing proves IPW/post-stratification equality.
 Target P001-T85: Section 6.2.5, equivalence of the IPW estimator and the post-stratification plug-in estimator, corrected: it holds when the estimated response probability in each cell is the observed respondent fraction.
@@ -3375,7 +3711,7 @@ theorem missing_ipw_saturation_necessary {E : Type*} [Fintype E] [DecidableEq E]
     simp_rw [h]
     exact missing_ipw_saturated_cells N r S hN hr
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem positive_cef_inverse_weights {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
     (Y : Ω → ℝ) (hY : Measurable Y) (hbound : ∀ ω, |Y ω|≤1)
@@ -3466,6 +3802,19 @@ theorem response_weights_denominator_correction {Ω E : Type*} [MeasurableSpace 
     rw [integral_congr_ae hh]
     simp
 
+/-- A respondent CEF of Y is also the respondent CEF of Y*, while the full CEF of Y* given (R,X) equals the respondent CEF at R=1 and −99 at R=0.
+Target P001-T87: Section 6.3, the working models for the regression estimators: the conditional expectation, corrected to the respondent CEF $\mathrm{E}[Y_i^*|R_i = 1, \mathbf{X}_i]$ (three places).
+Location: p. 233 (PDF p. 251), first paragraph below Table 6.3.1. -/
+theorem stable_outcomes_respondent_cef {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R) (hYi : Integrable Y μ)
+   (hbinary : ∀ ω,R ω=0 ∨ R ω=1) (m : E → ℝ)
+   (hm : IsCEF (μ.restrict {ω | R ω=1}) X Y m) :
+   IsCEF (μ.restrict {ω | R ω=1}) X (fun ω => censored (Y ω) (R ω)) m ∧
+   IsCEF μ (fun ω => (R ω,X ω)) (fun ω => censored (Y ω) (R ω))
+     (fun rx => if rx.1=1 then m rx.2 else -99) := by
+  sorry
+
 
 /-- The duplicated observable cell has probability one third, and the corrected four conditional means give the adjusted contrast minus one quarter.
 Target P001-T89: Example 7.1.17 (Conditioning on Post-Treatment Variables), the distribution of observables, corrected (the cell $(Y_i, X_i, D_i) = (1, 1, 1)$ once, with probability $\frac{1}{3}$); the adjusted contrast $-\frac{1}{4}$.
@@ -3493,6 +3842,18 @@ theorem continuous_dose_nonidentification : (volume.restrict (Set.Icc (0 : ℝ) 
     simp only [doseSpike,if_neg hd]
   refine ⟨Measure.map_congr hae,?_,?_⟩ <;> norm_num [doseSpike]
 
+/-- Two conditional mean versions continuous at a dose with positive probability in every neighborhood must agree at that dose.
+Target P001-T91: Section 7.1.8, identification of $\mathrm{E}[\tau_i(d, d')]$ for multivalued and continuous treatments, corrected: positive mass at the doses, or continuity of the conditional mean dose-response.
+Location: p. 255 (PDF p. 273), first paragraph. -/
+theorem continuous_dose_version_identified_at_supported_point_supporting (ν : Measure ℝ) [IsProbabilityMeasure ν] (d : ℝ)
+   (hsupp : ∀ ε : ℝ,0 < ε → 0 < ν (Metric.ball d ε))
+   (m m' : ℝ → ℝ) (hm : ContinuousAt m d) (hm' : ContinuousAt m' d)
+   (heq : m =ᵐ[ν] m') : m d=m' d := by
+  by_contra hne
+  obtain ⟨ε,hε,hball⟩ := Metric.mem_nhds_iff.mp ((hm.ne_iff_eventually_ne hm').mp hne)
+  have hz : ν {x | m x ≠ m' x}=0 := ae_iff.mp heq
+  have hbzero : ν (Metric.ball d ε)=0 := measure_mono_null hball hz
+  exact (ne_of_gt (hsupp ε hε)) hbzero
 
 /-- Using the fitted coefficient vector but predicting unit 3 at the misprinted covariate 9 gives partial imputation 12103/4874, different from the full-imputation treatment coefficient 6178/2437.
 Target P001-T92: Example 7.2.2 (Causal Inference with OLS Regression), the two imputation tables as printed (unit 3 with $X_{[1]i} = 9$) against the claim that both imputations give the same estimate.
@@ -3604,6 +3965,20 @@ theorem att_normalization_counterexample : fmean attWitness (fun _ => (1/4 : ℝ
    (1/4 : ℝ)≠1 ∧ (1/4 : ℝ)/(1/4)=1 := by
   norm_num [fmean, fcond, fprob, attWitness, Fin.sum_univ_succ]
 
+/-- Under conditional ignorability, the ATT equals E[p(X)tau]/E[p(X)] and the denominator is P(D=1).
+Target P001-T100: Section 7.3.1, the propensity-score-weighted estimand equal to the ATT, corrected (normalized by $\mathrm{E}[p_D(\mathbf{X}_i)]$).
+Location: p. 273 (PDF p. 291), Section 7.3.1, second paragraph. -/
+theorem att_normalized_propensity_mean {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y0 Y1 D : Ω → ℝ) (h0 : Measurable Y0) (h1 : Measurable Y1) (hD : Measurable D)
+   (hi0 : Integrable Y0 μ) (hi1 : Integrable Y1 μ) (hbinary : ∀ ω,D ω=0 ∨ D ω=1)
+   (hpD : 0 < prob μ {ω | D ω=1}) (p : E → ℝ) (hp : IsCEF μ X D p)
+   (hCI : CI μ X hX (fun ω => (Y0 ω,Y1 ω)) D) :
+   mean μ (p ∘ X)=prob μ {ω | D ω=1} ∧
+   mean μ (fun ω => p (X ω)*(Y1 ω-Y0 ω))=mean μ (fun ω => D ω*(Y1 ω-Y0 ω)) ∧
+   (∫ ω in {ω | D ω=1},Y1 ω-Y0 ω ∂μ)/prob μ {ω | D ω=1} =
+     mean μ (fun ω => p (X ω)*(Y1 ω-Y0 ω))/mean μ (p ∘ X) := by
+  sorry
 
 /-- Expectations are linear for arbitrary integrable random variables, including an added constant.
 Target P001-T106: Theorem 2.1.9 (Linearity of Expectations), Theorem 2.1.13 (Alternative Formula for Variance), Theorem 2.1.14 (Properties of Variance), Theorem 2.1.16 (Properties of Standard Deviation) and Theorem 2.1.18 (Chebyshev's Inequality).
@@ -3757,8 +4132,21 @@ theorem weierstrass_approximation (a b : ℝ) (hab : a ≤ b) (f : ℝ → ℝ) 
   intro x hx
   simpa only [abs_sub_comm] using hp x hx
 
+/-- On compact covariate support with continuous CEF, the population least-squares polynomial predictors approach the CEF in mean squared error for all sufficiently high degrees.
+Target P001-T109: Theorem 4.3.3 (Polynomial Approximation of the CEF), with Theorem 4.3.2 (Weierstrass Approximation Theorem).
+Location: p. 158 (PDF p. 176); proof on pp. 158–159 (PDF pp. 176–177). -/
+theorem polynomial_blp_cef_approximation {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X Y : Ω → ℝ) (hX : Measurable X) (hY : MemLp Y 2 μ)
+   (a b : ℝ) (hsupp : ∀ ω,X ω∈Set.Icc a b)
+   (m : ℝ → ℝ) (hm : IsCEF μ X Y m) (hc : ContinuousOn m (Set.Icc a b))
+   (p : ℕ → Polynomial ℝ) (hpdeg : ∀ J,(p J).natDegree ≤ J)
+   (hpmin : ∀ (J : ℕ) (q : Polynomial ℝ),q.natDegree ≤ J →
+     mean μ (fun ω => (Y ω-(p J).eval (X ω))^2) ≤ mean μ (fun ω => (Y ω-q.eval (X ω))^2)) :
+   ∀ ε : ℝ,0 < ε → ∃ J : ℕ,∀ J',J ≤ J' →
+     mean μ (fun ω => (m (X ω)-(p J').eval (X ω))^2) < ε := by
+  sorry
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem bernoulli_log_strict_max (q s t : ℝ) (hq0 : 0 ≤ q) (hq1 : q ≤ 1)
     (hs0 : 0 < s) (hs1 : s < 1) (ht0 : 0 < t) (ht1 : t < 1)
     (hdir : (t-s)*(q-s) ≤ 0) (hne : t≠s) :
@@ -3885,6 +4273,64 @@ theorem three_coin_flips_maximum (t : ℝ) (ht : t∈Set.Icc (0 : ℝ) 1) :
       linarith
     · intro h; rw [h]
 
+/-- Under MCAR and positive response probability, the population outcome mean equals the respondent mean of the censored outcome.
+Target P001-T111: Theorem 6.1.6 (Expected Value under MCAR), Theorem 6.1.9 (Expected Value under MAR) and Theorem 6.1.10 (CEF under MAR); with the estimates of Examples 6.1.7 and 6.2.1.
+Location: Definition 6.1.5 and Theorem 6.1.6: p. 213 (PDF p. 231). Example 6.1.7: p. 214 (PDF p. 232). Definition 6.1.8: p. 215 (PDF p. 233). Theorem 6.1.9: p. 216 (PDF p. 234). Theorem 6.1.10: p. 217 (PDF p. 235). Section 6.2.1 and Example 6.2.1: pp. 219–220 (PDF pp. 237–238). -/
+theorem mcar_expected_value {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R) (hYi : Integrable Y μ)
+   (hbinary : ∀ ω,R ω=0 ∨ R ω=1) (hind : IndepFun Y R μ)
+   (hpos : 0 < prob μ {ω | R ω=1}) :
+   mean μ Y=(∫ ω in {ω | R ω=1},censored (Y ω) (R ω) ∂μ)/prob μ {ω | R ω=1} := by
+  have hc := independent_constant_cef μ R Y hR hY hYi hind.symm
+  have hp := hc.2.2.2 ({1} : Set ℝ) (measurableSet_singleton 1)
+  have he : (∫ ω in {ω | R ω=1},Y ω ∂μ)=prob μ {ω | R ω=1}*mean μ Y := by
+    simpa [Set.preimage,integral_const,measureReal_def,prob,smul_eq_mul] using hp
+  have hobs : (∫ ω in {ω | R ω=1},censored (Y ω) (R ω) ∂μ)=
+      ∫ ω in {ω | R ω=1},Y ω ∂μ := by
+    apply integral_congr_ae
+    filter_upwards [ae_restrict_mem (hR (measurableSet_singleton (1 : ℝ)))] with ω hω
+    simp [censored,hω]
+  rw [hobs,he]
+  exact (mul_div_cancel_left₀ _ hpos.ne').symm
+
+/-- Under MAR, a respondent CEF of the censored outcome is a population CEF; with discrete covariates its weighted countable mean identifies E[Y].
+Target P001-T111: Theorem 6.1.6 (Expected Value under MCAR), Theorem 6.1.9 (Expected Value under MAR) and Theorem 6.1.10 (CEF under MAR); with the estimates of Examples 6.1.7 and 6.2.1.
+Location: Definition 6.1.5 and Theorem 6.1.6: p. 213 (PDF p. 231). Example 6.1.7: p. 214 (PDF p. 232). Definition 6.1.8: p. 215 (PDF p. 233). Theorem 6.1.9: p. 216 (PDF p. 234). Theorem 6.1.10: p. 217 (PDF p. 235). Section 6.2.1 and Example 6.2.1: pp. 219–220 (PDF pp. 237–238). -/
+theorem mar_cef_and_discrete_mean {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E] [Countable E] [MeasurableSingletonClass E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R) (hYi : Integrable Y μ)
+   (hbinary : ∀ ω,R ω=0 ∨ R ω=1) (p : E → ℝ) (hp : IsCEF μ X R p)
+   (hpos : ∃ ε : ℝ,0 < ε ∧ ∀ ω,ε < p (X ω)) (hmar : CI μ X hX Y R)
+   (m : E → ℝ) (hm : IsCEF (μ.restrict {ω | R ω=1}) X (fun ω => censored (Y ω) (R ω)) m)
+   (hmi : Integrable (m ∘ X) μ) :
+   IsCEF μ X Y m ∧ mean μ Y=∑' x : E,m x*prob μ {ω | X ω=x} := by
+  sorry
+
+/-- Under MAR, the response propensity balances X and response, preserves outcome/response conditional independence, and retains its positive lower bound.
+Target P001-T112: Theorem 6.1.12 (MAR and the Propensity Score).
+Location: pp. 217–218 (PDF pp. 235–236); proof on p. 218; Definition 6.1.11, p. 217. -/
+theorem mar_balancing_score {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R)
+   (hbinary : ∀ ω,R ω=0 ∨ R ω=1) (p : E → ℝ) (hp : IsCEF μ X R p)
+   (hmar : CI μ X hX Y R) (ε : ℝ) (hε : 0 < ε) (hpos : ∀ ω,ε < p (X ω)) :
+   CI μ (p ∘ X) (hp.1.comp hX) R X ∧ CI μ (p ∘ X) (hp.1.comp hX) Y R ∧
+   IsCEF μ (p ∘ X) R id ∧ ∀ ω,ε < p (X ω) := by
+  sorry
+
+/-- Under MAR, augmented inverse weighting recovers E[Y] if either the respondent CEF or the propensity is correct, with a bounded-away-from-zero approximate propensity.
+Target P001-T113: Theorem 6.2.9 (Double Robustness Theorem for Missing Data).
+Location: p. 229 (PDF p. 247); proof on pp. 229–230 (PDF pp. 247–248). -/
+theorem missing_double_robustness {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R) (hYi : Integrable Y μ)
+   (hbinary : ∀ ω,R ω=0 ∨ R ω=1) (p : E → ℝ) (hp : IsCEF μ X R p)
+   (hpos : ∃ ε : ℝ,0 < ε ∧ ∀ ω,ε < p (X ω)) (hmar : CI μ X hX Y R)
+   (m q : E → ℝ) (hm : Measurable m) (hq : Measurable q) (hmi : Integrable (m ∘ X) μ)
+   (hcorrect : (IsCEF (μ.restrict {ω | R ω=1}) X (fun ω => censored (Y ω) (R ω)) m ∧
+       ∃ ε : ℝ,0 < ε ∧ ∀ ω,ε < q (X ω) ∧ q (X ω) < 1-ε) ∨ q ∘ X =ᵐ[μ] p ∘ X) :
+   mean μ Y=mean μ (fun ω => m (X ω)+R ω*(censored (Y ω) (R ω)-m (X ω))/q (X ω)) := by
+  sorry
 
 /-- With bounded potential outcomes, the ATE lies between the imputed endpoints; their width is exactly b−a and every intermediate effect is attainable with the same observables.
 Target P001-T114: Theorem 7.1.7 (Sharp Bounds for the ATE) and the width of the bounds; with the estimates of Example 7.1.6.
@@ -4042,6 +4488,47 @@ theorem random_assignment_ate_and_selection_bias {Ω : Type*} [MeasurableSpace �
     rw [integral_sub hi1.integrableOn hi0.integrableOn,sub_div]
     ring
 
+/-- Strong ignorability gives the conditional ATE as the respondent arm-CEF difference, the unconditional ATE as its expectation, and preserves ignorability and overlap after conditioning on the propensity score.
+Target P001-T116: Theorem 7.1.13 (ATE under Strong Ignorability), Theorem 7.1.14 (Conditional ATE under Strong Ignorability) and Theorem 7.1.16 (Strong Ignorability and the Propensity Score).
+Location: Definition 7.1.12: p. 247 (PDF p. 265). Theorem 7.1.13: p. 248 (PDF p. 266). Theorem 7.1.14: p. 249 (PDF p. 267). Definition 7.1.15: p. 250 (PDF p. 268). Theorem 7.1.16: p. 251 (PDF p. 269), proof on pp. 251–252. -/
+theorem strong_ignorability_identification_and_balance {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y0 Y1 D : Ω → ℝ) (h0 : Measurable Y0) (h1 : Measurable Y1) (hD : Measurable D)
+   (hi0 : Integrable Y0 μ) (hi1 : Integrable Y1 μ) (hbinary : ∀ ω,D ω=0 ∨ D ω=1)
+   (p : E → ℝ) (hp : IsCEF μ X D p) (ε : ℝ) (hε : 0 < ε)
+   (hpos : ∀ ω,ε < p (X ω) ∧ p (X ω) < 1-ε)
+   (hCI : CI μ X hX (fun ω => (Y0 ω,Y1 ω)) D)
+   (m0 m1 : E → ℝ)
+   (hm0 : IsCEF (μ.restrict {ω | D ω=0}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m0)
+   (hm1 : IsCEF (μ.restrict {ω | D ω=1}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m1)
+   (hmi0 : Integrable (m0 ∘ X) μ) (hmi1 : Integrable (m1 ∘ X) μ) :
+   IsCEF μ X (fun ω => Y1 ω-Y0 ω) (fun x => m1 x-m0 x) ∧
+   mean μ (fun ω => Y1 ω-Y0 ω)=mean μ (fun ω => m1 (X ω)-m0 (X ω)) ∧
+   CI μ (p ∘ X) (hp.1.comp hX) D X ∧
+   CI μ (p ∘ X) (hp.1.comp hX) (fun ω => (Y0 ω,Y1 ω)) D ∧
+   IsCEF μ (p ∘ X) D id := by
+  sorry
+
+/-- Strong ignorability gives the inverse-weighted ATE and an augmented formula correct if both outcome regressions are correct or the propensity is correct.
+Target P001-T117: Theorem 7.2.5 (Reweighting under Strong Ignorability) and Theorem 7.2.8 (Double Robustness Theorem for Causal Inference).
+Location: Theorem 7.2.5: p. 265 (PDF p. 283), proof on pp. 265–266. Theorem 7.2.8: pp. 267–268 (PDF pp. 285–286), proof on pp. 268–269. -/
+theorem causal_ipw_and_double_robustness {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y0 Y1 D : Ω → ℝ) (h0 : Measurable Y0) (h1 : Measurable Y1) (hD : Measurable D)
+   (hi0 : Integrable Y0 μ) (hi1 : Integrable Y1 μ) (hbinary : ∀ ω,D ω=0 ∨ D ω=1)
+   (p : E → ℝ) (hp : IsCEF μ X D p)
+   (hpos : ∃ ε : ℝ,0 < ε ∧ ∀ ω,ε < p (X ω) ∧ p (X ω) < 1-ε)
+   (hCI : CI μ X hX (fun ω => (Y0 ω,Y1 ω)) D)
+   (m0 m1 q : E → ℝ) (hm0 : Measurable m0) (hm1 : Measurable m1) (hq : Measurable q)
+   (hmi0 : Integrable (m0 ∘ X) μ) (hmi1 : Integrable (m1 ∘ X) μ)
+   (hcorrect : (IsCEF (μ.restrict {ω | D ω=0}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m0 ∧
+       IsCEF (μ.restrict {ω | D ω=1}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m1 ∧
+       ∃ ε : ℝ,0 < ε ∧ ∀ ω,ε < q (X ω) ∧ q (X ω) < 1-ε) ∨ q ∘ X =ᵐ[μ] p ∘ X) :
+   let Y := fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)
+   mean μ (fun ω => Y1 ω-Y0 ω)=mean μ (fun ω => Y ω*D ω/p (X ω)-Y ω*(1-D ω)/(1-p (X ω))) ∧
+   mean μ (fun ω => Y1 ω-Y0 ω)=mean μ (fun ω => m1 (X ω)+D ω*(Y ω-m1 (X ω))/q (X ω)-
+     m0 (X ω)-(1-D ω)*(Y ω-m0 (X ω))/(1-q (X ω))) := by
+  sorry
 
 /-- The iid sample mean converges in probability to the population mean under a finite second moment, including the zero-variance case.
 Target P001-T125: Theorem 3.2.8 (Weak Law of Large Numbers).
@@ -4120,7 +4607,7 @@ theorem central_limit_finite_variance {Ω : Type*} [MeasurableSpace Ω] (μ : Me
       atTop (nhds ((ν (Set.Iic x)).toReal)) at hreal
   simpa only [hmap,cdf,AronowAudit.P001.prob] using hreal
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem pdf_closed_interval_probability {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → ℝ) (hX : Measurable X)
     (f : ℝ → ℝ) (hf : HasPDF (μ.map X) f) (a b : ℝ) (hab : a≤b) :
@@ -4306,7 +4793,7 @@ theorem rectangular_kernel_memLp {Ω : Type*} [MeasurableSpace Ω]
   have hs := memLp_finsetSum Finset.univ (fun i _ => hi i)
   simpa only [kernelDensity,firstSample,div_eq_mul_inv,mul_comm] using hs.const_mul (n:ℝ)⁻¹
 
-/-- For a population density continuous on ℝ, the rectangular kernel estimator is consistent at every real point if the positive bandwidths h tend to zero and n*h tends to infinity.
+/-- At every point with continuous population density, the rectangular kernel estimator is consistent if h tends to zero and n*h tends to infinity.
 Target P001-T127: Theorem 3.3.8 (Consistency of the Kernel Density Estimator, Rectangular Kernel).
 Location: p. 122 (PDF p. 140); proof sketch on p. 123 (PDF p. 141); the continuity condition is stated on p. 121 (PDF p. 139). -/
 theorem rectangular_kernel_consistency {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
@@ -4354,9 +4841,9 @@ theorem rectangular_kernel_consistency {Ω : Type*} [MeasurableSpace Ω] (μ : M
     exact (rectangular_kernel_moments_core μ X hiid f hf n hn (h n) (hpos n) x).2
 
 /-!
-Two probability helpers for the normal-confidence-interval theorem.
-The first adapts the continuous CDF squeeze from StatLean's `SteinMethod` module
-(Apache-2.0); see NOTICE at the repository root.
+Two elementary probability helpers for the original normal-confidence-interval
+theorem. The first adapts the proved Apache-2.0 StatLean continuous CDF squeeze
+(vendored SteinMethod.lean:1344, commit e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2).
 The interval helper works directly with the book's CDF-convergence definition;
 it derives probability bounds on the good random-width event.
 -/
@@ -4576,12 +5063,172 @@ theorem ml_consistency_explicit_uniform_regularities_supporting {Ω : Type*} [Me
     herr (by simpa using hmax) hsep hlim hz
 
 
+/-- The explicitly constructed fat Cantor set has Lebesgue measure 1/2 and contains no nontrivial interval; normalized restricted Lebesgue sampling on it gives a continuous identity random variable with precisely that range.
+Target P001-T31: Section 1.2.4, the sentence 'More specifically, $X(\Omega)$ must include some interval or union of intervals of the real line', as printed.
+Location: p. 24 (PDF p. 42), paragraph before Definition 1.2.14. -/
+theorem fat_cantor_continuous_range_counterexample : IsClosed fatCantor ∧ volume fatCantor=1/2 ∧ IsProbabilityMeasure fatSampleMeasure ∧
+   HasPDF (fatSampleMeasure.map (fun x : fatCantor => x.val)) fatPDF ∧
+   Set.range (fun x : fatCantor => x.val)=fatCantor ∧
+   ∀ a b : ℝ,a < b → ¬ Set.Icc a b ⊆ fatCantor := by
+  sorry
 
+/-- The explicit heavy-tail law admits a locally linear sup-norm regular functional with positive normal limit, but for every odd n≥5 its ordinary bootstrap variance exceeds 5/n with probability at least 3/16 and is inconsistent.
+Target P001-T61: Section 3.4.3, the sentence 'Given the usual plug-in regularity conditions (Section 3.3.1), this standard deviation will consistently estimate the standard error', as printed.
+Location: p. 131 (PDF p. 149), sentence after the four bootstrap steps; Section 3.3.1 and footnote 31, p. 120 (PDF p. 138); Definition 3.2.32, pp. 113–114 (PDF pp. 131–132). -/
+theorem regular_functional_bootstrap_variance_counterexample {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X : ℕ → Ω → ℝ) (hiid : IID μ X) (hlaw : μ.map (X 0)=heavyBootstrapLaw) :
+   (∀ G : ℝ → ℝ,(∀ x,|G x-cdf heavyBootstrapLaw id x| < 1/4) →
+     regularHeavyFunctional G-regularHeavyFunctional (cdf heavyBootstrapLaw id)=G 0-cdf heavyBootstrapLaw id 0) ∧
+   CD μ (fun k ω => Real.sqrt (2*k+1)*regularHeavyStatistic (firstSample X (2*k+1) ω)) (gaussianReal 0 (1/4)) ∧
+   (∀ n : ℕ,Odd n → 5 ≤ n → (3/16 : ℝ) ≤ prob μ {ω |
+     5 < (n : ℝ)*bootVar regularHeavyStatistic (firstSample X n ω)}) ∧
+   ¬ CP μ (fun k ω => ((2*k+1 : ℕ) : ℝ)*bootVar regularHeavyStatistic (firstSample X (2*k+1) ω)) (1/4) := by
+  sorry
 
+/-- The printed mixture-maximization assertion says the unrestricted mixture has a maximizing parameter for every positive nonempty sample.
+Target P001-T103: Section 5.2.5 (Mixture Models), the mixture likelihood and the claims attached to it, with the mixture of Example 5.2.11, as printed.
+Location: pp. 198–200 (PDF pp. 216–218). -/
+theorem printed_unrestricted_mixture_maximum {n : ℕ} (hn : 0 < n) (y : Fin n → ℝ) (hy : ∀ i,0 < y i) :
+   ∃ θ : Fin 7 → ℝ,MixtureAdmissible θ ∧ ∀ θ',MixtureAdmissible θ' →
+     mixtureLikelihood y θ' ≤ mixtureLikelihood y θ := by
+  sorry
 
+/- The printed relation asserts equivalence between complete countable population overlap and one uniform strict propensity bound.
+Target P001-T104: Section 7.3, the claims relating positivity and overlap around Definition 7.3.1 and Theorem 7.3.2, as printed.
+Location: p. 271 (PDF p. 289); p. 272 (PDF p. 290), with Example 7.3.3. -/
+/- The exact historical universal assertion is archived in the follow-up ledger and refuted in P001_PrintedRefutations.lean. -/
 
+/- The printed plug-in theorem asserts a positive-variance normal limit for every Kolmogorov-Hadamard differentiable statistical functional.
+Target P001-T118: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators) with footnote 31 and the paragraph after it, as printed.
+Location: p. 120 (PDF p. 138). -/
+/- The exact historical universal assertion is archived in the follow-up ledger and refuted in P001_PrintedRefutations.lean. -/
 
+/-- The printed sieve claim asserts consistency with a smooth CEF on compact covariate support from J→infinity and J/n→0 alone.
+Target P001-T119: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim attached to it, as printed.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem printed_sieve_insufficient_degree_rate {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X Y : ℕ → Ω → ℝ) (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+   (hYi : Integrable (Y 0) μ) (a b : ℝ) (hab : a < b)
+   (f : ℝ → ℝ) (hpdf : HasPDF (μ.map (X 0)) f)
+   (hsupp : ∀ x,0 < f x ↔ x∈Set.Icc a b) (m : ℝ → ℝ) (hm : ContDiff ℝ ⊤ m)
+   (hcef : IsCEF μ (X 0) (Y 0) m) (J : ℕ → ℕ) (hJ : Tendsto J atTop atTop)
+   (hrate : Tendsto (fun (n : ℕ) => (J n : ℝ)/(n : ℝ)) atTop (nhds 0))
+   (fit : ℕ → Ω → Polynomial ℝ) (hfit : IsSieveLS X Y J fit) :
+   CP μ (fun n ω => ∫ x,((fit n ω).eval x-m x)^2 ∂(μ.map (X 0))) 0 := by
+  sorry
 
+/-- The printed bootstrap-standard-error assurance, applied to the exact iid counterexample design, predicts scaled conditional bootstrap variance convergence to the true positive root-n variance.
+Target P001-T122: Footnote 15 and the hot deck row of Table 6.3.1, as printed.
+Location: p. 233 (PDF p. 251). -/
+theorem printed_hot_deck_bootstrap_assurance {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z) (hlaw : μ.map (Z 0)=matchingUnitLaw) :
+   CP μ (fun n ω => (n : ℝ)*bootVar hotDeck (firstSample Z n ω)) matchV := by
+  sorry
+
+/-- The printed bootstrap-standard-error assurance, applied to the exact iid counterexample design, predicts scaled conditional bootstrap variance convergence to the true positive root-n variance.
+Target P001-T123: The end of Section 7.2.4 with footnote 13, footnote 20, and the Matching row of Table 7.5.1, as printed.
+Location: p. 264 (PDF p. 282); p. 279 (PDF p. 297); p. 280 (PDF p. 298). -/
+theorem printed_matching_bootstrap_assurance {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z) (hlaw : μ.map (Z 0)=matchingUnitLaw) :
+   CP μ (fun n ω => (n : ℝ)*bootVar causalMatch (firstSample Z n ω)) matchV := by
+  sorry
+
+/-- The printed well-defined-PDA assertion implies that smooth CEF extensions agreeing as versions give the same derivative at the covariate mean.
+Target P001-T102: Definition 4.3.7 (Partial Derivative at the Average) and the plug-in estimate that follows it, as printed.
+Location: p. 167 (PDF p. 185); footnote 13, p. 166 (PDF p. 184); the remark on p. 168 (PDF p. 186). -/
+theorem printed_pda_is_distributional {K : ℕ} (ν : Measure (Fin K → ℝ)) [IsProbabilityMeasure ν]
+   (hmean : ∀ k,Integrable (fun x => x k) ν)
+   (m m' : (Fin K → ℝ) → ℝ) (hm : ContDiff ℝ 1 m) (hm' : ContDiff ℝ 1 m')
+   (heq : m =ᵐ[ν] m') (k : Fin K) :
+   partialAt m (fun j => ∫ x,x j ∂ν) k=partialAt m' (fun j => ∫ x,x j ∂ν) k := by
+  sorry
+
+/-- The printed information-completeness implication would make potential outcomes conditionally independent of gender even when referendum preferences may be associated with gender.
+Target P001-T105: Section 7.5, the paragraph justifying ignorability in the application, as printed.
+Location: p. 278 (PDF p. 296). -/
+theorem printed_complete_description_implies_ignorability {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (D U : Ω → ℝ) (hD : Measurable D) (hU : Measurable U)
+   (m : E → ℝ → ℝ → ℝ)
+   (hm0 : Measurable (fun ω => m (X ω) 0 (U ω)))
+   (hm1 : Measurable (fun ω => m (X ω) 1 (U ω)))
+   (hbound : ∀ ω,m (X ω) 0 (U ω)∈Set.Icc (0 : ℝ) 100 ∧
+     m (X ω) 1 (U ω)∈Set.Icc (0 : ℝ) 100) :
+   CI μ X hX (fun ω => (m (X ω) 0 (U ω),m (X ω) 1 (U ω))) D := by
+  sorry
+
+/-- Averaging conditional KL over the covariate law gives the conditional entropy constant minus the population expected model log likelihood.
+Target P001-T8: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), corrected: the KL divergence averaged over the distribution of $\mathbf{X}$.
+Location: p. 195 (PDF p. 213), Theorem 5.2.8; the explanatory paragraphs on p. 196 (PDF p. 214). -/
+theorem averaged_kl_entropy_loglikelihood_supporting {K τ : ℕ} (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX]
+   (κ : Measure ℝ) [SFinite κ] (f : ℝ → (Fin K → ℝ) → ℝ)
+   (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ) (t : Fin τ → ℝ)
+   (hf : Measurable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1))
+   (hpos : ∀ y x,0 < f y x ∧ 0 < g y x t)
+   (hent : Integrable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1*Real.log (f xy.2 xy.1)) (νX.prod κ))
+   (hcross : Integrable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1*Real.log (g xy.2 xy.1 t)) (νX.prod κ)) :
+   averageKL νX κ f g t=
+     (∫ x,∫ y,f y x*Real.log (f y x) ∂κ ∂νX)-
+     (∫ xy : (Fin K → ℝ) × ℝ,f xy.2 xy.1*Real.log (g xy.2 xy.1 t) ∂(νX.prod κ)) := by
+  sorry
+
+/-- The printed theorem asserts that a pooled likelihood estimator converges to the unique conditional KL minimizer at one fixed covariate x.
+Target P001-T120: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), as printed.
+Location: p. 195 (PDF p. 213). -/
+theorem printed_fixed_covariate_kl_mle_target {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+   (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+   (κ : Measure ℝ) [SFinite κ] (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX]
+   (f : ℝ → (Fin K → ℝ) → ℝ) (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+   (hf : μ.map (fun ω => (X 0 ω,Y 0 ω))=
+     (νX.prod κ).withDensity (fun xy => ENNReal.ofReal (f xy.2 xy.1)))
+   (Θ : Set (Fin τ → ℝ))
+   (hfpos : ∀ y x,0 ≤ f y x) (hfnorm : ∀ x,(∫⁻ y,ENNReal.ofReal (f y x) ∂κ)=1)
+   (hfmeas : Measurable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1))
+   (hgmeas : ∀ t∈Θ,Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 t))
+   (hgpos : ∀ t∈Θ,∀ y x,0 ≤ g y x t)
+   (hgnorm : ∀ t∈Θ,∀ x,(∫⁻ y,ENNReal.ofReal (g y x t) ∂κ)=1)
+   (x : Fin K → ℝ) (tstar : Fin τ → ℝ) (ht : tstar∈Θ)
+   (hdom : ∀ t∈Θ,∀ᵐ y ∂κ,0 < f y x → 0 < g y x t)
+   (hKL : ∀ t∈Θ,Integrable (fun y => f y x*Real.log (f y x/g y x t)) κ)
+   (hunique : ∀ t∈Θ,conditionalKL κ f g x tstar ≤ conditionalKL κ f g x t ∧
+     (conditionalKL κ f g x t=conditionalKL κ f g x tstar → t=tstar))
+   (that : ℕ → Ω → Fin τ → ℝ) (hthat : ∀ n ω,that n ω∈Θ)
+   (hmax : ∀ n ω t,t∈Θ → (∏ i ∈ Finset.range n,g (Y i ω) (X i ω) t) ≤ 
+     ∏ i ∈ Finset.range n,g (Y i ω) (X i ω) (that n ω)) : CP μ that tstar := by
+  sorry
+
+/-- In the printed subset claim, a valid compact mixture model true at p=1 would make every likelihood-maximizing selection consistent for the full parameter including the unused component.
+Target P001-T121: Section 5.2.5, the 'any subset' sentence on consistency and asymptotic efficiency of the mixture ML estimator, as printed.
+Location: p. 199 (PDF p. 217), second paragraph. -/
+theorem printed_subset_full_vector_consistency {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X : ℕ → Ω → Fin 4) (hiid : IID μ X) (b0 : ℝ) (hb : b0∈Set.Icc (1/4 : ℝ) (3/4))
+   (hlaw : μ.map (X 0)=∑ j : Fin 4,ENNReal.ofReal (disjointMixture 1 (1/3) b0 j) • Measure.dirac j)
+   (that : ∀ n : ℕ,(Fin n → Fin 4) → Fin 3 → ℝ)
+   (hvalid : ∀ n s,that n s 0∈Set.Icc (0 : ℝ) 1 ∧ that n s 1∈Set.Icc (0 : ℝ) 1 ∧
+      that n s 2∈Set.Icc (1/4 : ℝ) (3/4))
+   (hmax : ∀ n s p a b,p∈Set.Icc (0 : ℝ) 1 → a∈Set.Icc (0 : ℝ) 1 → b∈Set.Icc (1/4 : ℝ) (3/4) →
+     (∏ i,disjointMixture p a b (s i)) ≤ 
+       ∏ i,disjointMixture (that n s 0) (that n s 1) (that n s 2) (s i)) :
+   CP μ (fun n ω => that n (firstSample X n ω)) (![1,1/3,b0] : Fin 3 → ℝ) := by
+  sorry
+
+/-- The printed placebo interpretation asserts asymptotic F-test size at most alpha under conditional independence alone, even if the included X regressors do not span the conditional treatment mean.
+Target P001-T124: Section 7.2.8 (Placebo Testing), the $F$-test passage, as printed.
+Location: p. 270 (PDF p. 288). -/
+theorem printed_placebo_f_test_size {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K L : ℕ} (hL : 0 < L) (X : ℕ → Ω → Fin K → ℝ) (W : ℕ → Ω → Fin L → ℝ) (D : ℕ → Ω → ℝ)
+   (hiid : IID μ (fun i ω => (X i ω,W i ω,D i ω))) (hX : Measurable (X 0))
+   (hCI : CI μ (X 0) hX (W 0) (D 0)) (hbinary : ∀ i ω,D i ω=0 ∨ D i ω=1)
+   (hX2 : ∀ k,MemLp (fun ω => X 0 ω k) 2 μ) (hW2 : ∀ k,MemLp (fun ω => W 0 ω k) 2 μ)
+   (hRank : IsUnit (Matrix.det ((fun j k : Fin (K+L+1) => mean μ (fun ω =>
+     (Fin.cases 1 (Fin.addCases (X 0 ω) (W 0 ω)) j)*
+     (Fin.cases 1 (Fin.addCases (X 0 ω) (W 0 ω)) k))) : Matrix (Fin (K+L+1)) (Fin (K+L+1)) ℝ)))
+   (α : ℝ) (hα : α∈Set.Ioo (0 : ℝ) 1) (critical : ℕ → ℝ)
+   (hcritical : ∀ n,K+L+1 < n → prob (fReference L (n-(K+L+1))) (Set.Iic (critical n))=1-α) :
+   Filter.limsup (fun (n : ℕ) => prob μ {ω | critical n < placeboFStatistic (firstSample X n ω)
+     (firstSample W n ω) (firstSample D n ω)}) atTop  ≤  α := by
+  sorry
 
 /-- Two functions of X are equal as random variables exactly when they agree on X(Ω).
 Target P001-T33: Theorem 1.3.2 (Equality of Functions of a Random Variable), with the functions named consistently.
@@ -4714,6 +5361,16 @@ theorem misprinted_imputation_counterexample_full : IsUnit (causalDesign.transpo
   · rw [hb]
     exact corrected_imputation_table_agreement.1
 
+/-- The specified bounded product law is a probability distribution with a joint PDF; both smooth extensions are CEF versions of Y given X, but their derivatives at E[X]=0 differ.
+Target P001-T3: Definition 4.3.7 (Partial Derivative at the Average) and the remark that the PDA 'has a well-defined meaning', as printed: a joint distribution for which the PDA is not determined.
+Location: Definition 4.3.7: p. 167 (PDF p. 185). Remark: p. 168 (PDF p. 186). Footnote 13: p. 166 (PDF p. 184). Definition 2.2.15: p. 69 (PDF p. 87). -/
+theorem pda_joint_cef_counterexample : IsProbabilityMeasure gapJointLaw ∧
+   HasJointPDF gapJointLaw (fun xy => gapPDF xy.1 * (if xy.2∈Set.Icc (-1 : ℝ) 1 then 1/2 else 0)) ∧
+   mean gapJointLaw Prod.fst=0 ∧ IsCEF gapJointLaw Prod.fst Prod.snd (fun _ => 0) ∧
+   IsCEF gapJointLaw Prod.fst Prod.snd pdaBump ∧
+   ContDiff ℝ 1 pdaBump ∧ deriv pdaBump (mean gapJointLaw Prod.fst)=1 ∧
+   deriv (fun _ : ℝ => (0 : ℝ)) (mean gapJointLaw Prod.fst)=0 := by
+  sorry
 
 /-- Any measurable nonnegative function equal almost everywhere to a PDF is another PDF of the same law and has the same lower-tail integrals.
 Target P001-T30: Definition 1.2.15 and the uniqueness sentence before it, corrected: the PDF is unique up to Lebesgue-almost-everywhere equality and equals $F'$ almost everywhere; the joint analogue (Definition 1.3.11).
@@ -4785,6 +5442,19 @@ theorem conditional_density_positive_finite_slice (f : ℝ × ℝ → ℝ) (hf :
   refine ⟨hi.div_const _, fun y => div_nonneg (hpos _) hp.le, ?_⟩
   rw [integral_div, div_self hp.ne']
 
+/-- The corrected bivariate density defines a probability law with its printed means, standard deviations and correlation; zero correlation gives independence.
+Target P001-T39: The implication drawn from Theorem 2.1.21 and the bivariate normal PDF of footnote 13, corrected.
+Location: p. 56 (PDF p. 74), Theorem 2.1.21 and the sentence after it; p. 66 (PDF p. 84), footnote 13. -/
+theorem bivariate_normal_zero_correlation_independent (mx my sx sy ρ : ℝ) (hx : 0 < sx) (hy : 0 < sy) (hρ : ρ∈Set.Ioo (-1 : ℝ) 1) :
+   let f := bivariateNormalPDF mx my sx sy ρ
+   let ν := volume.withDensity (fun xy => ENNReal.ofReal (f xy))
+   IsProbabilityMeasure ν ∧ HasJointPDF ν f ∧
+   mean ν Prod.fst=mx ∧ mean ν Prod.snd=my ∧
+   Real.sqrt (var ν Prod.fst)=sx ∧ Real.sqrt (var ν Prod.snd)=sy ∧
+   covariance Prod.fst Prod.snd ν/(sx*sy)=ρ ∧
+   (ρ=0 → IndepFun Prod.fst Prod.snd ν ∧
+      ∀ xy,f xy=normalDensity mx sx xy.1*normalDensity my sy xy.2) := by
+  sorry
 
 /-- The event-integral CEF definition is preserved when covariates agree almost everywhere. -/
 theorem isCEF_ae_covariate {Ω : Type*} [MeasurableSpace Ω]
@@ -5271,6 +5941,12 @@ theorem rectangular_kernel_empirical_cdf_identity {n : ℕ} (hn : 0 < n) (X : Fi
   have hnR : (n:ℝ) ≠ 0 := by exact_mod_cast hn.ne'
   field_simp [hnR,hh.ne']
 
+/-- Resampling l clusters of m observations gives lm observations; the resampling map has l draws, one per intact cluster.
+Target P001-T64: Example 3.5.8 (Consequences of Clustering for the Sample Mean), the common-correlation condition, corrected to pairs $j \ne j'$; and step 1 of the block bootstrap, corrected to $l$ clusters.
+Location: Example 3.5.8: pp. 140–141 (PDF pp. 158–159). Block bootstrap steps: p. 141 (PDF p. 159). Theorem 3.5.5: p. 137 (PDF p. 155). -/
+theorem block_bootstrap_draw_count_supporting {l m : ℕ} {E : Type*} (X : Fin l → Fin m → E) (a : Fin l → Fin l) :
+   Fintype.card (Fin l × Fin m)=l*m ∧ ∀ j k,blockResample X a j k=X (a j) k := by
+  simp [blockResample]
 
 /-- A zero conditional mean and constant conditional variance imply that the expected squared-residual regressor product is sigma² times the expected regressor product.
 Target P001-T67: Section 4.2.3, the display reducing the asymptotic covariance of the OLS estimator under a linear CEF and homoskedasticity, with the stray observation subscript removed.
@@ -5333,6 +6009,17 @@ theorem missing_ipw_difference_and_stabilization {E : Type*} [Fintype E] (N r S 
     rw [htotal]
     exact div_self (ne_of_gt hn)
 
+/-- Under MAR and positive response probability, the respondent CEF of the stable observed outcome is a version of the full-population CEF of Y.
+Target P001-T87: Section 6.3, the working models for the regression estimators: the conditional expectation, corrected to the respondent CEF $\mathrm{E}[Y_i^*|R_i = 1, \mathbf{X}_i]$ (three places).
+Location: p. 233 (PDF p. 251), first paragraph below Table 6.3.1. -/
+theorem mar_respondent_cef_is_population_cef {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R) (hYi : Integrable Y μ)
+   (hbinary : ∀ ω,R ω=0 ∨ R ω=1) (p m : E → ℝ) (hp : IsCEF μ X R p)
+   (hpos : ∃ ε : ℝ,0 < ε ∧ ∀ ω,ε < p (X ω)) (hmar : CI μ X hX Y R)
+   (hm : IsCEF (μ.restrict {ω | R ω=1}) X (fun ω => censored (Y ω) (R ω)) m)
+   (hmi : Integrable (m ∘ X) μ) : IsCEF μ X Y m := by
+  sorry
 
 /-- With both arms in every cell, equality of IPW and post-stratification for all arm outcome sums is equivalent to each fitted propensity equaling its observed treated fraction.
 Target P001-T97: Section 7.2.6, equivalence of the IPW estimator and the post-stratification plug-in estimator of the ATE, corrected: it holds when each fitted propensity equals the observed treated fraction in its covariate cell.
@@ -5422,6 +6109,86 @@ theorem treatment_weight_sample_means {Ω E : Type*} [MeasurableSpace Ω] [Measu
     intro ω
     constructor <;> linarith [(hpos 0 ω).1,(hpos 0 ω).2]
 
+/-- For uniform covariates and orthonormal polynomials of successive degrees, the fixed-n Gram deviation probability is at most 4(K³−K)/n and the polynomial row norm is bounded by K².
+Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem uniform_polynomial_gram_bound {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X : ℕ → Ω → ℝ) (hiid : IID μ X) (hx : μ.map (X 0)=uniformLaw 0 1)
+   (K n : ℕ) (hK : 0 < K) (hn : 0 < n) (p : Fin K → Polynomial ℝ)
+   (hdeg : ∀ k,(p k).natDegree=k.val)
+   (horth : ∀ j k,mean μ (fun ω => (p j).eval (X 0 ω)*(p k).eval (X 0 ω))=if j=k then 1 else 0) :
+   (∀ x∈Set.Icc (0 : ℝ) 1,(∑ k,((p k).eval x)^2) ≤ (K : ℝ)^2) ∧
+   prob μ {ω | 1/2 < gramDeviation (sampleGram p X n ω)} ≤ 4*((K : ℝ)^3-K)/n := by
+  sorry
+
+/-- When the augmented regressor moment matrix is nonsingular, conditional independence and the linear treatment CEF force the unique population BLP coefficients on W to zero.
+Target P001-T18: Section 7.2.8, the regression implementation of the placebo test, corrected: valid when $\mathrm{E}[D_i|\mathbf{X}_i]$ is linear in the included regressors.
+Location: p. 270 (PDF p. 288), Section 7.2.8. -/
+theorem placebo_zero_coefficients_unique {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K L : ℕ} (X : Ω → Fin K → ℝ) (W : Ω → Fin L → ℝ) (D : Ω → ℝ)
+   (hX : Measurable X) (hW : Measurable W) (hD : Measurable D)
+   (hbinary : ∀ ω,D ω=0 ∨ D ω=1)
+   (hX2 : ∀ k,MemLp (fun ω => X ω k) 2 μ) (hW2 : ∀ k,MemLp (fun ω => W ω k) 2 μ)
+   (hCI : CI μ X hX W D) (γ : Fin (K+1) → ℝ) (hcef : IsCEF μ X D (linearPredictor γ))
+   (hRank : IsUnit (Matrix.det ((fun j k : Fin (K+L+1) => mean μ (fun ω =>
+     (Fin.cases 1 (Fin.addCases (X ω) (W ω)) j)*
+     (Fin.cases 1 (Fin.addCases (X ω) (W ω)) k))) : Matrix (Fin (K+L+1)) (Fin (K+L+1)) ℝ))) :
+   ∀ a : ℝ,∀ b : Fin K → ℝ,∀ c : Fin L → ℝ,
+     (mean μ (fun ω => (D ω-(a+(∑ k,b k*X ω k)+(∑ k,c k*W ω k)))^2)=
+       mean μ (fun ω => (D ω-linearPredictor γ (X ω))^2)) ↔
+       a=γ 0 ∧ (∀ k,b k=γ k.succ) ∧ (∀ k,c k=0) := by
+  sorry
+
+/-- With countable covariates, ignorability and positive conditional mass at d, the conditional and unconditional potential means at d equal the observed conditional means, averaged over covariates.
+Target P001-T91: Section 7.1.8, identification of $\mathrm{E}[\tau_i(d, d')]$ for multivalued and continuous treatments, corrected: positive mass at the doses, or continuity of the conditional mean dose-response.
+Location: p. 255 (PDF p. 273), first paragraph. -/
+theorem positive_mass_dose_identification {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E] [MeasurableSingletonClass E] [Countable E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (D : Ω → ℝ)
+   (hX : Measurable X) (hD : Measurable D) (Y : ℝ → Ω → ℝ)
+   (hY : ∀ t,Measurable (Y t)) (hi : ∀ t,Integrable (Y t) μ)
+   (hobs : Measurable (fun ω => Y (D ω) ω)) (hobsI : Integrable (fun ω => Y (D ω) ω) μ)
+   (hind : CI μ X hX (fun ω t => Y t ω) D) (d : ℝ)
+   (hpos : ∀ x,0 < prob μ {ω | X ω=x} → 0 < prob μ {ω | X ω=x ∧ D ω=d}) :
+   (∀ x,0 < prob μ {ω | X ω=x} →
+     conditionalMeanAt μ X (Y d) x=
+       conditionalMeanAt μ (fun ω => (X ω,D ω)) (fun ω => Y (D ω) ω) (x,d)) ∧
+   mean μ (Y d)=∑' x : E,
+     conditionalMeanAt μ (fun ω => (X ω,D ω)) (fun ω => Y (D ω) ω) (x,d)*prob μ {ω | X ω=x} := by
+  sorry
+
+/-- Under binary strong ignorability, a true fitted conditional mean version evaluated at X has expectation equal to the mean potential outcome.
+Target P001-T94: Section 7.2.3, the maximum likelihood plug-in estimator of $\mathrm{E}[Y_i(d)]$, corrected: the fitted conditional mean evaluated at the observed covariates $\mathbf{X}_i$.
+Location: p. 261 (PDF p. 279), last display on the page; the population identity above it on the same page. -/
+theorem ml_potential_mean_population_identity {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K τ : ℕ} (X : Ω → Fin K → ℝ) (D Y0 Y1 : Ω → ℝ)
+   (hX : Measurable X) (hD : Measurable D) (h0 : Integrable Y0 μ) (h1 : Integrable Y1 μ)
+   (hbinary : ∀ ω,D ω=0 ∨ D ω=1) (p : (Fin K → ℝ) → ℝ) (hp : IsCEF μ X D p)
+   (hpos : ∃ ε : ℝ,0 < ε ∧ ∀ ω,ε < p (X ω) ∧ p (X ω) < 1-ε)
+   (hind : CI μ X hX (fun ω => (Y0 ω,Y1 ω)) D)
+   (g : ℝ → ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ) (θ : Fin τ → ℝ)
+   (hm : IsCEF μ (fun ω => (D ω,X ω))
+     (fun ω => Y1 ω*D ω+Y0 ω*(1-D ω)) (fun dx => modelConditionalMean g dx.1 dx.2 θ))
+   (hmi : ∀ d∈({0,1} : Set ℝ),Integrable (fun ω => modelConditionalMean g d (X ω) θ) μ) :
+   mean μ Y0=mean μ (fun ω => modelConditionalMean g 0 (X ω) θ) ∧
+   mean μ Y1=mean μ (fun ω => modelConditionalMean g 1 (X ω) θ) := by
+  sorry
+
+/-- In a correctly specified conditional model, expected log likelihood is maximized at the true parameter; equality holds exactly when fitted and true densities agree almost surely under the true law.
+Target P001-T129: Theorem 5.2.6 (Consistency of the Maximum Likelihood Estimator) and the lemma in its proof sketch.
+Location: Theorem 5.2.6: p. 193 (PDF p. 211). Proof sketch: pp. 193–194 (PDF pp. 211–212). -/
+theorem true_model_expected_log_likelihood_maximum {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K τ : ℕ} (X : Ω → Fin K → ℝ) (Y : Ω → ℝ)
+   (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+   (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ) (θ t : Fin τ → ℝ)
+   (hg : ∀ v∈({θ,t} : Set (Fin τ → ℝ)),Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 v))
+   (hpos : ∀ v∈({θ,t} : Set (Fin τ → ℝ)),∀ y x,0 < g y x v)
+   (hnorm : ∀ v∈({θ,t} : Set (Fin τ → ℝ)),∀ x,(∫⁻ y,ENNReal.ofReal (g y x v) ∂κ)=1)
+   (htrue : μ.map (fun ω => (X ω,Y ω))=conditionalModelLaw νX κ g θ)
+   (hi : ∀ v∈({θ,t} : Set (Fin τ → ℝ)),Integrable (fun ω => Real.log (g (Y ω) (X ω) v)) μ) :
+   expectedLogLikelihood μ X Y g t ≤ expectedLogLikelihood μ X Y g θ ∧
+   (expectedLogLikelihood μ X Y g t=expectedLogLikelihood μ X Y g θ ↔
+     ∀ᵐ ω ∂μ,g (Y ω) (X ω) t=g (Y ω) (X ω) θ) := by
+  sorry
 
 /-- For every fixed positive n and bandwidth, the rectangular kernel expectation and variance are exactly the Bernoulli-window formulas in the proof of consistency.
 Target P001-T127: Theorem 3.3.8 (Consistency of the Kernel Density Estimator, Rectangular Kernel).
@@ -5512,7 +6279,7 @@ theorem identified_mixture_ml_consistency_supporting {Ω : Type*} [MeasurableSpa
 
 
 /-- The log normalizer "log(1+exp(xβ))" of the binary logit model
-(Definition 5.1.9, p. 183; the grouped ML fit in T84). -/
+(Definition 5.1.9, p. 183; the grouped ML fit in the T84 validator). -/
 def logitSoftplus (t : ℝ) : ℝ := Real.log (1+Real.exp t)
 
 /-- The logistic log normalizer has a strict supporting line at every real predictor. -/
@@ -5754,8 +6521,27 @@ theorem causal_ipw_logit_ml_counterexample : (∀ a b : ℝ,
   · norm_num [causalCellSize, causalCellTreatment, causalCellTreatedSum,
       causalCellControlSum, Fin.sum_univ_succ]
 
+/-- Under the specified heavy-tail iid population, the median and its conditional bootstrap law have normal limits with variance four, but the bootstrap variance is inconsistent.
+Target P001-T61: Section 3.4.3, the sentence 'Given the usual plug-in regularity conditions (Section 3.3.1), this standard deviation will consistently estimate the standard error', as printed.
+Location: p. 131 (PDF p. 149), sentence after the four bootstrap steps; Section 3.3.1 and footnote 31, p. 120 (PDF p. 138); Definition 3.2.32, pp. 113–114 (PDF pp. 131–132). -/
+theorem heavy_median_bootstrap_variance_counterexample {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X : ℕ → Ω → ℝ) (hiid : IID μ X) (hlaw : μ.map (X 0)=heavyBootstrapLaw) :
+   CD μ (fun k ω => Real.sqrt (2*k+1)*sampleMedian (firstSample X (2*k+1) ω)) (gaussianReal 0 4) ∧
+   BootstrapWeakCP μ X (fun k => 2*k+1) (fun {n} => @sampleMedian n) (gaussianReal 0 4) ∧
+   (∀ n : ℕ,Odd n → 5 ≤ n → (3/16 : ℝ) ≤ prob μ {ω |
+     5 < (n : ℝ)*bootVar sampleMedian (firstSample X n ω)}) ∧
+   ¬ CP μ (fun k ω => ((2*k+1 : ℕ) : ℝ)*bootVar sampleMedian (firstSample X (2*k+1) ω)) 4 := by
+  sorry
 
+/-- The ordinary bootstrap conditional law of the globally regular modified heavy-tail statistic converges weakly in probability to the normal law with variance one quarter.
+Target P001-T61: Section 3.4.3, the sentence 'Given the usual plug-in regularity conditions (Section 3.3.1), this standard deviation will consistently estimate the standard error', as printed.
+Location: p. 131 (PDF p. 149), sentence after the four bootstrap steps; Section 3.3.1 and footnote 31, p. 120 (PDF p. 138); Definition 3.2.32, pp. 113–114 (PDF pp. 131–132). -/
+theorem regular_heavy_functional_bootstrap_weak_limit {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X : ℕ → Ω → ℝ) (hiid : IID μ X) (hlaw : μ.map (X 0)=heavyBootstrapLaw) :
+   BootstrapWeakCP μ X (fun k => 2*k+1) (fun {n} => @regularHeavyStatistic n) (gaussianReal 0 (1/4)) := by
+  sorry
 
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem uniform_index_integral {n : ℕ} [NeZero n] (f : Fin n → ℝ) :
     ∫ i, f i ∂(PMF.uniformOfFintype (Fin n)).toMeasure = (∑ i, f i)/(n:ℝ) := by
   rw [PMF.integral_eq_sum]
@@ -5873,6 +6659,21 @@ theorem bootstrap_sample_mean_consistency {Ω : Type*} [MeasurableSpace Ω] (μ 
   have hs := probability_convergence_continuous_at μ _ _ Real.sqrt hcp Real.continuous_sqrt.continuousAt
   simpa only [Real.sqrt_mul (Nat.cast_nonneg _)] using hs
 
+/-- For an iid population with a unique median, positive continuous density there, and a finite positive-order absolute moment, the ordinary bootstrap median variance and standard error are consistent.
+Target P001-T62: Section 3.4.3, consistency of the bootstrap standard deviation for the standard error, corrected: the added moment condition.
+Location: p. 131 (PDF p. 149), sentence after the four bootstrap steps; Definition 3.2.32, pp. 113–114 (PDF pp. 131–132). -/
+theorem bootstrap_median_primitive_moment_condition_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X : ℕ → Ω → ℝ) (hiid : IID μ X) (m : ℝ) (f : ℝ → ℝ)
+   (hf : HasPDF (μ.map (X 0)) f) (hcont : ContinuousAt f m) (hpos : 0 < f m)
+   (hmed : cdf μ (X 0) m=1/2 ∧
+     (∀ x,x < m → cdf μ (X 0) x < 1/2) ∧ (∀ x,m < x → 1/2 < cdf μ (X 0) x))
+   (η : ℝ) (hη : 0 < η) (hmoment : Integrable (fun ω => |X 0 ω|^η) μ) :
+   CP μ (fun k ω => ((2*k+1 : ℕ) : ℝ)*bootVar sampleMedian (firstSample X (2*k+1) ω))
+     (1/(4*(f m)^2)) ∧
+   CP μ (fun k ω => Real.sqrt (2*k+1)*Real.sqrt (bootVar sampleMedian (firstSample X (2*k+1) ω)))
+     (1/(2*f m)) := by
+  sorry
+
 
 /-- The covariance matrix with corrected coordinate indices is symmetric and has coordinate variances on its diagonal.
 Target P001-T48: Definition 2.3.1 (Covariance Matrix), the index quantifier, corrected; with Theorem 2.3.2 (Multivariate Variance Rule).
@@ -5906,7 +6707,7 @@ theorem polynomial_squared_criterion_ols {n J : ℕ} (X Y : Fin n → ℝ)
     rw [hP]
     simp
 
-/-- Under the stated constant-scale normal location-model factorization, the residual Y - m(X) has law N(0,s²) and is independent of X. Identifying m as an IsCEF additionally requires integrability of Y and m(X).
+/-- In the constant-scale conditional normal model, the deviation from the conditional mean has the normal law N(0,sigma²) and is independent of the covariates.
 Target P001-T74: Section 5.1.1, the comparison of the classical linear model's errors with deviations from the CEF, corrected ('uncorrelated with' for 'independent of'); with Theorem 2.2.19 (Properties of Deviations from the CEF).
 Location: p. 181 (PDF p. 199), paragraph after the display $Y = \mathbf{X}\boldsymbol\beta + \varepsilon$. Theorem 2.2.19: p. 74 (PDF p. 92), proof on pp. 74–75. -/
 theorem classical_normal_residual_independent {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
@@ -5948,6 +6749,25 @@ theorem classical_normal_residual_independent {Ω E : Type*} [MeasurableSpace Ω
   rw [hLaw]
   exact hJoint
 
+/-- For the actual iid empirical CDF in Kolmogorov norm, a Hadamard derivative evaluated at its Gaussian process limit gives the positive-variance normal limit of the plug-in statistic.
+Target P001-T57: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators), corrected with the non-degeneracy condition.
+Location: p. 120 (PDF p. 138), Theorem 3.3.6 and footnote 31; Definition 3.2.28, p. 112 (PDF p. 130). -/
+theorem empirical_cdf_delta_nondegenerate_supporting {Ω : Type*} [MeasurableSpace Ω]
+   [MeasurableSpace KolmogorovSpace] [BorelSpace KolmogorovSpace]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : ℕ → Ω → ℝ) (hiid : IID μ X)
+   (T : (ℝ → ℝ) → ℝ) (H : Set KolmogorovSpace)
+   (L : KolmogorovSpace →L[ℝ] ℝ)
+   (hd : HadamardAt cdfDomain H (fun f => T (fun x => f x))
+     (kolmogorovEmbed (cdf μ (X 0))) L)
+   (νB : Measure KolmogorovSpace) [IsProbabilityMeasure νB]
+   (htangent : νB Hᶜ=0)
+   (hprocess : OuterWeakLimit μ (fun n ω =>
+     Real.sqrt n • (empiricalCDFElement X n ω-kolmogorovEmbed (cdf μ (X 0)))) νB)
+   (v : ℝ≥0) (hv : 0 < v) (hgauss : νB.map L=gaussianReal 0 v)
+   (hstat : ∀ n,Measurable (fun ω => T (cdf (empirical X n ω) id))) :
+   CD μ (fun n ω => Real.sqrt n*(T (cdf (empirical X n ω) id)-T (cdf μ (X 0))))
+     (gaussianReal 0 v) := by
+  sorry
 
 /-- Embedding a probability-law CDF in the sup-norm space retains its value at every real point.
 Target P001-T57: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators), corrected with the non-degeneracy condition.
@@ -5965,7 +6785,7 @@ theorem kolmogorov_embedding_preserves_cdf_supporting (ν : Measure ℝ) [IsProb
   intro x
   simp [kolmogorovEmbed,hb]
 
-/-- Under the open-support condition, an existing coordinate derivative of one continuous CEF version is also the derivative of every other continuous version.
+/-- Under the repaired open-support condition, an existing coordinate derivative of one continuous CEF version is also the derivative of every other continuous version.
 Target P001-T4: Definition 4.3.7 (Partial Derivative at the Average), corrected with a support condition at the covariate mean.
 Location: p. 167 (PDF p. 185), Definition 4.3.7; p. 168 (PDF p. 186), first paragraph. -/
 theorem pda_derivative_transfers_on_open_support {K : ℕ} (U : Set (Fin K → ℝ)) (hU : IsOpen U) (x : Fin K → ℝ)
@@ -5982,6 +6802,58 @@ theorem pda_derivative_transfers_on_open_support {K : ℕ} (U : Set (Fin K → �
   filter_upwards [hmem] with t ht
   exact (he ht).symm
 
+/-- A consistent average-log maximizing mixture estimate has a centered root-n Gaussian limit with inverse Fisher information under the stated interior score and Hessian regularities.
+Target P001-T12: Section 5.2.5, the 'any subset' sentence, corrected: consistency and efficiency of the mixture ML estimator under identification of the full parameter vector.
+Location: p. 199 (PDF p. 217), second paragraph. -/
+theorem identified_mixture_ml_normal_efficiency_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {M K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+   (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+   (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+   (p : (Fin τ → ℝ) → Fin M → ℝ)
+   (g : Fin M → ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+   (Θ : Set (Fin τ → ℝ)) (θ : Fin τ → ℝ) (δ : ℝ) (hδ : 0 < δ)
+   (hinterior : Metric.ball θ δ⊆Θ)
+   (hp : ∀ t∈Θ,(∀ m,0 ≤ p t m) ∧ (∑ m,p t m)=1)
+   (hg : ∀ t∈Θ,∀ m,Measurable (fun xy : (Fin K → ℝ) × ℝ => g m xy.2 xy.1 t))
+   (hnonneg : ∀ t∈Θ,∀ m y x,0 ≤ g m y x t)
+   (hnorm : ∀ t∈Θ,∀ m x,(∫⁻ y,ENNReal.ofReal (g m y x t) ∂κ)=1)
+   (htrue : μ.map (fun ω => (X 0 ω,Y 0 ω))=conditionalModelLaw νX κ (mixtureFamily p g) θ)
+   (hpositive : ∀ᵐ ω ∂μ,∀ t∈Metric.ball θ δ,0 < mixtureFamily p g (Y 0 ω) (X 0 ω) t)
+   (hdiff : ∀ᵐ ω ∂μ,ContDiffOn ℝ 2
+     (fun t => Real.log (mixtureFamily p g (Y 0 ω) (X 0 ω) t)) (Metric.ball θ δ))
+   (hs2 : ∀ j,MemLp (fun ω => modelScore (mixtureFamily p g) (Y 0 ω) (X 0 ω) θ j) 2 μ)
+   (hszero : ∀ j,mean μ (fun ω => modelScore (mixtureFamily p g) (Y 0 ω) (X 0 ω) θ j)=0)
+   (hinfo : (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ).PosDef)
+   (hHinfo : populationHessian μ (X 0) (Y 0) (mixtureFamily p g) θ=
+     -informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)
+   (hHcont : ContinuousAt (populationHessian μ (X 0) (Y 0) (mixtureFamily p g)) θ)
+   (hHi : ∀ t∈Metric.ball θ δ,∀ j k,
+     Integrable (fun ω => modelHessian (mixtureFamily p g) (Y 0 ω) (X 0 ω) t j k) μ)
+   (ΔH : ℕ → Ω → ℝ) (hHbound : ∀ n ω t,t∈Metric.ball θ δ → ∀ j k,
+     |sampleHessian X Y (mixtureFamily p g) n ω t j k-
+       populationHessian μ (X 0) (Y 0) (mixtureFamily p g) t j k| ≤ ΔH n ω)
+   (hHlim : CP μ ΔH 0)
+   (that : ℕ → Ω → Fin τ → ℝ) (hmeas : ∀ n,Measurable (that n))
+   (hthat : ∀ n ω,that n ω∈Θ)
+   (hmax : ∀ n ω t,t∈Θ → sampleLogLikelihood X Y (mixtureFamily p g) n ω t ≤ 
+     sampleLogLikelihood X Y (mixtureFamily p g) n ω (that n ω))
+   (hconsistent : CP μ that θ) :
+   WeakLimit μ (fun n ω => Real.sqrt n • (that n ω-θ))
+     (normalVectorLaw (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)⁻¹) := by
+  sorry
+
+/-- Every finite-second-moment regular influence function satisfying the score derivative identity has covariance at least inverse Fisher information, in the positive-semidefinite quadratic-form sense.
+Target P001-T12: Section 5.2.5, the 'any subset' sentence, corrected: consistency and efficiency of the mixture ML estimator under identification of the full parameter vector.
+Location: p. 199 (PDF p. 217), second paragraph. -/
+theorem regular_influence_information_lower_bound {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {τ : ℕ} (s ψ : Ω → Fin τ → ℝ)
+   (hs2 : ∀ j,MemLp (fun ω => s ω j) 2 μ) (hψ2 : ∀ j,MemLp (fun ω => ψ ω j) 2 μ)
+   (hs0 : ∀ j,mean μ (fun ω => s ω j)=0) (hψ0 : ∀ j,mean μ (fun ω => ψ ω j)=0)
+   (I : Matrix (Fin τ) (Fin τ) ℝ)
+   (hI : ∀ j k,I j k=mean μ (fun ω => s ω j*s ω k)) (hpos : I.PosDef)
+   (hregular : ∀ j k,mean μ (fun ω => ψ ω j*s ω k)=if j=k then 1 else 0) :
+   ∀ a : Fin τ → ℝ,0 ≤ ∑ j,∑ k,a j*(covarianceMatrix μ ψ j k-I⁻¹ j k)*a k := by
+  sorry
 
 /-- The two explicit full mixture parameters give identical normalized sample laws at every sample size, and no estimator in that common experiment can be consistent for both parameter vectors.
 Target P001-T11: Section 5.2.5, the sentence 'If any subset of the models ... jointly characterize the conditional distribution of $Y$, then this estimator is consistent and asymptotically efficient', as printed.
@@ -6037,6 +6909,92 @@ theorem studentization_finite_identity_and_coverage (n : ℕ) (hn : 0 < n) (that
   · rw [Set.mem_Ioo,lt_div_iff₀ hvS,div_lt_iff₀ hvS]
     constructor <;> intro h <;> constructor <;> nlinarith [h.1,h.2]
 
+/-- In the corrected conditional model, average sample log-criterion maximizers converge to the unique covariate-averaged KL minimizer under the stated finite-log, compactness and uniform convergence conditions.
+Target P001-T8: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), corrected: the KL divergence averaged over the distribution of $\mathbf{X}$.
+Location: p. 195 (PDF p. 213), Theorem 5.2.8; the explanatory paragraphs on p. 196 (PDF p. 214). -/
+theorem averaged_kl_ml_consistency_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+   (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+   (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+   (f : ℝ → (Fin K → ℝ) → ℝ)
+   (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+   (hfmeas : Measurable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1))
+   (hfpos : ∀ y x,0 ≤ f y x) (hfnorm : ∀ x,(∫⁻ y,ENNReal.ofReal (f y x) ∂κ)=1)
+   (htrue : μ.map (fun ω => (X 0 ω,Y 0 ω))=
+     (νX.prod κ).withDensity (fun xy => ENNReal.ofReal (f xy.2 xy.1)))
+   (Θ : Set (Fin τ → ℝ)) (hcompact : IsCompact Θ)
+   (hgmeas : ∀ t∈Θ,Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 t))
+   (hgpos : ∀ t∈Θ,∀ y x,0 ≤ g y x t)
+   (hgnorm : ∀ t∈Θ,∀ x,(∫⁻ y,ENNReal.ofReal (g y x t) ∂κ)=1)
+   (hdom : ∀ t∈Θ,∀ᵐ xy ∂(νX.prod κ),0 < f xy.2 xy.1 → 0 < g xy.2 xy.1 t)
+   (hentropy : Integrable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1*Real.log (f xy.2 xy.1)) (νX.prod κ))
+   (hcross : ∀ t∈Θ,Integrable
+     (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1*Real.log (g xy.2 xy.1 t)) (νX.prod κ))
+   (hM : ContinuousOn (expectedLogLikelihood μ (X 0) (Y 0) g) Θ)
+   (tstar : Fin τ → ℝ) (ht : tstar∈Θ)
+   (hunique : ∀ t∈Θ,averageKL νX κ f g tstar ≤ averageKL νX κ f g t ∧
+     (averageKL νX κ f g t=averageKL νX κ f g tstar → t=tstar))
+   (that : ℕ → Ω → Fin τ → ℝ) (hmeas : ∀ n,Measurable (that n))
+   (hthat : ∀ n ω,that n ω∈Θ)
+   (hmax : ∀ n ω t,t∈Θ → sampleLogLikelihood X Y g n ω t ≤ sampleLogLikelihood X Y g n ω (that n ω))
+   (Δ : ℕ → Ω → ℝ) (hbound : ∀ n ω t,t∈Θ →
+     |sampleLogLikelihood X Y g n ω t-expectedLogLikelihood μ (X 0) (Y 0) g t| ≤ Δ n ω)
+   (hlim : CP μ Δ 0) : CP μ that tstar := by
+  sorry
+
+/-- When the model equals the true conditional distribution, its covariate-averaged KL divergence is zero.
+Target P001-T8: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), corrected: the KL divergence averaged over the distribution of $\mathbf{X}$.
+Location: p. 195 (PDF p. 213), Theorem 5.2.8; the explanatory paragraphs on p. 196 (PDF p. 214). -/
+theorem true_model_averaged_kl_zero_supporting {K τ : ℕ} (νX : Measure (Fin K → ℝ)) (κ : Measure ℝ)
+   (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ) (θ : Fin τ → ℝ) :
+   averageKL νX κ (fun y x => g y x θ) g θ=0 := by
+  have h (y : ℝ) (x : Fin K → ℝ) :
+      g y x θ*Real.log (g y x θ/g y x θ)=0 := by
+    by_cases hz : g y x θ=0
+    · simp [hz]
+    · simp [hz]
+  unfold averageKL conditionalKL
+  simp only [h,integral_zero]
+
+/-- For a normalized correctly specified conditional model and finite expected logs, expected log likelihood is maximized at the truth, with equality exactly when the fitted and true conditional likelihood values agree almost surely.
+Target P001-T129: Theorem 5.2.6 (Consistency of the Maximum Likelihood Estimator) and the lemma in its proof sketch.
+Location: Theorem 5.2.6: p. 193 (PDF p. 211). Proof sketch: pp. 193–194 (PDF pp. 211–212). -/
+theorem true_model_log_likelihood_lemma_with_zeros {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K τ : ℕ} (X : Ω → Fin K → ℝ) (Y : Ω → ℝ) (hX : Measurable X) (hY : Measurable Y)
+   (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+   (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+   (Θ : Set (Fin τ → ℝ)) (θ : Fin τ → ℝ) (hθ : θ∈Θ)
+   (hgmeas : ∀ t∈Θ,Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 t))
+   (hgpos : ∀ t∈Θ,∀ y x,0 ≤ g y x t)
+   (hgnorm : ∀ t∈Θ,∀ x,(∫⁻ y,ENNReal.ofReal (g y x t) ∂κ)=1)
+   (htrue : μ.map (fun ω => (X ω,Y ω))=conditionalModelLaw νX κ g θ)
+   (hdom : ∀ t∈Θ,∀ᵐ xy ∂(νX.prod κ),0 < g xy.2 xy.1 θ → 0 < g xy.2 xy.1 t)
+   (hlog : ∀ t∈Θ,Integrable (fun ω => Real.log (g (Y ω) (X ω) t)) μ) :
+   ∀ t∈Θ,expectedLogLikelihood μ X Y g t ≤ expectedLogLikelihood μ X Y g θ ∧
+     (expectedLogLikelihood μ X Y g t=expectedLogLikelihood μ X Y g θ ↔
+       (fun ω => g (Y ω) (X ω) t)=ᵐ[μ](fun ω => g (Y ω) (X ω) θ)) := by
+  sorry
+
+/-- For an orthonormal polynomial basis whose squared row norm is bounded by zeta², the fixed-n Gram matrix probability bound is 4(zeta² K−K)/n.
+Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem general_polynomial_gram_probability_bound {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K : ℕ} (hK : 0 < K) (X : ℕ → Ω → ℝ) (hiid : IID μ X)
+   (p : Fin K → Polynomial ℝ)
+   (horth : ∀ j k,mean μ (fun ω => (p j).eval (X 0 ω)*(p k).eval (X 0 ω))=if j=k then 1 else 0)
+   (ζ2 : ℝ) (hrow : ∀ᵐ ω ∂μ,(∑ k,((p k).eval (X 0 ω))^2) ≤ ζ2)
+   (n : ℕ) (hn : 0 < n) :
+   prob μ {ω | 1/2 < gramDeviation (sampleGram p X n ω)} ≤ 4*(ζ2*(K : ℝ)-K)/(n : ℝ) := by
+  sorry
+
+/-- The second printed claim says every finite-variance population law makes the mean functional Kolmogorov-Hadamard differentiable, even restricting its domain to CDFs with finite second moment.
+Target P001-T118: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators) with footnote 31 and the paragraph after it, as printed.
+Location: p. 120 (PDF p. 138). -/
+theorem printed_finite_variance_mean_hadamard (ν : Measure ℝ) [IsProbabilityMeasure ν] (h2 : MemLp id 2 ν) :
+   ∃ L : KolmogorovSpace →L[ℝ] ℝ,
+     HadamardAt {F | finiteSecondCDF F} Set.univ cdfMeanFunctional
+       (kolmogorovEmbed (cdf ν id)) L := by
+  sorry
 
 /-- Adding one common intercept to all scores leaves the nearest-donor algorithm, including its fixed tie choice, unchanged.
 Target P001-T16: Section 7.2.4 and footnote 20, corrected: for nearest-neighbour matching the ordinary bootstrap can give inconsistent standard errors even without bias, and root-$n$ consistency and bootstrap validity are separate questions.
@@ -6045,7 +7003,7 @@ theorem nearest_donor_common_shift {n : ℕ} (p : Fin n → ℝ) (r : Fin n → 
    nearestDonor (fun j => a+p j) r i=nearestDonor p r i := by
   simp only [nearestDonor,add_sub_add_left_eq_sub]
 
-/-- The specified estimated score and true propensity score give exactly the same donor for every unit in every fixed sample.
+/-- The validator estimated score and true propensity score give exactly the same donor for every unit in every fixed sample.
 Target P001-T16: Section 7.2.4 and footnote 20, corrected: for nearest-neighbour matching the ordinary bootstrap can give inconsistent standard errors even without bias, and root-$n$ consistency and bootstrap validity are separate questions.
 Location: p. 264 (PDF p. 282), end of Section 7.2.4 and footnote 13; p. 279 (PDF p. 297), footnote 20. -/
 theorem estimated_score_matches_equal {n : ℕ} (s : Fin n → ℝ × Bool × Bool) (r : Fin n → Bool) (i : Fin n) :
@@ -6058,13 +7016,57 @@ theorem estimated_score_matches_equal {n : ℕ} (s : Fin n → ℝ × Bool × Bo
   rw [he]
   exact nearest_donor_common_shift _ r _ i
 
-/-- For every sample, rematching with the specified estimated scores gives exactly the known-score matching statistic.
+/-- For every sample, rematching with the validator estimated scores gives exactly the known-score matching statistic.
 Target P001-T16: Section 7.2.4 and footnote 20, corrected: for nearest-neighbour matching the ordinary bootstrap can give inconsistent standard errors even without bias, and root-$n$ consistency and bootstrap validity are separate questions.
 Location: p. 264 (PDF p. 282), end of Section 7.2.4 and footnote 13; p. 279 (PDF p. 297), footnote 20. -/
 theorem estimated_matching_statistic_equal {n : ℕ} (s : Fin n → ℝ × Bool × Bool) : causalMatchEstimated s=causalMatch s := by
   unfold causalMatchEstimated causalMatch
   simp only [estimated_score_matches_equal]
 
+/-- In the specified iid design the clipped estimated propensity intercept converges in probability to one quarter.
+Target P001-T15: Section 7.2.4 (matching with estimated propensity scores: the bootstrap's failure attributed to slowly shrinking bias) and footnote 20 ('the bootstrap standard errors are likely to adequately characterize sampling variability'), as printed.
+Location: p. 264 (PDF p. 282), end of Section 7.2.4, with footnote 13; p. 279 (PDF p. 297), footnote 20; p. 280 (PDF p. 298), Table 7.5.1, row 'Matching'. Matching: Section 7.2.4, pp. 262–263 (PDF pp. 280–281). -/
+theorem matching_score_intercept_consistent {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z) (hlaw : μ.map (Z 0)=matchingUnitLaw) :
+   CP μ (fun n ω => estimatedMatchIntercept (firstSample Z n ω)) (1/4) := by
+  sorry
+
+/-- With scores and responses fixed, hot deck is a weighted sum of independent sign outcomes with conditional variance equal to the sum of squared reuse weights over n².
+Target P001-T14: Footnote 15, corrected: for hot deck (nearest-neighbour) imputation the ordinary bootstrap can give inconsistent standard errors even without bias.
+Location: p. 233 (PDF p. 251), footnote 15; Table 6.3.1, row 'Hot Deck Imputation'. -/
+theorem hot_deck_conditional_reuse_variance {n : ℕ} (hn : 0 < n) (p : Fin n → ℝ) (r : Fin n → Bool) :
+   (∀ e : Fin n → Bool,hotDeck (fun j => (p j,r j,e j))-50=
+     (∑ j,donorReuseWeight p r j*noise (e j))/(n : ℝ)) ∧
+   IsProbabilityMeasure (signProductLaw n) ∧
+   mean (signProductLaw n) (fun e => hotDeck (fun j => (p j,r j,e j)))=50 ∧
+   var (signProductLaw n) (fun e => hotDeck (fun j => (p j,r j,e j)))=
+     (∑ j,(donorReuseWeight p r j)^2)/(n : ℝ)^2 := by
+  sorry
+
+/-- With scores and assignments fixed, the causal matching estimate is minus the weighted sum of control signs and has conditional variance equal to the sum of squared control reuse weights over n².
+Target P001-T16: Section 7.2.4 and footnote 20, corrected: for nearest-neighbour matching the ordinary bootstrap can give inconsistent standard errors even without bias, and root-$n$ consistency and bootstrap validity are separate questions.
+Location: p. 264 (PDF p. 282), end of Section 7.2.4 and footnote 13; p. 279 (PDF p. 297), footnote 20. -/
+theorem causal_matching_conditional_reuse_variance {n : ℕ} (hn : 0 < n) (p : Fin n → ℝ) (d : Fin n → Bool) :
+   (∀ e : Fin n → Bool,causalMatch (fun j => (p j,d j,e j))=
+     -(∑ j,donorReuseWeight p (fun i => !(d i)) j*noise (e j))/(n : ℝ)) ∧
+   IsProbabilityMeasure (signProductLaw n) ∧
+   mean (signProductLaw n) (fun e => causalMatch (fun j => (p j,d j,e j)))=0 ∧
+   var (signProductLaw n) (fun e => causalMatch (fun j => (p j,d j,e j)))=
+     (∑ j,(donorReuseWeight p (fun i => !(d i)) j)^2)/(n : ℝ)^2 := by
+  sorry
+
+/-- In the exact iid witness, the estimated-score matching statistic is unbiased with finite positive root-n variance but its rematching bootstrap variance is inconsistent.
+Target P001-T16: Section 7.2.4 and footnote 20, corrected: for nearest-neighbour matching the ordinary bootstrap can give inconsistent standard errors even without bias, and root-$n$ consistency and bootstrap validity are separate questions.
+Location: p. 264 (PDF p. 282), end of Section 7.2.4 and footnote 13; p. 279 (PDF p. 297), footnote 20. -/
+theorem estimated_matching_bootstrap_failure {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z) (hlaw : μ.map (Z 0)=matchingUnitLaw) :
+   (∀ n,0 < n → mean μ (fun ω => causalMatchEstimated (firstSample Z n ω))=0) ∧
+   Tendsto (fun (n : ℕ) => (n : ℝ)*var μ (fun ω => causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchV) ∧
+   Tendsto (fun (n : ℕ) => mean μ (fun ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchVB) ∧
+   0 < matchVB ∧ matchVB < matchV ∧
+   ¬ CP μ (fun n ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω)) matchV := by
+  simpa [MatchingFailure,estimated_matching_statistic_equal,bootVar,bootMean]
+    using matching_bootstrap_correction_supporting μ Z hiid hlaw
 
 /-- For every nonempty binary sample, the unique likelihood maximum over [1/10,9/10] is the sample success fraction clipped to that interval.
 Target P001-T7: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), with the target defined by the KL divergence at a fixed $\mathbf{x}$, as printed.
@@ -6167,6 +7169,14 @@ theorem probability_convergence_centering_equivalence_supporting {Ω : Type*} [M
    CP μ V v ↔ CP μ (fun n ω => V n ω-v) 0 := by
   simp only [CP,Real.dist_eq,sub_zero]
 
+/-- For each n at least two, scaling the sample-mean variance estimate by n gives the plug-in population variance exactly.
+Target P001-T55: Definition 3.2.32 (Consistency of Sampling Variance and Standard Error Estimators) and footnote 23, with the estimator's hat restored in four places.
+Location: pp. 113–114 (PDF pp. 131–132), Definition 3.2.32; footnote 23, p. 114 (PDF p. 132). -/
+theorem sample_mean_variance_estimate_scale_supporting {Ω : Type*} (X : ℕ → Ω → ℝ) (n : ℕ) (hn : 2 ≤ n) (ω : Ω) :
+   (n : ℝ)*sampleMeanVarianceEstimate X n ω=sampleVariance X n ω := by
+  have hn0 : (n : ℝ)≠0 := by exact_mod_cast (by omega : n≠0)
+  unfold sampleMeanVarianceEstimate
+  field_simp [hn0]
 
 /-- The fair-die CDF at minus one, one, one and a half, two, six and seven is respectively zero, one sixth, one sixth, one third, one and one.
 Target P001-T28: Example 1.2.13, first sentence, corrected: the CDF of a discrete random variable as a sum of jumps, and its step shape when the range is finite.
@@ -6187,6 +7197,17 @@ theorem missing_mcar_mar_sample_estimates : respondentMean stableExampleYstar st
   simp only [respondentMean,poststratifiedMissingMean,Fin.sum_univ_succ]
   norm_num [stableExampleYstar,stableExampleR,stableExampleX]
 
+/-- With general covariates, MAR and positive response propensity make the respondent censored-outcome CEF a population outcome CEF, as in Theorem 6.1.10.
+Target P001-T111: Theorem 6.1.6 (Expected Value under MCAR), Theorem 6.1.9 (Expected Value under MAR) and Theorem 6.1.10 (CEF under MAR); with the estimates of Examples 6.1.7 and 6.2.1.
+Location: Definition 6.1.5 and Theorem 6.1.6: p. 213 (PDF p. 231). Example 6.1.7: p. 214 (PDF p. 232). Definition 6.1.8: p. 215 (PDF p. 233). Theorem 6.1.9: p. 216 (PDF p. 234). Theorem 6.1.10: p. 217 (PDF p. 235). Section 6.2.1 and Example 6.2.1: pp. 219–220 (PDF pp. 237–238). -/
+theorem mar_cef_general_covariates {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R) (hYi : Integrable Y μ)
+   (hbinary : ∀ ω,R ω=0 ∨ R ω=1) (p m : E → ℝ) (hp : IsCEF μ X R p)
+   (hpos : ∃ ε : ℝ,0 < ε ∧ ∀ ω,ε < p (X ω)) (hmar : CI μ X hX Y R)
+   (hm : IsCEF (μ.restrict {ω | R ω=1}) X (fun ω => censored (Y ω) (R ω)) m)
+   (hmi : Integrable (m ∘ X) μ) : IsCEF μ X Y m := by
+  exact mar_respondent_cef_is_population_cef μ X hX Y R hY hR hYi hbinary p m hp hpos hmar hm hmi
 
 /-- The six-unit binary causal example gives estimated lower ATE bound minus two sixths and upper bound four sixths.
 Target P001-T114: Theorem 7.1.7 (Sharp Bounds for the ATE) and the width of the bounds; with the estimates of Example 7.1.6.
@@ -6407,6 +7428,47 @@ theorem sample_variance_unbiased_factor_and_consistency_supporting {Ω : Type*} 
       (tendstoInMeasure_iff_measureReal_dist.mp hmeasure) ε hε
 
 
+
+/-- The corrected zeta²K/n rate makes the population-normalized sample polynomial Gram matrix bounded below by one half with probability tending to one.
+Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem general_gram_rate_stability {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X : ℕ → Ω → ℝ) (hiid : IID μ X) (p : ℕ → Polynomial ℝ)
+   (horth : ∀ j k,mean μ (fun ω => (p j).eval (X 0 ω)*(p k).eval (X 0 ω))=if j=k then 1 else 0)
+   (J : ℕ → ℕ) (zeta2 : ℕ → ℝ)
+   (hrow : ∀ n,∀ᵐ ω ∂μ,(∑ k : Fin (J n+1),((p k).eval (X 0 ω))^2) ≤ zeta2 n)
+   (hrate : Tendsto (fun (n : ℕ) => zeta2 n*((J n+1 : ℕ) : ℝ)/(n : ℝ)) atTop (nhds 0)) :
+   Tendsto (fun (n : ℕ) => prob μ {ω | ∀ v : Fin (J n+1) → ℝ,
+     (1/2 : ℝ)*(∑ k,(v k)^2) ≤ 
+       (∑ i∈Finset.range n,(∑ k : Fin (J n+1),v k*(p k).eval (X i ω))^2)/(n : ℝ)})
+     atTop (nhds 1) := by
+  sorry
+
+/-- For uniform covariates and successive orthonormal polynomial degrees, K³/n tending to zero implies the required Gram lower bound with probability tending to one.
+Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem uniform_cubic_gram_rate_stability {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X : ℕ → Ω → ℝ) (hiid : IID μ X) (a b : ℝ) (hab : a < b)
+   (hlaw : μ.map (X 0)=uniformLaw a b) (p : ℕ → Polynomial ℝ)
+   (hdeg : ∀ k,(p k).natDegree=k)
+   (horth : ∀ j k,mean μ (fun ω => (p j).eval (X 0 ω)*(p k).eval (X 0 ω))=if j=k then 1 else 0)
+   (J : ℕ → ℕ)
+   (hrate : Tendsto (fun (n : ℕ) => (((J n+1 : ℕ) : ℝ)^3)/(n : ℝ)) atTop (nhds 0)) :
+   Tendsto (fun (n : ℕ) => prob μ {ω | ∀ v : Fin (J n+1) → ℝ,
+     (1/2 : ℝ)*(∑ k,(v k)^2) ≤ 
+       (∑ i∈Finset.range n,(∑ k : Fin (J n+1),v k*(p k).eval (X i ω))^2)/(n : ℝ)})
+     atTop (nhds 1) := by
+  sorry
+
+/-- In the exact hot-deck witness the scaled conditional bootstrap variance has a uniformly bounded second moment.
+Target P001-T13: Footnote 15 (hot deck imputation: 'the bootstrap standard errors are likely to adequately characterize sampling variability', with the bootstrap's failure attributed to slowly converging bias), as printed.
+Location: p. 233 (PDF p. 251), footnote 15, attached to the hot deck estimate; Table 6.3.1, row 'Hot Deck Imputation'. Hot deck imputation: Section 6.2.3, pp. 224–225 (PDF pp. 242–243). The bootstrap: Section 3.4.3, p. 131 (PDF p. 149). -/
+theorem hot_deck_bootstrap_uniform_second_moment {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z) (hlaw : μ.map (Z 0)=matchingUnitLaw) :
+   ∃ C : ℝ,0 ≤ C ∧ ∀ n : ℕ,
+     mean μ (fun ω => ((n : ℝ)*bootVar hotDeck (firstSample Z n ω))^2) ≤ C := by
+  sorry
+
 /-- The occupancy constants A and B are below three and three halves, and the bootstrap variance limit is below the true limit.
 Target P001-T13: Footnote 15 (hot deck imputation: 'the bootstrap standard errors are likely to adequately characterize sampling variability', with the bootstrap's failure attributed to slowly converging bias), as printed.
 Location: p. 233 (PDF p. 251), footnote 15, attached to the hot deck estimate; Table 6.3.1, row 'Hot Deck Imputation'. Hot deck imputation: Section 6.2.3, pp. 224–225 (PDF pp. 242–243). The bootstrap: Section 3.4.3, p. 131 (PDF p. 149). -/
@@ -6481,6 +7543,20 @@ theorem ordered_finite_cdf_formula {m : ℕ} (P : FiniteLaw (m+1)) (X : Fin (m+1
     simp only [hall,if_true]
     exact P.total
 
+/-- For iid Bernoulli-one-half observations the quadratic CDF functional is Hadamard differentiable, has the exact fourth-moment formula, and its root-n plug-in statistic converges in probability to zero.
+Target P001-T56: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators), as printed, read with footnote 31 and Definition 3.2.28.
+Location: p. 120 (PDF p. 138), Theorem 3.3.6 and footnote 31. Definition 3.2.28: p. 112 (PDF p. 130). -/
+theorem quadratic_plugin_degenerate_counterexample {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X : ℕ → Ω → ℝ) (hiid : IID μ X)
+   (hlaw : μ.map (X 0)=(1/2 : ℝ≥0∞) • Measure.dirac (0 : ℝ)+
+     (1/2 : ℝ≥0∞) • Measure.dirac (1 : ℝ)) :
+   CDFHadamard quadraticCDFFunctional (cdf μ (X 0)) ∧
+   quadraticCDFFunctional (cdf μ (X 0))=0 ∧
+   (∀ n : ℕ,0 < n → mean μ (fun ω =>
+     (Real.sqrt n*quadraticCDFFunctional (cdf (empirical X n ω) id))^2)=
+       (3*(n : ℝ)-2)/(16*(n : ℝ)^2)) ∧
+   CP μ (fun n ω => Real.sqrt n*quadraticCDFFunctional (cdf (empirical X n ω) id)) 0 := by
+  sorry
 
 /-- The conditional-variance version of Y is also that of its CEF deviation, and the deviation variance equals the mean conditional variance.
 Target P001-T74: Section 5.1.1, the comparison of the classical linear model's errors with deviations from the CEF, corrected ('uncorrelated with' for 'independent of'); with Theorem 2.2.19 (Properties of Deviations from the CEF).
@@ -6503,10 +7579,8 @@ theorem cef_residual_conditional_variance {Ω E : Type*} [MeasurableSpace Ω] [M
   rw [var, variance_eq_integral hr2.aemeasurable, hr]
   simpa [mean] using hv'
 
-
-/- The two square-integral norm/Minkowski lemmas adapt the StatLean modules
-`QMDAnalytic` and `ZEstimatorModelShift` (Apache-2.0;
-see NOTICE at the repository root). -/
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
+/- The two square-integral norm/Minkowski lemmas adapt proved StatLean QMDAnalytic.lean and ZEstimatorModelShift.lean at e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2 (Apache-2.0; see AronowAudit/External/StatLean/LICENSE). The Gram and finite polynomial L2 proofs are local. -/
 theorem sqrt_integral_sq_eq_lpNorm {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
     {f : Ω → ℝ} (hf : MemLp f 2 μ) :
     Real.sqrt (∫ ω, f ω^2 ∂μ) = (eLpNorm f 2 μ).toReal := by
@@ -6632,6 +7706,39 @@ theorem post_treatment_latent_random_assignment : FCondIndep postTreatmentLaw
       norm_num [fprob,postTreatmentLaw,postX,Fin.sum_univ_succ])
     norm_num [fprob,postTreatmentLaw,postY,postD,postX,Fin.sum_univ_succ] at hh
 
+/-- With discrete covariates, strong ignorability identifies the ATE as the difference of arm-CEF sums weighted by the covariate PMF.
+Target P001-T116: Theorem 7.1.13 (ATE under Strong Ignorability), Theorem 7.1.14 (Conditional ATE under Strong Ignorability) and Theorem 7.1.16 (Strong Ignorability and the Propensity Score).
+Location: Definition 7.1.12: p. 247 (PDF p. 265). Theorem 7.1.13: p. 248 (PDF p. 266). Theorem 7.1.14: p. 249 (PDF p. 267). Definition 7.1.15: p. 250 (PDF p. 268). Theorem 7.1.16: p. 251 (PDF p. 269), proof on pp. 251–252. -/
+theorem discrete_strong_ignorability_ate_sum {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E] [Countable E] [MeasurableSingletonClass E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y0 Y1 D : Ω → ℝ) (h0 : Measurable Y0) (h1 : Measurable Y1) (hD : Measurable D)
+   (hi0 : Integrable Y0 μ) (hi1 : Integrable Y1 μ) (hbinary : ∀ ω,D ω=0 ∨ D ω=1)
+   (p : E → ℝ) (hp : IsCEF μ X D p) (ε : ℝ) (hε : 0 < ε)
+   (hpos : ∀ ω,ε < p (X ω) ∧ p (X ω) < 1-ε)
+   (hCI : CI μ X hX (fun ω => (Y0 ω,Y1 ω)) D)
+   (m0 m1 : E → ℝ)
+   (hm0 : IsCEF (μ.restrict {ω | D ω=0}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m0)
+   (hm1 : IsCEF (μ.restrict {ω | D ω=1}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m1)
+   (hmi0 : Integrable (m0 ∘ X) μ) (hmi1 : Integrable (m1 ∘ X) μ) : mean μ (fun ω => Y1 ω-Y0 ω)=
+   (∑' x : E,m1 x*prob μ {ω | X ω=x})-(∑' x : E,m0 x*prob μ {ω | X ω=x}) := by
+  sorry
+
+/-- Once strong ignorability is assumed explicitly, the corrected application uses the discrete-covariate ATE sum identity.
+Target P001-T22: Section 7.5, the justification of ignorability in the application, corrected: conditional independence as an explicit substantive assumption; what follows from it.
+Location: p. 278 (PDF p. 296), paragraph beginning 'The fact that random assignment is unlikely to hold'. -/
+theorem explicit_ignorability_discrete_ate {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E] [Countable E] [MeasurableSingletonClass E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y0 Y1 D : Ω → ℝ) (h0 : Measurable Y0) (h1 : Measurable Y1) (hD : Measurable D)
+   (hi0 : Integrable Y0 μ) (hi1 : Integrable Y1 μ) (hbinary : ∀ ω,D ω=0 ∨ D ω=1)
+   (p : E → ℝ) (hp : IsCEF μ X D p) (ε : ℝ) (hε : 0 < ε)
+   (hpos : ∀ ω,ε < p (X ω) ∧ p (X ω) < 1-ε)
+   (hCI : CI μ X hX (fun ω => (Y0 ω,Y1 ω)) D)
+   (m0 m1 : E → ℝ)
+   (hm0 : IsCEF (μ.restrict {ω | D ω=0}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m0)
+   (hm1 : IsCEF (μ.restrict {ω | D ω=1}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m1)
+   (hmi0 : Integrable (m0 ∘ X) μ) (hmi1 : Integrable (m1 ∘ X) μ) : mean μ (fun ω => Y1 ω-Y0 ω)=
+   (∑' x : E,m1 x*prob μ {ω | X ω=x})-(∑' x : E,m0 x*prob μ {ω | X ω=x}) := by
+  sorry
 
 /-- The printed plug-in formula takes the coordinate derivative of the chosen estimated CEF at the componentwise sample covariate mean.
 Target P001-T102: Definition 4.3.7 (Partial Derivative at the Average) and the plug-in estimate that follows it, as printed.
@@ -6764,6 +7871,20 @@ theorem sieve_finite_approximation_coefficient_bound {n K : ℕ} (hn : 0 < n) (P
    (∑ i,(P.mulVec (olsCoef P r) i)^2)/(n : ℝ) ≤ (∑ i,(r i)^2)/(n : ℝ) := by
   exact ⟨hgram _,div_le_div_of_nonneg_right (ols_fitted_sum_squares_le P r) (Nat.cast_nonneg n)⟩
 
+/-- For a fixed design with Gram lower bound c, mean-zero uncorrelated sampling noises of variances at most V give coefficient second moment at most V*trace(G⁻¹)/n, bounded by V*K/(c*n).
+Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem sieve_finite_sampling_noise_trace_bound_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {n K : ℕ} (hn : 0 < n) (P : Matrix (Fin n) (Fin K) ℝ)
+   (u : Ω → Fin n → ℝ) (hu2 : ∀ i,MemLp (fun ω => u ω i) 2 μ)
+   (hu0 : ∀ i,mean μ (fun ω => u ω i)=0)
+   (huncorr : ∀ i j,i≠j → covariance (fun ω => u ω i) (fun ω => u ω j) μ=0)
+   (V c : ℝ) (hV : 0 ≤ V) (hc : 0 < c) (huV : ∀ i,var μ (fun ω => u ω i) ≤ V)
+   (hgram : ∀ v : Fin K → ℝ,c*(∑ k,(v k)^2) ≤ (∑ i,(P.mulVec v i)^2)/(n : ℝ)) :
+   mean μ (fun ω => ∑ k,(olsCoef P (u ω) k)^2) ≤ 
+     V*(∑ k,(fixedDesignGram P)⁻¹ k k)/(n : ℝ) ∧
+   V*(∑ k,(fixedDesignGram P)⁻¹ k k)/(n : ℝ) ≤ V*(K : ℝ)/(c*(n : ℝ)) := by
+  sorry
 
 /-- The exact twelve-point placebo null has positivity and potential-outcome ignorability, yet the unique population augmented BLP has W slope 4/17 and strictly smaller risk than the restricted BLP.
 Target P001-T17: Section 7.2.8 (Placebo Testing): the $F$-test comparing a regression of $D_i$ on $\mathbf{W}_i$ and $\mathbf{X}_i$ with a regression of $D_i$ on $\mathbf{X}_i$ alone, as a test of $\mathbf{W}_i \perp\!\!\!\perp D_i|\mathbf{X}_i$, as printed.
@@ -6848,7 +7969,7 @@ theorem placebo_full_finite_counterexample : FCondIndep placeboLaw placeboW plac
     norm_num
   · norm_num
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem iid_positive_at_parameter {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] {K τ : ℕ}
     (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
@@ -6943,6 +8064,38 @@ theorem product_maximum_likelihood_consistency {Ω : Type*} [MeasurableSpace Ω]
   exact product_mle_consistency_core μ X Y g Θ hc θ hθ hM hunique that hthat hp
     (fun n ω => hmax n ω θ hθ) Δ hΔ hlim
 
+/-- Under misspecification, actual conditional product-ML estimators consistently estimate the unique covariate-averaged KL minimizer under the corrected finite-entropy, compactness and uniform-log conditions.
+Target P001-T8: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), corrected: the KL divergence averaged over the distribution of $\mathbf{X}$.
+Location: p. 195 (PDF p. 213), Theorem 5.2.8; the explanatory paragraphs on p. 196 (PDF p. 214). -/
+theorem product_averaged_kl_ml_consistency {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+   (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+   (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+   (f : ℝ → (Fin K → ℝ) → ℝ)
+   (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+   (hfmeas : Measurable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1))
+   (hfpos : ∀ y x,0 ≤ f y x) (hfnorm : ∀ x,(∫⁻ y,ENNReal.ofReal (f y x) ∂κ)=1)
+   (htrue : μ.map (fun ω => (X 0 ω,Y 0 ω))=
+     (νX.prod κ).withDensity (fun xy => ENNReal.ofReal (f xy.2 xy.1)))
+   (Θ : Set (Fin τ → ℝ)) (hcompact : IsCompact Θ)
+   (hgmeas : ∀ t∈Θ,Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 t))
+   (hgpos : ∀ t∈Θ,∀ y x,0 ≤ g y x t)
+   (hgnorm : ∀ t∈Θ,∀ x,(∫⁻ y,ENNReal.ofReal (g y x t) ∂κ)=1)
+   (hdom : ∀ t∈Θ,∀ᵐ xy ∂(νX.prod κ),0 < f xy.2 xy.1 → 0 < g xy.2 xy.1 t)
+   (hentropy : Integrable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1*Real.log (f xy.2 xy.1)) (νX.prod κ))
+   (hcross : ∀ t∈Θ,Integrable
+     (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1*Real.log (g xy.2 xy.1 t)) (νX.prod κ))
+   (hM : ContinuousOn (expectedLogLikelihood μ (X 0) (Y 0) g) Θ)
+   (tstar : Fin τ → ℝ) (ht : tstar∈Θ)
+   (hunique : ∀ t∈Θ,averageKL νX κ f g tstar ≤ averageKL νX κ f g t ∧
+     (averageKL νX κ f g t=averageKL νX κ f g tstar → t=tstar))
+   (that : ℕ → Ω → Fin τ → ℝ) (hmeas : ∀ n,Measurable (that n))
+   (hthat : ∀ n ω,that n ω∈Θ)
+   (hmax : ∀ n ω t,t∈Θ → sampleLikelihood X Y g n ω t ≤ sampleLikelihood X Y g n ω (that n ω))
+   (Δ : ℕ → Ω → ℝ) (hbound : ∀ n ω t,t∈Θ →
+     |sampleLogLikelihood X Y g n ω t-expectedLogLikelihood μ (X 0) (Y 0) g t| ≤ Δ n ω)
+   (hlim : CP μ Δ 0) : CP μ that tstar := by
+  sorry
 
 /-- For an identified correctly specified conditional mixture, maximizers of the actual product likelihood consistently estimate the full parameter vector under the explicit compact uniform-log regularities.
 Target P001-T12: Section 5.2.5, the 'any subset' sentence, corrected: consistency and efficiency of the mixture ML estimator under identification of the full parameter vector.
@@ -6983,6 +8136,45 @@ theorem product_identified_mixture_ml_consistency {Ω : Type*} [MeasurableSpace 
   exact product_mle_consistency_core μ X Y (mixtureFamily p g) Θ hc θ hθ hM hunique that hthat hp
     (fun n ω => hmax n ω θ hθ) Δ hΔ hlim
 
+/-- A consistent actual product-mixture ML estimator has the centered root-n inverse-information Gaussian limit under the corrected interior, differentiability and uniform Hessian conditions.
+Target P001-T12: Section 5.2.5, the 'any subset' sentence, corrected: consistency and efficiency of the mixture ML estimator under identification of the full parameter vector.
+Location: p. 199 (PDF p. 217), second paragraph. -/
+theorem product_identified_mixture_ml_normal_limit {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {M K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+   (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+   (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+   (p : (Fin τ → ℝ) → Fin M → ℝ)
+   (g : Fin M → ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+   (Θ : Set (Fin τ → ℝ)) (θ : Fin τ → ℝ) (δ : ℝ) (hδ : 0 < δ)
+   (hinterior : Metric.ball θ δ⊆Θ)
+   (hp : ∀ t∈Θ,(∀ m,0 ≤ p t m) ∧ (∑ m,p t m)=1)
+   (hg : ∀ t∈Θ,∀ m,Measurable (fun xy : (Fin K → ℝ) × ℝ => g m xy.2 xy.1 t))
+   (hnonneg : ∀ t∈Θ,∀ m y x,0 ≤ g m y x t)
+   (hnorm : ∀ t∈Θ,∀ m x,(∫⁻ y,ENNReal.ofReal (g m y x t) ∂κ)=1)
+   (htrue : μ.map (fun ω => (X 0 ω,Y 0 ω))=conditionalModelLaw νX κ (mixtureFamily p g) θ)
+   (hpositive : ∀ᵐ ω ∂μ,∀ t∈Metric.ball θ δ,0 < mixtureFamily p g (Y 0 ω) (X 0 ω) t)
+   (hdiff : ∀ᵐ ω ∂μ,ContDiffOn ℝ 2
+     (fun t => Real.log (mixtureFamily p g (Y 0 ω) (X 0 ω) t)) (Metric.ball θ δ))
+   (hs2 : ∀ j,MemLp (fun ω => modelScore (mixtureFamily p g) (Y 0 ω) (X 0 ω) θ j) 2 μ)
+   (hszero : ∀ j,mean μ (fun ω => modelScore (mixtureFamily p g) (Y 0 ω) (X 0 ω) θ j)=0)
+   (hinfo : (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ).PosDef)
+   (hHinfo : populationHessian μ (X 0) (Y 0) (mixtureFamily p g) θ=
+     -informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)
+   (hHcont : ContinuousAt (populationHessian μ (X 0) (Y 0) (mixtureFamily p g)) θ)
+   (hHi : ∀ t∈Metric.ball θ δ,∀ j k,
+     Integrable (fun ω => modelHessian (mixtureFamily p g) (Y 0 ω) (X 0 ω) t j k) μ)
+   (ΔH : ℕ → Ω → ℝ) (hHbound : ∀ n ω t,t∈Metric.ball θ δ → ∀ j k,
+     |sampleHessian X Y (mixtureFamily p g) n ω t j k-
+       populationHessian μ (X 0) (Y 0) (mixtureFamily p g) t j k| ≤ ΔH n ω)
+   (hHlim : CP μ ΔH 0)
+   (that : ℕ → Ω → Fin τ → ℝ) (hmeas : ∀ n,Measurable (that n))
+   (hthat : ∀ n ω,that n ω∈Θ)
+   (hmax : ∀ n ω t,t∈Θ → sampleLikelihood X Y (mixtureFamily p g) n ω t ≤ 
+     sampleLikelihood X Y (mixtureFamily p g) n ω (that n ω))
+   (hconsistent : CP μ that θ) :
+   WeakLimit μ (fun n ω => Real.sqrt n • (that n ω-θ))
+     (normalVectorLaw (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)⁻¹) := by
+  sorry
 
 /-- With unit scales and zero means, both printed correlation endpoints force a zero denominator; Lean’s totalized endpoint formula is identically zero and integrates to zero rather than one.
 Target P001-T38: The sentence after Theorem 2.1.21 ('any linear combination of any number of mutually independent normal random variables must itself be normal') and the parameter range of the bivariate normal PDF in footnote 13, as printed.
@@ -7003,10 +8195,34 @@ theorem bivariate_normal_endpoint_counterexample : (1 : ℝ)∈Set.Icc (-1) 1 �
   · simp_rw [(hf _).2]
     simp
 
+/-- With the printed full compact-interval PDF support, continuous CEF and bounded conditional variance, a polynomial sieve fit is L2 consistent under the corrected dimension rate and positive Gram stability condition.
+Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem sieve_consistency_full_interval_support {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X Y : ℕ → Ω → ℝ) (hiid : IID μ (fun i ω => (X i ω, Y i ω)))
+   (a b V : ℝ) (hab : a  <  b) (hV : 0  ≤  V) (hY2 : MemLp (Y 0) 2 μ)
+   (fX : ℝ → ℝ) (hfX : HasPDF (μ.map (X 0)) fX)
+   (hfullsupport : paperSupport fX=Set.Icc a b)
+   (hsupp : ∀ᵐ ω ∂μ, X 0 ω ∈ Set.Icc a b)
+   (m : ℝ → ℝ) (hm : ContinuousOn m (Set.Icc a b)) (hcef : IsCEF μ (X 0) (Y 0) m)
+   (hvar : ∀ A : Set ℝ, MeasurableSet A →
+     (∫ ω in (X 0) ⁻¹' A, (Y 0 ω-m (X 0 ω))^2 ∂μ)  ≤  V * prob μ ((X 0) ⁻¹' A))
+   (p : ℕ → Polynomial ℝ) (hdeg : ∀ k, (p k).natDegree = k)
+   (horth : ∀ j k, mean μ (fun ω => (p j).eval (X 0 ω)*(p k).eval (X 0 ω)) = if j=k then 1 else 0)
+   (J : ℕ → ℕ) (hJ : Tendsto J atTop atTop)
+   (hrate : Tendsto (fun (n : ℕ) => ((J n+1 : ℕ) : ℝ)/n) atTop (nhds 0))
+   (c : ℝ) (hc : 0  <  c)
+   (hgram : Tendsto (fun (n : ℕ) => prob μ {ω | ∀ v : Fin (J n+1) → ℝ,
+     c*(∑ k, (v k)^2)  ≤  (∑ i ∈ Finset.range n,
+       (∑ k : Fin (J n+1), v k*(p k).eval (X i ω))^2)/(n : ℝ)}) atTop (nhds 1))
+   (fit : ℕ → Ω → Polynomial ℝ) (hfit : IsSieveLS X Y J fit) :
+   CP μ (fun n ω => ∫ x, ((fit n ω).eval x-m x)^2 ∂(μ.map (X 0))) 0 := by
+  exact sieve_consistency_stable_gram_supporting μ X Y hiid a b V hab hV hY2 hsupp
+    m hm hcef hvar p hdeg horth J hJ hrate c hc hgram fit hfit
 
 end
 
-
+/-! Fidelity repairs from the independent review. -/
 noncomputable section
 local instance (p : Prop) : Decidable p := Classical.propDecidable p
 
@@ -7017,6 +8233,25 @@ def HasVectorPDF {K : ℕ} (ν : Measure (Fin K → ℝ)) (f : (Fin K → ℝ) �
   AEMeasurable f volume ∧ (∀ x, 0 ≤ f x) ∧ Integrable f volume ∧
   ν = volume.withDensity (fun x => ENNReal.ofReal (f x))
 
+/-- The fixed bounded independent gap-uniform joint law has CEF zero on its support, while smooth CEF extensions have every prescribed derivative at the covariate mean zero.
+Target P001-T3: Definition 4.3.7 (Partial Derivative at the Average) and the remark that the PDA 'has a well-defined meaning', as printed: a joint distribution for which the PDA is not determined.
+Location: Definition 4.3.7: p. 167 (PDF p. 185). Remark: p. 168 (PDF p. 186). Footnote 13: p. 166 (PDF p. 184). Definition 2.2.15: p. 69 (PDF p. 87). -/
+theorem pda_extrapolation_witness :
+  IsProbabilityMeasure gapJointLaw ∧
+  HasJointPDF gapJointLaw (fun xy => gapPDF xy.1 *
+    (if xy.2 ∈ Set.Icc (-1 : ℝ) 1 then 1/2 else 0)) ∧
+  gapJointLaw = (gapJointLaw.map Prod.fst).prod (gapJointLaw.map Prod.snd) ∧
+  HasPDF (gapJointLaw.map Prod.fst) gapPDF ∧
+  gapJointLaw.map Prod.snd = uniformLaw (-1) 1 ∧
+  (∀ᵐ xy ∂gapJointLaw, xy.1 ∈ Set.Icc (-2 : ℝ) 2 ∧ xy.2 ∈ Set.Icc (-1 : ℝ) 1) ∧
+  mean gapJointLaw Prod.fst = 0 ∧ gapPDF 0 = 0 ∧
+  IsCEF gapJointLaw Prod.fst Prod.snd (fun _ => 0) ∧
+  ContDiff ℝ 1 pdaBump ∧
+  (∀ x, 0 < gapPDF x → pdaBump x = 0) ∧
+  deriv (fun _ : ℝ => (0 : ℝ)) 0 = 0 ∧
+  (∀ a : ℝ, IsCEF gapJointLaw Prod.fst Prod.snd (fun x => a*pdaBump x) ∧
+    deriv (fun x => a*pdaBump x) (mean gapJointLaw Prod.fst) = a) := by
+  sorry
 
 /-- For a continuous covariate vector with finite mean and a PDF positive on an open neighborhood of that mean, continuous CEF versions agree there and transfer an existing coordinate derivative.
 Target P001-T4: Definition 4.3.7 (Partial Derivative at the Average), corrected with a support condition at the covariate mean.
@@ -7054,10 +8289,61 @@ theorem pda_unique_on_open_support {Ω : Type*} [MeasurableSpace Ω]
   have hd' := pda_derivative_transfers_on_open_support U hU _ hmean m m' hc hc' hrestrict k a hd
   exact ⟨he.1,hd',he.2⟩
 
+/-- The polynomial least-squares sieve is L² consistent under the exact compact-interval PMF/PDF support, degree, noise and Gram stability assumptions of the correction.
+Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem sieve_consistency_stable_gram {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (X Y : ℕ → Ω → ℝ) (hiid : IID μ (fun i ω => (X i ω, Y i ω)))
+   (a b V : ℝ) (hab : a  <  b) (hV : 0  ≤  V) (hY2 : MemLp (Y 0) 2 μ)
+   (fX : ℝ → ℝ) (hfX : HasPDF (μ.map (X 0)) fX)
+   (hfullsupport : paperSupport fX=Set.Icc a b)
+   (hsupp : ∀ᵐ ω ∂μ, X 0 ω ∈ Set.Icc a b)
+   (m : ℝ → ℝ) (hm : ContinuousOn m (Set.Icc a b)) (hcef : IsCEF μ (X 0) (Y 0) m)
+   (hvar : ∀ A : Set ℝ, MeasurableSet A →
+     (∫ ω in (X 0) ⁻¹' A, (Y 0 ω-m (X 0 ω))^2 ∂μ)  ≤  V * prob μ ((X 0) ⁻¹' A))
+   (p : ℕ → Polynomial ℝ) (hdeg : ∀ k, (p k).natDegree = k)
+   (horth : ∀ j k, mean μ (fun ω => (p j).eval (X 0 ω)*(p k).eval (X 0 ω)) = if j=k then 1 else 0)
+   (J : ℕ → ℕ) (hJ : Tendsto J atTop atTop)
+   (hrate : Tendsto (fun (n : ℕ) => ((J n+1 : ℕ) : ℝ)/n) atTop (nhds 0))
+   (c : ℝ) (hc : 0  <  c)
+   (hgram : Tendsto (fun (n : ℕ) => prob μ {ω | ∀ v : Fin (J n+1) → ℝ,
+     c*(∑ k, (v k)^2)  ≤  (∑ i ∈ Finset.range n,
+       (∑ k : Fin (J n+1), v k*(p k).eval (X i ω))^2)/(n : ℝ)}) atTop (nhds 1))
+   (fit : ℕ → Ω → Polynomial ℝ) (hfit : IsSieveLS X Y J fit) :
+   CP μ (fun n ω => ∫ x, ((fit n ω).eval x-m x)^2 ∂(μ.map (X 0))) 0 := by
+  sorry
 
-/-- "Pr_theta of the n iid observations" (Section 5.2.5, p. 199; T11).
-Coordinatewise probability convergence is equivalent to vector convergence in
-probability in this finite parameter dimension. -/
+/-- For the random sample design, conditional zero means, uncorrelated sampling noise and bounded conditional variances give the conditional OLS noise trace bound on the good Gram event.
+Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
+Location: pp. 168–169 (PDF pp. 186–187). -/
+theorem sieve_finite_sampling_noise_trace_bound {Ω : Type*} [MeasurableSpace Ω]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] {n K : ℕ} (hn : 0 < n)
+  (P : Ω → Matrix (Fin n) (Fin K) ℝ) (hP : Measurable P)
+  (u : Ω → Fin n → ℝ) (hu2 : ∀ i, MemLp (fun ω => u ω i) 2 μ)
+  (hu0 : ∀ i, IsCEF μ P (fun ω => u ω i) (fun _ => 0))
+  (huncorr : ∀ i j, i ≠ j →
+    IsCEF μ P (fun ω => u ω i*u ω j) (fun _ => 0))
+  (v : Matrix (Fin n) (Fin K) ℝ → Fin n → ℝ)
+  (hv : ∀ i, IsCEF μ P (fun ω => (u ω i)^2) (fun p => v p i))
+  (V c : ℝ) (hV : 0 ≤ V) (hc : 0 < c)
+  (hvar : ∀ᵐ ω ∂μ, ∀ i, v (P ω) i ≤ V)
+  : ∃ q : Matrix (Fin n) (Fin K) ℝ → ℝ,
+  IsCEF μ P (fun ω => if (∀ b : Fin K → ℝ, c*(∑ k, (b k)^2) ≤
+    (∑ i, ((P ω).mulVec b i)^2)/(n : ℝ))
+    then ∑ k, (olsCoef (P ω) (u ω) k)^2 else 0) q ∧
+  (∀ᵐ ω ∂μ, (∀ b : Fin K → ℝ, c*(∑ k, (b k)^2) ≤
+    (∑ i, ((P ω).mulVec b i)^2)/(n : ℝ)) →
+    q (P ω) ≤ V*(∑ k, (fixedDesignGram (P ω))⁻¹ k k)/(n : ℝ) ∧
+    V*(∑ k, (fixedDesignGram (P ω))⁻¹ k k)/(n : ℝ) ≤
+      V*(K : ℝ)/(c*(n : ℝ))) ∧
+  mean μ (fun ω => if (∀ b : Fin K → ℝ, c*(∑ k, (b k)^2) ≤
+    (∑ i, ((P ω).mulVec b i)^2)/(n : ℝ))
+    then ∑ k, (olsCoef (P ω) (u ω) k)^2 else 0) ≤ V*(K : ℝ)/(c*(n : ℝ)) := by
+  sorry
+
+/-- "Pr_theta of the n iid observations" (Section 5.2.5, p. 199;
+T11 validator Section 3). Coordinatewise probability convergence is equivalent
+to vector convergence in probability in this finite parameter dimension. -/
 def FiniteMixtureConsistent
   (T : (n : ℕ) → (Fin n → Fin 4) → Fin 3 → ℝ) (θ : Fin 3 → ℝ) : Prop :=
   ∀ k : Fin 3, ∀ ε : ℝ, 0 < ε → Tendsto
@@ -7087,8 +8373,8 @@ theorem finite_mixture_statistical_impossibility
   obtain ⟨n,hn⟩ := Filter.Eventually.exists bad
   exact hn
 
-/-- The compact four-point mixture counterexample, including attained MLEs
-and the actual two sampling experiments (p. 199, T11). -/
+/-- The compact four-point mixture witness, including attained MLEs and the
+actual two sampling experiments (p. 199, T11 validator Sections 1–3). -/
 def UnusedMixtureWitness : Prop :=
   IsCompact disjointMixtureParameterSet ∧
   (![1,1/3,1/4] : Fin 3 → ℝ) ∈ disjointMixtureParameterSet ∧
@@ -7131,24 +8417,24 @@ theorem unused_component_counterexample_full : UnusedMixtureWitness := by
   exact unused_component_nonidentification
 
 /-- "The full applicant information shown to voters is (X,D); there is no
-additional applicant information or personal acquaintance" (T21; application
-p. 278). This structure enumerates applicant information. -/
+additional applicant information or personal acquaintance" (T21 validator,
+Section 1; application p. 278). This record enumerates applicant information. -/
 structure LeafletInformation where
   nonGender : ℝ
   gender : Bool
   personallyKnown : Bool
   deriving DecidableEq
 
-/-- "X=0; D is the gender shown on the leaflet" (T21). -/
+/-- "X=0; D is the gender shown on the leaflet" (T21 validator, Section 1). -/
 def electorateLeaflet (d : Bool) : LeafletInformation := ⟨0,d,false⟩
 
-/-- "Voter k votes no exactly when k ≤ 20+40u+5d" (T21).
-Its arguments are the voter's preference type, voter index and the displayed
-information; it has no additional applicant input. -/
+/-- "Voter k votes no exactly when k ≤ 20+40u+5d" (T21 validator,
+Section 1). Its arguments are the voter's preference type, voter index and
+the displayed information; it has no additional applicant input. -/
 def electorateVote (u : ℝ) (k : Fin 100) (info : LeafletInformation) : Prop :=
   (k.val+1 : ℝ) ≤ 20+40*u+5*(if info.gender then 1 else 0)
 
-/-- Percentage voting no among exactly 100 voters (T21).
+/-- Percentage voting no among exactly 100 voters (T21 validator, Section 1).
 For 100 voters, the count is numerically the percentage. -/
 def electorateVoteShare (i : Fin 4) (d : Bool) : ℝ :=
   ((Finset.univ.filter (fun k : Fin 100 =>
@@ -7290,8 +8576,8 @@ theorem sample_mean_variance_estimate_scale {Ω : Type*} [MeasurableSpace Ω]
 
 /-- "D(t)=E_X[KL(f(Y|X) || g(Y,X;t))]" (T8 correction to Definition
 5.2.7, p. 195). This extended nonnegative integral retains infinite KL and
-assigns infinity when the model excludes positive true mass. The real integral
-averageKL is used only in finite-entropy identities. -/
+assigns infinity when the model excludes positive true mass. The older
+real integral averageKL is reused only in finite-entropy identities. -/
 def averageKLExt {K τ : ℕ} (νX : Measure (Fin K → ℝ)) (κ : Measure ℝ)
     (f : ℝ → (Fin K → ℝ) → ℝ)
     (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ) (t : Fin τ → ℝ) : ℝ≥0∞ :=
@@ -7299,7 +8585,7 @@ def averageKLExt {K τ : ℕ} (νX : Measure (Fin K → ℝ)) (κ : Measure ℝ)
     (κ.withDensity (fun y => ENNReal.ofReal (f y x)))
     (κ.withDensity (fun y => ENNReal.ofReal (g y x t))) ∂νX
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem four_atom_integral (f : ℝ × ℝ → ℝ) (a b c d : ℝ≥0∞)
     (ha : a ≠ ∞) (hb : b ≠ ∞) (hc : c ≠ ∞) (hd : d ≠ ∞) :
     (∫ z, f z ∂(a • Measure.dirac (0,0) + b • Measure.dirac (0,1) +
@@ -7618,6 +8904,74 @@ theorem changed_covariate_marginal_mle_limit {Ω : Type*} [MeasurableSpace Ω]
     rw [min_eq_right (by linarith [hq.2]),max_eq_right (by linarith [hq.1])]
   simpa only [he] using hcp
 
+/-- For normalized conditional laws with possible zero true masses and model positivity on the true support, finite averaged entropy and cross entropy give D(t)=C−E[log g(Y,X;t)].
+Target P001-T8: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), corrected: the KL divergence averaged over the distribution of $\mathbf{X}$.
+Location: p. 195 (PDF p. 213), Theorem 5.2.8; the explanatory paragraphs on p. 196 (PDF p. 214). -/
+theorem averaged_kl_entropy_loglikelihood {Ω : Type*} [MeasurableSpace Ω]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] {K τ : ℕ}
+  (X : Ω → Fin K → ℝ) (Y : Ω → ℝ) (hX : Measurable X) (hY : Measurable Y)
+  (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX]
+  (κ : Measure ℝ) [SFinite κ] (f : ℝ → (Fin K → ℝ) → ℝ)
+  (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ) (t : Fin τ → ℝ)
+  (hf : Measurable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1))
+  (hg : Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 t))
+  (hfn : ∀ y x, 0 ≤ f y x) (hgn : ∀ y x, 0 ≤ g y x t)
+  (hfnorm : ∀ x, (∫⁻ y, ENNReal.ofReal (f y x) ∂κ)=1)
+  (hgnorm : ∀ x, (∫⁻ y, ENNReal.ofReal (g y x t) ∂κ)=1)
+  (htrue : μ.map (fun ω => (X ω,Y ω)) =
+    (νX.prod κ).withDensity (fun xy => ENNReal.ofReal (f xy.2 xy.1)))
+  (hdom : ∀ᵐ xy ∂(νX.prod κ), 0 < f xy.2 xy.1 → 0 < g xy.2 xy.1 t)
+  (hent : Integrable (fun xy : (Fin K → ℝ) × ℝ =>
+    f xy.2 xy.1*Real.log (f xy.2 xy.1)) (νX.prod κ))
+  (hcross : Integrable (fun xy : (Fin K → ℝ) × ℝ =>
+    f xy.2 xy.1*Real.log (g xy.2 xy.1 t)) (νX.prod κ)) :
+  averageKLExt νX κ f g t ≠ ∞ ∧
+  (averageKLExt νX κ f g t).toReal =
+    (∫ x, ∫ y, f y x*Real.log (f y x) ∂κ ∂νX) - expectedLogLikelihood μ X Y g t ∧
+  averageKL νX κ f g t = (averageKLExt νX κ f g t).toReal := by
+  sorry
+
+/-- An exact product MLE or a vanishing-error average-log maximizer converges to the separated population expected-log maximizer; with finite entropy this is exactly the averaged-KL minimizer.
+Target P001-T8: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), corrected: the KL divergence averaged over the distribution of $\mathbf{X}$.
+Location: p. 195 (PDF p. 213), Theorem 5.2.8; the explanatory paragraphs on p. 196 (PDF p. 214). -/
+theorem averaged_kl_ml_consistency {Ω : Type*} [MeasurableSpace Ω]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] {K τ : ℕ}
+  (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+  (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+  (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+  (f : ℝ → (Fin K → ℝ) → ℝ)
+  (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+  (hf : Measurable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1))
+  (hfn : ∀ y x, 0 ≤ f y x) (hfnorm : ∀ x, (∫⁻ y, ENNReal.ofReal (f y x) ∂κ)=1)
+  (htrue : μ.map (fun ω => (X 0 ω,Y 0 ω)) =
+    (νX.prod κ).withDensity (fun xy => ENNReal.ofReal (f xy.2 xy.1)))
+  (Θ : Set (Fin τ → ℝ))
+  (hg : ∀ t ∈ Θ, Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 t))
+  (hgn : ∀ t ∈ Θ, ∀ y x, 0 ≤ g y x t)
+  (hgnorm : ∀ t ∈ Θ, ∀ x, (∫⁻ y, ENNReal.ofReal (g y x t) ∂κ)=1)
+  (hdom : ∀ᵐ xy ∂(νX.prod κ), ∀ t ∈ Θ, 0 < f xy.2 xy.1 → 0 < g xy.2 xy.1 t)
+  (hlog : ∀ t ∈ Θ, Integrable (fun ω => Real.log (g (Y 0 ω) (X 0 ω) t)) μ)
+  (tstar : Fin τ → ℝ) (ht : tstar ∈ Θ)
+  (hsep : ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t ∈ Θ,
+    ε ≤ dist t tstar → expectedLogLikelihood μ (X 0) (Y 0) g t ≤
+      expectedLogLikelihood μ (X 0) (Y 0) g tstar-δ)
+  (that : ℕ → Ω → Fin τ → ℝ) (hm : ∀ n, Measurable (that n))
+  (hthat : ∀ n ω, that n ω ∈ Θ)
+  (e Δ : ℕ → Ω → ℝ) (hen : ∀ n ω, 0 ≤ e n ω)
+  (he : CP μ e 0) (hΔ : CP μ Δ 0)
+  (hbound : ∀ n ω t, t ∈ Θ →
+    |sampleLogLikelihood X Y g n ω t-expectedLogLikelihood μ (X 0) (Y 0) g t| ≤ Δ n ω)
+  (hmax : (∀ n ω t, t ∈ Θ →
+    sampleLikelihood X Y g n ω t ≤ sampleLikelihood X Y g n ω (that n ω)) ∨
+    (∀ n ω t, t ∈ Θ → sampleLogLikelihood X Y g n ω t-e n ω ≤
+      sampleLogLikelihood X Y g n ω (that n ω))) :
+  CP μ that tstar ∧
+  ((Integrable (fun xy : (Fin K → ℝ) × ℝ =>
+      f xy.2 xy.1*Real.log (f xy.2 xy.1)) (νX.prod κ) ∧
+    ∀ t ∈ Θ, Integrable (fun xy : (Fin K → ℝ) × ℝ =>
+      f xy.2 xy.1*Real.log (g xy.2 xy.1 t)) (νX.prod κ)) →
+    ∀ t ∈ Θ, averageKLExt νX κ f g tstar ≤ averageKLExt νX κ f g t) := by
+  sorry
 
 /-- For a normalized nonnegative conditional model true at θ, averaged KL at θ is zero; a unique averaged-KL minimizer is θ.
 Target P001-T8: Theorem 5.2.8 (The ML Estimator Is Consistent for the Minimum KL Divergence Predictor), corrected: the KL divergence averaged over the distribution of $\mathbf{X}$.
@@ -7694,6 +9048,65 @@ theorem identified_mixture_ml_consistency {Ω : Type*} [MeasurableSpace Ω] (μ 
   exact product_mle_consistency_core μ X Y (mixtureFamily p g) Θ hc θ hθ hM hunique that hthat hp
     (fun n ω => hmax n ω θ hθ) Δ hΔ hlim
 
+/-- The nearest-neighbor causal matching statistic with a consistent score recomputed on each sample and bootstrap resample is unbiased with finite root-n variance, but its bootstrap variance is inconsistent.
+Target P001-T15: Section 7.2.4 (matching with estimated propensity scores: the bootstrap's failure attributed to slowly shrinking bias) and footnote 20 ('the bootstrap standard errors are likely to adequately characterize sampling variability'), as printed.
+Location: p. 264 (PDF p. 282), end of Section 7.2.4, with footnote 13; p. 279 (PDF p. 297), footnote 20; p. 280 (PDF p. 298), Table 7.5.1, row 'Matching'. Matching: Section 7.2.4, pp. 262–263 (PDF pp. 280–281). -/
+theorem matching_bootstrap_counterexample {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z) (hlaw : μ.map (Z 0)=matchingUnitLaw) :
+   (∀ n,0 < n → mean μ (fun ω => causalMatchEstimated (firstSample Z n ω))=0) ∧
+   Tendsto (fun (n : ℕ) => (n : ℝ)*var μ (fun ω => causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchV) ∧
+   Tendsto (fun (n : ℕ) => mean μ (fun ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchVB) ∧
+   0 < matchVB ∧ matchVB < matchV ∧
+   ¬ CP μ (fun n ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω)) matchV := by
+  sorry
+
+/-- The nearest-neighbor causal matching statistic with a consistent score recomputed on each sample and bootstrap resample is unbiased with finite root-n variance, but its bootstrap variance is inconsistent.
+Target P001-T16: Section 7.2.4 and footnote 20, corrected: for nearest-neighbour matching the ordinary bootstrap can give inconsistent standard errors even without bias, and root-$n$ consistency and bootstrap validity are separate questions.
+Location: p. 264 (PDF p. 282), end of Section 7.2.4 and footnote 13; p. 279 (PDF p. 297), footnote 20. -/
+theorem matching_bootstrap_correction {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Z : ℕ → Ω → ℝ × Bool × Bool) (hiid : IID μ Z) (hlaw : μ.map (Z 0)=matchingUnitLaw) :
+   (∀ n,0 < n → mean μ (fun ω => causalMatchEstimated (firstSample Z n ω))=0) ∧
+   Tendsto (fun (n : ℕ) => (n : ℝ)*var μ (fun ω => causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchV) ∧
+   Tendsto (fun (n : ℕ) => mean μ (fun ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω))) atTop (nhds matchVB) ∧
+   0 < matchVB ∧ matchVB < matchV ∧
+   ¬ CP μ (fun n ω => (n : ℝ)*bootVar causalMatchEstimated (firstSample Z n ω)) matchV := by
+  sorry
+
+/-- Under conditional independence and a linear treatment CEF, adding the placebo variables preserves that CEF and the best linear predictor; an invertible augmented moment matrix makes every placebo coefficient uniquely zero.
+Target P001-T18: Section 7.2.8, the regression implementation of the placebo test, corrected: valid when $\mathrm{E}[D_i|\mathbf{X}_i]$ is linear in the included regressors.
+Location: p. 270 (PDF p. 288), Section 7.2.8. -/
+theorem placebo_linear_cef_correction {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K L : ℕ} (X : Ω → Fin K → ℝ) (W : Ω → Fin L → ℝ) (D : Ω → ℝ)
+   (hX : Measurable X) (hW : Measurable W) (hD : Measurable D)
+   (hbinary : ∀ ω,D ω=0 ∨ D ω=1)
+   (hSupportD : 0 < prob μ {ω | D ω=1} ∧ prob μ {ω | D ω=1} < 1)
+   (hX2 : ∀ k,MemLp (fun ω => X ω k) 2 μ) (hW2 : ∀ k,MemLp (fun ω => W ω k) 2 μ)
+   (hCI : CI μ X hX W D) (γ : Fin (K+1) → ℝ) (hcef : IsCEF μ X D (linearPredictor γ))
+   (hRank : IsUnit (Matrix.det ((fun j k : Fin (K+L+1) => mean μ (fun ω =>
+     (Fin.cases 1 (Fin.addCases (X ω) (W ω)) j)*
+     (Fin.cases 1 (Fin.addCases (X ω) (W ω)) k))) : Matrix (Fin (K+L+1)) (Fin (K+L+1)) ℝ))) :
+   IsCEF μ (fun ω => (X ω,W ω)) D (fun xw => linearPredictor γ xw.1) ∧
+   (∀ a : ℝ,∀ b : Fin K → ℝ,∀ c : Fin L → ℝ,
+     mean μ (fun ω => (D ω-linearPredictor γ (X ω))^2) ≤
+       mean μ (fun ω => (D ω-(a+(∑ k,b k*X ω k)+(∑ k,c k*W ω k)))^2)) ∧
+   ∀ a : ℝ,∀ b : Fin K → ℝ,∀ c : Fin L → ℝ,
+     (mean μ (fun ω => (D ω-(a+(∑ k,b k*X ω k)+(∑ k,c k*W ω k)))^2)=
+       mean μ (fun ω => (D ω-linearPredictor γ (X ω))^2)) ↔
+       a=γ 0 ∧ (∀ k,b k=γ k.succ) ∧ (∀ k,c k=0) := by
+  sorry
+
+/-- There is an actual absolutely continuous random variable on a probability space whose entire range contains no interval of positive length.
+Target P001-T32: Section 1.2.4, the description of the range of a continuous random variable, corrected.
+Location: p. 24 (PDF p. 42), paragraph before Definition 1.2.14. -/
+theorem continuous_range_without_interval :
+  ∃ C : Set ℝ, MeasurableSet C ∧ volume C=1/2 ∧
+    ∃ μ : Measure C, IsProbabilityMeasure μ ∧
+      Measurable (fun x : C => (x : ℝ)) ∧
+      Set.range (fun x : C => (x : ℝ))=C ∧
+      HasPDF (μ.map (fun x : C => (x : ℝ))) (fun x => if x ∈ C then 2 else 0) ∧
+      ¬ C.Countable ∧ ¬ Countable C ∧
+      ∀ a b : ℝ, a < b → ¬ Set.Icc a b ⊆ Set.range (fun x : C => (x : ℝ)) := by
+  sorry
 
 /-- With X uniform on (0,1) and independent standard normal noise, Y=10X²+W has CEF 10X² and BLP intercept −5/3 and slope 10.
 Target P001-T46: Example 2.2.24 (BLP under Nonlinearity), the CEF formula, corrected; with the CEF and BLP of Example 2.2.23.
@@ -7708,6 +9121,23 @@ theorem quadratic_cef_factor_ten {Ω : Type*} [MeasurableSpace Ω] (μ : Measure
    blpSlope μ X Y=10 ∧ blpIntercept μ X Y= -5/3 := by
   exact uniform_quadratic_cef_and_blp μ X W hX hW hi hx hw
 
+/-- Independent random variables have constant conditional mean and variance and constant BLP; their measurable composed random variables h(Y) and g(X) satisfy the corrected conditional-mean and BLP statements.
+Target P001-T47: Theorem 2.2.25 (Implications of Independence, Part III), fourth bullet, first sub-bullet, corrected.
+Location: pp. 82–83 (PDF pp. 100–101). -/
+theorem independent_functions_cef {Ω : Type*} [MeasurableSpace Ω]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] (X Y : Ω → ℝ)
+  (hX : Measurable X) (hY : Measurable Y) (hi : IndepFun X Y μ)
+  (hX2 : MemLp X 2 μ) (hY2 : MemLp Y 2 μ)
+  (g h : ℝ → ℝ) (hgX : Measurable (g ∘ X)) (hhY : Measurable (h ∘ Y))
+  (hg2 : MemLp (g ∘ X) 2 μ) (hh2 : MemLp (h ∘ Y) 2 μ) :
+  IsCEF μ X Y (fun _ => mean μ Y) ∧
+  IsCEF μ X (fun ω => (Y ω-mean μ Y)^2) (fun _ => var μ Y) ∧
+  (∀ a b : ℝ, linearRisk μ X Y (mean μ Y) 0 ≤ linearRisk μ X Y a b) ∧
+  IndepFun (g ∘ X) (h ∘ Y) μ ∧
+  IsCEF μ (g ∘ X) (h ∘ Y) (fun _ => mean μ (h ∘ Y)) ∧
+  ∀ a b : ℝ, linearRisk μ (g ∘ X) (h ∘ Y) (mean μ (h ∘ Y)) 0 ≤
+    linearRisk μ (g ∘ X) (h ∘ Y) a b := by
+  sorry
 
 /-- "A unit selected with equal probabilities" (Definition 3.1.2 and
 Example 3.1.3, pp. 93–94). The law is on unit indices, allowing repeated outcomes. -/
@@ -7768,6 +9198,97 @@ def IsCDFBridge [MeasurableSpace KolmogorovSpace] (F : ℝ → ℝ) (ν : Measur
     0 ≤ v ∧ ν.map (fun h => ∑ j, a j*h (x j)) =
       gaussianReal 0 ⟨max v 0, le_max_right _ _⟩
 
+/-- For the actual iid empirical CDF and a Hadamard-differentiable functional in Kolmogorov norm, the Brownian-bridge process limit is derived and the plug-in statistic has a normal limit with the derivative’s strictly positive finite variance.
+Target P001-T57: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators), corrected with the non-degeneracy condition.
+Location: p. 120 (PDF p. 138), Theorem 3.3.6 and footnote 31; Definition 3.2.28, p. 112 (PDF p. 130). -/
+theorem functional_delta_nondegenerate_correction {Ω : Type*} [MeasurableSpace Ω]
+  [MeasurableSpace KolmogorovSpace] [BorelSpace KolmogorovSpace]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] (X : ℕ → Ω → ℝ) (hiid : IID μ X)
+  (T : KolmogorovSpace → ℝ) (L : KolmogorovSpace →L[ℝ] ℝ)
+  (hd : HadamardAt cdfDomain (CDFTangent (cdf μ (X 0))) T
+    (kolmogorovEmbed (cdf μ (X 0))) L)
+  (νB : Measure KolmogorovSpace) [IsProbabilityMeasure νB]
+  (hbridge : IsCDFBridge (cdf μ (X 0)) νB)
+  (hstat : ∀ n, Measurable (fun ω => T (empiricalCDFElement X n ω)))
+  (hL2 : MemLp (fun h => L h) 2 νB) (hv : 0 < var νB (fun h => L h)) :
+  OuterWeakLimit μ (fun n ω => Real.sqrt n •
+    (empiricalCDFElement X n ω-kolmogorovEmbed (cdf μ (X 0)))) νB ∧
+  CD μ (fun n ω => Real.sqrt n*(T (empiricalCDFElement X n ω)-
+    T (kolmogorovEmbed (cdf μ (X 0)))))
+    (gaussianReal 0 ⟨var νB (fun h => L h), le_of_lt hv⟩) := by
+  sorry
+
+/-- For the actual iid empirical CDF and a Hadamard-differentiable functional in Kolmogorov norm, the Brownian-bridge process limit is derived and the plug-in statistic has a normal limit with the derivative’s strictly positive finite variance.
+Target P001-T57: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators), corrected with the non-degeneracy condition.
+Location: p. 120 (PDF p. 138), Theorem 3.3.6 and footnote 31; Definition 3.2.28, p. 112 (PDF p. 130). -/
+theorem empirical_cdf_delta_nondegenerate {Ω : Type*} [MeasurableSpace Ω]
+  [MeasurableSpace KolmogorovSpace] [BorelSpace KolmogorovSpace]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] (X : ℕ → Ω → ℝ) (hiid : IID μ X)
+  (T : KolmogorovSpace → ℝ) (L : KolmogorovSpace →L[ℝ] ℝ)
+  (hd : HadamardAt cdfDomain (CDFTangent (cdf μ (X 0))) T
+    (kolmogorovEmbed (cdf μ (X 0))) L)
+  (νB : Measure KolmogorovSpace) [IsProbabilityMeasure νB]
+  (hbridge : IsCDFBridge (cdf μ (X 0)) νB)
+  (hstat : ∀ n, Measurable (fun ω => T (empiricalCDFElement X n ω)))
+  (hL2 : MemLp (fun h => L h) 2 νB) (hv : 0 < var νB (fun h => L h)) :
+  OuterWeakLimit μ (fun n ω => Real.sqrt n •
+    (empiricalCDFElement X n ω-kolmogorovEmbed (cdf μ (X 0)))) νB ∧
+  CD μ (fun n ω => Real.sqrt n*(T (empiricalCDFElement X n ω)-
+    T (kolmogorovEmbed (cdf μ (X 0)))))
+    (gaussianReal 0 ⟨var νB (fun h => L h), le_of_lt hv⟩) := by
+  sorry
+
+/-- For the actual iid empirical CDF and a Hadamard-differentiable functional in Kolmogorov norm, the Brownian-bridge process limit is derived and the plug-in statistic has a normal limit with the derivative’s strictly positive finite variance.
+Target P001-T57: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators), corrected with the non-degeneracy condition.
+Location: p. 120 (PDF p. 138), Theorem 3.3.6 and footnote 31; Definition 3.2.28, p. 112 (PDF p. 130). -/
+theorem kolmogorov_embedding_preserves_cdf {Ω : Type*} [MeasurableSpace Ω]
+  [MeasurableSpace KolmogorovSpace] [BorelSpace KolmogorovSpace]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] (X : ℕ → Ω → ℝ) (hiid : IID μ X)
+  (T : KolmogorovSpace → ℝ) (L : KolmogorovSpace →L[ℝ] ℝ)
+  (hd : HadamardAt cdfDomain (CDFTangent (cdf μ (X 0))) T
+    (kolmogorovEmbed (cdf μ (X 0))) L)
+  (νB : Measure KolmogorovSpace) [IsProbabilityMeasure νB]
+  (hbridge : IsCDFBridge (cdf μ (X 0)) νB)
+  (hstat : ∀ n, Measurable (fun ω => T (empiricalCDFElement X n ω)))
+  (hL2 : MemLp (fun h => L h) 2 νB) (hv : 0 < var νB (fun h => L h)) :
+  OuterWeakLimit μ (fun n ω => Real.sqrt n •
+    (empiricalCDFElement X n ω-kolmogorovEmbed (cdf μ (X 0)))) νB ∧
+  CD μ (fun n ω => Real.sqrt n*(T (empiricalCDFElement X n ω)-
+    T (kolmogorovEmbed (cdf μ (X 0)))))
+    (gaussianReal 0 ⟨var νB (fun h => L h), le_of_lt hv⟩) := by
+  sorry
+
+/-- The iid empirical-CDF process has its Brownian-bridge outer weak limit in Kolmogorov norm.
+Target P001-T57: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators), corrected with the non-degeneracy condition.
+Location: p. 120 (PDF p. 138), Theorem 3.3.6 and footnote 31; Definition 3.2.28, p. 112 (PDF p. 130). -/
+theorem iid_empirical_cdf_bridge_limit {Ω : Type*} [MeasurableSpace Ω]
+  [MeasurableSpace KolmogorovSpace] [BorelSpace KolmogorovSpace]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] (X : ℕ → Ω → ℝ) (hiid : IID μ X)
+  (νB : Measure KolmogorovSpace) [IsProbabilityMeasure νB]
+  (hbridge : IsCDFBridge (cdf μ (X 0)) νB) :
+  OuterWeakLimit μ (fun n ω => Real.sqrt n •
+    (empiricalCDFElement X n ω-kolmogorovEmbed (cdf μ (X 0)))) νB := by
+  sorry
+
+/-- A unique median with positive continuous local density and a finite positive-order absolute moment yields variance and standard-error consistency of the ordinary bootstrap median for all sample sizes.
+Target P001-T62: Section 3.4.3, consistency of the bootstrap standard deviation for the standard error, corrected: the added moment condition.
+Location: p. 131 (PDF p. 149), sentence after the four bootstrap steps; Definition 3.2.32, pp. 113–114 (PDF pp. 131–132). -/
+theorem bootstrap_median_primitive_moment_condition {Ω : Type*} [MeasurableSpace Ω]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] (X : ℕ → Ω → ℝ) (hiid : IID μ X)
+  (m : ℝ) (f : ℝ → ℝ) (δ : ℝ) (hδ : 0 < δ)
+  (hf : (μ.map (X 0)).restrict (Metric.ball m δ) =
+    (volume.restrict (Metric.ball m δ)).withDensity (fun x => ENNReal.ofReal (f x)))
+  (hfn : ∀ x ∈ Metric.ball m δ, 0 ≤ f x)
+  (hfm : AEMeasurable f (volume.restrict (Metric.ball m δ)))
+  (hcont : ContinuousAt f m) (hpos : 0 < f m)
+  (hmed : cdf μ (X 0) m=1/2 ∧
+    (∀ x, x < m → cdf μ (X 0) x < 1/2) ∧
+    (∀ x, m < x → 1/2 < cdf μ (X 0) x))
+  (η : ℝ) (hη : 0 < η) (hmoment : Integrable (fun ω => |X 0 ω|^η) μ) :
+  CP μ (fun n ω => (n : ℝ)*bootVar sampleMedian (firstSample X n ω)) (1/(4*(f m)^2)) ∧
+  CP μ (fun n ω => Real.sqrt n*Real.sqrt (bootVar sampleMedian (firstSample X n ω)))
+    (1/(2*f m)) := by
+  sorry
 
 /-- A block bootstrap draws exactly l independent uniform cluster indices with replacement, retains every cluster’s m observations, and contains exactly lm observations.
 Target P001-T64: Example 3.5.8 (Consequences of Clustering for the Sample Mean), the common-correlation condition, corrected to pairs $j \ne j'$; and step 1 of the block bootstrap, corrected to $l$ clusters.
@@ -7961,6 +9482,42 @@ theorem missing_ipw_not_poststratified : (∀ a b : ℝ,
   exact missing_ipw_logit_ml_counterexample
 
 
+/-- With discrete covariates, process ignorability and a continuous potential conditional mean at supported doses, every continuous observable dose-response version agrees there and its standardized contrast equals the mean causal contrast.
+Target P001-T91: Section 7.1.8, identification of $\mathrm{E}[\tau_i(d, d')]$ for multivalued and continuous treatments, corrected: positive mass at the doses, or continuity of the conditional mean dose-response.
+Location: p. 255 (PDF p. 273), first paragraph. -/
+theorem continuous_dose_version_identified_at_supported_point
+  {Ω E V : Type*} [MeasurableSpace Ω] [MeasurableSpace E] [MeasurableSpace V]
+  [MeasurableSingletonClass E] [Countable E]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (D : Ω → ℝ)
+  (hX : Measurable X) (hD : Measurable D) (Y : ℝ → Ω → ℝ)
+  (hY : Measurable (fun z : ℝ × Ω => Y z.1 z.2))
+  (path : Ω → V) (hpath : Measurable path) (eval : ℝ → V → ℝ)
+  (heval : Measurable (fun z : ℝ × V => eval z.1 z.2))
+  (hrep : ∀ t ω, Y t ω=eval t (path ω))
+  (hi : ∀ t, Integrable (Y t) μ) (hobs : Integrable (fun ω => Y (D ω) ω) μ)
+  (hind : CI μ X hX path D)
+  (d d' : ℝ) (mobs : E → ℝ → ℝ)
+  (hcef : ∀ x, 0 < prob μ {ω | X ω=x} →
+    IsCEF (μ.restrict {ω | X ω=x}) D (fun ω => Y (D ω) ω) (mobs x))
+  (hm : ∀ x, 0 < prob μ {ω | X ω=x} →
+    ContinuousAt (fun t => conditionalMeanAt μ X (Y t) x) d ∧
+    ContinuousAt (fun t => conditionalMeanAt μ X (Y t) x) d')
+  (hmobs : ∀ x, 0 < prob μ {ω | X ω=x} →
+    ContinuousAt (mobs x) d ∧ ContinuousAt (mobs x) d')
+  (hsupp : ∀ x, 0 < prob μ {ω | X ω=x} → ∀ ε : ℝ, 0 < ε →
+    0 < μ {ω | X ω=x ∧ D ω ∈ Metric.ball d ε} ∧
+    0 < μ {ω | X ω=x ∧ D ω ∈ Metric.ball d' ε}) :
+  (∀ x, 0 < prob μ {ω | X ω=x} →
+    mobs x d=conditionalMeanAt μ X (Y d) x ∧
+    mobs x d'=conditionalMeanAt μ X (Y d') x) ∧
+  mean μ (fun ω => Y d' ω-Y d ω) =
+    (∑' x : E, mobs x d'*prob μ {ω | X ω=x})-
+    (∑' x : E, mobs x d*prob μ {ω | X ω=x}) ∧
+  (∀ x, 0 < prob μ {ω | X ω=x} → ∀ m' : ℝ → ℝ,
+    IsCEF (μ.restrict {ω | X ω=x}) D (fun ω => Y (D ω) ω) m' →
+    ContinuousAt m' d → ContinuousAt m' d' → m' d=mobs x d ∧ m' d'=mobs x d') := by
+  sorry
+
 /-- For iid data from a true normalized conditional model, its actual product-likelihood ML estimator is consistent under compactness, population uniqueness and uniform expected-log convergence.
 Target P001-T129: Theorem 5.2.6 (Consistency of the Maximum Likelihood Estimator) and the lemma in its proof sketch.
 Location: Theorem 5.2.6: p. 193 (PDF p. 211). Proof sketch: pp. 193–194 (PDF pp. 211–212). -/
@@ -8003,7 +9560,7 @@ def SampleCP {E : Type*} [MeasurableSpace E] {τ : ℕ}
     (fun n => prob (iidObservationLaw ν n) {s | ε ≤ dist (T n s) θ}) atTop (nhds 0)
 
 /-- Weak convergence under a sequence of iid experiments, including local
-alternatives θ+h/sqrt(n) (T12 regular information-bound conditions). -/
+alternatives θ+h/sqrt(n) (T12 validator regular information-bound conditions). -/
 def SampleWeakLimit {E : Type*} [MeasurableSpace E] {τ : ℕ}
     (ν : ℕ → Measure E) (Z : (n : ℕ) → (Fin n → E) → Fin τ → ℝ)
     (γ : Measure (Fin τ → ℝ)) : Prop :=
@@ -8028,10 +9585,9 @@ def RegularAL {E : Type*} [MeasurableSpace E] {τ : ℕ}
     (fun n s => Real.sqrt n • (T n s-(θ+(Real.sqrt n)⁻¹ • h)))
     (normalVectorLaw (covarianceMatrix (ν θ) ψ)))
 
-/-- Real-integral quadratic-mean remainder condition used together with the
-separately stated local density normalization, measurability and
-square-integrable-score assumptions. This predicate alone does not assert
-integrability of the residual or quadratic-mean differentiability. -/
+/-- Quadratic-mean differentiability of a conditional density, with score s
+(one explicit form of differentiation under the integral in the T12 correction).
+The residual squared L² norm is o(‖t−θ‖²). -/
 def QuadraticMeanModel {K τ : ℕ} (νX : Measure (Fin K → ℝ)) (κ : Measure ℝ)
     (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
     (θ : Fin τ → ℝ) : Prop :=
@@ -8042,7 +9598,7 @@ def QuadraticMeanModel {K τ : ℕ} (νX : Measure (Fin K → ℝ)) (κ : Measur
        (∑ j, (t j-θ j)*modelScore g xy.2 xy.1 θ j)*
          Real.sqrt (g xy.2 xy.1 θ)/2)^2 ∂(νX.prod κ)) ≤ ε*(dist t θ)^2
 
-
+/-! P001 two-hour campaign: proved support for unchanged original statements. -/
 theorem conditional_model_probability {K τ : ℕ}
     (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
     (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ) (θ : Fin τ → ℝ)
@@ -8168,6 +9724,95 @@ theorem zero_weight_component_irrelevant {M K τ : ℕ}
       exact hboth.2
     exact hθ (sample_probability_limit_unique _ T θ θ' hboth.1 hother)
 
+/-- A regular asymptotically linear estimator under the normalized differentiable model satisfies the score derivative identity, and its influence covariance is bounded below by inverse Fisher information.
+Target P001-T12: Section 5.2.5, the 'any subset' sentence, corrected: consistency and efficiency of the mixture ML estimator under identification of the full parameter vector.
+Location: p. 199 (PDF p. 217), second paragraph. -/
+theorem regular_local_alternative_score_identity {K τ : ℕ}
+  (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+  (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+  (θ : Fin τ → ℝ) (δ : ℝ) (hδ : 0 < δ)
+  (hg : ∀ t ∈ Metric.ball θ δ, Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 t))
+  (hpos : ∀ t ∈ Metric.ball θ δ, ∀ y x, 0 ≤ g y x t)
+  (hnorm : ∀ t ∈ Metric.ball θ δ, ∀ x, (∫⁻ y, ENNReal.ofReal (g y x t) ∂κ)=1)
+  (hqm : QuadraticMeanModel νX κ g θ)
+  (hs2 : ∀ j, MemLp (fun xy : (Fin K → ℝ) × ℝ => modelScore g xy.2 xy.1 θ j)
+    2 (conditionalModelLaw νX κ g θ))
+  (hs0 : ∀ j, mean (conditionalModelLaw νX κ g θ)
+    (fun xy => modelScore g xy.2 xy.1 θ j)=0)
+  (I : Matrix (Fin τ) (Fin τ) ℝ)
+  (hI : ∀ j k, I j k=mean (conditionalModelLaw νX κ g θ)
+    (fun xy => modelScore g xy.2 xy.1 θ j*modelScore g xy.2 xy.1 θ k))
+  (hpd : I.PosDef)
+  (T : (n : ℕ) → (Fin n → (Fin K → ℝ) × ℝ) → Fin τ → ℝ)
+  (ψ : (Fin K → ℝ) × ℝ → Fin τ → ℝ)
+  (hregular : RegularAL (conditionalModelLaw νX κ g) θ T ψ) :
+  (∀ j k, mean (conditionalModelLaw νX κ g θ)
+    (fun xy => ψ xy j*modelScore g xy.2 xy.1 θ k)=if j=k then 1 else 0) ∧
+  ∀ a : Fin τ → ℝ, 0 ≤ ∑ j, ∑ k,
+    a j*(covarianceMatrix (conditionalModelLaw νX κ g θ) ψ j k-I⁻¹ j k)*a k := by
+  sorry
+
+/-- A correctly specified identified regular mixture product MLE is consistent, has root-n Gaussian limit with inverse Fisher information, and attains the covariance lower bound for all regular asymptotically linear estimators.
+Target P001-T12: Section 5.2.5, the 'any subset' sentence, corrected: consistency and efficiency of the mixture ML estimator under identification of the full parameter vector.
+Location: p. 199 (PDF p. 217), second paragraph. -/
+theorem identified_mixture_ml_normal_efficiency {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {M K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+   (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+   (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+   (p : (Fin τ → ℝ) → Fin M → ℝ)
+   (g : Fin M → ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+   (Θ : Set (Fin τ → ℝ)) (θ : Fin τ → ℝ) (δ : ℝ) (hδ : 0 < δ)
+   (hinterior : Metric.ball θ δ⊆Θ)
+   (hp : ∀ t∈Θ,(∀ m,0 ≤ p t m) ∧ (∑ m,p t m)=1)
+   (hg : ∀ t∈Θ,∀ m,Measurable (fun xy : (Fin K → ℝ) × ℝ => g m xy.2 xy.1 t))
+   (hnonneg : ∀ t∈Θ,∀ m y x,0 ≤ g m y x t)
+   (hnorm : ∀ t∈Θ,∀ m x,(∫⁻ y,ENNReal.ofReal (g m y x t) ∂κ)=1)
+   (htrue : μ.map (fun ω => (X 0 ω,Y 0 ω))=conditionalModelLaw νX κ (mixtureFamily p g) θ)
+   (hpositive : ∀ᵐ ω ∂μ,∀ t∈Metric.ball θ δ,0 < mixtureFamily p g (Y 0 ω) (X 0 ω) t)
+   (hdiff : ∀ᵐ ω ∂μ,ContDiffOn ℝ 2
+     (fun t => Real.log (mixtureFamily p g (Y 0 ω) (X 0 ω) t)) (Metric.ball θ δ))
+   (hs2 : ∀ j,MemLp (fun ω => modelScore (mixtureFamily p g) (Y 0 ω) (X 0 ω) θ j) 2 μ)
+   (hszero : ∀ j,mean μ (fun ω => modelScore (mixtureFamily p g) (Y 0 ω) (X 0 ω) θ j)=0)
+   (hinfo : (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ).PosDef)
+   (hHinfo : populationHessian μ (X 0) (Y 0) (mixtureFamily p g) θ=
+     -informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)
+   (hHcont : ContinuousAt (populationHessian μ (X 0) (Y 0) (mixtureFamily p g)) θ)
+   (hHi : ∀ t∈Metric.ball θ δ,∀ j k,
+     Integrable (fun ω => modelHessian (mixtureFamily p g) (Y 0 ω) (X 0 ω) t j k) μ)
+   (ΔH : ℕ → Ω → ℝ) (hHbound : ∀ n ω t,t∈Metric.ball θ δ → ∀ j k,
+     |sampleHessian X Y (mixtureFamily p g) n ω t j k-
+       populationHessian μ (X 0) (Y 0) (mixtureFamily p g) t j k| ≤ ΔH n ω)
+   (hHlim : CP μ ΔH 0)
+   (that : ℕ → Ω → Fin τ → ℝ) (hmeas : ∀ n,Measurable (that n))
+   (hthat : ∀ n ω,that n ω∈Θ)
+   (hmax : ∀ n ω t,t∈Θ → sampleLikelihood X Y (mixtureFamily p g) n ω t ≤ 
+     sampleLikelihood X Y (mixtureFamily p g) n ω (that n ω))
+   
+  (hcompact : IsCompact Θ) (hθ : θ ∈ Θ)
+  (hlog : ∀ t ∈ Θ, Integrable (fun ω =>
+    Real.log (mixtureFamily p g (Y 0 ω) (X 0 ω) t)) μ)
+  (hposAll : ∀ᵐ ω ∂μ, ∀ t ∈ Θ, 0 < mixtureFamily p g (Y 0 ω) (X 0 ω) t)
+  (hM : ContinuousOn (expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g)) Θ)
+  (hunique : ∀ t ∈ Θ,
+    expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) t ≤
+      expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) θ ∧
+    (expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) t =
+      expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) θ → t=θ))
+  (Δ : ℕ → Ω → ℝ) (hΔ : CP μ Δ 0)
+  (hbound : ∀ n ω t, t ∈ Θ →
+    |sampleLogLikelihood X Y (mixtureFamily p g) n ω t-
+      expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) t| ≤ Δ n ω)
+  (hqm : QuadraticMeanModel νX κ (mixtureFamily p g) θ) :
+   CP μ that θ ∧ WeakLimit μ (fun n ω => Real.sqrt n • (that n ω-θ))
+     (normalVectorLaw (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)⁻¹) ∧
+  (∀ T : (n : ℕ) → (Fin n → (Fin K → ℝ) × ℝ) → Fin τ → ℝ,
+    ∀ ψ : (Fin K → ℝ) × ℝ → Fin τ → ℝ,
+    RegularAL (conditionalModelLaw νX κ (mixtureFamily p g)) θ T ψ →
+    ∀ a : Fin τ → ℝ, 0 ≤ ∑ j, ∑ k, a j*
+      (covarianceMatrix (conditionalModelLaw νX κ (mixtureFamily p g) θ) ψ j k-
+       (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)⁻¹ j k)*a k)
+  := by
+  sorry
 
 /-- For each fixed sample on the good Gram event, a uniformly ε-close polynomial approximation gives population L² error at most ε(1+c^(−1/2)) plus the Euclidean sampling-noise coefficient norm.
 Target P001-T6: Definition 4.3.9 (Polynomial Least Squares Sieve Estimator) and the consistency claim after it, corrected with a sufficient degree-growth condition.
@@ -8255,12 +9900,22 @@ theorem sieve_finite_l2_approximation_error_bound {n K : ℕ} (hn : 0 < n)
     _ ≤ ε*(1+(Real.sqrt c)⁻¹)+Real.sqrt (∑ k,(olsCoef P u k)^2) := by
       nlinarith [hbrnorm]
 
-/-- In a bootstrap resample, aggregate a donor's reuse count over copies of
-each original observation (T14 finite two-bootstrap-draw identity). -/
+/-- In a bootstrap resample, aggregate a donor’s reuse count over copies of
+each original observation (T14 validator finite two-bootstrap-draw identity). -/
 def bootstrapOriginalReuse {n : ℕ} (p : Fin n → ℝ) (r : Fin n → Bool)
     (a : Fin n → Fin n) (j : Fin n) : ℝ :=
   ∑ i, if a i=j then donorReuseWeight (p ∘ a) (r ∘ a) i else 0
 
+/-- For fixed scores and responses, the expected conditional bootstrap variance over independent outcome signs equals one half of the average squared difference between two independent bootstrap reuse-weight vectors, divided by n².
+Target P001-T14: Footnote 15, corrected: for hot deck (nearest-neighbour) imputation the ordinary bootstrap can give inconsistent standard errors even without bias.
+Location: p. 233 (PDF p. 251), footnote 15; Table 6.3.1, row 'Hot Deck Imputation'. -/
+theorem hot_deck_two_bootstrap_draw_reuse_identity {n : ℕ} (hn : 0 < n)
+  (p : Fin n → ℝ) (r : Fin n → Bool) :
+  mean (signProductLaw n) (fun e => bootVar hotDeck (fun j => (p j,r j,e j))) =
+    (∑ a : Fin n → Fin n, ∑ b : Fin n → Fin n, ∑ j : Fin n,
+      (bootstrapOriginalReuse p r a j-bootstrapOriginalReuse p r b j)^2)/
+      (2*(n : ℝ)^2*((n : ℝ)^n)^2) := by
+  sorry
 
 /-- A finite PMF induces the actual atomic probability law (Definition 1.2.5,
 p. 18); used for iid repetitions of the twelve-atom placebo design. -/
@@ -8268,14 +9923,14 @@ def finiteLawMeasure {n : ℕ} (P : FiniteLaw n) : Measure (Fin n) :=
   ∑ i, ENNReal.ofReal (P.weight i) • Measure.dirac i
 
 /-- The ordinary nested-regression F statistic for the exact placebo design
-(Section 7.2.8, p. 270; T17). -/
+(Section 7.2.8, p. 270; T17 validator Section 3). -/
 def placeboSampleF {Ω : Type*} (Z : ℕ → Ω → Fin 12) (n : ℕ) (ω : Ω) : ℝ :=
   placeboFStatistic (fun i : Fin n => fun _ : Fin 1 => placeboX (Z i.val ω))
     (fun i : Fin n => fun _ : Fin 1 => placeboW (Z i.val ω))
     (fun i : Fin n => placeboD (Z i.val ω))
 
 /-- The heteroskedasticity-robust Wald statistic for the added W coefficient
-(Section 7.2.8, p. 270; T17). -/
+(Section 7.2.8, p. 270; T17 validator Section 4). -/
 def placeboSampleWald {Ω : Type*} (Z : ℕ → Ω → Fin 12) (n : ℕ) (ω : Ω) : ℝ :=
   let P : Matrix (Fin n) (Fin 3) ℝ := fun i =>
     ![1,placeboX (Z i.val ω),placeboW (Z i.val ω)]
@@ -8283,6 +9938,82 @@ def placeboSampleWald {Ω : Type*} (Z : ℕ → Ω → Fin 12) (n : ℕ) (ω : �
   let β := olsCoef P D
   (β 2)^2/(robustCov P (D-P.mulVec β) 2 2)
 
+/-- The exact placebo conditional-independence null has a nonzero unique population W coefficient, while both iid-sample F and robust Wald tests reject with probability tending to one; the replicated 240-observation F equals 5056/177.
+Target P001-T17: Section 7.2.8 (Placebo Testing): the $F$-test comparing a regression of $D_i$ on $\mathbf{W}_i$ and $\mathbf{X}_i$ with a regression of $D_i$ on $\mathbf{X}_i$ alone, as a test of $\mathbf{W}_i \perp\!\!\!\perp D_i|\mathbf{X}_i$, as printed.
+Location: p. 270 (PDF p. 288), Section 7.2.8. -/
+theorem placebo_linear_test_counterexample {Ω : Type*} [MeasurableSpace Ω]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : ℕ → Ω → Fin 12)
+  (hiid : IID μ Z) (hlaw : μ.map (Z 0)=finiteLawMeasure placeboLaw) :
+  FCondIndep placeboLaw placeboW placeboD placeboX ∧
+  FCondIndep placeboLaw (fun i => (2+placeboZ i,3+placeboZ i)) placeboD placeboX ∧
+  placeboMoment.det=17/54 ∧
+  (∀ a b c : ℝ, placeboRisk (29/68) 0 (4/17) ≤ placeboRisk a b c ∧
+    (placeboRisk a b c=placeboRisk (29/68) 0 (4/17) ↔ a=29/68 ∧ b=0 ∧ c=4/17)) ∧
+  (∀ᵐ ω ∂μ, Tendsto (fun n => placeboSampleF Z n ω/(n : ℝ)) atTop (nhds (64/531))) ∧
+  (∀ᵐ ω ∂μ, Tendsto (fun n => placeboSampleWald Z n ω/(n : ℝ)) atTop (nhds (18496/135315))) ∧
+  (∀ α : ℝ, α ∈ Set.Ioo (0 : ℝ) 1 → ∀ critical : ℕ → ℝ,
+    (∀ n : ℕ, 3 < n → prob (fReference 1 (n-3)) (Set.Iic (critical n))=1-α) →
+    Tendsto (fun n => prob μ {ω | critical n < placeboSampleF Z n ω}) atTop (nhds 1)) ∧
+  (∀ c : ℝ, Tendsto (fun n => prob μ {ω | c < placeboSampleWald Z n ω}) atTop (nhds 1)) ∧
+  240*placeboRisk (7/12) 0 0=175/3 ∧
+  240*placeboRisk (29/68) 0 (4/17)=885/17 ∧
+  ((240*placeboRisk (7/12) 0 0-240*placeboRisk (29/68) 0 (4/17))/
+    (240*placeboRisk (29/68) 0 (4/17)/(240-3))=5056/177) := by
+  sorry
+
+/-- The full twelve-atom conditional null has iid F and robust Wald statistics that diverge and reject asymptotically, with the exact replicated 240-observation F certificate.
+Target P001-T17: Section 7.2.8 (Placebo Testing): the $F$-test comparing a regression of $D_i$ on $\mathbf{W}_i$ and $\mathbf{X}_i$ with a regression of $D_i$ on $\mathbf{X}_i$ alone, as a test of $\mathbf{W}_i \perp\!\!\!\perp D_i|\mathbf{X}_i$, as printed.
+Location: p. 270 (PDF p. 288), Section 7.2.8. -/
+theorem placebo_iid_F_Wald_counterexample {Ω : Type*} [MeasurableSpace Ω]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : ℕ → Ω → Fin 12)
+  (hiid : IID μ Z) (hlaw : μ.map (Z 0)=finiteLawMeasure placeboLaw) :
+  FCondIndep placeboLaw placeboW placeboD placeboX ∧
+  FCondIndep placeboLaw (fun i => (2+placeboZ i,3+placeboZ i)) placeboD placeboX ∧
+  placeboMoment.det=17/54 ∧
+  (∀ a b c : ℝ, placeboRisk (29/68) 0 (4/17) ≤ placeboRisk a b c ∧
+    (placeboRisk a b c=placeboRisk (29/68) 0 (4/17) ↔ a=29/68 ∧ b=0 ∧ c=4/17)) ∧
+  (∀ᵐ ω ∂μ, Tendsto (fun n => placeboSampleF Z n ω/(n : ℝ)) atTop (nhds (64/531))) ∧
+  (∀ᵐ ω ∂μ, Tendsto (fun n => placeboSampleWald Z n ω/(n : ℝ)) atTop (nhds (18496/135315))) ∧
+  (∀ α : ℝ, α ∈ Set.Ioo (0 : ℝ) 1 → ∀ critical : ℕ → ℝ,
+    (∀ n : ℕ, 3 < n → prob (fReference 1 (n-3)) (Set.Iic (critical n))=1-α) →
+    Tendsto (fun n => prob μ {ω | critical n < placeboSampleF Z n ω}) atTop (nhds 1)) ∧
+  (∀ c : ℝ, Tendsto (fun n => prob μ {ω | c < placeboSampleWald Z n ω}) atTop (nhds 1)) ∧
+  240*placeboRisk (7/12) 0 0=175/3 ∧
+  240*placeboRisk (29/68) 0 (4/17)=885/17 ∧
+  ((240*placeboRisk (7/12) 0 0-240*placeboRisk (29/68) 0 (4/17))/
+    (240*placeboRisk (29/68) 0 (4/17)/(240-3))=5056/177) := by
+  exact placebo_linear_test_counterexample μ Z hiid hlaw
+
+/-- The leaflets explicitly record all candidate information and exclude personal acquaintance; the voting rule depends on displayed gender and own voter preferences.
+Target P001-T21: Section 7.5, the claim that if the coded applicant descriptions account for all the information presented to voters then 'by definition, $D_i$ must be conditionally independent of potential outcomes', as printed.
+Location: p. 278 (PDF p. 296), paragraph beginning 'The fact that random assignment is unlikely to hold'; the application's setting: pp. 276–278 (PDF pp. 294–296). -/
+theorem electorate_information_complete :
+  (∀ d, (electorateLeaflet d).nonGender=0 ∧ (electorateLeaflet d).gender=d ∧
+    (electorateLeaflet d).personallyKnown=false) ∧
+  (∀ u k info info', info.gender=info'.gender →
+    (electorateVote u k info ↔ electorateVote u k info')) := by
+  exact ⟨complete_coding_not_ignorability.1,complete_coding_not_ignorability.2.1⟩
+
+/-- The printed local-support differentiability assumptions alone would make the derivative at the covariate mean exist and be invariant across CEF versions; this is the false full-scope assertion.
+Target P001-T102: Definition 4.3.7 (Partial Derivative at the Average) and the plug-in estimate that follows it, as printed.
+Location: p. 167 (PDF p. 185); footnote 13, p. 166 (PDF p. 184); the remark on p. 168 (PDF p. 186). -/
+theorem printed_pda_local_support_invariance {Ω : Type*} [MeasurableSpace Ω]
+  (μ : Measure Ω) [IsProbabilityMeasure μ] {K : ℕ}
+  (X : Ω → Fin K → ℝ) (Y : Ω → ℝ) (hX : Measurable X)
+  (hi : ∀ j, Integrable (fun ω => X ω j) μ) (hY : Integrable Y μ)
+  (f : (Fin K → ℝ) → ℝ) (hf : HasVectorPDF (μ.map X) f)
+  (m m' : (Fin K → ℝ) → ℝ) (hm : IsCEF μ X Y m) (hm' : IsCEF μ X Y m')
+  (k : Fin K)
+  (hd : ∀ x, 0 < f x → DifferentiableAt ℝ
+    (fun t => m (Function.update x k (x k+t))) 0)
+  (hd' : ∀ x, 0 < f x → DifferentiableAt ℝ
+    (fun t => m' (Function.update x k (x k+t))) 0) :
+  ∃ a : ℝ,
+    HasDerivAt (fun t => m (Function.update (fun j => mean μ (fun ω => X ω j)) k
+      (mean μ (fun ω => X ω k)+t))) a 0 ∧
+    HasDerivAt (fun t => m' (Function.update (fun j => mean μ (fun ω => X ω j)) k
+      (mean μ (fun ω => X ω k)+t))) a 0 := by
+  sorry
 
 /-- For each positive n, the bounded-variation linear functional of the actual empirical law is the sample mean of a(X), and its centered root-n statistic has variance Var[a(X)].
 Target P001-T57: Theorem 3.3.6 (Asymptotic Normality of Plug-In Estimators), corrected with the non-degeneracy condition.
@@ -8339,12 +10070,10 @@ theorem bounded_linear_functional_empirical_identity {Ω : Type*} [MeasurableSpa
     field_simp [hn0]
 
 
-/-- Covariance-comparison predicate used for the printed mixture claim
-(Section 5.2.5, p. 199; T121). It requires a Gaussian root-n limit under `μ`
-whose covariance is a lower bound for the influence covariances of all
-`RegularAL ν θ` competitors. It does not require the candidate estimator to
-be regular, require a regular competitor to exist, or connect its sampling
-law under `μ` to the experiment `ν`. Those properties require separate premises. -/
+/-- An estimator is asymptotically efficient when it has a Gaussian root-n
+limit whose covariance is a lower bound among regular asymptotically linear
+estimators in the same experiment (Section 5.2.5, p. 199; T12/T121).
+This states the full covariance comparison, not only a normal limit. -/
 def EfficientInModel {E : Type*} [MeasurableSpace E] {Ω : Type*} [MeasurableSpace Ω]
     {τ : ℕ} (μ : Measure Ω) (that : ℕ → Ω → Fin τ → ℝ)
     (ν : (Fin τ → ℝ) → Measure E) (θ : Fin τ → ℝ) : Prop :=
@@ -8354,6 +10083,104 @@ def EfficientInModel {E : Type*} [MeasurableSpace E] {Ω : Type*} [MeasurableSpa
       RegularAL ν θ T ψ → ∀ a : Fin τ → ℝ, 0 ≤ ∑ j, ∑ k,
         a j*(covarianceMatrix (ν θ) ψ j k-S j k)*a k
 
+/-- The printed assertion claims full-vector ML consistency and regular asymptotic efficiency whenever any nonempty proper subset of the fitted mixture components characterizes the true conditional law.
+Target P001-T121: Section 5.2.5, the 'any subset' sentence on consistency and asymptotic efficiency of the mixture ML estimator, as printed.
+Location: p. 199 (PDF p. 217), second paragraph. -/
+theorem printed_general_subset_mixture_consistency_efficiency
+  {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+  {M K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+  (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+  (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+  (p : (Fin τ → ℝ) → Fin M → ℝ)
+  (g : Fin M → ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+  (Θ : Set (Fin τ → ℝ)) (θ : Fin τ → ℝ) (hθ : θ ∈ Θ)
+  (hp : ∀ t ∈ Θ, (∀ m, 0 ≤ p t m) ∧ (∑ m,p t m)=1)
+  (hg : ∀ t ∈ Θ, ∀ m, Measurable (fun xy : (Fin K → ℝ) × ℝ => g m xy.2 xy.1 t))
+  (hgn : ∀ t ∈ Θ, ∀ m y x, 0 ≤ g m y x t)
+  (hnorm : ∀ t ∈ Θ, ∀ m x, (∫⁻ y, ENNReal.ofReal (g m y x t) ∂κ)=1)
+  (S : Finset (Fin M)) (hS : S.Nonempty) (hproper : S ≠ Finset.univ)
+  (hsubset : ∀ m, m ∉ S → p θ m=0)
+  (htrue : μ.map (fun ω => (X 0 ω,Y 0 ω))=
+    conditionalModelLaw νX κ (mixtureFamily p g) θ)
+  (that : ℕ → Ω → Fin τ → ℝ) (hmeas : ∀ n, Measurable (that n))
+  (hthat : ∀ n ω, that n ω ∈ Θ)
+  (hmax : ∀ n ω t, t ∈ Θ → sampleLikelihood X Y (mixtureFamily p g) n ω t ≤
+    sampleLikelihood X Y (mixtureFamily p g) n ω (that n ω)) :
+  CP μ that θ ∧ EfficientInModel μ that (conditionalModelLaw νX κ (mixtureFamily p g)) θ := by
+  sorry
+
+/-- One-to-one nearest-neighbor hot deck based on a score fitted from the
+same data (Section 6.2.3, pp. 224–225). Every resample refits the score.
+The fallback is used only when the sample has no donor. -/
+def generalHotDeck {K n : ℕ}
+    (fit : ((Fin n → (Fin K → ℝ) × ℝ × Bool)) → (Fin K → ℝ) → ℝ)
+    (fallback : ℝ) (s : Fin n → (Fin K → ℝ) × ℝ × Bool) : ℝ :=
+  (∑ i, if (s i).2.2 then (s i).2.1 else
+    match nearestDonor (fun j => fit s (s j).1) (fun j => (s j).2.2) i with
+    | some j => (s j).2.1
+    | none => fallback)/(n : ℝ)
+
+/-- One-to-one nearest-neighbor causal matching, imputing the other arm's
+outcome and refitting the propensity on each dataset (Section 7.2.4, pp. 262–263). -/
+def generalCausalMatch {K n : ℕ}
+    (fit : ((Fin n → (Fin K → ℝ) × ℝ × Bool)) → (Fin K → ℝ) → ℝ)
+    (fallback : ℝ) (s : Fin n → (Fin K → ℝ) × ℝ × Bool) : ℝ :=
+  (∑ i,
+    let other := match nearestDonor (fun j => fit s (s j).1)
+        (fun j => (s j).2.2 != (s i).2.2) i with
+      | some j => (s j).2.1
+      | none => fallback
+    if (s i).2.2 then (s i).2.1-other else other-(s i).2.1)/(n : ℝ)
+
+/-- The printed assurance universally asserts bootstrap standard-error consistency for nearest-neighbor hot deck under MAR when the estimator has a finite nondegenerate root-n limit.
+Target P001-T122: Footnote 15 and the hot deck row of Table 6.3.1, as printed.
+Location: p. 233 (PDF p. 251). -/
+theorem printed_general_hot_deck_bootstrap_assurance
+  {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ] {K : ℕ}
+  (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ) (R : ℕ → Ω → Bool)
+  (hiid : IID μ (fun i ω => (X i ω,Y i ω,R i ω)))
+  (hX : Measurable (X 0)) (hY2 : MemLp (Y 0) 2 μ)
+  (hMAR : CI μ (X 0) hX (Y 0) (R 0))
+  (p : (Fin K → ℝ) → ℝ)
+  (hp : IsCEF μ (X 0) (fun ω => if R 0 ω then (1 : ℝ) else 0) p)
+  (hpos : ∃ ε : ℝ, 0 < ε ∧ ∀ ω, ε < p (X 0 ω))
+  (fit : (n : ℕ) → (Fin n → (Fin K → ℝ) × ℝ × Bool) → (Fin K → ℝ) → ℝ)
+  (fallback : ℝ)
+  (hfit : ∀ x, CP μ (fun n ω => fit n
+    (fun i => (X i.val ω,censored (Y i.val ω) (if R i.val ω then 1 else 0),R i.val ω)) x) (p x))
+  (ν : Measure ℝ) [IsProbabilityMeasure ν] (hv : MemLp id 2 ν) (hvp : 0 < var ν id)
+  (hlimit : CD μ (fun n ω => Real.sqrt n*(generalHotDeck (fit n) fallback
+    (fun i => (X i.val ω,censored (Y i.val ω) (if R i.val ω then 1 else 0),R i.val ω))-
+    mean μ (Y 0))) ν) :
+  SEConsistent μ (fun n ω => bootVar (generalHotDeck (fit n) fallback)
+    (fun i => (X i.val ω,censored (Y i.val ω) (if R i.val ω then 1 else 0),R i.val ω)))
+    (var ν id) := by
+  sorry
+
+/-- The printed assurance universally asserts bootstrap standard-error consistency for one-to-one estimated-propensity causal matching under strong ignorability and a finite nondegenerate root-n limit.
+Target P001-T123: The end of Section 7.2.4 with footnote 13, footnote 20, and the Matching row of Table 7.5.1, as printed.
+Location: p. 264 (PDF p. 282); p. 279 (PDF p. 297); p. 280 (PDF p. 298). -/
+theorem printed_general_matching_bootstrap_assurance
+  {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ] {K : ℕ}
+  (X : ℕ → Ω → Fin K → ℝ) (Y0 Y1 : ℕ → Ω → ℝ) (D : ℕ → Ω → Bool)
+  (hiid : IID μ (fun i ω => (X i ω,Y0 i ω,Y1 i ω,D i ω)))
+  (hX : Measurable (X 0)) (h02 : MemLp (Y0 0) 2 μ) (h12 : MemLp (Y1 0) 2 μ)
+  (hCI : CI μ (X 0) hX (fun ω => (Y0 0 ω,Y1 0 ω)) (D 0))
+  (p : (Fin K → ℝ) → ℝ)
+  (hp : IsCEF μ (X 0) (fun ω => if D 0 ω then (1 : ℝ) else 0) p)
+  (hpos : ∃ ε : ℝ, 0 < ε ∧ ∀ ω, ε < p (X 0 ω) ∧ p (X 0 ω) < 1-ε)
+  (fit : (n : ℕ) → (Fin n → (Fin K → ℝ) × ℝ × Bool) → (Fin K → ℝ) → ℝ)
+  (fallback : ℝ)
+  (hfit : ∀ x, CP μ (fun n ω => fit n (fun i => (X i.val ω,
+    observedOutcome (Y0 i.val ω) (Y1 i.val ω) (if D i.val ω then 1 else 0),D i.val ω)) x) (p x))
+  (ν : Measure ℝ) [IsProbabilityMeasure ν] (hv : MemLp id 2 ν) (hvp : 0 < var ν id)
+  (hlimit : CD μ (fun n ω => Real.sqrt n*(generalCausalMatch (fit n) fallback
+    (fun i => (X i.val ω,observedOutcome (Y0 i.val ω) (Y1 i.val ω)
+      (if D i.val ω then 1 else 0),D i.val ω))-mean μ (fun ω => Y1 0 ω-Y0 0 ω))) ν) :
+  SEConsistent μ (fun n ω => bootVar (generalCausalMatch (fit n) fallback)
+    (fun i => (X i.val ω,observedOutcome (Y0 i.val ω) (Y1 i.val ω)
+      (if D i.val ω then 1 else 0),D i.val ω))) (var ν id) := by
+  sorry
 
 end
 /-- In the explicit iid four-atom law the clipped Bernoulli MLE tends to 1/2, while each fixed-covariate KL minimizer is unique at 1/4 or 3/4.
@@ -8372,6 +10199,105 @@ theorem conditional_kl_mle_wrong_target_supporting {Ω : Type*} [MeasurableSpace
   rcases conditional_kl_mle_wrong_target μ X Y hiid hlaw with
     ⟨hKL,_,_,_,_,_,_,hCP,hQ,hT,_⟩
   exact ⟨hKL,hCP,hQ,hT⟩
+
+
+/-- Measurable bounded transformations preserve iid sampling and give both
+exact unbiasedness and convergence in probability of sample means. -/
+theorem bounded_transformed_mean {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : ℕ → Ω → E) (hiid : IID μ Z)
+    (g : E → ℝ) (hg : Measurable g) (C : ℝ)
+    (hbound : ∀ ω, |g (Z 0 ω)|≤C) :
+    (∀ n,0<n → mean μ (sampleMean (fun i ω => g (Z i ω)) n)=
+      mean μ (fun ω => g (Z 0 ω))) ∧
+    CP μ (sampleMean (fun i ω => g (Z i ω))) (mean μ (fun ω => g (Z 0 ω))) := by
+  have hi : IID μ (fun i ω => g (Z i ω)) :=
+    ⟨fun i => hg.comp (hiid.1 i),hiid.2.1.comp (fun _ => g) (fun _ => hg),
+      fun i => (hiid.2.2 i).comp hg⟩
+  have h2 : MemLp (fun ω => g (Z 0 ω)) 2 μ :=
+    MemLp.of_bound (hg.comp (hiid.1 0)).aestronglyMeasurable C
+      (ae_of_all _ (fun ω => by simpa only [Real.norm_eq_abs] using hbound ω))
+  exact ⟨fun n hn => (iid_sample_mean_finite_moments μ _ hi h2 n hn).1,
+    weak_law_finite_variance μ _ hi h2⟩
+
+
+/-- The stable-outcome lower and upper imputation sample means are unbiased and consistent for the two expected-value bound endpoints.
+Target P001-T130: Theorem 6.1.4 (Estimating Sharp Bounds for the Expected Value).
+Location: pp. 211–212 (PDF pp. 229–230); proof on p. 212. -/
+theorem expected_value_bounds_estimators {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Ystar R : ℕ → Ω → ℝ) (hiid : IID μ (fun i ω => (Ystar i ω,R i ω)))
+   (a b : ℝ) (hR : ∀ i ω,R i ω=0 ∨ R i ω=1)
+   (hY : ∀ i ω,(R i ω=1 → Ystar i ω∈Set.Icc a b) ∧ (R i ω=0 → Ystar i ω= -99)) :
+   let L := fun i ω => missingEndpoint (Ystar i ω) (R i ω) a
+   let U := fun i ω => missingEndpoint (Ystar i ω) (R i ω) b
+   (∀ n,0 < n → mean μ (sampleMean L n)=mean μ (L 0) ∧ mean μ (sampleMean U n)=mean μ (U 0)) ∧
+   CP μ (sampleMean L) (mean μ (L 0)) ∧ CP μ (sampleMean U) (mean μ (U 0)) := by
+  let gL : ℝ × ℝ → ℝ := fun yr => missingEndpoint yr.1 yr.2 a
+  let gU : ℝ × ℝ → ℝ := fun yr => missingEndpoint yr.1 yr.2 b
+  have hgL : Measurable gL := by
+    change Measurable (fun yr : ℝ × ℝ => yr.1*yr.2+a*(1-yr.2))
+    fun_prop
+  have hgU : Measurable gU := by
+    change Measurable (fun yr : ℝ × ℝ => yr.1*yr.2+b*(1-yr.2))
+    fun_prop
+  have hL : ∀ ω,|gL (Ystar 0 ω,R 0 ω)|≤max |a| |b| := by
+    intro ω
+    rcases hR 0 ω with hr|hr
+    · simpa [gL,missingEndpoint,hr] using le_max_left |a| |b|
+    · simpa [gL,missingEndpoint,hr] using
+        abs_le_max_abs_abs ((hY 0 ω).1 hr).1 ((hY 0 ω).1 hr).2
+  have hU : ∀ ω,|gU (Ystar 0 ω,R 0 ω)|≤max |a| |b| := by
+    intro ω
+    rcases hR 0 ω with hr|hr
+    · simpa [gU,missingEndpoint,hr] using le_max_right |a| |b|
+    · simpa [gU,missingEndpoint,hr] using
+        abs_le_max_abs_abs ((hY 0 ω).1 hr).1 ((hY 0 ω).1 hr).2
+  obtain ⟨hEL,hCL⟩ := bounded_transformed_mean μ _ hiid gL hgL _ hL
+  obtain ⟨hEU,hCU⟩ := bounded_transformed_mean μ _ hiid gU hgU _ hU
+  exact ⟨fun n hn => ⟨hEL n hn,hEU n hn⟩,hCL,hCU⟩
+
+/-- The corrected lower and upper ATE bound sample means are unbiased and consistent for the respective bound endpoints.
+Target P001-T88: Theorem 7.1.8 (Estimating Sharp Bounds for the ATE), with two symbols in its proof corrected ($\overline{\tau_i^L}$ for $\overline{Y_i^L}$; $Y_i(1 - D_i)$ for $Y_i(x1 - D_i)$).
+Location: Theorem 7.1.8 and the first part of the proof: p. 243 (PDF p. 261); rest of the proof: p. 244 (PDF p. 262). -/
+theorem ate_bounds_estimators_supporting {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   (Y D : ℕ → Ω → ℝ) (hiid : IID μ (fun i ω => (Y i ω,D i ω)))
+   (a b : ℝ) (hY : ∀ i ω,Y i ω∈Set.Icc a b) (hD : ∀ i ω,D i ω=0 ∨ D i ω=1) :
+   let L := fun i ω => ateLower (Y i ω) (D i ω) a b
+   let U := fun i ω => ateUpper (Y i ω) (D i ω) a b
+   (∀ n,0 < n → mean μ (sampleMean L n)=mean μ (L 0) ∧ mean μ (sampleMean U n)=mean μ (U 0)) ∧
+   CP μ (sampleMean L) (mean μ (L 0)) ∧ CP μ (sampleMean U) (mean μ (U 0)) := by
+  let gL : ℝ × ℝ → ℝ := fun yd => ateLower yd.1 yd.2 a b
+  let gU : ℝ × ℝ → ℝ := fun yd => ateUpper yd.1 yd.2 a b
+  have hgL : Measurable gL := by
+    change Measurable (fun yd : ℝ × ℝ => yd.1*yd.2+a*(1-yd.2)-yd.1*(1-yd.2)-b*yd.2)
+    fun_prop
+  have hgU : Measurable gU := by
+    change Measurable (fun yd : ℝ × ℝ => yd.1*yd.2+b*(1-yd.2)-yd.1*(1-yd.2)-a*yd.2)
+    fun_prop
+  let M : ℝ := max |a| |b|
+  have ha : |a|≤M := le_max_left _ _
+  have hb : |b|≤M := le_max_right _ _
+  have hy (ω : Ω) : |Y 0 ω|≤M := abs_le_max_abs_abs (hY 0 ω).1 (hY 0 ω).2
+  have hL : ∀ ω,|gL (Y 0 ω,D 0 ω)|≤2*M := by
+    intro ω
+    rcases hD 0 ω with hd|hd
+    · simp only [gL,ateLower,hd,mul_zero,mul_one,sub_zero,zero_sub,zero_add,add_zero]
+      have h := abs_sub a (Y 0 ω)
+      nlinarith [hy ω]
+    · simp only [gL,ateLower,hd,mul_zero,mul_one,sub_self,sub_zero,zero_sub,zero_add,add_zero]
+      have h := abs_sub (Y 0 ω) b
+      nlinarith [hy ω]
+  have hU : ∀ ω,|gU (Y 0 ω,D 0 ω)|≤2*M := by
+    intro ω
+    rcases hD 0 ω with hd|hd
+    · simp only [gU,ateUpper,hd,mul_zero,mul_one,sub_zero,zero_sub,zero_add,add_zero]
+      have h := abs_sub b (Y 0 ω)
+      nlinarith [hy ω]
+    · simp only [gU,ateUpper,hd,mul_zero,mul_one,sub_self,sub_zero,zero_sub,zero_add,add_zero]
+      have h := abs_sub (Y 0 ω) a
+      nlinarith [hy ω]
+  obtain ⟨hEL,hCL⟩ := bounded_transformed_mean μ _ hiid gL hgL _ hL
+  obtain ⟨hEU,hCU⟩ := bounded_transformed_mean μ _ hiid gU hgU _ hU
+  exact ⟨fun n hn => ⟨hEL n hn,hEU n hn⟩,hCL,hCU⟩
 
 
 /-- Integral identity for the complete T88 observed-data bound endpoints. -/
@@ -8568,5 +10494,408 @@ theorem ate_bounds_estimators {Ω : Type*} [MeasurableSpace Ω]
     exact ⟨(iid_sample_mean_finite_moments μ L hLiid h2L n hn).1,
       (iid_sample_mean_finite_moments μ U hUiid h2U n hn).1⟩
 
+
+#print axioms compact_unique_maximum_separated
+#print axioms probability_limit_unique
+#print axioms sample_mean_memLp
+#print axioms chebyshev_probability
+#print axioms geometric_mean_perturbation
+#print axioms geometric_partial_mass
+#print axioms pda_extrapolation_witness_supporting
+#print axioms pda_unique_on_open_support_supporting
+#print axioms sieve_degree_counterexample
+#print axioms sieve_consistency_stable_gram_supporting
+#print axioms argmax_finite_gap
+#print axioms separated_argmax_consistency
+#print axioms conditional_kl_counterexample_finite_supporting
+#print axioms conditional_kl_mle_wrong_target_supporting
+#print axioms mixture_three_point_unbounded
+#print axioms mixture_unbounded_positive_sample
+#print axioms mixture_compact_attainment
+#print axioms unused_component_nonidentification_supporting
+#print axioms zero_weight_component_irrelevant_supporting
+#print axioms hot_deck_bootstrap_counterexample
+#print axioms hot_deck_bootstrap_correction
+#print axioms matching_bootstrap_counterexample_supporting
+#print axioms matching_bootstrap_correction_supporting
+#print axioms placebo_linear_test_counterexample_supporting
+#print axioms placebo_linear_cef_correction_supporting
+#print axioms complete_overlap_without_uniform_positivity
+#print axioms discrete_overlap_pointwise
+#print axioms finite_overlap_uniform_bound
+#print axioms complete_coding_not_ignorability_supporting
+#print axioms description_only_outcomes_conditional_independence
+#print axioms probability_monotonicity
+#print axioms basic_probability_rules
+#print axioms total_probability_partition_supporting
+#print axioms two_event_partition_nonempty
+#print axioms integer_cdf_missing_zero_counterexample
+#print axioms integer_lower_tail_correction
+#print axioms dense_discrete_cdf_counterexample
+#print axioms discrete_cdf_jump_sum
+#print axioms finite_cdf_constant_between_values
+#print axioms uniform_pdf_versions_counterexample
+#print axioms pdf_unique_and_derivative_ae
+#print axioms joint_pdf_unique_ae
+#print axioms continuous_rv_range_uncountable
+#print axioms continuous_range_without_interval_supporting
+#print axioms triangular_event_counterexample
+#print axioms triangular_region_correction
+#print axioms infinite_marginal_slice_counterexample
+#print axioms marginal_pdf_ae_correction
+#print axioms zero_normal_combination_counterexample
+#print axioms nontrivial_independent_normal_sum
+#print axioms coin_mse_scale_correction
+#print axioms correlation_not_pointwise_dependence
+#print axioms correlation_linear_dependence_ae
+#print axioms blp_corrected_derivatives_and_minimum
+#print axioms covariance_does_not_fix_intercept
+#print axioms blp_two_equation_characterization
+#print axioms quadratic_cef_factor_ten_supporting
+#print axioms independent_constant_cef
+#print axioms additive_independent_noise_cef
+#print axioms independent_functions_cef_supporting
+#print axioms multivariate_variance_rule
+#print axioms linear_predictor_update_identity
+#print axioms linear_predictor_coordinate_increment
+#print axioms variance_functional_minus_sign
+#print axioms finite_population_example_moments_supporting
+#print axioms probability_convergence_eventual_levels
+#print axioms indicator_expectation
+#print axioms squares_missing_wlln_hypothesis
+#print axioms probability_convergence_continuous_at
+#print axioms variance_se_consistency_equivalence
+#print axioms constant_plugin_degenerate
+#print axioms signed_kernel_not_cdf
+#print axioms nonnegative_kernel_cdf
+#print axioms kernel_cdf_correct_integrand
+#print axioms bootstrap_moments_correction
+#print axioms functional_delta_nondegenerate_correction_supporting
+#print axioms cluster_mean_properties
+#print axioms intracluster_variance_correct_diagonal
+#print axioms ols_correct_rows_solution_residuals
+#print axioms standard_error_diagonal_index
+#print axioms homoskedastic_sandwich_identity
+#print axioms apd_pda_different_correct_coordinate_supporting
+#print axioms unsquared_sieve_no_minimum
+#print axioms lasso_zero_penalty_ols
+#print axioms lasso_convex
+#print axioms classical_linear_positive_scale_cef
+#print axioms cef_residual_not_independent
+#print axioms cef_residual_orthogonality_correction
+#print axioms binary_choice_fixed_argument_mean
+#print axioms normal_fixed_scale_ml_is_ols
+#print axioms likelihood_correct_function_space
+#print axioms normal_joint_ml_scale_square
+#print axioms ml_plugin_correct_covariate_indices
+#print axioms missing_data_bounds_example
+#print axioms missing_data_bounds_and_sharpness
+#print axioms hot_deck_correct_donor_comparison
+#print axioms matching_correct_donor_comparison
+#print axioms propensity_range_correction_supporting
+#print axioms mar_reweighting_corrected_hypothesis
+#print axioms missing_ipw_not_poststratified_supporting
+#print axioms missing_ipw_saturated_cells
+#print axioms missing_ipw_saturation_necessary
+#print axioms response_weights_denominator_correction
+#print axioms stable_outcomes_respondent_cef
+#print axioms ate_bounds_estimators_supporting
+#print axioms post_treatment_observable_mass_and_contrast
+#print axioms continuous_dose_nonidentification
+#print axioms continuous_dose_version_identified_at_supported_point_supporting
+#print axioms misprinted_imputation_table_disagreement
+#print axioms corrected_imputation_table_agreement
+#print axioms pooled_ols_imputation_identity
+#print axioms ml_potential_mean_observed_covariates
+#print axioms causal_ipw_not_poststratified
+#print axioms causal_ipw_saturated_cells
+#print axioms treatment_weights_denominators_correction
+#print axioms att_normalization_counterexample
+#print axioms att_normalized_propensity_mean
+#print axioms expectation_linearity
+#print axioms variance_affine_rules
+#print axioms standard_deviation_rules
+#print axioms chebyshev_standard_deviations
+#print axioms iterated_expectation
+#print axioms total_variance_and_cef_best_prediction
+#print axioms iid_sample_mean_finite_moments
+#print axioms iid_sample_mean_chebyshev
+#print axioms weierstrass_approximation
+#print axioms polynomial_blp_cef_approximation
+#print axioms bernoulli_ml_unique_sample_fraction
+#print axioms three_coin_flips_maximum
+#print axioms mcar_expected_value
+#print axioms mar_cef_and_discrete_mean
+#print axioms mar_balancing_score
+#print axioms missing_double_robustness
+#print axioms ate_sharp_bounds_and_width
+#print axioms ate_bounds_width_finite
+#print axioms random_assignment_ate_and_selection_bias
+#print axioms strong_ignorability_identification_and_balance
+#print axioms causal_ipw_and_double_robustness
+#print axioms weak_law_finite_variance
+#print axioms central_limit_finite_variance
+#print axioms rectangular_kernel_consistency
+#print axioms normal_approximation_confidence_interval
+#print axioms ml_consistency_explicit_uniform_regularities_supporting
+#print axioms expected_value_bounds_estimators
+#print axioms fat_cantor_continuous_range_counterexample
+#print axioms regular_functional_bootstrap_variance_counterexample
+#print axioms printed_unrestricted_mixture_maximum
+
+
+#print axioms printed_sieve_insufficient_degree_rate
+#print axioms printed_hot_deck_bootstrap_assurance
+#print axioms printed_matching_bootstrap_assurance
+#print axioms printed_pda_is_distributional
+#print axioms printed_complete_description_implies_ignorability
+#print axioms averaged_kl_entropy_loglikelihood_supporting
+#print axioms printed_fixed_covariate_kl_mle_target
+#print axioms printed_subset_full_vector_consistency
+#print axioms printed_placebo_f_test_size
+#print axioms functions_equal_on_range
+#print axioms relative_complement
+#print axioms constant_potential_ignorability_finite
+#print axioms att_counterexample_with_ignorability
+#print axioms electorate_potential_outcomes_not_cia_supporting
+#print axioms constant_cdf_functional_hadamard
+#print axioms finite_correlation_counterexample_full
+#print axioms causal_example_ols_fit
+#print axioms misprinted_imputation_counterexample_full
+#print axioms pda_joint_cef_counterexample
+#print axioms pdf_version_change
+#print axioms continuous_independence_density_ae
+#print axioms joint_cdf_mixed_derivative_boundary
+#print axioms conditional_density_positive_finite_slice
+#print axioms bivariate_normal_zero_correlation_independent
+#print axioms blp_hessian_and_cef_corollaries
+#print axioms uniform_quadratic_cef_and_blp
+#print axioms independence_variance_and_blp
+#print axioms linear_predictor_partial_derivative
+#print axioms empirical_variance_identity
+#print axioms empirical_cdf_consistency
+#print axioms constant_functional_hadamard
+#print axioms rectangular_kernel_empirical_cdf_identity
+#print axioms block_bootstrap_draw_count_supporting
+#print axioms homoskedastic_population_moments
+#print axioms missing_ipw_difference_and_stabilization
+#print axioms mar_respondent_cef_is_population_cef
+#print axioms causal_ipw_saturation_necessary
+#print axioms treatment_weight_sample_means
+#print axioms uniform_polynomial_gram_bound
+#print axioms placebo_zero_coefficients_unique
+#print axioms positive_mass_dose_identification
+#print axioms ml_potential_mean_population_identity
+#print axioms true_model_expected_log_likelihood_maximum
+#print axioms rectangular_kernel_fixed_sample_moments
+#print axioms nonidentification_no_two_consistent_targets_supporting
+#print axioms maximum_likelihood_consistency_correct_model
+#print axioms identified_mixture_ml_consistency_supporting
+#print axioms logit_logsumexp_tangent
+#print axioms grouped_logit_canonical_identity
+#print axioms missing_grouped_logit_unique
+#print axioms missing_ipw_logit_ml_counterexample
+#print axioms isCEF_condExp
+#print axioms logit_softplus_tangent
+#print axioms causal_grouped_logit_unique
+#print axioms causal_ipw_logit_ml_counterexample
+#print axioms heavy_median_bootstrap_variance_counterexample
+#print axioms regular_heavy_functional_bootstrap_weak_limit
+#print axioms bootstrap_sample_mean_exact_variance
+#print axioms bootstrap_sample_mean_consistency
+#print axioms bootstrap_median_primitive_moment_condition_supporting
+#print axioms mse_general_identity_and_unique_minimum
+#print axioms covariance_matrix_symmetry_and_diagonal
+#print axioms polynomial_squared_criterion_ols
+#print axioms classical_normal_residual_independent
+#print axioms empirical_cdf_delta_nondegenerate_supporting
+#print axioms kolmogorov_embedding_preserves_cdf_supporting
+#print axioms pda_derivative_transfers_on_open_support
+#print axioms identified_mixture_ml_normal_efficiency_supporting
+#print axioms regular_influence_information_lower_bound
+#print axioms unused_component_counterexample_full_supporting
+#print axioms geometric_partial_first_moment
+#print axioms geometric_partial_second_moment
+#print axioms studentization_finite_identity_and_coverage
+#print axioms averaged_kl_ml_consistency_supporting
+#print axioms true_model_averaged_kl_zero_supporting
+#print axioms true_model_log_likelihood_lemma_with_zeros
+#print axioms general_polynomial_gram_probability_bound
+#print axioms printed_finite_variance_mean_hadamard
+#print axioms nearest_donor_common_shift
+#print axioms estimated_score_matches_equal
+#print axioms estimated_matching_statistic_equal
+#print axioms matching_score_intercept_consistent
+#print axioms hot_deck_conditional_reuse_variance
+#print axioms causal_matching_conditional_reuse_variance
+#print axioms estimated_matching_bootstrap_failure
+#print axioms clipped_bernoulli_mle
+#print axioms slope_penalty_seminorm_and_unpenalized_intercept
+#print axioms conditional_kernel_propensity_range
+#print axioms probability_convergence_centering_equivalence_supporting
+#print axioms sample_mean_variance_estimate_scale_supporting
+#print axioms fair_die_cdf_examples
+#print axioms missing_mcar_mar_sample_estimates
+#print axioms mar_cef_general_covariates
+#print axioms binary_causal_sample_bound_estimates
+#print axioms cluster_variance_double_covariance_sum
+#print axioms finite_mixture_compact_attainment
+#print axioms finite_mixture_iid_probabilities
+#print axioms finite_mixture_counterexample_with_attainment
+#print axioms empirical_mean_fixed_sample
+#print axioms sample_mean_clt_correction
+#print axioms iid_sample_mean_expectation_integrable
+#print axioms sample_variance_unbiased_factor_and_consistency_supporting
+#print axioms general_gram_rate_stability
+#print axioms uniform_cubic_gram_rate_stability
+#print axioms hot_deck_bootstrap_uniform_second_moment
+#print axioms hot_deck_bootstrap_constant_inequalities
+#print axioms ordered_finite_cdf_formula
+#print axioms quadratic_plugin_degenerate_counterexample
+#print axioms cef_residual_conditional_variance
+#print axioms post_treatment_latent_random_assignment
+#print axioms discrete_strong_ignorability_ate_sum
+#print axioms explicit_ignorability_discrete_ate
+#print axioms printed_pda_plugin_formula
+#print axioms standardized_mean_fixed_sample_moments
+#print axioms central_limit_standardized_mean
+#print axioms sieve_finite_coefficient_decomposition
+#print axioms sieve_finite_approximation_coefficient_bound
+#print axioms sieve_finite_sampling_noise_trace_bound_supporting
+#print axioms placebo_full_finite_counterexample
+#print axioms product_maximum_likelihood_consistency
+#print axioms product_averaged_kl_ml_consistency
+#print axioms product_identified_mixture_ml_consistency
+#print axioms product_identified_mixture_ml_normal_limit
+#print axioms bivariate_normal_endpoint_counterexample
+#print axioms sieve_consistency_full_interval_support
+#print axioms pda_extrapolation_witness
+#print axioms pda_unique_on_open_support
+#print axioms sieve_consistency_stable_gram
+#print axioms sieve_finite_sampling_noise_trace_bound
+#print axioms finite_mixture_statistical_impossibility
+#print axioms unused_component_nonidentification
+#print axioms nonidentification_no_two_consistent_targets
+#print axioms unused_component_counterexample_full
+#print axioms electorate_votes_count
+#print axioms complete_coding_not_ignorability
+#print axioms electorate_potential_outcomes_not_cia
+#print axioms total_probability_partition
+#print axioms sample_variance_unbiased_factor_and_consistency
+#print axioms probability_convergence_centering_equivalence
+#print axioms sample_mean_variance_estimate_scale
+#print axioms conditional_kl_counterexample_finite
+#print axioms conditional_kl_mle_wrong_target
+#print axioms changed_covariate_marginal_mle_limit
+#print axioms averaged_kl_entropy_loglikelihood
+#print axioms averaged_kl_ml_consistency
+#print axioms true_model_averaged_kl_zero
+#print axioms identified_mixture_ml_consistency
+#print axioms matching_bootstrap_counterexample
+#print axioms matching_bootstrap_correction
+#print axioms placebo_linear_cef_correction
+#print axioms continuous_range_without_interval
+#print axioms quadratic_cef_factor_ten
+#print axioms independent_functions_cef
+#print axioms finite_population_example_moments
+#print axioms functional_delta_nondegenerate_correction
+#print axioms empirical_cdf_delta_nondegenerate
+#print axioms kolmogorov_embedding_preserves_cdf
+#print axioms iid_empirical_cdf_bridge_limit
+#print axioms bootstrap_median_primitive_moment_condition
+#print axioms block_bootstrap_draw_count
+#print axioms apd_pda_different_correct_coordinate
+#print axioms propensity_range_correction
+#print axioms missing_ipw_not_poststratified
+#print axioms ate_bounds_estimators
+#print axioms continuous_dose_version_identified_at_supported_point
+#print axioms ml_consistency_explicit_uniform_regularities
+#print axioms zero_weight_component_irrelevant
+#print axioms regular_local_alternative_score_identity
+#print axioms identified_mixture_ml_normal_efficiency
+#print axioms sieve_finite_l2_approximation_error_bound
+#print axioms hot_deck_two_bootstrap_draw_reuse_identity
+#print axioms placebo_linear_test_counterexample
+#print axioms placebo_iid_F_Wald_counterexample
+#print axioms electorate_information_complete
+#print axioms printed_pda_local_support_invariance
+#print axioms bounded_linear_functional_empirical_identity
+#print axioms printed_general_subset_mixture_consistency_efficiency
+#print axioms printed_general_hot_deck_bootstrap_assurance
+#print axioms printed_general_matching_bootstrap_assurance
+
+
+#print axioms linearRisk_mean_covariance_form
+
+#print axioms isCEF_ae_covariate
+
+#print axioms covariance_ae_congr
+
+#print axioms isCEF_unique_real
+
+#print axioms isCEF_covariance_real
+
+#print axioms normalDensity_eq_gaussianPDFReal
+#print axioms independent_constant_cef_ae
+#print axioms independent_affine_risk_minimum
+
+#print axioms uniformLaw_zero_one_eq_restrict
+#print axioms integral_pow_uniformLaw_zero_one
+
+#print axioms iid_positive_at_parameter
+#print axioms product_mle_consistency_core
+
+#print axioms uniform_index_integral
+#print axioms uniform_resampling_integral
+#print axioms iid_sample_variance_cp
+
+#print axioms conditional_model_probability
+#print axioms sample_probability_limit_unique
+
+#print axioms uniform_cdf_reflection
+#print axioms uniform_cdf_not_differentiable_zero
+#print axioms uniform_cdf_not_differentiable_one
+#print axioms uniform_closed_integral_cdf
+#print axioms centered_gaussian_half_mass
+
+#print axioms ols_fitted_sum_squares_le
+
+#print axioms sqrt_integral_sq_eq_lpNorm
+#print axioms sqrt_integral_sq_add_le
+#print axioms gram_quadratic_form
+#print axioms gram_unit_of_lower_bound
+#print axioms orthonormal_polynomial_lp
+#print axioms orthonormal_polynomial_integral_sq
+
+#print axioms bernoulli_log_strict_max
+
+#print axioms four_atom_integral
+#print axioms iid_snd
+#print axioms four_atom_snd_memLp
+#print axioms four_atom_snd_moments
+#print axioms clipped_distance_half
+#print axioms clipped_bernoulli_chebyshev
+#print axioms clipped_bernoulli_far_bound
+#print axioms bernoulli_kl_minimum
+#print axioms averaged_binary_kl_half
+
+#print axioms integral_affine_iic
+#print axioms integrable_density_cdf_properties
+#print axioms signed_kernel_indicator
+#print axioms signed_kernel_integrals
+
+#print axioms pdf_closed_interval_probability
+#print axioms iid_indicator_sample_moments
+#print axioms rectangular_kernel_moments_core
+#print axioms continuous_pdf_cdf_hasDerivAt
+#print axioms symmetric_difference_quotient_tendsto
+#print axioms probability_convergence_from_mean_variance
+#print axioms rectangular_kernel_memLp
+
+#print axioms positive_cef_inverse_weights
+#print axioms joint_pdf_event_probability
+#print axioms triangular_region_integral
+
+#print axioms correlation_affine
 
 end AronowAudit.P001

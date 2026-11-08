@@ -1,0 +1,53 @@
+import SAP.P001g.Defs
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators ENNReal NNReal Topology
+
+noncomputable section
+
+namespace ReviewRefutation
+
+-- A genuinely iid constant sequence; these are independent degenerate draws.
+lemma iid_zero : SAP.P001g.IID (Measure.dirac ()) (fun _ : ℕ => fun _ : Unit => (0 : ℝ)) := by
+  classical
+  refine ⟨fun _ => measurable_const, ?_, fun _ => IdentDistrib.refl aemeasurable_const⟩
+  rw [iIndepFun_iff_measure_inter_preimage_eq_mul]
+  intro s sets hsets
+  simp only [Measure.dirac_apply, Set.mem_iInter, Set.mem_preimage, Set.indicator_apply,
+    Pi.one_apply]
+  by_cases h : ∀ i ∈ s, (0 : ℝ) ∈ sets i
+  · simpa [Finset.prod_eq_one (fun i hi => if_pos (h i hi))] using h
+  · push_neg at h
+    obtain ⟨i, hi, hnot⟩ := h
+    rw [if_neg (by aesop)]
+    symm
+    apply Finset.prod_eq_zero hi
+    simp [hnot]
+
+-- A zero functional meets every differentiability hypothesis without junk values.
+lemma zero_hadamard (F : ℝ → ℝ) :
+    SAP.P001g.CDFHadamard (fun _ => 0) F := by
+  refine ⟨fun _ => 0, by intros; simp, by intros; simp, ?_, ?_⟩
+  · exact ⟨0, le_rfl, by intros; simp⟩
+  · intros
+    simpa using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
+
+example : ∃ (X : ℕ → Unit → ℝ) (T : (ℝ → ℝ) → ℝ),
+    SAP.P001g.IID (Measure.dirac ()) X ∧
+    SAP.P001g.CDFHadamard T (SAP.P001g.cdf (Measure.dirac ()) (X 0)) ∧
+    ∀ (n : ℕ) ω, Real.sqrt n *
+      (T (SAP.P001g.cdf (SAP.P001g.empirical X n ω) id) -
+       T (SAP.P001g.cdf (Measure.dirac ()) (X 0))) = 0 := by
+  exact ⟨fun _ _ => 0, fun _ => 0, iid_zero, zero_hadamard _, by intros; simp⟩
+
+-- The base measure for the mean-functional counterexample has a real finite moment.
+example : IsProbabilityMeasure (Measure.dirac (0 : ℝ)) ∧
+    MemLp id 2 (Measure.dirac (0 : ℝ)) ∧
+    (∫ x : ℝ, x ∂Measure.dirac 0) = 0 := by
+  refine ⟨inferInstance, ?_, by simp⟩
+  apply (memLp_congr_ae (f := fun _ : ℝ => (0 : ℝ)) (g := id) ?_).mp
+      (memLp_const (0 : ℝ))
+  simp only [Filter.EventuallyEq, ae_dirac_eq]
+  rfl
+
+end ReviewRefutation

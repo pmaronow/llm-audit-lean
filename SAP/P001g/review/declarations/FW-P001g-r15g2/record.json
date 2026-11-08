@@ -1,0 +1,73 @@
+[
+ {
+  "target_id": "P001-T121",
+  "decision": "refuted",
+  "theorem": "SAP.P001g.T121",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.PrintedConfidence.lift_stream_iid",
+   "AronowAudit.P001.probability_limit_unique"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.printed_subset_full_vector_consistency_refuted",
+    "reason": "Permits tied maximizing selections; every true-support sample in its witness has distinct equally maximizing vectors, violating the carried unique-argmax convention."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.printed_general_subset_mixture_refuted",
+    "reason": "Its nonidentified inactive-component countermodel also permits tied maximizers and supplies no refutation retaining the estimator definition's uniqueness condition."
+   }
+  ],
+  "omission_reason": null,
+  "auxiliary_theorem": "SAP.P001g.T121_tiedAuxiliary",
+  "statement_definition": "SAP.P001g.T121WholeStatement"
+ },
+ {
+  "target_id": "P001-T124",
+  "decision": "refuted",
+  "theorem": "SAP.P001g.T124",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.printed_placebo_f_test_size_refuted"
+  ],
+  "rows_not_used": [],
+  "proof_transport": "Uses the exported witness and component lemmas of the credited refutation: continuity transports the frequency limit to eventual valid OLS data; the existing rejection theorem is applied to the guarded rejection margin. The displayed test counts no singular or zero-residual sample as a rejection."
+ },
+ {
+  "target_id": "P001-T125",
+  "decision": "whole",
+  "theorem": "SAP.P001g.T125",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.weak_law_finite_variance"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T126",
+  "decision": "whole",
+  "theorem": "SAP.P001g.T126",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.central_limit_finite_variance",
+   "AronowAudit.P001.central_limit_standardized_mean",
+   "AronowAudit.P001.standardized_mean_fixed_sample_moments"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T127",
+  "decision": "whole",
+  "theorem": "SAP.P001g.T127",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.rectangular_kernel_consistency"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.rectangular_kernel_fixed_sample_moments",
+    "reason": "An auxiliary finite-sample identity; the selected theorem already supplies every asserted target conclusion."
+   }
+  ]
+ }
+]

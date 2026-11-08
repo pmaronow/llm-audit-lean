@@ -1,0 +1,33 @@
+[
+ {
+  "theorem": "SAP.P017.T8",
+  "target_id": "P017-T8",
+  "round": 8,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P017/Challenge/Part1.lean:66: The docstring omits the required disclosure that the usual measure-theoretic conditions are assumed. T8Statement explicitly requires measurable estimators and measurable, square-integrable remainders at SAP/P017/Defs/Part5.lean:20 via NormalRemainder (SAP/P017/Defs/Part1.lean:78). These are permissible usual conditions, so the whole decision is correct; the requested disclosure is still absent. The statement-definition docstring at SAP/P017/Defs/Part5.lean:15 also omits it."
+  ]
+ },
+ {
+  "theorem": "SAP.P017.T9",
+  "target_id": "P017-T9",
+  "round": 8,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P017/Defs/Part5.lean:128: Inside the negated universal, H : Nat -> Measure D -> Real has no measurability premise. The requirement at line 129 makes hat n measurable on Xi; the factorization at lines 130-131 is only a pointwise equality and does not require a measurable function of the observed empirical distribution. Measurability of a composite does not imply measurability of its factor, nor the existence of a measurable factor agreeing on every realization on the arbitrary measurable spaces quantified here. The user explicitly presupposes a Borel/measurable function when an estimator is a function of F_n. Consequently this negation still allows counterexamples outside that canonical reading, despite correctly requiring IID sampling from G.",
+   "SAP/P017/Challenge/Part1.lean:71: The docstring calls the printed assertion false, but the audited negation does not require the measurable empirical functional that the printed reading presupposes. The same overstatement occurs in the T9SamplingStatement docstring at SAP/P017/Defs/Part5.lean:114. The existence of a genuine measurable IID witness outside the statement does not strengthen this weaker negation."
+  ]
+ },
+ {
+  "theorem": "SAP.P017.T10",
+  "target_id": "P017-T10",
+  "round": 8,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P017/Challenge/Part1.lean:80: The docstring omits the required disclosure that the usual measure-theoretic conditions are assumed. T10Statement explicitly requires measurable population effects and estimators at SAP/P017/Defs/Part5.lean:75 and SAP/P017/Defs/Part5.lean:76 (and in its other branches). These are permissible usual conditions and do not justify a restriction, but the requested disclosure is absent. The T10Statement docstring at SAP/P017/Defs/Part5.lean:71 omits it as well."
+  ]
+ }
+]

@@ -1,7 +1,7 @@
 import AronowAudit.P031.Wave1.LargeSampleRefutationBlueprint
 import Mathlib.Analysis.Real.Sqrt
 
-/-! Expand the difference in means using zero controls, then use
+/-! Node 10: expand the difference in means using zero controls, then use
 the supplied true-variance formula. Positivity and the square-root identity
 for the power-of-two population size are isolated before clearing divisors. -/
 

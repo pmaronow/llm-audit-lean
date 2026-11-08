@@ -1,0 +1,185 @@
+import SAP.P004a.Defs
+import SAP.P004a.Defs.WholeW1
+
+open SAP.P004a MeasureTheory ProbabilityTheory Filter Set
+open scoped BigOperators Matrix Classical Topology ENNReal NNReal
+noncomputable section
+
+-- This file uses definitions and Mathlib only, never the Challenge theorems.
+
+lemma review_three_p : w1ThreeP 3 = ![1/3, 1/2, 2/3] := by
+  funext i
+  fin_cases i <;>
+    norm_num [w1ThreeP, propensities, logistic, dot, threeTypeONat,
+      threeTypeTheta, Fin.sum_univ_two, Real.exp_neg, Real.exp_log]
+
+example : information (fun _ : Fin 2 => (1/2 : ℝ))
+    (fun _ : Fin 2 => fun _ : Fin 1 => (1 : ℝ)) = !![1/4] := by
+  ext a b
+  fin_cases a
+  fin_cases b
+  norm_num [information, Fin.sum_univ_two]
+
+example : armCount areaWitnessAssignment true = 1 ∧
+    armCount areaWitnessAssignment false = 1 := by
+  norm_num [armCount, areaWitnessAssignment, Fin.sum_univ_two]
+
+example : (∀ (c : Fin 3) (j : Fin 6) (a : Bool),
+    0 ≤ w1AreaShares c j a ∧ w1AreaShares c j a ≤ 1) := by
+  intro c j a
+  fin_cases c <;> fin_cases j <;> cases a <;> norm_num [w1AreaShares]
+
+example : (∑ j : Fin 6, (w1AreaShares 1 j true-1/10)) = (-17/500 : ℝ) ∧
+    (∑ j : Fin 6, (2*(j : ℝ)+1)/36*(w1AreaShares 1 j true-1/10)) =
+      (121/18000 : ℝ) := by
+  constructor
+  · norm_num [w1AreaShares, Fin.sum_univ_succ]
+  · norm_num [w1AreaShares, Fin.sum_univ_succ]
+
+lemma review_mle_exists {k : ℕ} (O : ∀ N, Fin N → Fin k → ℝ)
+    (Θ : Set (Fin k → ℝ)) (hc : IsCompact Θ) (hne : Θ.Nonempty) :
+    ∃ θhat : ∀ N, Assignment N → Fin k → ℝ, ∀ N z,
+      θhat N z ∈ Θ ∧ ∀ θ ∈ Θ,
+      (∑ i, (bit (z i)*dot (O N i) θ-Real.log (1+Real.exp (dot (O N i) θ)))) ≤
+      (∑ i, (bit (z i)*dot (O N i) (θhat N z)-
+        Real.log (1+Real.exp (dot (O N i) (θhat N z))))) := by
+  have h : ∀ N (z : Assignment N), ∃ θ ∈ Θ, ∀ t ∈ Θ,
+      (∑ i, (bit (z i)*dot (O N i) t-Real.log (1+Real.exp (dot (O N i) t)))) ≤
+      (∑ i, (bit (z i)*dot (O N i) θ-Real.log (1+Real.exp (dot (O N i) θ)))) := by
+    intro N z
+    have hf : Continuous (fun θ : Fin k → ℝ =>
+        ∑ i, (bit (z i)*dot (O N i) θ-Real.log (1+Real.exp (dot (O N i) θ)))) := by
+      apply continuous_finsetSum
+      intro i hi
+      have hd : Continuous (fun θ : Fin k → ℝ => dot (O N i) θ) := by
+        unfold dot
+        fun_prop
+      exact (continuous_const.mul hd).sub
+        ((continuous_const.add (Real.continuous_exp.comp hd)).log
+          (fun θ => by change 1+Real.exp (dot (O N i) θ) ≠ 0; positivity))
+    obtain ⟨θ, hθ, hmax⟩ := hc.exists_isMaxOn hne hf.continuousOn
+    exact ⟨θ, hθ, fun t ht => hmax ht⟩
+  choose θhat hm hx using h
+  exact ⟨θhat, fun N z => ⟨hm N z, hx N z⟩⟩
+
+example : ∃ θhat : ∀ N, Assignment N → Fin 2 → ℝ, ∀ N z,
+    θhat N z ∈ threeTypeParameterSet ∧ ∀ θ ∈ threeTypeParameterSet,
+    (∑ i, (bit (z i)*dot (threeTypeONat N i) θ-
+      Real.log (1+Real.exp (dot (threeTypeONat N i) θ)))) ≤
+    (∑ i, (bit (z i)*dot (threeTypeONat N i) (θhat N z)-
+      Real.log (1+Real.exp (dot (threeTypeONat N i) (θhat N z))))) := by
+  apply review_mle_exists
+  · exact isCompact_pi_infinite (fun _ => isCompact_Icc)
+  · exact ⟨0, fun _ => by norm_num⟩
+
+def reviewP : Fin 2 → ℝ := fun _ => 1/2
+def reviewR : CircleTable 2 := fun i _ => (i.val : ℝ)+1
+def reviewO : Fin 2 → Fin 1 → ℝ := fun _ _ => 1
+def reviewB : Fin 2 → Finset (Fin 2) := fun i => {i}
+
+-- A nonempty, nonsingular, genuinely random finite instance of every finite T2 premise.
+example : 0 < (2 : ℕ) ∧ (∀ i, 0 < reviewP i ∧ reviewP i < 1) ∧
+    IsUnit (information reviewP reviewO).det ∧
+    (∀ i, i ∈ reviewB i) ∧ (∀ i j, j ∈ reviewB i ↔ i ∈ reviewB j) ∧
+    (∀ i j, j ∉ reviewB i → ¬ sharesSource reviewR i j) := by
+  refine ⟨by norm_num, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i; norm_num [reviewP]
+  · rw [Matrix.det_fin_one]
+    norm_num [information, reviewP, reviewO, Fin.sum_univ_two, isUnit_iff_ne_zero]
+  · intro i; simp [reviewB]
+  · intro i j; simp [reviewB, eq_comm]
+  · intro i j hj
+    simp only [reviewB, Finset.mem_singleton] at hj
+    rintro ⟨l, hil, hjl⟩
+    have hi : i = l := by simpa [interferes, reviewR] using hil
+    have hj' : j = l := by simpa [interferes, reviewR] using hjl
+    exact hj (hj'.trans hi.symm)
+
+lemma review_assignments_two (F : Assignment 2 → ℝ) :
+    (∑ z, F z) = F ![false,false]+F ![false,true]+F ![true,false]+F ![true,true] := by
+  have hu : (Finset.univ : Finset (Assignment 2)) =
+      {![false,false], ![false,true], ![true,false], ![true,true]} := by decide
+  rw [hu]
+  simp [Finset.sum_insert, add_assoc]
+
+-- Every T4(b) premise, with positive variance and two independent nonconstant contrasts.
+example : 0 < (2 : ℕ) ∧ (∀ i, 0 < reviewP i ∧ reviewP i < 1) ∧
+    (∀ i, i ∈ reviewB i) ∧ (∀ i j, j ∈ reviewB i ↔ i ∈ reviewB j) ∧
+    (∀ i j, j ∉ reviewB i →
+      cov reviewP (residualContrast reviewP reviewR (fun _ _ => 0) i)
+        (residualContrast reviewP reviewR (fun _ _ => 0) j) = 0) ∧
+    SAP.P004a.variance reviewP (fun z => (∑ i, residualContrast reviewP reviewR (fun _ _ => 0) i z)/2) = 5 := by
+  refine ⟨by norm_num, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i; norm_num [reviewP]
+  · intro i; simp [reviewB]
+  · intro i j; simp [reviewB, eq_comm]
+  · intro i j hij
+    fin_cases i <;> fin_cases j <;>
+      norm_num [reviewB, cov, expect, review_assignments_two, designWeight,
+        Fin.prod_univ_two, reviewP, residualContrast, reviewR, bit, coin] at *
+  · norm_num [SAP.P004a.variance, cov, expect, review_assignments_two, designWeight,
+      Fin.prod_univ_two, Fin.sum_univ_two, reviewP, residualContrast, reviewR, bit, coin]
+
+example : 0 < armCount areaWitnessAssignment true ∧ 0 < armCount areaWitnessAssignment false ∧
+    (∀ i, 0 < reviewP i ∧ reviewP i < 1) := by
+  norm_num [armCount, areaWitnessAssignment, Fin.sum_univ_two, reviewP]
+
+lemma review_assignments_three (F : Assignment 3 → ℝ) :
+    (∑ z, F z) = F ![false,false,false]+F ![false,false,true]+
+      F ![false,true,false]+F ![false,true,true]+F ![true,false,false]+
+      F ![true,false,true]+F ![true,true,false]+F ![true,true,true] := by
+  have hu : (Finset.univ : Finset (Assignment 3)) =
+      {![false,false,false], ![false,false,true], ![false,true,false], ![false,true,true],
+       ![true,false,false], ![true,false,true], ![true,true,false], ![true,true,true]} := by decide
+  rw [hu]
+  simp [Finset.sum_insert, add_assoc]
+
+example : expect (w1ThreeP 3) w1OneBlock = 0 ∧
+    expect (w1ThreeP 3) (fun z => (w1OneBlock z)^2) = 3*(10369/750000) ∧
+    expect (w1ThreeP 3) (fun z => (w1OneBlock z)^4) = 915255049/250000000000 := by
+  norm_num [expect, review_assignments_three, w1OneBlock, review_three_p,
+    designWeight, coin, bit, w1ThreeD, w1ThreeA, w1ThreeB,
+    Fin.sum_univ_succ, Fin.prod_univ_succ]
+
+example : w1ActiveNH 8 = 2 ∧ w1ActiveNL 8 = 6 := by
+  have hh : (Finset.univ.filter (fun i : Fin 8 => activeGroup 8 i)) = {0,1} := by
+    ext i; fin_cases i <;> norm_num [activeGroup]
+  have hl : (Finset.univ.filter (fun i : Fin 8 => ¬activeGroup 8 i)) = {2,3,4,5,6,7} := by
+    ext i; fin_cases i <;> norm_num [activeGroup]
+  norm_num [w1ActiveNH, w1ActiveNL, hh, hl]
+
+def reviewInterceptTheta : Set (Fin 1 → ℝ) := {θ | ∀ j, -1 ≤ θ j ∧ θ j ≤ 1}
+
+-- An actual MLE sequence satisfying every LogisticConditions clause, with an interior truth.
+example : ∃ θhat : ∀ N, Assignment N → Fin 1 → ℝ,
+    LogisticConditions (fun N (_ : Fin N) (_ : Fin 1) => 1)
+      (fun _ => 0) reviewInterceptTheta θhat := by
+  have hc : IsCompact reviewInterceptTheta := isCompact_pi_infinite (fun _ => isCompact_Icc)
+  have hzero : (fun _ : Fin 1 => (0 : ℝ)) ∈ reviewInterceptTheta := by
+    intro j; norm_num
+  obtain ⟨θhat, hmle⟩ := review_mle_exists
+    (fun N (_ : Fin N) (_ : Fin 1) => (1 : ℝ)) reviewInterceptTheta hc ⟨_, hzero⟩
+  refine ⟨θhat, hc, hzero, ⟨1, ?_⟩, ?_, hmle⟩
+  · intro N i j; norm_num
+  · refine ⟨1, by norm_num, ?_⟩
+    filter_upwards [eventually_ge_atTop (1 : ℕ)] with N hN
+    intro v
+    have hn : (N : ℝ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
+    simp [dot, mul_div_cancel_left₀ _ hn]
+
+example : (fun _ : Fin 1 => (0 : ℝ)) ∈ interior reviewInterceptTheta := by
+  have hopen : IsOpen ((fun θ : Fin 1 → ℝ => θ 0) ⁻¹' Set.Ioo (-1 : ℝ) 1) :=
+    isOpen_Ioo.preimage (continuous_apply 0)
+  have hzero : (fun _ : Fin 1 => (0 : ℝ)) ∈
+      ((fun θ : Fin 1 → ℝ => θ 0) ⁻¹' Set.Ioo (-1 : ℝ) 1) := by norm_num
+  apply mem_interior_iff_mem_nhds.mpr
+  apply Filter.mem_of_superset (hopen.mem_nhds hzero)
+  intro θ hθ j
+  fin_cases j
+  exact ⟨le_of_lt hθ.1, le_of_lt hθ.2⟩
+
+example : Overlap (fun N => propensities
+    (fun (_ : Fin N) (_ : Fin 1) => (1 : ℝ)) (fun _ => 0)) := by
+  refine ⟨1/4, by norm_num, by norm_num, ?_⟩
+  intro N i
+  norm_num [propensities, logistic, dot]

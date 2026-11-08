@@ -1,0 +1,272 @@
+import SAP.P001b.Challenge
+
+open SAP.P001b MeasureTheory ProbabilityTheory
+open scoped ENNReal BigOperators Classical
+
+noncomputable section
+
+-- Checks below use definitions and Mathlib, never the audited theorem stubs.
+lemma fair_halves : (2⁻¹ : ℝ≥0∞) + 2⁻¹ = 1 := by
+  simpa using (ENNReal.add_halves 1)
+
+local instance fair_probability : IsProbabilityMeasure W1Fair := by
+  constructor
+  norm_num [W1Fair, Measure.add_apply, Measure.smul_apply, fair_halves]
+
+lemma fair_real (H : Set Bool) :
+    probability W1Fair H =
+      (if false ∈ H then (1 / 2 : ℝ) else 0) +
+      (if true ∈ H then (1 / 2 : ℝ) else 0) := by
+  by_cases h0 : false ∈ H <;> by_cases h1 : true ∈ H <;>
+    norm_num [probability, W1Fair, Measure.add_apply, Measure.smul_apply,
+      Measure.dirac_apply, h0, h1, fair_halves]
+
+lemma fair_arm (d : ℝ) (hd : d = 0 ∨ d = 1) :
+    probability W1Fair {b | W1BinaryValue b = d} = 1 / 2 := by
+  rcases hd with rfl | rfl <;> norm_num [fair_real, W1BinaryValue]
+
+lemma fair_propensity (x : Unit) :
+    W1CellPropensity W1Fair (fun _ => ()) W1BinaryValue x = 1 / 2 := by
+  cases x
+  norm_num [W1CellPropensity, W1JointMass, fair_real, W1BinaryValue]
+
+lemma fair_integral (f : Bool → ℝ) :
+    (∫ b, f b ∂W1Fair) = (f false + f true) / 2 := by
+  rw [W1Fair, integral_add_measure
+    ((integrable_dirac (by finiteness)).smul_measure (by norm_num))
+    ((integrable_dirac (by finiteness)).smul_measure (by norm_num))]
+  simp only [integral_smul_measure, integral_dirac]
+  norm_num
+  ring
+
+lemma fair_cef : W1CEF W1Fair (fun _ : Bool => ()) W1BinaryValue
+    (fun _ : Unit => (1 / 2 : ℝ)) := by
+  refine ⟨measurable_const, Integrable.of_finite, integrable_const _, ?_⟩
+  intro A _
+  by_cases h : () ∈ A
+  · have hp : (fun _ : Bool => ()) ⁻¹' A = Set.univ := by ext b; simp [h]
+    rw [hp]
+    simp only [Measure.restrict_univ]
+    rw [fair_integral, fair_integral]
+    norm_num [W1BinaryValue]
+  · have hp : (fun _ : Bool => ()) ⁻¹' A = ∅ := by ext b; simp [h]
+    rw [hp]
+    simp
+
+-- T20: all hypotheses of the general overlap clause hold together.
+example :
+    Measurable (fun _ : Bool => ()) ∧ Measurable W1BinaryValue ∧
+    (∀ b, W1BinaryValue b = 0 ∨ W1BinaryValue b = 1) ∧
+    0 < probability W1Fair {b | W1BinaryValue b = 0} ∧
+    0 < probability W1Fair {b | W1BinaryValue b = 1} ∧
+    W1CEF W1Fair (fun _ : Bool => ()) W1BinaryValue
+      (fun _ : Unit => (1 / 2 : ℝ)) ∧
+    (∃ ε : ℝ, 0 < ε ∧ ∀ᵐ _b ∂W1Fair,
+      ε < (1 / 2 : ℝ) ∧ (1 / 2 : ℝ) < 1 - ε) := by
+  refine ⟨measurable_const, Measurable.of_discrete, ?_, ?_, ?_, fair_cef, ?_⟩
+  · intro b; cases b <;> simp [W1BinaryValue]
+  · rw [fair_arm 0 (Or.inl rfl)]; norm_num
+  · rw [fair_arm 1 (Or.inr rfl)]; norm_num
+  · exact ⟨1 / 4, by norm_num, Filter.Eventually.of_forall (by intro _; norm_num)⟩
+
+lemma constant_pair_ci :
+    W1CI W1Fair (fun _ : Bool => ()) measurable_const
+      (fun _ => ((0, 1) : ℝ × ℝ)) W1BinaryValue := by
+  intro A B _ _
+  have hm : MeasurableSpace.comap (fun _ : Bool => ()) inferInstance ≤
+      (inferInstance : MeasurableSpace Bool) :=
+    (measurable_const : Measurable (fun _ : Bool => ())).comap_le
+  by_cases h : ((0, 1) : ℝ × ℝ) ∈ A
+  · simp [h, condExp_const hm]
+  · simp [h]
+
+-- T20: both arms exist, the covariate is genuinely discrete and its support finite.
+example :
+    Measurable (fun _ : Bool => ()) ∧ Measurable W1BinaryValue ∧
+    (∀ b, W1BinaryValue b = 0 ∨ W1BinaryValue b = 1) ∧
+    0 < probability W1Fair {b | W1BinaryValue b = 0} ∧
+    0 < probability W1Fair {b | W1BinaryValue b = 1} ∧
+    (∃ ε : ℝ, 0 < ε ∧ ∀ x : Unit,
+      ε < W1CellPropensity W1Fair (fun _ => ()) W1BinaryValue x ∧
+      W1CellPropensity W1Fair (fun _ => ()) W1BinaryValue x < 1 - ε) ∧
+    ({x : Unit | 0 < probability W1Fair {_b | () = x}}).Finite := by
+  refine ⟨measurable_const, Measurable.of_discrete, ?_, ?_, ?_, ?_, Set.toFinite _⟩
+  · intro b; cases b <;> simp [W1BinaryValue]
+  · rw [fair_arm 0 (Or.inl rfl)]; norm_num
+  · rw [fair_arm 1 (Or.inr rfl)]; norm_num
+  · exact ⟨1 / 4, by norm_num, by intro x; rw [fair_propensity]; norm_num⟩
+
+-- T20: the purely algebraic hypotheses have a positive, nonempty example.
+example :
+    (∀ _ : Unit, (0 : ℝ) ≤ 1 / 2) ∧ (0 : ℝ) < 1 / 2 ∧
+    (∃ ε : ℝ, 0 < ε ∧ ∀ _ : Unit,
+      ε < (1 / 2 : ℝ) / (1 / 2 + 1 / 2) ∧
+      (1 / 2 : ℝ) / (1 / 2 + 1 / 2) < 1 - ε) := by
+  refine ⟨by intro _; norm_num, by norm_num, 1 / 4, by norm_num, ?_⟩
+  intro _; norm_num
+
+-- T20: the finite-support converse has an actual overlap antecedent.
+example :
+    {x : Unit | 0 < W1ArmPMF W1Fair (fun _ => ()) W1BinaryValue 1 x} =
+    {x : Unit | 0 < W1ArmPMF W1Fair (fun _ => ()) W1BinaryValue 0 x} := by
+  ext x
+  cases x
+  norm_num [W1ArmPMF, W1JointMass, fair_real, W1BinaryValue]
+
+-- T20: the boundary-region implications also have genuine nonvacuous premises.
+-- These use X=id and p=D; the positive-probability singleton regions have p=0 and p=1.
+example :
+    W1CEF W1Fair (id : Bool → Bool) W1BinaryValue W1BinaryValue ∧
+    MeasurableSet ({false} : Set Bool) ∧ MeasurableSet ({true} : Set Bool) ∧
+    0 < probability W1Fair {false} ∧ 0 < probability W1Fair {true} ∧
+    (∀ b ∈ ({false} : Set Bool), W1BinaryValue b = 0) ∧
+    (∀ b ∈ ({true} : Set Bool), W1BinaryValue b = 1) := by
+  refine ⟨⟨Measurable.of_discrete, Integrable.of_finite,
+    Integrable.of_finite, by intro A _; rfl⟩,
+    measurableSet_singleton _, measurableSet_singleton _, ?_, ?_, ?_, ?_⟩
+  · norm_num [fair_real]
+  · norm_num [fair_real]
+  · simp [W1BinaryValue]
+  · simp [W1BinaryValue]
+
+example : ∀ k, 0 < W1OverlapT k ∧ 0 < W1OverlapC k := by
+  intro k
+  constructor
+  · unfold W1OverlapT; positivity
+  · unfold W1OverlapC; positivity
+
+-- T20: the geometric mass sequences have genuine half-unit sums.
+example : HasSum W1OverlapT (1 / 2) ∧ HasSum W1OverlapC (1 / 2) := by
+  constructor
+  · have h := (hasSum_geometric_of_lt_one (r := (1 / 3 : ℝ))
+      (by norm_num) (by norm_num)).mul_right (1 / 3)
+    convert h using 1
+    · funext k; simp [W1OverlapT, pow_succ]
+    · norm_num
+  · have h := (hasSum_geometric_of_lt_one (r := (1 / 2 : ℝ))
+      (by norm_num) (by norm_num)).mul_right ((1 / 2 : ℝ) ^ 2)
+    convert h using 1
+    · funext k; simp [W1OverlapC, pow_add]
+    · norm_num
+
+lemma finite_count (n : Fin 100) :
+    ((Finset.univ.filter (fun k : Fin 100 =>
+      (k.val : ℝ) + 1 ≤ (n.val : ℝ))).card : ℝ) = n.val := by
+  have heq : Finset.univ.filter (fun k : Fin 100 =>
+      (k.val : ℝ) + 1 ≤ (n.val : ℝ)) = Finset.Iio n := by
+    ext k
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_Iio]
+    change (k.val : ℝ) + 1 ≤ (n.val : ℝ) ↔ k.val < n.val
+    rw [← Nat.cast_one, ← Nat.cast_add, Nat.cast_le]
+    omega
+  rw [heq, Fin.card_Iio]
+
+lemma voting_count_of_threshold (i : Fin 4) (d : Bool) (n : Fin 100)
+    (h : 20 + 40 * electorateType i + 5 * (if d then 1 else 0) = (n.val : ℝ)) :
+    countedVoteShare i d = potentialVoteShare (if d then 1 else 0) i := by
+  unfold countedVoteShare votesNo potentialVoteShare
+  rw [h]
+  exact finite_count n
+
+lemma voting_counts : ∀ i d,
+    countedVoteShare i d = potentialVoteShare (if d then 1 else 0) i := by
+  intro i d
+  have hu : electorateType i = 0 ∨ electorateType i = 1 := by
+    fin_cases i <;> norm_num [electorateType]
+  rcases hu with hu | hu
+  · cases d
+    · exact voting_count_of_threshold _ _ ⟨20, by norm_num⟩ (by norm_num [hu])
+    · exact voting_count_of_threshold _ _ ⟨25, by norm_num⟩ (by norm_num [hu])
+  · cases d
+    · exact voting_count_of_threshold _ _ ⟨60, by norm_num⟩ (by norm_num [hu])
+    · exact voting_count_of_threshold _ _ ⟨65, by norm_num⟩ (by norm_num [hu])
+
+lemma voting_dependence :
+    ¬ FiniteConditionalIndependence voterMass
+      (fun i => (potentialVoteShare 0 i, potentialVoteShare 1 i))
+      displayedGender (fun _ => (0 : ℝ)) := by
+  intro h
+  have hw : 0 < finiteProbability voterMass (fun _ => (0 : ℝ) = 0) := by
+    norm_num [finiteProbability, voterMass, Fin.sum_univ_succ]
+  have bad := h 0 (60, 65) 1 hw
+  norm_num [finiteProbability, voterMass, potentialVoteShare, electorateType,
+    displayedGender, Fin.sum_univ_succ] at bad
+
+-- T21: independently check the whole explicit witness, including all 100-voter counts.
+example : T21Statement := by
+  unfold T21Statement
+  simp only [voting_counts, voting_dependence, not_false_eq_true, forall_const]
+  norm_num [finiteProbability, finiteConditionalMean, finiteMean, voterMass,
+    potentialVoteShare, observedVoteShare, electorateType, displayedGender,
+    displayedLeaflet, Fin.sum_univ_succ, Fin.forall_fin_succ]
+
+-- T22(i): the extra response function and uniform positivity are genuine.
+example :
+    (∃ response : ℝ → ℝ → ℝ → ℝ,
+      ∀ i d, potentialVoteShare d i = response 0 d (electorateType i)) ∧
+    (1 / 4 : ℝ) < finiteConditionalMean voterMass displayedGender (fun _ => 0) 0 ∧
+    finiteConditionalMean voterMass displayedGender (fun _ => 0) 0 < 1 - (1 / 4 : ℝ) := by
+  refine ⟨⟨fun _ d u => 20 + 40 * u + 5 * d, by intros; rfl⟩, ?_⟩
+  norm_num [finiteConditionalMean, finiteProbability, voterMass,
+    displayedGender, Fin.sum_univ_succ]
+
+-- T22(ii): a fixed response with a nonzero treatment effect has measurable sections.
+example : ∃ response : Unit → ℝ → ℝ,
+    Measurable (fun x => response x 0) ∧
+    Measurable (fun x => response x 1) ∧
+    (∀ x, response x 1 - response x 0 = 1) := by
+  exact ⟨fun _ d => d, measurable_const, measurable_const, by intro _; norm_num⟩
+
+-- T22(iii): every hypothesis at once; neither treatment arm has zero mass.
+example :
+    Measurable (fun _ : Bool => ()) ∧
+    Measurable (fun _ : Bool => (0 : ℝ)) ∧
+    Measurable (fun _ : Bool => (1 : ℝ)) ∧ Measurable W1BinaryValue ∧
+    Integrable (fun _ : Bool => (0 : ℝ)) W1Fair ∧
+    Integrable (fun _ : Bool => (1 : ℝ)) W1Fair ∧
+    (∀ b, W1BinaryValue b = 0 ∨ W1BinaryValue b = 1) ∧
+    (∃ ε : ℝ, 0 < ε ∧ ∀ x : Unit,
+      0 < probability W1Fair {_b | () = x} →
+      ε < W1CellPropensity W1Fair (fun _ => ()) W1BinaryValue x ∧
+      W1CellPropensity W1Fair (fun _ => ()) W1BinaryValue x < 1 - ε) ∧
+    W1CI W1Fair (fun _ : Bool => ()) measurable_const
+      (fun _ => ((0, 1) : ℝ × ℝ)) W1BinaryValue := by
+  refine ⟨measurable_const, measurable_const, measurable_const,
+    Measurable.of_discrete, integrable_const _, integrable_const _, ?_, ?_,
+    constant_pair_ci⟩
+  · intro b; cases b <;> simp [W1BinaryValue]
+  · exact ⟨1 / 4, by norm_num, by intro x _; rw [fair_propensity]; norm_num⟩
+
+-- T23: a proper inclusion on a probability space, with both atoms positive.
+example :
+    MeasurableSet ({false} : Set Bool) ∧ MeasurableSet (Set.univ : Set Bool) ∧
+    ({false} : Set Bool) ⊆ Set.univ ∧ ({false} : Set Bool) ≠ Set.univ ∧
+    probability W1Fair {false} = 1 / 2 ∧ probability W1Fair Set.univ = 1 := by
+  refine ⟨measurableSet_singleton _, MeasurableSet.univ, Set.subset_univ _, ?_, ?_, ?_⟩
+  · intro h
+    have : true ∈ ({false} : Set Bool) := by rw [h]; trivial
+    simp at this
+  · norm_num [fair_real]
+  · norm_num [fair_real]
+
+-- T24: a genuine two-cell positive partition, with a measurable event B={true}.
+example : ∃ A : Bool → Set Bool,
+    (∀ i, MeasurableSet (A i)) ∧ (∀ i, (A i).Nonempty) ∧
+    Pairwise (fun i j => Disjoint (A i) (A j)) ∧
+    (⋃ i, A i) = Set.univ ∧
+    (∀ i, 0 < probability W1Fair (A i)) ∧ MeasurableSet ({true} : Set Bool) := by
+  refine ⟨fun b => {b}, ?_, ?_, ?_, ?_, ?_, measurableSet_singleton _⟩
+  · intro b; exact measurableSet_singleton _
+  · intro b; exact ⟨b, rfl⟩
+  · intro b c h; simpa using h
+  · ext b; simp
+  · intro b; cases b <;> norm_num [fair_real]
+
+-- T24: nonempty measurable cells may have probability zero.
+example :
+    IsProbabilityMeasure (Measure.dirac false) ∧
+    ({true} : Set Bool).Nonempty ∧
+    probability (Measure.dirac false) ({true} : Set Bool) = 0 := by
+  exact ⟨inferInstance, ⟨true, rfl⟩, by simp [probability]⟩
+
+end

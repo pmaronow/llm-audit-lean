@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P004-T6",
+    "theorem": "SAP.P004a.T6",
+    "fingerprint": "19374d1750471ced6bacadd4b90d810a5df1a7967454b4107e649400043a263a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:10 constructs every aggregation hypothesis with N=1, m=2, counting measure on Fin 2, positive singleton bins, nonconstant treatment/control outcomes and p=1/2. The positive-scale clauses have ordinary c=2 instances.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T7",
+    "theorem": "SAP.P004a.T7",
+    "fingerprint": "3d3f16d59d8e92988c62959fca5723a997fbf7a9ba8eba1bd5b0905e458fd07f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:37 checks the exact twenty-node assignment, counts 10/10, both means zero, and product probability 1/1048576. scratch/exact_checks.py independently verifies raw variances 4/25, traces 41/50 and 101/100, positive trace-square parameters, adjusted variances 8/41 and 16/101, and the genuine spectral positive part. claim-audit.md checks every C1-C5 and variance-floor condition directly, including uniform spacing and positive traces on valid assignments; these infinite geometric assertions are argued rather than recompiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T8",
+    "theorem": "SAP.P004a.T8",
+    "fingerprint": "dd4c6923a1610c70290f072915f23d70c6e007170a83e159bca68733a79d8641",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:48 constructs every finite symmetric-kernel hypothesis at N=2 with K=I, assignment (1,0) and nonzero vector (1,-1), and instantiates the Student degree/level guards. For all asymptotic hypotheses, claim-audit.md directly verifies the repeated-star population at p=1/2, d=0, h=6/5, including full-sequence nondegeneracy and zero homophily; choose the normal critical value or constant positive Student degree 1. The infinite spatial estimates are argued explicitly instead of formalizing another geometric development.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T9",
+    "theorem": "SAP.P004a.T9",
+    "fingerprint": "74191277596cb7cd2bec5235783138781dc75a3ab36e926808f8e46415d23c3d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:66 checks the genuine N=1 all-control realization with independent product probability 1/2, boundaryMLE=0, remainder=2 and sqrt(N)|remainder|>1. claim-audit.md checks all printed C6 and logistic C1 premises, including actual unique constrained maximization via the strictly concave likelihood; the full all-N calculus check is argued rather than independently re-proved in Lean. scratch/exact_checks.py independently verifies second/fourth moments, symmetry and lower bounds for N=1,...,80. No undefined log argument is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T10",
+    "theorem": "SAP.P004a.T10",
+    "fingerprint": "1fafc454cff6959be661be5ef8e206c7a4de5da25527ecb99416eef5ca8b213f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:77 independently constructs every hypothesis in dimension one: constant covariate 1, true coefficient 0, compact closed radius-one ball, uniform Gram bound 1 eventually, overlap with epsilon=1/4, interior truth, and an actual MLE for every N and assignment selected using the extreme value theorem. This instantiates the interior expansion branch as well as the basic consistency branch.",
+    "confidence": 0.99
+  }
+]

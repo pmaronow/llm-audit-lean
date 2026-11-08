@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-Formalizations of claims in Aronow, Coppock, Crawford, and Green, P019.
+Formal audit of Aronow, Coppock, Crawford, and Green, P019.
 Locations use printed article pages (PDF page = printed page - 42).
 The supplement has its own page numbers. All finite distributions are exact
 weighted sums; no Monte Carlo probability is promoted to an exact theorem.
@@ -398,8 +398,8 @@ theorem list_mean_identified (S : Study Ω) (h2 : S.noLiarsDesign)
   rw [ce_cell_independent S h3 (fun w _ _ => (w : ℝ)) z y hD]
   rw [ce_cell_independent S h3 (fun _ x _ => bitVal x) z y hD]
 
-/-- T11(b): monotonicity and positive probability of Y=1 give E[X | Y=1]=1;
-corrected last sentence of the Lemma 1 proof, p. 48. -/
+/-- T11(b): monotonicity alone gives E[X | Y=1]=1; repaired last sentence
+of the Lemma 1 proof, p. 48. -/
 theorem monotone_yes_mean (S : Study Ω) (h1 : S.monotone)
     (hy : S.law.prob (fun ω => S.Y ω = true) ≠ 0) :
     S.law.ce (fun ω => bitVal (S.X ω)) (fun ω => S.Y ω = true) = 1 := by
@@ -551,7 +551,7 @@ theorem placebo_two_identity (S : Study Ω) (h3 : S.treatmentIndependent)
   rw [Study.delta, ce_arm_independent S h3 (fun _ _ y => bitVal y) true ht,
     ce_arm_independent S h3 (fun _ _ y => bitVal y) false h0, sub_self]
 
-/-- Uniform finite latent bits in explicit counterexamples. -/
+/-- Uniform finite latent bits in the validator's explicit counterexamples. -/
 def uniformFin (n : ℕ) (hn : 0 < n) : FiniteLaw (Fin n) where
   mass := fun _ => 1 / (n : ℝ)
   nonneg := by intro; positivity
@@ -651,8 +651,8 @@ theorem ceiling_as_printed (ρ : ℝ) (hρ0 : 0 ≤ ρ) (hρ1 : ρ ≤ 1) :
 independent fair Bernoulli variables, used only in concrete witnesses. -/
 def fairBit {n : ℕ} (ω : Fin n) (k : ℕ) : Bool := decide ((ω.val / 2^k) % 2 = 1)
 
-/-- T3 counterexample population: X,C,W,Z are four independent fair bits,
-Y=XC and V=W+XZ. Finding P019-E003; article pp. 46-47. -/
+/-- T3 validator's population: X,C,W,Z are four independent fair bits,
+Y=XC and V=W+XZ. Derivation E003, section 4; article pp. 46-47. -/
 def finiteSampleWitness : Study (Fin 16) where
   law := uniformFin 16 (by norm_num)
   W := fun ω => if fairBit ω 2 then 1 else 0
@@ -682,7 +682,7 @@ theorem finite_sample_witness_valid : finiteSampleWitness.standing := by
         uniformFin, fairBit, bitVal, Fin.sum_univ_succ]
 
 /-- The n=1 cell mean with value zero on the empty cell, the explicit
-bounded completion in T3 (finding P019-E003). -/
+bounded completion in T3 and validator E003, section 2. -/
 def singletonMean (S : Study Ω) (z y : Bool) (ω : Ω) : ℝ :=
   if S.cell z y ω then (S.V ω : ℝ) else 0
 
@@ -724,7 +724,7 @@ theorem conditional_count_counterexample :
   norm_num [finiteSampleWitness, uniformFin, fairBit, singletonMean, Study.listMean,
     Study.cell, FiniteLaw.ce, FiniteLaw.prob, FiniteLaw.mean, Fin.sum_univ_succ]
 
-/-- T5 counterexample population: X=Y, W, and Z are independent fair
+/-- T5 validator's valid population: X=Y, W, and Z are independent fair
 bits. The eight atoms have mass 1/8. Article Section 4.1, p. 50. -/
 def distributionWitness : Study (Fin 8) where
   law := uniformFin 8 (by norm_num)
@@ -769,7 +769,7 @@ theorem distribution_sign_counterexample :
     FiniteLaw.ce, FiniteLaw.mean, FiniteLaw.prob, Fin.sum_univ_succ]
 
 /-- T7's interior-prevalence population: B,C,X,Z are independent fair bits;
-W=B+C, Y=X·1{C=Z}, V=W+XZ. Finding P019-N006; supplement Appendix C. -/
+W=B+C, Y=X·1{C=Z}, V=W+XZ. E[N006], section 5, supplement Appendix C. -/
 def diagnosisWitness : Study (Fin 16) where
   law := uniformFin 16 (by norm_num)
   W := fun ω => (if fairBit ω 0 then 1 else 0) + (if fairBit ω 1 then 1 else 0)
@@ -808,7 +808,7 @@ theorem diagnosis_counterexample :
       FiniteLaw.prob, Fin.sum_univ_succ] at h
 
 /-- The CNN non-identification pair uses type masses 1/4,1/4,1/2,
-independent W∈{1,2} and fair Z. Finding P019-E007; Table A1,
+independent W∈{1,2} and fair Z. E007 derivation, sections 3-4; Table A1,
 p. 61. There are twelve complete atoms. -/
 def cnnLaw : FiniteLaw (Fin 12) where
   mass := fun ω => if ω.val / 4 < 2 then 1/16 else 1/8
@@ -884,7 +884,7 @@ def tripleIndependent (P : FiniteLaw Ω) (W : Ω → ℕ) (R Q Z : Ω → Bool) 
 /-- T14, full corrected CNN reading: with truthful questions as worded,
 the list/combined functional is b+a = Pr(read OR watch); its excess over
 watching is exactly reader-only mass a, and both placebo restrictions
-still hold. Table A1, p. 61, and the P019-E007 correction. -/
+still hold. Table A1, p. 61, and the E007 correction. -/
 theorem cnn_interpretation (S : Study Ω) (R Q : Ω → Bool)
     (hY : ∀ ω, S.Y ω = Q ω) (hX : ∀ ω, S.X ω = (R ω || Q ω))
     (h2 : S.noLiarsDesign) (hi : tripleIndependent S.law S.W R Q S.Z)
@@ -1090,7 +1090,7 @@ def Study.standardHat (S : Study Ω) {n : ℕ} (s : Fin n → Ω) (c1 c0 : ℝ) 
 def Study.gammaHat (S : Study Ω) {n : ℕ} (s : Fin n → Ω) : ℝ :=
   (S.armCount s true : ℝ) / (n : ℝ)
 
-/-- "σhat²(·) denotes the sample variance", p. 49. The definition uses
+/-- "σhat²(·) denotes the sample variance", p. 49. This audit uses
 the usual divisor N_{zy}-1. Zero is an explicit convention if fewer than two
 subjects occupy the cell. -/
 def Study.cellVariance (S : Study Ω) {n : ℕ} (s : Fin n → Ω) (z y : Bool) : ℝ :=
@@ -1143,7 +1143,7 @@ theorem asymptotic_variance_positive (S : Study Ω) (hs : S.standing) : 0 < S.si
   have hb := mul_pos hq (add_pos ht hc)
   linarith
 
-/-- The influence function ψ of T18 (finding P019-E003):
+/-- The influence function ψ of T18, validator E003 section 6:
 (1-δ*)(Y-r)+(1-Y)[Z(V-m1)/γ-(1-Z)(V-m0)/(1-γ)]. The two residual
 terms use the corresponding Boolean cell masks; this is the identical
 function, not a finite-sample substitute for the limit theorem. -/
@@ -1264,7 +1264,7 @@ theorem estimator_product_identity (S : Study Ω) {n : ℕ} (s : Fin n → Ω) (
       (S.cellMean s true false c1 - S.cellMean s false false c0 - 1) := by
   unfold Study.muHat; ring
 
-/-- T18(c), finding P019-E003: the exact decomposition of the
+/-- T18(c), validator E003 section 6: the exact decomposition of the
 combined estimator's error before taking a limit. Its only algebraic
 hypothesis is the identified population relation μ=r+(1-r)(m1-m0). -/
 theorem estimator_error_decomposition (yb v1 v0 μ r m1 m0 : ℝ)
@@ -1346,7 +1346,7 @@ theorem variance_gap_strict (r q γ s1 s0 τ u c : ℝ)
 
 /-- The (Y,Z) pattern is the finite sigma-field F of corrected Lemma 2:
 conditioning on its fibre is conditioning on all sampled direct answers
-and assignments. T4, finding P019-E003. -/
+and assignments. T4, validator E003 section 3. -/
 def Study.patternFibre (S : Study Ω) {n : ℕ} (s t : Fin n → Ω) : Prop :=
   ∀ i, S.Y (t i) = S.Y (s i) ∧ S.Z (t i) = S.Z (s i)
 
@@ -1367,6 +1367,69 @@ Lemma 2 and displays (4)-(7), pp. 62-63. -/
 def Study.negativeCount (S : Study Ω) {n : ℕ} (s : Fin n → Ω) : ℕ :=
   S.cellCount s true false + S.cellCount s false false
 
+/-- T4(a,b), full finite sampling correction: the empty-cell probabilities,
+the conditional binomial law, and the conditional mean/variance and
+covariance statements on occupied cells. No conclusion is assumed.
+Each fixed real c is a bounded empty-cell completion. -/
+theorem corrected_cell_lemmas (S : Study Ω) (hs : S.standing) (n : ℕ) (hn : 2 ≤ n)
+    (c1 c0 : ℝ) :
+    let P := S.law.iid n
+    0 < P.prob (S.occupied) ∧
+    (∀ z : Bool,
+      P.prob (fun s => S.cellCount s z false = 0) =
+        (1 - S.law.prob (S.cell z false))^n ∧
+      0 < P.prob (fun s => S.cellCount s z false = 0)) ∧
+    (∀ k : ℕ, k ≤ n → P.prob (fun s => S.negativeCount s = k) ≠ 0 →
+      ∀ i : ℕ, i ≤ k →
+        P.ce (fun s => if S.cellCount s true false = i then 1 else 0)
+          (fun s => S.negativeCount s = k) =
+            (Nat.choose k i : ℝ) * S.gamma^i * (1-S.gamma)^(k-i)) ∧
+    (∀ (s : Fin n → Ω), S.occupied s → P.prob (S.patternFibre s) ≠ 0 →
+      (∀ z : Bool,
+        P.ce (fun t => S.cellMean t z false (if z then c1 else c0)) (S.patternFibre s) =
+          S.listMean z false ∧
+        P.cv (fun t => S.cellMean t z false (if z then c1 else c0)) (S.patternFibre s) =
+          S.law.cv (fun ω => (S.V ω : ℝ)) (S.cell z false) / (S.cellCount s z false : ℝ)) ∧
+      P.ccov (fun t => S.cellMean t true false c1) (fun t => S.cellMean t false false c0)
+        (S.patternFibre s) = 0) ∧
+    (∀ z : Bool,
+      P.ccov (fun t => S.cellMean t z false (if z then c1 else c0)) S.sampleA S.occupied = 0) ∧
+    P.ccov (fun t => S.cellMean t true false c1) (fun t => S.cellMean t false false c0)
+      S.occupied = 0 := by
+  sorry
+
+/-- T4(c,d), exact repaired product-variance formula conditional on D.
+The difference from the printed product formula is precisely Cov(A²,h|D).
+This statement is about actual IID cell ratios, not assumed moment data. -/
+theorem corrected_product_variance (S : Study Ω) (hs : S.standing) (n : ℕ) (hn : 2 ≤ n)
+    (c1 c0 : ℝ) :
+    let P := S.law.iid n
+    let A := @Study.sampleA Ω _ S n
+    let B := fun s : Fin n → Ω => S.sampleB s c1 c0
+    let h := @Study.sampleH Ω _ S n
+    let b := S.listMean true false - S.listMean false false - 1
+    P.cv (fun s => S.muHat s c1 c0) S.occupied =
+      b^2 * P.cv A S.occupied + P.ce (fun s => A s ^ 2 * h s) S.occupied ∧
+    P.cv (fun s => A s * B s) S.occupied =
+      b^2 * P.cv A S.occupied + P.ce (fun s => A s ^ 2 * h s) S.occupied ∧
+    P.cv (fun s => A s * B s) S.occupied -
+      ((P.ce A S.occupied)^2 * P.cv B S.occupied +
+        P.cv A S.occupied * (P.ce B S.occupied)^2 +
+        P.cv A S.occupied * P.cv B S.occupied) =
+      P.ccov (fun s => A s^2) h S.occupied := by
+  sorry
+
+/-- T4(d), asymptotic size and leading coefficient of the missing
+covariance. The exact corrected identity remains separate above. -/
+theorem corrected_covariance_order (S : Study Ω) (hs : S.standing) :
+    let R := fun n : ℕ => (S.law.iid n).ccov
+      (fun s => (S.sampleA s)^2) (fun s => S.sampleH s) (fun s => S.occupied s)
+    Asymptotics.IsBigO atTop R (fun n : ℕ => (1/(n : ℝ))^2) ∧
+    Tendsto (fun n : ℕ => (n : ℝ)^2 * R n) atTop
+      (nhds (-2 * (S.mu * S.truthRate) *
+        (S.law.cv (fun ω => (S.V ω : ℝ)) (S.cell true false) / S.gamma +
+         S.law.cv (fun ω => (S.V ω : ℝ)) (S.cell false false) / (1-S.gamma)))) := by
+  sorry
 
 /-- T4(d), exact Taylor coefficient algebra: the multinomial covariance
 matrix and gradients of (P1+P0)² and s1/P1+s0/P0 give the claimed
@@ -1426,6 +1489,47 @@ theorem realized_count_counterexample :
     norm_num [finiteSampleWitness, uniformFin, fairBit,
       FiniteLaw.prob, FiniteLaw.mean, Fin.sum_univ_succ]
 
+/-- T4(b,c): the remaining conditional-mean and contrast-moment part of
+the correction, with F the finite (Y,Z) pattern and D occupied cells.
+This explicitly states E[Vbar_z0 | A,D]=m_z and the contrast variance h. -/
+theorem corrected_conditional_means (S : Study Ω) (hs : S.standing)
+    (n : ℕ) (hn : 2 ≤ n) (c1 c0 : ℝ) :
+    let P := S.law.iid n
+    (∀ (a : ℝ), P.prob (fun s => S.occupied s ∧ S.sampleA s = a) ≠ 0 →
+      ∀ z : Bool,
+        P.ce (fun s => S.cellMean s z false (if z then c1 else c0))
+          (fun s => S.occupied s ∧ S.sampleA s = a) = S.listMean z false) ∧
+    (∀ s : Fin n → Ω, S.occupied s → P.prob (S.patternFibre s) ≠ 0 →
+      P.ce (fun t => S.sampleB t c1 c0) (S.patternFibre s) =
+        S.listMean true false - S.listMean false false - 1 ∧
+      P.cv (fun t => S.sampleB t c1 c0) (S.patternFibre s) = S.sampleH s) ∧
+    (∀ k : ℕ, k ≤ n → P.prob (fun s => S.negativeCount s = k) ≠ 0 →
+      P.ce (fun s => if 0 < S.cellCount s true false then 1 else 0)
+        (fun s => S.negativeCount s = k) = 1-(1-S.gamma)^k ∧
+      P.ce (fun s => if 0 < S.cellCount s false false then 1 else 0)
+        (fun s => S.negativeCount s = k) = 1-S.gamma^k) := by
+  sorry
+
+/-- T3(iii,iv), the actual n=4 IID counterexample with every printed
+population assumption. Even conditional on D, both relevant covariances
+vanish while the exact product-variance formula fails. The realized
+treatment count also differs from nγ with positive probability. -/
+theorem finite_product_counterexample :
+    let S := finiteSampleWitness
+    let P := S.law.iid 4
+    let A := @Study.sampleA (Fin 16) _ S 4
+    let B := fun s : Fin 4 → Fin 16 => S.sampleB s 0 0
+    S.standing ∧ P.prob S.occupied = 1431/2048 ∧
+    P.ccov A B S.occupied = 0 ∧
+    P.ccov (fun s => S.cellMean s true false 0) (fun s => S.cellMean s false false 0)
+      S.occupied = 0 ∧
+    P.cv (fun s => S.muHat s 0 0) S.occupied = 141205/404496 ∧
+    (P.ce A S.occupied)^2 * P.cv B S.occupied +
+      P.cv A S.occupied * (P.ce B S.occupied)^2 +
+      P.cv A S.occupied * P.cv B S.occupied = 75809/202248 ∧
+    P.prob (fun s => S.armCount s true = 2) = 3/8 ∧
+    P.prob (fun s => S.armCount s true = 0) = 1/16 := by
+  sorry
 
 /-- Standard normal CDF Φ, Propositions 3-4, pp. 50-51. -/
 def normalCDF (t : ℝ) : ℝ := ((gaussianReal 0 1) (Set.Iic t)).toReal
@@ -1450,11 +1554,44 @@ def ProbabilityLimit (P : FiniteLaw Ω) (T : (n : ℕ) → (Fin n → Ω) → �
     Tendsto (fun n => (P.iid n).prob (fun s => ε < |T n s-a|)) atTop (nhds 0)
 
 /-- Root-n consistency, p. 49, interpreted as stochastic boundedness
-of sqrt(n)(μhat-μ). -/
+of sqrt(n)(μhat-μ), in addition to the normal limit stated below. -/
 def RootNTight (S : Study Ω) (c1 c0 : ℝ) : Prop :=
   ∀ ε : ℝ, 0 < ε → ∃ M : ℝ, 0 < M ∧ ∃ N : ℕ, ∀ n : ℕ, N ≤ n →
     (S.law.iid n).prob (fun s => M < |Real.sqrt n * (S.muHat s c1 c0-S.mu)|) < ε
 
+/-- T18: Proposition 1, equation (3), with maintained Assumptions 1-4.
+The variance is deterministic, so its printed plim is an ordinary limit.
+Every fixed bounded empty-cell completion is quantified explicitly. -/
+theorem proposition_one_variance_limit (S : Study Ω) (hs : S.standing) (c1 c0 : ℝ) :
+    Tendsto (fun n : ℕ => (n : ℝ) *
+      (S.law.iid n).variance (fun s => S.muHat s c1 c0)) atTop (nhds S.sigmaSq) := by
+  sorry
+
+/-- T19 (and T11(c)): the assertion after Proposition 1 and Corollary 1,
+p. 49, without weakening the root-n normal limit, plug-in consistency,
+or asymptotic Wald coverage. No exact finite-sample coverage is asserted. -/
+theorem combined_asymptotic_inference (S : Study Ω) (hs : S.standing) (c1 c0 cV : ℝ) :
+    RootNTight S c1 c0 ∧
+    WeakLimit S.law (fun n s => Real.sqrt n * (S.muHat s c1 c0-S.mu))
+      (gaussianReal 0 S.sigmaSq.toNNReal) ∧
+    ProbabilityLimit S.law (fun n s => (n : ℝ)*S.muVarianceHat s c1 c0 cV) S.sigmaSq ∧
+    (∀ α : ℝ, 0 < α → α < 1 →
+      Tendsto (fun n : ℕ => (S.law.iid n).prob (fun s =>
+        |S.muHat s c1 c0-S.mu| ≤ normalQuantile (1-α/2) *
+          Real.sqrt (S.muVarianceHat s c1 c0 cV))) atTop (nhds (1-α))) := by
+  sorry
+
+/-- T20: Proposition 2, p. 49. Both actual variance limits are stated,
+together with the strict inequality. The finite square completion and
+strict positive variance gap are proved separately above. -/
+theorem proposition_two_efficiency (S : Study Ω) (hs : S.standing)
+    (c1 c0 d1 d0 : ℝ) :
+    Tendsto (fun n : ℕ => (n : ℝ)*(S.law.iid n).variance
+      (fun s => S.muHat s c1 c0)) atTop (nhds S.sigmaSq) ∧
+    Tendsto (fun n : ℕ => (n : ℝ)*(S.law.iid n).variance
+      (fun s => S.standardHat s d1 d0)) atTop (nhds S.standardSigmaSq) ∧
+    S.sigmaSq < S.standardSigmaSq := by
+  sorry
 
 /-- βhat=Vbar11-Vbar01, Placebo Test I, p. 50, with explicit bounded
 values on empty cells. -/
@@ -1476,6 +1613,18 @@ an undefined printed expression; the null limit statements are unchanged. -/
 def normalPValue (estimate null varianceEstimate : ℝ) : ℝ :=
   2 * normalCDF (-|estimate-null| / Real.sqrt varianceEstimate)
 
+/-- T21: Proposition 3 as printed (the stronger Assumptions 1-4).
+The exact β=1 is combined with the full studentized standard-normal
+limit and the asymptotic uniformity of its printed p-value. -/
+theorem proposition_three (S : Study Ω) (hs : S.standing) (c1 c0 cV : ℝ) :
+    S.beta = 1 ∧
+    WeakLimit S.law (fun _ s => (S.betaHat s c1 c0-1) /
+      Real.sqrt (S.betaVarianceHat s cV)) (gaussianReal 0 1) ∧
+    (∀ u : ℝ, 0 < u → u < 1 →
+      Tendsto (fun n : ℕ => (S.law.iid n).prob (fun s =>
+        normalPValue (S.betaHat s c1 c0) 1 (S.betaVarianceHat s cV) ≤ u))
+          atTop (nhds u)) := by
+  sorry
 
 /-- Direct-answer sample mean within an arm, δhat numerator/denominator
 in Section 4.2, p. 51; c completes an empty arm. -/
@@ -1502,13 +1651,26 @@ def Study.deltaVarianceHat (S : Study Ω) {n : ℕ} (s : Fin n → Ω) (cV : ℝ
       S.directArmVariance s false / (S.armCount s false : ℝ)
   else cV
 
+/-- T22: Proposition 4, p. 51, under exactly its null: Assumption 3,
+with Assumption 4 for inference. Monotonicity and the list equation are
+not hypotheses. δ=0 and the full studentized normal limit are stated. -/
+theorem proposition_four (S : Study Ω) (h3 : S.treatmentIndependent)
+    (h4 : S.nondegenerate) (c1 c0 cV : ℝ) :
+    S.delta = 0 ∧
+    WeakLimit S.law (fun _ s => S.deltaHat s c1 c0 /
+      Real.sqrt (S.deltaVarianceHat s cV)) (gaussianReal 0 1) ∧
+    (∀ u : ℝ, 0 < u → u < 1 →
+      Tendsto (fun n : ℕ => (S.law.iid n).prob (fun s =>
+        normalPValue (S.deltaHat s c1 c0) 0 (S.deltaVarianceHat s cV) ≤ u))
+          atTop (nhds u)) := by
+  sorry
 
 /-- S=p1(1-p1)+p2(1-p2), the unpooled variance in the R planning
 approximation for Figure A2, supplement Appendix D and T15. -/
 def planningS (p1 p2 : ℝ) : ℝ := p1*(1-p1)+p2*(1-p2)
 
 /-- V=(p1+p2)(1-(p1+p2)/2), the pooled critical-value variance of
-power.prop.test, T15 and finding P019-E006. -/
+power.prop.test, T15 and validator E006. -/
 def planningV (p1 p2 : ℝ) : ℝ := (p1+p2)*(1-(p1+p2)/2)
 
 /-- Favored rejection tail A from the first Figure A2 panel's original
@@ -1525,7 +1687,7 @@ def oppositeTail (n p1 p2 c : ℝ) : ℝ :=
     Real.sqrt (planningS p1 p2))
 
 /-- Two-sided normal planning power as a probability under a standard
-normal draw G: |d+sqrt(S/n)G|>c sqrt(V/n), finding P019-E006. -/
+normal draw G: |d+sqrt(S/n)G|>c sqrt(V/n), validator E006 section 3. -/
 def twoSidedPlanningPower (n p1 p2 c : ℝ) : ℝ :=
   ((gaussianReal 0 1) {g : ℝ | c * Real.sqrt (planningV p1 p2 / n) <
     abs (abs (p1-p2) + Real.sqrt (planningS p1 p2/n)*g)}).toReal
@@ -1565,8 +1727,35 @@ theorem planning_tail_argument (n p1 p2 c : ℝ) (hn : 0 < n)
     simp only [sub_self, abs_zero, mul_zero, zero_add, he]
     field_simp
 
+/-- T15, the FULL corrected normal-approximation power statement for
+both rejection tails, including 0<B≤α/2 and its exact equality condition.
+The N=100 value is a separate statement below. The quantile is the actual normal quantile,
+not an abstract CDF with extra assumed properties. -/
+theorem two_sided_power_corrected (n p1 p2 α : ℝ) (hn : 0 < n)
+    (hp10 : 0 ≤ p1) (hp11 : p1 ≤ 1) (hp20 : 0 ≤ p2) (hp21 : p2 ≤ 1)
+    (hs : 0 < planningS p1 p2) (ha0 : 0 < α) (ha1 : α < 1) :
+    let c := normalQuantile (1-α/2)
+    0 < c ∧
+    twoSidedPlanningPower n p1 p2 c = favoredTail n p1 p2 c + oppositeTail n p1 p2 c ∧
+    oppositeTail n p1 p2 c = 1 -
+      normalCDF ((Real.sqrt n * |p1-p2| + c*Real.sqrt (planningV p1 p2)) /
+        Real.sqrt (planningS p1 p2)) ∧
+    0 < oppositeTail n p1 p2 c ∧ oppositeTail n p1 p2 c ≤ α/2 ∧
+    (oppositeTail n p1 p2 c = α/2 ↔ p1=p2) ∧
+    twoSidedPlanningPower n p1 p2 c - favoredTail n p1 p2 c = oppositeTail n p1 p2 c := by
+  sorry
 
-/-- The per-list placebo influence function (finding P019-N003),
+/-- T15(iv): at N=100, p1=p2=1/2 and α=1/20, the printed one-tail
+value is 1/40 and the repaired two-tail value is 1/20. -/
+theorem two_sided_power_null :
+    let c := normalQuantile (1-(1/20 : ℝ)/2)
+    planningS (1/2) (1/2) = 1/2 ∧ planningV (1/2) (1/2) = 1/2 ∧
+    favoredTail 50 (1/2) (1/2) c = 1/40 ∧
+    oppositeTail 50 (1/2) (1/2) c = 1/40 ∧
+    twoSidedPlanningPower 50 (1/2) (1/2) c = 1/20 := by
+  sorry
+
+/-- The per-list placebo influence function, validator N003 equation (1),
 for the joint Fisher calibration on p. 56. q=Pr(Y=1), m=E(W|Y=1).
 Its covariance, not shared respondents alone, governs joint inference. -/
 def Study.betaPsi (S : Study Ω) (ω : Ω) : ℝ :=
@@ -1575,9 +1764,9 @@ def Study.betaPsi (S : Study Ω) (ω : Ω) : ℝ :=
     ((S.W ω : ℝ) - S.law.ce (fun t => (S.W t : ℝ)) (fun t => S.Y t = true))
 
 /-- Full assignment independence and independence of the assignment
-vector from all W,X,Y coordinates, the sufficient joint premise
+VECTOR from all W,X,Y coordinates, the sufficient NEW joint premise
 in corrected T10. This permits arbitrary cross-list outcome dependence.
-Finite factorization is required for every function of the latent vector. -/
+Finite factorization is tested against every function of the latent vector. -/
 def jointAssignmentStable (P : FiniteLaw Ω) (S : Fin 5 → Study Ω) : Prop :=
   ∀ (f : (Fin 5 → ℕ) → (Fin 5 → Bool) → (Fin 5 → Bool) → ℝ) (a : Fin 5 → Bool),
     P.mean (fun ω => if ∀ j, (S j).Z ω = a j then
@@ -1586,7 +1775,7 @@ def jointAssignmentStable (P : FiniteLaw Ω) (S : Fin 5 → Study Ω) : Prop :=
         P.mean (fun ω => f (fun j => (S j).W ω) (fun j => (S j).X ω) (fun j => (S j).Y ω))
 
 /-- Conditioning on all cross-list W,X,Y coordinates, L in corrected
-T10 (finding P019-N003). -/
+T10 and validator N003 section 2. -/
 def latentVectorFibre (S : Fin 5 → Study Ω) (ω t : Ω) : Prop :=
   ∀ j, (S j).W t = (S j).W ω ∧ (S j).X t = (S j).X ω ∧ (S j).Y t = (S j).Y ω
 
@@ -1599,9 +1788,30 @@ standard normals, the reference used in the p. 56 joint test. -/
 def chiSquareTen : Measure ℝ :=
   (Measure.pi (fun _ : Fin 10 => gaussianReal 0 1)).map (fun x => ∑ j, (x j)^2)
 
+/-- T10, full corrected Fisher result with the new sufficient joint
+premise: diagonal influence covariance, independent joint normal limit,
+independent uniform p-values, and χ²_10 Fisher limit. The reported data
+numbers 12.143 and 0.276 are empirical, not formal targets here. -/
+theorem fisher_corrected (P : FiniteLaw Ω) (S : Fin 5 → Study Ω)
+    (hsame : ∀ j, (S j).law = P) (hs : ∀ j, (S j).standing)
+    (hj : jointAssignmentStable P S) :
+    (∀ j, (S j).beta = 1) ∧
+    (∀ j k : Fin 5, j ≠ k → ∀ ω,
+      P.prob (latentVectorFibre S ω) ≠ 0 →
+        P.ce (fun t => (S j).betaPsi t * (S k).betaPsi t) (latentVectorFibre S ω) = 0) ∧
+    (∀ j k : Fin 5, j ≠ k → P.mean (fun ω => (S j).betaPsi ω * (S k).betaPsi ω) = 0) ∧
+    WeakLimit P (fun _ s j => ((S j).betaHat s 0 0-1) /
+      Real.sqrt ((S j).betaVarianceHat s 0))
+        (Measure.pi (fun _ : Fin 5 => gaussianReal 0 1)) ∧
+    WeakLimit P (fun _ s j => normalPValue ((S j).betaHat s 0 0) 1
+      ((S j).betaVarianceHat s 0))
+        (Measure.pi (fun _ : Fin 5 => volume.restrict (Set.Icc (0 : ℝ) 1))) ∧
+    WeakLimit P (fun _ s => fisherStatistic (fun j =>
+      normalPValue ((S j).betaHat s 0 0) 1 ((S j).betaVarianceHat s 0))) chiSquareTen := by
+  sorry
 
 /-- A fair sign U or A_j=2Z_j-1 in T9's 128-atom counterexample,
-finding P019-N003. -/
+validator N003 section 3. -/
 def bitSign (b : Bool) : ℝ := if b then 1 else -1
 
 /-- P_k=∏_{j≤k} A_j, with P_0=1, in the sequential-spillover
@@ -1626,14 +1836,25 @@ def sequentialStudy (j : Fin 5) : Study (Fin 128) where
   V := fun ω => (if bitSign (fairBit ω 1) * prefixSign ω j.val = 1 then 2 else 1) +
     (if fairBit ω 0 && fairBit ω (j.val+2) then 1 else 0)
 
+/-- T9: each own triple (W_j,X_j,Y_j) is independent of Z_j, despite
+dependence on assignments to other lists. This explicitly checks the
+paper's whole-triple Assumption 3, not only marginal independence. -/
+theorem sequential_own_independence (j : Fin 5) : (sequentialStudy j).treatmentIndependent := by
+  sorry
+
+/-- T9: every printed per-list assumption is required in the explicit
+ordered model, including the four positive cell variances and both
+binary marginal variances. Their complete Lean check remains drafted. -/
+theorem sequential_standing (j : Fin 5) : (sequentialStudy j).standing := by
+  sorry
 
 /-- The exact simplified influences in T9: 2DU(P_j+P_5) for j<5,
-2DUP_5 for j=5 (finding P019-N003). -/
+2DUP_5 for j=5, validator N003 equation (4). -/
 def sequentialPsi (j : Fin 5) (ω : Fin 128) : ℝ :=
   2*bitVal (fairBit ω 0)*bitSign (fairBit ω 1)*
     (if j.val < 4 then prefixSign ω (j.val+1)+prefixSign ω 5 else prefixSign ω 5)
 
-/-- Integer copy of the fair signs for finite enumeration.
+/-- Integer copy of the fair signs for kernel-checked finite enumeration.
 It does not introduce a different probability model. -/
 def integerSign (b : Bool) : ℤ := if b then 1 else -1
 
@@ -1641,7 +1862,8 @@ def integerSign (b : Bool) : ℤ := if b then 1 else -1
 def integerPrefix (ω : Fin 128) (k : ℕ) : ℤ :=
   ∏ i ∈ Finset.range k, integerSign (fairBit ω (i+2))
 
-/-- Integer copy of the T9 influence function; its cast equals the real copy. -/
+/-- Integer copy of the T9 influence function; the real copy is proved
+equal below, before any integer enumeration is used as evidence. -/
 def integerSequentialPsi (j : Fin 5) (ω : Fin 128) : ℤ :=
   2*(if fairBit ω 0 then 1 else 0)*integerSign (fairBit ω 1)*
     (if j.val < 4 then integerPrefix ω (j.val+1)+integerPrefix ω 5 else integerPrefix ω 5)
@@ -1664,12 +1886,13 @@ theorem sequential_psi_integer_cast (j : Fin 5) (ω : Fin 128) :
       simp [integerSequentialPsi, sequentialPsi, integerSign, bitVal, bitSign,
         hd, hu, hj, prefix_integer_cast]
 
-/-- Exact integer covariance sums over 128 atoms. -/
+/-- Exact integer covariance sums over 128 atoms, proved by Lean's
+kernel reduction (decide, not native_decide). -/
 theorem sequential_integer_matrix :
     ∀ j k : Fin 5, (∑ ω : Fin 128, integerSequentialPsi j ω * integerSequentialPsi k ω) =
       if j = k then (if j.val < 4 then (512 : ℤ) else 256) else 256 := by decide
 
-/-- Exact integer mean sums over all 128 atoms. -/
+/-- Exact integer mean sums over all 128 atoms, kernel checked. -/
 theorem sequential_integer_centered :
     ∀ j : Fin 5, (∑ ω : Fin 128, integerSequentialPsi j ω) = 0 := by decide
 
@@ -1707,7 +1930,7 @@ theorem sequential_influence_centered (j : Fin 5) :
   rw [he, sequential_integer_centered]
   norm_num
 
-/-- The five limiting standardized normals in T9 (finding P019-N003):
+/-- The five limiting standardized normals in T9, validator N003 (6):
 G_j=(E_j+E_5)/sqrt(2) for j<5 and G_5=E_5. -/
 def correlatedNormals (e : Fin 5 → ℝ) (j : Fin 5) : ℝ :=
   if j.val < 4 then (e j + e 4)/Real.sqrt 2 else e 4
@@ -1718,12 +1941,46 @@ def sequentialFisherLimit : Measure ℝ :=
     fisherStatistic (fun j => normalPValue (correlatedNormals e j) 0 1))
 
 /-- Variance of a real variable under a continuous law, used to compare
-T9's Fisher limit with χ²_10. -/
+T9's Fisher limit with χ²_10. Integrability is asserted in the theorem. -/
 def continuousVariance (P : Measure ℝ) : ℝ :=
   (∫ x, x^2 ∂P) - (∫ x, x ∂P)^2
 
+/-- T9 finite lemmas: all per-list hypotheses, independent assignments,
+the pointwise influence identities and the exact covariance matrix for
+the 128-atom sequential counterexample. -/
+theorem fisher_sequential_finite :
+    (∀ j : Fin 5, (sequentialStudy j).standing ∧ (sequentialStudy j).beta = 1) ∧
+    (∀ a : Fin 5 → Bool,
+      (uniformFin 128 (by norm_num)).prob
+        (fun ω => ∀ j, (sequentialStudy j).Z ω = a j) = 1/32) ∧
+    (∀ j ω, (sequentialStudy j).betaPsi ω = sequentialPsi j ω) ∧
+    (∀ j, (uniformFin 128 (by norm_num)).mean (sequentialPsi j) = 0) ∧
+    (∀ j k, (uniformFin 128 (by norm_num)).mean
+      (fun ω => sequentialPsi j ω * sequentialPsi k ω) =
+        if j = k then (if j.val < 4 then 4 else 2) else 2) := by
+  sorry
 
-/-- T4 (finding P019-E003): conditional on the
+/-- T9, full counterexample target including its conclusion: the actual
+five statistics in the explicit ordered model converge to the correlated
+normal vector, Fisher's limit has variance strictly above 20 and hence is
+not χ²_10. Per-list Assumptions 1-4 are all included in the
+finite part; no inference from nonzero correlation alone is substituted
+for the false Fisher reference-distribution conclusion. -/
+theorem fisher_reference_counterexample :
+    (∀ j : Fin 5, (sequentialStudy j).standing ∧ (sequentialStudy j).beta = 1) ∧
+    WeakLimit (uniformFin 128 (by norm_num))
+      (fun _ s j => ((sequentialStudy j).betaHat s 0 0-1) /
+        Real.sqrt ((sequentialStudy j).betaVarianceHat s 0))
+      ((Measure.pi (fun _ : Fin 5 => gaussianReal 0 1)).map correlatedNormals) ∧
+    WeakLimit (uniformFin 128 (by norm_num)) (fun _ s => fisherStatistic
+      (fun j => normalPValue ((sequentialStudy j).betaHat s 0 0) 1
+        ((sequentialStudy j).betaVarianceHat s 0))) sequentialFisherLimit ∧
+    Integrable (fun x : ℝ => x) sequentialFisherLimit ∧
+    Integrable (fun x : ℝ => x^2) sequentialFisherLimit ∧
+    20 < continuousVariance sequentialFisherLimit ∧ sequentialFisherLimit ≠ chiSquareTen := by
+  sorry
+
+/-- T4 finite step (1), validator E003 section 3: conditional on the
 full sampled (Y,Z) pattern, the V_i are independent and each has its
 own population-cell law. Every test function of each V_i is allowed.
 Only a positive-probability pattern is used as a conditioning event. -/
@@ -1900,6 +2157,21 @@ theorem placebo_influence_residual (S : Study Ω) (hs : S.standing) (ω : Ω)
     rw [hs.2.1 ω hω]
     cases hz : S.Z ω <;> simp [Study.betaPsi, bitVal, hy, hx, hz] <;> field_simp <;> ring
 
+/-- T10(e), T21(d), T22(c): the exact standard-normal probability
+integral transform for the printed two-sided p-value. This is a fixed
+normal-law identity, separate from all sample-size limit assertions. -/
+theorem normal_pvalue_uniform (u : ℝ) (hu0 : 0 < u) (hu1 : u < 1) :
+    ((gaussianReal 0 1) {g : ℝ | 2*normalCDF (-|g|) ≤ u}).toReal = u := by
+  sorry
+
+/-- T10(f): five independent uniforms on (0,1) give Fisher's exact
+χ²_10 reference law. The endpoints have zero Lebesgue mass and are
+completed using Lean's totalized logarithm. No CLT is asserted here. -/
+theorem uniform_fisher_identity :
+    (Measure.pi (fun _ : Fin 5 => volume.restrict (Set.Icc (0 : ℝ) 1))).map
+      fisherStatistic = chiSquareTen := by
+  sorry
+
 
 /-- Conditional variance is unchanged by an additive constant. This is
 the exact list-versus-baseline variance step for confessors in the proof
@@ -1989,7 +2261,7 @@ theorem conditional_arm_variance (S : Study Ω) (hs : S.standing) (z : Bool) (f 
   ring
 
 /-- T20(a,e,f), the full finite population comparison underlying
-Proposition 2, pp. 64-65 and finding P019-E003. This states the
+Proposition 2, pp. 64-65 and validator E003 section 7. This states the
 actual population variance gap, beyond the already proved algebra for
 abstract component moments. -/
 theorem population_efficiency_gap (S : Study Ω) (hs : S.standing) :
@@ -2182,8 +2454,8 @@ theorem contrast_influence_moments (P : FiniteLaw Ω) (f : Ω → ℝ)
 
 /-- T21(c): the actual placebo-I influence ψ has mean zero and variance
 Var(V|Z=1,Y=1)/(qγ)+Var(V|Z=0,Y=1)/(q(1-γ)), q=Pr(Y=1), under the
-printed maintained model. This is a finite moment identity; studentized limits
-and variance-estimator consistency are separate assertions. -/
+printed maintained model. This finite coefficient is separate from the
+still-drafted studentized limit and variance-estimator consistency. -/
 theorem placebo_influence_moments (S : Study Ω) (hs : S.standing) :
     S.law.mean S.betaPsi = 0 ∧
     S.law.variance S.betaPsi =
@@ -2274,3 +2546,116 @@ theorem unchanged_response_increment (w : Fin 5) :
 end
 end AronowAudit.P019
 
+#print axioms AronowAudit.P019.mean_add
+#print axioms AronowAudit.P019.mean_const
+#print axioms AronowAudit.P019.mean_mul_const
+#print axioms AronowAudit.P019.mean_const_mul
+#print axioms AronowAudit.P019.mean_div_const
+#print axioms AronowAudit.P019.mean_sub
+#print axioms AronowAudit.P019.mean_congr_support
+#print axioms AronowAudit.P019.ce_congr_support
+#print axioms AronowAudit.P019.ce_add
+#print axioms AronowAudit.P019.ce_mul_const
+#print axioms AronowAudit.P019.ce_const
+#print axioms AronowAudit.P019.masked_central_moments
+#print axioms AronowAudit.P019.binary_centered_moment
+#print axioms AronowAudit.P019.mean_bit
+#print axioms AronowAudit.P019.probability_mono
+#print axioms AronowAudit.P019.regularity_probabilities
+#print axioms AronowAudit.P019.prob_false
+#print axioms AronowAudit.P019.direct_response_probability
+#print axioms AronowAudit.P019.cell_probability
+#print axioms AronowAudit.P019.ce_cell_independent
+#print axioms AronowAudit.P019.ce_arm_independent
+#print axioms AronowAudit.P019.list_mean_response
+#print axioms AronowAudit.P019.list_mean_identified
+#print axioms AronowAudit.P019.monotone_yes_mean
+#print axioms AronowAudit.P019.beta_baseline_decomposition
+#print axioms AronowAudit.P019.placebo_one_identity
+#print axioms AronowAudit.P019.beta_departure_diagnosis
+#print axioms AronowAudit.P019.placebo_distribution_corrected
+#print axioms AronowAudit.P019.list_arm_expansion
+#print axioms AronowAudit.P019.combined_excess
+#print axioms AronowAudit.P019.prevalence_identity
+#print axioms AronowAudit.P019.false_confessions_strict
+#print axioms AronowAudit.P019.placebo_two_identity
+#print axioms AronowAudit.P019.binomial_baseline_exact
+#print axioms AronowAudit.P019.ceiling_counterexample
+#print axioms AronowAudit.P019.ceiling_corrected
+#print axioms AronowAudit.P019.ceiling_response_increments
+#print axioms AronowAudit.P019.ceiling_as_printed
+#print axioms AronowAudit.P019.finite_sample_witness_valid
+#print axioms AronowAudit.P019.lemma_two_counterexample
+#print axioms AronowAudit.P019.omitted_binomial_mass
+#print axioms AronowAudit.P019.conditional_count_counterexample
+#print axioms AronowAudit.P019.distribution_witness_valid
+#print axioms AronowAudit.P019.distribution_sign_counterexample
+#print axioms AronowAudit.P019.diagnosis_counterexample
+#print axioms AronowAudit.P019.cnn_witness_valid
+#print axioms AronowAudit.P019.cnn_nonidentification_counterexample
+#print axioms AronowAudit.P019.cnn_interpretation
+#print axioms AronowAudit.P019.iid_mean_prod
+#print axioms AronowAudit.P019.iid_mean_coordinate
+#print axioms AronowAudit.P019.mean_sum
+#print axioms AronowAudit.P019.probability_complement
+#print axioms AronowAudit.P019.iid_absence_probability
+#print axioms AronowAudit.P019.empty_cell_probability
+#print axioms AronowAudit.P019.asymptotic_variance_positive
+#print axioms AronowAudit.P019.combined_influence_moments
+#print axioms AronowAudit.P019.combined_influence_variance
+#print axioms AronowAudit.P019.estimator_product_identity
+#print axioms AronowAudit.P019.estimator_error_decomposition
+#print axioms AronowAudit.P019.ratio_residual_identity
+#print axioms AronowAudit.P019.plugin_identity
+#print axioms AronowAudit.P019.population_variance_term
+#print axioms AronowAudit.P019.weighted_square_identity
+#print axioms AronowAudit.P019.weighted_square_minimum
+#print axioms AronowAudit.P019.variance_gap_strict
+#print axioms AronowAudit.P019.corrected_cell_lemmas
+#print axioms AronowAudit.P019.corrected_product_variance
+#print axioms AronowAudit.P019.corrected_covariance_order
+#print axioms AronowAudit.P019.covariance_taylor_coefficient
+#print axioms AronowAudit.P019.treatment_count_correction
+#print axioms AronowAudit.P019.realized_count_counterexample
+#print axioms AronowAudit.P019.corrected_conditional_means
+#print axioms AronowAudit.P019.finite_product_counterexample
+#print axioms AronowAudit.P019.proposition_one_variance_limit
+#print axioms AronowAudit.P019.combined_asymptotic_inference
+#print axioms AronowAudit.P019.proposition_two_efficiency
+#print axioms AronowAudit.P019.proposition_three
+#print axioms AronowAudit.P019.proposition_four
+#print axioms AronowAudit.P019.pooled_variance_difference
+#print axioms AronowAudit.P019.planning_tail_argument
+#print axioms AronowAudit.P019.two_sided_power_corrected
+#print axioms AronowAudit.P019.two_sided_power_null
+#print axioms AronowAudit.P019.fisher_corrected
+#print axioms AronowAudit.P019.sequential_own_independence
+#print axioms AronowAudit.P019.sequential_standing
+#print axioms AronowAudit.P019.prefix_integer_cast
+#print axioms AronowAudit.P019.sequential_psi_integer_cast
+#print axioms AronowAudit.P019.sequential_integer_matrix
+#print axioms AronowAudit.P019.sequential_integer_centered
+#print axioms AronowAudit.P019.sequential_influence_matrix
+#print axioms AronowAudit.P019.sequential_influence_centered
+#print axioms AronowAudit.P019.fisher_sequential_finite
+#print axioms AronowAudit.P019.fisher_reference_counterexample
+#print axioms AronowAudit.P019.conditional_sample_factorization
+#print axioms AronowAudit.P019.iid_mean_two_coordinates
+#print axioms AronowAudit.P019.iid_average_moments
+#print axioms AronowAudit.P019.direct_sample_moments
+#print axioms AronowAudit.P019.nonconfessor_population_contrast
+#print axioms AronowAudit.P019.placebo_influence_residual
+#print axioms AronowAudit.P019.normal_pvalue_uniform
+#print axioms AronowAudit.P019.uniform_fisher_identity
+#print axioms AronowAudit.P019.conditional_variance_shift
+#print axioms AronowAudit.P019.conditional_variance_congr_support
+#print axioms AronowAudit.P019.confessor_cell_variance
+#print axioms AronowAudit.P019.conditional_arm_split
+#print axioms AronowAudit.P019.conditional_arm_variance
+#print axioms AronowAudit.P019.population_efficiency_gap
+#print axioms AronowAudit.P019.arm_mean_decomposition
+#print axioms AronowAudit.P019.binary_null_characterization
+#print axioms AronowAudit.P019.contrast_influence_moments
+#print axioms AronowAudit.P019.placebo_influence_moments
+#print axioms AronowAudit.P019.direct_influence_moments
+#print axioms AronowAudit.P019.unchanged_response_increment

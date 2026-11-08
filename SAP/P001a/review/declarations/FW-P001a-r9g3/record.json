@@ -1,0 +1,143 @@
+[
+ {
+  "target_id": "P001-T11",
+  "decision": "restricted",
+  "theorem": "SAP.P001a.T11",
+  "restriction": "States the normalized identical iid experiments, compactness, likelihood continuity and attainment, finite two-target estimation bound, impossibility for every estimator and an attained MLE selection that fails at a truth. The two truths are nonidentified zero-weight boundary parameters. Does not refute the contextual claim with the identification and uniqueness conditions of Theorem 5.2.6 retained, and establishes no regular-efficiency counterexample at an interior truth with nonsingular full-parameter information. Omits the separate uniform likelihood upper bound of one and the binomial-count rewriting of the sample mass.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.unused_mixture_attained_mle_inconsistent",
+   "AronowAudit.P001.finite_mixture_compact_attainment"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.finite_mixture_counterexample_with_attainment",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.finite_mixture_iid_probabilities",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.finite_mixture_statistical_impossibility",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.nonidentification_no_two_consistent_targets",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.probability_limit_unique",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.unused_component_counterexample_full",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.unused_component_nonidentification",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T11Statement",
+  "bridge": "SAP.P001a.Bridge.T11_correspondence"
+ },
+ {
+  "target_id": "P001-T12",
+  "decision": "whole",
+  "theorem": "SAP.P001a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.zero_weight_component_irrelevant",
+   "AronowAudit.P001.identified_mixture_ml_consistency_supporting",
+   "AronowAudit.P001.Wave1.identified_mixture_ml_normal_efficiency_common_regular_set",
+   "SAP.P001a.WH.W2.T12_whole",
+   "SAP.P001a.WH.W2.T12_assembly",
+   "SAP.P001a.WH.W2.T12_L1_proof",
+   "SAP.P001a.WH.W2.T12_L2_proof",
+   "SAP.P001a.WH.W2.T12_L3_proof",
+   "SAP.P001a.WH.W2.mixture_nonidentification",
+   "AronowAudit.P001.compact_unique_maximum_separated",
+   "AronowAudit.P001.argmax_finite_gap",
+   "AronowAudit.P001.sample_probability_limit_unique",
+   "AronowAudit.P001.Wave1.regular_influence_information_lower_bound_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.identified_mixture_ml_normal_efficiency_supporting_common_regular_set",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.product_identified_mixture_ml_normal_limit_common_regular_set",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.regular_influence_information_lower_bound_proof",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.regular_local_alternative_score_identity_proof",
+    "reason": "Excluded by the final review; no credit is taken from this row."
+   },
+   {
+    "lean_name": "AronowAudit.P001.identified_mixture_ml_consistency",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.product_identified_mixture_ml_consistency",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T12WholeStatement",
+  "bridge": "SAP.P001a.Bridge.T12_correspondence"
+ },
+ {
+  "target_id": "P001-T13",
+  "decision": "restricted",
+  "theorem": "SAP.P001a.T13",
+  "restriction": "States the explicit hot-deck mean and scaled-variance limits, positive bootstrap gap, variance inconsistency, uniform second-moment bound and occupancy inequalities. Adds finite second-moment premises for every sample statistic and bootstrap variance to exclude undefined expectations. Omits separate MAR/MCAR, overlap and continuous-score assertions, root-n tightness, uniform integrability as a predicate, and the bootstrap-standard-error inconsistency conclusion. Does not claim to evaluate the reported empirical numbers or the literal hedged assurance.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.TailA.hot_deck_bootstrap_counterexample_final",
+   "AronowAudit.P001.Wave1.TailA.hot_deck_bootstrap_uniform_second_moment_final",
+   "AronowAudit.P001.hot_deck_bootstrap_constant_inequalities"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001a.T13Statement",
+  "bridge": "SAP.P001a.Bridge.T13_correspondence"
+ },
+ {
+  "target_id": "P001-T14",
+  "decision": "restricted",
+  "theorem": "SAP.P001a.T14",
+  "restriction": "States the explicit hot-deck bootstrap failure and the exact conditional weighted-sign and variance identities. Adds finite second-moment premises for the sample statistic and bootstrap variance. Omits separate MAR/MCAR, overlap, continuous-score and root-n-tightness assertions and any conclusion about confidence-interval calibration or the reported standard error.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.TailA.hot_deck_bootstrap_correction_final",
+   "AronowAudit.P001.Wave1.hot_deck_conditional_reuse_variance_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.hot_deck_two_bootstrap_draw_reuse_identity_proof",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T14Statement",
+  "bridge": "SAP.P001a.Bridge.T14_correspondence"
+ },
+ {
+  "target_id": "P001-T15",
+  "decision": "restricted",
+  "theorem": "SAP.P001a.T15",
+  "restriction": "Only the displayed mathematical matching example is stated: true-score bootstrap failure and consistency of the estimated intercept. Adds finite second-moment premises for the statistic and bootstrap variance. Does not refute the literal hedged footnote or the reported numbers, does not use the wrong_credit row, and omits the estimated-score statistic failure, score-match equalities, explicit design admissibility predicates, root-n tightness, gap decomposition and standard-error conclusion.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.TailA.matching_bootstrap_counterexample_supporting_final",
+   "AronowAudit.P001.Wave1.matching_score_intercept_consistent_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.TailA.matching_bootstrap_counterexample_final",
+    "reason": "Excluded by the final review; no credit is taken from this row."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T15Statement",
+  "bridge": "SAP.P001a.Bridge.T15_correspondence"
+ }
+]

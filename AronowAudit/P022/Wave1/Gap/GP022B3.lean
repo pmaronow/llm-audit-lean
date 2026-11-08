@@ -4,7 +4,16 @@ import Mathlib.Topology.Instances.ENNReal.Lemmas
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.List.GetD
 
+/-!
+Drafted without executing Lean, as required by dd-GP022B3.
 
+INTEGRATION DEPENDENCY: the final T6 assembly calls
+`AronowAudit.P022.Wave1.proposition2_corrected_finite_proof`, assigned to
+GP022B2. That module is absent from this worktree. Once its independently
+proved version is integrated, add its import here. The frozen original
+`AronowAudit.P022.proposition2_corrected_finite` must not be substituted.
+The T9 argument below does not depend on the held Appendix B theorem.
+-/
 
 namespace AronowAudit.P022.Wave1
 
@@ -14,7 +23,7 @@ set_option autoImplicit false
 
 noncomputable section
 
-
+-- Record 11 omitted: the new finite-decomposition proof is unavailable.
 
 /-! ## P022-T9: union-grid geometry and cell ranks -/
 
@@ -245,7 +254,8 @@ private theorem T9_product_cell {m k r : ℕ} (hm : 0 < m) (hk : 0 < k)
     simp only [T9_codeProduct, reduceCtorEq, if_false, empiricalQuantile]
     rw [hma, href, hkb]
 
-/-- Direct raw-product quadrature for the Appendix B integration argument. -/
+/-- Direct raw-product quadrature. This proves precisely the part of the
+Appendix B integration argument needed here, without using its held theorem. -/
 private theorem T9_raw_quadrature {m k : ℕ} (hm : 0 < m) (hk : 0 < k)
     (a : Fin m → ℝ) (b : Fin k → ℝ) (B : BoundSide)
     (hw : ∀ r < partitionCells m k, 2 * codeEpsilon < cellWidth m k r) :
@@ -371,6 +381,9 @@ theorem appendixB_general_discrepancy_proof {N m k : ℕ} (hm : 2 ≤ m) (hk : 2
     rw [hrawL]
     simp only [sharpCovariance, varianceExpression, reduceCtorEq, if_false, div_eq_mul_inv]
     ring
+
+example : type_of% @AronowAudit.P022.appendixB_general_discrepancy :=
+  @appendixB_general_discrepancy_proof
 
 end
 

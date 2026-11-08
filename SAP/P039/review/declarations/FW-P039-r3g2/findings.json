@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P039-T6",
+    "theorem": "SAP.P039.T6",
+    "fingerprint": "52a553cb34ba4ac2de8b6b79862845dd9e78ab89c2bdb4f83b3cffef8e1da719",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:10 compiled successfully with the SAP definitions only. For each of all five measures it checks winner and competitor membership in both samples, negative selected score, positive attained exact margin, both actual sample cardinalities, and a positive nonzero maximumEffect at beta=-1. The theorem has no outer hypotheses. Independent rational enumeration in scratch/check_data.py confirms uniqueness and every minimal margin across all 64 deposited scores; results are in scratch/numeric-audit.json.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T7",
+    "theorem": "SAP.P039.T7",
+    "fingerprint": "d3fb18d410e50c8b508579fa33ca8147e26ab082dd60424c478db5d5dc3fec4f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully with definitions only: it proves full column rank of tableA1, tableA2 and tableA3, then constructs Z1=[e0,e1], Z2=[e0,e1,e2], q=10e3 and y=17e4 in R^17. The compiled examples establish nesting, both appended full ranks, positive residual degrees of freedom, both outcome SSEs equal to 289, SE2<=.965, s1<=4.625 and s2>=4.695, jointly satisfying every premise of PrintedCellsBoundStatement. Exact normal-equation certificates for the three actual data fits, including positive SSE and coefficients, are recorded in scratch/numeric-audit.json. The simultaneous four rounding bins intentionally admit no instance: this is precisely the canonical incompatibility assertion. Under alternative sqrt(SSE/17), even the two RMSQ bins conflict with nested SSE monotonicity; the separate factor identity has the same satisfiable rank/positive-SSE premises already constructed. No refutation witness is claimed.",
+    "confidence": "high"
+  }
+]

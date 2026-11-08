@@ -1,22 +1,29 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
 
 # Gaussian characteristic-function bridge for the multivariate CLT
 
-A centered Gaussian limit can be specified by a target measure `Q` with
-characteristic function
-`charFun Q t = exp(−½ ∫⟪t,ψ⟫² dP)`.
+`Causalean/Stat/CLT/MultivariateCLT.lean`, `Stat/Inference/WaldVec.lean`, and
+`Stat/Inference/RatioDeltaMethod.lean`
+state their limit laws against an *abstract* target measure `Q` together with the
+hypothesis
+`charFun Q t = exp(−½ ∫⟪t,ψ⟫² dP)`  (`hQ`).
 At the current Mathlib pin the multivariate-Gaussian characteristic-function
 formula is available as
 `ProbabilityTheory.IsGaussian.charFun_eq'`
 (`Mathlib/Probability/Distributions/Gaussian/CharFun.lean`):
 `charFun μ t = exp(⟪t, μ[id]⟫·I − covarianceBilin μ t t / 2)`.
 
-This file specializes the Gaussian characteristic-function formula to a centered
-Gaussian measure `Q`.
+This file provides the verified glue that converts a *concrete* centered Gaussian
+`Q` whose covariance is identified with the influence-function second moment into
+exactly the `hQ` shape those theorems consume. The concrete `Q` is now
+constructed in `Causalean/Stat/CLT/GaussianLimit.lean` (`gaussianLimit`), as
+`stdGaussian.map √Σ` with `Σ` the second-moment operator
+(`Causalean/Stat/CLT/SecondMomentOperator.lean`) and `√Σ` its positive operator square
+root (`Causalean/Mathlib/Analysis/InnerProductSpace/PosDef/Sqrt.lean`);
+de-abstraction is complete.
 -/
 
 module
@@ -26,10 +33,14 @@ public import Mathlib.Probability.Distributions.Gaussian.CharFun
 
 This file connects concrete centered Gaussian measures with the characteristic
 function form used by the library's multivariate central-limit theorems. It
-specializes the characteristic-function formula to measures with mean zero.
+identifies the Gaussian covariance with the second moment of an influence
+function so that abstract limit-law hypotheses can be discharged.
 
 `charFun_isGaussian_centered` specializes the Mathlib Gaussian characteristic
-function formula to centered Gaussian measures. -/
+function formula to centered Gaussian measures. `charFun_isGaussian_of_cov_eq`
+then rewrites the covariance form into the influence-function integral
+`∫ ⟪t, ψ x⟫² ∂P`, matching the abstract target used by the multivariate CLT
+theorems. -/
 
 public section
 
@@ -55,5 +66,19 @@ theorem charFun_isGaussian_centered (Q : Measure E) [IsGaussian Q]
   congr 1
   ring
 
+/-- **Bridge to the abstract CLT target `hQ`.** For a centered Gaussian measure `Q` on `E` with
+[mean zero](hyp:hmean) whose [covariance bilinear form at every `t` equals the
+influence-function second moment $\int \langle t,\psi(x)\rangle^2\,dP$](hyp:hcov), [its
+characteristic function at `t` equals $\exp(-\tfrac12\int
+\langle t,\psi(x)\rangle^2\,dP)$](goal) — the exact target shape consumed as the hypothesis `hQ`
+by `IIDSample.clt_normalizedSum_vec_of_charFun` and friends. -/
+theorem charFun_isGaussian_of_cov_eq {X : Type*} [MeasurableSpace X]
+    {P : Measure X} {ψ : X → E} (Q : Measure E) [IsGaussian Q]
+    (hmean : ∫ x, x ∂Q = 0)
+    (hcov : ∀ t : E, covarianceBilin Q t t = ∫ x, (⟪t, ψ x⟫) ^ 2 ∂P)
+    (t : E) :
+    charFun Q t
+      = Complex.exp (-(((∫ x, (⟪t, ψ x⟫) ^ 2 ∂P : ℝ)) : ℂ) / 2) := by
+  rw [charFun_isGaussian_centered Q hmean t, hcov t]
 
 end Causalean.Stat

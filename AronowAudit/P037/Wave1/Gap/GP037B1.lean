@@ -72,6 +72,8 @@ theorem outcome_selection_regression_limit_proof (ε : ℝ) (hε : 0<ε) :
   · norm_num
   · norm_num
 
+example : type_of% @AronowAudit.P037.outcome_selection_regression_limit := outcome_selection_regression_limit_proof
+
 noncomputable def cutoff_draw (j : Fin 10000) : Bool × Finset (Fin 12) :=
   if j.val < 5000 then (false, {0,1,2,3,4,5})
   else if j.val < 5005 then (true, {6,7,8,9,10,11})
@@ -170,6 +172,8 @@ theorem cutoff_simulated_sequence_proof :
   · intro k
     rw [cutoff_histogram]
     fin_cases k <;> norm_num
+
+example : type_of% @AronowAudit.P037.cutoff_simulated_sequence := cutoff_simulated_sequence_proof
 
 noncomputable def positivity_avoid (F : Finset (Fin 12)) : Finset (Finset (Fin 12)) :=
   (seedChoices 12 6).filter (fun s => Disjoint s F)
@@ -363,6 +367,8 @@ theorem positivity_cutoff_counterexamples_proof :
   · norm_num [treatedSeedExposure, Finset.disjoint_insert_right]
   · norm_num [treatedSeedExposure, Finset.disjoint_insert_right]
 
+example : type_of% @AronowAudit.P037.positivity_cutoff_counterexamples := positivity_cutoff_counterexamples_proof
+
 theorem analysis_prob_positive_iff {Ω : Type*} [Fintype Ω]
     (P : SupportedDesign Ω) (E : Ω → Prop) :
     0 < sampleProb P E ↔ ∃ w, E w := by
@@ -468,5 +474,7 @@ theorem analysis_set_inclusions_proof {Ω I : Type*} [Fintype Ω]
     exact hest (hcut hi.1)
   · intro i hi
     exact hi.2.1
+
+example : type_of% @AronowAudit.P037.analysis_set_inclusions := analysis_set_inclusions_proof
 
 end AronowAudit.P037.Wave1

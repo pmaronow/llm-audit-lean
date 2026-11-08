@@ -1,0 +1,73 @@
+[
+ {
+  "target_id": "P029-T19",
+  "decision": "whole",
+  "theorem": "SAP.P029b.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.corrected_simulation_types",
+   "AronowAudit.P029.printed_simulation_equation_failure",
+   "AronowAudit.P029.simulation_outcome_identity",
+   "SAP.P029b.WH.W2.T19_whole",
+   "SAP.P029b.WH.W2.T19_assembly",
+   "SAP.P029b.WH.W2.T19_L1_proof",
+   "SAP.P029b.WH.W2.T19_L2_proof",
+   "SAP.P029b.WH.W2.T19_L3_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P029b.T19WholeStatement"
+ },
+ {
+  "target_id": "P029-T20",
+  "decision": "refuted",
+  "theorem": "SAP.P029b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.Wave1.printed_ignorability_ordering_refuted",
+   "AronowAudit.P029.baseline_selection_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.Wave1.printed_ignorability_ordering_all_profiles_refuted",
+    "reason": "The direct positive-profile universal ordering is already refuted by the selected measure-theoretic row; a second kernel presentation is unnecessary."
+   }
+  ],
+  "statement_definition": "SAP.P029b.T20Statement"
+ },
+ {
+  "target_id": "P029-T21",
+  "decision": "refuted",
+  "theorem": "SAP.P029b.T21",
+  "restriction": "The two false joint implications are refuted. The additional true constant-effect component is stated with measurable conditional-mean versions and uniform positive overlap, and only positive-probability, positive-score profiles are evaluated. The weaker positivity-only constant-effect assertion and sample consistency are not asserted. The marginal refutation uses independence of the complier indicator, not a separately stated full-type marginal implication.",
+  "rows_used": [
+   "AronowAudit.P029.Wave1.constant_effect_population_limits_proof",
+   "AronowAudit.P029.Wave1.printed_conditional_sufficiency_refuted",
+   "AronowAudit.P029.Wave1.printed_marginal_sufficiency_refuted"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P029b.T21Statement"
+ },
+ {
+  "target_id": "P029-T22",
+  "decision": "restricted",
+  "theorem": "SAP.P029b.T22",
+  "restriction": "Records only the empirical RMSE scoring convention for a supplied array of 2500 estimates and a supplied constant benchmark of 5. Omits the simulation design and estimator implementations, including alpha=0.275; any connection to historical estimates or simulated datasets; identification of the sample average effect, population ATE, or LATE with 5; and every numerical entry and graphical result of Table A3 and Figure A3. No simulation output or implementation is validated or refuted.",
+  "rows_used": [
+   "AronowAudit.P029.homogeneous_rmse_rule"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P029b.T22Statement"
+ },
+ {
+  "target_id": "P029-T23",
+  "decision": "refuted",
+  "theorem": "SAP.P029b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.Wave1.nested_bernoulli_package_weighted_fit_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P029b.T23Statement",
+  "statement_summary": "An exact minimizer of the package's inside-log criterion in an interior nested Bernoulli model with positive observation weights does not minimize the weighted negative log likelihood."
+ }
+]

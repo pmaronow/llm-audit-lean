@@ -6,6 +6,11 @@ The proof uses a finite binomial shape induction, a two-unit Pascal decompositio
 one-unobserved-bit tail transport, candidate-line reduction, and stateful sentinel
 search. Outcome reflection supplies the lower endpoint. The stronger pathwise
 cost bound supplies the prescribed logarithmic total cost.
+
+The starting search/candidate/discordance-one helpers are the prior writer's
+checked partial source. The stateful cost helpers adapt the checked local audit
+proof in P003/Wave1/Gap/GP0032B2.lean (T7 helpers), with fresh names. Further donor
+sources are recorded immediately before their adapted sections.
 -/
 
 namespace AronowAudit.P003.Wave1
@@ -29,7 +34,7 @@ lemma glp0032b2_runTests_cost (reject : Counts → ℕ → Bool) (xs : List Coun
         And.intro hi.1 (Nat.succ_le_succ hi.2)
     · simp [runTests, hv]
 
-/-- A uniform flat-map length bound. -/
+/-- A uniform flat-map length bound, kept local to this record. -/
 lemma glp0032b2_flatMap_length {α β : Type*} (xs : List α) (f : α → List β) (B : ℕ)
     (hf : ∀ x ∈ xs, (f x).length ≤ B) :
     (xs.flatMap f).length ≤ xs.length * B := by
@@ -81,7 +86,7 @@ lemma glp0032b2_zeroCredit_right (a c b : ℤ) (hac : a < c) (hcb : c < b) :
   unfold glp0032b2_zeroCredit
   split_ifs <;> omega
 
-/-- Expose the corrected branch of the recursion. -/
+/-- Expose only the corrected branch of the frozen recursion. -/
 lemma glp0032b2_search_succ (fuel : ℕ) (o : Counts) (k₁ k₂ : ℤ)
     (reject : Counts → ℕ → Bool) (a b : ℤ) (idx : ℕ) :
     adaptiveSearch (fuel+1) true o k₁ k₂ reject a b idx =
@@ -127,7 +132,7 @@ lemma glp0032b2_search_terminates (fuel : ℕ) (o : Counts) (k₁ k₂ : ℤ)
       · simp only [if_neg hq]
         exact ih a c q.idx hac (by omega)
 
-/-- A stateful search cost bound, measured in table tests.
+/-- Stateful analogue of `sentinel_queries_le_pow`, measured in table tests.
 The reserve pays for the exceptional candidate block at zero at most once.
 No property of `reject`, or of the chronological start index, is assumed. -/
 lemma glp0032b2_search_cost (q fuel : ℕ) (o : Counts) (k₁ k₂ : ℤ)
@@ -178,7 +183,7 @@ lemma glp0032b2_search_cost (q fuel : ℕ) (o : Counts) (k₁ k₂ : ℤ)
           have hm := Nat.mul_le_mul_left (o.total+1) hc
           nlinarith
 
-/-- A bound on the number of table tests, valid for every starting index. -/
+/-- Reusable arbitrary-start version, stronger by one block than the frozen budget. -/
 lemma glp0032b2_upperRun_budget (o : Counts) (reject : Counts → ℕ → Bool) (idx : ℕ)
     (ho : 0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) :
     (upperRun true o reject idx).value.isSome ∧
@@ -264,7 +269,7 @@ lemma glp0032b2_search_threshold (fuel : ℕ) (o : Counts) (k₁ k₂ : ℤ)
         exact hquery d had (lt_trans hdc hcb) i
 
 /-- This numerical estimate uses the stronger pathwise bound, so balance
-and n≥15 allow the uniform assumption n≥16. -/
+and n≥15 let us work uniformly with n≥16. -/
 lemma glp0032b2_log_cost (n : ℕ) (hn : 16 ≤ n) :
     2 * (((n+1)*(Nat.log2 (n+1)+2) : ℕ) : ℝ) ≤ 4*(n : ℝ)*logTwo n := by
   have hnR : (16 : ℝ) ≤ n := by exact_mod_cast hn
@@ -465,8 +470,119 @@ lemma glp0032b2_candidate_reduction (o : Counts) (x : ℤ) (α : ℝ)
         rw [hwu] at hh
         exact ⟨w,hmem,hp.trans (by exact_mod_cast hh)⟩
 
+/-- Binomial coefficients extended by zero to the full integer lattice. -/
+def glp0032b2_chooseZ (n : ℕ) (k : ℤ) : ℝ :=
+  if 0 ≤ k then (n.choose k.toNat : ℝ) else 0
 
-/- Enumeration of random states (T24). -/
+lemma glp0032b2_chooseZ_nonneg (n : ℕ) (k : ℤ) :
+    0 ≤ glp0032b2_chooseZ n k := by
+  unfold glp0032b2_chooseZ
+  split <;> positivity
+
+lemma glp0032b2_chooseZ_symm (n : ℕ) (k : ℤ) :
+    glp0032b2_chooseZ n ((n : ℤ)-k) = glp0032b2_chooseZ n k := by
+  by_cases hk0 : 0 ≤ k
+  · by_cases hkn : k ≤ n
+    · have hk : k.toNat ≤ n := by omega
+      have hnat : ((n : ℤ)-k).toNat = n-k.toNat := by omega
+      simp only [glp0032b2_chooseZ, if_pos hk0,
+        if_pos (show 0 ≤ (n : ℤ)-k by omega), hnat, Nat.choose_symm hk]
+    · have hlt : n < k.toNat := by omega
+      simp only [glp0032b2_chooseZ, if_pos hk0,
+        if_neg (show ¬0 ≤ (n : ℤ)-k by omega),
+        Nat.choose_eq_zero_of_lt hlt, Nat.cast_zero]
+  · have hlt : n < ((n : ℤ)-k).toNat := by omega
+    simp only [glp0032b2_chooseZ, if_neg hk0,
+      if_pos (show 0 ≤ (n : ℤ)-k by omega),
+      Nat.choose_eq_zero_of_lt hlt, Nat.cast_zero]
+
+/-- The first of the four adjacent inequalities in the shape argument,
+including all support boundaries. -/
+lemma glp0032b2_chooseZ_right (n : ℕ) (k : ℤ) (hk : (n : ℤ) ≤ 2*k) :
+    glp0032b2_chooseZ n (k+1) ≤ glp0032b2_chooseZ n k := by
+  have hk0 : 0 ≤ k := by omega
+  have hkp : 0 ≤ k+1 := by omega
+  have he : (k+1).toNat = k.toNat+1 := by omega
+  simp only [glp0032b2_chooseZ, if_pos hk0, if_pos hkp, he]
+  apply Nat.cast_le.mpr
+  have hrec := Nat.choose_succ_right_eq n k.toNat
+  have hfac : n-k.toNat ≤ k.toNat+1 := by omega
+  have hmul := Nat.mul_le_mul_left (n.choose k.toNat) hfac
+  rw [← hrec] at hmul
+  exact Nat.le_of_mul_le_mul_right hmul (by omega)
+
+lemma glp0032b2_chooseZ_left (n : ℕ) (k : ℤ) (hk : 2*k ≤ (n : ℤ)) :
+    glp0032b2_chooseZ n (k-1) ≤ glp0032b2_chooseZ n k := by
+  have hh := glp0032b2_chooseZ_right n ((n : ℤ)-k) (by omega)
+  rw [show (n : ℤ)-k+1 = (n : ℤ)-(k-1) by ring,
+    glp0032b2_chooseZ_symm, glp0032b2_chooseZ_symm] at hh
+  exact hh
+
+lemma glp0032b2_chooseZ_right_central (n : ℕ) (k : ℤ)
+    (hk : (n : ℤ)+1 ≤ 2*k) :
+    glp0032b2_chooseZ n k ≤ glp0032b2_chooseZ n (k-1) := by
+  by_cases hh : (n : ℤ) ≤ 2*(k-1)
+  · simpa only [show k-1+1 = k by ring] using glp0032b2_chooseZ_right n (k-1) hh
+  · have he : (n : ℤ)-(k-1) = k := by omega
+    exact le_of_eq (by simpa only [he] using glp0032b2_chooseZ_symm n (k-1))
+
+lemma glp0032b2_chooseZ_left_central (n : ℕ) (k : ℤ)
+    (hk : 2*k ≤ (n : ℤ)-1) :
+    glp0032b2_chooseZ n k ≤ glp0032b2_chooseZ n (k+1) := by
+  have hh := glp0032b2_chooseZ_right_central n ((n : ℤ)-k) (by omega)
+  rw [show (n : ℤ)-k-1 = (n : ℤ)-(k+1) by ring,
+    glp0032b2_chooseZ_symm, glp0032b2_chooseZ_symm] at hh
+  exact hh
+
+/-- The paper's two-parity formula for the unnormalised discordance-one
+mass, identified with the frozen weighted law below. -/
+def glp0032b2_oneMass (a z : ℕ) (s : ℤ) : ℝ :=
+  if ((a : ℤ)+s)%2 = 0 then
+    glp0032b2_chooseZ a (((a : ℤ)+s)/2) *
+      glp0032b2_chooseZ z (((z : ℤ)+1-s)/2)
+  else
+    glp0032b2_chooseZ a (((a : ℤ)+s-1)/2) *
+      glp0032b2_chooseZ z (((z : ℤ)-s)/2)
+
+lemma glp0032b2_oneMass_step (a z : ℕ) (s : ℤ) (hs : 1 ≤ s) :
+    glp0032b2_oneMass a z (s+1) ≤ glp0032b2_oneMass a z s := by
+  by_cases hp : ((a : ℤ)+s)%2 = 0
+  · have hp' : ¬((a : ℤ)+(s+1))%2 = 0 := by omega
+    simp only [glp0032b2_oneMass, if_pos hp, if_neg hp']
+    rw [show (a : ℤ)+(s+1)-1 = (a : ℤ)+s by ring,
+      show ((z : ℤ)-(s+1))/2 = ((z : ℤ)+1-s)/2-1 by omega]
+    exact mul_le_mul_of_nonneg_left
+      (glp0032b2_chooseZ_left z (((z : ℤ)+1-s)/2) (by omega))
+      (glp0032b2_chooseZ_nonneg _ _)
+  · have hp' : ((a : ℤ)+(s+1))%2 = 0 := by omega
+    simp only [glp0032b2_oneMass, if_neg hp, if_pos hp']
+    rw [show (z : ℤ)+1-(s+1) = (z : ℤ)-s by ring,
+      show ((a : ℤ)+(s+1))/2 = ((a : ℤ)+s-1)/2+1 by omega]
+    exact mul_le_mul_of_nonneg_right
+      (glp0032b2_chooseZ_right a (((a : ℤ)+s-1)/2) (by omega))
+      (glp0032b2_chooseZ_nonneg _ _)
+
+lemma glp0032b2_oneMass_shape (a z m : ℕ) (hn : a+z+1 = 2*m) :
+    SDShape (glp0032b2_oneMass a z) 1 := by
+  constructor
+  · intro s
+    by_cases hp : ((a : ℤ)+s)%2 = 0
+    · have hp' : ¬((a : ℤ)+(1-s))%2 = 0 := by omega
+      simp only [glp0032b2_oneMass, if_pos hp, if_neg hp']
+      rw [show ((a : ℤ)+(1-s)-1)/2 = (a : ℤ)-((a : ℤ)+s)/2 by omega,
+        show ((z : ℤ)-(1-s))/2 = (z : ℤ)-((z : ℤ)+1-s)/2 by omega,
+        glp0032b2_chooseZ_symm, glp0032b2_chooseZ_symm]
+    · have hp' : ((a : ℤ)+(1-s))%2 = 0 := by omega
+      simp only [glp0032b2_oneMass, if_neg hp, if_pos hp']
+      rw [show ((a : ℤ)+(1-s))/2 = (a : ℤ)-((a : ℤ)+s-1)/2 by omega,
+        show ((z : ℤ)+1-(1-s))/2 = (z : ℤ)-((z : ℤ)-s)/2 by omega,
+        glp0032b2_chooseZ_symm, glp0032b2_chooseZ_symm]
+  · intro i j hi hij
+    exact Int.leInduction (motive := fun j _ => glp0032b2_oneMass a z j ≤
+      glp0032b2_oneMass a z i) le_rfl
+      (fun j hji ih => (glp0032b2_oneMass_step a z j (by omega)).trans ih) j hij
+
+/- The following enumeration helpers adapt GP0031B3.lean, T24. -/
 lemma glp0032b2_mem_randomStates_iff (v q : Counts) (m : ℕ) :
     q ∈ randomStates v m ↔
       q.a ≤ v.a ∧ q.b ≤ v.b ∧ q.c ≤ v.c ∧ q.d ≤ v.d ∧ q.total = m := by
@@ -546,6 +662,88 @@ lemma glp0032b2_randomStates_nodup (v : Counts) (m : ℕ) :
 def glp0032b2_score (v q : Counts) : ℤ :=
   2*(q.a : ℤ)+q.b+q.c-v.a-v.c
 
+noncomputable def glp0032b2_countMass (v : Counts) (m : ℕ) (s : ℤ) : ℝ :=
+  ∑ q ∈ (randomStates v m).toFinset,
+    if glp0032b2_score v q = s then (multiplicity v q : ℝ) else 0
+
+lemma glp0032b2_chooseZ_zero (n : ℕ) (k : ℤ)
+    (hk : ¬(0 ≤ k ∧ k ≤ n)) : glp0032b2_chooseZ n k = 0 := by
+  by_cases hk0 : 0 ≤ k
+  · have hlt : n < k.toNat := by omega
+    simp only [glp0032b2_chooseZ, if_pos hk0,
+      Nat.choose_eq_zero_of_lt hlt, Nat.cast_zero]
+  · simp only [glp0032b2_chooseZ, if_neg hk0]
+
+/-- A discordance-one score singles out one random-state vector, or falls
+outside the support. This proves the parity formula on the actual enumeration. -/
+lemma glp0032b2_countMass_one_at (a z m b : ℕ) (s x y : ℤ)
+    (hb : b ≤ 1) (hsize : x+b+y = m) (hscore : 2*x+b-a = s) :
+    glp0032b2_countMass ⟨a,1,0,z⟩ m s =
+      glp0032b2_chooseZ a x * glp0032b2_chooseZ z y := by
+  have hcoord (q : Counts) (hq : q ∈ randomStates ⟨a,1,0,z⟩ m)
+      (hs : glp0032b2_score ⟨a,1,0,z⟩ q = s) :
+      (q.a : ℤ) = x ∧ q.b = b ∧ q.c = 0 ∧ (q.d : ℤ) = y := by
+    obtain ⟨ha,hb',hc,hd,ht⟩ := random_state_facts _ _ _ hq
+    dsimp at ha hb' hc hd
+    dsimp [glp0032b2_score] at hs
+    dsimp [Counts.total] at ht
+    omega
+  by_cases hvalid : (0 ≤ x ∧ x ≤ a) ∧ (0 ≤ y ∧ y ≤ z)
+  · let q₀ : Counts := ⟨x.toNat,b,0,y.toNat⟩
+    have hq : q₀ ∈ randomStates ⟨a,1,0,z⟩ m := by
+      apply (glp0032b2_mem_randomStates_iff _ _ _).mpr
+      dsimp [q₀, Counts.total]
+      exact ⟨by omega,hb,le_rfl,by omega,by omega⟩
+    have hqs : glp0032b2_score ⟨a,1,0,z⟩ q₀ = s := by
+      dsimp [q₀, glp0032b2_score]
+      omega
+    have hterm : (multiplicity ⟨a,1,0,z⟩ q₀ : ℝ) =
+        glp0032b2_chooseZ a x * glp0032b2_chooseZ z y := by
+      have hbval : b = 0 ∨ b = 1 := by omega
+      rcases hbval with rfl | rfl <;>
+        simp [multiplicity, binomial_eq_choose, q₀, glp0032b2_chooseZ,
+          hvalid.1.1, hvalid.2.1]
+    unfold glp0032b2_countMass
+    calc
+      _ = if glp0032b2_score ⟨a,1,0,z⟩ q₀ = s then
+          (multiplicity ⟨a,1,0,z⟩ q₀ : ℝ) else 0 := by
+        apply Finset.sum_eq_single q₀
+        · intro q hq' hne
+          by_cases hs : glp0032b2_score ⟨a,1,0,z⟩ q = s
+          · have he := hcoord q (List.mem_toFinset.mp hq') hs
+            have hqq : q = q₀ := by ext <;> dsimp [q₀] <;> omega
+            exact (hne hqq).elim
+          · simp only [if_neg hs]
+        · intro hnot
+          exact (hnot (List.mem_toFinset.mpr hq)).elim
+      _ = _ := by rw [if_pos hqs, hterm]
+  · have hzero : glp0032b2_countMass ⟨a,1,0,z⟩ m s = 0 := by
+      unfold glp0032b2_countMass
+      apply Finset.sum_eq_zero
+      intro q hq
+      by_cases hs : glp0032b2_score ⟨a,1,0,z⟩ q = s
+      · have he := hcoord q (List.mem_toFinset.mp hq) hs
+        have hf := random_state_facts ⟨a,1,0,z⟩ m q (List.mem_toFinset.mp hq)
+        have hh : (0 ≤ x ∧ x ≤ a) ∧ (0 ≤ y ∧ y ≤ z) := by
+          dsimp at hf
+          omega
+        exact (hvalid hh).elim
+      · simp only [if_neg hs]
+    rw [hzero]
+    by_cases hx : 0 ≤ x ∧ x ≤ a
+    · have hy : ¬(0 ≤ y ∧ y ≤ z) := by tauto
+      rw [glp0032b2_chooseZ_zero z y hy, mul_zero]
+    · rw [glp0032b2_chooseZ_zero a x hx, zero_mul]
+
+lemma glp0032b2_countMass_one (a z m : ℕ) (hn : a+z+1 = 2*m) (s : ℤ) :
+    glp0032b2_countMass ⟨a,1,0,z⟩ m s = glp0032b2_oneMass a z s := by
+  by_cases hp : ((a : ℤ)+s)%2 = 0
+  · simp only [glp0032b2_oneMass, if_pos hp]
+    exact glp0032b2_countMass_one_at a z m 0 s (((a : ℤ)+s)/2)
+      (((z : ℤ)+1-s)/2) (by omega) (by omega) (by omega)
+  · simp only [glp0032b2_oneMass, if_neg hp]
+    exact glp0032b2_countMass_one_at a z m 1 s (((a : ℤ)+s-1)/2)
+      (((z : ℤ)-s)/2) (by omega) (by omega) (by omega)
 
 lemma glp0032b2_allCounts_mem (m : ℕ) (q : Counts) :
     q ∈ allCounts m ↔ q.total = m := by
@@ -560,8 +758,153 @@ lemma glp0032b2_allCounts_mem (m : ℕ) (q : Counts) :
 noncomputable def glp0032b2_sumAll (v : Counts) (m : ℕ) (F : Counts → ℝ) : ℝ :=
   ∑ q ∈ allCounts m, (multiplicity v q : ℝ)*F q
 
+lemma glp0032b2_sumAll_shift_a (m : ℕ) (G : Counts → ℝ) :
+    (∑ q ∈ allCounts (m+1), if 1 ≤ q.a then
+      G ⟨q.a-1,q.b,q.c,q.d⟩ else 0) = ∑ q ∈ allCounts m, G q := by
+  rw [← Finset.sum_filter]
+  apply Finset.sum_nbij' (fun q : Counts => ⟨q.a-1,q.b,q.c,q.d⟩)
+    (fun q : Counts => ⟨q.a+1,q.b,q.c,q.d⟩)
+  · intro q hq
+    obtain ⟨hq,ha⟩ := Finset.mem_filter.mp hq
+    rw [glp0032b2_allCounts_mem] at hq ⊢
+    dsimp [Counts.total] at *
+    omega
+  · intro q hq
+    rw [glp0032b2_allCounts_mem] at hq
+    apply Finset.mem_filter.mpr
+    refine ⟨(glp0032b2_allCounts_mem _ _).mpr ?_, by dsimp; omega⟩
+    dsimp [Counts.total] at *
+    omega
+  · intro q hq
+    obtain ⟨hq,ha⟩ := Finset.mem_filter.mp hq
+    ext <;> dsimp <;> omega
+  · intro q hq
+    ext <;> dsimp <;> omega
+  · intro q hq
+    rfl
 
-/- Zero-extended binomial coefficients and canonical counts. -/
+lemma glp0032b2_multiplicity_a_identity (v q : Counts) (hv : 1 ≤ v.a)
+    (hq : 1 ≤ q.a) :
+    (q.a : ℝ)*(multiplicity v q : ℝ) = (v.a : ℝ)*
+      (multiplicity ⟨v.a-1,v.b,v.c,v.d⟩ ⟨q.a-1,q.b,q.c,q.d⟩ : ℝ) := by
+  have h := Nat.add_one_mul_choose_eq (v.a-1) (q.a-1)
+  rw [Nat.sub_add_cancel hv, Nat.sub_add_cancel hq] at h
+  have hR : (v.a : ℝ)*((v.a-1).choose (q.a-1) : ℝ) =
+      (v.a.choose q.a : ℝ)*q.a := by exact_mod_cast h
+  dsimp [multiplicity]
+  simp only [binomial_eq_choose, Nat.cast_mul]
+  linear_combination - ((v.b.choose q.b : ℝ) * (v.c.choose q.c : ℝ) *
+    (v.d.choose q.d : ℝ)) * hR
+
+lemma glp0032b2_sumAll_treated_a (v : Counts) (m : ℕ) (F : Counts → ℝ)
+    (hv : 1 ≤ v.a) :
+    glp0032b2_sumAll v (m+1) (fun q => (q.a : ℝ)*F q) =
+      (v.a : ℝ)*glp0032b2_sumAll ⟨v.a-1,v.b,v.c,v.d⟩ m
+        (fun q => F ⟨q.a+1,q.b,q.c,q.d⟩) := by
+  unfold glp0032b2_sumAll
+  rw [Finset.mul_sum]
+  let G (q : Counts) := (v.a : ℝ)*
+    (multiplicity ⟨v.a-1,v.b,v.c,v.d⟩ q : ℝ)*F ⟨q.a+1,q.b,q.c,q.d⟩
+  have hs := glp0032b2_sumAll_shift_a m G
+  calc
+    _ = ∑ q ∈ allCounts (m+1), if 1 ≤ q.a then
+        G ⟨q.a-1,q.b,q.c,q.d⟩ else 0 := by
+      apply Finset.sum_congr rfl
+      intro q hq
+      by_cases ha : 1 ≤ q.a
+      · rw [if_pos ha]
+        dsimp [G]
+        rw [Nat.sub_add_cancel ha]
+        have he := glp0032b2_multiplicity_a_identity v q hv ha
+        linear_combination F q * he
+      · have hqa : q.a = 0 := by omega
+        simp [hqa]
+    _ = ∑ q ∈ allCounts m, G q := hs
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro q hq
+      dsimp [G]
+      ring
+
+lemma glp0032b2_estimator_formula (v q : Counts) (m : ℕ) (hm : 0 < m)
+    (hn : v.total = 2*m) (hq : q ∈ randomStates v m) :
+    (m : ℝ)*estimate (observed v q) =
+      2*(q.a : ℝ)+q.b+q.c-v.a-v.c := by
+  rcases random_state_facts v m q hq with ⟨ha,hb,hc,hd,ht⟩
+  have hsum : q.a+q.b+q.c+q.d = m := ht
+  have hcontrol : v.a-q.a+v.c-q.c+(v.b-q.b+v.d-q.d) = m := by
+    dsimp [Counts.total] at hn
+    omega
+  have htreated : (q.a+q.b)+(q.c+q.d) = m := by omega
+  have hmR : (m : ℝ) ≠ 0 := by exact_mod_cast hm.ne'
+  have he : estimate (observed v q) =
+      ((q.a : ℝ)+q.b)/m - (((v.a : ℝ)-q.a)+v.c-q.c)/m := by
+    have hreal (o : Counts) : estimate o =
+        (o.a : ℝ)/((o.a : ℝ)+o.b)-(o.c : ℝ)/((o.c : ℝ)+o.d) := by
+      simp [estimate,estimateQ]
+    have htR : ((q.a+q.b : ℕ) : ℝ)+(q.c+q.d : ℕ) = m := by
+      exact_mod_cast htreated
+    have hcR : ((v.a-q.a+v.c-q.c : ℕ) : ℝ)+
+        (v.b-q.b+v.d-q.d : ℕ) = m := by exact_mod_cast hcontrol
+    have hcnum : ((v.a-q.a+v.c-q.c : ℕ) : ℝ) =
+        (v.a : ℝ)-q.a+v.c-q.c := by
+      rw [Nat.cast_sub (show q.c ≤ v.a-q.a+v.c by omega),
+        Nat.cast_add,Nat.cast_sub ha]
+    rw [hreal]
+    change ((q.a+q.b : ℕ) : ℝ)/
+        (((q.a+q.b : ℕ) : ℝ)+(q.c+q.d : ℕ)) -
+      ((v.a-q.a+v.c-q.c : ℕ) : ℝ)/
+        (((v.a-q.a+v.c-q.c : ℕ) : ℝ)+(v.b-q.b+v.d-q.d : ℕ)) = _
+    rw [htR,hcR,hcnum,Nat.cast_add]
+  rw [he]
+  field_simp [hmR]
+  <;> ring
+
+
+lemma glp0032b2_scaled_mass_formula (v : Counts) (m : ℕ) (hm : 0 < m)
+    (hn : v.total = 2*m) (s : ℤ) :
+    scaledEstimatorMass v m s = glp0032b2_countMass v m s / v.total.choose m := by
+  unfold scaledEstimatorMass designProb glp0032b2_countMass
+  congr 1
+  rw [← List.sum_toFinset _ (glp0032b2_randomStates_nodup _ _)]
+  apply Finset.sum_congr rfl
+  intro q hq
+  have he := glp0032b2_estimator_formula v q m hm hn (List.mem_toFinset.mp hq)
+  have heQ : (m : ℚ)*estimateQ (observed v q) = (glp0032b2_score v q : ℚ) := by
+    have heR : ((m : ℚ)*estimateQ (observed v q) : ℝ) =
+        (glp0032b2_score v q : ℝ) := by
+      simpa [estimate, glp0032b2_score] using he
+    exact_mod_cast heR
+  have hevent : (m : ℚ)*estimateQ (observed v q) = (s : ℚ) ↔
+      glp0032b2_score v q = s := by
+    rw [heQ]
+    exact_mod_cast (Iff.rfl : glp0032b2_score v q = s ↔ glp0032b2_score v q = s)
+  simp only [hevent]
+
+lemma glp0032b2_shape_div (f : ℤ → ℝ) (c : ℤ) (D : ℝ)
+    (hf : SDShape f c) (hD : 0 ≤ D) : SDShape (fun s => f s / D) c := by
+  constructor
+  · intro s
+    dsimp only
+    rw [hf.1 s]
+  · intro i j hi hij
+    exact div_le_div_of_nonneg_right (hf.2 i j hi hij) hD
+
+/-- The first base case of the proposed general shape induction is certified
+for the frozen finite-design probability, rather than an auxiliary law. -/
+lemma glp0032b2_discordance_one_shape (a z m : ℕ) (hm : 0 < m)
+    (hn : a+z+1 = 2*m) : SDShape (scaledEstimatorMass ⟨a,1,0,z⟩ m) 1 := by
+  have htot : (⟨a,1,0,z⟩ : Counts).total = 2*m := by
+    dsimp [Counts.total]
+    omega
+  convert glp0032b2_shape_div (glp0032b2_oneMass a z) 1
+    ((⟨a,1,0,z⟩ : Counts).total.choose m) (glp0032b2_oneMass_shape a z m hn)
+    (by positivity) using 1
+  funext s
+  rw [glp0032b2_scaled_mass_formula _ _ hm htot, glp0032b2_countMass_one a z m hn]
+
+/- The following zero-extended binomial and canonical-count lemmas adapt
+P003/Wave1/Gap/GLP0031B1.lean from the read-only audit. -/
 /-- Binomial coefficients with zero extension to negative integer indices. -/
 noncomputable def glp0032b2_sd_binom (n : ℕ) (k : ℤ) : ℝ :=
   if 0 ≤ k then (n.choose k.toNat : ℝ) else 0
@@ -686,6 +1029,12 @@ noncomputable def glp0032b2_sd_count (a d z : ℕ) (t s : ℤ) : ℝ :=
 
 local notation "C" => glp0032b2_sd_count
 
+lemma glp0032b2_sd_count_nonneg (a d z : ℕ) (t s : ℤ) :
+    0 ≤ C a d z t s := by
+  apply tsum_nonneg
+  intro x
+  exact mul_nonneg (glp0032b2_sd_binom_nonneg _ _)
+    (mul_nonneg (glp0032b2_sd_binom_nonneg _ _) (glp0032b2_sd_binom_nonneg _ _))
 
 lemma glp0032b2_sd_count_symm (a d z m : ℕ) (hn : a+d+z = 2*m) (s : ℤ) :
     C a d z m ((d : ℤ)-s) = C a d z m s := by
@@ -1235,8 +1584,50 @@ lemma glp0032b2_sd_joint_design (v : Counts) (m : ℕ) (f : List ℤ → ℝ) :
   simp only [Function.comp_apply, binomial_eq_choose]
   ring
 
+/-- Exact integer statistic on every enumerated balanced state. -/
+lemma glp0032b2_sd_scaled_statistic (v : Counts) (m : ℕ) (hm : 0 < m)
+    (hn : v.total = 2*m) (q : Counts) (hq : q ∈ randomStates v m) :
+    (m : ℚ) * estimateQ (observed v q) =
+      ((2*(q.a : ℤ)+q.b+q.c-v.a-v.c : ℤ) : ℚ) := by
+  rcases random_state_facts v m q hq with ⟨ha,hb,hc,hd,ht⟩
+  have hT : (observed v q).a + (observed v q).b = m := by
+    dsimp [observed, Counts.total] at ht ⊢
+    omega
+  have hC : (observed v q).c + (observed v q).d = m := by
+    dsimp [observed, Counts.total] at hn ht ⊢
+    omega
+  have hmQ : (m : ℚ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hm)
+  simp only [estimateQ, ← Nat.cast_add, hT, hC]
+  rw [mul_sub, mul_div_cancel₀ _ hmQ, mul_div_cancel₀ _ hmQ]
+  have hcc : q.c ≤ v.a-q.a+v.c := by omega
+  simp only [observed, Nat.cast_sub hcc, Nat.cast_add, Nat.cast_sub ha,
+    Int.cast_sub, Int.cast_add, Int.cast_mul, Int.cast_ofNat, Int.cast_natCast]
+  ring
 
-/- Weighted Pascal decomposition and one-bit tail transport. -/
+lemma glp0032b2_sd_mass_formula (v : Counts) (m : ℕ) (hm : 0 < m)
+    (hn : v.total = 2*m) (s : ℤ) :
+    scaledEstimatorMass v m s = C v.a (v.b+v.c) v.d m (s+v.c) / v.total.choose m := by
+  unfold scaledEstimatorMass designProb
+  congr 1
+  calc
+    _ = ((randomStates v m).map fun q => (multiplicity v q : ℝ) *
+        (if 2*(q.a : ℤ)+q.b+q.c-v.a-v.c = s then 1 else 0)).sum := by
+      apply congrArg List.sum
+      apply List.map_congr_left
+      intro q hq
+      dsimp only
+      simp only [glp0032b2_sd_scaled_statistic v m hm hn q hq, Int.cast_inj]
+      split_ifs <;> ring
+    _ = _ := by
+      simpa only [List.getElem!_cons_zero, List.getElem!_cons_succ, Nat.cast_ofNat,
+        Int.cast_ofNat] using
+        (glp0032b2_sd_joint_design v m
+          (fun xs => if 2*xs[0]!+xs[1]!+xs[2]!-(v.a : ℤ)-v.c = s then 1 else 0)).trans
+          (glp0032b2_sd_joint_canonical v.a v.b v.c v.d m s)
+
+
+/- Weighted Pascal decomposition and one-bit tail transport adapt
+P003/Wave1/Gap/GP0031B2b.lean. -/
 def glp0032b2_bit_coord (v : Counts) (i : Fin 4) : ℕ := ![v.a,v.b,v.c,v.d] i
 
 def glp0032b2_bit_add (v : Counts) (i : Fin 4) : Counts :=
@@ -1447,6 +1838,7 @@ lemma glp0032b2_bit_pvalue_step (u o o' : Counts) (i j : Fin 4) (m : ℕ)
   · apply Finset.sum_le_sum
     intro q _
     exact Nat.mul_le_mul_left _ (glp0032b2_bit_tail_indicator_mono _ _ _ _ _ _ ht hneg (hs' q))
+
 
 
 lemma glp0032b2_sumAll_add (v : Counts) (m : ℕ) (i : Fin 4) (F : Counts → ℝ) :
@@ -1710,7 +2102,7 @@ lemma glp0032b2_merge (o v : Counts)
     ext <;> simp [glp0032b2_bit_add, u]
   simpa only [hv,hw] using h
 
-/- Outcome reflection. -/
+/- Outcome-reflection helpers adapt GP0031B2.lean. -/
 def glp0032b2_reflect_reverse (v : Counts) : Counts :=
   ⟨v.d, v.c, v.b, v.a⟩
 
@@ -1749,6 +2141,20 @@ lemma glp0032b2_reflect_reverse_tau (v : Counts) :
     ring
   simpa only [tau, Rat.cast_neg] using congrArg (fun x : ℚ => (x : ℝ)) hQ
 
+/-- Positive arms are necessary here because rational division is total. -/
+lemma glp0032b2_reflect_complement_estimate (o : Counts)
+    (ho : 0 < o.a+o.b ∧ 0 < o.c+o.d) :
+    estimate (complementObserved o) = -estimate o := by
+  have h₀ : (o.a : ℚ)+o.b ≠ 0 := by
+    exact ne_of_gt (by exact_mod_cast ho.1)
+  have h₁ : (o.c : ℚ)+o.d ≠ 0 := by
+    exact ne_of_gt (by exact_mod_cast ho.2)
+  have hQ : estimateQ (complementObserved o) = -estimateQ o := by
+    dsimp [estimateQ, complementObserved]
+    rw [add_comm (o.b : ℚ) (o.a : ℚ), add_comm (o.d : ℚ) (o.c : ℚ)]
+    field_simp [h₀, h₁]
+    ring
+  simpa only [estimate, Rat.cast_neg] using congrArg (fun x : ℚ => (x : ℝ)) hQ
 
 lemma glp0032b2_reflect_possible_forward (o v : Counts)
     (hv : Possible o v) :
@@ -1761,6 +2167,15 @@ lemma glp0032b2_reflect_possible_forward (o v : Counts)
     o.d-l, by omega, o.c-k, by omega, ?_⟩
   ext <;> dsimp [glp0032b2_reflect_reverse] <;> omega
 
+lemma glp0032b2_reflect_possible_iff (o v : Counts) :
+    Possible (complementObserved o) (glp0032b2_reflect_reverse v) ↔
+      Possible o v := by
+  constructor
+  · intro h
+    have hh := glp0032b2_reflect_possible_forward _ _ h
+    simpa only [glp0032b2_reflect_complement_complement,
+      glp0032b2_reflect_reverse_reverse] using hh
+  · exact glp0032b2_reflect_possible_forward o v
 
 lemma glp0032b2_reflect_reverse_state (v q : Counts) (m : ℕ)
     (hq : q ∈ randomStates v m) :
@@ -1796,8 +2211,8 @@ lemma glp0032b2_reflect_complement_deviation (v o : Counts)
   rw [hZ]
   ring
 
-/-- The outcome-complementation p-value identity requires equal table totals,
-even when both observed arms are positive. -/
+/-- The total equality is indispensable even when the observed arms are
+positive. This is the precise corrected S2 p-value identity. -/
 lemma glp0032b2_reflect_complement_pValue (v o : Counts)
     (ho : 0 < o.a+o.b ∧ 0 < o.c+o.d) (hn : v.total = o.total) :
     pValue (⟨v.d,v.c,v.b,v.a⟩ : Counts) (complementObserved o) = pValue v o := by
@@ -1897,6 +2312,7 @@ lemma glp0032b2_reflect_complement_upper (α : ℝ) (o : Counts)
     obtain ⟨s,hs,rfl⟩ := Finset.mem_image.mp ht
     apply neg_le_neg
     exact csInf_le (accepted α o).finite_toSet.bddBelow hs
+
 
 
 lemma glp0032b2_bit_lower (v o : Counts) (i j : Fin 4)
@@ -2143,5 +2559,7 @@ theorem fast_exact_interval_proof (o : Counts) (α : ℝ)
         (exactUpperRun α (complementObserved o)).trace.length ≤
         2*((o.total+1)*(Nat.log2 (o.total+1)+2)) by omega)
     exact hbR.trans (glp0032b2_log_cost o.total (by dsimp [Counts.total] at *; omega))
+
+example : type_of% @AronowAudit.P003.fast_exact_interval := fast_exact_interval_proof
 
 end AronowAudit.P003.Wave1

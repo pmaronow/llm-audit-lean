@@ -34,5 +34,6 @@ theorem centered_variance_bound {Ω : Type*} [MeasurableSpace Ω] {n : ℕ}
     (DenseCumulant.cumulant_connected_bound μ Z D hz B hB hb)
   simpa only [Fintype.card_fin] using h
 
+#print axioms centered_variance_bound
 end
 end AronowAudit.P011.DenseCenteredVariance

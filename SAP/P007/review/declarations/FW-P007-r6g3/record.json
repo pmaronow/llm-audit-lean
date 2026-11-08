@@ -1,0 +1,75 @@
+[
+ {
+  "target_id": "P007-T11",
+  "decision": "whole",
+  "theorem": "SAP.P007.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.independent_rows_product",
+   "AronowAudit.P007.mutually_independent_need_not_be_iid"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": []
+ },
+ {
+  "target_id": "P007-T12",
+  "decision": "whole",
+  "theorem": "SAP.P007.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.printed_average_cannot_be_retained",
+   "AronowAudit.P007.removing_fully_missing_columns",
+   "AronowAudit.P007.stateFailure_average_overstatement",
+   "AronowAudit.P007.stateFailure_corrected_average"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P007.columnAverage_count_identity",
+    "reason": "The removal theorem already exports the needed count-to-average identities."
+   },
+   {
+    "lean_name": "AronowAudit.P007.logged_mask_correction",
+    "reason": "Part (iii) uses the canonical missing-count premise A=7019387 directly; the stronger log-tolerance correction is packaged in T2."
+   }
+  ],
+  "supporting_declarations": []
+ },
+ {
+  "target_id": "P007-T14",
+  "decision": "whole",
+  "theorem": "SAP.P007.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.lemma3"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": []
+ },
+ {
+  "target_id": "P007-T15",
+  "decision": "whole",
+  "theorem": "SAP.P007.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.lemma8"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": []
+ },
+ {
+  "target_id": "P007-T16",
+  "decision": "whole",
+  "theorem": "SAP.P007.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.proposition5"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P007.uniform_decay",
+    "reason": "Auxiliary analytic decay is already used internally by the headline proposition; the Challenge states its probability limit."
+   }
+  ],
+  "supporting_declarations": []
+ }
+]

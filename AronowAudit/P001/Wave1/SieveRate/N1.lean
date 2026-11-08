@@ -1,6 +1,7 @@
 import AronowAudit.P001.Wave1.SieveRateBlueprint
 
-/-! The infinite product witness and its one-observation marginals. -/
+/-! The infinite product witness and its one-observation marginals.
+Drafted by source inspection only; Lean has not been run on this file. -/
 
 set_option autoImplicit false
 

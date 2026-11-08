@@ -34,7 +34,7 @@ def mixtureSystem (p e0 e1 x0 x1 : ℝ) : Prop :=
   ∃ n : ℝ, p*x0 + (1-p)*n = e0 ∧ p*x1 + (1-p)*n = e1 ∧
     0 ≤ x0 ∧ x0 ≤ 1 ∧ 0 ≤ x1 ∧ x1 ≤ 1 ∧ 0 ≤ n ∧ n ≤ 1
 
-/-- The corrected sentence after Eq. (3), p. 678: the noncomplier
+/-- The corrected sentence after Eq. (3), p. 678 (E001): the noncomplier
 contribution is bounded by 1-P_c, rather than the printed 1. -/
 def correctedSystem (p e0 e1 x0 x1 : ℝ) : Prop :=
   p*x0 + e1 - p*x1 = e0 ∧ 0 ≤ x0 ∧ x0 ≤ 1 ∧ 0 ≤ x1 ∧ x1 ≤ 1 ∧
@@ -47,7 +47,7 @@ def printedSystem (p e0 e1 x0 x1 : ℝ) : Prop :=
 
 /-- T4(i): for 0<P_c<1 the corrected intermediate system is equivalent to
 the original mixture equations with a noncomplier mean in [0,1]. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem corrected_reframing (p e0 e1 x0 x1 : ℝ) (hp : 0 < p) (hp1 : p < 1) :
     mixtureSystem p e0 e1 x0 x1 ↔ correctedSystem p e0 e1 x0 x1 := by
   constructor
@@ -63,14 +63,14 @@ theorem corrected_reframing (p e0 e1 x0 x1 : ℝ) (hp : 0 < p) (hp1 : p < 1) :
 
 /-- T4(i): when the original system holds, Eq. (2) uniquely determines n
 as (EY₁-P_c EY_c(1))/(1-P_c). The denominator condition is explicit. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem noncomplier_mean_from_equation (p e1 x1 n : ℝ) (hp1 : p < 1)
     (h : p*x1 + (1-p)*n = e1) : n = (e1-p*x1)/(1-p) := by
   apply (eq_div_iff (by linarith : 1-p ≠ 0)).2
   linarith
 
 /-- T4(ii): the variable eliminated through Eq. (3) is the control mean x0. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem control_substitution (p e0 e1 x0 x1 : ℝ) (hp : 0 < p) :
     p*x0 + e1 - p*x1 = e0 ↔ x0 = x1 - effect p e0 e1 := by
   unfold effect
@@ -78,14 +78,14 @@ theorem control_substitution (p e0 e1 x0 x1 : ℝ) (hp : 0 < p) :
   constructor <;> intro h <;> nlinarith
 
 /-- T4(ii): substituting x0=x1-τ translates the unit-interval restriction. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem control_unit_interval (x1 t : ℝ) :
     (0 ≤ x1-t ∧ x1-t ≤ 1) ↔ (t ≤ x1 ∧ x1 ≤ 1+t) := by
   constructor <;> rintro ⟨h0,h1⟩ <;> constructor <;> linarith
 
 /-- T4(ii): the corrected contribution constraint gives exactly the third line
 of the printed three-line display. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem contribution_interval (p e1 x1 : ℝ) (hp : 0 < p) :
     (0 ≤ e1-p*x1 ∧ e1-p*x1 ≤ 1-p) ↔
     ((e1+p-1)/p ≤ x1 ∧ x1 ≤ e1/p) := by
@@ -93,7 +93,7 @@ theorem contribution_interval (p e1 x1 : ℝ) (hp : 0 < p) :
   constructor <;> rintro ⟨h0,h1⟩ <;> constructor <;> linarith
 
 /-- Algebraic equality of the two forms of Proposition 1's third lower limit. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem third_lower_identity (p e : ℝ) (hp : 0 < p) :
     (e+p-1)/p = 1-(1-e)/p := by
   field_simp
@@ -101,7 +101,7 @@ theorem third_lower_identity (p e : ℝ) (hp : 0 < p) :
 
 /-- T4(iii): the corrected system is exactly the treated interval together with
 the implied control mean. This statement permits all real arm means. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem corrected_interval_system (p e0 e1 x0 x1 : ℝ) (hp : 0 < p) :
     correctedSystem p e0 e1 x0 x1 ↔
       x0 = x1 - effect p e0 e1 ∧
@@ -127,7 +127,7 @@ theorem corrected_interval_system (p e0 e1 x0 x1 : ℝ) (hp : 0 < p) :
 
 /-- T4(iii): subtracting τ from the treated endpoints yields exactly the
 control endpoints printed in Proposition 1. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem endpoint_translation (p e0 e1 : ℝ) (hp : 0 < p) :
     lowerTreated p e0 e1 - effect p e0 e1 = lowerControl p e0 e1 ∧
     upperTreated p e0 e1 - effect p e0 e1 = upperControl p e0 e1 := by
@@ -148,7 +148,7 @@ theorem endpoint_translation (p e0 e1 : ℝ) (hp : 0 < p) :
 
 /-- T4(iv): the weaker printed constraint yields (EY₁-1)/P_c, rather than
 (EY₁+P_c-1)/P_c, as its lower restriction. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem printed_contribution_interval (p e1 x1 : ℝ) (hp : 0 < p) :
     (0 ≤ e1-p*x1 ∧ e1-p*x1 ≤ 1) ↔
     ((e1-1)/p ≤ x1 ∧ x1 ≤ e1/p) := by
@@ -157,7 +157,7 @@ theorem printed_contribution_interval (p e1 x1 : ℝ) (hp : 0 < p) :
 
 /-- T4(iv): for e1≤1 and x1≥0, the printed upper contribution restriction
 is redundant; it cannot supply the missing lower limit in general. 
-Reference (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T4): Corrected Proposition 1 proof after Eq. (3), p. 678; E001 repair. -/
 theorem printed_lower_redundant (p e1 x1 : ℝ) (hp : 0 < p)
     (he : e1 ≤ 1) (hx : 0 ≤ x1) : (e1-1)/p ≤ x1 := by
   apply (div_le_iff₀ hp).2
@@ -167,7 +167,7 @@ theorem printed_lower_redundant (p e1 x1 : ℝ) (hp : 0 < p)
 but no noncomplier mean in [0,1] satisfies Eqs. (1)-(2). Its implied mean is
 3/2, and the corrected residual restriction fails. This refutes a proof step,
 not Proposition 1. 
-Reference (P028-T5): Printed Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T5): Printed Proposition 1 proof after Eq. (3), p. 678; E001 witness. -/
 theorem misprinted_constraint_counterexample :
     printedSystem (1/2) (3/4) (3/4) 0 0 ∧
     ¬ mixtureSystem (1/2) (3/4) (3/4) 0 0 ∧
@@ -190,7 +190,7 @@ theorem misprinted_constraint_counterexample :
 
 /-- T6(vii): the two printed intervals at P_c=1 are singletons for every
 e0,e1 in [0,1]; there is no division by a noncomplier mass. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem full_compliance_endpoints (e0 e1 : ℝ)
     (he0 : 0 ≤ e0 ∧ e0 ≤ 1) (he1 : 0 ≤ e1 ∧ e1 ≤ 1) :
     lowerControl 1 e0 e1 = e0 ∧ upperControl 1 e0 e1 = e0 ∧
@@ -243,7 +243,7 @@ variable {Ω : Type*} [MeasurableSpace Ω]
 /-- Compliers C={D(1)>D(0)}, Section 2, p. 678. -/
 def complierEvent (M : CausalModel Ω) : Set Ω := {ω | M.S ω = 2}
 /-- Always-takers A={D(0)=D(1)=1}, principal-stratum decomposition in the
-derivation of Proposition 1 and Corollary 1. -/
+validators' derivation of Proposition 1 and Corollary 1. -/
 def alwaysEvent (M : CausalModel Ω) : Set Ω := {ω | M.S ω = 0}
 /-- Never-takers N={D(0)=D(1)=0}, same principal-stratum decomposition. -/
 def neverEvent (M : CausalModel Ω) : Set Ω := {ω | M.S ω = 1}
@@ -251,12 +251,12 @@ def neverEvent (M : CausalModel Ω) : Set Ω := {ω | M.S ω = 1}
 def noncomplierEvent (M : CausalModel Ω) : Set Ω := (complierEvent M)ᶜ
 /-- Assignment arm {Z=z}, Section 2, p. 678. -/
 def armEvent (M : CausalModel Ω) (z : Bool) : Set Ω := {ω | M.Z ω = z}
-/-- Observed D=D(Z), the implicit observation rule. -/
+/-- Observed D=D(Z), the validators' reading of the implicit observation rule. -/
 def observedD (M : CausalModel Ω) (ω : Ω) : Bool := treatment (M.S ω) (M.Z ω)
 /-- Observed Y=Y(D(Z)), the same observation rule; exclusion is built into Y. -/
 def observedY (M : CausalModel Ω) (ω : Ω) : ℝ := M.Y (observedD M ω) ω
 /-- Elementary conditional mean on an event: integral divided by its probability,
-as in Section 2, p. 678.
+the validators' ordinary-event reading of Section 2, p. 678.
 An ordinary conditional mean exists only on a positive-probability event; every
 statement using it as a mean includes that side condition or derives it. -/
 def eventMean (μ : Measure Ω) (f : Ω → ℝ) (E : Set Ω) : ℝ :=
@@ -276,12 +276,12 @@ def noncomplierMean (M : CausalModel Ω) : ℝ :=
 /-- E[Y(1)-Y(0)|D(1)>D(0)], the CACE in the Section 2 display. -/
 def cace (M : CausalModel Ω) : ℝ :=
   eventMean M.μ (fun ω => M.Y true ω - M.Y false ω) (complierEvent M)
-/-- Bounded potential outcomes “fix Y∈[0,1]”, Section 2, p. 678, with both
-potential outcomes bounded. -/
+/-- Bounded potential outcomes “fix Y∈[0,1]”, Section 2, p. 678, on the
+validators' reading that both potential outcomes are bounded. -/
 def boundedOutcomes (M : CausalModel Ω) : Prop :=
   ∀ d ω, 0 ≤ M.Y d ω ∧ M.Y d ω ≤ 1
-/-- The noncomplier contribution m=E[1_A Y(1)]+E[1_N Y(0)].
-This is a moment, not a mean over a possibly null group. -/
+/-- The noncomplier contribution m=E[1_A Y(1)]+E[1_N Y(0)], the E002
+repair. This is a moment, not a mean over a possibly null group. -/
 def noncomplierContribution (M : CausalModel Ω) : ℝ :=
   (∫ ω in alwaysEvent M, M.Y true ω ∂M.μ) +
   (∫ ω in neverEvent M, M.Y false ω ∂M.μ)
@@ -294,29 +294,29 @@ def cellProbability (M : CausalModel Ω) (d z : Bool) : ℝ :=
 /-- E[Y|D=d,Z=z], Corollary 1, p. 678; its premise requires positive cells. -/
 def cellMean (M : CausalModel Ω) (d z : Bool) : ℝ :=
   eventMean M.μ (observedY M) (cellEvent M d z)
-/-- Assignment-conditional product moment E[Y·1{D=d}|Z=z],
+/-- Assignment-conditional product moment E[Y·1{D=d}|Z=z], the E002 repair,
 which remains defined with empty treatment-assignment cells. -/
 def jointOutcomeMoment (M : CausalModel Ω) (d z : Bool) : ℝ :=
   eventMean M.μ (fun ω => if observedD M ω = d then observedY M ω else 0)
     (armEvent M z)
 
-/-- The three possible indices of the monotone binary treatment strata. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+/-- The three strata form a partition of all monotone binary treatment types. 
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem stratum_cases (s : Fin 3) : s = 0 ∨ s = 1 ∨ s = 2 := by omega
 
 /-- All stratum events are measurable; this is needed for ordinary conditioning. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem stratum_measurable (M : CausalModel Ω) (s : Fin 3) :
     MeasurableSet {ω | M.S ω = s} := M.measurableS (measurableSet_singleton s)
 
 /-- The two positive-probability assignment-arm events are measurable. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem arm_measurable (M : CausalModel Ω) (z : Bool) :
     MeasurableSet (armEvent M z) := M.measurableZ (measurableSet_singleton z)
 
 /-- First-stage population identity: D(1)-D(0)=1_C for every allowed type;
 its expectation is P_c>0, including full compliance. 
-Reference (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
+Audit source (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
 theorem first_stage_population (M : CausalModel Ω) :
     (∫ ω, realBit (treatment (M.S ω) true) -
       realBit (treatment (M.S ω) false) ∂M.μ) = complierProbability M ∧
@@ -335,7 +335,7 @@ theorem first_stage_population (M : CausalModel Ω) :
 
 /-- Random assignment equates an arm-conditional potential-vector moment with
 its population moment. This is the finite/integrable form of Section 2 (i). 
-Reference (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
+Audit source (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
 theorem random_assignment_moment (M : CausalModel Ω)
     (f : Fin 3 × ℝ × ℝ → ℝ) (hf : Measurable f)
     (hfi : Integrable (fun ω => f (M.S ω, M.Y false ω, M.Y true ω)) M.μ)
@@ -372,7 +372,7 @@ def potentialArmOutcome (z : Bool) (v : Fin 3 × ℝ × ℝ) : ℝ :=
   if v.1 = 0 then v.2.2 else if v.1 = 1 then v.2.1 else if z then v.2.2 else v.2.1
 
 /-- The arm-outcome expression is measurable in the joint potential vector. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem potential_arm_measurable (z : Bool) : Measurable (potentialArmOutcome z) := by
   unfold potentialArmOutcome
   apply Measurable.ite (measurable_fst (measurableSet_singleton 0))
@@ -383,7 +383,7 @@ theorem potential_arm_measurable (z : Bool) : Measurable (potentialArmOutcome z)
 
 /-- The arm-outcome expression is integrable because it is a sum of the three
 stratum-restricted integrable potential outcomes. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem potential_arm_integrable (M : CausalModel Ω) (z : Bool) :
     Integrable (fun ω => potentialArmOutcome z (M.S ω,M.Y false ω,M.Y true ω)) M.μ := by
   have hC := (M.integrableY z).indicator (stratum_measurable M 2)
@@ -396,7 +396,7 @@ theorem potential_arm_integrable (M : CausalModel Ω) (z : Bool) :
 
 /-- Under random assignment, EY_z is the population integral of the fixed-arm
 outcome expression. The observation rule is used on the positive arm event. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem arm_mean_population (M : CausalModel Ω) (z : Bool) :
     armMean M z = ∫ ω, potentialArmOutcome z (M.S ω,M.Y false ω,M.Y true ω) ∂M.μ := by
   rw [← random_assignment_moment M (potentialArmOutcome z)
@@ -409,9 +409,9 @@ theorem arm_mean_population (M : CausalModel Ω) (z : Bool) :
   rcases stratum_cases (M.S ω) with hs | hs | hs <;> cases z <;>
     simp [observedY, observedD, treatment, potentialArmOutcome, hs, hω]
 
-/-- The exact population mixture equations in the corrected Proposition 1 proof,
+/-- The exact population mixture equations in the repaired Proposition 1 proof,
 with an unnormalized noncomplier contribution. No boundedness is required. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem population_mixture (M : CausalModel Ω) (z : Bool) :
     armMean M z = complierProbability M*complierMean M z + noncomplierContribution M := by
   have hC := (M.integrableY z).indicator (stratum_measurable M 2)
@@ -439,7 +439,7 @@ theorem population_mixture (M : CausalModel Ω) (z : Bool) :
   ring
 
 /-- Noncomplier stratum probabilities add to 1-P_c. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem noncomplier_probability_partition (M : CausalModel Ω) :
     M.μ.real (alwaysEvent M)+M.μ.real (neverEvent M) = 1-complierProbability M := by
   have hs : noncomplierEvent M = alwaysEvent M ∪ neverEvent M := by
@@ -459,7 +459,7 @@ theorem noncomplier_probability_partition (M : CausalModel Ω) :
 
 /-- Integral of a unit-interval outcome over any event is between zero and the
 probability of that event; the event may have zero probability. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem bounded_set_moment (M : CausalModel Ω) (hb : boundedOutcomes M)
     (d : Bool) (E : Set Ω) :
     0 ≤ (∫ ω in E, M.Y d ω ∂M.μ) ∧ (∫ ω in E, M.Y d ω ∂M.μ) ≤ M.μ.real E := by
@@ -472,7 +472,7 @@ theorem bounded_set_moment (M : CausalModel Ω) (hb : boundedOutcomes M)
 
 /-- The bounded noncomplier contribution obeys 0≤m≤1-P_c at every compliance
 rate; it is zero at full compliance without defining a null-group mean. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem noncomplier_contribution_bounds (M : CausalModel Ω) (hb : boundedOutcomes M) :
     0 ≤ noncomplierContribution M ∧ noncomplierContribution M ≤ 1-complierProbability M := by
   have ha := bounded_set_moment M hb true (alwaysEvent M)
@@ -483,7 +483,7 @@ theorem noncomplier_contribution_bounds (M : CausalModel Ω) (hb : boundedOutcom
 
 /-- The two complier conditional means are in [0,1], with positive conditioning
 probability obtained from nonzero first stage and monotonicity. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem complier_mean_bounds (M : CausalModel Ω) (hb : boundedOutcomes M) (d : Bool) :
     0 ≤ complierMean M d ∧ complierMean M d ≤ 1 := by
   have hp := (first_stage_population M).2
@@ -492,7 +492,7 @@ theorem complier_mean_bounds (M : CausalModel Ω) (hb : boundedOutcomes M) (d : 
   exact ⟨div_nonneg h.1 hp.le, (div_le_one hp).2 h.2⟩
 
 /-- CACE is the treated complier mean minus the control complier mean. 
-Reference (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
+Audit source (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
 theorem cace_difference (M : CausalModel Ω) :
     cace M = complierMean M true-complierMean M false := by
   unfold cace complierMean eventMean
@@ -500,7 +500,7 @@ theorem cace_difference (M : CausalModel Ω) :
 
 /-- The reduced form divided by P_c equals CACE; this proves the population
 part of the Section 2 LATE display without any outcome boundedness premise. 
-Reference (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
+Audit source (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
 theorem late_population_ratio (M : CausalModel Ω) :
     cace M = (armMean M true-armMean M false)/complierProbability M := by
   rw [cace_difference, population_mixture M true, population_mixture M false]
@@ -508,12 +508,13 @@ theorem late_population_ratio (M : CausalModel Ω) :
   <;> ring
 
 
+
 /-- Outcome potential multiplied by the indicator of the fixed-arm treatment cell. -/
 def potentialCellOutcome (d z : Bool) (v : Fin 3 × ℝ × ℝ) : ℝ :=
   if treatment v.1 z = d then (if d then v.2.2 else v.2.1) else 0
 
 /-- The fixed-arm cell-outcome test is measurable. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem potential_cell_measurable (d z : Bool) : Measurable (potentialCellOutcome d z) := by
   have hs : MeasurableSet {v : Fin 3 × ℝ × ℝ | treatment v.1 z = d} :=
     ((Measurable.of_discrete : Measurable (fun s : Fin 3 => treatment s z)).comp measurable_fst)
@@ -524,7 +525,7 @@ theorem potential_cell_measurable (d z : Bool) : Measurable (potentialCellOutcom
   · exact measurable_const
 
 /-- Fixed-arm cell-outcome moments are integrable even when a cell is null. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem potential_cell_integrable (M : CausalModel Ω) (d z : Bool) :
     Integrable (fun ω => potentialCellOutcome d z (M.S ω,M.Y false ω,M.Y true ω)) M.μ := by
   have hs : MeasurableSet {ω | treatment (M.S ω) z = d} :=
@@ -536,7 +537,7 @@ theorem potential_cell_integrable (M : CausalModel Ω) (d z : Bool) :
 
 /-- Random assignment identifies the assignment-conditional joint outcome moment
 with a stratum-restricted population outcome moment. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem joint_outcome_population (M : CausalModel Ω) (d z : Bool) :
     jointOutcomeMoment M d z =
       ∫ ω, potentialCellOutcome d z (M.S ω,M.Y false ω,M.Y true ω) ∂M.μ := by
@@ -552,7 +553,7 @@ theorem joint_outcome_population (M : CausalModel Ω) (d z : Bool) :
 
 /-- The two pure noncomplier product moments equal their unnormalized population
 stratum outcome moments. This has no positive-cell hypothesis. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem pure_cell_product_moments (M : CausalModel Ω) :
     jointOutcomeMoment M true false = (∫ ω in alwaysEvent M, M.Y true ω ∂M.μ) ∧
     jointOutcomeMoment M false true = (∫ ω in neverEvent M, M.Y false ω ∂M.μ) := by
@@ -571,7 +572,7 @@ theorem pure_cell_product_moments (M : CausalModel Ω) :
       simp [potentialCellOutcome, treatment, neverEvent, Set.indicator, hs]
 
 /-- The two treatment-cell joint outcome moments add to EY_z in each arm. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem arm_joint_moment_partition (M : CausalModel Ω) (z : Bool) :
     jointOutcomeMoment M false z+jointOutcomeMoment M true z = armMean M z := by
   rw [joint_outcome_population, joint_outcome_population, arm_mean_population,
@@ -582,21 +583,21 @@ theorem arm_joint_moment_partition (M : CausalModel Ω) (z : Bool) :
     simp [potentialCellOutcome, potentialArmOutcome, treatment, hs]
 
 /-- m equals the two observable product moments (the optional empty-cell extension
-of Corollary 1). 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+of Corollary 1, E002). 
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem noncomplier_contribution_observable (M : CausalModel Ω) :
     noncomplierContribution M = jointOutcomeMoment M true false+jointOutcomeMoment M false true := by
   rw [(pure_cell_product_moments M).1, (pure_cell_product_moments M).2]
   rfl
 
 /-- The probability of the noncomplier event is 1-P_c, including P_c=1. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem noncomplier_event_probability (M : CausalModel Ω) :
     M.μ.real (noncomplierEvent M) = 1-complierProbability M :=
   probReal_compl_eq_one_sub (stratum_measurable M 2)
 
 /-- The unnormalized observed-outcome moment on noncompliers is m. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem noncomplier_outcome_moment (M : CausalModel Ω) :
     (∫ ω in noncomplierEvent M, observedY M ω ∂M.μ) = noncomplierContribution M := by
   have hs : MeasurableSet (noncomplierEvent M) := (stratum_measurable M 2).compl
@@ -618,7 +619,7 @@ theorem noncomplier_outcome_moment (M : CausalModel Ω) :
 
 /-- The noncomplier-mean formula on a positive event; no value at a null event
 is interpreted as an ordinary conditional mean. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem noncomplier_mean_positive_formula (M : CausalModel Ω) (hp : complierProbability M < 1) :
     0 < M.μ.real (noncomplierEvent M) ∧
     noncomplierMean M = noncomplierContribution M/(1-complierProbability M) := by
@@ -627,7 +628,7 @@ theorem noncomplier_mean_positive_formula (M : CausalModel Ω) (hp : complierPro
   rw [noncomplier_outcome_moment, noncomplier_event_probability]
 
 /-- Probability implies P_c≤1; first stage supplies strict positivity separately. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem complier_probability_le_one (M : CausalModel Ω) : complierProbability M ≤ 1 := by
   have h := measureReal_add_measureReal_compl (μ := M.μ) (stratum_measurable M 2)
   have hn : 0 ≤ M.μ.real (complierEvent M)ᶜ := measureReal_nonneg
@@ -635,8 +636,8 @@ theorem complier_probability_le_one (M : CausalModel Ω) : complierProbability M
   unfold complierProbability complierEvent at *
   linarith
 
-/-- The corrected full-compliance branch gives m=0 and c_d=EY_d directly. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+/-- The repaired full-compliance branch gives m=0 and c_d=EY_d directly. 
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem full_compliance_population (M : CausalModel Ω) (hb : boundedOutcomes M)
     (hp : complierProbability M = 1) : noncomplierContribution M = 0 ∧
     complierMean M false = armMean M false ∧ complierMean M true = armMean M true := by
@@ -650,19 +651,19 @@ theorem full_compliance_population (M : CausalModel Ω) (hb : boundedOutcomes M)
 
 /-- The implicit observed treatment is measurable, since the treatment map on
 stratum and assignment is a function on a finite measurable space. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem observed_d_measurable (M : CausalModel Ω) : Measurable (observedD M) :=
   (Measurable.of_discrete : Measurable (fun v : Fin 3 × Bool => treatment v.1 v.2)).comp
     (M.measurableS.prodMk M.measurableZ)
 
 /-- All treatment-assignment cells are measurable. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem cell_measurable (M : CausalModel Ω) (d z : Bool) : MeasurableSet (cellEvent M d z) :=
   ((observed_d_measurable M) (measurableSet_singleton d)).inter (arm_measurable M z)
 
 /-- A product moment is the unnormalized cell outcome integral divided only by
 the positive assignment-arm probability. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem joint_moment_cell_integral (M : CausalModel Ω) (d z : Bool) :
     jointOutcomeMoment M d z = (∫ ω in cellEvent M d z, observedY M ω ∂M.μ)/M.μ.real (armEvent M z) := by
   unfold jointOutcomeMoment eventMean
@@ -674,7 +675,7 @@ theorem joint_moment_cell_integral (M : CausalModel Ω) (d z : Bool) :
     simp [Set.indicator, armEvent, cellEvent, hz, hd]
 
 /-- Cell probability is an arm-conditional binary-indicator expectation. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem cell_probability_as_mean (M : CausalModel Ω) (d z : Bool) :
     cellProbability M d z = eventMean M.μ (fun ω => if observedD M ω = d then 1 else 0) (armEvent M z) := by
   unfold cellProbability eventMean
@@ -687,7 +688,7 @@ theorem cell_probability_as_mean (M : CausalModel Ω) (d z : Bool) :
 
 /-- Random assignment identifies treatment-cell probabilities with the
 corresponding potential-treatment probabilities. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem cell_probability_population (M : CausalModel Ω) (d z : Bool) :
     cellProbability M d z = M.μ.real {ω | treatment (M.S ω) z = d} := by
   let f : Fin 3 × ℝ × ℝ → ℝ := fun v => if treatment v.1 z = d then 1 else 0
@@ -723,7 +724,7 @@ theorem cell_probability_population (M : CausalModel Ω) (d z : Bool) :
 
 /-- The two pure-cell treatment probabilities are the always- and never-taker
 masses, and sum to 1-P_c. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem pure_cell_probabilities (M : CausalModel Ω) :
     cellProbability M true false = M.μ.real (alwaysEvent M) ∧
     cellProbability M false true = M.μ.real (neverEvent M) ∧
@@ -744,7 +745,7 @@ theorem pure_cell_probabilities (M : CausalModel Ω) :
 
 /-- On a positive cell, probability times its ordinary conditional mean equals
 the joint outcome moment. This explicitly avoids a mean on a null cell. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem weighted_cell_mean (M : CausalModel Ω) (d z : Bool)
     (hc : 0 < M.μ.real (cellEvent M d z)) :
     cellProbability M d z*cellMean M d z = jointOutcomeMoment M d z := by
@@ -755,7 +756,7 @@ theorem weighted_cell_mean (M : CausalModel Ω) (d z : Bool)
 
 
 /-- Each arm's two treatment probabilities add to one. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem cell_probability_partition (M : CausalModel Ω) (z : Bool) :
     cellProbability M false z+cellProbability M true z = 1 := by
   have hs : MeasurableSet {ω | treatment (M.S ω) z = false} :=
@@ -769,7 +770,7 @@ theorem cell_probability_partition (M : CausalModel Ω) (z : Bool) :
 
 /-- Positive conditional treatment probability implies positive joint cell mass,
 since both assignment arms have positive probability. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem positive_cell_mass (M : CausalModel Ω) (d z : Bool)
     (hp : 0 < cellProbability M d z) : 0 < M.μ.real (cellEvent M d z) := by
   have he : M.μ.real (armEvent M z)*cellProbability M d z = M.μ.real (cellEvent M d z) := by
@@ -781,7 +782,7 @@ theorem positive_cell_mass (M : CausalModel Ω) (d z : Bool)
 
 /-- Two-sided noncompliance plus the standing nonzero first stage makes all four
 ordinary cell means well-defined, as required by Corollary 1. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem two_sided_cells_positive (M : CausalModel Ω)
     (hq : 0 < cellProbability M true false) (hr : 0 < cellProbability M false true) :
     ∀ d z, 0 < M.μ.real (cellEvent M d z) := by
@@ -794,7 +795,7 @@ theorem two_sided_cells_positive (M : CausalModel Ω)
   cases d <;> cases z <;> linarith
 
 /-- The exact observed first-stage identity, Section 2: E[D|Z=1]-E[D|Z=0]=P_c. 
-Reference (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
+Audit source (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
 theorem observed_first_stage (M : CausalModel Ω) :
     eventMean M.μ (fun ω => realBit (observedD M ω)) (armEvent M true) -
       eventMean M.μ (fun ω => realBit (observedD M ω)) (armEvent M false) = complierProbability M := by
@@ -812,7 +813,7 @@ theorem observed_first_stage (M : CausalModel Ω) :
 /-- T8 finite algebra: every value in the printed treated interval supplies an
 actual feasible pair of complier means and a contribution m in [0,1-p]. This
 is the numerical certificate used by the attaining-population construction. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem sharpness_moment_certificate (p e0 e1 x1 : ℝ) (hp : 0 < p)
     (hx : lowerTreated p e0 e1 ≤ x1 ∧ x1 ≤ upperTreated p e0 e1) :
     let x0 := x1-effect p e0 e1
@@ -825,10 +826,10 @@ theorem sharpness_moment_certificate (p e0 e1 x1 : ℝ) (hp : 0 < p)
   dsimp
   exact ⟨h0,h01,h1,h11,hm,hm1,by linarith,by ring⟩
 
-/-- T8 finite algebra: the compatibility restriction |e1-e0|≤p is
+/-- T8 finite algebra: the target's compatibility restriction |e1-e0|≤p is
 necessary and sufficient for feasible bounded mixture moments. It is not a
 replacement for the separate theorem asserting existence of a probability model. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem compatible_mixture_moments (p e0 e1 : ℝ) (hp : 0 < p ∧ p ≤ 1) :
     (0 ≤ e0 ∧ e0 ≤ 1 ∧ 0 ≤ e1 ∧ e1 ≤ 1 ∧ |e1-e0| ≤ p) ↔
     ∃ c0 c1 m : ℝ, 0 ≤ c0 ∧ c0 ≤ 1 ∧ 0 ≤ c1 ∧ c1 ≤ 1 ∧
@@ -857,7 +858,7 @@ theorem compatible_mixture_moments (p e0 e1 : ℝ) (hp : 0 < p ∧ p ≤ 1) :
 
 /-- T9 finite algebra: substituting the identified noncomplier contribution
 q·a+r·n in Eqs. (1)-(2) gives both expressions of Corollary 1. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem corollary_moment_identity (p q r e0 e1 c0 c1 a n : ℝ) (hp : 0 < p)
     (h0 : e0 = p*c0+q*a+r*n) (h1 : e1 = p*c1+q*a+r*n) :
     c0 = (e0-q*a-r*n)/p ∧ c1 = c0+(e1-e0)/p ∧
@@ -873,7 +874,7 @@ theorem corollary_moment_identity (p q r e0 e1 c0 c1 a n : ℝ) (hp : 0 < p)
 /-- T2(v) finite lemma: a full outcome moment lies between its recorded moment
 and the recorded moment plus missing-cell probability. Differences of two such
 moments give the sensitivity bounds after division by P_c>0. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem missing_moment_difference_bounds
     (p c full0 full1 recorded0 recorded1 missing0 missing1 : ℝ) (hp : 0 < p)
     (he : p*c = full0-full1)
@@ -886,14 +887,14 @@ theorem missing_moment_difference_bounds
 
 /-- T7(F6): the printed intervals in the two-atom full-compliance witness are
 [0,0] and [1,1]; the witness refutes only the unqualified proof expressions. 
-Reference (P028-T7): Proposition 1 proof, p. 678. -/
+Audit source (P028-T7): Proposition 1 proof, p. 678; E002 full-compliance witness. -/
 theorem full_compliance_witness_intervals :
     lowerControl 1 0 1 = 0 ∧ upperControl 1 0 1 = 0 ∧
     lowerTreated 1 0 1 = 1 ∧ upperTreated 1 0 1 = 1 := by
   norm_num [lowerControl, upperControl, lowerTreated, upperTreated, effect]
 
 
-/-- The independent fair assignment coin used in the attaining models. -/
+/-- The independent fair assignment coin used in the validators' attaining models. -/
 def fairUnitProbability : Set.Icc (0:ℝ) 1 := ⟨1/2,by constructor <;> norm_num⟩
 /-- Genuine four-atom probability measure: complier indicator with probability p,
 times an independent fair assignment coin. The never-taker mass may be zero. -/
@@ -903,7 +904,7 @@ instance attainingMeasure_probability (p : Set.Icc (0:ℝ) 1) :
     IsProbabilityMeasure (attainingMeasure p) := by unfold attainingMeasure; infer_instance
 
 /-- Exact weighted-sum formula for the four-atom attaining measure. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem attaining_integral (p : Set.Icc (0:ℝ) 1) (f : Bool × Bool → ℝ) :
     (∫ ω, f ω ∂attainingMeasure p) =
       (p:ℝ)*((1/2)*f (true,true)+(1/2)*f (true,false)) +
@@ -914,15 +915,15 @@ theorem attaining_integral (p : Set.Icc (0:ℝ) 1) (f : Bool × Bool → ℝ) :
   ring
 
 /-- Both assignment arms have probability 1/2 in the attaining model. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem attaining_arm_probability (p : Set.Icc (0:ℝ) 1) (z : Bool) :
     (attainingMeasure p).real {ω | ω.2 = z} = 1/2 := by
   rw [← integral_indicator_one (MeasurableSet.of_discrete), attaining_integral]
   cases z <;> simp [Set.indicator] <;> ring
 
-/-- Attaining population: compliers have constant (c0,c1),
+/-- Validators' attaining population: compliers have constant (c0,c1),
 never-takers have both potential outcomes n, and Z is an independent fair coin.
-Sharpness construction for Proposition 1. -/
+Proposition 1 sharpness construction in the E001/E002 derivations. -/
 def attainingModel (p : Set.Icc (0:ℝ) 1) (hp : 0 < (p:ℝ)) (c0 c1 n : ℝ) :
     CausalModel (Bool × Bool) where
   μ := attainingMeasure p
@@ -948,7 +949,7 @@ def attainingModel (p : Set.Icc (0:ℝ) 1) (hp : 0 < (p:ℝ)) (c0 c1 n : ℝ) :
 
 /-- The attaining model has bounded potential outcomes whenever its three
 constant outcomes lie in [0,1]; the model's measure is never identically zero. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem attaining_model_bounded (p : Set.Icc (0:ℝ) 1) (hp : 0 < (p:ℝ))
     (c0 c1 n : ℝ) (h0 : 0 ≤ c0 ∧ c0 ≤ 1) (h1 : 0 ≤ c1 ∧ c1 ≤ 1)
     (hn : 0 ≤ n ∧ n ≤ 1) : boundedOutcomes (attainingModel p hp c0 c1 n) := by
@@ -957,7 +958,7 @@ theorem attaining_model_bounded (p : Set.Icc (0:ℝ) 1) (hp : 0 < (p:ℝ))
     simp [attainingModel, hd, hb] <;> assumption
 
 /-- Exact population moments of the attaining model, valid also at p=1. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem attaining_model_moments (p : Set.Icc (0:ℝ) 1) (hp : 0 < (p:ℝ)) (c0 c1 n : ℝ) :
     complierProbability (attainingModel p hp c0 c1 n) = (p:ℝ) ∧
     armMean (attainingModel p hp c0 c1 n) false = (p:ℝ)*c0+(1-(p:ℝ))*n ∧
@@ -1001,7 +1002,7 @@ theorem attaining_model_moments (p : Set.Icc (0:ℝ) 1) (hp : 0 < (p:ℝ)) (c0 c
 
 /-- Every feasible mixture certificate is realized by an actual probability
 model. The noncomplier outcome is chosen only when 1-p>0; at p=1 it is 0. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem realize_mixture_moments (p e0 e1 c0 c1 m : ℝ) (hp : 0 < p ∧ p ≤ 1)
     (h0 : 0 ≤ c0 ∧ c0 ≤ 1) (h1 : 0 ≤ c1 ∧ c1 ≤ 1)
     (hm : 0 ≤ m ∧ m ≤ 1-p) (he0 : e0 = p*c0+m) (he1 : e1 = p*c1+m) :
@@ -1033,7 +1034,7 @@ theorem realize_mixture_moments (p e0 e1 c0 c1 m : ℝ) (hp : 0 < p ∧ p ≤ 1)
 
 /-- T6 finite algebra: the mixture equations with 0≤m≤1-p imply both printed
 intervals for every p>0, including p=1, without dividing by 1-p. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem bounds_from_mixture_moments (p e0 e1 c0 c1 m : ℝ) (hp : 0 < p)
     (h0 : e0 = p*c0+m) (h1 : e1 = p*c1+m)
     (hc0 : 0 ≤ c0 ∧ c0 ≤ 1) (hc1 : 0 ≤ c1 ∧ c1 ≤ 1)
@@ -1047,11 +1048,11 @@ theorem bounds_from_mixture_moments (p e0 e1 c0 c1 m : ℝ) (hp : 0 < p)
   rcases endpoint_translation p e0 e1 hp with ⟨hel,heu⟩
   exact ⟨by linarith, by linarith, by linarith, hl, hu⟩
 
-/-- T6(i)-(v): the corrected proof works at every 0<P_c≤1 using the noncomplier
+/-- T6(i)-(v): the repaired proof works at every 0<P_c≤1 using the noncomplier
 contribution. It supplies the ordinary noncomplier mean only for P_c<1, gives
 c_d=EY_d at full compliance, and gives the product-moment extension of Corollary 1
-without any positive-cell premise. 
-Reference (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679. -/
+without any positive-cell premise. E002 repair, Proposition 1 and Corollary 1. 
+Audit source (P028-T6): Proposition 1 proof, p. 678, and Corollary 1 proof, p. 679; E002 repair. -/
 theorem boundary_proof_repair (M : CausalModel Ω) (hb : boundedOutcomes M) :
     0 < complierProbability M ∧ complierProbability M ≤ 1 ∧
     (0 ≤ noncomplierContribution M ∧ noncomplierContribution M ≤ 1-complierProbability M) ∧
@@ -1084,7 +1085,7 @@ theorem boundary_proof_repair (M : CausalModel Ω) (hb : boundedOutcomes M) :
 /-- T8, validity and translated intervals: Proposition 1 under the full standing
 assumptions. Its sharpness is stated separately, so validity cannot be confused
 with attainment of every bound. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem proposition1_valid (M : CausalModel Ω) (hb : boundedOutcomes M) :
     lowerControl (complierProbability M) (armMean M false) (armMean M true) ≤ complierMean M false ∧
     complierMean M false ≤ upperControl (complierProbability M) (armMean M false) (armMean M true) ∧
@@ -1104,7 +1105,7 @@ for every admissible triple and every treated mean in the displayed interval,
 a genuine randomized bounded-outcome probability model attains that mean and the
 implied control mean. The explicit four-atom sample space is sufficient for
 attainment; validity is universal over arbitrary probability spaces. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem proposition1_sharp (p e0 e1 : ℝ) (hp : 0 < p ∧ p ≤ 1)
     (he0 : 0 ≤ e0 ∧ e0 ≤ 1) (he1 : 0 ≤ e1 ∧ e1 ≤ 1) (hcompat : |e1-e0| ≤ p)
     (x1 : ℝ) (hx : lowerTreated p e0 e1 ≤ x1 ∧ x1 ≤ upperTreated p e0 e1) :
@@ -1121,7 +1122,7 @@ theorem proposition1_sharp (p e0 e1 : ℝ) (hp : 0 < p ∧ p ≤ 1)
 
 /-- T8, admissible-input characterization: exactly the triples in [0,1]²,
 0<p≤1 with |e1-e0|≤p arise from bounded randomized monotone models. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem proposition1_compatible_triples (p e0 e1 : ℝ) :
     (0 < p ∧ p ≤ 1 ∧ 0 ≤ e0 ∧ e0 ≤ 1 ∧ 0 ≤ e1 ∧ e1 ≤ 1 ∧ |e1-e0| ≤ p) ↔
     ∃ M : CausalModel (Bool × Bool), boundedOutcomes M ∧
@@ -1149,7 +1150,7 @@ theorem proposition1_compatible_triples (p e0 e1 : ℝ) :
 /-- T9: Corollary 1 and the intermediate noncomplier-mean ratio, pp. 678-679.
 The ordinary “four cell means are known” premise includes positive probability
 of all four treatment-assignment cells. No boundedness premise is needed. 
-Reference (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
+Audit source (P028-T9): Corollary 1, pp. 678-679, under Section 2's standing assumptions. -/
 theorem corollary1 (M : CausalModel Ω)
     (hcell : ∀ d z, 0 < M.μ.real (cellEvent M d z)) :
     cellProbability M true false = M.μ.real (alwaysEvent M) ∧
@@ -1216,7 +1217,7 @@ theorem corollary1 (M : CausalModel Ω)
 /-- T10(a)-(c): the LATE display, Section 2, p. 678. The observed first stage
 is P_c>0, the reduced form is P_c times CACE, and both Wald ratios equal CACE.
 Only integrability, rather than bounded outcomes, is required. 
-Reference (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
+Audit source (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
 theorem late_identity (M : CausalModel Ω) :
     eventMean M.μ (fun ω => realBit (observedD M ω)) (armEvent M true) -
       eventMean M.μ (fun ω => realBit (observedD M ω)) (armEvent M false) = complierProbability M ∧
@@ -1237,7 +1238,7 @@ theorem late_identity (M : CausalModel Ω) :
 /-- T10(d): the introduction's non-identification claim is existential, not
 universal over triples. The two bounded randomized models have (P_c,EY₀,EY₁)
 =(1/2,3/4,3/4), CACE=0, and complier means (1/2,1/2) versus (1,1). 
-Reference (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
+Audit source (P028-T10): Section 2 LATE display, p. 678, and Section 1 identification claim, p. 677. -/
 theorem three_figures_do_not_identify_levels :
     ∃ M₀ M₁ : CausalModel (Bool × Bool), boundedOutcomes M₀ ∧ boundedOutcomes M₁ ∧
       complierProbability M₀ = 1/2 ∧ complierProbability M₁ = 1/2 ∧
@@ -1256,12 +1257,12 @@ theorem three_figures_do_not_identify_levels :
   · rw [cace_difference,hc00,hc01]; ring
   · rw [cace_difference,hc10,hc11]; ring
 
-/-- Response R on the same probability space is otherwise unrestricted;
-no independence of response is built into the causal model. -/
+/-- Response R on the same probability space is otherwise unrestricted (N005
+repair); no independence of response is built into the causal model. -/
 structure Response (Ω : Type*) [MeasurableSpace Ω] where
   R : Ω → Bool
   measurableR : Measurable R
-/-- Respondents {R=1}. -/
+/-- Respondents {R=1}, validator's N005 response definition. -/
 def responseEvent (T : Response Ω) : Set Ω := {ω | T.R ω = true}
 /-- Respondent arm outcome mean E[Y|Z=z,R=1], corrected application (T2). -/
 def responseArmMean (M : CausalModel Ω) (T : Response Ω) (z : Bool) : ℝ :=
@@ -1276,7 +1277,7 @@ def mixedMeanEqualities (M : CausalModel Ω) (T : Response Ω) : Prop :=
   responseCellMean M T true false = cellMean M true false ∧
   responseCellMean M T false true = cellMean M false true
 /-- Response positivity required by the mixed version, stated as positive joint
-masses. Under positive arms/cells this is equivalent to positive
+masses. Under positive arms/cells this is equivalent to the target's positive
 conditional response probabilities. -/
 def mixedResponsePositive (M : CausalModel Ω) (T : Response Ω) : Prop :=
   (∀ z, 0 < M.μ.real (armEvent M z ∩ responseEvent T)) ∧
@@ -1289,7 +1290,7 @@ def assignmentConditionalLaw (M : CausalModel Ω) (z : Bool) : Measure Ω :=
 
 /-- T2(i): joint-moment Corollary 1, without any assumption on response or
 positive treatment-assignment cells. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem response_joint_moment_identity (M : CausalModel Ω) :
     complierProbability M*complierMean M false = jointOutcomeMoment M false false-jointOutcomeMoment M false true ∧
     complierProbability M*complierMean M true = jointOutcomeMoment M true true-jointOutcomeMoment M true false := by
@@ -1303,7 +1304,7 @@ theorem response_joint_moment_identity (M : CausalModel Ω) :
 /-- T2(ii): the mixed available-case plug-in identifies the population complier
 means under precisely the stated respondent/full-population mean equalities,
 positive response events, and positive pure noncomplier cells. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem response_mixed_identification (M : CausalModel Ω) (T : Response Ω)
     (hb : boundedOutcomes M) (hq : 0 < cellProbability M true false)
     (hr : 0 < cellProbability M false true) (hp : mixedResponsePositive M T)
@@ -1337,7 +1338,7 @@ def missingOutcomeProbability (M : CausalModel Ω) (T : Response Ω) (d z : Bool
 
 /-- The implicit observed outcome is a measurable selection of the two potential
 outcomes; Section 2's observation rule adds no response assumption. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem observed_y_measurable (M : CausalModel Ω) : Measurable (observedY M) := by
   have he : observedY M = fun ω => if observedD M ω = true then M.Y true ω else M.Y false ω := by
     funext ω
@@ -1347,7 +1348,7 @@ theorem observed_y_measurable (M : CausalModel Ω) : Measurable (observedY M) :=
     (M.measurableY true) (M.measurableY false)
 
 /-- The observed outcome is integrable, without requiring bounded potentials. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem observed_y_integrable (M : CausalModel Ω) : Integrable (observedY M) M.μ := by
   have ht := (M.integrableY true).indicator ((observed_d_measurable M) (measurableSet_singleton true))
   have hf := (M.integrableY false).indicator ((observed_d_measurable M) (measurableSet_singleton false))
@@ -1357,7 +1358,7 @@ theorem observed_y_integrable (M : CausalModel Ω) : Integrable (observedY M) M.
 
 /-- A null treatment-assignment cell contributes zero product moment, without
 claiming that its ordinary conditional mean is defined. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem null_cell_joint_moment (M : CausalModel Ω) (d z : Bool)
     (hz : cellProbability M d z = 0) : jointOutcomeMoment M d z = 0 := by
   change M.μ.real (cellEvent M d z)/M.μ.real (armEvent M z) = 0 at hz
@@ -1369,7 +1370,7 @@ theorem null_cell_joint_moment (M : CausalModel Ω) (d z : Bool)
 
 /-- The conditional missing-cell probability is the expectation of its binary
 indicator in the assignment arm. This quantity is fully observed. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem missing_probability_as_mean (M : CausalModel Ω) (T : Response Ω) (d z : Bool) :
     missingOutcomeProbability M T d z =
       eventMean M.μ (fun ω => if T.R ω = false ∧ observedD M ω = d then 1 else 0) (armEvent M z) := by
@@ -1387,7 +1388,7 @@ theorem missing_probability_as_mean (M : CausalModel Ω) (T : Response Ω) (d z 
 /-- T2(v)'s finite population inequality: the full joint outcome moment lies
 between its recorded moment and that moment plus missing-cell probability.
 It uses only bounded outcomes, not response ignorability or independence. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem recorded_joint_moment_bounds (M : CausalModel Ω) (T : Response Ω)
     (hb : boundedOutcomes M) (d z : Bool) :
     recordedOutcomeMoment M T d z ≤ jointOutcomeMoment M d z ∧
@@ -1440,7 +1441,7 @@ theorem recorded_joint_moment_bounds (M : CausalModel Ω) (T : Response Ω)
 
 
 /-- Integral under the normalized arm law, including a further measurable event. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem normalized_arm_set_integral (M : CausalModel Ω) (z : Bool) (f : Ω → ℝ)
     (E : Set Ω) (hE : MeasurableSet E) :
     (∫ ω in E, f ω ∂assignmentConditionalLaw M z) =
@@ -1451,14 +1452,14 @@ theorem normalized_arm_set_integral (M : CausalModel Ω) (z : Bool) (f : Ω → 
   rw [Set.inter_comm E (armEvent M z),mul_comm]
 
 /-- The normalized arm law's event probabilities are ordinary conditional probabilities. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem normalized_arm_real (M : CausalModel Ω) (z : Bool) (E : Set Ω) (hE : MeasurableSet E) :
     (assignmentConditionalLaw M z).real E = M.μ.real (armEvent M z ∩ E)/M.μ.real (armEvent M z) := by
   have h := normalized_arm_set_integral M z (fun _ => 1) E hE
   simpa only [setIntegral_const,smul_eq_mul,mul_one] using h
 
 /-- Integral under the normalized arm law is the ordinary arm conditional mean. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem normalized_arm_integral (M : CausalModel Ω) (z : Bool) (f : Ω → ℝ) :
     (∫ ω, f ω ∂assignmentConditionalLaw M z) =
       (∫ ω in armEvent M z, f ω ∂M.μ)/M.μ.real (armEvent M z) := by
@@ -1466,7 +1467,7 @@ theorem normalized_arm_integral (M : CausalModel Ω) (z : Bool) (f : Ω → ℝ)
 
 /-- Independence of response and (Y,D) factorizes every integrable outcome/cell
 moment restricted to respondents. This is a probability lemma, not an assumption. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem independent_response_factor (ν : Measure Ω) (R : Ω → Bool) (V : Ω → ℝ × Bool)
     (hR : Measurable R) (hV : Measurable V) (hi : IndepFun R V ν)
     (f : ℝ × Bool → ℝ) (hf : Measurable f) :
@@ -1489,7 +1490,7 @@ theorem independent_response_factor (ν : Measure Ω) (R : Ω → Bool) (V : Ω 
   rw [he,hp,hr]
 
 /-- Conditional response independence yields the arm-restricted moment factorization. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem independent_arm_response_factor (M : CausalModel Ω) (T : Response Ω) (z : Bool)
     (hi : IndepFun T.R (fun ω => (observedY M ω,observedD M ω)) (assignmentConditionalLaw M z))
     (f : ℝ × Bool → ℝ) (hf : Measurable f) :
@@ -1510,7 +1511,7 @@ theorem independent_arm_response_factor (M : CausalModel Ω) (T : Response Ω) (
 
 /-- A treatment indicator integrated over an arm and another event is their
 joint cell probability. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem arm_event_cell_indicator (M : CausalModel Ω) (d z : Bool) (E : Set Ω) (hE : MeasurableSet E) :
     (∫ ω in armEvent M z ∩ E, if observedD M ω = d then (1:ℝ) else 0 ∂M.μ) =
       M.μ.real (cellEvent M d z ∩ E) := by
@@ -1523,7 +1524,7 @@ theorem arm_event_cell_indicator (M : CausalModel Ω) (d z : Bool) (E : Set Ω) 
 
 /-- A cell-restricted outcome product integrated over an arm and another event
 is the unnormalized outcome moment on that treatment-assignment cell. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem arm_event_cell_outcome (M : CausalModel Ω) (d z : Bool) (E : Set Ω) (hE : MeasurableSet E) :
     (∫ ω in armEvent M z ∩ E, if observedD M ω = d then observedY M ω else 0 ∂M.μ) =
       (∫ ω in cellEvent M d z ∩ E, observedY M ω ∂M.μ) := by
@@ -1535,7 +1536,7 @@ theorem arm_event_cell_outcome (M : CausalModel Ω) (d z : Bool) (E : Set Ω) (h
     by_cases he : ω ∈ E <;> simp [Set.indicator,armEvent,cellEvent,hz,hd,he]
 
 /-- Positive arm response and conditional response independence imply (M1). 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem independent_response_arm_mean (M : CausalModel Ω) (T : Response Ω) (z : Bool)
     (hr : 0 < M.μ.real (armEvent M z ∩ responseEvent T))
     (hi : IndepFun T.R (fun ω => (observedY M ω,observedD M ω)) (assignmentConditionalLaw M z)) :
@@ -1550,7 +1551,7 @@ theorem independent_response_arm_mean (M : CausalModel Ω) (T : Response Ω) (z 
 
 /-- Positive cell and arm response, with conditional response independence,
 imply positive cell response and equality of its respondent and population means. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem independent_response_cell_mean (M : CausalModel Ω) (T : Response Ω) (d z : Bool)
     (hc : 0 < M.μ.real (cellEvent M d z))
     (hr : 0 < M.μ.real (armEvent M z ∩ responseEvent T))
@@ -1587,7 +1588,7 @@ theorem independent_response_cell_mean (M : CausalModel Ω) (T : Response Ω) (d
 /-- T2(iii): conditional independence R ⟂ (Y,D) in each assignment arm, with
 positive arm response, is a sufficient stronger condition for the four mean
 equalities and required response positivity when q,r>0. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem response_independence_sufficient (M : CausalModel Ω) (T : Response Ω)
     (hb : boundedOutcomes M) (hq : 0 < cellProbability M true false)
     (hr : 0 < cellProbability M false true)
@@ -1604,7 +1605,7 @@ theorem response_independence_sufficient (M : CausalModel Ω) (T : Response Ω)
 /-- T2(iv): cell mean ignorability identifies arm means after reweighting by
 full-sample cell probabilities and identifies both complier means by differences
 of reweighted cell moments. No unweighted respondent-arm equality is assumed. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem response_cell_reweighting (M : CausalModel Ω) (T : Response Ω)
     (hb : boundedOutcomes M)
     (hc : ∀ d z, 0 < cellProbability M d z →
@@ -1641,7 +1642,7 @@ theorem response_cell_reweighting (M : CausalModel Ω) (T : Response Ω)
 /-- T2(v): without any response restriction, bounded outcomes imply the two
 missing-outcome sensitivity intervals. These are population identification
 bounds, not sampling confidence intervals. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem response_sensitivity_bounds (M : CausalModel Ω) (T : Response Ω)
     (hb : boundedOutcomes M) :
     (recordedOutcomeMoment M T false false-recordedOutcomeMoment M T false true-
@@ -1673,7 +1674,7 @@ theorem response_sensitivity_bounds (M : CausalModel Ω) (T : Response Ω)
 /-- T2 worked instance: all exact sensitivity endpoints and both conditional
 plug-in calculations from the source table. The point values are justified only
 under their respective response assumptions; T1 proves endpoint attainment. 
-Reference (P028-T2): Corrected Section 4 identification claim, p. 679. -/
+Audit source (P028-T2): Corrected Section 4 identification claim, p. 679; N005 response repair. -/
 theorem response_source_table_calculations :
     ((167/495-130/505-26/505)/(2047/9999) : ℝ) = 1423/10235 ∧
     ((167/495+36/495-130/505)/(2047/9999) : ℝ) = 7633/10235 ∧
@@ -1687,7 +1688,7 @@ theorem response_source_table_calculations :
 
 /-- T8: for bounded arm means and 0<p≤1, the printed intervals are nonempty
 exactly when |e1-e0|≤p. The control interval is its translated counterpart. 
-Reference (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
+Audit source (P028-T8): Proposition 1, p. 678, including the sharpness interpretation. -/
 theorem proposition1_interval_nonempty (p e0 e1 : ℝ) (hp : 0 < p ∧ p ≤ 1)
     (he0 : 0 ≤ e0 ∧ e0 ≤ 1) (he1 : 0 ≤ e1 ∧ e1 ≤ 1) :
     lowerTreated p e0 e1 ≤ upperTreated p e0 e1 ↔ |e1-e0| ≤ p := by
@@ -1710,7 +1711,7 @@ theorem proposition1_interval_nonempty (p e0 e1 : ℝ) (hp : 0 < p ∧ p ≤ 1)
 /-- T5(E6): the counterexample's input triple (1/2,3/4,3/4) really is generated
 by an admissible randomized bounded-outcome population. A half-complier, half-
 never-taker law has complier means 1 and noncomplier outcome 1/2. 
-Reference (P028-T5): Printed Proposition 1 proof after Eq. (3), p. 678. -/
+Audit source (P028-T5): Printed Proposition 1 proof after Eq. (3), p. 678; E001 witness. -/
 theorem misprinted_witness_admissible_inputs :
     ∃ M : CausalModel (Bool × Bool), boundedOutcomes M ∧
       complierProbability M = 1/2 ∧ armMean M false = 3/4 ∧ armMean M true = 3/4 ∧
@@ -1723,3 +1724,99 @@ end AronowAudit.P028
 
 
 
+
+
+
+
+
+
+
+#print axioms AronowAudit.P028.corrected_reframing
+#print axioms AronowAudit.P028.noncomplier_mean_from_equation
+#print axioms AronowAudit.P028.control_substitution
+#print axioms AronowAudit.P028.control_unit_interval
+#print axioms AronowAudit.P028.contribution_interval
+#print axioms AronowAudit.P028.third_lower_identity
+#print axioms AronowAudit.P028.corrected_interval_system
+#print axioms AronowAudit.P028.endpoint_translation
+#print axioms AronowAudit.P028.printed_contribution_interval
+#print axioms AronowAudit.P028.printed_lower_redundant
+#print axioms AronowAudit.P028.misprinted_constraint_counterexample
+#print axioms AronowAudit.P028.full_compliance_endpoints
+#print axioms AronowAudit.P028.stratum_cases
+#print axioms AronowAudit.P028.stratum_measurable
+#print axioms AronowAudit.P028.arm_measurable
+#print axioms AronowAudit.P028.first_stage_population
+#print axioms AronowAudit.P028.random_assignment_moment
+#print axioms AronowAudit.P028.potential_arm_measurable
+#print axioms AronowAudit.P028.potential_arm_integrable
+#print axioms AronowAudit.P028.arm_mean_population
+#print axioms AronowAudit.P028.population_mixture
+#print axioms AronowAudit.P028.noncomplier_probability_partition
+#print axioms AronowAudit.P028.bounded_set_moment
+#print axioms AronowAudit.P028.noncomplier_contribution_bounds
+#print axioms AronowAudit.P028.complier_mean_bounds
+#print axioms AronowAudit.P028.cace_difference
+#print axioms AronowAudit.P028.late_population_ratio
+#print axioms AronowAudit.P028.potential_cell_measurable
+#print axioms AronowAudit.P028.potential_cell_integrable
+#print axioms AronowAudit.P028.joint_outcome_population
+#print axioms AronowAudit.P028.pure_cell_product_moments
+#print axioms AronowAudit.P028.arm_joint_moment_partition
+#print axioms AronowAudit.P028.noncomplier_contribution_observable
+#print axioms AronowAudit.P028.noncomplier_event_probability
+#print axioms AronowAudit.P028.noncomplier_outcome_moment
+#print axioms AronowAudit.P028.noncomplier_mean_positive_formula
+#print axioms AronowAudit.P028.complier_probability_le_one
+#print axioms AronowAudit.P028.full_compliance_population
+#print axioms AronowAudit.P028.observed_d_measurable
+#print axioms AronowAudit.P028.cell_measurable
+#print axioms AronowAudit.P028.joint_moment_cell_integral
+#print axioms AronowAudit.P028.cell_probability_as_mean
+#print axioms AronowAudit.P028.cell_probability_population
+#print axioms AronowAudit.P028.pure_cell_probabilities
+#print axioms AronowAudit.P028.weighted_cell_mean
+#print axioms AronowAudit.P028.cell_probability_partition
+#print axioms AronowAudit.P028.positive_cell_mass
+#print axioms AronowAudit.P028.two_sided_cells_positive
+#print axioms AronowAudit.P028.observed_first_stage
+#print axioms AronowAudit.P028.sharpness_moment_certificate
+#print axioms AronowAudit.P028.compatible_mixture_moments
+#print axioms AronowAudit.P028.corollary_moment_identity
+#print axioms AronowAudit.P028.missing_moment_difference_bounds
+#print axioms AronowAudit.P028.full_compliance_witness_intervals
+#print axioms AronowAudit.P028.attaining_integral
+#print axioms AronowAudit.P028.attaining_arm_probability
+#print axioms AronowAudit.P028.attaining_model_bounded
+#print axioms AronowAudit.P028.attaining_model_moments
+#print axioms AronowAudit.P028.realize_mixture_moments
+#print axioms AronowAudit.P028.bounds_from_mixture_moments
+#print axioms AronowAudit.P028.boundary_proof_repair
+#print axioms AronowAudit.P028.proposition1_valid
+#print axioms AronowAudit.P028.proposition1_sharp
+#print axioms AronowAudit.P028.proposition1_compatible_triples
+#print axioms AronowAudit.P028.corollary1
+#print axioms AronowAudit.P028.late_identity
+#print axioms AronowAudit.P028.three_figures_do_not_identify_levels
+#print axioms AronowAudit.P028.response_joint_moment_identity
+#print axioms AronowAudit.P028.response_mixed_identification
+#print axioms AronowAudit.P028.observed_y_measurable
+#print axioms AronowAudit.P028.observed_y_integrable
+#print axioms AronowAudit.P028.null_cell_joint_moment
+#print axioms AronowAudit.P028.missing_probability_as_mean
+#print axioms AronowAudit.P028.recorded_joint_moment_bounds
+#print axioms AronowAudit.P028.normalized_arm_set_integral
+#print axioms AronowAudit.P028.normalized_arm_real
+#print axioms AronowAudit.P028.normalized_arm_integral
+#print axioms AronowAudit.P028.independent_response_factor
+#print axioms AronowAudit.P028.independent_arm_response_factor
+#print axioms AronowAudit.P028.arm_event_cell_indicator
+#print axioms AronowAudit.P028.arm_event_cell_outcome
+#print axioms AronowAudit.P028.independent_response_arm_mean
+#print axioms AronowAudit.P028.independent_response_cell_mean
+#print axioms AronowAudit.P028.response_independence_sufficient
+#print axioms AronowAudit.P028.response_cell_reweighting
+#print axioms AronowAudit.P028.response_sensitivity_bounds
+#print axioms AronowAudit.P028.response_source_table_calculations
+#print axioms AronowAudit.P028.proposition1_interval_nonempty
+#print axioms AronowAudit.P028.misprinted_witness_admissible_inputs

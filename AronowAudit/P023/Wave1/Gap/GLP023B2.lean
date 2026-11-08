@@ -3,8 +3,8 @@ import AronowAudit.P023.Wave1.Gap.GP023B2b
 import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 import Mathlib.Tactic.FunProp
 
-/-! The full-support clustered witness, using density normalization and
-two-point integral formulas. -/
+/-! The full-support clustered witness. The two imported Wave1 modules contain
+proved density normalization and two-point integral formulas. -/
 namespace AronowAudit.P023.Wave1
 noncomputable section
 open scoped BigOperators ENNReal Topology
@@ -129,7 +129,7 @@ private theorem GLP023B2_cc_density_lower (d x : ℝ) (hd : 0 < d) (hd' : d ≤ 
   dsimp [clusterDensity]
   nlinarith [mul_nonneg (show 0 ≤ (1-d^4)/2 by linarith) (add_nonneg (ht (1/2)) (ht (-1/2)))]
 
-/-! Normalization of the clustered margin law. -/
+/-! Law normalization is reused from the compiled clustered fit theorem. -/
 
 private theorem GLP023B2_cc_probability (d : ℝ) (hd : 0 < d) (hd' : d ≤ 1/2) :
     ProbabilityLaw (clusteredMargins d) := by
@@ -805,7 +805,7 @@ private theorem GLP023B2_cc_no_uniform_bound :
   have hb := le_of_tendsto_of_tendsto hl hr (GLP023B2_cc_near.mono (fun d hd => hC d hd.1 hd.2))
   norm_num at hb
 
-/-- The full clustered-law family. -/
+/-- The full clustered-law family, with the held statement unchanged. -/
 theorem clustered_counterexample_proof :
     (∀ d : ℝ, 0 < d → d ≤ 1 / 2 →
       ProbabilityLaw (clusteredMargins d) ∧ MarginSupport (clusteredMargins d) ∧
@@ -855,6 +855,8 @@ theorem clustered_counterexample_proof :
   · have h := GLP023B2_cc_outcomes (1/1000) (by norm_num) (by norm_num)
     norm_num at h ⊢
     exact h
+
+example : type_of% @AronowAudit.P023.clustered_counterexample := clustered_counterexample_proof
 
 end
 end AronowAudit.P023.Wave1

@@ -1,0 +1,227 @@
+import SAP.P004c.Defs
+
+set_option autoImplicit false
+open scoped BigOperators Classical
+open SAP.P004c MeasureTheory Filter
+noncomputable section
+
+-- The finite T32 premises, and the first T33 premises, all hold together.
+example :
+    0 < (1 : ℕ) ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    (∀ i z, |(fun (_ : Fin 1) (_ : Assignment 1) => (1 : ℝ)) i z| < 2) ∧
+    (∀ i : Fin 1, i ∈ ({i} : Finset (Fin 1))) ∧
+    (∀ i j : Fin 1, j ∈ ({i} : Finset (Fin 1)) ↔ i ∈ ({j} : Finset (Fin 1))) ∧
+    (∀ i j : Fin 1, j ∉ ({i} : Finset (Fin 1)) →
+      ¬ sharesSource (fun _ _ => (1 : ℝ)) i j) := by
+  norm_num
+
+-- A family satisfying the two finite-table rate premises of T32.
+example :
+    (∀ᶠ N : ℕ in atTop, ∀ (i : Fin N) (z : Assignment N), |(1 : ℝ)| < 2) ∧
+    (∀ᶠ N : ℕ in atTop,
+      (∀ (i : Fin N) (z : Assignment N), |(1 : ℝ)| < 2) ∧
+      (∀ i : Fin N, i ∈ ({i} : Finset (Fin N))) ∧
+      maxDegree (fun i : Fin N => ({i} : Finset (Fin N))) ≤ 1) := by
+  constructor
+  · exact Filter.Eventually.of_forall (by intros; norm_num)
+  · exact Filter.Eventually.of_forall (by
+      intro N
+      refine ⟨by intros; norm_num, by simp, ?_⟩
+      exact Finset.sup_le (by simp))
+
+def spacedPopulation (N : ℕ) : SpatialPopulation N ℝ where
+  node i := {(N : ℝ) * (i : ℝ)}
+  node_nonempty _ := Set.singleton_nonempty _
+  zeta := Measure.count
+  outcome _ _ := 1
+  bands _ := {0}
+
+lemma spaced_region (N : ℕ) (i : Fin N) (d : ℝ) :
+    region (spacedPopulation N) i d = {(N : ℝ) * (i : ℝ)} := by
+  ext x
+  simp [region, nodeDistance, spacedPopulation, Metric.infDist_singleton]
+
+-- Every spatial average used below has measure one and integrable outcomes.
+lemma spaced_wellDefined (N : ℕ) (d : ℝ) : WellDefined (spacedPopulation N) d := by
+  intro i
+  rw [spaced_region]
+  refine ⟨measurableSet_singleton _, ?_, ?_, ?_⟩
+  · simp [spacedPopulation]
+  · simp [spacedPopulation]
+  · intro z
+    exact integrableOn_const (by simp [spacedPopulation])
+
+lemma spaced_separation (N : ℕ) (i j : Fin N) :
+    nodeSeparation (spacedPopulation N) i j =
+      dist ((N : ℝ) * (i : ℝ)) ((N : ℝ) * (j : ℝ)) := by
+  simp [nodeSeparation, spacedPopulation]
+
+-- At each fixed radius, distinct nodes eventually lie farther apart than it.
+lemma spaced_ball (N : ℕ) (r : ℝ) (hr : 0 ≤ r) (hN : r < (N : ℝ))
+    (i : Fin N) : ball (nodeSeparation (spacedPopulation N)) i r = {i} := by
+  ext j
+  simp only [ball, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+  rw [spaced_separation]
+  constructor
+  · intro h
+    by_contra hne
+    have hv : i.val ≠ j.val := by
+      intro hval
+      exact hne (Fin.ext hval.symm)
+    have hi : (i : ℝ) + 1 ≤ (j : ℝ) ∨ (j : ℝ) + 1 ≤ (i : ℝ) := by
+      rcases lt_or_gt_of_ne hv with hij | hji
+      · left; exact_mod_cast hij
+      · right; exact_mod_cast hji
+    rw [Real.dist_eq] at h
+    have h₁ := (abs_le.mp h).1
+    have h₂ := (abs_le.mp h).2
+    rcases hi with hij | hji <;> nlinarith [Nat.cast_nonneg (α := ℝ) N]
+  · intro h
+    subst j
+    simpa using hr
+
+lemma spaced_localConditions : SpatialLocalConditions spacedPopulation := by
+  refine ⟨⟨2, by norm_num, Filter.Eventually.of_forall ?_⟩, ?_, ?_⟩
+  · intros; norm_num [spacedPopulation]
+  · refine ⟨fun _ => 0, by simp, ?_⟩
+    intro d hd
+    apply Filter.Eventually.of_forall
+    intro N i j hij
+    intro hs
+    have heq : i = j := by
+      symm
+      simpa [sharesSource, interferes, circleAverage, spacedPopulation] using hs
+    subst j
+    simpa [spaced_separation] using hij
+  · refine ⟨fun _ => 1, ?_⟩
+    intro r hr
+    have hlarge : ∀ᶠ N : ℕ in atTop, r < (N : ℝ) :=
+      tendsto_natCast_atTop_atTop.eventually (eventually_gt_atTop r)
+    filter_upwards [hlarge] with N hN
+    intro i
+    rw [spaced_ball N r hr hN i]
+    norm_num
+
+-- This supplies every premise of the spatial-rate conjunct of T32.
+example : (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧ 0 ≤ (0 : ℝ) ∧
+    SpatialLocalConditions spacedPopulation ∧
+    (∀ᶠ N : ℕ in atTop, WellDefined (spacedPopulation N) 0) := by
+  exact ⟨by norm_num, le_rfl, spaced_localConditions,
+    Filter.Eventually.of_forall (fun N => spaced_wellDefined N 0)⟩
+
+lemma sum_one_assignment (F : Assignment 1 → ℝ) :
+    (∑ z, F z) = F (fun _ => true) + F (fun _ => false) := by
+  calc
+    (∑ z, F z) = ∑ a : Bool, F (fun _ => a) := by
+      apply Fintype.sum_equiv (Equiv.piUnique fun _ : Fin 1 => Bool)
+      intro z
+      apply congrArg F
+      funext i
+      exact congrArg z (Subsingleton.elim _ _)
+    _ = _ := Fintype.sum_bool _
+
+-- The positive variance premise of T33 is genuine: HT is +2 or -2 here.
+example : variance (fun _ : Fin 1 => (1/2 : ℝ))
+    (ht (fun _ => (1/2 : ℝ)) (fun _ _ => 1)) = 4 := by
+  norm_num [variance, cov, expect, sum_one_assignment, designWeight, ht,
+    Fin.prod_univ_one, Fin.sum_univ_one, coin, bit]
+
+example : 0 < (1 : ℕ) ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    0 < variance (fun _ : Fin 1 => (1/2 : ℝ))
+      (ht (fun _ => (1/2 : ℝ)) (fun _ _ => 1)) := by
+  norm_num [variance, cov, expect, sum_one_assignment, designWeight, ht,
+    Fin.prod_univ_one, Fin.sum_univ_one, coin, bit]
+
+-- T39 has only N>0 and p∈(0,1) as premises. This also evaluates its conclusion
+-- for a nonzero effect, with R(true)=4 and R(false)=1.
+example :
+    let R : CircleTable 1 := fun _ z => 3 * bit (z 0) + 1
+    0 < (1 : ℕ) ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    expect (fun _ => (1/2 : ℝ)) (ht (fun _ => (1/2 : ℝ)) R) = 3 ∧
+    (∑ i : Fin 1,
+      (expect (fun _ => (1/2 : ℝ)) (fun z => R i (Function.update z i true)) -
+       expect (fun _ => (1/2 : ℝ)) (fun z => R i (Function.update z i false)))) / 1 = 3 := by
+  norm_num [expect, sum_one_assignment, designWeight, ht,
+    Fin.prod_univ_one, Fin.sum_univ_one, coin, bit]
+
+def additivePopulation : SpatialPopulation 2 ℝ where
+  node i := {(i : ℝ)}
+  node_nonempty _ := Set.singleton_nonempty _
+  zeta := Measure.count
+  outcome _ z := (∑ j : Fin 2, bit (z j) * ((j : ℝ) + 1)) + 3
+  bands _ := {0}
+
+lemma additive_region (i : Fin 2) :
+    region additivePopulation i 0 = {(i : ℝ)} := by
+  ext x
+  simp [region, nodeDistance, additivePopulation, Metric.infDist_singleton]
+
+def allFalseLaw (_ : Fin 2) (z : Assignment 2) : ℝ :=
+  if z = (fun _ => false) then 1 else 0
+
+-- T40: two distinct nodes with genuine measure-one regions, additive effects
+-- g_0=1 and g_1=2, baseline 3, and a valid degenerate design law.
+example :
+    0 < (2 : ℕ) ∧
+    (∀ i, (∑ z, allFalseLaw i z) = 1) ∧
+    (∀ i z, 0 ≤ allFalseLaw i z) ∧
+    (∀ x z, additivePopulation.outcome x z =
+      (∑ j, bit (z j) * ((j : ℝ) + 1)) + 3) ∧
+    WellDefined additivePopulation 0 := by
+  refine ⟨by norm_num, ?_, ?_, by intros; rfl, ?_⟩
+  · intro i
+    simp [allFalseLaw]
+  · intro i z
+    unfold allFalseLaw
+    split <;> norm_num
+  · intro i
+    rw [additive_region]
+    refine ⟨measurableSet_singleton _, ?_, ?_, ?_⟩
+    · simp [additivePopulation]
+    · simp [additivePopulation]
+    · intro z
+      exact integrableOn_const (by simp [additivePopulation])
+
+-- T34: a nontrivial finite kernel configuration, matching the canonical
+-- eight-node witness. Its realization is intentionally absent from T34 itself.
+def witnessZ (i : Fin 8) : Bool := decide (i.val < 5)
+def witnessE (i : Fin 8) : ℝ := if i.val = 0 then 1 else if i.val = 1 then -1 else 0
+def witnessD (i j : Fin 8) : ℝ := |(i : ℝ) - (j : ℝ)|
+def witnessK (t : ℝ) : ℝ := if t ≤ 1 then 1 else 0
+
+example :
+    0 < (8 : ℕ) ∧ 0 < armCount witnessZ true ∧
+    (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    0 < (8 : ℝ) ∧
+    (∀ t, 0 ≤ t → |witnessK t| ≤ 1) ∧
+    (∀ t, 1 < t → witnessK t = 0) ∧
+    (∀ i j, 0 ≤ witnessD i j) := by
+  refine ⟨by norm_num, ?_, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · simp only [armCount, Fin.sum_univ_succ]
+    norm_num [witnessZ]
+  · intro t ht
+    unfold witnessK
+    split <;> norm_num
+  · intro t ht
+    simp [witnessK, not_le.mpr ht]
+  · intros; exact abs_nonneg _
+
+example : armCount witnessZ true = 5 ∧
+    armCount witnessZ false = 3 ∧
+    (∑ i : Fin 8, if witnessZ i = true then witnessE i else 0) = 0 ∧
+    (∑ i : Fin 8, if witnessZ i = false then witnessE i else 0) = 0 := by
+  simp only [armCount, Fin.sum_univ_succ]
+  norm_num [witnessZ, witnessE]
+
+example : (∑ i : Fin 8, ∑ j ∈ Finset.univ.erase i,
+      bit (witnessZ i) * bit (witnessZ j) * witnessE i * witnessE j *
+        witnessK (witnessD i j / 8)) / 8 = (-1/4 : ℝ) := by
+  norm_num [Fin.sum_univ_succ, Finset.sum_erase_eq_sub,
+    witnessZ, witnessE, witnessD, witnessK, bit]
+
+-- The stochastic denominator-rate conjunct of T34 quantifies only over p∈(0,1).
+example : 0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1 := by norm_num
+
+example : |(8 : ℝ)^2/5^2 - 1/(1/2 : ℝ)^2| * |(-1/4 : ℝ)| = 9/25 ∧
+    ((8 : ℝ)^2/5^2 - 1/(1/2 : ℝ)^2) * |(-1/4 : ℝ)| = -9/25 ∧
+    ¬ (9/25 : ℝ) ≤ -9/25 := by norm_num

@@ -38,6 +38,9 @@ theorem printed_conditional_sufficiency_refuted :
     ConditionalSufficiency.n1_proof
     ConditionalSufficiency.n2_proof
 
+example : AronowAudit.P029.Wave1.ConditionalSufficiency.Target :=
+  printed_conditional_sufficiency_refuted
+
 end
 
 end AronowAudit.P029.Wave1

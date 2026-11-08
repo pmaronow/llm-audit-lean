@@ -154,6 +154,25 @@ theorem tb05_true_target {N : ℕ} (hN : 3 ≤ N) : trueTarget signPairKernel N 
   fin_cases a <;> fin_cases b <;> dsimp <;> ring_nf at h0 h1 h2 ⊢ <;> linarith
 
 
+theorem tb05_true_target_limit :
+    Tendsto (trueTarget signPairKernel) atTop (𝓝 (!![4,0;0,0] : Mat 2)) := by
+  have hi : Tendsto (fun N : ℕ => ((N:ℝ)-1)⁻¹) atTop (𝓝 0) := by
+    apply tendsto_inv_atTop_zero.comp
+    simpa only [sub_eq_add_neg] using
+      (tendsto_atTop_add_const_right atTop (-1:ℝ) tendsto_natCast_atTop_atTop)
+  let f : ℝ → Mat 2 := fun t => !![4+4*t,-4*t;-4*t,4*t]
+  have hf : Continuous f := by fun_prop
+  have hl := hf.continuousAt.tendsto.comp hi
+  have he : (fun N : ℕ => f (((N:ℝ)-1)⁻¹)) =ᶠ[atTop] trueTarget signPairKernel := by
+    filter_upwards [eventually_ge_atTop 3] with N hN
+    rw [tb05_true_target hN]
+    have hn : (N:ℝ)-1 ≠ 0 := by
+      have : (3:ℝ) ≤ N := by exact_mod_cast hN
+      linarith
+    ext a b
+    fin_cases a <;> fin_cases b <;> dsimp [f] <;> field_simp <;> ring
+  convert hl.congr' he using 1 <;> norm_num [f]
+
 theorem tb05_absolute_consistency :
     inProbability (unitSampleLaw signPairKernel) (fun N ω =>
       (N:ℝ) • sampleVariance members (design signPairKernel ω) (response signPairKernel ω)-
@@ -204,9 +223,8 @@ theorem tb05_proposition_extra_bounded :
   exact ⟨4,by norm_num,fun N => Filter.Eventually.of_forall
     (fun ω d => tb05_model_fitted_residual_bound ω d)⟩
 
-/-- The deterministic second-order expansion of the fitted sandwich variance estimate
-for the slope in the literal model. After multiplication by N², the remainder is
-O(N^-1/2), uniformly on bounded sets of the three normalized sign sums. -/
+/-- The deterministic O(N^-2) slope expansion for the literal model estimator.
+The normalized error is O(N^-1/2), uniformly in all three bounded sign sums. -/
 theorem tb05_model_second_order_remainder (R : ℝ) (hR : 0 ≤ R) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (ω : Fin N → Bool × Bool), 2 ≤ N →
       (Real.sqrt N)⁻¹ ≤ 1/(2*(R^2+2)) →

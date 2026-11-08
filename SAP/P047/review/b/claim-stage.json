@@ -1,0 +1,20 @@
+[
+  {
+    "theorem": "SAP.P047.T1",
+    "target_id": "P047-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "T1Statement contains all canonical parts (i)-(vi), with the same arm-by-arm ignorability, common positive B and epsilon, n>=1, t>=0, alpha in (0,1), IPW scores, conditional/unconditional means, exact Hoeffding exponents, coverage and deterministic root-n ATE width. Its second conjunct uses precisely the weaker one-treated-outcome assumptions, without imposing boundedness or overlap on the control arm. Conditional factorization for every measurable integrable test is a correct rendering of binary-treatment conditional independence; the constant test calibrates e as P(A=1|W). The product sample law gives iid observations. No conclusion is built into CausalLaw. The canonical formal reading expressly imposes no distributional condition on W. Positive n and almost-sure overlap make zero-division conventions irrelevant; bounded measurable scores make integrals ordinary integrals. The hypotheses are satisfiable, for example with independent uniform W and fair A, Y(0)=0, Y(1)=1, e=1/2, B=1 and epsilon=1/2. The formulas are true by conditional expectation and Hoeffding."
+  },
+  {
+    "theorem": "SAP.P047.T2",
+    "target_id": "P047-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The real K->infinity limit takes a supremum jointly over every positive sample size and every law with the same B and epsilon, using each laws own propensity. This is exactly canonical (a), including its strict-tail event. The separate non-strict exponential tail bound has exactly the canonical constant and domain K>=0. The variance bound and fixed-law weak Gaussian limit, including variance zero, are canonical (b). Suprema over the law/sample pairs equal the nested canonical suprema. The inserted zero is harmless because all probabilities lie in [0,1] and the models are nonempty. Bounded scores have finite second moments, so neither Mathlibs infinite-variance-to-zero convention nor the Gaussian variance truncation changes the meaning. Nonvacuity: independent uniform W and fair A, Y(0)=0, Y(1)=1, e=1/2, B=1, epsilon=1/2 give a nonconstant score with positive variance. Conditional expectation, Hoeffding and the iid finite-variance CLT establish the asserted behavior; no uniform normal approximation is asserted."
+  },
+  {
+    "theorem": "SAP.P047.T3",
+    "target_id": "P047-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All substantive inequalities in canonical (a) and (b) are present: every measurable observed-data estimator, the finite weak-error threshold 1/12 and lower bound 1/2, a positive strict-error limsup, and every asymptotically honest interval with alpha in (0,1/2), with the width>1/6 probability lower bounded by 1-2alpha at the one fixed baseline S. Independent randomization is included as required by definitions_needed. UnknownModel is the exact canonical uniform-covariate, binary-outcome, joint-ignorability model with common overlap [1/4,3/4]. The theorem does not explicitly assert that baselineLaw can be equipped with propensity 1/2 to form an UnknownModel CausalLaw, and it does not quantify the final canonical extension over every model containing this class. These are the two missing explicit clauses, so the reading is narrower. The necessity interpretation in (c) is already supplied by (a) and (b); testability and sufficiency are not canonical assertions. The EReal width comparison is the ordinary width event for finite endpoints and handles real empty/unbounded intervals correctly. All risk/coverage extrema and limsup/liminf sequences are bounded in [0,1]. A model instance is independent uniform W and fair A, Y(0)=0, Y(1)=1 and e=1/2; S itself additionally makes Y(1) an independent fair bit. The coverage hypothesis is satisfiable, e.g. by the constant interval [-1,1] or the whole real line. The cell-mixture argument, checked independently rather than treated as extra canonical clauses, gives the constants and the baseline bound."
+  }
+]

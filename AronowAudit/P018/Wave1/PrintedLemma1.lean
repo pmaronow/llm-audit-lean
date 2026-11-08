@@ -21,5 +21,7 @@ theorem lemma1_printed_refuted :
       Tendsto (trueTarget K) atTop (𝓝 (varMat ν id))) :=
   PrintedLemma1.assemble PrintedLemma1.n1_proof PrintedLemma1.n2_proof PrintedLemma1.n3_proof PrintedLemma1.n4_proof PrintedLemma1.n5_proof
 
+example : AronowAudit.P018.Wave1.PrintedLemma1.Target := lemma1_printed_refuted
+
 end
 end AronowAudit.P018.Wave1

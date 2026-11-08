@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P013-T27",
+    "theorem": "SAP.P013b.T27",
+    "fingerprint": "627f19d977f5295c7eb86d0c883e3b7ceff0c57a6ec377656762d149bd791429",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using sap-lean, importing only SAP.P013b.Defs. Review.t27_hypotheses constructs a uniform five-world design with N=1, M=2, an injective analyzed-student map, a loopless symmetric within-school peer graph, binary potential outcome y(i,d)=1 exactly for d=4, and positive probabilities for all five exposures. A separate example proves every exposure probability is exactly 1/5. Thus every hypothesis holds simultaneously, with nonconstant outcomes and nonzero exposure contrasts. No target theorem or Challenge stub is used.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T26",
+    "theorem": "SAP.P013b.T26",
+    "fingerprint": "50145b16604b5981eb7d4bfa8af1078320c55e994c3ed7105502a6a4fc407c6a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using sap-lean, importing only SAP.P013b.Defs. Review.blockChoice_mem supplies the assignment choosing schools 0 and 1 in every block; Review.concrete_C_mem verifies its 28-school host set belongs to C. Review.bad_C_mem and Review.bad_not_B independently verify the strict-support witness. The student-law example uses Xi=Fin 2, N=3, Q(x)=1/2, a nonconstant student code, two students in the same school, and another in a different school, satisfying all premises of both student-law conjuncts. A Boolean case-check proves the four-valued student-code abstraction specializes exactly to section10Exposure. No target theorem or Challenge stub is used.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T25",
+    "theorem": "SAP.P013b.T25",
+    "fingerprint": "a53dfe501be80642a7fe1d41c03ee9c7fce01a225a5e32ba28d830a6f275e572",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using sap-lean, importing only SAP.P013b.Defs. Both concrete school supports have explicit members; Review.bad_C_mem proves the proposed witness has 28 hosts and belongs to C, and Review.bad_not_B proves no B assignment produces it. The final example instantiates every generic moment hypothesis with S=univ on Fin 2 x Fin 2, active schools (0,0) and (0,1), independent fair host bits, p=1/4 and q=27/110; both marginals, the joint probability, distinctness and both positivity conditions are proved. The actual B/C laws and two-active-school potentials are explicitly defined, with no outer hypotheses to make vacuous. Independent exact rational recalculation in scratch/exact-arithmetic.json matches all three variance rows and both bias signs. This affirms the canonical counterexample rather than refuting the article's block-randomization sentence. No target theorem or Challenge stub is used.",
+    "confidence": "high"
+  }
+]

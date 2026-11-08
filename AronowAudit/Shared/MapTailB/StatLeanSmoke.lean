@@ -1,6 +1,6 @@
 import AronowAudit.External.StatLean.AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLeCamThird
 
-/-! Local score central limit theorem and contiguity for nondominated QMD paths. -/
+/-! Exact endpoint aliases for the TB-LANPORT scalar-path closure. -/
 
 open MeasureTheory Filter ProbabilityTheory
 open scoped InnerProductSpace RealInnerProductSpace
@@ -28,3 +28,12 @@ theorem TailB_qmd_local_contiguous
       (fun n => Measure.pi (fun _ : Fin n => γ.curve (a * (Real.sqrt n)⁻¹))) := by
   exact qmd_local_contiguous γ a ha
 
+example : type_of% @qmd_local_score_clt := @TailB_qmd_local_score_clt
+example : type_of% @qmd_local_contiguous := @TailB_qmd_local_contiguous
+
+#print axioms TailB_qmd_local_score_clt
+#print axioms TailB_qmd_local_contiguous
+#print axioms AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLeCamThird.qmd_local_score_clt
+#print axioms AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLeCamThird.qmd_local_contiguous
+#print axioms AsymptoticStatistics.Core.NondominatedQMDPath.exists_nondominatedQMDPath_of_bare_qmd
+#print axioms AsymptoticStatistics.WeakConverges.slutsky_of_tendstoInMeasure_dist

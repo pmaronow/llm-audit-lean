@@ -1,0 +1,22 @@
+[
+ {
+  "theorem": "SAP.P009c.T42",
+  "target_id": "P009-T42",
+  "round": 6,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P009c/Defs/Part1.lean:81: The hajek definition docstring says \"All Hájek conclusions in this package ensure nonempty arms on the design support.\" This package-wide assertion is false: T41 (Challenge/Part1.lean:50; Defs/WholeW1.lean:65-69) and T43 (Challenge/Part1.lean:62; Defs/WholeW1.lean:76-82) include fair Bernoulli designs, whose all-treated and all-control assignments have positive mass at every size. scratch/Nonvacuity.lean constructs such a growing regular study and proves that EventuallySupportedArms fails. T42 itself does guarantee supported nonempty arms through its design, and its mathematical statement and estimator definition are correct; the current defect is the inaccurate documentation of a definition in its closure."
+  ]
+ },
+ {
+  "theorem": "SAP.P009c.T44",
+  "target_id": "P009-T44",
+  "round": 6,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P009c/Defs/Part1.lean:81: The hajek definition docstring says \"All Hájek conclusions in this package ensure nonempty arms on the design support.\" This package-wide assertion is false: T41 (Challenge/Part1.lean:50; Defs/WholeW1.lean:65-69) and T43 (Challenge/Part1.lean:62; Defs/WholeW1.lean:76-82) include fair Bernoulli designs, whose all-treated and all-control assignments have positive mass at every size. scratch/Nonvacuity.lean constructs such a growing regular study and proves that EventuallySupportedArms fails. T44 itself does guarantee supported nonempty arms through its design, and its mathematical statement and estimator definition are correct; the current defect is the inaccurate documentation of a definition in its closure."
+  ]
+ }
+]

@@ -1,17 +1,24 @@
 import AronowAudit.P045.P045_Spillover
 
 /-!
-# P045-T25: a counterexample to Bernoulli arm-mean unbiasedness
+# Blueprint: refutation of `AronowAudit.P045.bernoulli_unbiasedness_as_printed` (P045-T25)
 
-The proposition is a two-part conjunction: (i) for every `n > 0`, `0 < p < 1`,
-real schedule `y`, and arm `b`, the Bernoulli conditional arm mean on its nonempty-arm
-domain equals the average own-treatment marginal; (ii) five hierarchy clauses under
-an arbitrary first-stage design. `Target` is the negation of the whole conjunction.
-A conjunction implies its first component, so one counterexample to (i) suffices.
+Record: P045-T25 / `AronowAudit.P045.bernoulli_unbiasedness_as_printed`; resolution `refute`.
+The frozen contract (P045_Spillover.lean:4618) is a two-part conjunction: (i) for every
+`n > 0`, `0 < p < 1`, real schedule `y` and arm `b`, the Bernoulli conditional arm mean on
+its nonempty-arm domain equals the average own-treatment marginal; (ii) five hierarchy
+clauses under an arbitrary first-stage design.
 
-Take `n = 4`, `p = 1/2`, `b = true`, and `y = coMembers` (number of treated peers).
-The treated arm exists with probability `15/16`; its conditional mean is
-`E[K-1 | K>0] = 17/15`; every marginal is `3p = 3/2`.
+`Target` is the negation of the whole frozen conjunction, copied verbatim from the source
+(the `example` below checks by `Iff.rfl` that it is the negation of the frozen type).
+A conjunction implies its first component, so refuting (i) at one instance suffices.
+
+Witness (paper proof, record 8): `n = 4`, `p = 1/2`, `b = true`, `y = coMembers`
+(number of treated peers). The treated arm exists with probability `15/16`; the
+conditional treated-arm mean is `E[K-1 | K>0] = 17/15`; every marginal is `3p = 3/2`.
+
+Nodes `N1`, `N2` are each one or two lines from proved source lemmas and are proved by
+the blueprint author in `AronowAudit/P045/Wave1/BernoulliUnbiasedness/N1.lean`, `N2.lean`.
 -/
 
 set_option autoImplicit false
@@ -23,7 +30,8 @@ open scoped BigOperators
 
 noncomputable section
 
-/-- The negation of the printed Bernoulli unbiasedness proposition. -/
+/-- The frozen statement to be resolved: the negation of the exact recorded proposition
+`bernoulli_unbiasedness_as_printed` (body copied verbatim from P045_Spillover.lean). -/
 def Target : Prop :=
   ¬ (
     (∀ n : ℕ, 0 < n → ∀ p : ℝ, 0 < p → p < 1 →
@@ -51,14 +59,21 @@ def Target : Prop :=
           mean (fun g => mean (fun i => expect (bernoulli φ) (y g i)))))
     )
 
-/-- The conditional treated-arm mean of the peer-count schedule under fair Bernoulli
-assignment of four units is `32/15 - 1 = 17/15`. The count-law calculation uses
-`bernoulli_arm_count_conditional` and `bernoulli_count_counterexample`. -/
+/-- Fidelity check: `Target` is literally `¬` (type of the frozen declaration). Only the
+frozen theorem's *type* is read; its `sorry` proof is never used. -/
+example : Target ↔ ¬ (type_of% @AronowAudit.P045.bernoulli_unbiasedness_as_printed) := Iff.rfl
+
+/-- **Node N1** (paper proof, record 8, second paragraph: "condMean(bernoulli(1/2),
+armExists(true), armMean(y,true)) = 32/15 - 1 = 17/15"): the conditional treated-arm
+mean of the peer-count schedule under fair Bernoulli assignment of four units.
+Source: `bernoulli_arm_count_conditional` (cube → count law) and
+`bernoulli_count_counterexample` (count-law value `17/15`). -/
 def N1 : Prop :=
   condMean (bernoulli (1/2 : ℝ)) (armExists true) (armMean (coMembers (n := 4)) true) = 17/15
 
-/-- Every treated marginal target is `3/2`, by `co_members_marginal_four`;
-hence their mean is `3/2`. -/
+/-- **Node N2** (paper proof, record 8, first paragraph: "marginal_i(b)=3/2 for each i ...
+The mean of the four treated marginal targets is therefore 3/2"). Source:
+`co_members_marginal_four`. -/
 def N2 : Prop :=
   mean (fun i : Fin 4 => marginal (bernoulli (1/2 : ℝ)) coMembers i true) = 3/2
 
@@ -69,6 +84,12 @@ theorem assemble (h1 : N1) (h2 : N2) : Target := by
   have key := h.1 4 (by norm_num) (1/2) (by norm_num) (by norm_num) coMembers true
   rw [h1, h2] at key
   norm_num at key
+
+/-- Nonvacuity record: the instance satisfies the first conjunct's hypotheses
+(`0 < 4`, `0 < 1/2 < 1`). The conditioning event `armExists true` has probability
+`15/16 > 0` under this law (paper proof and both referees), so the failure is on the
+estimator's actual domain, not an artifact of the totalized `0/0`. -/
+example : 0 < (4 : ℕ) ∧ (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1 := by norm_num
 
 end
 

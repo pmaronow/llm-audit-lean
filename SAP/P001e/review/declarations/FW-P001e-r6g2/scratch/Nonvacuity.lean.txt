@@ -1,0 +1,186 @@
+import SAP.P001e.Defs
+import SAP.P001e.Defs.WholeW1
+import SAP.P001e.Defs.WholeW2
+
+open MeasureTheory ProbabilityTheory Set
+open scoped BigOperators ENNReal Classical
+
+namespace Audit
+noncomputable section
+
+def coin : Measure (Fin 2) :=
+  (1/2 : ℝ≥0∞) • Measure.dirac 0 + (1/2 : ℝ≥0∞) • Measure.dirac 1
+
+instance : IsProbabilityMeasure coin := by
+  constructor
+  norm_num [coin, Measure.add_apply, Measure.smul_apply]
+  exact ENNReal.inv_two_add_inv_two
+
+def X (_ : Fin 2) : ℝ := 0
+def R (i : Fin 2) : ℝ := (i.val : ℝ)
+def RB (i : Fin 2) : Bool := if i = 0 then false else true
+def p (_ : ℝ) : ℝ := 1/2
+
+lemma r_binary : ∀ i, R i = 0 ∨ R i = 1 := by
+  intro i
+  fin_cases i <;> norm_num [R]
+
+lemma mass_zero : SAP.P001e.probability coin {i | R i = 0} = 1/2 := by
+  norm_num [SAP.P001e.probability, coin, R, Measure.add_apply, Measure.smul_apply]
+
+lemma mass_one : SAP.P001e.probability coin {i | R i = 1} = 1/2 := by
+  norm_num [SAP.P001e.probability, coin, R, Measure.add_apply, Measure.smul_apply]
+
+lemma integral_coin (f : Fin 2 → ℝ) : ∫ i, f i ∂coin = (f 0 + f 1)/2 := by
+  rw [integral_fintype Integrable.of_finite, Fin.sum_univ_two]
+  norm_num [measureReal_def, coin, Measure.add_apply, Measure.smul_apply]
+  ring
+
+lemma mean_r : SAP.P001e.IsConditionalMean coin X R p := by
+  refine ⟨measurable_const, Integrable.of_finite, Integrable.of_finite, ?_⟩
+  intro A hA
+  by_cases h : (0 : ℝ) ∈ A
+  · have hs : X ⁻¹' A = Set.univ := by ext i; simp [X, h]
+    rw [hs, Measure.restrict_univ, integral_coin, integral_coin]
+    norm_num [R, p, X]
+  · have hs : X ⁻¹' A = ∅ := by ext i; simp [X, h]
+    simp [hs]
+
+lemma mar : SAP.P001e.CondIndependent coin X measurable_const (fun _ => (7 : ℝ)) R := by
+  intro A B hA hB
+  have hm : MeasurableSpace.comap X inferInstance ≤ (inferInstance : MeasurableSpace (Fin 2)) :=
+    measurable_const.comap_le
+  by_cases h : (7 : ℝ) ∈ A
+  · simp only [h, true_and, ite_true, condExp_const hm (1 : ℝ), one_mul]
+    exact Filter.EventuallyEq.rfl
+  · simp only [h, false_and, ite_false, condExp_const hm (0 : ℝ), zero_mul]
+    exact Filter.EventuallyEq.rfl
+
+-- T82: every universally quantified hypothesis is realized, with nondegenerate R.
+example : Measurable X ∧ Measurable RB ∧
+    0 < SAP.P001e.probability coin {i | RB i = true} ∧
+    SAP.P001e.probability coin {i | RB i = true} < 1 := by
+  refine ⟨measurable_const, measurable_of_finite _, ?_, ?_⟩ <;>
+    norm_num [SAP.P001e.probability, coin, RB, Measure.add_apply, Measure.smul_apply]
+
+def kernel (_ : ℝ) : Measure Bool := coin.map RB
+
+-- Also construct the full existential T82 witness, without invoking T82.
+example : ∃ p' : ℝ → ℝ, ∃ κ : ℝ → Measure Bool,
+    Measurable p' ∧ (∀ x, p' x ∈ Set.Icc (0 : ℝ) 1) ∧
+    (∀ x, IsProbabilityMeasure (κ x)) ∧
+    (∀ B : Set Bool, MeasurableSet B → Measurable (fun x => κ x B)) ∧
+    (∀ A : Set ℝ, MeasurableSet A → ∀ B : Set Bool, MeasurableSet B →
+      coin {i | X i ∈ A ∧ RB i ∈ B} = ∫⁻ x in A, κ x B ∂(coin.map X)) ∧
+    (∀ x, SAP.P001e.responseProbability κ x = p' x ∧
+      SAP.P001e.expectation (κ x) (fun r => if r then (1 : ℝ) else 0) = p' x) ∧
+    SAP.P001e.IsConditionalMean coin X (fun i => if RB i then (1 : ℝ) else 0) p' ∧
+    (∀ m : ℝ → ℝ,
+      SAP.P001e.IsConditionalMean coin X (fun i => if RB i then (1 : ℝ) else 0) m →
+      (m ∘ X) =ᵐ[coin] (p' ∘ X)) ∧
+    (∀ q : ℝ, q ∉ Set.Icc (0 : ℝ) 1 ↔ 1 < q ∨ q < 0) := by
+  have hRB : Measurable RB := measurable_of_finite _
+  refine ⟨p, kernel, measurable_const, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x; norm_num [p]
+  · intro x
+    constructor
+    change (coin.map RB) Set.univ = 1
+    rw [Measure.map_apply hRB MeasurableSet.univ]
+    simp only [Set.preimage_univ, measure_univ]
+  · intro B hB
+    change Measurable (fun _ : ℝ => (coin.map RB) B)
+    exact measurable_const
+  · intro A hA B hB
+    change coin {i | X i ∈ A ∧ RB i ∈ B} =
+      ∫⁻ x in A, (coin.map RB) B ∂(coin.map X)
+    rw [lintegral_const, Measure.restrict_apply_univ,
+      Measure.map_apply (measurable_of_finite X) hA, Measure.map_apply hRB hB]
+    by_cases h : (0 : ℝ) ∈ A
+    · have hs : X ⁻¹' A = Set.univ := by ext i; simp [X, h]
+      have he : {i | X i ∈ A ∧ RB i ∈ B} = RB ⁻¹' B := by ext i; simp [X, h]
+      rw [he, hs, measure_univ, mul_one]
+    · have hs : X ⁻¹' A = ∅ := by ext i; simp [X, h]
+      have he : {i | X i ∈ A ∧ RB i ∈ B} = ∅ := by ext i; simp [X, h]
+      rw [he, hs, measure_empty, mul_zero]
+  · intro x
+    constructor
+    · change ((coin.map RB) {true}).toReal = 1/2
+      rw [Measure.map_apply hRB (MeasurableSet.singleton true)]
+      norm_num [coin, RB, Measure.add_apply, Measure.smul_apply]
+    · change (∫ r, (if r then (1 : ℝ) else 0) ∂(coin.map RB)) = 1/2
+      rw [integral_map hRB.aemeasurable
+        (measurable_of_finite (fun r : Bool => if r then (1 : ℝ) else 0)).aestronglyMeasurable,
+        integral_coin]
+      norm_num [RB]
+  · have hr : (fun i => if RB i then (1 : ℝ) else 0) = R := by
+      funext i; fin_cases i <;> norm_num [RB, R]
+    simpa only [hr] using mean_r
+  · intro m hm
+    have h := hm.2.2.2 Set.univ MeasurableSet.univ
+    simp only [Set.preimage_univ, Measure.restrict_univ] at h
+    rw [integral_coin, integral_coin] at h
+    norm_num [RB, X] at h
+    have hm0 : m 0 = 1/2 := by linarith
+    exact Filter.Eventually.of_forall (by intro i; simpa [Function.comp_def, X, p] using hm0)
+  · intro q
+    simp only [Set.mem_Icc, not_and_or, not_le]
+    tauto
+
+-- T83: all measurability, moment, support, propensity, positivity and MAR premises.
+example : Measurable X ∧ Measurable (fun _ : Fin 2 => (7 : ℝ)) ∧ Measurable R ∧
+    Integrable (fun _ : Fin 2 => (7 : ℝ)) coin ∧
+    (∀ᵐ i ∂coin, R i = 0 ∨ R i = 1) ∧
+    0 < SAP.P001e.probability coin {i | R i = 0} ∧
+    0 < SAP.P001e.probability coin {i | R i = 1} ∧
+    SAP.P001e.IsConditionalMean coin X R p ∧
+    (∃ ε : ℝ, 0 < ε ∧ ∀ᵐ i ∂coin, ε < p (X i)) ∧
+    SAP.P001e.CondIndependent coin X measurable_const (fun _ => (7 : ℝ)) R := by
+  refine ⟨measurable_const, measurable_const, measurable_of_finite _, Integrable.of_finite,
+    Filter.Eventually.of_forall r_binary, ?_, ?_, mean_r, ?_, mar⟩
+  · rw [mass_zero]; norm_num
+  · rw [mass_one]; norm_num
+  · exact ⟨1/4, by norm_num, Filter.Eventually.of_forall (by intro i; norm_num [p])⟩
+
+-- T86: all premises, and direct computations avoiding the audited theorem.
+example : Measurable X ∧ Measurable R ∧ (∀ i, R i = 0 ∨ R i = 1) ∧
+    SAP.P001e.IsConditionalMean coin X R p ∧
+    (∃ ε : ℝ, 0 < ε ∧ ∀ i, ε < p (X i) ∧ p (X i) ≤ 1) := by
+  refine ⟨measurable_const, measurable_of_finite _, r_binary, mean_r, 1/4, ?_, ?_⟩
+  · norm_num
+  · intro i; norm_num [p]
+
+example : SAP.P001e.expectation coin (fun i => R i / p (X i)) = 1 ∧
+    SAP.P001e.expectation coin (fun i => 1 / p (X i)) = 2 := by
+  simp only [SAP.P001e.expectation, integral_coin]
+  norm_num [R, p]
+
+-- T85: two actual observed cells, each with one respondent and one nonrespondent.
+def sampleX : Fin 4 → Bool := ![false, false, true, true]
+def sampleR : Fin 4 → ℝ := ![1,0,1,0]
+def sampleY : Fin 4 → ℝ := ![2,5,4,7]
+def sampleQ (_ : Bool) : ℝ := 1/2
+
+example : (0 : ℕ) < 4 ∧ (∀ i, sampleR i = 0 ∨ sampleR i = 1) ∧
+    (∀ x ∈ SAP.P001e.wholeCells sampleX, 0 < SAP.P001e.wholeCellR sampleX sampleR x) ∧
+    (∀ x ∈ SAP.P001e.wholeCells sampleX, 0 < sampleQ x) ∧
+    (∀ x ∈ SAP.P001e.wholeCells sampleX,
+      sampleQ x = SAP.P001e.wholeCellR sampleX sampleR x / SAP.P001e.wholeCellN sampleX x) := by
+  refine ⟨by norm_num, ?_, ?_, ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num [sampleR]
+  · intro x hx; cases x <;> norm_num [SAP.P001e.wholeCellR, sampleX, sampleR, Fin.sum_univ_succ]
+  · intro x hx; norm_num [sampleQ]
+  · intro x hx; cases x <;>
+      simp only [SAP.P001e.wholeCellR, SAP.P001e.wholeCellN,
+        Fin.sum_univ_succ, Fin.sum_univ_zero] <;>
+      norm_num [sampleQ, SAP.P001e.wholeCellR, SAP.P001e.wholeCellN,
+        sampleX, sampleR, Fin.sum_univ_succ]
+
+example : SAP.P001e.wholeSampleIPW sampleX sampleR sampleY sampleQ = 3 ∧
+    SAP.P001e.wholeSampleWeight sampleX sampleR sampleQ = 1 ∧
+    SAP.P001e.wholeSampleStabilized sampleX sampleR sampleY sampleQ = 3 := by
+  norm_num [SAP.P001e.wholeSampleIPW, SAP.P001e.wholeSampleWeight,
+    SAP.P001e.wholeSampleStabilized, SAP.P001e.recordedOutcome,
+    sampleX, sampleR, sampleY, sampleQ, Fin.sum_univ_succ]
+
+end
+end Audit

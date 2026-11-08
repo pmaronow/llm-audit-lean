@@ -1,0 +1,190 @@
+import SAP.P009c.Defs
+
+open scoped BigOperators Topology
+open Filter SAP.P009c
+noncomputable section
+attribute [local instance] Classical.propDecidable
+
+namespace Review
+
+def fairLaw (n : ℕ) : Law (Assignment n) where
+  mass := fun _ => (1 / 2 : ℝ) ^ n
+  nonneg := by intro z; positivity
+  total := by
+    simp only [Finset.sum_const, Finset.card_univ, Assignment,
+      Fintype.card_fun, Fintype.card_bool, Fintype.card_fin, nsmul_eq_mul,
+      Nat.cast_pow, Nat.cast_ofNat]
+    rw [← mul_pow]
+    norm_num
+
+def direct (n : ℕ) : Experiment n where
+  design := fairLaw n
+  outcome := fun i z => if z i then 1 else -1
+
+lemma fairMarginal (n : ℕ) (i : Fin n) (b : Bool) :
+    marginal (direct n) i b = 1 / 2 := by
+  classical
+  simp only [marginal, prob, mean, direct, fairLaw]
+  let e := Equiv.piSplitAt i (fun _ : Fin n => Bool)
+  rw [← e.symm.sum_comp]
+  simp only [Fintype.sum_prod_type]
+  have hn : 0 < n := Nat.zero_lt_of_lt i.isLt
+  have hcard : Fintype.card {j : Fin n // j ≠ i} = n - 1 := by
+    simp [Fintype.card_subtype_compl, Fintype.card_fin]
+  have hn' : n = (n - 1) + 1 := by omega
+  have hp : (2 : ℝ)^n = (2 : ℝ)^(n-1) * 2 := by
+    conv_lhs => rw [hn', pow_succ]
+  cases b <;>
+    simp [e, Equiv.piSplitAt, hcard, one_div] <;>
+    rw [hp, mul_inv] <;> field_simp
+
+lemma bernoulli (n : ℕ) : Bernoulli (direct n) := by
+  constructor
+  · intro i; rw [fairMarginal]; norm_num
+  · intro z
+    simp only [fairMarginal]
+    simp only [direct, fairLaw]
+    rw [show (1 : ℝ) - 1/2 = 1/2 by norm_num]
+    simp
+
+lemma interferes (n : ℕ) (i j : Fin n) : Interferes (direct n) i j ↔ i = j := by
+  constructor
+  · rintro (h | ⟨z, z', heq, hy⟩)
+    · exact h
+    · by_contra h
+      apply hy
+      simp only [direct]
+      rw [heq j (Ne.symm h)]
+  · exact Or.inl
+
+lemma dependent (n : ℕ) (i j : Fin n) : Dependent (direct n) i j ↔ i = j := by
+  simp only [Dependent, interferes]
+  aesop
+
+lemma entry (n : ℕ) (i j : Fin n) : d (direct n) i j = if i = j then 1 else 0 := by
+  simp [d, dependent]
+
+lemma degree_one (n : ℕ) (i : Fin n) : degree (direct n) i = 1 := by
+  simp [degree, entry]
+
+lemma average_one (n : ℕ) (hn : 0 < n) : dAvg (direct n) = 1 := by
+  simp [dAvg, degree_one, ne_of_gt hn]
+
+lemma quad (n : ℕ) (v : Fin n → ℝ) : quadD (direct n) v = ∑ i, v i ^ 2 := by
+  simp [quadD, entry, mul_ite, ite_mul, pow_two]
+
+lemma lambda_one (n : ℕ) (hn : 0 < n) : lambdaMax (direct n) = 1 := by
+  have hset : {r : ℝ | ∃ v : Fin n → ℝ, (∑ i, v i ^ 2) = 1 ∧
+      r = quadD (direct n) v} = {1} := by
+    ext r
+    simp only [Set.mem_ofPred_eq, Set.mem_singleton_iff, quad]
+    constructor
+    · rintro ⟨v, hv, hr⟩; exact hr.trans hv
+    · intro hr
+      refine ⟨fun i => if i = ⟨0, hn⟩ then 1 else 0, ?_, ?_⟩ <;> simp [hr]
+  rw [lambdaMax, hset, csSup_singleton]
+
+lemma regular (n : ℕ) : Regular (direct n) 2 4 1 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro i; rw [fairMarginal]; norm_num
+  · intro i
+    have hval : (fun z : Assignment n => Real.rpow |(direct n).outcome i z| 4) =
+        fun _ => (1 : ℝ) := by
+      funext z
+      simp only [direct]
+      split <;> norm_num
+    rw [hval]
+    simp only [mean, mul_one, (direct n).design.total]
+    norm_num
+  · intro i b
+    have hval : (fun z : Assignment n => Real.rpow |potential (direct n) i b z| 1) =
+        fun _ => (1 : ℝ) := by
+      funext z
+      cases b <;> simp [potential, direct]
+    rw [hval]
+    simp only [mean, mul_one, (direct n).design.total]
+    norm_num
+
+lemma msq_four (n : ℕ) (hn : 0 < n) : msq (direct n) = 4 := by
+  have heffect (i : Fin n) (z : Assignment n) : effect (direct n) i z = 2 := by
+    simp [effect, potential, direct]
+    norm_num
+  simp [msq, heffect, mean, ← Finset.sum_mul, (direct n).design.total,
+    ne_of_gt hn]
+  norm_num
+
+def study : Study where
+  N := fun t => t + 1
+  positive := fun t => by omega
+  grows := tendsto_add_atTop_nat 1
+  experiment := fun t => direct (t + 1)
+
+lemma size_grows : Tendsto (size study) atTop atTop := by
+  exact tendsto_natCast_atTop_atTop.comp study.grows
+
+lemma restricted : Restricted study := by
+  simpa [Restricted, study, average_one, Function.comp_def] using
+    tendsto_inv_atTop_zero.comp size_grows
+
+lemma first_alternative : LittleO (fun t => lambdaMax (study.experiment t))
+    (fun t => Real.sqrt (size study t) * Real.sqrt (dAvg (study.experiment t))) := by
+  simpa [LittleO, study, lambda_one, average_one, Function.comp_def] using
+    tendsto_inv_atTop_zero.comp (Real.tendsto_sqrt_atTop.comp size_grows)
+
+lemma second_alternative : Restricted study ∧ PositiveLiminf
+    (fun t => msq (study.experiment t)) := by
+  refine ⟨restricted, 4, by norm_num, Filter.Eventually.of_forall ?_⟩
+  intro t
+  simp [study, msq_four]
+
+-- Every hypothesis of each T50 branch is satisfied by the same growing study.
+example : RegularSequence study 2 4 1 ∧ (4 : ℝ) ≤ 4 ∧
+    (∀ t, Bernoulli (study.experiment t)) ∧
+    LittleO (fun t => lambdaMax (study.experiment t))
+      (fun t => Real.sqrt (size study t) * Real.sqrt (dAvg (study.experiment t))) ∧
+    Restricted study ∧ PositiveLiminf (fun t => msq (study.experiment t)) := by
+  exact ⟨fun t => regular (t+1), le_refl _, fun t => bernoulli (t+1),
+    first_alternative, second_alternative⟩
+
+-- Every premise of T51 is simultaneously satisfiable, including endpoint x=0.
+example : (0 : ℝ) < 2 ∧
+    (∀ t i, (2 : ℝ)⁻¹ ≤ marginal (study.experiment t) i true ∧
+      marginal (study.experiment t) i true ≤ 1 - (2 : ℝ)⁻¹) ∧
+    (∀ t, Bernoulli (study.experiment t)) ∧
+    ((0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1) ∧ ((0 : ℝ) ≤ 0 ∧ (0 : ℝ) < 1) := by
+  refine ⟨by norm_num, ?_, fun t => bernoulli (t+1), by norm_num, by norm_num⟩
+  intro t i
+  change Fin (t + 1) at i
+  change (2 : ℝ)⁻¹ ≤ marginal (direct (t+1)) i true ∧
+    marginal (direct (t+1)) i true ≤ 1 - (2 : ℝ)⁻¹
+  rw [fairMarginal]
+  norm_num
+
+-- The limit law is a genuine nondegenerate distribution, with Chebyshev equality.
+example : ∃ (P : Law (Fin 3)) (X : Fin 3 → ℝ),
+    mean P X = 0 ∧ var P X = 1/2 ∧
+    prob P (fun i => |X i| ≥ 1) = 1/2 ∧
+    prob P (fun i => |X i - mean P X| ≥ Real.sqrt (var P X / (1/2))) = 1/2 := by
+  refine ⟨sharpLaw (1/2) (by norm_num), sharpValue, ?_⟩
+  norm_num [mean, var, cov, prob, sharpLaw, sharpValue, Fin.sum_univ_succ]
+
+-- Check the CDF used in convergence against the mass function, at all real x.
+example (α : ℝ) (hα : 0 < α ∧ α < 1) (x : ℝ) :
+    prob (sharpLaw α hα) (fun i => sharpValue i ≤ x) = sharpCDF α x := by
+  simp only [prob, mean, sharpLaw, sharpValue, Fin.sum_univ_succ,
+    Matrix.cons_val_zero, Matrix.cons_val_succ, Fin.sum_univ_zero, add_zero]
+  unfold sharpCDF
+  by_cases h₁ : x < -1
+  · have h₂ : ¬(0 : ℝ) ≤ x := by linarith
+    have h₃ : ¬(1 : ℝ) ≤ x := by linarith
+    simp [h₁, h₂, h₃, not_le.mpr h₁]
+  · by_cases h₂ : x < 0
+    · have h₃ : ¬(1 : ℝ) ≤ x := by linarith
+      simp [h₁, h₂, h₃, not_lt.mp h₁, not_le.mpr h₂]
+    · by_cases h₃ : x < 1
+      · simp [h₁, h₂, h₃, not_lt.mp h₁, not_lt.mp h₂, not_le.mpr h₃]
+        ring
+      · simp [h₁, h₂, h₃, not_lt.mp h₁, not_lt.mp h₂, not_lt.mp h₃]
+        ring
+
+end Review

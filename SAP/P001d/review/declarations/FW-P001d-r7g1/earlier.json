@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P001d.T62",
+  "target_id": "P001-T62",
+  "round": 6,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P001d/Challenge/Part1.lean:44: The phrase '; it also implies scaled standard-deviation convergence to phi' leaves its antecedent ambiguous. With the sentence's subject (conditional weak convergence) as antecedent, it overclaims that weak convergence alone gives standard-deviation consistency. The actual implication in Defs/WholeW2.lean:217 requires convergence of n times the bootstrap variance. T61 supplies a counterexample to the weak-convergence-alone reading. This is a docstring-only defect; the mathematical statement matches the canonical claim.",
+   "SAP/P001d/Defs/WholeW2.lean:202: The definition docstring repeats the same ambiguous implication. Explicitly condition the standard-deviation conclusion on the equivalent square-tail/variance-consistency conditions."
+  ]
+ }
+]

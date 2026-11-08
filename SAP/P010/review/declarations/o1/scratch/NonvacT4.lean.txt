@@ -1,0 +1,38 @@
+import SAP.P010.Defs
+
+open MeasureTheory ProbabilityTheory SAP.P010
+
+/-- `response` is measurable on `Population 2 0`. -/
+lemma measurable_response2 : Measurable (response : Population 2 0 → ℝ) := by
+  have h : (response : Population 2 0 → ℝ) =
+      (fun p : (Fin 2 → ℝ) × Fin 2 => p.1 p.2) ∘ (fun ω : Population 2 0 => (ω.1, ω.2.2.1)) := rfl
+  rw [h]
+  have hg : Measurable (fun p : (Fin 2 → ℝ) × Fin 2 => p.1 p.2) :=
+    measurable_from_prod_countable_left (fun i => measurable_pi_apply i)
+  exact hg.comp (measurable_fst.prodMk (measurable_fst.comp (measurable_snd.comp measurable_snd)))
+
+lemma noAtoms_laplace (r : ℝ) : noAtoms (laplaceDistribution r) := by
+  intro x
+  exact withDensity_absolutelyContinuous _ _ (Real.volume_singleton)
+
+/-- Nonvacuity of T4's hypotheses, conditional on the (certified) T3 statement:
+the T3 witness `missingPassingPopulation true` with arm `0` satisfies every hypothesis of T4,
+with trimming ratio `1/2` (strictly between `0` and `1`, so the branch is non-degenerate). -/
+example (h3 : T3Statement) :
+    ∃ μ : Measure (Population 2 0), populationAssumptions μ ∧ 0 < μ allPass ∧
+      noAtoms (passerDistribution μ 0) ∧
+      Integrable response (μ.restrict (passed ∩ assigned 0)) ∧
+      trimmingRatio μ 0 < 1 ∧ 0 < trimmingRatio μ 0 := by
+  obtain ⟨hall, -⟩ := h3
+  obtain ⟨hpa, hA, -, -, hmom, -, -, hr, hpd, -⟩ := hall true
+  refine ⟨missingPassingPopulation true, hpa, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hA]; norm_num
+  · rw [hpd]; exact noAtoms_laplace 1
+  · have h1 := hmom 1
+    simp only [pow_one] at h1
+    have hint : Integrable response (missingPassingPopulation true) :=
+      (integrable_norm_iff measurable_response2.aestronglyMeasurable).1
+        (by simpa [Real.norm_eq_abs] using h1)
+    exact hint.restrict
+  · rw [hr]; norm_num
+  · rw [hr]; norm_num

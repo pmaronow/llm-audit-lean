@@ -3,8 +3,9 @@ import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Topology.Order.Compact
 
-/-! P004-T9: the constrained boundary MLE and its finite-sample remainder
-on the interval [0,1]. -/
+/-! P004-T9: the constrained boundary MLE and its finite-sample remainder.
+The scalar derivative-sign argument follows the proved argument in
+`Wave1/ObservationalCoverage/O2.lean`, here for the exact interval [0,1]. -/
 
 namespace AronowAudit.P004.Wave1
 
@@ -437,6 +438,8 @@ theorem boundary_mle_counterexample_proof :
     ¬ LittleOp (fun _ _ => 1/2) (fun N z => boundaryMLE z-4*(armCount z true/N-1/2))
       (fun N => (Real.sqrt N)⁻¹) := by
   exact ⟨t9b6_conditions, t9b6_remainder_tail, t9b6_not_littleOp⟩
+
+example : type_of% @AronowAudit.P004.boundary_mle_counterexample := boundary_mle_counterexample_proof
 
 end
 end AronowAudit.P004.Wave1

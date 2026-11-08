@@ -1,0 +1,92 @@
+[
+ {
+  "target_id": "P001-T20",
+  "decision": "whole",
+  "theorem": "SAP.P001b.T20",
+  "restriction": null,
+  "statement_definition": "SAP.P001b.T20WholeStatement",
+  "rows_used": [
+   "AronowAudit.P001.discrete_overlap_pointwise",
+   "AronowAudit.P001.finite_overlap_uniform_bound",
+   "SAP.P001b.WH.W1.T20_whole",
+   "SAP.P001b.WH.W1.T20_assembly",
+   "SAP.P001b.WH.W1.T20_L1V2_proof",
+   "SAP.P001b.WH.W1.T20_L2V2_proof",
+   "SAP.P001b.WH.W1.T20_L3V2_proof",
+   "AronowAudit.P001.complete_overlap_without_uniform_positivity"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T21",
+  "decision": "whole",
+  "theorem": "SAP.P001b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.complete_coding_not_ignorability"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.electorate_potential_outcomes_not_cia",
+    "reason": "Duplicates the complete electorate witness already obtained from complete_coding_not_ignorability."
+   },
+   {
+    "lean_name": "AronowAudit.P001.electorate_votes_count",
+    "reason": "Not separately invoked: the complete electorate witness already exports the 100-voter count identity."
+   }
+  ]
+ },
+ {
+  "target_id": "P001-T22",
+  "decision": "whole",
+  "theorem": "SAP.P001b.T22",
+  "restriction": null,
+  "statement_definition": "SAP.P001b.T22WholeStatement",
+  "rows_used": [
+   "AronowAudit.P001.complete_coding_not_ignorability",
+   "SAP.P001b.WH.W1.T22_whole",
+   "SAP.P001b.WH.W1.T22_assembly",
+   "SAP.P001b.WH.W1.T22_L1V2_proof",
+   "SAP.P001b.WH.W1.T22_L2V2_proof",
+   "AronowAudit.P001.description_only_outcomes_conditional_independence",
+   "AronowAudit.P001.Wave1.explicit_ignorability_discrete_ate_proof",
+   "AronowAudit.P001.Wave1.MarDiscrete.n1_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.explicit_ignorability_discrete_ate_conditional",
+    "reason": "Not invoked: the supplied proof uses the unconditional countable-covariate identification declaration, avoiding this row’s additional literature premise."
+   }
+  ]
+ },
+ {
+  "target_id": "P001-T23",
+  "decision": "whole",
+  "theorem": "SAP.P001b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.basic_probability_rules",
+   "AronowAudit.P001.probability_monotonicity"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T24",
+  "decision": "whole",
+  "theorem": "SAP.P001b.T24",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.total_probability_complete_correction"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.total_probability_partition",
+    "reason": "Not separately invoked: the complete correction already exports both countable formulas."
+   },
+   {
+    "lean_name": "AronowAudit.P001.two_event_partition_nonempty",
+    "reason": "Not separately invoked: the complete correction already exports the binary nonemptiness equivalence."
+   }
+  ]
+ }
+]

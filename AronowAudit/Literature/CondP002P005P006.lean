@@ -1,9 +1,9 @@
 import AronowAudit.P005.P005_Formalization
 
 /-!
-Finite row-sampling literature statements and conditional covariance and
-regression-expansion statements. The literature results are explicit hypotheses
-of the application statements.
+Statement-only assessment for cond-P002P005P006. No held theorem is used as a proof.
+The imported audit module supplies the existing population/design vocabulary.
+It contains historical admitted theorems; none is referenced by these definitions.
 -/
 
 noncomputable section
@@ -13,7 +13,7 @@ set_option linter.unusedVariables false
 namespace AronowAudit.Literature
 
 /-- Uniform probability on labelled size-s subsets of Fin N.
-This definition has no dependence on a population, estimator, or conclusion. -/
+This definition has no dependence on an audit population, estimator, or conclusion. -/
 def labelledSubsetProbability (N s : ℕ) (E : Finset (Fin N) → Prop) : ℝ := by
   classical
   exact ((((Finset.univ : Finset (Fin N)).powersetCard s).filter E).card : ℝ) /
@@ -95,7 +95,7 @@ end AronowAudit.Literature
 
 namespace AronowAudit.P005
 
-/-- P005-T2 statement conditional on the independent quadratic-form lemma. -/
+/-- Held P005-T2 type, with only the independent quadratic-form lemma added. -/
 def corrected_covariance_lemma_conditional_statement : Prop :=
   AronowAudit.Literature.LeiDing2021QuadraticSampling →
   ∀ {n m : ℕ} (hn : 4 ≤ n) (hm : 0 < m) (hmn : m < n)
@@ -106,7 +106,7 @@ def corrected_covariance_lemma_conditional_statement : Prop :=
     variance m (fun S => sampleCov (armSet t S) a b) ≤
       covarianceBound (armSize n m t) (centered a) (centered b)
 
-/-- P005-T8 statement conditional on the published row-sampling lemma. -/
+/-- Held P005-T8 type, with only the independent published row-sampling lemma added. -/
 def corrected_interacted_expansion_max_conditional_statement : Prop :=
   AronowAudit.Literature.Tropp2011RowSampling →
   ∀ (d m : ℕ → ℕ)
@@ -117,7 +117,7 @@ def corrected_interacted_expansion_max_conditional_statement : Prop :=
     stochasticO m (fun n S => interactedATE (P n) S - ate (P n) - armLeading (P n) S)
       (fun n => Real.sqrt (kappa (P n)*(d n)/n))
 
-/-- P005-T9 statement conditional on the published row-sampling lemma. -/
+/-- Held P005-T9 type, with the same independent published row-sampling lemma added. -/
 def corrected_interacted_expansion_two_conditional_statement : Prop :=
   AronowAudit.Literature.Tropp2011RowSampling →
   ∀ (d m : ℕ → ℕ)
@@ -130,3 +130,19 @@ def corrected_interacted_expansion_two_conditional_statement : Prop :=
 
 end AronowAudit.P005
 
+#print AronowAudit.Literature.Tropp2011RowSampling
+#check @AronowAudit.Literature.Tropp2011RowSampling
+#print AronowAudit.P005.corrected_interacted_expansion_max_conditional_statement
+#check @AronowAudit.P005.corrected_interacted_expansion_max_conditional_statement
+#print AronowAudit.P005.corrected_interacted_expansion_two_conditional_statement
+#check @AronowAudit.P005.corrected_interacted_expansion_two_conditional_statement
+#print axioms AronowAudit.Literature.Tropp2011RowSampling
+#print axioms AronowAudit.P005.corrected_interacted_expansion_max_conditional_statement
+#print axioms AronowAudit.P005.corrected_interacted_expansion_two_conditional_statement
+
+#print AronowAudit.Literature.LeiDing2021QuadraticSampling
+#check @AronowAudit.Literature.LeiDing2021QuadraticSampling
+#print AronowAudit.P005.corrected_covariance_lemma_conditional_statement
+#check @AronowAudit.P005.corrected_covariance_lemma_conditional_statement
+#print axioms AronowAudit.Literature.LeiDing2021QuadraticSampling
+#print axioms AronowAudit.P005.corrected_covariance_lemma_conditional_statement

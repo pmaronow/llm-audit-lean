@@ -1,0 +1,108 @@
+import SAP.P029b.Defs
+import SAP.P029b.Defs.WholeW2
+
+open SAP.P029b MeasureTheory ProbabilityTheory Set
+open scoped BigOperators ENNReal
+
+noncomputable section
+namespace Review
+
+set_option maxHeartbeats 400000
+-- T20: a finite typical-ignorability witness, with randomized assignment.
+def p4 (_ : Fin 4) : ℝ := 1/4
+def p8 : Fin 4 × Bool → ℝ := randomized p4 (1/2)
+def counterUnit (i : Fin 4) : PotentialUnit Unit :=
+  ⟨(), decide (i.val = 2), decide (i.val < 3), 0, if i.val < 2 then 1 else 0⟩
+
+theorem finiteCounterexample : FIV p8 (liftUnit counterUnit) Prod.snd ∧
+    fTypicalIgnorability p8 (liftUnit counterUnit) Prod.snd () ∧
+    ¬ fLatentIgnorability p8 (liftUnit counterUnit) := by
+  constructor
+  · unfold FIV
+    refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+    · constructor
+      · intro i; rcases i with ⟨i,z⟩; fin_cases i <;> cases z <;>
+          norm_num [p8, p4, randomized]
+      · norm_num [p8, p4, randomized, Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · norm_num [fP, p8, p4, randomized, Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · norm_num [fP, p8, p4, randomized, Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · intro a b
+      cases b <;> simp [fP, p8, p4, randomized, liftUnit, counterUnit,
+        Fintype.sum_prod_type, Fin.sum_univ_succ] <;> ring
+    · norm_num [fP, p8, p4, randomized, liftUnit, counterUnit,
+        PotentialUnit.defier, Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · norm_num [fCE, fE, fP, p8, p4, randomized, liftUnit, counterUnit,
+        PotentialUnit.receipt, bit, Fintype.sum_prod_type, Fin.sum_univ_succ]
+  · constructor
+    · norm_num [fTypicalIgnorability, fCE, fE, fP, p8, p4, randomized,
+        liftUnit, counterUnit, PotentialUnit.receipt,
+        Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · intro h
+      have h0 := h () (by norm_num [fP, p8, p4, randomized, liftUnit,
+        counterUnit, Fintype.sum_prod_type, Fin.sum_univ_succ])
+      norm_num [fCE, fE, fP, p8, p4, randomized, liftUnit, counterUnit,
+        PotentialUnit.tau, PotentialUnit.complier,
+        Fintype.sum_prod_type, Fin.sum_univ_succ] at h0
+
+def mu4 : Measure (Fin 4) := (PMF.uniformOfFintype (Fin 4)).toMeasure
+def muB : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
+def mu8 : Measure (Fin 4 × Bool) := mu4.prod muB
+instance : IsProbabilityMeasure mu4 := by unfold mu4; infer_instance
+instance : IsProbabilityMeasure muB := by unfold muB; infer_instance
+instance : IsProbabilityMeasure mu8 := by unfold mu8; infer_instance
+
+lemma integral8 (f : Fin 4 × Bool → ℝ) : (∫ w, f w ∂mu8) = fE p8 f := by
+  unfold mu8
+  rw [integral_prod f Integrable.of_finite]
+  norm_num [mu4, muB, PMF.integral_eq_sum, PMF.uniformOfFintype_apply,
+    fE, p8, p4, randomized, Fintype.sum_prod_type, Fin.sum_univ_succ] <;> ring
+
+lemma prob8 (s : Set (Fin 4 × Bool)) :
+    mP mu8 s = fP p8 (fun w => w ∈ s) := by
+  classical
+  change mu8.real s = _
+  rw [← integral_indicator_one (MeasurableSet.of_discrete), integral8]
+  unfold fE fP
+  apply Finset.sum_congr rfl
+  intro i _
+  by_cases hi : i ∈ s <;> simp [hi]
+
+lemma mean8 (v : Fin 4 × Bool → ℝ) (s : Set (Fin 4 × Bool)) :
+    mCE mu8 v s = fCE p8 v (fun w => w ∈ s) := by
+  classical
+  unfold mCE fCE
+  rw [prob8, ← integral_indicator (MeasurableSet.of_discrete), integral8]
+  rfl
+
+example : IVAssumptions mu8 (liftUnit counterUnit) Prod.snd ∧
+    typicalAt mu8 (liftUnit counterUnit) Prod.snd () ∧
+    ¬ latentAt mu8 (liftUnit counterUnit) () := by
+  obtain ⟨hvalid, hz, hzl, hind, hdef, hfirst⟩ := finiteCounterexample.1
+  refine ⟨?_, ?_, ?_⟩
+  · refine ⟨measurable_of_finite _, measurable_of_finite _, measurable_of_finite _,
+      measurable_of_finite _, measurable_of_finite _, measurable_of_finite _,
+      Integrable.of_finite, Integrable.of_finite, ?_, ?_, ?_, ?_, ?_⟩
+    · exact (indepFun_prod (μ := mu4) (ν := muB)
+        (X := fun i : Fin 4 => ((counterUnit i).x, (counterUnit i).d0,
+          (counterUnit i).d1, (counterUnit i).y0, (counterUnit i).y1))
+        (Y := id) (measurable_of_finite _) measurable_id).symm
+    · simpa only [prob8, Set.mem_setOf_eq] using hz
+    · simpa only [prob8, Set.mem_setOf_eq] using hzl
+    · have hempty : {w | (liftUnit counterUnit w).defier} = ∅ := by
+        ext w
+        rcases w with ⟨i,z⟩
+        fin_cases i <;> cases z <;>
+          norm_num [liftUnit, counterUnit, PotentialUnit.defier]
+      rw [hempty]; simp
+    · simpa only [mean8, Set.mem_setOf_eq] using hfirst
+  · simpa only [typicalAt, mean8, Set.mem_setOf_eq, fTypicalIgnorability]
+      using finiteCounterexample.2.1
+  · intro h
+    apply finiteCounterexample.2.2
+    intro x hx
+    cases x
+    simpa only [latentAt, mean8, Set.mem_setOf_eq] using h
+
+end Review
+
+

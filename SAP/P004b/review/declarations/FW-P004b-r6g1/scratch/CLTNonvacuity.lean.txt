@@ -1,0 +1,121 @@
+import SAP.P004b.Defs
+import SAP.P004b.Defs.WholeW2
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+open MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Classical Topology
+namespace ReviewCLT
+noncomputable section
+
+def fair : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
+instance fair_probability : IsProbabilityMeasure fair := by
+  unfold fair
+  infer_instance
+def sign (a : Bool) : ℝ := if a then 1 else -1
+def law (N : ℕ) : Measure (Fin N → Bool) := Measure.pi (fun _ => fair)
+instance law_probability (N : ℕ) : IsProbabilityMeasure (law N) := by
+  unfold law
+  infer_instance
+def V (N : ℕ) (i : Fin N) (z : Fin N → Bool) : ℝ := sign (z i)
+
+lemma sign_abs (a : Bool) : |sign a| = 1 := by cases a <;> norm_num [sign]
+lemma sign_mean : ∫ a, sign a ∂fair = 0 := by
+  rw [integral_fintype Integrable.of_finite]
+  norm_num [Measure.real, fair, PMF.toMeasure_apply_singleton,
+    PMF.uniformOfFintype_apply, Fintype.sum_bool, sign]
+lemma sign_memLp : MemLp sign 2 fair :=
+  MemLp.of_bound (by fun_prop) 1 (Filter.Eventually.of_forall (fun a => by
+    simpa [Real.norm_eq_abs, sign_abs]))
+lemma sign_variance : ProbabilityTheory.variance sign fair = 1 := by
+  rw [ProbabilityTheory.variance_eq_integral (by fun_prop), sign_mean]
+  have hs : (fun a => (sign a - 0)^2) = fun _ => (1 : ℝ) := by
+    funext a
+    cases a <;> norm_num [sign]
+  rw [hs]
+  rw [integral_const]
+  simp only [probReal_univ, one_smul]
+
+lemma means (N : ℕ) (i : Fin N) : ∫ z, V N i z ∂law N = 0 := by
+  unfold law V
+  rw [integral_comp_eval (by fun_prop)]
+  exact sign_mean
+
+lemma graph (N : ℕ) : SAP.P004b.DependencyGraph (law N) (V N) (fun i => {i}) := by
+  refine ⟨by simp, by simp [eq_comm], ?_⟩
+  intro I J hIJ
+  have hd : Disjoint I J := by
+    rw [Finset.disjoint_left]
+    intro i hi hj
+    exact hIJ i hi i hj (by simp)
+  exact (iIndepFun_pi (X := fun _ : Fin N => sign) (fun _ => by fun_prop)).indepFun_finset
+    I J hd (fun _ => by fun_prop)
+
+lemma second_moment (N : ℕ) :
+    (∫ z, (∑ i, V N i z)^2 ∂law N) = (N : ℝ) := by
+  have hm : (∫ z, ∑ i, V N i z ∂law N) = 0 := by
+    rw [integral_finsetSum _ (fun _ _ => Integrable.of_finite)]
+    simp [means]
+  have hv : ProbabilityTheory.variance (fun z => ∑ i, V N i z) (law N) = (N : ℝ) := by
+    have h := variance_sum_pi (μ := fun _ : Fin N => fair) (fun _ => sign_memLp)
+    have heq : (∑ i : Fin N, fun z : Fin N → Bool => sign (z i)) =
+        (fun z => ∑ i, sign (z i)) := by funext z; simp
+    rw [heq] at h
+    simpa [V, law, sign_variance] using h
+  rw [ProbabilityTheory.variance_eq_integral (by fun_prop), hm] at hv
+  simpa using hv
+
+-- All hypotheses of the general corrected CLT are jointly satisfied.
+example :
+    (∀ N i, Measurable (V N i)) ∧
+    (∀ N i, ∫ z, V N i z ∂law N = 0) ∧
+    (∃ M : ℝ, ∀ N i, ∀ᵐ z ∂law N, |V N i z| ≤ M) ∧
+    (∀ N, SAP.P004b.DependencyGraph (law N) (V N) (fun i => {i})) ∧
+    (∃ D : ℕ, ∀ N (i : Fin N), ({i} : Finset (Fin N)).card ≤ D) ∧
+    (∃ v : ℝ, 0 < v ∧ ∀ᶠ N : ℕ in atTop,
+      v*N ≤ ∫ z, (∑ i, V N i z)^2 ∂law N) := by
+  refine ⟨fun _ _ => by fun_prop, means, ⟨1, ?_⟩, graph, ⟨1, by simp⟩,
+    ⟨1, by norm_num, Filter.Eventually.of_forall ?_⟩⟩
+  · intro N i
+    exact Filter.Eventually.of_forall (fun z => by simp [V, sign_abs])
+  · intro N
+    simp [second_moment]
+
+def U (N : ℕ) (i : Fin N) (z : Fin N → Bool) : ℝ := V N i z / Real.sqrt N
+
+lemma normalized_graph (N : ℕ) :
+    SAP.P004b.DependencyGraph (law N) (U N) (fun i => {i}) := by
+  refine ⟨by simp, by simp [eq_comm], ?_⟩
+  intro I J hIJ
+  have hd : Disjoint I J := by
+    rw [Finset.disjoint_left]
+    intro i hi hj
+    exact hIJ i hi i hj (by simp)
+  exact (iIndepFun_pi (X := fun _ : Fin N => fun a => sign a / Real.sqrt N)
+    (fun _ => by fun_prop)).indepFun_finset I J hd (fun _ => by fun_prop)
+
+lemma normalized_moment (N : ℕ) (hN : 0 < N) :
+    (∫ z, (∑ i, U N i z)^2 ∂law N) = 1 := by
+  have hsum (z : Fin N → Bool) : (∑ i, U N i z) = (∑ i, V N i z)/Real.sqrt N := by
+    simp [U, Finset.sum_div]
+  simp_rw [hsum, div_pow, Real.sq_sqrt (Nat.cast_nonneg N)]
+  rw [integral_div, second_moment, div_self (by exact_mod_cast (Nat.ne_of_gt hN))]
+
+-- All hypotheses of the centered, variance-one formulation as well.
+example :
+    (∀ N i, Measurable (U N i)) ∧
+    (∀ N i, ∫ z, U N i z ∂law N = 0) ∧
+    (∃ K : ℝ, 0 < K ∧ ∀ N, 0 < N → ∀ i,
+      ∀ᵐ z ∂law N, |U N i z| ≤ K/Real.sqrt N) ∧
+    (∀ N, SAP.P004b.DependencyGraph (law N) (U N) (fun i => {i})) ∧
+    (∃ D : ℕ, ∀ N (i : Fin N), ({i} : Finset (Fin N)).card ≤ D) ∧
+    (∀ N, 0 < N → (∫ z, (∑ i, U N i z)^2 ∂law N) = 1) := by
+  refine ⟨fun _ _ => by fun_prop, ?_, ⟨1, by norm_num, ?_⟩,
+    normalized_graph, ⟨1, by simp⟩, normalized_moment⟩
+  · intro N i
+    simp [U, integral_div, means]
+  · intro N hN i
+    exact Filter.Eventually.of_forall (fun z => by
+      simp [U, V, abs_div, sign_abs, abs_of_nonneg (Real.sqrt_nonneg _)])
+
+end
+end ReviewCLT

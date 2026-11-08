@@ -137,7 +137,7 @@ lemma bivariate_normal_conditional_lintegral (mx my sx d c : ℝ) (hx : 0 < sx) 
   simpa only [Pi.mul_apply, bivariate_normal_transport, normalDensity,
     add_sub_cancel_left, sub_zero] using he.symm
 
-/-- The universal nonnegative-test identity for the bivariate density. -/
+/-- The repaired universal nonnegative-test identity for the actual bivariate density. -/
 lemma bivariate_normal_lintegral (mx my sx sy ρ : ℝ) (hx : 0 < sx) (hy : 0 < sy)
     (hρ : ρ ∈ Set.Ioo (-1 : ℝ) 1) (H : ℝ × ℝ → ℝ≥0∞) (hH : Measurable H) :
     (∫⁻ z, H z ∂volume.withDensity
@@ -277,7 +277,7 @@ lemma bivariate_normal_probability (mx my sx sy ρ : ℝ) (hx : 0 < sx) (hy : 0 
       (ae_of_all _ hn)).1 (by rw [hl]; finiteness)
   exact ⟨⟨hmass⟩, hm.aemeasurable, hn, hi, rfl⟩
 
-/-- Nonnegative moment identities: Tonelli is applied to the two centered squares,
+/-- Explicit nonnegative moment node: Tonelli is applied to the two centered squares,
 and their finite extended values are computed before integrability on the target space. -/
 lemma bivariate_normal_nonnegative_moments (mx my sx sy ρ : ℝ) (hx : 0 < sx) (hy : 0 < sy)
     (hρ : ρ ∈ Set.Ioo (-1 : ℝ) 1) :
@@ -370,7 +370,7 @@ lemma bivariate_normal_eq_map (mx my sx sy ρ : ℝ) (hx : 0 < sx) (hy : 0 < sy)
   exact bivariate_normal_lintegral mx my sx sy ρ hx hy hρ H hH
 
 /-- The signed counterpart is deliberately restricted to integrable tests. Later uses
-obtain this premise from the finite centered-square integrals and Cauchy--Schwarz. -/
+obtain this premise from the finite centered-square node and Cauchy--Schwarz. -/
 lemma bivariate_normal_integral (mx my sx sy ρ : ℝ) (hx : 0 < sx) (hy : 0 < sy)
     (hρ : ρ ∈ Set.Ioo (-1 : ℝ) 1) (H : ℝ × ℝ → ℝ)
     (hH : Integrable H (volume.withDensity
@@ -483,6 +483,8 @@ theorem bivariate_normal_zero_correlation_independent_proof (mx my sx sy ρ : �
   intro hz
   subst ρ
   exact bivariate_normal_zero_product mx my sx sy hx hy
+
+example : type_of% @AronowAudit.P001.bivariate_normal_zero_correlation_independent := bivariate_normal_zero_correlation_independent_proof
 
 end
 end AronowAudit.P001.Wave1

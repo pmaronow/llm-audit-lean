@@ -1,0 +1,257 @@
+import SAP.P047.Challenge
+
+open MeasureTheory ProbabilityTheory Filter
+open MeasureTheory.Measure
+open scoped ENNReal NNReal Topology BigOperators
+
+noncomputable section
+namespace AuditP047
+open SAP.P047
+
+abbrev Tail := Bool × (ℝ × ℝ)
+
+lemma cond_snd (F : Measure Tail) [IsProbabilityMeasure F]
+    (g : Tail → ℝ) (hg : Measurable g) :
+    (uniform01.prod F)[fun u : UnitData => g u.2 | covariateSigma] =ᵐ[uniform01.prod F]
+      fun _ => ∫ t, g t ∂F := by
+  have hind : IndepFun (fun u : UnitData => u.2) (fun u : UnitData => u.1)
+      (uniform01.prod F) := (indepFun_prod measurable_id measurable_id).symm
+  have hsm : StronglyMeasurable[MeasurableSpace.comap (fun u : UnitData => u.2)
+      inferInstance] (fun u : UnitData => g u.2) :=
+    (hg.comp (measurable_iff_comap_le.mpr le_rfl)).stronglyMeasurable
+  have hm : covariateSigma ≤ (inferInstance : MeasurableSpace UnitData) :=
+    measurable_fst.comap_le
+  have : IsFiniteMeasure ((uniform01.prod F).trim hm) :=
+    isFiniteMeasure_trim hm
+  have h : (uniform01.prod F)[fun u : UnitData => g u.2 | covariateSigma]
+      =ᵐ[uniform01.prod F] fun _ => ∫ u : UnitData, g u.2 ∂uniform01.prod F :=
+    condExp_indep_eq measurable_snd.comap_le hm hsm hind
+  simpa only [integral_fun_snd, Measure.real, measure_univ,
+    ENNReal.toReal_one, one_smul] using h
+
+def pairLaw : Measure (ℝ × ℝ) :=
+  bernoulliMeasure (0, 1) (0, 0) ⟨(1 / 2 : ℝ), by constructor <;> norm_num⟩
+
+instance : IsProbabilityMeasure pairLaw := by unfold pairLaw; infer_instance
+
+def testLaw : Measure UnitData := uniform01.prod (fairBool.prod pairLaw)
+
+instance : IsProbabilityMeasure testLaw := by unfold testLaw; infer_instance
+
+lemma fair_integral (g : Bool → ℝ) :
+    (∫ a, g a ∂fairBool) = (1 / 2 : ℝ) * g true + (1 / 2 : ℝ) * g false := by
+  norm_num [fairBool, integral_bernoulliMeasure, smul_eq_mul]
+
+lemma pair_integral (g : ℝ × ℝ → ℝ) :
+    (∫ y, g y ∂pairLaw) = (1 / 2 : ℝ) * g (0, 1) + (1 / 2 : ℝ) * g (0, 0) := by
+  norm_num [pairLaw, integral_bernoulliMeasure, smul_eq_mul]
+
+lemma joint_factor (a : Bool) (f : ℝ × ℝ → ℝ) (hf : Measurable f) :
+    testLaw[fun u => arm a u * f (potential false u, potential true u) | covariateSigma]
+      =ᵐ[testLaw] fun u => (1 / 2 : ℝ) *
+        (testLaw[fun v => f (potential false v, potential true v) | covariateSigma]) u := by
+  have hm : Measurable (fun t : Tail => if t.1 = a then (1 : ℝ) else 0) :=
+    Measurable.ite (measurable_fst (measurableSet_singleton a)) measurable_const measurable_const
+  have h1 := cond_snd (fairBool.prod pairLaw)
+    (fun t => (if t.1 = a then (1 : ℝ) else 0) * f t.2) (hm.mul (hf.comp measurable_snd))
+  have h2 := cond_snd (fairBool.prod pairLaw) (fun t => f t.2) (by fun_prop)
+  have hfactor : (∫ t : Tail, (if t.1 = a then (1 : ℝ) else 0) * f t.2
+      ∂fairBool.prod pairLaw) =
+      (1 / 2 : ℝ) * ∫ t : Tail, f t.2 ∂fairBool.prod pairLaw := by
+    rw [integral_prod_mul (fun b : Bool => if b = a then (1 : ℝ) else 0) f,
+      integral_fun_snd]
+    simp only [Measure.real, measure_univ, ENNReal.toReal_one, one_smul]
+    cases a <;> simp [fair_integral]
+  filter_upwards [h1, h2] with u hu hv
+  change (testLaw[fun u => (if u.2.1 = a then (1 : ℝ) else 0) * f u.2.2 |
+    covariateSigma]) u = (1 / 2 : ℝ) *
+      (testLaw[fun v => f v.2.2 | covariateSigma]) u
+  change (testLaw[fun u => (if u.2.1 = a then (1 : ℝ) else 0) * f u.2.2 |
+    covariateSigma]) u = _ at hu
+  change (testLaw[fun v => f v.2.2 | covariateSigma]) u = _ at hv
+  rw [hu, hv, hfactor]
+
+lemma test_ignorable : Ignorable testLaw (fun _ => (1 / 2 : ℝ)) := by
+  intro a f hf _
+  have h := joint_factor a (fun y => f (if a then y.2 else y.1))
+    (by cases a <;> dsimp <;> fun_prop)
+  cases a <;> norm_num [potential, armPropensity] at h ⊢ <;> exact h
+
+def S : CausalLaw where
+  measure := testLaw
+  probability := inferInstance
+  propensity := fun _ => 1 / 2
+  measurable_propensity := measurable_const
+  ignorability := test_ignorable
+
+lemma pair_support : ∀ᵐ y ∂pairLaw, y = (0, 1) ∨ y = (0, 0) := by
+  rw [pairLaw, bernoulliMeasure_def, ae_add_measure_iff]
+  constructor
+  · exact ae_smul_measure (by simp) _
+  · exact ae_smul_measure (by simp) _
+
+lemma test_support : ∀ᵐ u ∂testLaw, u.2.2 = (0, 1) ∨ u.2.2 = (0, 0) := by
+  have h : MeasurableSet {u : UnitData | u.2.2 = (0, 1) ∨ u.2.2 = (0, 0)} := by
+    measurability
+  apply (ae_prod_iff_ae_ae h).mpr
+  filter_upwards with x
+  apply (ae_prod_iff_ae_ae (by measurability)).mpr
+  filter_upwards with a
+  exact pair_support
+
+lemma S_unknown : UnknownModel S := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · change (uniform01.prod (fairBool.prod pairLaw)).map Prod.fst = uniform01
+    simp only [Measure.map_fst_prod, measure_univ, one_smul]
+  · intro a f hf _
+    have h := joint_factor a f hf
+    cases a <;> norm_num [S, armPropensity] at h ⊢ <;> exact h
+  · intro a
+    filter_upwards [test_support] with u hu
+    rcases hu with hu | hu
+    all_goals cases a <;> simp [potential, hu]
+  · filter_upwards with u
+    norm_num [S]
+
+example : ∃ L : CausalLaw, UnknownModel L := ⟨S, S_unknown⟩
+
+lemma S_baseline : S.measure = baselineLaw := by
+  have hp : pairLaw = fairBool.map (fun b => ((0 : ℝ), if b then (1 : ℝ) else 0)) := by
+    simp [pairLaw, fairBool, map_bernoulliMeasure]
+  have hi : fairBool.prod pairLaw =
+      (fairBool.prod fairBool).map
+        (fun t => (t.1, ((0 : ℝ), if t.2 then (1 : ℝ) else 0))) := by
+    rw [hp]
+    simpa only [Measure.map_id, Prod.map_def, id_eq] using
+      (Measure.map_prod_map (f := id)
+        (g := fun b => ((0 : ℝ), if b then (1 : ℝ) else 0))
+        fairBool fairBool measurable_id (by fun_prop))
+  change testLaw = baselineLaw
+  rw [testLaw, hi]
+  simpa only [Measure.map_id, Prod.map_def, id_eq, baselineLaw] using
+    (Measure.map_prod_map (f := id)
+      (g := fun t : Bool × Bool => (t.1, ((0 : ℝ), if t.2 then (1 : ℝ) else 0)))
+      uniform01 (fairBool.prod fairBool) measurable_id (by fun_prop))
+
+lemma S_effect : ate S = 1 / 2 := by
+  change (∫ u : UnitData, u.2.2.2 - u.2.2.1
+    ∂uniform01.prod (fairBool.prod pairLaw)) = 1 / 2
+  rw [integral_fun_snd (fun t : Tail => t.2.2 - t.2.1),
+    integral_fun_snd (fun y : ℝ × ℝ => y.2 - y.1)]
+  norm_num only [Measure.real, measure_univ, ENNReal.toReal_one, one_smul, pair_integral]
+
+lemma S_bounded : BoundedOverlap S 1 (1 / 4) := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_⟩
+  · intro a
+    filter_upwards [test_support] with u hu
+    rcases hu with hu | hu
+    all_goals cases a <;> norm_num [potential, hu]
+  · filter_upwards with u
+    norm_num [S]
+
+lemma S_treated : TreatedMeanModel S (1 / 4) := by
+  refine ⟨by norm_num, ?_, ?_⟩
+  · filter_upwards [test_support] with u hu
+    rcases hu with hu | hu
+    all_goals norm_num [potential, hu]
+  · filter_upwards with u
+    norm_num [S]
+
+-- T1: both branches have actual populations, positive sample size, nominal
+-- level in (0,1), and a nonnegative tail threshold.
+example : ∃ L : CausalLaw, BoundedOverlap L 1 (1 / 4) ∧
+    TreatedMeanModel L (1 / 4) ∧ (1 : ℕ) ≤ 1 ∧
+    (0 : ℝ) < 1 / 4 ∧ (1 / 4 : ℝ) < 1 ∧ (0 : ℝ) ≤ 1 := by
+  exact ⟨S, S_bounded, S_treated, by norm_num, by norm_num, by norm_num, by norm_num⟩
+
+-- T2: the common model is nonempty and the centered score is not identically
+-- zero as an algebraic function of the observed treatment/outcome.
+example : ∃ L : CausalLaw, BoundedOverlap L 1 (1 / 4) ∧ ate L = 1 / 2 ∧
+    score L (1 / 2, true, (0, 1)) = 2 ∧
+    score L (1 / 2, false, (0, 1)) = 0 := by
+  refine ⟨S, S_bounded, S_effect, ?_, ?_⟩
+  all_goals norm_num [score, S, arm, observed, potential]
+
+lemma unknown_integrable (L : CausalLaw) (hL : UnknownModel L) :
+    Integrable (fun u => potential true u - potential false u) L.measure := by
+  apply (integrable_const (2 : ℝ)).mono'
+  · simp only [potential, Bool.false_eq_true, ite_true, ite_false]
+    fun_prop
+  · filter_upwards [hL.2.2.1 true, hL.2.2.1 false] with u h1 h0
+    rcases h1 with h1 | h1 <;> rcases h0 with h0 | h0 <;>
+      norm_num [h1, h0]
+
+lemma hard_model_integrable : ∀ P ∈ unknownPopulations,
+    Integrable (fun u => potential true u - potential false u) (P : Measure UnitData) := by
+  rintro P ⟨L, hL, rfl⟩
+  exact unknown_integrable L hL
+
+-- T3: the specified full baseline (not just its observed-data marginal) is
+-- genuine and belongs to a nonempty admissible class with finite effects.
+example : ∃ S : CausalLaw,
+    S.measure = baselineLaw ∧ S.propensity = (fun _ => (1 / 2 : ℝ)) ∧
+      UnknownModel S ∧ ate S = 1 / 2 := by
+  exact ⟨S, S_baseline, rfl, S_unknown, S_effect⟩
+
+example : unknownPopulations.Nonempty ∧
+    unknownPopulations ⊆ unknownPopulations ∧
+    (∀ P ∈ unknownPopulations, Integrable
+      (fun u => potential true u - potential false u) (P : Measure UnitData)) := by
+  exact ⟨⟨populationProbability S, S, S_unknown, rfl⟩, Set.Subset.rfl, hard_model_integrable⟩
+
+def seed : Measure Unit := Measure.dirac ()
+instance : IsProbabilityMeasure seed := by unfold seed; infer_instance
+
+def zeroEstimator (n : ℕ) : ((Fin n → ObservedUnit) × Unit) → ℝ := fun _ => 0
+def lower (n : ℕ) : ((Fin n → ObservedUnit) × Unit) → EReal := fun _ => ⊥
+def upper (n : ℕ) : ((Fin n → ObservedUnit) × Unit) → EReal := fun _ => ⊤
+
+example : (∀ n, Measurable (zeroEstimator n)) ∧
+    (∀ n, Measurable (lower n)) ∧ (∀ n, Measurable (upper n)) := by
+  exact ⟨fun _ => measurable_const, fun _ => measurable_const, fun _ => measurable_const⟩
+
+example : ((sampleLaw S.measure).prod seed).real
+    {z | (1 / 12 : ℝ) ≤ |zeroEstimator 1 (observedSample 1 z.1, z.2) - ate S|} = 1 := by
+  norm_num only [zeroEstimator, S_effect, zero_sub, abs_neg, abs_of_pos (by norm_num :
+    (0 : ℝ) < 1 / 2), show (1 / 12 : ℝ) ≤ 1 / 2 by norm_num, Set.ofPred_true,
+    probReal_univ]
+
+example (n : ℕ) : widthProb seed lower upper n = 1 := by
+  simp only [widthProb, lower, upper, EReal.bot_add, bot_lt_top, Set.ofPred_true,
+    probReal_univ]
+
+lemma full_coverage (n : ℕ) :
+    wholeCoverage unknownPopulations seed lower upper n = 1 := by
+  unfold wholeCoverage modelEventInf
+  have he : {p : ℝ | ∃ P ∈ unknownPopulations,
+      p = ((sampleLaw (P : Measure UnitData)).prod seed).real
+        {z | lower n (observedSample n z.1, z.2) ≤ (populationEffect P : EReal) ∧
+          (populationEffect P : EReal) ≤ upper n (observedSample n z.1, z.2)}} = {1} := by
+    ext p
+    simp only [lower, upper, bot_le, le_top, and_self, Set.ofPred_true,
+      Measure.real, measure_univ, ENNReal.toReal_one, Set.mem_ofPred_eq,
+      Set.mem_singleton_iff]
+    exact ⟨by rintro ⟨P, _, hp⟩; exact hp,
+      by intro hp; exact ⟨populationProbability S, ⟨S, S_unknown, rfl⟩, hp⟩⟩
+  rw [he]
+  simp
+
+-- T3's honesty antecedent is satisfiable, with a real independent seed law
+-- and measurable endpoints, at alpha=1/4.
+example : (0 : ℝ) < 1 / 4 ∧ (1 / 4 : ℝ) < 1 / 2 ∧
+    1 - (1 / 4 : ℝ) ≤ Filter.liminf
+      (wholeCoverage unknownPopulations seed lower upper) atTop := by
+  have h : wholeCoverage unknownPopulations seed lower upper = fun _ => 1 :=
+    funext full_coverage
+  rw [h, Filter.liminf_const]
+  norm_num
+
+#print axioms AuditP047.S_unknown
+#print axioms AuditP047.S_baseline
+#print axioms AuditP047.S_effect
+#print axioms AuditP047.S_bounded
+#print axioms AuditP047.S_treated
+#print axioms AuditP047.hard_model_integrable
+#print axioms AuditP047.full_coverage
+
+end AuditP047

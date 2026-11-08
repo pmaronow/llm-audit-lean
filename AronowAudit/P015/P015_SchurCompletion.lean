@@ -67,5 +67,6 @@ theorem block_ols_coefficient {Q : Type*} [Fintype Q] [DecidableEq Q]
   change u (Sum.inr ()) * (d-dotProduct ω b)=t-dotProduct ω v
   nlinarith
 
+#print axioms block_ols_coefficient
 end
 end AronowAudit.P015.SchurCompletion

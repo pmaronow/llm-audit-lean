@@ -1,0 +1,58 @@
+import SAP.P006a.Challenge
+
+open MeasureTheory ProbabilityTheory
+open scoped ENNReal
+open SAP.P006a
+
+noncomputable section
+
+lemma interval_probability : IsProbabilityMeasure intervalLaw := by
+  constructor
+  norm_num [intervalLaw]
+
+lemma reference_probability : IsProbabilityMeasure referenceWithAtom := by
+  constructor
+  norm_num [referenceWithAtom, intervalLaw, Measure.add_apply, Measure.smul_apply]
+  simpa only [one_div] using ENNReal.add_halves 1
+
+lemma atom_masses :
+    intervalLaw ({1/2} : Set ℝ) = 0 ∧ referenceWithAtom ({1/2} : Set ℝ) = 1/2 := by
+  norm_num [intervalLaw, referenceWithAtom, Measure.add_apply, Measure.smul_apply,
+    Measure.restrict_apply, measurableSet_singleton]
+
+example : ¬ referenceWithAtom ≪ intervalLaw := by
+  intro h
+  have hzero := h atom_masses.1
+  rw [atom_masses.2] at hzero
+  norm_num at hzero
+
+example : ¬ ∃ f : ℝ → ℝ≥0∞, Measurable f ∧
+    referenceWithAtom = intervalLaw.withDensity f := by
+  rintro ⟨f,hf,heq⟩
+  have hac : referenceWithAtom ≪ intervalLaw := by
+    rw [heq]
+    exact withDensity_absolutelyContinuous _ _
+  have hzero := hac atom_masses.1
+  rw [atom_masses.2] at hzero
+  norm_num at hzero
+
+lemma reference_dominates : ∀ s : Set ℝ,
+    (1/2 : ℝ≥0∞) * intervalLaw s ≤ referenceWithAtom s := by
+  intro s
+  simp only [referenceWithAtom, Measure.add_apply, Measure.smul_apply, smul_eq_mul]
+  exact le_add_right le_rfl
+
+example : intervalLaw ≪ referenceWithAtom := by
+  intro s hs
+  have h := reference_dominates s
+  rw [hs] at h
+  have hz := le_zero_iff.mp h
+  exact (mul_eq_zero.mp hz).resolve_left (by norm_num)
+
+-- The deterministic potential outcomes and oracle have effect one at every covariate.
+example (ν : Measure ℝ) :
+    (uniformOracle ν).hn = (by norm_num : 0 < (1 : ℕ)) ∧
+    (∀ x, (uniformOracle ν).μ0 x = 0 ∧ (uniformOracle ν).μ1 x = 1 ∧
+      (uniformOracle ν).τ x = 1) ∧
+    (∀ π ω x, (uniformOracle ν).μhat π ω x = 0) := by
+  simp [uniformOracle, Experiment.τ]

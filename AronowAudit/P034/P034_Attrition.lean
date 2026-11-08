@@ -9,15 +9,15 @@ set_option maxRecDepth 16384
 set_option maxHeartbeats 0
 
 /-!
-P034-T1: an explicit finite counterexample to the Study 2 PAP's
+P034-T1: the validator's explicit finite counterexample to the Study 2 PAP's
 missingness rule (amended plan §8, PDF pp. 5-6; Appendix pp. 9 and 18).
 P034-T2: the sufficient identifying condition in the correction.
 Neither construction is a claim of actual bias in the survey estimates.
-The paper has no formal potential-outcome definitions; the definitions below
-specify the models for P034-T1–T2.
+The paper has no formal potential-outcome definitions: those definitions
+below come from P034-E017/derivation.md §§2-6 and the fixed targets.
 -/
 
-/-- “Y=Y(T), R=R(T)”.
+/-- “Y=Y(T), R=R(T)” (validator P034-E017, derivation.md §2).
 `T` is the treatment, `Y t` the potential outcome, `R t` the potential
 completion indicator, and `X` a finite vector of pretreatment covariates.
 The paper's “survey completion rates” (article p. 6) concern `R`. -/
@@ -27,93 +27,96 @@ structure SurveyModel (Ω K : Type*) (k : ℕ) where
   R : Bool → Ω → Bool
   X : Ω → Fin k → K
 
-/-- “Y=Y(T)”: the outcome under the realized assignment. -/
+/-- “Y=Y(T)” (validator §2): the outcome under the realized assignment. -/
 def realizedOutcome {Ω K : Type*} {k : ℕ} (M : SurveyModel Ω K k) (ω : Ω) : K :=
   M.Y (M.T ω) ω
 
-/-- “R=R(T)”: an outcome is observed iff this indicator is true. -/
+/-- “R=R(T)” (validator §2): an outcome is observed iff this indicator is true. -/
 def realizedCompletion {Ω K : Type*} {k : ℕ} (M : SurveyModel Ω K k) (ω : Ω) : Bool :=
   M.R (M.T ω) ω
 
 /-- The numerical 0/1 coding used for treatment and binary outcomes in the
-constructed witness. -/
+constructed witness (validator §§2-3). -/
 def bitQ (b : Bool) : ℚ := if b then 1 else 0
 
 /-- The finite probability of an event is the sum of its point masses.
-All weights here are exact rationals. -/
+This implements the validator's “probability of each of the 32 configurations”
+(§3). All weights here are exact rationals. -/
 def finiteProb {Ω : Type*} [Fintype Ω] (w : Ω → ℚ)
     (E : Ω → Prop) [DecidablePred E] : ℚ := ∑ ω, if E ω then w ω else 0
 
-/-- “E[Y(1)-Y(0)]”, evaluated as a weighted finite sum. -/
+/-- “E[Y(1)-Y(0)]” (validator §2), evaluated as a weighted finite sum. -/
 def finiteMean {Ω : Type*} [Fintype Ω] (w : Ω → ℚ) (f : Ω → ℚ) : ℚ :=
   ∑ ω, w ω * f ω
 
 /-- Ordinary event conditioning: the joint probability divided by the
-conditioning event's probability. Positivity is checked
+conditioning event's probability (validator §§3-6). Positivity is checked
 separately for every conditioning event used in the witness. -/
 def finiteCondProb {Ω : Type*} [Fintype Ω] (w : Ω → ℚ)
     (E F : Ω → Prop) [DecidablePred E] [DecidablePred F] : ℚ :=
   finiteProb w (fun ω => E ω ∧ F ω) / finiteProb w F
 
-/-- “E[Y | T=t,R=1]” and “E[ZZ' | R=1]”, with event
+/-- “E[Y | T=t,R=1]” and “E[ZZ' | R=1]” (validator §§3-4), with event
 conditioning implemented by the normalized weighted finite sum. -/
 def finiteCondMean {Ω : Type*} [Fintype Ω] (w : Ω → ℚ) (f : Ω → ℚ)
     (E : Ω → Prop) [DecidablePred E] : ℚ :=
   (∑ ω, if E ω then w ω * f ω else 0) / finiteProb w E
 
 /-- Independence for finite-valued variables is the factorization of every
-joint cell probability. -/
+joint cell probability (validator §2: “T is independent of ...”). -/
 def finiteIndependent {Ω A B : Type*} [Fintype Ω] [DecidableEq A] [DecidableEq B]
     (w : Ω → ℚ) (f : Ω → A) (g : Ω → B) : Prop :=
   ∀ a b, finiteProb w (fun ω => f ω = a ∧ g ω = b) =
     finiteProb w (fun ω => f ω = a) * finiteProb w (fun ω => g ω = b)
 
-/-- Independence within an event of positive probability, expressed as
-factorization of every finite joint cell. -/
+/-- Independence within an event of positive probability (validator §3:
+“conditional on (T,X)”), again as factorization of every finite joint cell. -/
 def finiteConditionalIndependent {Ω A B : Type*} [Fintype Ω]
     [DecidableEq A] [DecidableEq B] (w : Ω → ℚ) (f : Ω → A) (g : Ω → B)
     (E : Ω → Prop) [DecidablePred E] : Prop :=
   ∀ a b, finiteCondProb w (fun ω => f ω = a ∧ g ω = b) E =
     finiteCondProb w (fun ω => f ω = a) E * finiteCondProb w (fun ω => g ω = b) E
 
-/-- `Ω={0,1}^5`, with coordinates `(u,r₀,r₁,x,t)` in P034-T1.
-Booleans represent binary values without extra support hypotheses. -/
+/-- `Ω={0,1}^5`, with coordinates `(u,r₀,r₁,x,t)` (validator §3;
+fixed target T1). Booleans represent binary values without extra support hypotheses. -/
 abbrev WorldA := Fin 5 → Bool
 
-/-- `p₀(0)=37/50, p₀(1)=13/50, p₁(0)=13/50, p₁(1)=37/50`. -/
+/-- `p₀(0)=37/50, p₀(1)=13/50, p₁(0)=13/50, p₁(1)=37/50`
+(validator §5's first numerical specification). -/
 def completionChance (t u : Bool) : ℚ := if t = u then 37/50 else 13/50
 
-/-- `p^r (1-p)^(1-r)` for a binary indicator. -/
+/-- `p^r (1-p)^(1-r)` for a binary indicator (validator §3's point-mass formula). -/
 def bernoulliMass (p : ℚ) (r : Bool) : ℚ := if r then p else 1-p
 
 /-- `P(u,r₀,r₁,x,t)=1/8 p₀(u)^r₀(1-p₀(u))^(1-r₀)
-p₁(u)^r₁(1-p₁(u))^(1-r₁)`. -/
+p₁(u)^r₁(1-p₁(u))^(1-r₁)` (validator §3). -/
 def worldAWeight (ω : WorldA) : ℚ :=
   (1/8) * bernoulliMass (completionChance false (ω 0)) (ω 1) *
     bernoulliMass (completionChance true (ω 0)) (ω 2)
 
-/-- “Y(0)=Y(1)=U” and the potential completions/covariate/assignment; the single binary covariate is also encoded as a rational. -/
+/-- “Y(0)=Y(1)=U” and the potential completions/covariate/assignment
+(validator §3); the single binary covariate is also encoded as a rational. -/
 def worldAModel : SurveyModel WorldA ℚ 1 where
   T ω := ω 4
   Y _ ω := bitQ (ω 0)
   R t ω := if t then ω 2 else ω 1
   X ω _ := bitQ (ω 3)
 
-/-- `(Y(0),Y(1),R(0),R(1),X)` in its binary coding.
+/-- `(Y(0),Y(1),R(0),R(1),X)` in its binary coding (validator §2).
 Both potential outcomes use the same `u`. -/
 def worldABundle (ω : WorldA) : Bool × Bool × Bool × Bool × Bool :=
   (ω 0, ω 0, ω 1, ω 2, ω 3)
 
-/-- The target “τ=E[Y(1)-Y(0)]”, for the constructed world A. -/
+/-- The target “τ=E[Y(1)-Y(0)]” (validator §2), for the constructed world A. -/
 def worldAEffect : ℚ := finiteMean worldAWeight
   (fun ω => worldAModel.Y true ω - worldAModel.Y false ω)
 
-/-- “E[Y | T=t,R=1]”, the complete-case arm mean. -/
+/-- “E[Y | T=t,R=1]” (validator §3), the complete-case arm mean. -/
 def worldAArmMean (t : Bool) : ℚ := finiteCondMean worldAWeight
   (realizedOutcome worldAModel)
   (fun ω => worldAModel.T ω = t ∧ realizedCompletion worldAModel ω = true)
 
-/-- The conditioning stratum `(T=t,X=x,Y=y)` in T1(v). -/
+/-- The conditioning stratum `(T=t,X=x,Y=y)` in T1(v), validator §3. -/
 def worldAStratum (t x y : Bool) (ω : WorldA) : Prop :=
   worldAModel.T ω = t ∧ worldAModel.X ω 0 = bitQ x ∧
     realizedOutcome worldAModel ω = bitQ y
@@ -121,28 +124,28 @@ def worldAStratum (t x y : Bool) (ω : WorldA) : Prop :=
 instance (t x y : Bool) : DecidablePred (worldAStratum t x y) :=
   fun ω => by unfold worldAStratum; infer_instance
 
-/-- “Z=(1,T,X)'”, for the one-covariate witness. -/
+/-- “Z=(1,T,X)'” (validator §4), for the one-covariate witness. -/
 def worldADesign (ω : WorldA) : Fin 3 → ℚ :=
   ![1, bitQ (worldAModel.T ω), worldAModel.X ω 0]
 
-/-- “G=E[ZZ' | R=1]”, computed from the entire joint law. -/
+/-- “G=E[ZZ' | R=1]” (validator §4), computed from the entire joint law. -/
 def worldAGram : Matrix (Fin 3) (Fin 3) ℚ := fun i j =>
   finiteCondMean worldAWeight (fun ω => worldADesign ω i * worldADesign ω j)
     (fun ω => realizedCompletion worldAModel ω = true)
 
-/-- “h=E[ZY | R=1]”, computed from the entire joint law. -/
+/-- “h=E[ZY | R=1]” (validator §4), computed from the entire joint law. -/
 def worldARhs : Fin 3 → ℚ := fun i =>
   finiteCondMean worldAWeight (fun ω => worldADesign ω i * realizedOutcome worldAModel ω)
     (fun ω => realizedCompletion worldAModel ω = true)
 
-/-- The matrix printed in target T1(vii). -/
+/-- The matrix printed in fixed target T1(vii), validator §4. -/
 def witnessGram : Matrix (Fin 3) (Fin 3) ℚ :=
   !![1, 1/2, 1/2; 1/2, 1/2, 1/4; 1/2, 1/4, 1/2]
 
-/-- The right-hand side `(1/2,37/100,1/4)'` in T1(vii). -/
+/-- The right-hand side `(1/2,37/100,1/4)'` in T1(vii), validator §4. -/
 def witnessRhs : Fin 3 → ℚ := ![1/2, 37/100, 1/4]
 
-/-- The coefficient vector `(13/50,12/25,0)'` in T1(vii). -/
+/-- The coefficient vector `(13/50,12/25,0)'` in T1(vii), validator §§4-5. -/
 def witnessBeta : Fin 3 → ℚ := ![13/50, 12/25, 0]
 
 /-- All finite numerical claims of T1(i)-(vii), including strict positivity
@@ -194,32 +197,32 @@ theorem witness_normal_equations (β : Fin 3 → ℚ) :
     decide +kernel
 
 /-- Observed data consist of treatment, covariate, and either a missing
-outcome (`none`) or a binary observed outcome (`some y`). -/
+outcome (`none`) or a binary observed outcome (`some y`), validator §6. -/
 abbrev ObservedCell := Bool × Bool × Option Bool
 
-/-- The observed-data map in world A. -/
+/-- The observed-data map in world A (validator §6). -/
 def observedA (ω : WorldA) : ObservedCell :=
   (ω 4, ω 3, if realizedCompletion worldAModel ω then some (ω 0) else none)
 
 /-- T1(viii)'s 400-unit data set as integer cell multiplicities: per `(t,x)`,
-50 missing, and 50 observed split 37/13 or 13/37. This
+50 missing, and 50 observed split 37/13 or 13/37. Validator §5. This
 frequency representation is exactly the finite data set, without an ordering. -/
 def sampleCount (c : ObservedCell) : ℕ :=
   match c.2.2 with
   | none => 50
   | some y => if c.1 = y then 37 else 13
 
-/-- The sample's `T`-by-`R` count table. -/
+/-- The sample's `T`-by-`R` count table (validator §5). -/
 def sampleCompletionCount (t r : Bool) : ℚ :=
   ∑ c : ObservedCell, if c.1 = t ∧ c.2.2.isSome = r then (sampleCount c : ℚ) else 0
 
-/-- Pearson's expected count `(row total * column total)/N`, target
+/-- Pearson's expected count `(row total * column total)/N`, fixed target
 T1(viii), where the row and column totals are computed from the count table. -/
 def sampleExpectedCount (t r : Bool) : ℚ :=
   ((∑ s : Bool, sampleCompletionCount t s) *
     (∑ s : Bool, sampleCompletionCount s r)) / (∑ c : ObservedCell, (sampleCount c : ℚ))
 
-/-- “Pearson's statistic ... equals 0”: the usual sum of
+/-- “Pearson's statistic ... equals 0” (validator §5): the usual sum of
 `(observed-expected)^2/expected` over the four cells. -/
 def samplePearson : ℚ := ∑ t : Bool, ∑ r : Bool,
   (sampleCompletionCount t r - sampleExpectedCount t r)^2 / sampleExpectedCount t r
@@ -229,16 +232,17 @@ this is the exact definition of the reference distribution in T1(viii). -/
 noncomputable def chiSquareOnePValue (s : ℝ) : ℝ :=
   ((gaussianReal 0 1) {z : ℝ | s ≤ z^2}).toReal
 
-/-- “Z=(1,T,X)'” for an observed cell of the sample. -/
+/-- “Z=(1,T,X)'” for an observed cell of the sample (validator §4-5). -/
 def cellDesign (c : ObservedCell) : Fin 3 → ℚ := ![1, bitQ c.1, bitQ c.2.1]
 
 /-- The sample OLS Gram matrix is the design cross-product over completed
-records; multiplicities implement repeated observations. -/
+records (validator §5); multiplicities implement repeated observations. -/
 def sampleGram : Matrix (Fin 3) (Fin 3) ℚ := fun i j =>
   ∑ c : ObservedCell, if c.2.2.isSome then
     (sampleCount c : ℚ) * cellDesign c i * cellDesign c j else 0
 
-/-- The sample OLS right-hand side, restricted to completed outcomes. `none` is skipped, not imputed. -/
+/-- The sample OLS right-hand side, restricted to completed outcomes
+(validator §5). `none` is skipped, not imputed. -/
 def sampleRhs : Fin 3 → ℚ := fun i =>
   ∑ c : ObservedCell, match c.2.2 with
   | none => 0
@@ -293,15 +297,15 @@ theorem sample_normal_equations (β : Fin 3 → ℚ) :
     · intro h; rw [h]
   exact he.trans (witness_normal_equations β)
 
-/-- `Ω_B={0,1}^6`, coordinates `(y₀,y₁,r₀,r₁,x,t)`. -/
+/-- `Ω_B={0,1}^6`, coordinates `(y₀,y₁,r₀,r₁,x,t)` (validator §6). -/
 abbrev WorldB := Fin 6 → Bool
 
 /-- World B's product distribution, with outcome probabilities `13/50`
-and `37/50` and four independent fair binary coordinates. -/
+and `37/50` and four independent fair binary coordinates (validator §6). -/
 def worldBWeight (ω : WorldB) : ℚ :=
   bernoulliMass (13/50) (ω 0) * bernoulliMass (37/50) (ω 1) * (1/16)
 
-/-- The potential variables and realization in world B;
+/-- The potential variables and realization in world B (validator §6);
 this reuses `SurveyModel` and the realized-variable definitions from world A. -/
 def worldBModel : SurveyModel WorldB ℚ 1 where
   T ω := ω 5
@@ -310,7 +314,7 @@ def worldBModel : SurveyModel WorldB ℚ 1 where
   X ω _ := bitQ (ω 4)
 
 /-- The observable triple in world B, with missing outcomes represented by
-`none`, exactly as in world A. -/
+`none`, exactly as in world A (validator §6). -/
 def observedB (ω : WorldB) : ObservedCell :=
   (ω 5, ω 4, if realizedCompletion worldBModel ω then
     some (if ω 5 then ω 1 else ω 0) else none)
@@ -342,7 +346,7 @@ theorem worldB_observational_equivalence : WorldBFacts := by
   unfold WorldBFacts finiteIndependent
   decide +kernel
 
-/-- P034-T1 in full: claims (i)-(ix) for the concrete witness,
+/-- P034-T1 in full: claims (i)-(ix) for the validator's concrete witness,
 including unique population and sample OLS solutions and exact test
 non-rejection. Amended Study 2 PAP §8 and Appendix Figures OA2a/OA3 notes.
 Equal completion rates therefore do not justify the complete-case effect. -/
@@ -359,11 +363,11 @@ theorem missingness_counterexample :
 
 /-! General probability-space version of the correction P034-T2. -/
 
-/-- `0/1` treatment coding in real-valued regressions. -/
+/-- `0/1` treatment coding in real-valued regressions; validator §2. -/
 def bitR (b : Bool) : ℝ := if b then 1 else 0
 
 /-- The full potential-variable bundle in the correction's randomization
-condition H1 (P034-T2). -/
+condition H1 (fixed target T2; validator §2). -/
 def potentialBundle {Ω : Type*} {k : ℕ} (M : SurveyModel Ω ℝ k) (ω : Ω) :
     ℝ × ℝ × Bool × Bool × (Fin k → ℝ) :=
   (M.Y false ω, M.Y true ω, M.R false ω, M.R true ω, M.X ω)
@@ -374,7 +378,7 @@ pretreatment covariates” (corrected Study 2 PAP §8, target T2). -/
 def outcomeCovariateBundle {Ω : Type*} {k : ℕ} (M : SurveyModel Ω ℝ k) (ω : Ω) :
     ℝ × ℝ × (Fin k → ℝ) := (M.Y false ω, M.Y true ω, M.X ω)
 
-/-- The complete-case event `R=1`, where `R=R(T)`. -/
+/-- The complete-case event `R=1`, where `R=R(T)` (validator §2). -/
 def completedEvent {Ω K : Type*} {k : ℕ} (M : SurveyModel Ω K k) : Set Ω :=
   {ω | realizedCompletion M ω = true}
 
@@ -383,12 +387,12 @@ def completedArm {Ω K : Type*} {k : ℕ} (M : SurveyModel Ω K k) (t : Bool) : 
   {ω | M.T ω = t ∧ realizedCompletion M ω = true}
 
 /-- Ordinary conditioning on an event of positive probability, represented
-by the normalized restriction measure (P034-T2). -/
+by the normalized restriction measure (validator §2 and fixed target T2). -/
 noncomputable def eventMeasure {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (E : Set Ω) : Measure Ω := (μ E)⁻¹ • μ.restrict E
 
 /-- `E[f | E] = (∫_E f dP)/P(E)`, ordinary event conditional expectation
-in P034-T2. Positivity is a theorem conclusion. -/
+(fixed target T2, definitions_needed). Positivity is a theorem conclusion. -/
 noncomputable def eventMean {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (E : Set Ω) (f : Ω → ℝ) : ℝ :=
   (∫ ω in E, f ω ∂μ) / μ.real E
@@ -398,16 +402,16 @@ noncomputable def eventProbability {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (A E : Set Ω) : ℝ := μ.real (A ∩ E) / μ.real E
 
 /-- The target `τ=E[Y(1)-Y(0)]` in the general probability-space correction
-P034-T2. -/
+(validator §2 and fixed target T2). -/
 noncomputable def populationEffect {Ω : Type*} [MeasurableSpace Ω] {k : ℕ}
     (μ : Measure Ω) (M : SurveyModel Ω ℝ k) : ℝ :=
   ∫ ω, M.Y true ω - M.Y false ω ∂μ
 
 /-- The intercept, treatment, and `k` covariate indices of `Z=(1,T,X')'`
-(target T2(d)); the sum type explicitly separates the first two columns. -/
+(fixed target T2(d)); the sum type explicitly separates the first two columns. -/
 abbrev RegressionIndex (k : ℕ) := Fin 2 ⊕ Fin k
 
-/-- `Z=(1,T,X')'` (correction T2(d)) on a general sample space. -/
+/-- `Z=(1,T,X')'` (validator §4; correction T2(d)) on a general sample space. -/
 def populationDesign {Ω : Type*} {k : ℕ} (M : SurveyModel Ω ℝ k) (ω : Ω) :
     RegressionIndex k → ℝ :=
   Sum.elim (fun i => if i = 0 then 1 else bitR (M.T ω)) (M.X ω)
@@ -564,7 +568,7 @@ theorem potential_selected_laws
     hT (hR t) hf hi (hH2 t).1 t ht (hH2 t).2
 
 /-- The arm event `{T=t,R(T)=1}` equals `{T=t,R(t)=1}` by the
-realization definition, target T2(a). -/
+realization definition, fixed target T2(a). -/
 theorem completed_arm_eq {Ω K : Type*} {k : ℕ} (M : SurveyModel Ω K k) (t : Bool) :
     completedArm M t = {ω | M.T ω = t ∧ M.R t ω = true} := by
   ext ω
@@ -762,7 +766,7 @@ theorem event_mean_const_mul {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
   ring
 
 /-- The moment identities used to multiply the normal equations by
-`(-p,1,0')` (target T2(d)). These are intermediate conclusions, not
+`(-p,1,0')` (fixed target T2(d)). These are intermediate conclusions, not
 additional identifying assumptions. -/
 structure RespondentMomentIdentities {Ω : Type*} [MeasurableSpace Ω] {k : ℕ}
     (μ : Measure Ω) (M : SurveyModel Ω ℝ k) : Prop where
@@ -870,12 +874,12 @@ theorem corrected_respondent_moments
     ring
   · exact integral_sub (hyI true) (hyI false)
 
-/-- Finite algebra behind correction T2(d): if the first two normal equations
-have randomized respondent moments, multiplying the intercept equation by `p`
-and subtracting identifies the treatment coefficient. Covariate dimension
-is arbitrary, and `G` need not be nonsingular. This supporting lemma does
-not assume H1/H2 imply those moments; that implication is part of the
-general theorem below. -/
+/-- Finite algebra behind correction T2(d) (validator's derivation of the
+repair): if the first two normal equations have randomized respondent
+moments, multiplying the intercept equation by `p` and subtracting identifies
+the treatment coefficient. Covariate dimension is arbitrary, and `G` need
+not be nonsingular. This supporting lemma does not assume H1/H2 imply those
+moments; that bridge is part of the general theorem below. -/
 theorem ols_treatment_from_moments {k : ℕ}
     (G : Matrix (RegressionIndex k) (RegressionIndex k) ℝ)
     (h β : RegressionIndex k → ℝ) (m : Fin k → ℝ) (p μ₀ μ₁ : ℝ)
@@ -906,11 +910,11 @@ theorem ols_treatment_from_moments {k : ℕ}
   have := (mul_eq_zero.mp ez).resolve_left hcoef
   linarith
 
-/-- The concrete failure of the equal-completion-rate implication, correction T2(e).
+/-- The concrete failure of the deleted implication, correction T2(e).
 World A has randomized treatment and equal completion rates, but R(0) is
 independent of neither Y(0) alone nor the full (Y(0),Y(1),X) bundle; its
 normal-equation solution has nonzero treatment coefficient despite τ=0.
-All variables are from the construction in T1. -/
+All variables reuse the validator's construction in T1 (§§2-5). -/
 def EqualCompletionFailure : Prop :=
   finiteIndependent worldAWeight worldAModel.T worldABundle ∧
   (∀ t : Bool, finiteCondProb worldAWeight
@@ -926,13 +930,13 @@ theorem equal_completion_does_not_identify : EqualCompletionFailure := by
   unfold EqualCompletionFailure finiteIndependent
   decide +kernel
 
-/-- P034-T2(a)-(e), the complete general correction to
-amended Study 2 PAP §8 (PDF pp. 5-6), also correcting Appendix pp. 9 and 18.
+/-- P034-T2(a)-(e), the complete general statement of Sol's correction to
+amended Study 2 PAP §8 (PDF pp. 5-6), also repairing Appendix pp. 9 and 18.
 H1 is randomized treatment with overlap; H2 is independent potential
 completion with positive probability. `MemLp ... 2` is the stated finite
 second-moment hypothesis; measurability makes these genuine random variables.
 No equality of completion rates is an identifying hypothesis. The second
-conjunct records the explicit failure of that implication, part (e). -/
+conjunct records the explicit failure of that deleted implication, part (e). -/
 theorem corrected_complete_case_identification
     {Ω : Type*} [MeasurableSpace Ω] {k : ℕ}
     (μ : Measure Ω) [IsProbabilityMeasure μ] (M : SurveyModel Ω ℝ k)
@@ -993,3 +997,31 @@ theorem corrected_complete_case_identification
 
 end AronowAudit.P034
 
+#print axioms AronowAudit.P034.worldA_numerical_facts
+#print axioms AronowAudit.P034.witness_normal_equations
+#print axioms AronowAudit.P034.sample_numerical_facts
+#print axioms AronowAudit.P034.sample_test_nonrejection
+#print axioms AronowAudit.P034.sample_normal_equations
+#print axioms AronowAudit.P034.worldB_observational_equivalence
+#print axioms AronowAudit.P034.missingness_counterexample
+
+#print axioms AronowAudit.P034.corrected_complete_case_identification
+#print axioms AronowAudit.P034.ols_treatment_from_moments
+#print axioms AronowAudit.P034.equal_completion_does_not_identify
+#print axioms AronowAudit.P034.selected_arm_unnormalized_law
+#print axioms AronowAudit.P034.selected_arm_normalized_law
+#print axioms AronowAudit.P034.potential_selected_laws
+#print axioms AronowAudit.P034.completed_arm_eq
+#print axioms AronowAudit.P034.completed_arm_measurable
+#print axioms AronowAudit.P034.event_mean_eq_integral
+#print axioms AronowAudit.P034.event_mean_of_preserved_law
+#print axioms AronowAudit.P034.corrected_arm_means_and_covariates
+#print axioms AronowAudit.P034.completed_event_union
+#print axioms AronowAudit.P034.completed_arms_disjoint
+#print axioms AronowAudit.P034.respondent_mixture
+#print axioms AronowAudit.P034.arm_mean_treatment_mul
+#print axioms AronowAudit.P034.integrable_treatment_mul
+#print axioms AronowAudit.P034.event_mean_const
+#print axioms AronowAudit.P034.event_mean_sub
+#print axioms AronowAudit.P034.event_mean_const_mul
+#print axioms AronowAudit.P034.corrected_respondent_moments

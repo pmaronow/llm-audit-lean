@@ -2,8 +2,9 @@ import AronowAudit.P004.P004_VarianceComponentsCompletion
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 import Mathlib.Probability.CDF
 
-/-! T26, T34, and T42: tail homophily correction, finite-law concentration,
-and the Hájek central limit theorem. -/
+/-! Drafter dd-GP0042B1. This file has deliberately not been run through Lean.
+The three frozen declarations are restated, in brief order, below.
+All helpers have a record-specific prefix. -/
 namespace AronowAudit.P004.Wave1
 
 open scoped BigOperators Matrix Classical Topology
@@ -46,7 +47,7 @@ lemma T26_center_bound {N : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
   intro i
   exact (abs_sub _ _).trans (by linarith [hτ i])
 
-/-- The kernel bound assumes a nonnegative radius `r` in `hr`. -/
+/-- Referee 2's radius-sign fix is explicit in `hr`. -/
 lemma T26_centered_kernel_split {N : ℕ} (hN : 0 < N)
     (D : Fin N → Fin N → ℝ) (a : Fin N → ℝ) (K φ : ℝ → ℝ)
     (b r A C Cb L ε T : ℝ) (hb : 0 < b) (hr : 0 ≤ r)
@@ -178,6 +179,9 @@ theorem tail_homophily_correction_proof (P : PopulationSequence Space) (p d : �
       ((htail r hrdiv).const_mul (L+1))
   apply (tendsto_zero_iff_abs_tendsto_zero _).mpr
   exact squeeze_zero' (Eventually.of_forall (fun N => abs_nonneg _)) hbound htbound
+
+example : type_of% @AronowAudit.P004.tail_homophily_correction :=
+  tail_homophily_correction_proof
 
 /-! ## T34: elementary finite-law concentration. -/
 lemma T34_prob_nonneg {N : ℕ} (p : Fin N → ℝ)
@@ -391,6 +395,9 @@ theorem bernoulli_denominator_rate_proof (p : ℝ) (hp : 0 < p ∧ p < 1) :
     field_simp [hA.ne', hn.ne'] <;> ring
   rw [hratio] at hprob
   exact hprob.trans_lt hsmall
+
+example : type_of% @AronowAudit.P004.bernoulli_denominator_rate :=
+  bernoulli_denominator_rate_proof
 
 /-! ## T42: deterministic arm recentering, finite moments, and CDF transfer. -/
 def T42_recenter {N : ℕ} (p : ℝ) (R : CircleTable N) : CircleTable N :=
@@ -846,7 +853,8 @@ lemma T42_remainder_inProb (P : PopulationSequence Space) (p d : ℝ)
       (hnlim.const_mul (4*K1+4*K0)).add (hslim.const_mul (K/(ε*Real.sqrt v)))
   exact squeeze_zero' (Eventually.of_forall (fun N => T34_prob_nonneg _ (fun _=>hp) _)) hbound hlim
 
-/-- Continuity of the Gaussian CDF follows from the absence of atoms. -/
+/-- Gaussian CDF continuity, the same atomless-CDF argument as the existing
+P053 normal-quantile helper, specialized here to the actual P004 normalCDF. -/
 lemma T42_normal_continuous (x : ℝ) : ContinuousAt normalCDF x := by
   let μ := ProbabilityTheory.gaussianReal 0 1
   letI : NullSingletonClass μ := ProbabilityTheory.nullSingletonClass_gaussianReal (by norm_num : (1:NNReal)≠0)
@@ -937,6 +945,8 @@ theorem hajek_central_limit_proof (P : PopulationSequence Space) (p d : ℝ)
   convert hrem using 1
   funext N z
   ring
+
+example : type_of% @AronowAudit.P004.hajek_central_limit := hajek_central_limit_proof
 
 end
 end AronowAudit.P004.Wave1

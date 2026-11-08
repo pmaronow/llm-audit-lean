@@ -1,13 +1,11 @@
 import Mathlib
 
 /-!
-Formalization of chapter 16, "Estimating Causal Effects in Experiments with Network
-Spillovers", printed pp. 209–222.
+Formal audit of chapter 16, "Estimating Causal Effects in Experiments with Network
+Spillovers", printed pp. 209–222. Target identifiers refer to targets.json.
 The chapter has no numbered theorems and does not display its estimators.
-Estimator formulas below are supplied mathematical models of the interference
-package's estimators. Agreement of the package's estimator and smoothing outputs
-with `htMean`, `htContrast`, `varianceEstimate`, `smoothedWeight`, and `smoothedJoint`
-is an external assumption. Lean does not verify that correspondence.
+Estimator formulas below are the formulas transcribed in standing assumption S7
+from the staged interference package. Software provenance is not a Lean theorem.
 -/
 namespace AronowAudit.P044
 
@@ -56,7 +54,7 @@ Pr(Z=z)=p_z. Also used over rational fields for exact numerical witnesses. -/
 def expect {Ω K : Type*} [Fintype Ω] [CommSemiring K] (p : Ω → K) (t : Ω → K) : K :=
   ∑ ω, p ω * t ω
 
-/-- Randomization variance E[T²]−E[T]², valid when the
+/-- Randomization variance E[T²]−E[T]² (audit notation S7), valid when the
 nonnegative masses sum to one. It is not squared error about the estimand. -/
 def designVariance {Ω K : Type*} [Fintype Ω] [CommRing K]
     (p : Ω → K) (t : Ω → K) : K := expect p (fun ω => t ω ^ 2) - (expect p t) ^ 2
@@ -77,36 +75,38 @@ identical formula in ℚ. -/
 def tau {N : ℕ} {D K : Type*} [Field K] (y : Fin N → D → K) (a b : D) : K :=
   (∑ i, (y i a - y i b)) / N
 
-/-- πᵢ(d)=Pr(Dᵢ=d), the exposure probability of pp. 212, 216.
+/-- πᵢ(d)=Pr(Dᵢ=d), the exposure probability of pp. 212, 216 (notation S7).
 `f ω i` is Dᵢ on the randomization atom ω. -/
 def marginal {Ω D K : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D] [CommSemiring K]
     (p : Ω → K) (f : Ω → Fin N → D) (i : Fin N) (a : D) : K :=
   ∑ ω, if f ω i = a then p ω else 0
 
-/-- πᵢⱼ(d,e)=Pr(Dᵢ=d,Dⱼ=e), the joint probability for shared-peer dependencies
+/-- πᵢⱼ(d,e)=Pr(Dᵢ=d,Dⱼ=e), audit notation S7 for shared-peer dependencies
 (p. 213). Ordered pairs, including diagonal pairs, are retained. -/
 def joint {Ω D K : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D] [CommSemiring K]
     (p : Ω → K) (f : Ω → Fin N → D) (i j : Fin N) (a b : D) : K :=
   ∑ ω, if f ω i = a ∧ f ω j = b then p ω else 0
 
-/-- The HT unit contribution I(Dᵢ=d)Yᵢ/wᵢ(d) (pp. 212, 216).
-By correct specification Yᵢ=yᵢ(Dᵢ), this is the displayed conditional expression. Lean's total division is not a support assumption. -/
+/-- The HT unit contribution I(Dᵢ=d)Yᵢ/wᵢ(d) (S7; staged estimates.R,
+pp. 212, 216). By correct specification Yᵢ=yᵢ(Dᵢ), this is the displayed
+conditional expression. Lean's total division is not a support assumption. -/
 def htTerm {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K) (a : D) (ω : Ω) (i : Fin N) : K :=
   if f ω i = a then y i a / w i a else 0
 
-/-- μ̂_HT(d)=N⁻¹∑ᵢ I(Dᵢ=d)Yᵢ/wᵢ(d).
+/-- μ̂_HT(d)=N⁻¹∑ᵢ I(Dᵢ=d)Yᵢ/wᵢ(d) (S7; staged estimates.R 216–218,314).
 The estimator is not displayed in the chapter; the prose is on pp. 212,216. -/
 def htMean {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K) (a : D) (ω : Ω) : K :=
   (∑ i, htTerm f y w a ω i) / N
 
-/-- The modeled effect estimate μ̂(k)−μ̂(l), for the p. 212 estimand. -/
+/-- The implemented effect estimate μ̂(k)−μ̂(l), for the p. 212 estimand
+(S7; staged estimates.R). -/
 def htContrast {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K) (a b : D) (ω : Ω) : K :=
   htMean f y w a ω - htMean f y w b ω
 
-/-- The modeled total variance estimate V̂_d; ordered positive-joint terms
+/-- V̂_d from S7 (staged estimates.R 365–403); ordered positive-joint terms
 include i=j; zero-joint squared-outcome adjustment excludes i=j. -/
 def totalVarianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K] [LinearOrder K] [IsStrictOrderedRing K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K)
@@ -121,7 +121,7 @@ def totalVarianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K] [
       (if f ω j = a then y j a ^ 2 / (2 * w j a) else 0)
     else 0))
 
-/-- The modeled total covariance estimate Ĉ_kl. The cross zero adjustment
+/-- Ĉ_kl from S7 (staged estimates.R 422–465). The cross zero adjustment
 has a minus sign and includes every i=j pair. -/
 def totalCovarianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K] [LinearOrder K] [IsStrictOrderedRing K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K)
@@ -136,8 +136,8 @@ def totalCovarianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K]
       (if f ω j = b then y j b ^ 2 / (2 * w j b) else 0)
     else 0))
 
-/-- V̂(k,l)=(V̂_k+V̂_l−2 Ĉ_kl)/N², the supplied HT variance functional
-modeling the "conservative approximations" on p. 217. -/
+/-- V̂(k,l)=(V̂_k+V̂_l−2 Ĉ_kl)/N², the HT variance functional used by
+"conservative approximations" on p. 217 (S7; staged estimates.R 289–292). -/
 def varianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K] [LinearOrder K] [IsStrictOrderedRing K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K)
     (q : Fin N → Fin N → D → D → K) (a b : D) (ω : Ω) : K :=
@@ -218,8 +218,8 @@ theorem htTerm_product_expectation {Ω D K : Type*} {N : ℕ} [Fintype Ω] [Fiel
       simp [hi, hj, div_eq_mul_inv] <;> ring
   rw [he, expect_joint_event]
 
-/-- T2 finite algebra: the second moment of the population average expands into
-all ordered pairs, divided by N², with no independence requirement. -/
+/-- T2 finite algebra: a weighted sum's squared second moment expands into
+all ordered pairs, with no independence requirement. -/
 theorem expect_square_sum {Ω K : Type*} {N : ℕ} [Fintype Ω] [Field K]
     (p : Ω → K) (u : Ω → Fin N → K) :
     expect p (fun ω => ((∑ i, u ω i) / N) ^ 2) =
@@ -260,8 +260,8 @@ theorem htContrast_second_moment {Ω D K : Type*} {N : ℕ} [Fintype Ω] [Field 
   simp only [htTerm_product_expectation]
 
 /-- Expected same-exposure variance functional with observation probabilities
-m,J and arbitrary fixed estimator inputs w,q. This is `totalVarianceEstimate`
-with each exposure indicator (or product) replaced by its randomization expectation. -/
+m,J and arbitrary fixed estimator inputs w,q. This is S7 with each exposure
+indicator (or product) replaced by its randomization expectation. -/
 def expectedTotalVariance {N : ℕ} {D K : Type*} [DecidableEq D] [Field K]
     [LinearOrder K] [IsStrictOrderedRing K]
     (m : Fin N → D → K) (J : Fin N → Fin N → D → D → K)
@@ -305,9 +305,9 @@ theorem expect_ite {Ω K : Type*} [Fintype Ω] [Field K] (p u v : Ω → K)
     expect p (fun ω => if h then u ω else v ω) = if h then expect p u else expect p v := by
   by_cases hh : h <;> simp [hh]
 
-/-- T2 finite identity: the expectation of `varianceEstimate` is its
+/-- T2 finite identity: the expectation of the S7 variance functional is its
 explicit marginal/joint formula. It holds also for finite simulated inputs;
-with such inputs, this identity alone does not establish conservativeness. -/
+conservativeness then requires additional equalities of those inputs. -/
 theorem varianceEstimate_expectation {Ω D K : Type*} {N : ℕ}
     [Fintype Ω] [DecidableEq D] [Field K] [LinearOrder K] [IsStrictOrderedRing K]
     (p : Ω → K) (f : Ω → Fin N → D) (y w : Fin N → D → K)
@@ -781,8 +781,8 @@ theorem complete_randomization_support (N M : ℕ) (hN : 0 < N)
   · linarith [hop.1]
   · linarith [hop.2]
 
-/-- The star adjacency in T3: vertex 0 is adjacent to all three leaves;
-there are no loops and no isolated vertices. -/
+/-- The star adjacency in T3 (validator witness): vertex 0 is adjacent to
+all three leaves; there are no loops and no isolated vertices. -/
 def starAdj : Adjacency 4 := fun i j => decide (i ≠ j ∧ (i = 0 ∨ j = 0))
 
 /-- The six equiprobable complete-randomization assignments in T3, in the
@@ -870,25 +870,25 @@ Using left rotations fixes the same design and the stated base assignment. -/
 def cycle8Assignments (r : Fin 8) : Assignment 8 := fun i =>
   decide ((i.val + r.val) % 8 ∈ ({0,1,3} : Finset ℕ))
 
-/-- Exposure counts cᵢ(a) over an enumerated table, used in the p. 214 recipe
-and the supplied model of `make_exposure_prob` inputs. -/
+/-- Exposure counts cᵢ(a) over an enumerated table, the p. 214 recipe and
+S7's make_exposure_prob inputs (staged lines 83,88). -/
 def exposureCount {R N : ℕ} {D : Type*} [DecidableEq D]
     (f : Fin R → Fin N → D) (i : Fin N) (a : D) : ℕ :=
   (Finset.univ.filter (fun r => f r i = a)).card
 
-/-- Joint counts cᵢⱼ(a,b) over the same table. -/
+/-- Joint counts cᵢⱼ(a,b) over the same table (S7). -/
 def jointCount {R N : ℕ} {D : Type*} [DecidableEq D]
     (f : Fin R → Fin N → D) (i j : Fin N) (a b : D) : ℕ :=
   (Finset.univ.filter (fun r => f r i = a ∧ f r j = b)).card
 
 /-- Returned marginal weights (cᵢ(a)+1)/(R+1), rather than counts/R:
-the package's `make_exposure_prob`, used on pp. 216,218 (T8 correction). -/
+staged make_exposure_prob.R line 83, used on pp. 216,218 (T8 correction). -/
 def smoothedWeight {R N : ℕ} {D K : Type*} [DecidableEq D] [Field K]
     (f : Fin R → Fin N → D) (i : Fin N) (a : D) : K :=
   ((exposureCount f i a : K) + 1) / ((R : K) + 1)
 
 /-- Returned joint weights: same-exposure entries add the diagonal identity
-then divide by R+1; cross-exposure entries divide by R (T8 correction). -/
+then divide by R+1; cross-exposure entries divide by R (S7; T8 correction). -/
 def smoothedJoint {R N : ℕ} {D K : Type*} [DecidableEq D] [Field K]
     (f : Fin R → Fin N → D) (i j : Fin N) (a b : D) : K :=
   if a = b then ((jointCount f i j a b : K) + if i = j then 1 else 0) / ((R : K) + 1)
@@ -972,25 +972,58 @@ theorem smoothed_not_distribution {D : Type*} [Fintype D]
   have hk : (2 : ℝ) ≤ Fintype.card D := by exact_mod_cast hK
   linarith
 
+/-- T8(iv), illustrative with-replacement bank: the exact binomial finite
+sum for an independent realized exposure and R simulated draws equals
+1−(1−p)^(R+1)<1. This is not the chapter's without-replacement seed coupling. -/
+theorem independent_binomial_bank (R : ℕ) (p : ℝ) (hp : 0 < p) (hp1 : p < 1) :
+    p * ((R : ℝ) + 1) *
+      (∑ c ∈ Finset.range (R + 1),
+        (R.choose c : ℝ) * p ^ c * (1 - p) ^ (R - c) / ((c : ℝ) + 1)) =
+      1 - (1 - p) ^ (R + 1) ∧ 1 - (1 - p) ^ (R + 1) < 1 := by
+  have hterm (c : ℕ) :
+      p * ((R : ℝ) + 1) * ((R.choose c : ℝ) * p ^ c * (1 - p) ^ (R - c) / ((c : ℝ) + 1)) =
+        p ^ (c + 1) * (1 - p) ^ ((R + 1) - (c + 1)) * ((R + 1).choose (c + 1) : ℝ) := by
+    have hne : (c : ℝ) + 1 ≠ 0 := by positivity
+    have hc : ((R : ℝ) + 1) * (R.choose c : ℝ) =
+        ((R + 1).choose (c + 1) : ℝ) * ((c : ℝ) + 1) := by
+      exact_mod_cast (Nat.add_one_mul_choose_eq R c)
+    have hcoeff : ((R : ℝ) + 1) * (R.choose c : ℝ) / ((c : ℝ) + 1) =
+        ((R + 1).choose (c + 1) : ℝ) := (div_eq_iff hne).mpr hc
+    calc
+      _ = (((R : ℝ) + 1) * (R.choose c : ℝ) / ((c : ℝ) + 1)) *
+          p ^ c * p * (1 - p) ^ (R - c) := by ring
+      _ = _ := by rw [hcoeff]; simp [pow_succ, Nat.add_sub_add_right]; ring
+  have hs := add_pow p (1 - p) (R + 1)
+  rw [Finset.sum_range_succ'] at hs
+  have hpadd : p + (1 - p) = 1 := by ring
+  rw [hpadd] at hs
+  simp only [one_pow, pow_zero, Nat.choose_zero_right, Nat.cast_one, mul_one, one_mul, Nat.sub_zero] at hs
+  constructor
+  · rw [Finset.mul_sum]
+    simp_rw [hterm]
+    linarith
+  · have hpos : 0 < (1 - p) ^ (R + 1) := by positivity
+    linarith
 
 /-- kᵢ=∑ⱼ Aᵢⱼ, the first-neighbor degree used by the outcome generator
-(p. 216). -/
+(p. 216; staged make_dilated_out.R 135). -/
 def degree {N : ℕ} (A : Adjacency N) (i : Fin N) : ℕ :=
   ∑ j, if A i j then 1 else 0
 
 /-- qᵢ=#{j≠i:(A²)ᵢⱼ>0}, "second-order degree" in the p. 216 generator,
-from the package's `make_dilated_out` generator. Counts two-edge walks' reachable
+read from staged make_dilated_out.R 136–139. Counts two-edge walks' reachable
 vertices, not shortest-path distance exactly two. -/
 def twoWalkDegree {N : ℕ} (A : Adjacency N) (i : Fin N) : ℕ :=
   (Finset.univ.filter (fun j => j ≠ i ∧ ∃ k, A i k = true ∧ A k j = true)).card
 
 /-- aᵢ=kᵢ+qᵢ+kᵢqᵢ, the degree-dependent baseline coefficient
-(correction T6 to p. 216). -/
+(staged make_dilated_out.R 108–116; correction T6 to p. 216). -/
 def degreeScale {N : ℕ} (A : Adjacency N) (i : Fin N) : ℕ :=
   degree A i + twoWalkDegree A i + degree A i * twoWalkDegree A i
 
 /-- Corrected baseline Bᵢ=aᵢ|Gᵢ|+Eᵢ, with standard-normal G and
-N(1,1/16) noise E conditional on the fixed network (T6; p. 216). -/
+N(1,1/16) noise E conditional on the fixed network (T6; p. 216).
+The formula's software provenance is a premise outside Lean. -/
 def baseline (a g e : ℝ) : ℝ := a * |g| + e
 
 /-- "multipliers ... (2,1.5,1.25)" (p. 216): the four fixed realized
@@ -1151,7 +1184,8 @@ theorem within_community_share {N : ℕ} {C : Type*} (hN : 0 < N)
 
 /-- T12: the mathematical unbiasedness assertion as printed on pp. 212,216,
 with no unitwise support requirement, encoded as a proposition rather than
-an axiom. Division at zero means unsupported terms are dropped. -/
+an axiom. Division at zero means unsupported terms are dropped. The printed
+claim will be explicitly refuted, not assumed or 'proved' by adding support. -/
 def PrintedUnbiasedness : Prop :=
   ∀ (N : ℕ) (_hN : 0 < N) (P : FiniteDesign (Assignment N))
     (A : Adjacency N) (_hdiag : ∀ i, A i i = false)
@@ -1162,12 +1196,10 @@ def PrintedUnbiasedness : Prop :=
       (marginal P.mass (fun z => exposure A z)) a b) = tau y a b
 
 
-/-- When R does not exceed the number of positive-mass design profiles, this is
-the law of R distinct simulated profiles obtained by successive design draws
-with repeat profiles rejected. For an injective ordered bank, its mass
-is the product of remaining-support conditional probabilities. For complete
-random assignment it is uniform over the supported ordered distinct banks.
-If R exceeds the positive support size, the definition has total mass zero. -/
+/-- The recipe's law of R distinct simulated profiles, obtained by successive
+design draws with repeat profiles rejected (S6/S7). For an injective ordered
+bank, its mass is the product of remaining-support conditional probabilities.
+This covers every design, and is uniform for complete random assignment. -/
 noncomputable def distinctBankMass {N R : ℕ} (P : FiniteDesign (Assignment N))
     (bank : Fin R → Assignment N) : ℝ := by
   classical
@@ -1267,12 +1299,13 @@ noncomputable def normalPopulation (N : ℕ) : Measure (Fin N → ℝ × ℝ) :=
   Measure.pi (fun _ : Fin N => normalPair)
 
 /-- T6 corrected baseline vector, with the network's k+q+kq coefficients.
-This definition describes the generator invoked on pp. 216–217. -/
+This definition describes the staged generator invoked on pp. 216–217. -/
 def generatedBaselines {N : ℕ} (A : Adjacency N) (x : Fin N → ℝ × ℝ) : Fin N → ℝ :=
   fun i => baseline (degreeScale A i) (x i).1 (x i).2
 
 /-- T1's complete randomization atoms: all 66 ordered-increasing treated
-pairs on twelve vertices, enumerating the two-element subsets. -/
+pairs on twelve vertices. The table below is just a computable enumeration
+of the two-element subsets; it is not a list of validator output numbers. -/
 def cliquePairs : Fin 66 → Fin 12 × Fin 12 :=
   ![(0,1), (0,2), (0,3), (0,4), (0,5), (0,6), (0,7), (0,8), (0,9), (0,10), (0,11), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9), (1,10), (1,11), (2,3), (2,4), (2,5), (2,6), (2,7), (2,8), (2,9), (2,10), (2,11), (3,4), (3,5), (3,6), (3,7), (3,8), (3,9), (3,10), (3,11), (4,5), (4,6), (4,7), (4,8), (4,9), (4,10), (4,11), (5,6), (5,7), (5,8), (5,9), (5,10), (5,11), (6,7), (6,8), (6,9), (6,10), (6,11), (7,8), (7,9), (7,10), (7,11), (8,9), (8,10), (8,11), (9,10), (9,11), (10,11)]
 
@@ -1376,11 +1409,19 @@ def cliqueWeights (t : Fin 66) (i : Fin 12) (a : Exposure) : ℚ :=
 
 /-- T1's retained joint counts are full counts minus the omitted joint event.
 Same-exposure entries add the diagonal identity and divide by 66; cross
-entries divide by R=65, as in `smoothedJoint`. -/
+entries divide by R=65, exactly as in S7. -/
 def cliqueJoints (t : Fin 66) (i j : Fin 12) (a b : Exposure) : ℚ :=
   let c := cliqueFullJoint i j a b - if cliqueF t i = a ∧ cliqueF t j = b then 1 else 0
   if a = b then ((c + if i = j then 1 else 0 : ℕ) : ℚ) / 66 else (c : ℚ) / 65
 
+/-- T1 finite count verification: the stated marginal and joint counts come
+from the explicit network and all 66 complete-randomization assignments. -/
+theorem clique_full_counts :
+    (∀ i a, exposureCount cliqueF i a = cliqueFullCount a) ∧
+    (∀ i j a b, (a = Exposure.d01 ∨ a = .d00) → (b = Exposure.d01 ∨ b = .d00) →
+      jointCount cliqueF i j a b = cliqueFullJoint i j a b) := by
+  -- Draft: exact finite certificate not yet verified; see lean.json for proof attempts.
+  sorry
 
 /-- Deleting one randomization atom subtracts its event indicator from the
 finite count. This exact counting identity avoids treating an approximate
@@ -1396,6 +1437,37 @@ theorem count_delete_atom {n : ℕ} (t : Fin (n + 1)) (test : Fin (n + 1) → Pr
       Fin.sum_univ_succAbove (fun r => if test r then (1 : ℕ) else 0) t
   omega
 
+/-- T1 finite bank verification: subtracting the omitted indicators yields
+exactly the package weights from the 65 retained distinct assignments. -/
+theorem clique_retained_weights :
+    (∀ t i a, cliqueWeights t i a = (smoothedWeight (retainedF t) i a : ℚ)) ∧
+    (∀ t i j a b, (a = Exposure.d01 ∨ a = .d00) → (b = Exposure.d01 ∨ b = .d00) →
+      cliqueJoints t i j a b = (smoothedJoint (retainedF t) i j a b : ℚ)) := by
+  have hc (t : Fin 66) (i : Fin 12) (a : Exposure) :
+      exposureCount (retainedF t) i a = cliqueFullCount a - if cliqueF t i = a then 1 else 0 := by
+    change (Finset.univ.filter (fun r : Fin 65 => cliqueF (t.succAbove r) i = a)).card = _
+    rw [count_delete_atom t (fun r : Fin 66 => cliqueF r i = a)]
+    rw [← clique_full_counts.1 i a]
+    rfl
+  have hj (t : Fin 66) (i j : Fin 12) (a b : Exposure)
+      (ha : a = .d01 ∨ a = .d00) (hb : b = .d01 ∨ b = .d00) :
+      jointCount (retainedF t) i j a b = cliqueFullJoint i j a b -
+        if cliqueF t i = a ∧ cliqueF t j = b then 1 else 0 := by
+    change (Finset.univ.filter (fun r : Fin 65 =>
+      cliqueF (t.succAbove r) i = a ∧ cliqueF (t.succAbove r) j = b)).card = _
+    rw [count_delete_atom t (fun r : Fin 66 => cliqueF r i = a ∧ cliqueF r j = b)]
+    rw [← clique_full_counts.2 i j a b ha hb]
+    rfl
+  constructor
+  · intro t i a
+    unfold cliqueWeights smoothedWeight
+    rw [hc]
+    push_cast
+    norm_num
+  · intro t i j a b ha hb
+    unfold cliqueJoints smoothedJoint
+    rw [hj t i j a b ha hb]
+    by_cases he : a = b <;> by_cases hij : i = j <;> simp [he, hij, Nat.cast_add] <;> norm_num
 
 /-- T1 point estimator T(S,z) with all outcomes one and the package's
 returned positive marginal inputs, for omitted assignment t. -/
@@ -1403,7 +1475,7 @@ def cliqueT (t z : Fin 66) : ℚ :=
   htContrast cliqueF cliqueY (cliqueWeights t) .d01 .d00 z
 
 /-- T1 variance functional at the package's returned marginal and joint
-inputs from the same bank. This definition reuses `varianceEstimate`. -/
+inputs from the same bank. This definition reuses the general S7 formula. -/
 def cliqueV (t z : Fin 66) : ℚ :=
   varianceEstimate cliqueF cliqueY (cliqueWeights t) (cliqueJoints t) .d01 .d00 z
 
@@ -1413,6 +1485,28 @@ pairs with z≠t, zero mass on z=t. -/
 def cliqueJointMass (included : Bool) (x : Fin 66 × Fin 66) : ℚ :=
   if included then (if x.1 = x.2 then 0 else 1/4290) else 1/4356
 
+/-- T13's mathematical description as printed on p. 216: every unit's
+baseline is absolute standard normal. The multiplier identities are stated separately.
+The degree correlation has no defined numerical meaning in the chapter.
+This proposition records the natural law reading and is refuted by T5. -/
+def PrintedBaselineDescription : Prop :=
+  ∀ (N : ℕ) (A : Adjacency N) (_hdiag : ∀ i, A i i = false) (i : Fin N),
+    baselineLaw (degreeScale A i) = halfNormalLaw
+
+/-- T13: printed baseline-law assertion, p. 216, recorded without repairing
+it. It is false for the generator invoked by the displayed call; see T5. -/
+theorem printed_baseline_claim : PrintedBaselineDescription := by
+  sorry
+
+/-- T12: printed unbiasedness assertion without support, pp. 212,216,
+recorded without silently inserting the missing hypothesis. False by T3. -/
+theorem printed_unbiasedness_claim : PrintedUnbiasedness := by
+  sorry
+
+/-- T11: printed conservativeness assertion for simulated inputs, p. 217,
+recorded without silently replacing them by exact probabilities. False by T1. -/
+theorem printed_simulated_variance_claim : PrintedSimulatedConservativeness := by
+  sorry
 
 /-- Observation law for T1 conditional on the omitted profile t: uniform on
 all 66 profiles if independent, or on the 65 retained profiles if included. -/
@@ -1438,6 +1532,67 @@ def cliqueObservationJoint (t : Fin 66) (included : Bool) (i j : Fin 12) (a b : 
   if included then ((cliqueFullJoint i j a b - if cliqueF t i = a ∧ cliqueF t j = b then 1 else 0 : ℕ) : ℚ) / 65
   else (cliqueFullJoint i j a b : ℚ) / 66
 
+/-- T1 finite probability verification: actual observation marginals equal
+the complete or retained event counts divided by their support sizes. -/
+theorem clique_observation_marginal (t : Fin 66) (included : Bool) (i : Fin 12) (a : Exposure) :
+    marginal (cliqueObservationMass t included) cliqueF i a = cliqueObservationMarginal t included i a := by
+  cases included
+  · calc
+      marginal (cliqueObservationMass t false) cliqueF i a = (exposureCount cliqueF i a : ℚ) / 66 := by
+        rw [clique_observation_independent_mass]
+        simpa using
+          (exhaustive_probabilities (K := ℚ) (by decide : 0 < 66) cliqueF i i a a).1
+      _ = cliqueObservationMarginal t false i a := by
+        rw [clique_full_counts.1 i a]
+        rfl
+  · have he : marginal (cliqueObservationMass t true) cliqueF i a =
+        marginal (fun _ : Fin 65 => (1/65 : ℚ)) (retainedF t) i a := by
+      unfold marginal cliqueObservationMass retainedF
+      rw [Fin.sum_univ_succAbove _ t]
+      simp [Fin.succAbove_ne]
+    calc
+      marginal (cliqueObservationMass t true) cliqueF i a =
+          (exposureCount (retainedF t) i a : ℚ) / 65 := by
+        rw [he]
+        simpa using (exhaustive_probabilities (K := ℚ) (by decide : 0 < 65) (retainedF t) i i a a).1
+      _ = cliqueObservationMarginal t true i a := by
+        change ((Finset.univ.filter (fun r : Fin 65 => cliqueF (t.succAbove r) i = a)).card : ℚ) / 65 = _
+        rw [count_delete_atom t (fun r : Fin 66 => cliqueF r i = a)]
+        rw [show (Finset.univ.filter (fun r => cliqueF r i = a)).card = cliqueFullCount a
+          from clique_full_counts.1 i a]
+        rfl
+
+/-- T1 finite probability verification for the four relevant ordered joint
+exposure events, for either observation law. -/
+theorem clique_observation_joint (t : Fin 66) (included : Bool) (i j : Fin 12) (a b : Exposure)
+    (ha : a = .d01 ∨ a = .d00) (hb : b = .d01 ∨ b = .d00) :
+    joint (cliqueObservationMass t included) cliqueF i j a b = cliqueObservationJoint t included i j a b := by
+  cases included
+  · calc
+      joint (cliqueObservationMass t false) cliqueF i j a b = (jointCount cliqueF i j a b : ℚ) / 66 := by
+        rw [clique_observation_independent_mass]
+        simpa using
+          (exhaustive_probabilities (K := ℚ) (by decide : 0 < 66) cliqueF i j a b).2
+      _ = cliqueObservationJoint t false i j a b := by
+        rw [clique_full_counts.2 i j a b ha hb]
+        rfl
+  · have he : joint (cliqueObservationMass t true) cliqueF i j a b =
+        joint (fun _ : Fin 65 => (1/65 : ℚ)) (retainedF t) i j a b := by
+      unfold joint cliqueObservationMass retainedF
+      rw [Fin.sum_univ_succAbove _ t]
+      simp [Fin.succAbove_ne]
+    calc
+      joint (cliqueObservationMass t true) cliqueF i j a b =
+          (jointCount (retainedF t) i j a b : ℚ) / 65 := by
+        rw [he]
+        simpa using (exhaustive_probabilities (K := ℚ) (by decide : 0 < 65) (retainedF t) i j a b).2
+      _ = cliqueObservationJoint t true i j a b := by
+        change ((Finset.univ.filter (fun r : Fin 65 =>
+          cliqueF (t.succAbove r) i = a ∧ cliqueF (t.succAbove r) j = b)).card : ℚ) / 65 = _
+        rw [count_delete_atom t (fun r : Fin 66 => cliqueF r i = a ∧ cliqueF r j = b)]
+        rw [show (Finset.univ.filter (fun r => cliqueF r i = a ∧ cliqueF r j = b)).card =
+          cliqueFullJoint i j a b from clique_full_counts.2 i j a b ha hb]
+        rfl
 
 /-- T1 conditional first moment, computed from the true observation
 marginals and the smoothed marginal inputs. -/
@@ -1460,6 +1615,31 @@ def cliqueConditionalV (t : Fin 66) (included : Bool) : ℚ :=
   expectedVariance (cliqueObservationMarginal t included) (cliqueObservationJoint t included)
     cliqueY (cliqueWeights t) (cliqueJoints t) .d01 .d00
 
+/-- T1's marginal and joint moment formulas are exact finite expectations;
+there is no assumption that the package's inputs equal true probabilities. -/
+theorem clique_conditional_moments (t : Fin 66) (included : Bool) :
+    expect (cliqueObservationMass t included) (cliqueT t) = cliqueConditionalMean t included ∧
+    expect (cliqueObservationMass t included) (fun z => cliqueT t z ^ 2) = cliqueConditionalSecond t included ∧
+    expect (cliqueObservationMass t included) (cliqueV t) = cliqueConditionalV t included := by
+  have hkk := fun i j => clique_observation_joint t included i j .d01 .d01 (Or.inl rfl) (Or.inl rfl)
+  have hll := fun i j => clique_observation_joint t included i j .d00 .d00 (Or.inr rfl) (Or.inr rfl)
+  have hkl := fun i j => clique_observation_joint t included i j .d01 .d00 (Or.inl rfl) (Or.inr rfl)
+  have hlk := fun i j => clique_observation_joint t included i j .d00 .d01 (Or.inr rfl) (Or.inl rfl)
+  refine ⟨?_, ?_, ?_⟩
+  · unfold cliqueT htContrast
+    rw [expect_sub, htMean_expectation, htMean_expectation]
+    simp only [cliqueY, one_mul]
+    simp_rw [clique_observation_marginal]
+    unfold cliqueConditionalMean
+    ring
+  · unfold cliqueT
+    rw [htContrast_second_moment]
+    simp_rw [hkk, hll, hkl, hlk]
+    simp [cliqueY, cliqueConditionalSecond, div_eq_mul_inv, mul_inv_rev] <;> norm_num
+  · unfold cliqueV
+    rw [varianceEstimate_expectation]
+    unfold expectedVariance cliqueConditionalV expectedVariance expectedTotalVariance expectedTotalCovariance
+    simp_rw [hkk, hll, hkl, clique_observation_marginal]
 
 /-- T1 joint expectation decomposes into the uniform omitted-profile law
 and the actual conditional observation law. This retains the bank's random
@@ -1479,6 +1659,57 @@ theorem clique_joint_expectation (included : Bool) (u : Fin 66 → Fin 66 → �
   simp only [expect, Fintype.sum_prod_type]
   simp_rw [hm, mul_assoc, Finset.mul_sum]
 
+/-- T1 arithmetic after exact finite-moment reduction: the conditional
+moments averaged over all 66 omitted profiles give the two stated laws'
+means, variances, expected variance estimates, and strict shortfalls. -/
+theorem clique_reduced_arithmetic :
+    let U := fun _ : Fin 66 => (1/66 : ℚ)
+    let M := fun included => expect U (fun t => cliqueConditionalMean t included)
+    let S := fun included => expect U (fun t => cliqueConditionalSecond t included)
+    let V := fun included => expect U (fun t => cliqueConditionalV t included)
+    M false = -67/53592 ∧ S false - M false ^ 2 = 113448938731/232640299584 ∧
+    V false = 1040129476423/2326402995840 ∧
+    M true = -67/52780 ∧ S true - M true ^ 2 = 11375808887/23342482800 ∧
+    V true = 4673362763/10414338480 ∧
+    (∀ included, V included < S included - M included ^ 2 ∧ V included < 6050/11907) := by
+  -- Draft: exact finite certificate not yet verified; see lean.json for proof attempts.
+  sorry
+
+/-- T1(iii)–(v): exact rational computation on all 4356 independent or 4290
+included (omitted,realized) pairs. Inputs are the omission formulas, whose
+separate bridge to the enumerated package bank is clique_retained_weights. -/
+theorem clique_joint_moments :
+    expect (cliqueJointMass false) (fun x => cliqueT x.1 x.2) = -67/53592 ∧
+    designVariance (cliqueJointMass false) (fun x => cliqueT x.1 x.2) = 113448938731/232640299584 ∧
+    expect (cliqueJointMass false) (fun x => cliqueV x.1 x.2) = 1040129476423/2326402995840 ∧
+    expect (cliqueJointMass true) (fun x => cliqueT x.1 x.2) = -67/52780 ∧
+    designVariance (cliqueJointMass true) (fun x => cliqueT x.1 x.2) = 11375808887/23342482800 ∧
+    expect (cliqueJointMass true) (fun x => cliqueV x.1 x.2) = 4673362763/10414338480 ∧
+    (∀ included,
+      expect (cliqueJointMass included) (fun x => cliqueV x.1 x.2) <
+        designVariance (cliqueJointMass included) (fun x => cliqueT x.1 x.2) ∧
+      expect (cliqueJointMass included) (fun x => cliqueV x.1 x.2) < 6050/11907) := by
+  have hM (included : Bool) : expect (cliqueJointMass included) (fun x => cliqueT x.1 x.2) =
+      expect (fun _ : Fin 66 => (1/66 : ℚ)) (fun t => cliqueConditionalMean t included) := by
+    rw [clique_joint_expectation included cliqueT]
+    congr 1
+    funext t
+    exact (clique_conditional_moments t included).1
+  have hS (included : Bool) : expect (cliqueJointMass included) (fun x => cliqueT x.1 x.2 ^ 2) =
+      expect (fun _ : Fin 66 => (1/66 : ℚ)) (fun t => cliqueConditionalSecond t included) := by
+    rw [clique_joint_expectation included (fun t z => cliqueT t z ^ 2)]
+    congr 1
+    funext t
+    exact (clique_conditional_moments t included).2.1
+  have hV (included : Bool) : expect (cliqueJointMass included) (fun x => cliqueV x.1 x.2) =
+      expect (fun _ : Fin 66 => (1/66 : ℚ)) (fun t => cliqueConditionalV t included) := by
+    rw [clique_joint_expectation included cliqueV]
+    congr 1
+    funext t
+    exact (clique_conditional_moments t included).2.2
+  unfold designVariance
+  simp_rw [hM, hS, hV]
+  exact clique_reduced_arithmetic
 
 /-- T8(iii), complete bias formula: when the design is uniform on the
 exhaustive table, smoothed inputs produce the average of yᵢ(a) times
@@ -1532,6 +1763,103 @@ theorem returned_graph_expectations {Ω C : Type*} {N : ℕ} [Fintype Ω]
     exact div_self (by linarith)
 
 
+
+/-- T1 construction verification: the enumeration consists of distinct
+complete treat-two assignments, its clique network is symmetric with zero
+diagonal and no isolates, and both relevant exposures occur in every profile.
+There are 18 same-block profiles and 48 profiles in different blocks. -/
+theorem clique_structure :
+    Function.Injective cliqueAssignments ∧
+    (∀ r, (Finset.univ.filter (fun i => cliqueAssignments r i)).card = 2) ∧
+    (∀ i j, cliqueAdj i j = cliqueAdj j i) ∧
+    (∀ i, cliqueAdj i i = false ∧ ∃ j, cliqueAdj i j = true) ∧
+    (∀ r, (Finset.univ.filter (fun i => cliqueF r i = .d01)).card =
+        if (cliquePairs r).1.val / 4 = (cliquePairs r).2.val / 4 then 2 else 6) ∧
+    (∀ r, (Finset.univ.filter (fun i => cliqueF r i = .d00)).card =
+        if (cliquePairs r).1.val / 4 = (cliquePairs r).2.val / 4 then 8 else 4) ∧
+    (Finset.univ.filter (fun r => (cliquePairs r).1.val / 4 = (cliquePairs r).2.val / 4)).card = 18 ∧
+    (Finset.univ.filter (fun r => (cliquePairs r).1.val / 4 ≠ (cliquePairs r).2.val / 4)).card = 48 := by
+  -- Draft: exact finite certificate not yet verified; see lean.json for proof attempts.
+  sorry
+
+/-- T1 construction verification: each retained bank is precisely 65
+distinct profiles, excluding its omitted profile. -/
+theorem clique_retained_injective (t : Fin 66) :
+    Function.Injective (retainedAssignments t) ∧
+      ∀ r, retainedAssignments t r ≠ cliqueAssignments t := by
+  have hinj := clique_structure.1
+  constructor
+  · exact hinj.comp Fin.succAbove_right_injective
+  · intro r he
+    exact Fin.succAbove_ne t r (hinj he)
+
+/-- T1(ii) finite arithmetic for exact probabilities: the first two moments
+of the point estimate and the mean of the variance functional, computed
+from true marginals and joints, give equality at 6050/11907. -/
+theorem clique_exact_reduced_arithmetic :
+    let m := cliqueObservationMarginal 0 false
+    let J := cliqueObservationJoint 0 false
+    let M := ((∑ i, m i .d01 / m i .d01) - (∑ i, m i .d00 / m i .d00)) / 12
+    let S := (∑ i, ∑ j,
+      (J i j .d01 .d01 / (m i .d01 * m j .d01) +
+       J i j .d00 .d00 / (m i .d00 * m j .d00) -
+       J i j .d01 .d00 / (m i .d01 * m j .d00) -
+       J i j .d00 .d01 / (m i .d00 * m j .d01))) / 144
+    M = 0 ∧ S - M^2 = 6050/11907 ∧ expectedVariance m J cliqueY m J .d01 .d00 = 6050/11907 := by
+  -- Draft: exact finite certificate not yet verified; see lean.json for proof attempts.
+  sorry
+
+/-- T1(ii): with exact design probabilities, the clique estimator is
+−220/189 on same-block profiles and 55/126 otherwise. -/
+theorem clique_exact_profile_estimates :
+    let m := cliqueObservationMarginal 0 false
+    ∀ r, htContrast cliqueF cliqueY m .d01 .d00 r =
+      if (cliquePairs r).1.val / 4 = (cliquePairs r).2.val / 4 then -220/189 else 55/126 := by
+  -- Draft: exact finite certificate not yet verified; see lean.json for proof attempts.
+  sorry
+
+/-- T1(vi) finite arithmetic after conditional-moment reduction: the two
+fixed representative banks have the stated variances and expected variance
+estimates, and their exact strict differences. -/
+theorem clique_fixed_reduced_arithmetic :
+    cliqueConditionalSecond 0 false - (cliqueConditionalMean 0 false)^2 = 2810528137/5767941312 ∧
+    cliqueConditionalV 0 false = 267260522663/634473544320 ∧
+    cliqueConditionalV 0 false < cliqueConditionalSecond 0 false - (cliqueConditionalMean 0 false)^2 ∧
+    cliqueConditionalSecond 3 false - (cliqueConditionalMean 3 false)^2 = 937589375/1922647104 ∧
+    cliqueConditionalV 3 false = 4830430961/10574559072 ∧
+    cliqueConditionalV 3 false < cliqueConditionalSecond 3 false - (cliqueConditionalMean 3 false)^2 ∧
+    cliqueConditionalV 0 false - (cliqueConditionalSecond 0 false - (cliqueConditionalMean 0 false)^2) =
+      -1551761941/23499020160 ∧
+    cliqueConditionalV 3 false - (cliqueConditionalSecond 3 false - (cliqueConditionalMean 3 false)^2) =
+      -72513467/2349902016 := by
+  -- Draft: exact finite certificate not yet verified; see lean.json for proof attempts.
+  sorry
+
+/-- T1(vi): the two representative fixed banks, omitting (0,1) or (0,4),
+have precisely the stated variances and expected variance estimates, and
+both strictly underestimate the design variance. These are exact finite
+counterexamples conditional on a table, using the same S7 functional. -/
+theorem clique_fixed_table_counterexamples :
+    designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 0) = 2810528137/5767941312 ∧
+    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 0) = 267260522663/634473544320 ∧
+    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 0) <
+      designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 0) ∧
+    designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 3) = 937589375/1922647104 ∧
+    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 3) = 4830430961/10574559072 ∧
+    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 3) <
+      designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 3) := by
+  have hM (t : Fin 66) : expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT t) = cliqueConditionalMean t false := by
+    simpa only [clique_observation_independent_mass] using (clique_conditional_moments t false).1
+  have hS (t : Fin 66) : expect (fun _ : Fin 66 => (1/66 : ℚ)) (fun z => cliqueT t z ^ 2) =
+      cliqueConditionalSecond t false := by
+    simpa only [clique_observation_independent_mass] using (clique_conditional_moments t false).2.1
+  have hV (t : Fin 66) : expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV t) = cliqueConditionalV t false := by
+    simpa only [clique_observation_independent_mass] using (clique_conditional_moments t false).2.2
+  unfold designVariance
+  simp_rw [hS, hM, hV]
+  have h := clique_fixed_reduced_arithmetic
+  exact ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1, h.2.2.2.2.1, h.2.2.2.2.2.1⟩
+
 /-- T9(ii): the corrected row-times-column scalar counts precisely the
 vertices whose adjacency entry and treatment entry are both one (p. 211). -/
 theorem peerCount_is_count {N : ℕ} (A : Adjacency N) (z : Assignment N) (i : Fin N) :
@@ -1564,7 +1892,7 @@ theorem joint_nonneg {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D]
   intro ω _
   split_ifs <;> simp [P.nonneg]
 
-/-- Same-unit, same-exposure joint probability is the marginal. -/
+/-- Same-unit, same-exposure joint probability is the marginal (S7). -/
 theorem joint_diagonal {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D]
     (p : Ω → ℝ) (f : Ω → Fin N → D) (i : Fin N) (a : D) :
     joint p f i i a a = marginal p f i a := by simp [joint, marginal]
@@ -1682,8 +2010,8 @@ theorem htVariance_pair_expansion {Ω D : Type*} {N : ℕ} [Fintype Ω] [Decidab
   ring
 
 /-- T2(a): with any finite design, correctly specified exposures, fixed real
-outcomes and positive marginals for the two distinct exposures, the expectation
-of the exact-input HT variance estimate minus the design variance equals
+outcomes and positive marginals for the two distinct exposures, the expected
+exact-input HT variance estimate exceeds the design variance by precisely
 the structural-zero squared-outcome surplus. Repair of p. 217. -/
 theorem exact_variance_surplus {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D]
     (hN : 0 < N) (P : FiniteDesign Ω) (f : Ω → Fin N → D)
@@ -1730,6 +2058,7 @@ theorem exact_variance_conservative {Ω D : Type*} {N : ℕ} [Fintype Ω] [Decid
   have h := exact_variance_surplus hN P f y a b hab ha hb
   have hpos := zeroSurplus_nonneg y (joint P.mass f) a b
   linarith
+
 
 
 /-- T5(iv)/T6(ii), the finite moment ingredient |G|²=G²: the absolute
@@ -1842,8 +2171,8 @@ theorem baseline_memLp (a : ℝ) :
 
 /-- T6(iv), general conditional mean: for every fixed zero-diagonal
 network on a nonempty finite population, including networks with isolates,
-the expected direct-plus-indirect effect equals
-1 + √(2/π) * (average degree coefficient). Correction to the p. 216 generator. -/
+the expected direct-plus-indirect effect equals 1+√(2/π) times the average
+degree coefficient with the 1 additive. Correction to the p. 216 generator. -/
 theorem generated_effect_mean {N : ℕ} (hN : 0 < N) (A : Adjacency N)
     (hdiag : ∀ i, A i i = false) :
     (∫ x, tau (dilatedOutcomes (generatedBaselines A x)) .d11 .d00 ∂normalPopulation N) =
@@ -1992,6 +2321,61 @@ theorem no_cross_edges_on_support {Ω C : Type*} {N : ℕ} [Fintype Ω] [Decidab
   rw [if_pos ⟨he, hc⟩, hzero i j] at hle
   exact (not_le_of_gt hp) hle
 
+/-- T1(ii): the exact design probabilities give zero HT mean, design
+variance 6050/11907, and expected variance estimate equal to that variance.
+This bridges the kernel arithmetic to actual finite randomization moments. -/
+theorem clique_exact_moments :
+    let p := fun _ : Fin 66 => (1/66 : ℚ)
+    let m := marginal p cliqueF
+    let J := joint p cliqueF
+    let T := htContrast cliqueF cliqueY m .d01 .d00
+    expect p T = 0 ∧ designVariance p T = 6050/11907 ∧
+      expect p (varianceEstimate cliqueF cliqueY m J .d01 .d00) = 6050/11907 := by
+  let p := fun _ : Fin 66 => (1/66 : ℚ)
+  let m := cliqueObservationMarginal 0 false
+  let J := cliqueObservationJoint 0 false
+  let M := ((∑ i, m i .d01 / m i .d01) - (∑ i, m i .d00 / m i .d00)) / 12
+  let S := (∑ i, ∑ j,
+    (J i j .d01 .d01 / (m i .d01 * m j .d01) +
+     J i j .d00 .d00 / (m i .d00 * m j .d00) -
+     J i j .d01 .d00 / (m i .d01 * m j .d00) -
+     J i j .d00 .d01 / (m i .d00 * m j .d01))) / 144
+  have hm : marginal p cliqueF = m := by
+    funext i a
+    simpa only [p, m, clique_observation_independent_mass] using clique_observation_marginal 0 false i a
+  have hkk (i j) : joint p cliqueF i j .d01 .d01 = J i j .d01 .d01 := by
+    simpa only [p, J, clique_observation_independent_mass] using
+      clique_observation_joint 0 false i j .d01 .d01 (Or.inl rfl) (Or.inl rfl)
+  have hll (i j) : joint p cliqueF i j .d00 .d00 = J i j .d00 .d00 := by
+    simpa only [p, J, clique_observation_independent_mass] using
+      clique_observation_joint 0 false i j .d00 .d00 (Or.inr rfl) (Or.inr rfl)
+  have hkl (i j) : joint p cliqueF i j .d01 .d00 = J i j .d01 .d00 := by
+    simpa only [p, J, clique_observation_independent_mass] using
+      clique_observation_joint 0 false i j .d01 .d00 (Or.inl rfl) (Or.inr rfl)
+  have hlk (i j) : joint p cliqueF i j .d00 .d01 = J i j .d00 .d01 := by
+    simpa only [p, J, clique_observation_independent_mass] using
+      clique_observation_joint 0 false i j .d00 .d01 (Or.inr rfl) (Or.inl rfl)
+  have hmean : expect p (htContrast cliqueF cliqueY (marginal p cliqueF) .d01 .d00) = M := by
+    unfold htContrast
+    rw [expect_sub, htMean_expectation, htMean_expectation, hm]
+    simp only [cliqueY, one_mul]
+    unfold M
+    ring
+  have hsecond : expect p (fun r => htContrast cliqueF cliqueY (marginal p cliqueF) .d01 .d00 r ^ 2) = S := by
+    rw [htContrast_second_moment, hm]
+    simp_rw [hkk, hll, hkl, hlk]
+    simp [cliqueY, S, div_eq_mul_inv, mul_inv_rev] <;> norm_num
+  have hv : expect p (varianceEstimate cliqueF cliqueY (marginal p cliqueF) (joint p cliqueF) .d01 .d00) =
+      expectedVariance m J cliqueY m J .d01 .d00 := by
+    rw [varianceEstimate_expectation, hm]
+    unfold expectedVariance expectedTotalVariance expectedTotalCovariance
+    simp_rw [hkk, hll, hkl]
+  have hnum : M = 0 ∧ S - M^2 = 6050/11907 ∧ expectedVariance m J cliqueY m J .d01 .d00 = 6050/11907 :=
+    clique_exact_reduced_arithmetic
+  refine ⟨hmean.trans hnum.1, ?_, hv.trans hnum.2.2⟩
+  unfold designVariance
+  rw [hsecond, hmean]
+  exact hnum.2.1
 
 /-- T1 probability-law verification: both (omitted,realized) laws are
 nonnegative and sum to one. The omitted-profile law is uniform; conditional
@@ -2024,6 +2408,48 @@ theorem clique_probability_laws :
       · rw [Fin.sum_univ_succAbove _ t]
         simp [cliqueObservationMass, Fin.succAbove_ne]
 
+/-- T1 enumeration verification: the list has exactly one occurrence of
+ every increasing pair of distinct units, so its support is the complete
+ treat-two randomization support rather than a smaller selected design. -/
+theorem clique_pairs_complete :
+    (∀ r, (cliquePairs r).1 < (cliquePairs r).2) ∧
+    (∀ i j : Fin 12, i < j → ∃ r : Fin 66, cliquePairs r = (i,j)) := by
+  -- Draft: exact finite certificate not yet verified; see lean.json for proof attempts.
+  sorry
+
+/-- T1 complete-design verification: an assignment treats exactly two units
+ if and only if it is one of the explicitly enumerated 66 profiles. -/
+theorem clique_complete_support (z : Assignment 12) :
+    (Finset.univ.filter (fun i => z i)).card = 2 ↔ ∃ r, cliqueAssignments r = z := by
+  constructor
+  · intro hz
+    obtain ⟨i, j, hij, hs⟩ := Finset.card_eq_two.mp hz
+    have hvec (r : Fin 66) (hr : cliquePairs r = (i,j) ∨ cliquePairs r = (j,i)) : cliqueAssignments r = z := by
+      have hm (t : Fin 12) : z t = true ↔ t = i ∨ t = j := by
+        calc
+          z t = true ↔ t ∈ Finset.univ.filter (fun k => z k) := by simp
+          _ ↔ t ∈ ({i,j} : Finset (Fin 12)) := by rw [hs]
+          _ ↔ t = i ∨ t = j := by simp
+      funext t
+      unfold cliqueAssignments
+      rcases hr with hr | hr <;> rw [hr]
+      · cases ht : z t
+        · have hn : ¬(t = i ∨ t = j) := by simpa [ht] using hm t
+          simp [hn]
+        · have hp := (hm t).mp ht
+          simp [hp]
+      · cases ht : z t
+        · have hn : ¬(t = i ∨ t = j) := by simpa [ht] using hm t
+          simp [hn, or_comm]
+        · have hp := (hm t).mp ht
+          simp [hp, or_comm]
+    rcases lt_or_gt_of_ne hij with hlt | hgt
+    · obtain ⟨r, hr⟩ := clique_pairs_complete.2 i j hlt
+      exact ⟨r, hvec r (Or.inl hr)⟩
+    · obtain ⟨r, hr⟩ := clique_pairs_complete.2 j i hgt
+      exact ⟨r, hvec r (Or.inr hr)⟩
+  · rintro ⟨r, rfl⟩
+    exact clique_structure.2.1 r
 
 /-- A two-point permutation used in T1's explicit symmetry witness: first
 swap 0 to a, then send the resulting image of 1 to b. On the three- and
@@ -2033,8 +2459,8 @@ def twoImagePerm {n : ℕ} [NeZero n] (a b : Fin n) : Equiv.Perm (Fin n) :=
   e.trans (Equiv.swap (e 1) b)
 
 /-- Permute the three clique labels, and independently permute the four
-vertices of each source clique. This explicit product equivalence verifies
-the two representative-bank classes (T1(vi)). -/
+vertices of each source clique. This explicit product equivalence is used
+only to verify the validator's two representative-bank classes (T1(vi)). -/
 def cliqueProductPerm (e : Equiv.Perm (Fin 3)) (u : Fin 3 → Equiv.Perm (Fin 4)) :
     Equiv.Perm (Fin 3 × Fin 4) where
   toFun x := (e x.1, u x.1 x.2)
@@ -2053,6 +2479,108 @@ def cliqueRelabeling (t : Fin 66) : Equiv.Perm (Fin 12) :=
     else fun r => if r = 0 then Equiv.swap 0 a.2 else if r = 1 then Equiv.swap 0 b.2 else Equiv.refl _
   h.trans ((cliqueProductPerm e u).trans h.symm)
 
+/-- T1(vi): every omitted assignment becomes one of the two representative
+omissions under an explicit permutation preserving the graph. All 18
+same-block omissions use (0,1); all 48 other omissions use (0,4). -/
+theorem clique_relabeling_verified :
+    ∀ t : Fin 66,
+      (∀ i j, cliqueAdj (cliqueRelabeling t i) (cliqueRelabeling t j) = cliqueAdj i j) ∧
+      (∀ i, cliqueAssignments t (cliqueRelabeling t i) =
+        cliqueAssignments (if (cliquePairs t).1.val / 4 = (cliquePairs t).2.val / 4 then 0 else 3) i) ∧
+      (∀ i, cliqueF t (cliqueRelabeling t i) =
+        cliqueF (if (cliquePairs t).1.val / 4 = (cliquePairs t).2.val / 4 then 0 else 3) i) := by
+  -- Draft: exact finite certificate not yet verified; see lean.json for proof attempts.
+  sorry
+
+/-- T1(vi): every fixed bank of 65 assignments underestimates the variance
+over an independent complete-randomization observation. The exact variance,
+expected variance estimate, and negative difference depend only on whether
+the omitted pair shares a clique. This states the universal conclusion in
+the validator's refutation of the p. 217 conservativeness claim. -/
+theorem clique_all_fixed_table_counterexamples :
+    ∀ t : Fin 66,
+      let same := (cliquePairs t).1.val / 4 = (cliquePairs t).2.val / 4
+      designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT t) =
+        (if same then 2810528137/5767941312 else 937589375/1922647104) ∧
+      expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV t) =
+        (if same then 267260522663/634473544320 else 4830430961/10574559072) ∧
+      expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV t) -
+        designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT t) =
+        (if same then -1551761941/23499020160 else -72513467/2349902016) ∧
+      expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV t) <
+        designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT t) := by
+  -- Draft: the representative arithmetic and invariance of the full
+  -- randomization functionals under cliqueRelabeling remain unverified.
+  sorry
+
+/-- T1: every hypothesis of the explicit twelve-unit counterexample, and
+its exact design and simulated-bank means, variances, expected variance
+estimates, strict shortfalls in both sampling regimes, and the two fixed
+representative tables. Counterexample to p. 217; it concerns HT only. -/
+theorem clique_variance_counterexample :
+    cliqueF = (fun r => exposure cliqueAdj (cliqueAssignments r)) ∧
+    (∀ z : Assignment 12, (Finset.univ.filter (fun i => z i)).card = 2 ↔ ∃ r, cliqueAssignments r = z) ∧
+    (∀ i j, cliqueAdj i j = cliqueAdj j i) ∧
+    Function.Injective cliqueAssignments ∧
+    (∀ r, (Finset.univ.filter (fun i => cliqueAssignments r i)).card = 2) ∧
+    (∀ i, cliqueAdj i i = false ∧ ∃ j, cliqueAdj i j = true) ∧
+    (∀ i, marginal (fun _ : Fin 66 => (1/66 : ℚ)) cliqueF i .d01 = 9/22 ∧
+      marginal (fun _ : Fin 66 => (1/66 : ℚ)) cliqueF i .d00 = 14/33) ∧
+    (∀ t, Function.Injective (retainedAssignments t) ∧
+      (∀ r, retainedAssignments t r ≠ cliqueAssignments t)) ∧
+    (∀ t i, 0 < (smoothedWeight (retainedF t) i .d01 : ℚ) ∧
+      0 < (smoothedWeight (retainedF t) i .d00 : ℚ)) ∧
+    tau cliqueY .d01 .d00 = 0 ∧
+    (let w := marginal (fun _ : Fin 66 => (1/66 : ℚ)) cliqueF
+     let q := joint (fun _ : Fin 66 => (1/66 : ℚ)) cliqueF
+     let T := htContrast cliqueF cliqueY w .d01 .d00
+     expect (fun _ : Fin 66 => (1/66 : ℚ)) T = 0 ∧
+     designVariance (fun _ : Fin 66 => (1/66 : ℚ)) T = 6050/11907 ∧
+     expect (fun _ : Fin 66 => (1/66 : ℚ))
+       (varianceEstimate cliqueF cliqueY w q .d01 .d00) = 6050/11907) ∧
+    expect (cliqueJointMass false) (fun x => cliqueT x.1 x.2) = -67/53592 ∧
+    designVariance (cliqueJointMass false) (fun x => cliqueT x.1 x.2) = 113448938731/232640299584 ∧
+    expect (cliqueJointMass false) (fun x => cliqueV x.1 x.2) = 1040129476423/2326402995840 ∧
+    expect (cliqueJointMass false) (fun x => cliqueV x.1 x.2) -
+      designVariance (cliqueJointMass false) (fun x => cliqueT x.1 x.2) = -953130413/23499020160 ∧
+    expect (cliqueJointMass true) (fun x => cliqueT x.1 x.2) = -67/52780 ∧
+    designVariance (cliqueJointMass true) (fun x => cliqueT x.1 x.2) = 11375808887/23342482800 ∧
+    expect (cliqueJointMass true) (fun x => cliqueV x.1 x.2) = 4673362763/10414338480 ∧
+    expect (cliqueJointMass true) (fun x => cliqueV x.1 x.2) -
+      designVariance (cliqueJointMass true) (fun x => cliqueT x.1 x.2) = -20161943/522324075 ∧
+    (∀ included,
+      expect (cliqueJointMass included) (fun x => cliqueV x.1 x.2) <
+        designVariance (cliqueJointMass included) (fun x => cliqueT x.1 x.2) ∧
+      expect (cliqueJointMass included) (fun x => cliqueV x.1 x.2) < 6050/11907) ∧
+    designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 0) = 2810528137/5767941312 ∧
+    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 0) = 267260522663/634473544320 ∧
+    designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 3) = 937589375/1922647104 ∧
+    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 3) = 4830430961/10574559072 := by
+  have hs := clique_structure
+  have hj := clique_joint_moments
+  have hf := clique_fixed_table_counterexamples
+  have hprob (i : Fin 12) :
+      marginal (fun _ : Fin 66 => (1/66 : ℚ)) cliqueF i .d01 = 9/22 ∧
+      marginal (fun _ : Fin 66 => (1/66 : ℚ)) cliqueF i .d00 = 14/33 := by
+    have hk := clique_observation_marginal 0 false i .d01
+    have hl := clique_observation_marginal 0 false i .d00
+    rw [clique_observation_independent_mass] at hk hl
+    norm_num [cliqueObservationMarginal, cliqueFullCount] at hk hl
+    exact ⟨hk, hl⟩
+  have hpos (t : Fin 66) (i : Fin 12) :
+      0 < (smoothedWeight (retainedF t) i .d01 : ℚ) ∧ 0 < (smoothedWeight (retainedF t) i .d00 : ℚ) := by
+    rw [← clique_retained_weights.1 t i .d01, ← clique_retained_weights.1 t i .d00]
+    unfold cliqueWeights cliqueFullCount
+    split_ifs <;> norm_num
+  refine ⟨cliqueF_is_exposure, clique_complete_support, hs.2.2.1, hs.1, hs.2.1, hs.2.2.2.1, hprob, clique_retained_injective, hpos, ?_,
+    clique_exact_moments, hj.1, hj.2.1, hj.2.2.1, ?_,
+    hj.2.2.2.1, hj.2.2.2.2.1, hj.2.2.2.2.2.1, ?_, hj.2.2.2.2.2.2,
+    hf.1, hf.2.1, hf.2.2.2.1, hf.2.2.2.2.1⟩
+  · simp [tau, cliqueY]
+  · rw [hj.2.2.1, hj.2.1]
+    norm_num
+  · rw [hj.2.2.2.2.2.1, hj.2.2.2.2.1]
+    norm_num
 
 /-- T4(c), star instance: the original star design's common support for
 (d₁₁,d₀₀) is precisely the three leaves, with target effect and HT expectation
@@ -2124,7 +2652,7 @@ theorem ratCast_designVariance {Ω : Type*} [Fintype Ω] (p t : Ω → ℚ) :
   simp only [Rat.cast_sub, Rat.cast_pow, ← ratCast_expect]
 
 /-- Marginal exposure probabilities in a rational numerical witness are
-exactly the real marginal probabilities after embedding. -/
+exactly the paper's real probabilities after embedding (S7). -/
 theorem ratCast_marginal {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D]
     (p : Ω → ℚ) (f : Ω → Fin N → D) (i : Fin N) (a : D) :
     marginal (fun ω => (p ω : ℝ)) f i a = ((marginal p f i a : ℚ) : ℝ) := by
@@ -2134,7 +2662,7 @@ theorem ratCast_marginal {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D]
   split_ifs <;> simp only [Rat.cast_zero]
 
 /-- Joint exposure probabilities also embed exactly, preserving ordered
-and diagonal pairs (T1/T7). -/
+and diagonal pairs (S7; T1/T7). -/
 theorem ratCast_joint {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D]
     (p : Ω → ℚ) (f : Ω → Fin N → D) (i j : Fin N) (a b : D) :
     joint (fun ω => (p ω : ℝ)) f i j a b = ((joint p f i j a b : ℚ) : ℝ) := by
@@ -2154,23 +2682,24 @@ theorem ratCast_htTerm {Ω D : Type*} {N : ℕ} [DecidableEq D]
   split_ifs <;> simp only [Rat.cast_div, Rat.cast_zero]
 
 /-- The HT exposure mean commutes with the rational-to-real embedding,
-with the original population denominator N. -/
+with the original population denominator N (S7). -/
 theorem ratCast_htMean {Ω D : Type*} {N : ℕ} [DecidableEq D]
     (f : Ω → Fin N → D) (y w : Fin N → D → ℚ) (a : D) (ω : Ω) :
     htMean f (fun i d => (y i d : ℝ)) (fun i d => (w i d : ℝ)) a ω =
       ((htMean f y w a ω : ℚ) : ℝ) := by
   simp only [htMean, ratCast_htTerm, Rat.cast_div, Rat.cast_sum, Rat.cast_natCast]
 
-/-- The HT effect contrast in rational witnesses equals the real `htContrast`
-at canonically embedded outcomes and probability inputs. -/
+/-- The HT effect contrast in rational witnesses is the real paper contrast
+at canonically embedded outcomes and probability inputs (S7). -/
 theorem ratCast_htContrast {Ω D : Type*} {N : ℕ} [DecidableEq D]
     (f : Ω → Fin N → D) (y w : Fin N → D → ℚ) (a b : D) (ω : Ω) :
     htContrast f (fun i d => (y i d : ℝ)) (fun i d => (w i d : ℝ)) a b ω =
       ((htContrast f y w a b ω : ℚ) : ℝ) := by
   simp only [htContrast, ratCast_htMean, Rat.cast_sub]
 
-/-- `varianceEstimate` commutes with rational-to-real embedding, preserving
-the positive-joint and structural-zero guards and all denominators (T1). -/
+/-- The implemented variance functional commutes with rational-to-real
+embedding, preserving the positive-joint and structural-zero guards and
+all S7 denominators (T1). -/
 theorem ratCast_varianceEstimate {Ω D : Type*} {N : ℕ} [DecidableEq D]
     (f : Ω → Fin N → D) (y w : Fin N → D → ℚ)
     (q : Fin N → Fin N → D → D → ℚ) (a b : D) (ω : Ω) :
@@ -2181,6 +2710,16 @@ theorem ratCast_varianceEstimate {Ω D : Type*} {N : ℕ} [DecidableEq D]
     Rat.cast_sub, Rat.cast_mul, Rat.cast_one, Rat.cast_zero, Rat.cast_ofNat,
     apply_ite, Rat.cast_pos, Rat.cast_eq_zero]
 
+
+/-- T13: the printed baseline-law description is false for the supplied
+generator law. The symmetric two-unit edge graph has no isolates and has
+positive probability of a negative baseline. This proof does not use the
+drafted printed assertion as a hypothesis. -/
+theorem not_printed_baseline_description : ¬PrintedBaselineDescription := by
+  intro h
+  let A : Adjacency 2 := fun i j => decide (i ≠ j)
+  have hn := (baseline_not_halfNormal (degreeScale A (0 : Fin 2)) (by positivity)).2.2
+  exact hn (h 2 A (by intro i; simp [A]) 0)
 
 /-- T7 construction verification: each rotation treats exactly three units,
 and its four realized exposure-group sizes are (2,1,3,2). All four totals
@@ -2269,7 +2808,7 @@ theorem star_design_verified :
       decide +kernel
 
 /-- T5(i): the triangle's squared binary adjacency has diagonal 2 and
-all off-diagonal entries 1, as in the exact witness to p. 216. -/
+all off-diagonal entries 1, as in the validator's exact witness to p. 216. -/
 theorem triangle_two_walk_matrix :
     ∀ i j : Fin 3, (∑ k : Fin 3,
       (if i ≠ k then (1 : ℕ) else 0) * (if k ≠ j then 1 else 0)) =
@@ -2335,3 +2874,126 @@ end
 
 end AronowAudit.P044
 
+#print axioms AronowAudit.P044.expect_sum
+#print axioms AronowAudit.P044.expect_mul_const
+#print axioms AronowAudit.P044.expect_sub
+#print axioms AronowAudit.P044.expect_add
+#print axioms AronowAudit.P044.expect_div
+#print axioms AronowAudit.P044.expect_event
+#print axioms AronowAudit.P044.expect_joint_event
+#print axioms AronowAudit.P044.htTerm_product_expectation
+#print axioms AronowAudit.P044.expect_square_sum
+#print axioms AronowAudit.P044.htContrast_second_moment
+#print axioms AronowAudit.P044.expect_const_mul
+#print axioms AronowAudit.P044.expect_ite
+#print axioms AronowAudit.P044.varianceEstimate_expectation
+#print axioms AronowAudit.P044.htTerm_expectation
+#print axioms AronowAudit.P044.htMean_expectation
+#print axioms AronowAudit.P044.ht_unbiased
+#print axioms AronowAudit.P044.common_support_unbiased
+#print axioms AronowAudit.P044.interference_iff_not
+#print axioms AronowAudit.P044.noInterference_iff_same_own
+#print axioms AronowAudit.P044.exposure_cases
+#print axioms AronowAudit.P044.peerCount_own_independent
+#print axioms AronowAudit.P044.zeroPeer_subset
+#print axioms AronowAudit.P044.complete_no_peer_probabilities
+#print axioms AronowAudit.P044.complete_probability_pos_iff
+#print axioms AronowAudit.P044.complete_own_probability
+#print axioms AronowAudit.P044.complete_all_positive_iff
+#print axioms AronowAudit.P044.complete_randomization_support
+#print axioms AronowAudit.P044.star_counterexample
+#print axioms AronowAudit.P044.star_nonidentification
+#print axioms AronowAudit.P044.cycle8_smoothing_counterexample
+#print axioms AronowAudit.P044.exhaustive_probabilities
+#print axioms AronowAudit.P044.smoothing_bias_multiplier
+#print axioms AronowAudit.P044.smoothed_not_distribution
+#print axioms AronowAudit.P044.independent_binomial_bank
+#print axioms AronowAudit.P044.triangle_baseline_witness
+#print axioms AronowAudit.P044.negative_baseline_event
+#print axioms AronowAudit.P044.baseline_not_halfNormal
+#print axioms AronowAudit.P044.dilated_effects
+#print axioms AronowAudit.P044.baseline_mean_shift
+#print axioms AronowAudit.P044.crossCommunity_probability_zero
+#print axioms AronowAudit.P044.within_community_share
+#print axioms AronowAudit.P044.support_necessary
+#print axioms AronowAudit.P044.peerCount_two_treated
+#print axioms AronowAudit.P044.clique_pair_distinct
+#print axioms AronowAudit.P044.cliqueF_is_exposure
+#print axioms AronowAudit.P044.clique_full_counts
+#print axioms AronowAudit.P044.count_delete_atom
+#print axioms AronowAudit.P044.clique_retained_weights
+#print axioms AronowAudit.P044.printed_baseline_claim
+#print axioms AronowAudit.P044.printed_unbiasedness_claim
+#print axioms AronowAudit.P044.printed_simulated_variance_claim
+#print axioms AronowAudit.P044.clique_observation_independent_mass
+#print axioms AronowAudit.P044.clique_observation_marginal
+#print axioms AronowAudit.P044.clique_observation_joint
+#print axioms AronowAudit.P044.clique_conditional_moments
+#print axioms AronowAudit.P044.clique_joint_expectation
+#print axioms AronowAudit.P044.clique_reduced_arithmetic
+#print axioms AronowAudit.P044.clique_joint_moments
+#print axioms AronowAudit.P044.exhaustive_smoothing_bias
+#print axioms AronowAudit.P044.returned_graph_expectations
+#print axioms AronowAudit.P044.clique_structure
+#print axioms AronowAudit.P044.clique_retained_injective
+#print axioms AronowAudit.P044.clique_exact_reduced_arithmetic
+#print axioms AronowAudit.P044.clique_exact_profile_estimates
+#print axioms AronowAudit.P044.clique_fixed_reduced_arithmetic
+#print axioms AronowAudit.P044.clique_fixed_table_counterexamples
+#print axioms AronowAudit.P044.peerCount_is_count
+#print axioms AronowAudit.P044.triangle_realized_effects
+#print axioms AronowAudit.P044.joint_nonneg
+#print axioms AronowAudit.P044.joint_diagonal
+#print axioms AronowAudit.P044.joint_swap
+#print axioms AronowAudit.P044.exact_totalVariance
+#print axioms AronowAudit.P044.exact_totalCovariance
+#print axioms AronowAudit.P044.htVariance_pair_expansion
+#print axioms AronowAudit.P044.exact_variance_surplus
+#print axioms AronowAudit.P044.zero_pair_algebra
+#print axioms AronowAudit.P044.zeroSurplus_nonneg
+#print axioms AronowAudit.P044.exact_variance_conservative
+#print axioms AronowAudit.P044.halfNormal_second_moment
+#print axioms AronowAudit.P044.gaussian_halfline_moment
+#print axioms AronowAudit.P044.halfNormal_mean
+#print axioms AronowAudit.P044.halfNormal_variance
+#print axioms AronowAudit.P044.corrected_baseline_moments
+#print axioms AronowAudit.P044.baseline_memLp
+#print axioms AronowAudit.P044.generated_effect_scale
+#print axioms AronowAudit.P044.htTerm_observed
+#print axioms AronowAudit.P044.cycle8_contrast_biases
+#print axioms AronowAudit.P044.triangle_outcome_vectors
+#print axioms AronowAudit.P044.negative_baseline_rectangle
+#print axioms AronowAudit.P044.no_cross_edges_on_support
+#print axioms AronowAudit.P044.clique_exact_moments
+#print axioms AronowAudit.P044.clique_probability_laws
+#print axioms AronowAudit.P044.clique_pairs_complete
+#print axioms AronowAudit.P044.clique_complete_support
+#print axioms AronowAudit.P044.clique_relabeling_verified
+#print axioms AronowAudit.P044.clique_variance_counterexample
+#print axioms AronowAudit.P044.star_common_support
+#print axioms AronowAudit.P044.complete_support_1000_100
+#print axioms AronowAudit.P044.triangle_moment_comparison
+#print axioms AronowAudit.P044.nonisolated_baseline_mean_shift
+#print axioms AronowAudit.P044.ratCast_expect
+#print axioms AronowAudit.P044.ratCast_designVariance
+#print axioms AronowAudit.P044.ratCast_marginal
+#print axioms AronowAudit.P044.ratCast_joint
+#print axioms AronowAudit.P044.ratCast_htTerm
+#print axioms AronowAudit.P044.ratCast_htMean
+#print axioms AronowAudit.P044.ratCast_htContrast
+#print axioms AronowAudit.P044.ratCast_varianceEstimate
+#print axioms AronowAudit.P044.not_printed_baseline_description
+#print axioms AronowAudit.P044.cycle8_profile_counts
+#print axioms AronowAudit.P044.continuous_interval_probability
+#print axioms AronowAudit.P044.triangle_rectangle_cdf
+#print axioms AronowAudit.P044.star_design_verified
+#print axioms AronowAudit.P044.triangle_two_walk_matrix
+
+#print axioms AronowAudit.P044.ratCast_tau
+
+#print axioms AronowAudit.P044.triangle_cdf_rectangle_negative
+
+#print axioms AronowAudit.P044.generated_effect_mean
+
+#print axioms AronowAudit.P044.halfNormal_population_effect
+#print axioms AronowAudit.P044.clique_all_fixed_table_counterexamples

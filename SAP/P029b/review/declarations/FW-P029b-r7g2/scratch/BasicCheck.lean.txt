@@ -1,0 +1,44 @@
+import SAP.P029b.Defs
+import SAP.P029b.Defs.WholeW2
+
+open SAP.P029b MeasureTheory ProbabilityTheory Set
+open scoped BigOperators ENNReal
+
+noncomputable section
+namespace Review
+
+set_option maxHeartbeats 400000
+
+lemma rmse_constant (R : ℕ) (hR : 0 < R) (a b : ℝ) :
+    empiricalRMSE (fun _ : Fin R => a) (fun _ => b) = |a-b| := by
+  have h : (R : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hR)
+  simp [empiricalRMSE, nsmul_eq_mul, h]
+  exact Real.sqrt_sq_eq_abs _
+
+-- T22: a nonempty perfect estimate array and a nonzero-error array.
+example : empiricalRMSE (fun _ : Fin 2500 => 5) (fun _ => 5) = 0 := by
+  simp [empiricalRMSE]
+example : empiricalRMSE (fun _ : Fin 2500 => 6) (fun _ => 5) = 1 := by
+  simpa only [show |(6 : ℝ)-5| = 1 by norm_num] using
+    rmse_constant 2500 (by norm_num) 6 5
+
+-- T23: both the stated fit and an ordered interior weighted-rate competitor exist.
+def q0 : ReceiptParameters := ⟨packageCells, by
+  intro x; cases x <;> norm_num [packageCells]⟩
+def q1 : ReceiptParameters := ⟨fun xz =>
+  if xz.2 then (if xz.1 then 27/28 else 9/10) else 3/4, by
+  intro x; cases x <;> norm_num⟩
+
+example : q0.val = packageCells ∧
+    (∀ i : Observation, 0 < observationWeight i ∧ 0 < receiptLikelihood q0 i) ∧
+    (∀ i : Observation, 0 < receiptLikelihood q1 i) := by
+  refine ⟨rfl, ?_, ?_⟩
+  · intro i; rcases i with ⟨x,z,j⟩; cases x <;> cases z <;> fin_cases j <;>
+      norm_num [q0, receiptLikelihood, receiptData, observationWeight,
+        bernoulliFactor, packageCells, twoSidedSuccesses]
+  · intro i; rcases i with ⟨x,z,j⟩; cases x <;> cases z <;> fin_cases j <;>
+      norm_num [q1, receiptLikelihood, receiptData, bernoulliFactor,
+        twoSidedSuccesses]
+
+
+end Review

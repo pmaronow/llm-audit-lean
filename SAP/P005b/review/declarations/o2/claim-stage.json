@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P005b.T20",
+    "target_id": "P005-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "Covers every clause of printed Theorem 4.1: the valid exact parts (both decompositions, the bias expression, the nu1 difference and separate nu1 moments) are proved via T24Statement; the second display (nu3) is stated exactly as printed (NCCC = n_T(n_T-n_C)/((n-1)(n-2)n_C^2), NTTT = n_C(n_C-n_T)/((n-1)(n-2)n_T^2), S_t = popCov(h, y(t))) with the printed hypotheses (n >= 3, 1 <= n_T <= n-1, Assumption 2 at n, invertibility under every assignment) and refuted; I compiled an independent witness (n=5, d=1, m=2, x=(3/2,1/2,-1/2,-3/2,0), yT=e_0, yC=0: standardized, interactedRegular, LHS=1/64, printed RHS=-1/64). The final expansion is stated with the printed condition kappa*log d -> 0 (natural log), Assumptions 1-3 (standingAssumptions: d<=n, uniform K, eventually standardized, p_T in (lo,hi); the extra 1<=d only strengthens the witness), eventual invertibility (the only satisfiable reading of footnote 4 for a sequence, since d>=1 forces arm sizes >= d+1), the printed leading term (armLeading with beta_{I,t} = mean(y(t)x)) and the printed rate sqrt(kappa d/n); its negation contradicts the printed assertion (canonical status (3): false as printed for d=1, non-vanishing leverage). Contradicts the canonical statement's own assertion, so a refutation is the right form."
+  },
+  {
+    "theorem": "SAP.P005b.T21",
+    "target_id": "P005-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "Hypotheses n>=3, 0<m<n, standardized, Lhat invertible for every S match the explicit statement. (i) E[Bias]=E[ATE]-ATE and (ii) E[ATE_Debiased]=ATE with the inverse-free formula are stated; Bias is (7)+(8) exactly (sampleCov = Cov-hat with divisor |S|, h = ||x||^2, nu2 = (Lhat^{-1}-I)Nhat). Proof steps (a)-(e) are all stated: (a) bias decomposition, (b) definitional nu2 identity, (c),(d),(e) for (11),(12) (biasPart11/12 match the printed expressions) under 2<=n_T, 2<=n_C, which are the presupposed nonzero denominators of (11),(12); the population expectations (5) and the display before (12) are stated for all nonempty arms. The extra wholeW1OLS clause (closed form is the unique OLS minimiser of regression (1)) is true additional content consistent with the claim's parenthetical."
+  },
+  {
+    "theorem": "SAP.P005b.T22",
+    "target_id": "P005-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "T22Main: n>=3, 0<m<n, standardized, Lhat_T and Lhat_C invertible for every S; (i) E[Bias_I]=E[ATE_I]-ATE, (ii) E[ATE_I,Debiased]=ATE with the printed inverse-free formula, (iii) both armwise expectations. interactedBiasEstimate matches the printed Bias_I term by term; armDebiased with |S|=m resp. n-m gives the coefficients n_C/((n-2)n_T), n_T/((n-2)n_C). The two extra conjuncts state (iii) under exactly the claim's weaker hypotheses (x-bar=0, n>=3, n_T>=2, resp. n_C>=2)."
+  },
+  {
+    "theorem": "SAP.P005b.T23",
+    "target_id": "P005-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "Hypotheses n>=3, 0<m<n, standardized, Lhat invertible for every S match. (i) betaHat = N + nu1 + nu2 + nu3 with N = beta* and nu's as printed; (ii) bias decomposition; (iii) equation (5) and its covariance form -(1/(n-1)) * mean((h_i-hbar)(y_i(1)-y_i(0))); (iv) equation (6) with (n-2m)=n_C-n_T, (2m-n)=n_T-n_C; (v) Remark 1's two vanishing consequences (stated for the expectations, equivalent given (5),(6))."
+  },
+  {
+    "theorem": "SAP.P005b.T24",
+    "target_id": "P005-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "Hypotheses n>=2, 0<m<n, standardized, Lhat_T and Lhat_C invertible for every S match the explicit statement. (i) both decompositions with beta_{I,t} = mean(y(t)x) and the six nu's as printed; (ii) the bias expression; (iii) the nu1 difference and the two separate moments n_C/((n-1)n_T) S_1 and n_T/((n-1)n_C) S_0."
+  }
+]

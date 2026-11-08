@@ -14,7 +14,7 @@ open AronowAudit.P027 MeasureTheory ProbabilityTheory Filter
 open scoped BigOperators Topology NNReal
 attribute [local instance] Classical.propDecidable
 
-/-! ## Rounding and exact certificates -/
+/-! ## Record 3: rounding and exact certificates -/
 
 lemma GP027P016P031B1b_a3_rounding_implies_contrast_tail (H C H₀ C₀ R δ : ℝ)
     (hR : -1 ≤ R) (hH : |H-H₀| ≤ δ) (hC : |C-C₀| ≤ δ) :
@@ -99,7 +99,7 @@ lemma GP027P016P031B1b_a3_probability_from_tail {Ξ : Type} [MeasurableSpace Ξ]
       simp only [Int.cast_natCast, Real.rpow_neg (by norm_num : (0:ℝ) ≤ 2),
         Real.rpow_natCast]
 
-/-! ## Analytic and probability helpers -/
+/-! ## Record 6: analytic and probability helpers -/
 
 lemma GP027P016P031B1b_contrast_tail_binary_comparison (t d : ℝ) (ht : 0 < t) (hd : 0 ≤ d)
     (h : (⌈d/2⌉ : ℤ) < ⌊t⌋) :
@@ -656,6 +656,7 @@ theorem contrast_gaussian_tail_proof {Ξ : Type} [MeasurableSpace Ξ]
       · exact ae_of_all μ (GP027P016P031B1b_actual_lower r m hr hm β σ2 hσ (ε i)))
   simpa only [hs.2.2.2] using h
 
+example : type_of% @AronowAudit.P027.contrast_gaussian_tail := contrast_gaussian_tail_proof
 theorem a3_high_rows_probability_bound_proof {Ξ : Type} [MeasurableSpace Ξ]
     (μ : Measure Ξ) [IsProbabilityMeasure μ] (row : Fin 4) (K : ℕ) (hK : 0 < K) (β : ℝ)
     (ε : Fin K → (Σ _ : Fin (a3HighR row) × Fin 2, Fin (a3HighM row)) → Ξ → ℝ)
@@ -679,6 +680,8 @@ theorem a3_high_rows_probability_bound_proof {Ξ : Type} [MeasurableSpace Ξ]
   dsimp only [GP027P016P031B1b_a3_k] at hf
   rw [hf, hc.2.2.2.2.1] at ht
   exact ht
+
+example : type_of% @AronowAudit.P027.a3_high_rows_probability_bound := a3_high_rows_probability_bound_proof
 
 end
 end AronowAudit.P027.Wave1

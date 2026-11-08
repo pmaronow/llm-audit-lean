@@ -225,4 +225,6 @@ theorem exposure_monte_carlo_law_proof {Ω : Type*} [Fintype Ω]
     have hJpos : (0 : ℝ) < J := by exact_mod_cast hJ
     exact ⟨pow_pos (by linarith) J, div_pos (mul_pos hp.1 (by linarith)) hJpos⟩
 
+example : type_of% @AronowAudit.P037.exposure_monte_carlo_law := exposure_monte_carlo_law_proof
+
 end AronowAudit.P037.Wave1

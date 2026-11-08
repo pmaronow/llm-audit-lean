@@ -1,0 +1,27 @@
+[
+ {
+  "target_id": "P016-T6",
+  "decision": "restricted",
+  "theorem": "SAP.P016a.T6",
+  "restriction": "This states only the algebraic consistency consequence of the raw-distance display. It imposes no affine-normalization requirement on the arbitrary map g and omits the printed description that the indirect effect is linear in the raw distance sums. Unit variance is restricted to across-unit sample variance with divisor n-1 on every design assignment. Omits other unit-variance conventions, identification with the complete SSR + Design regression and testing procedure, and the empirical rejection proportions reported for the simulations and figures.",
+  "rows_used": [
+   "AronowAudit.P016.t6_printed_cutoff",
+   "AronowAudit.P016.t6_printed_general_model_consistency"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P016.t6_printed_model_consistency",
+    "reason": "The used general finite-design theorem contains this single-assignment cancellation, with the same sample-variance restriction."
+   }
+  ],
+  "statement_definition": "SAP.P016a.T6Statement",
+  "declaration_review_resolution": {
+   "round": 1,
+   "reviewer": "r1g1",
+   "verdict": "restriction_inaccurate",
+   "severity": "minor",
+   "action": "Accepted both issues: explicitly disclosed arbitrary g, the absence of an affine-normalization requirement, and the omitted printed linearity clause in the Challenge docstring, manifest and REPORT.md. The statement, proof, name and restricted decision are unchanged.",
+   "finding": "fw/round1/T6/r1g1/findings.json#SAP.P016a.T6"
+  }
+ }
+]

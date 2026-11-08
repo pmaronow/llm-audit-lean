@@ -1,0 +1,96 @@
+import SAP.P029b.Challenge
+
+open SAP.P029b MeasureTheory ProbabilityTheory Filter Set
+open scoped BigOperators Topology
+noncomputable section
+
+-- T14: the strict-bias hypotheses are realized with independent arm counts.
+example : (0 : ℝ) ≤ 1/4 ∧ (1/4 : ℝ) ≤ 3/4 ∧ (3/4 : ℝ) ≤ 1 ∧
+    (0 : ℝ) < 1/4 ∧ (3/4 : ℝ) < 1 ∧
+    fE (binomialArmLaw 1 1 (3/4) (1/4)) (armRateScore 1 1) - (3/4-1/4) = 1/16 := by
+  norm_num [fE, binomialArmLaw, binomialMass, armRateScore, positiveScore,
+    Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+example : SaturatedFitW1 1 1 0 1 = (1/2,1/2) ∧
+    SaturatedFitW1 4 4 3 1 = (3/4,1/4) := by
+  norm_num [SaturatedFitW1]
+
+-- T15: verify the actual six-atom witness directly from its definitions.
+lemma valid_six : ValidLaw sixMass := by
+  constructor
+  · rintro ⟨i,z⟩
+    fin_cases i <;> cases z <;> norm_num [sixMass, randomized, typeMass]
+  · norm_num [sixMass, randomized, typeMass, Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+lemma independent_six : FIndep sixMass
+    (fun i => ((liftUnit constantUnit i).x, (liftUnit constantUnit i).d0,
+      (liftUnit constantUnit i).d1, (liftUnit constantUnit i).y0,
+      (liftUnit constantUnit i).y1)) Prod.snd := by
+  intro a z
+  cases z <;>
+    norm_num [fP, sixMass, randomized, typeMass, liftUnit, constantUnit,
+      Fintype.sum_prod_type, Fin.sum_univ_succ] <;>
+    split_ifs <;> norm_num
+
+example : fP sixMass (fun i => (liftUnit constantUnit i).defier) = 0 ∧
+    fP sixMass (fun i => i.2 = true) = 1/2 ∧
+    fCE sixMass (fun i => bit ((constantUnit i.1).receipt i.2))
+      (fun i => i.2 = true) = 3/4 ∧
+    fCE sixMass (fun i => bit ((constantUnit i.1).receipt i.2))
+      (fun i => i.2 = false) = 1/4 ∧
+    fScore sixMass (liftUnit constantUnit) () = 1/2 ∧
+    fE sixMass (fun i => (constantUnit i.1).tau) = 1 ∧
+    fWald sixMass (liftUnit constantUnit) Prod.snd (fun _ => 2) = 1 := by
+  norm_num [fP, fCE, fE, fScore, fWald, sixMass, randomized, typeMass,
+    liftUnit, constantUnit, PotentialUnit.defier, PotentialUnit.complier,
+    PotentialUnit.receipt, PotentialUnit.outcome, PotentialUnit.tau, bit,
+    Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+-- T16: interpolation can genuinely change a positive score.
+example : Type7Quantile (fun i : Fin 2 => if i = 0 then (1/4 : ℝ) else 3/4)
+    (1/2) (1/2) := by
+  refine ⟨Equiv.refl _, ?_, ⟨0, ?_, ?_, ?_⟩⟩
+  · intro i j hij
+    fin_cases i <;> fin_cases j <;> norm_num at *
+  · norm_num
+  · norm_num
+  · norm_num [nextOrderIndex]
+
+example : belowCount (fun i : Fin 2 => if i = 0 then (1/4 : ℝ) else 3/4) (1/2) = 1 ∧
+    weightChange (1/4) (1/2) = 2 := by
+  constructor
+  · have h : (Finset.univ.filter (fun i : Fin 2 =>
+        (if i = 0 then (1/4 : ℝ) else 3/4) < 1/2)) = {0} := by
+      ext i
+      fin_cases i <;> norm_num
+    change (Finset.univ.filter _).card = 1
+    rw [h]
+    rfl
+  · norm_num [weightChange]
+
+-- T17: inhabited parameter and observation types, two assignment arms,
+-- and both receipt outcomes in the treated arm.
+example : (∀ (_ : Unit) (_ : Fin 3), (3/4 : ℝ) ∈ Ioo 0 1) ∧
+    (∀ i : Fin 3, decide (i.val ≠ 0) = false → decide (i.val = 1) = false) := by
+  constructor
+  · norm_num
+  · intro i
+    fin_cases i <;> decide
+
+-- T18: two arms with a defined first stage; no sample zero divisions.
+example : (∀ i : Fin 2, (1/2 : ℝ) ∈ Ioc 0 1) ∧
+    SampleDefined (fun _ : Fin 2 => (2 : ℝ))
+      (fun i => decide (i.val = 1)) (fun i => decide (i.val = 1)) := by
+  norm_num [SampleDefined, sampleArm, bit, Fin.sum_univ_succ, Bool.forall_bool]
+
+example : FIV sixMass (liftUnit constantUnit) Prod.snd := by
+  refine ⟨valid_six, ?_, ?_, independent_six, ?_, ?_⟩ <;>
+    norm_num [fP, fCE, fE, sixMass, randomized, typeMass, liftUnit, constantUnit,
+      PotentialUnit.defier, PotentialUnit.receipt, bit,
+      Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+example : fLatentIgnorability sixMass (liftUnit constantUnit) := by
+  intro x _
+  cases x
+  norm_num [fCE, fE, fP, sixMass, randomized, typeMass, liftUnit, constantUnit,
+    PotentialUnit.tau, PotentialUnit.complier, Fintype.sum_prod_type, Fin.sum_univ_succ]

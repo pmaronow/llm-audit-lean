@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecificLimits.Basic
@@ -16,7 +12,7 @@ construction blows the level-`q` cell count up to a product
 `N_q ≤ ∏_{p ∈ [q₀, q]} N_p`. The textbook salvages the entropy bookkeeping
 through two moves:
 
-1. **Product-salvage** (`Real.sqrt_log_prod_le_sum_one_add` for the regularized form):
+1. **Product-salvage** (`Real.sqrt_log_prod_le_sum`, `Real.sqrt_log_prod_le_sum_one_add`):
    `√(log (∏ N_p)) ≤ ∑ √(log N_p)`, and the `1 +`-regularized variant
    `√(log (1 + ∏ N_p)) ≤ ∑ √(log (1 + N_p))` matching the `1 +` entropy weight.
    This is subadditivity of `t ↦ √t` on a finite sum of nonnegative logarithms,
@@ -31,8 +27,9 @@ through two moves:
    then bound the inner geometric tail `∑_{q ≥ p} (2⁻¹)^q = 2 · (2⁻¹)^p`. The
    constant `2` is exact (equality on a point mass `a = δ_{p₀}`).
 
-These connect the product bound for nested-partition cell counts to the
-dyadic entropy series.
+These sit between `NestedBracketPartition.card_le`
+(`StatLean/AsymptoticStatistics/EmpiricalProcess/NestedPartition.lean`) and the dyadic
+entropy series of `StatLean/AsymptoticStatistics/EmpiricalProcess/Bracketing.lean`.
 
 Reference: vdV §19.6 p.286-287.
 -/
@@ -78,6 +75,35 @@ theorem Real.sqrt_sum_le {ι : Type*} (s : Finset ι) {f : ι → ℝ}
 
 /-! ## Product-salvage: `√(log (∏ N_p)) ≤ ∑ √(log N_p)` -/
 
+/-- **Product-salvage (real form).** For naturals `N : ι → ℕ` with `1 ≤ N i`
+on `s` (so each `log (N i) ≥ 0`),
+`√(log (∏_{i ∈ s} N i)) ≤ ∑_{i ∈ s} √(log (N i))`.
+
+vdV §19.6 p.286: the entropy salvage `(∑ log N_p)^{1/2} ≤ ∑ (log N_p)^{1/2}`. -/
+theorem Real.sqrt_log_prod_le_sum {ι : Type*} (s : Finset ι) {N : ι → ℕ}
+    (hN : ∀ i ∈ s, 1 ≤ N i) :
+    Real.sqrt (Real.log (∏ i ∈ s, (N i : ℝ)))
+      ≤ ∑ i ∈ s, Real.sqrt (Real.log (N i : ℝ)) := by
+  have hlog : Real.log (∏ i ∈ s, (N i : ℝ)) = ∑ i ∈ s, Real.log (N i : ℝ) := by
+    apply Real.log_prod
+    intro i hi
+    have : (1 : ℝ) ≤ (N i : ℝ) := by exact_mod_cast hN i hi
+    positivity
+  rw [hlog]
+  apply Real.sqrt_sum_le
+  intro i hi
+  apply Real.log_nonneg
+  exact_mod_cast hN i hi
+
+/-- **Product-salvage, `N i ≠ 0` form.** The same bound stated with the
+nonvanishing hypothesis `N i ≠ 0` (equivalent to `1 ≤ N i` for naturals),
+which is the shape the chaining caller has on hand: per-level cover
+cardinalities are `≥ 1` whenever `F` is nonempty. -/
+theorem Real.sqrt_log_prod_le_sum' {ι : Type*} (s : Finset ι) {N : ι → ℕ}
+    (hN : ∀ i ∈ s, N i ≠ 0) :
+    Real.sqrt (Real.log (∏ i ∈ s, (N i : ℝ)))
+      ≤ ∑ i ∈ s, Real.sqrt (Real.log (N i : ℝ)) :=
+  Real.sqrt_log_prod_le_sum s fun i hi => Nat.one_le_iff_ne_zero.mpr (hN i hi)
 
 /-- **`1 +`-regularized product bound.** `1 + ∏_{p ∈ s} N_p ≤ ∏_{p ∈ s} (1 + N_p)`
 for nonnegative reals `N_p` over a **nonempty** `s`. Expanding the right product
@@ -110,7 +136,7 @@ theorem one_add_prod_le_prod_one_add {ι : Type*} {s : Finset ι} (hs : s.Nonemp
 
 /-- **`1 +`-regularized product-salvage.** For naturals `N : ι → ℕ` over a
 **nonempty** `s`, `√(log (1 + ∏_{i ∈ s} N i)) ≤ ∑_{i ∈ s} √(log (1 + N i))`. This
-is the regularized product bound matching the `1 +` entropy
+is the regularized form of `Real.sqrt_log_prod_le_sum` matching the `1 +` entropy
 weight `entropyWeight N = √(log (1 + N))`.
 
 Proof: `1 + ∏ N_p ≤ ∏ (1 + N_p)` (`one_add_prod_le_prod_one_add`, needs `s`

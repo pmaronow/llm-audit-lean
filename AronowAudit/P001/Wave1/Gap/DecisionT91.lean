@@ -4,8 +4,9 @@ import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.Probability.ConditionalProbability
 
 /-!
-P001-T91: continuous-dose identification with an explicit measurable curve space
-and jointly measurable evaluation. No continuity of individual sample paths is used.
+The evaluation-ready interpretation of P001-T91, adopted in the author's
+20 October 2026 decision.  The measurable curve space and jointly measurable
+evaluation are explicit; no continuity of individual sample paths is used.
 -/
 
 namespace AronowAudit.P001.Wave1
@@ -19,7 +20,7 @@ set_option maxHeartbeats 800000
 set_option maxRecDepth 3000
 set_option autoImplicit false
 
-/-- Normalized cell integration equals the totalized conditional mean. -/
+/-- Normalized cell integration is the project's totalized conditional mean. -/
 lemma DecisionT91_integral_cell {Ω E : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (X : Ω → E) (f : Ω → ℝ) (x : E) :
     (∫ ω, f ω ∂(ProbabilityTheory.cond μ {ω | X ω = x})) =
@@ -260,7 +261,8 @@ lemma DecisionT91_standardization {Ω E : Type*} [MeasurableSpace Ω]
     (fun x => hX (measurableSet_singleton x)) hdisj hf.integrableOn
   simpa only [hcover, Measure.restrict_univ, mean] using hsum
 
-/-- P001-T91: continuous-dose identification with jointly measurable evaluation. -/
+/-- The author-approved evaluation-ready continuous-dose identification claim.
+One theorem supplies both P001-T91 gap records (mapper records 16 and 17). -/
 theorem continuous_dose_identified_evaluation_ready {Ω E V : Type*} [MeasurableSpace Ω] [MeasurableSpace E] [MeasurableSpace V]
   [MeasurableSingletonClass E] [Countable E]
   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (D : Ω → ℝ)
@@ -352,6 +354,8 @@ theorem continuous_dose_identified_evaluation_ready {Ω E V : Type*} [Measurable
       congrArg₂ (fun a b : ℝ => a - b)
         (tsum_congr (fun x => (hweighted x).1.symm))
         (tsum_congr (fun x => (hweighted x).2.symm))
+
+#check @continuous_dose_identified_evaluation_ready
 
 end
 end AronowAudit.P001.Wave1

@@ -1,0 +1,32 @@
+[
+  {
+    "target_id": "P041-T11",
+    "theorem": "SAP.P041.T11",
+    "fingerprint": "f349cf25d496ea6a110a56de99d6e2d319f70f2522a12fe4076894a068db869a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean (exit 0, no diagnostics). Its first example simultaneously witnesses all six rectangle-membership hypotheses using (0.691,0.318), (0.775,0.503), and (0.627,0.406). Its second example proves that every point of each complete rectangle has 0<h<1 and 0<s. Thus the universal clauses have nonempty domains and use neither division by zero nor the nonpositive-input logarithm extension. The theorem has no additional global hypotheses.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "Round 6: the restriction did not disclose omission of P1's existential compatibility of the printed living-subgroup p=0.70 with table rounding.",
+        "status": "fixed",
+        "reason": "SAP/P041/Challenge/Part1.lean:96 and record.json:6 now explicitly describe the retained material as a subset of P1 and explicitly omit the existence of h,s in the (0.775,0.503) rectangle with 0.695 <= normalTwoSided (hazardWald h s) < 0.705. This identifies the missing existential assertion independently of the separate central-value caveat. The restricted decision accurately describes the unchanged numerical theorem."
+      }
+    ]
+  },
+  {
+    "target_id": "P041-T12",
+    "theorem": "SAP.P041.T12",
+    "fingerprint": "44c01b3c0781fce32db3678d353c09588fc73e5e2e214eb26e72aa76caa5f5d5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "T12WholeStatement is closed arithmetic with no antecedent hypotheses or existentially selected model. Compiled scratch/Check.lean independently proves the entire proposition by norm_num after unfolding T12WholeStatement, T12Statement, relativeIncrease, symmetricDifference, and roundsWhole; it does not invoke SAP.P041.T12. Separate compiled examples check that all six proportions lie strictly between 0 and 1, the three symmetric denominators are positive, all counts are feasible, and the 12-hour counts are no larger than the corresponding 72-hour counts. The stipulated counts give directional values 575/13, 100/3, 375/4, each outside its respective printed interval and inside the corrected 44%, 33%, 94% interval. The printed reading and each witness condition are recorded in claim-review.md. No alternative assignment law or dependence assumption is introduced.",
+    "confidence": "high",
+    "resolved": []
+  }
+]

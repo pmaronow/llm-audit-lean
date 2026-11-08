@@ -1,4 +1,4 @@
-/- Complete-randomization overwhelming-fraction mixing, derived from the finite mask bound and explicit quarter-power degree thresholds. -/
+/- Complete-randomization overwhelming-fraction mixing, derived from the proved finite mask bound and explicit quarter-power degree thresholds. No additional probabilistic hypotheses. -/
 import AronowAudit.P009.P009_MixingAsymptotic
 import AronowAudit.P009.P009_CompleteMixing
 namespace AronowAudit.P009
@@ -21,6 +21,7 @@ theorem corrected_exceptional_pair_mixing_completed (S : Study)
     (fun t=>(size S t)^(1/4:ℝ)) hpos hgrow hsmall hsq
   intro n E m hm i j hij hs
   exact CompleteMixing.complete_mask_mixing_finite_completed E m hm i j hij hs
+#print axioms corrected_exceptional_pair_mixing_completed
 end
 end AronowAudit.P009
 
@@ -41,6 +42,8 @@ theorem corrected_exceptional_pair_mixing (S : Study)
         (i,j) ∉ exceptions t →
         alpha (S.experiment t).design (masked (S.experiment t) i) (masked (S.experiment t) j) < ε) := by
   exact corrected_exceptional_pair_mixing_completed S hCR hBound
+
+#print axioms corrected_exceptional_pair_mixing
 
 end
 end AronowAudit.P009

@@ -1,13 +1,10 @@
-/-
-Local file of llm-audit-lean, not taken from Causalean; it builds on the vendored Causalean code in this directory tree.
--/
 import AronowAudit.External.Causalean.Mathlib.Probability.SteinMethod.StandardizedDepGraphCLT
 
 /-!
-An almost-everywhere bounded form of the licensed CausalSmith dependency-graph CLT.
-A common a.e. bound is converted to a pointwise bound by coordinatewise clipping;
+Local adapter for the licensed CausalSmith dependency-graph CLT. A common
+a.e. bound is converted to a pointwise bound by coordinatewise clipping;
 the original means, second moments, joint independence and laws are preserved
-a.e.
+a.e. This module is new audit glue, rather than a copied upstream module.
 -/
 
 namespace Causalean.Mathlib.Probability.SteinMethod
@@ -72,5 +69,8 @@ theorem bounded_degree_dependency_clt_ae
   exact hlim.congr (fun n => congrArg (fun ν : Measure ℝ => ν.real (Set.Iic s))
     (Measure.map_congr ((hsum n).mono (fun _ h => congrArg (fun x : ℝ => x/Real.sqrt (v n)) h))))
 
+#print axioms stein_cdf_clt_of_depGraph
+#print axioms bounded_degree_dependency_clt
+#print axioms bounded_degree_dependency_clt_ae
 end
 end Causalean.Mathlib.Probability.SteinMethod

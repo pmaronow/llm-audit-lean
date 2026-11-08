@@ -11,4 +11,6 @@ theorem lemma2_as_printed_refuted :
       Conditions123 S H θ ρ → Lemma2Conclusions S H θ ρ :=
   PrintedLemma2.n1_proof
 
+example : AronowAudit.P022.Wave1.PrintedLemma2.Target := lemma2_as_printed_refuted
+
 end AronowAudit.P022.Wave1

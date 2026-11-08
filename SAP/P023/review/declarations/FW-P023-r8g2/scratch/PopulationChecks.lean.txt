@@ -1,0 +1,132 @@
+import SAP.P023.Defs
+open MeasureTheory Set Filter
+open scoped BigOperators ENNReal Topology
+open SAP.P023
+namespace AuditPopulation
+noncomputable section
+def x : Fin 4 → ℝ := ![-3/4, -1/4, 1/4, 3/4]
+def d : Fin 4 → ℝ := ![0, 0, 1, 1]
+def y : Fin 4 → ℝ := fun _ => 1/2
+def y' : Fin 4 → ℝ := ![51/100, 1/2, 1/2, 1/2]
+
+lemma data : TwoParty x d := by
+  refine ⟨?_, ?_, ?_, ?_⟩ <;> intro i <;> fin_cases i <;> norm_num [x, d]
+
+lemma party_agrees : ∀ i, d i = party (x i) := by
+  intro i; fin_cases i <;> norm_num [x, d, party]
+
+lemma interior : Condition1 (1/2) x := by
+  constructor
+  · exact ⟨2, by norm_num [x]⟩
+  · exact ⟨1, by norm_num [x]⟩
+
+lemma rank : FullRank (polynomialDesign 1 x d) := by
+  intro c hc
+  have h0 := hc 0
+  have h1 := hc 1
+  have h2 := hc 2
+  norm_num [predict, polynomialDesign, x, d, Fin.sum_univ_succ] at h0 h1 h2
+  ext j
+  fin_cases j
+  · change c 0 = 0; linarith
+  · change c 1 = 0; linarith
+  · change c 2 = 0; linarith
+
+def P4 : Measure (Fin 4) := (1/4 : ℝ≥0∞) • Measure.count
+
+lemma P4_prob : ProbabilityLaw P4 := by
+  norm_num [ProbabilityLaw, P4, Measure.smul_apply, Measure.count_apply_finite]
+  exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+instance P4_isprob : IsProbabilityMeasure P4 := ⟨P4_prob⟩
+
+lemma integral_P4 (f : Fin 4 → ℝ) : (∫ i, f i ∂P4) = (1/4 : ℝ) * ∑ i, f i := by
+  simp [P4, integral_smul_measure, integral_count]
+
+
+def nu : Measure (ℝ × ℝ) := Measure.map (fun i : Fin 4 => (x i, (0:ℝ))) P4
+def mu : Measure ℝ := Measure.map x P4
+
+lemma margin_eq : marginLaw nu = mu := by
+  unfold marginLaw nu mu
+  rw [Measure.map_map (f := fun i : Fin 4 => (x i, (0:ℝ)))
+    (g := Prod.fst) (by fun_prop) (by fun_prop)]
+  rfl
+
+lemma nu_prob : ProbabilityLaw nu := by
+  unfold ProbabilityLaw nu
+  rw [Measure.map_apply (f := fun i : Fin 4 => (x i, (0:ℝ))) (by fun_prop) MeasurableSet.univ]
+  simpa using P4_prob
+
+instance nu_isprob : IsProbabilityMeasure nu := ⟨nu_prob⟩
+
+lemma mu_support : MarginSupport mu := by
+  unfold MarginSupport mu
+  rw [Measure.map_apply (f := x) (by fun_prop) measurableSet_Icc.compl]
+  have hempty : x ⁻¹' (Icc (-1:ℝ) 1)ᶜ = ∅ := by
+    ext i; fin_cases i <;> norm_num [x]
+  rw [hempty, measure_empty]
+
+lemma second : Integrable (fun z : ℝ × ℝ => z.2^2) nu := by
+  unfold nu
+  rw [integrable_map_measure (by fun_prop) (by fun_prop)]
+  exact Integrable.of_finite
+
+lemma mean_zero : ConditionalMean nu (fun _ => 0) := by
+  have hz : (fun z : ℝ × ℝ => z.2) =ᵐ[nu] (fun _ => 0) := by
+    change ∀ᵐ z ∂Measure.map (fun i : Fin 4 => (x i, (0:ℝ))) P4, z.2 = 0
+    rw [ae_map_iff (f := fun i : Fin 4 => (x i, (0:ℝ))) (p := fun z => z.2=0)
+      (by fun_prop) (by measurability)]
+    simp
+  refine ⟨(integrable_congr hz).2 (integrable_zero _ _ _), integrable_zero _ _ _, ?_⟩
+  intro t ht hb
+  apply integral_congr_ae
+  filter_upwards [hz] with z hzero
+  simp [hzero]
+
+lemma moment_pd : MomentPositiveDefinite mu 1 := by
+  intro c hc
+  have hp : Measurable party := by
+    unfold party
+    exact Measurable.ite (measurableSet_le measurable_const measurable_id) measurable_const measurable_const
+  have hm : Measurable (fun z : ℝ =>
+      predict (polynomialDesign 1 (fun x : ℝ => x) party) c z ^ 2) := by
+    simp only [predict, polynomialDesign, Fin.sum_univ_succ]
+    norm_num
+    fun_prop
+  have he : expectation mu (fun z =>
+      predict (polynomialDesign 1 (fun x : ℝ => x) party) c z ^ 2) =
+      (1/4 : ℝ) * ∑ i, (predict (polynomialDesign 1 x d) c i)^2 := by
+    unfold expectation mu
+    rw [integral_map (f := fun z : ℝ =>
+      predict (polynomialDesign 1 (fun x : ℝ => x) party) c z ^ 2)
+      (by fun_prop) hm.aestronglyMeasurable, integral_P4]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro i hi
+    simp only [predict, polynomialDesign, ← party_agrees i]
+  rw [he]
+  have hn : ∃ i, predict (polynomialDesign 1 x d) c i ≠ 0 := by
+    by_contra hh
+    push_neg at hh
+    exact hc (rank c hh)
+  obtain ⟨i, hi⟩ := hn
+  have hs : 0 < ∑ i, (predict (polynomialDesign 1 x d) c i)^2 := by
+    have hl := Finset.single_le_sum (s := Finset.univ)
+      (fun j _ => sq_nonneg (predict (polynomialDesign 1 x d) c j)) (Finset.mem_univ i)
+    exact lt_of_lt_of_le (sq_pos_of_ne_zero hi) hl
+  exact mul_pos (by norm_num) hs
+
+-- Full population hypotheses of T7 at J=1; no Challenge theorem is used.
+example : ProbabilityLaw nu ∧ MarginSupport (marginLaw nu) ∧
+    Integrable (fun z : ℝ × ℝ => z.2^2) nu ∧
+    Measurable (fun _ : ℝ => (0:ℝ)) ∧
+    (∃ B : ℝ, ∀ z ∈ Icc (-1:ℝ) 1, |(0:ℝ)| ≤ B) ∧
+    ConditionalMean nu (fun z => (0:ℝ) + 0*party z + 0) ∧
+    (1 ≤ (1:ℕ)) ∧ MomentPositiveDefinite (marginLaw nu) 1 := by
+  rw [margin_eq]
+  exact ⟨nu_prob, mu_support, second, measurable_const,
+    ⟨0, by intro z hz; norm_num⟩, by simpa using mean_zero, by norm_num, moment_pd⟩
+
+end
+end AuditPopulation

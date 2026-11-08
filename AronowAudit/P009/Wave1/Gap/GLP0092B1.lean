@@ -230,8 +230,8 @@ theorem t45_tail_pointwise (u s L : ℝ) (hs : 1 ≤ s) (hL : 0 < L) :
       _ ≤ L ^ (1-s) * |u| ^ s :=
         mul_le_mul_of_nonneg_right hr (Real.rpow_nonneg (abs_nonneg u) s)
 
-/-- The truncation bound includes finite-law, marginal, moment,
-and W-factorization hypotheses. -/
+/-- The standalone truncation contract includes all finite-law, marginal,
+moment and W-factorization hypotheses required by the referees. -/
 theorem t45_truncation_core {Ω A : Type*} [Fintype Ω] [Fintype A]
     (P : Law Ω) (B : Ω → Bool) (W : Ω → A) (F : Bool → Ω → ℝ)
     (k s L a : ℝ) (hk : 0 < k) (hs : 1 ≤ s) (hL : 0 < L)
@@ -366,7 +366,7 @@ theorem t45_bias_estimand_expansion {n : ℕ} (hn : 0 < n) (E : Experiment n) :
             mean E.design (potential E i false))| := by congr 1; ring
         _ ≤ _ := abs_sub _ _
 
-/-- T45: finite bias lemma A20. -/
+/-- T45 finite bias lemma A20, with the held theorem's exact hypotheses. -/
 theorem arbitrary_bias_finite_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
     (k q s : ℝ) (hReg : Regular E k q s) :
     |adse E-eate E| ≤ 6*k^2*alphaInt E ((s-1)/s)/(n:ℝ) := by
@@ -405,6 +405,8 @@ theorem arbitrary_bias_finite_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
     rw [t45_truncation_choice k s a hReg.1 hReg.2.2.1 ha0] at hcore
     simpa only [mixPower, show alpha E.design (fun z => z i) (maskedOthers E i) = a from rfl,
       if_neg ha] using hcore
+
+example : type_of% @AronowAudit.P009.arbitrary_bias_finite := arbitrary_bias_finite_proof
 
 end
 end AronowAudit.P009.Wave1

@@ -1,8 +1,9 @@
 import AronowAudit.P001.P001_Foundations
 
 /-!
-P001-T47: independence, constant conditional expectations, and best linear prediction
-for transformations that are a.e. measurable under the marginal laws.
+P001-T47, record 44 (mapper record index 7). The author decision of 20 October
+2026 adopts Option A: transformations are a.e. measurable under the marginal
+laws. Both referees approve the mathematical proof under these hypotheses.
 -/
 
 namespace AronowAudit.P001.Wave1
@@ -44,6 +45,29 @@ theorem independent_functions_cef_law_measurable
   · intro _
     simp [blpSlope, blpIntercept, hiTrans.covariance_eq_zero hg2 hh2]
 
+
+/-- Borel transformations satisfy the law-a.e. hypotheses, so the classical
+measurable-function formulation has every conclusion of the repair. -/
+example
+    {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (X Y : Ω → ℝ) (hX : Measurable X) (hY : Measurable Y)
+    (hi : IndepFun X Y μ) (hX2 : MemLp X 2 μ) (hY2 : MemLp Y 2 μ)
+    (g h : ℝ → ℝ) (hg : Measurable g) (hh : Measurable h)
+    (hg2 : MemLp (g ∘ X) 2 μ) (hh2 : MemLp (h ∘ Y) 2 μ) :
+    IsCEF μ X Y (fun _ => mean μ Y) ∧
+    IsCEF μ X (fun ω => (Y ω - mean μ Y)^2) (fun _ => var μ Y) ∧
+    (∀ a b : ℝ, linearRisk μ X Y (mean μ Y) 0 ≤ linearRisk μ X Y a b) ∧
+    (0 < var μ X → blpSlope μ X Y = 0 ∧ blpIntercept μ X Y = mean μ Y) ∧
+    IndepFun (g ∘ X) (h ∘ Y) μ ∧
+    IsCEF μ (g ∘ X) (h ∘ Y) (fun _ => mean μ (h ∘ Y)) ∧
+    (∀ a b : ℝ,
+      linearRisk μ (g ∘ X) (h ∘ Y) (mean μ (h ∘ Y)) 0 ≤
+        linearRisk μ (g ∘ X) (h ∘ Y) a b) ∧
+    (0 < var μ (g ∘ X) →
+      blpSlope μ (g ∘ X) (h ∘ Y) = 0 ∧
+      blpIntercept μ (g ∘ X) (h ∘ Y) = mean μ (h ∘ Y)) := by
+  exact independent_functions_cef_law_measurable μ X Y hX hY hi hX2 hY2 g h
+    (hg.comp hX) (hh.comp hY) hg.aemeasurable hh.aemeasurable hg2 hh2
 
 end
 end AronowAudit.P001.Wave1

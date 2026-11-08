@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -18,7 +17,7 @@ The covariance `Cov(XᵢTᵢ, XⱼTⱼ)` vanishes unless `i,j` are at graph dist
 (so the closed neighborhoods `Nᵢ, Nⱼ` are not separated); there are `≤ N·m³` such pairs, each
 bounded by `2(m·Bₙ²)²`, giving `Var(∑XᵢTᵢ) ≤ 2m⁵·N·Bₙ⁴ → 0`; and
 `∑E[|Xᵢ|Tᵢ²] ≤ m²·N·Bₙ³ → 0`.  The
-leave-out independence is the dependency-graph property applied to `{i}` and `Nᵢᶜ`.
+leave-out independence is the dependency-graph property applied to `{i}` and `Nᵢᶜ`.  See
 -/
 
 module

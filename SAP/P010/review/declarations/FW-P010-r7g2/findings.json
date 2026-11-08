@@ -1,0 +1,71 @@
+[
+  {
+    "target_id": "P010-T6",
+    "theorem": "SAP.P010.T6",
+    "fingerprint": "d81e0fc21eaca5be5f5316e8bd6d47910e0f97f886b0328b4e030f25fc7615aa",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ContinuousWitness.lean (exit 0), importing only SAP.P010.Defs and using no Challenge theorem. Its continuousLaw is the pushforward of (N(0,1) x fair Fin 2 check bit) x fair Fin 2 assignment, with Y(0)=Y(1)=the Gaussian and S(0)=S(1)=the check bit. It proves populationAssumptions, Pr(allPass)=1/2>0, the Gaussian observed response law and its nonatomicity, ordinary response integrability, and r_0=1. The final example constructs a measure and arm satisfying every T6 hypothesis. Compatibility is nonempty because that same measure is compatible with itself. For any compatible law, observed-law equality transfers selected-arm integrability, and per-arm ignorability transfers it to Y(a) on wouldPass(a); restriction to allPass justifies every compatible mean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T7",
+    "theorem": "SAP.P010.T7",
+    "fingerprint": "308757a32824a7ace2777e6473d74374ca4e9b22c2afba33a1779cf8a32ae121",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteWitness.lean (exit 0), importing only Defs. For the actual four atoms and masses it independently proves normalization, both per-arm independence assertions for arbitrary measurable events, positive assignment and passing rates, common-check and all-pass probabilities one, selected event masses 1/2, integrability of the observed response and potential contrast, and the 1/4 versus 1/8 factorization. All outcomes are 0 or 1; the selected-arm sums are 1/4 over masses 1/2, and the potential-contrast sum over allPass is zero, giving the stated ordinary means. The witness satisfies the printed Assumptions 1-3 and common-check premise. There are no antecedent hypotheses on T7 itself.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json:9: the canonical four-state counterexample was incorrectly labelled refuted.",
+        "status": "fixed",
+        "reason": "record.json:21 now says whole. SAP/P010/Challenge/Part1.lean:34-37 identifies the canonical counterexample and the printed joint-independence step it refutes, and explicitly retains the Corollary 1 mean identity. The current statement at SAP/P010/Defs/Part6.lean:92-102 establishes the canonical assertion, so the revised label is correct."
+      }
+    ]
+  },
+  {
+    "target_id": "P010-T8",
+    "theorem": "SAP.P010.T8",
+    "fingerprint": "5fa09b6afd826c58f661f1256a15d51c1940acb3f33f35a23d1f121d18b5eda3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean (exit 0), importing only Defs. The explicit state in Population 1 0 has outcome zero, check true and its unique arm; its Dirac measure satisfies populationAssumptions, sameCheck mass one, and integrable potentialOutcome. The file constructs all input data and every hypothesis. The independently checked four-state Population 2 0 in scratch/FiniteWitness.lean also satisfies the common-check premises and has integrable potential outcomes, demonstrating that the multiple-arm scope is nonempty even without joint-vector independence.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T9",
+    "theorem": "SAP.P010.T9",
+    "fingerprint": "c63f1d9b910d80a43b1670ebf6718691cae0b763aab64d59957b0aef298bc4ab",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/SimulationWitness.lean (exit 0), importing only Defs. It checks the exact sqrt factor 4/25, always-passer masses 17/25 and 18/25, all four positive stratum weights, their normalization, margins 4/5, correlations 1/4 and 1/2, mixture weights 3/20 and 1/10, independence of the Gaussian noise and fair assignment product, and finite Gaussian component means. The common base law across all four strata makes noise independent of the check pair and assignment independent of all potentials. Thus both fixed witnesses satisfy the entire printed design, with SUTVA, positive passing, positive allPass mass and continuous full-support responses. Independent floating-point diagnostics in scratch/simulation-diagnostics.json give widths about 1.798577298968 and 1.767983385222; these diagnostics are not claimed as rigorous interval certificates. T9 has no antecedent hypotheses.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json:19: the canonical two-design counterexample was incorrectly labelled refuted.",
+        "status": "fixed",
+        "reason": "record.json:51 now says whole. SAP/P010/Challenge/Part1.lean:44-46 describes the canonical designs, changed observable passer laws and separated population widths as a counterexample to the printed row comparison. SAP/P010/Defs/Part6.lean:104-129 establishes the canonical assertion, so the revised label is correct."
+      }
+    ]
+  },
+  {
+    "target_id": "P010-T10",
+    "theorem": "SAP.P010.T10",
+    "fingerprint": "dc59c126cf3cc31d3050831a09a1084c27c6425b279c51d636a72bc0784d94f5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean (exit 0), importing only Defs. The final scalar existence example takes p1=p2=1/2, rho=0, lambda=1, sigma=1 and proves all nine scalar hypotheses, lambda nonzero, and positive always-passer stratum mass 1/4. Another example supplies probability populations mu=nu=the explicit always-passing Dirac law, an arm, equal passing rates and equal passer laws, satisfying every premise of the nested invariance clause. This feasible scalar tuple also discharges the outer premises when extracting the full parameter-independent invariance assertion. The two fixed width-comparison designs are independently checked in scratch/SimulationWitness.lean.",
+    "confidence": "high"
+  }
+]

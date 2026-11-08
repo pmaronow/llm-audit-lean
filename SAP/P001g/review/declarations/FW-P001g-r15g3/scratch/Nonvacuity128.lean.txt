@@ -1,0 +1,84 @@
+import SAP.P001g.Defs
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped Topology ENNReal NNReal BigOperators
+noncomputable section
+namespace Audit128
+open SAP.P001g
+
+def G : Measure ℝ := gaussianReal 0 1
+instance : IsProbabilityMeasure G := by unfold G; infer_instance
+instance : NullSingletonClass G := nullSingletonClass_gaussianReal (by norm_num)
+
+def T (n : ℕ) (x : ℝ) : ℝ := x / Real.sqrt n
+def V (n : ℕ) (_x : ℝ) : ℝ := if n ≤ 1 then 0 else 1 / (n : ℝ)
+
+lemma cp_eventually_constant {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
+    (Z : ℕ → Ω → ℝ) (c : ℝ) (h : ∀ᶠ n in atTop, ∀ ω, Z n ω = c) :
+    CP μ Z c := by
+  intro ε hε
+  apply tendsto_const_nhds.congr'
+  filter_upwards [h] with n hn
+  simp [prob, hn, hε.not_ge]
+
+lemma hAN : CD G (fun n x => Real.sqrt n * (T n x - 0))
+    (gaussianReal 0 ⟨(1 : ℝ)^2, sq_nonneg _⟩) := by
+  intro x hx
+  apply tendsto_const_nhds.congr'
+  filter_upwards [eventually_ge_atTop 1] with n hn
+  have hs : Real.sqrt (n : ℝ) ≠ 0 := by
+    apply ne_of_gt
+    apply Real.sqrt_pos.2
+    exact_mod_cast (show 0 < n by omega)
+  have hp : ∀ y : ℝ, Real.sqrt (n : ℝ) * T n y = y := by
+    intro y
+    dsimp [T]
+    field_simp
+  simp only [sub_zero, SAP.P001g.cdf]
+  simp [hp, G]
+  rfl
+
+
+lemma hVC : VarianceConsistent G V ((1 : ℝ)^2) := by
+  apply cp_eventually_constant
+  filter_upwards [eventually_ge_atTop 2] with n hn
+  intro x
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (show n ≠ 0 by omega)
+  simp [V, show ¬n ≤ 1 by omega, hn0]
+
+lemma quantile_exists : ∃ z : ℝ, prob G (Set.Iic z) = 1 - (1/2 : ℝ)/2 := by
+  have hcont : Continuous (fun x : ℝ => prob G (Set.Iic x)) := by
+    apply continuous_iff_continuousAt.mpr
+    intro x
+    have hc := (show IntegrableOn (fun _ : ℝ => (1 : ℝ)) (Set.Iic (x+1)) G from
+      (integrable_const 1).integrableOn).continuousOn_Iic_primitive_Iic
+    have hc' := hc.continuousAt (Iic_mem_nhds (show x < x+1 by linarith))
+    simpa [prob, integral_const, measureReal_def] using hc'
+  have heq : (fun x : ℝ => prob G (Set.Iic x)) = ProbabilityTheory.cdf G := by
+    funext x
+    exact (cdf_eq_real G x).symm
+  have hr := isPreconnected_univ.intermediate_value_Ioo
+    (show (atBot : Filter ℝ) ≤ 𝓟 Set.univ by simp)
+    (show (atTop : Filter ℝ) ≤ 𝓟 Set.univ by simp)
+    hcont.continuousOn
+    (heq ▸ tendsto_cdf_atBot G) (heq ▸ tendsto_cdf_atTop G)
+  obtain ⟨z, _, hz⟩ := hr (show (1 - (1/2 : ℝ)/2) ∈ Set.Ioo 0 1 by norm_num)
+  exact ⟨z, hz⟩
+
+-- All hypotheses of T128, with an actually empty interval at sample size one.
+example : ∃ z : ℝ,
+    (∀ n, Measurable (T n)) ∧ (∀ n, Measurable (V n)) ∧
+    (∀ n x, 0 ≤ V n x) ∧
+    (0 < (1 : ℝ)) ∧ ((1/2 : ℝ) ∈ Set.Ioo 0 1) ∧
+    prob G (Set.Iic z) = 1 - (1/2 : ℝ)/2 ∧
+    CD G (fun n x => Real.sqrt n * (T n x - 0))
+      (gaussianReal 0 ⟨(1 : ℝ)^2, sq_nonneg _⟩) ∧
+    VarianceConsistent G V ((1 : ℝ)^2) ∧
+    (∀ x, ¬T 1 x-z*Real.sqrt (V 1 x) < T 1 x+z*Real.sqrt (V 1 x)) := by
+  obtain ⟨z, hz⟩ := quantile_exists
+  refine ⟨z, ?_, ?_, ?_, by norm_num, by norm_num, hz, hAN, hVC, ?_⟩
+  · intro n; exact measurable_id.div_const _
+  · intro n; exact measurable_const
+  · intro n x; exact ite_nonneg (by positivity) (by positivity)
+  · intro x; simp [V]
+end Audit128

@@ -1,14 +1,18 @@
 import AronowAudit.P029.P029_Audit
 
 /-!
-# P029-T25: independent Bernoulli assignment on a probability space
+# Wave1 blueprint: P029-T25, `AronowAudit.P029.randomized_independent` (repair_and_prove)
 
 Paper: P029 p. 495 (PDF p. 4), fifth IV assumption: Z randomly assigned, independent of all
-fixed potential outcomes, with `0 < P(Z=1) < 1`. The finite signed-weight identity
-`randomized_independent` is valid for every real `e`, so it does not by itself certify a
-probability experiment. The product law `ν × Bernoulli(e)` for `0 < e < 1` on an arbitrary
-measurable unit space has total mass one, independent assignment, and the stated arm
-probabilities.
+fixed potential outcomes, with `0 < P(Z=1) < 1`. The held `randomized_independent` is a
+signed-weight algebraic identity valid for every real `e`, so it does not certify a
+probability experiment. Resolution: `repair_and_prove` — construct the genuine product law
+`ν × Bernoulli(e)` for `0 < e < 1` on an arbitrary measurable unit space and state its
+probability status, independence and arm probabilities (mapper record 7).
+
+Final theorem (writers): `AronowAudit.P029.Wave1.randomized_probability_independent`
+in `AronowAudit/P029/Wave1/RandomizedProbability.lean`. The mapper's optional
+`finite_compatibility` node is not needed for the Target and is omitted.
 -/
 
 namespace AronowAudit.P029.Wave1.RandomizedProbability
@@ -21,7 +25,7 @@ universe u v
 
 noncomputable section
 
-/-- Probability, independence, and arm probabilities under Bernoulli assignment. -/
+/-- The frozen final statement (mapper record 7, proposed statement). -/
 def Target : Prop :=
   ∀ {Ω : Type u} {A : Type v} [MeasurableSpace Ω] [MeasurableSpace A]
     (ν : Measure Ω) [IsProbabilityMeasure ν] (e : ℝ), 0 < e → e < 1 →
@@ -31,7 +35,8 @@ def Target : Prop :=
       mP (ν.prod (bernoulliMeasure e)) {i | i.2 = true} = e ∧
       mP (ν.prod (bernoulliMeasure e)) {i | i.2 = false} = 1 - e
 
-/-- For `0 < e < 1`, `bernoulliMeasure e` is a probability measure (`bernoulli_measure_probability`)
+/-- **Node RP-N1** (`bernoulli_arm_masses`; mapper record 7, paper-proof step 1). For
+`0 < e < 1`, `bernoulliMeasure e` is a probability measure (`bernoulli_measure_probability`)
 with point masses `ofReal e` at `true` and `ofReal (1 - e)` at `false`. -/
 def N1 : Prop :=
   ∀ e : ℝ, 0 < e → e < 1 →
@@ -39,7 +44,8 @@ def N1 : Prop :=
     bernoulliMeasure e {true} = ENNReal.ofReal e ∧
     bernoulliMeasure e {false} = ENNReal.ofReal (1 - e)
 
-/-- For a probability measure `ν`, a probability measure `β` on `Bool`, and measurable `v`, the product law is a
+/-- **Node RP-N2** (`product_assignment_independence`; mapper record 7, steps 2-3). For
+probability measures `ν` and `β` on `Bool` and measurable `v`, the product law is a
 probability measure, `v ∘ fst` is independent of `snd` (`indepFun_prod` with `id`, or the
 rectangle formula `Measure.prod_prod`), and the arm masses are the point masses of `β`. -/
 def N2 : Prop :=
@@ -50,7 +56,7 @@ def N2 : Prop :=
       IndepFun (fun i : Ω × Bool => v i.1) Prod.snd (ν.prod β) ∧
       ∀ b : Bool, mP (ν.prod β) {i | i.2 = b} = (β {b}).toReal
 
-/-- The intermediate propositions imply the conclusion. -/
+/-- The nodes suffice. -/
 theorem assemble (h1 : N1) (h2 : N2.{u, v}) : Target.{u, v} := by
   intro Ω A _ _ ν _ e he0 he1 v hv
   obtain ⟨hβ, ht, hf⟩ := h1 e he0 he1

@@ -1,10 +1,13 @@
 /-
+Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
+Authors: P. M. Aronow audit contributors
 -/
 /-
-Complex pole geometry and uniform real Taylor bounds for the logistic function.
-The argument uses Mathlib's Cauchy formula, analytic identity theorem,
-power-series uniqueness and geometric tail estimate.
+Actual complex pole geometry and uniform real Taylor bounds for the logistic function.
+The argument uses the pinned Mathlib Cauchy formula, analytic identity theorem,
+power-series uniqueness and geometric tail estimate. No additional hypotheses on
+these standard theorems are introduced.
 -/
 import AronowAudit.P015.P015_TaylorCompletion
 import Mathlib.Analysis.Calculus.Taylor
@@ -238,5 +241,9 @@ lemma uniform_sigmoid_taylor (c r ρ : ℝ) (hr : 0≤r) (hrρ : r<ρ)
       simpa only [pow_succ,zero_mul] using hp.mul_const (r/ρ)
     simpa only [mul_zero,zero_div] using (hs.const_mul M).div_const (1-r/ρ)
 
+#print axioms uniform_sigmoid_taylor
+#print axioms realSeries_partialSum
+#print axioms real_taylor_cauchy_bound
+#print axioms real_center_radius
 end
 end AronowAudit.P015.UniformTaylorCompletion

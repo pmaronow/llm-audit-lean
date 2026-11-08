@@ -1,0 +1,86 @@
+[
+  {
+    "theorem": "SAP.P002a.T1",
+    "target_id": "P002-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact negative-delta population, both admissibility assertions, both strict finite variance failures, the repeated-block variance/RHS formulas, the m=1 zero OLS coefficients, and the failed arithmetic comparison match the canonical counterexample. It does not separately assert all covariance/fourth-moment values, zero contrast variances, expanded oracle statistic, or exact numerical printed RHS values. The probability and variance definitions are genuine uniform complete randomization. Independent rational enumeration verifies n=12 and n=24, with 66 and 10626 assignments; see scratch/checks.json. No vacuous antecedent or zero denominator is responsible."
+  },
+  {
+    "theorem": "SAP.P002a.T2",
+    "target_id": "P002-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both final corrected variance bounds use exactly 1-max(delta,0), the canonical raw scaling, and the oracle adjusted statistic and residual variances. The intermediate corrected inequalities, parameter-space inclusions, and separately stated agreement for nonnegative delta are absent. The adjusted part explicitly has k>0, consistent with the paper's positive-integer k convention. Both domains have genuine instances, including the negative-delta model and the compiled positive-dimensional covZeroTwo Xi instance. The raw bound follows from the Neyman formula, monotonicity and the complier covariance bound; the adjusted bound follows from the residual covariance bound and the oracle Neyman formula."
+  },
+  {
+    "theorem": "SAP.P002a.T3",
+    "target_id": "P002-T3",
+    "my_reading_vs_claim": "different",
+    "reason": "The canonical result_touched_by_finding quotes two affirmative printed universal inequalities. The Lean theorem explicitly asserts the NEGATION of each of their accurate formal translations, rather than either affirmative inequality. Its docstring says that the printed claims are false. This is a faithful explicit refutation of both printed conclusions: the n=12 negative-delta population is admissible and has raw variance 5/396 below 65/4752 and oracle variance 36/55 below 39/55. This comparison classification records the logical polarity; acceptance of an architect's refuted decision is deferred to step 3."
+  },
+  {
+    "theorem": "SAP.P002a.T4",
+    "target_id": "P002-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The moment-collapse lemma, common W_a value for the raw collapsed class, exact raw class coverage one and nonemptiness, adjusted nonemptiness and uniform 1-1548/(n-1) coverage bound, and both nonnominal limits match parts (a)-(c). The detailed zero-statistic/quantile/coefficient/rank calculations, exact grid moments, and six-unit heterogeneous-effect enumeration in (d) are not separate assertions. The extended-valued infima do not obtain the counterexample from emptiness: explicit models are supplied for EVERY n>=2 and beta. The singleton-complier covariance and 0/0 statistic conventions match the supplied paper excerpts. Exact grid checks for n=2..20 and the compiled zeroTwo Theta instance establish feasible nonempty examples."
+  },
+  {
+    "theorem": "SAP.P002a.T5",
+    "target_id": "P002-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both uniform lower bounds are stated over the nonempty-size filter, with an explicit NeBot hypothesis requiring arbitrarily large nonempty classes; the adjusted statement requires positive k. Sharpness is a sufficient UNADJUSTED statement under a supplied admissible sequence with a constant additive effect at each size and strictly positive control-outcome variance. It proves nominal convergence for that sequence and equality of the whole-class liminf, but does not assert necessity, adjusted sharpness, or the separate degenerate-class assertion. There is no conclusion assumed in the hypotheses. Nonvacuous sharpness/rate sequences are the balanced sign populations with sizes=2(j+2), delta=0,r=1/2,A=1; adjusted lower-bound classes have, for example, zero residuals and balanced +/-1 covariates at unbounded even sizes."
+  },
+  {
+    "theorem": "SAP.P002a.T6",
+    "target_id": "P002-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The even near-singular family and odd extension match the canonical populations and constants. The theorem retains full-rank arm fits, the exploding FEASIBLE-statistic variance lower bound, 0<=estimator<5/n, probability-one failure at tolerance 1/2, and its limit. It omits explicit residual/moment calculations, rare-block slopes/statistic values, mean zero, the sharper binomial-coefficient variance bound, the 121/(25n) estimator bound, and the pointwise ratio bound. No refutation of E.58-E.60 is asserted. Exact rational enumeration at m=4,5,6 verifies all finite retained conditions, with positive genuine denominators; odd n=9,11,13 satisfy Xi. Lean also checks that the near-singular grid's subtraction is real, not truncated natural subtraction."
+  },
+  {
+    "theorem": "SAP.P002a.T8",
+    "target_id": "P002-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The centered two-unit x=(2,-2) example has fourth moment 16 and the stipulated covariate lower bound 2, while the actual intercept direction has Rayleigh quotient 1<2. Thus it refutes exactly the covariate-to-augmented-Gram implication identified in the claim, not Lemma 19 as a whole. The general even-size family and separately named Gram/eigenvalue evaluations are not asserted. All finite objects are nonempty; the actual Grams are [4] and diag(1,4)."
+  },
+  {
+    "theorem": "SAP.P002a.T9",
+    "target_id": "P002-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The finite block entries, min(1,e) quadratic-form bound, exact least-Rayleigh-value identity, and almost-sure coefficient-error inequality render both parts of the corrected claim. Positive n,k guard the real Rayleigh infima against empty unit spheres. The sequence conclusion uses the actual arm/pooled OLS difference at beta=LATE, and err is chosen after omega and must tend to zero. Fixed strict subsequences and independent complete-randomization vectors match the paper's almost-sure convention; the null set need not be simultaneous over all subsequences. Xi classes are nonempty (compiled covZeroTwo, and balanced +/-1 covariates with zero outcomes at increasing even sizes); a countable product of uniform assignment spaces supplies the required probability model and independence."
+  },
+  {
+    "theorem": "SAP.P002a.T10",
+    "target_id": "P002-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The formal fixed four-unit model, admissibility, beta=2, treated set, RHS -24 versus within-arm variance 0, printed expected bracket square 49/3 versus the exact 1/3, and corrected evaluations all match the counterexample. S1^2=1/12>0 is explicit, so unnormalizing the quoted C.17 equality loses no content: the normalized values are 196 versus 4. Exact enumeration of the six assignments independently reproduces the values; the valid design, LATE and positive S1^2 are also checked in Lean."
+  },
+  {
+    "theorem": "SAP.P002a.T11",
+    "target_id": "P002-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The corrected plus sign, exact finite variance identity for every valid design/beta, normalized equality with positive S1^2, and full normalized big-O/zero-limit statement match C.17 corrected. The separately simplified coefficient n0/(n1*n*pi^2*(1-pi)^2) and centered-square/S1^2 identity are not separately asserted, though they follow algebraically on the positive domain. Positivity is already stipulated in the canonical definitions_needed, so no silent division-by-zero extension is used. The centring model supplies an independently checked nondegenerate finite instance; balanced sign populations supply arbitrarily large instances satisfying the sequence hypotheses."
+  },
+  {
+    "theorem": "SAP.P002a.T12",
+    "target_id": "P002-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem supplies the exact canonical eight-unit admissible model, beta=0, first-four-treated assignment, 70 reassignments, arm contrast -2, variance 1/28, printed RHS 1/14, strict contradiction, and corrected RHS equality 1/28. The reassignment statistic keeps the observed outcome vector fixed as required. All these rational numerical values were independently enumerated."
+  },
+  {
+    "theorem": "SAP.P002a.T13",
+    "target_id": "P002-T13",
+    "my_reading_vs_claim": "broader",
+    "reason": "It states both canonical inequalities, with the exact coefficient and explicit balance constant, for an ARBITRARY fixed real vector q and valid design, without needing that q comes from an admissible potential-outcome model or beta=LATE. This is a true strengthening covering the whole corrected claim. Although balance hypotheses enclose the first inequality too, every valid design permits r=min(n1/n,n0/n)>0, so this adds no substantive restriction to that inequality. The bound follows from the exact variance p(1-p)V(q)/n and the within/between-arm sum-of-squares decomposition. The eight-unit sign example attains its first bound, so the domain is nonvacuous."
+  },
+  {
+    "theorem": "SAP.P002a.T14",
+    "target_id": "P002-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It retains the balanced sign family for every even size >=4, admissibility, exact positive reassignment variance, probability-one failure of the printed sqrt(variance-estimator)/variance ratio at tolerance 1/2, its limiting probability one, and the corrected finite bound 2/(n*kappa). It does not separately state the hypergeometric law, second moment, exact estimator/ratios, zero-or-at-least-three support, sqrt(n) divergence, corrected-ratio range/mean deficit, or corrected zero limit. Exact enumeration for n=4,6,...,16 verifies the displayed variance, the stronger support property, and expected corrected deficit 2/n, yielding the stated Markov bound. The printed reading genuinely fails, since the denominator is a positive variance and the numerator is its estimator's square root."
+  },
+  {
+    "theorem": "SAP.P002a.T15",
+    "target_id": "P002-T15",
+    "my_reading_vs_claim": "different",
+    "reason": "The intended corrected variance-over-variance a.s. limit is retained along each fixed strict subsequence, simultaneously for all positive tolerances. Its model domain is narrowed by explicit strictly positive population W_a variances at every size and strictly positive conditional reassignment variance for every size and omega. Conversely it is stronger on couplings: independent across-size assignments are not required, just the complete-randomization marginals. These differences are explicit in the theorem/docstring. No zero-denominator convention drives the limit. Balanced sign populations with sizes=2(j+2), delta=0,r=1/2,A=1 and a product of uniform assignment spaces satisfy all hypotheses; their conditional q does not depend on the original assignment and their reassignment variance is 1/[4(n-1)]>0. The retained limit is mathematically consistent: concentration makes observed normalized moments bounded almost surely, after which finite randomization-variance consistency applies."
+  }
+]

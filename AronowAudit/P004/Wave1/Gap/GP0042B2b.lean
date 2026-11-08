@@ -12,7 +12,7 @@ noncomputable section
 set_option maxHeartbeats 1000000
 attribute [local instance] Classical.propDecidable
 
-/- Projection of the Euclidean area-integral witness. -/
+/- Record 8: projection of the proved Euclidean area-integral witness. -/
 
 theorem area_sum_counterexample_proof :
     (∀ x z, areaBinaryPopulation.outcome x z = 0 ∨ areaBinaryPopulation.outcome x z = 1) ∧
@@ -26,7 +26,10 @@ theorem area_sum_counterexample_proof :
     (0 : ℝ) < 121/18000 ∧ -(17/500 : ℝ) ≠ 121/18000 := by
   exact area_sum_spatial_caseB.2.2.2
 
-/- Finite probability and Gaussian adapters. -/
+example : type_of% @AronowAudit.P004.area_sum_counterexample :=
+  area_sum_counterexample_proof
+
+/- Record 11: finite probability and Gaussian adapters. -/
 
 theorem GP0042B2b_capped_pd_prob_nonneg {N : ℕ} (p : Fin N → ℝ)
     (hp : ∀ i, 0 < p i ∧ p i < 1) (A : Assignment N → Prop) :
@@ -322,7 +325,8 @@ theorem GP0042B2b_capped_pd_row_bound {N : ℕ} (p : Fin N → ℝ) (R : CircleT
       exact mul_le_mul (hT i z) (hT j z) (abs_nonneg _) hC
     _ = _ := by simp
 
-/-- Finite expectation identity from finite covariance algebra. -/
+/-- Pure finite expectation identity: this part of T8.1 is already obtainable
+from existing proved finite covariance algebra. -/
 theorem GP0042B2b_capped_pd_oracle_mean {N : ℕ} {X : Type*} [MetricSpace X] [MeasurableSpace X]
     (P : SpatialPopulation N X) (p d h : ℝ) (hN : 0 < N)
     (hp : 0 < p ∧ p < 1) (hh : 0 ≤ h)
@@ -726,7 +730,7 @@ lemma GP0042B2b_plugin_bound {N : ℕ} (p : ℝ) (R : CircleTable N)
     cases hz : z i <;> simp [residualContrast, bit, hz]
   · exact GP0042B2b_scaled_residual p R hp hN M δ hM hδ hδhalf hR z hB hE
 
-/-- Four errors with second-moment bounds from the Hájek CLT. -/
+/-- Four errors whose second moments are already controlled by the Hajek CLT development. -/
 def GP0042B2b_errors {N : ℕ} (p : ℝ) (R : CircleTable N) (z : Assignment N) : ℝ :=
   (T42_B p R true z)^2+(T42_B p R false z)^2+
     (T42_E p true z)^2+(T42_E p false z)^2
@@ -901,6 +905,9 @@ theorem capped_pd_coverage_proof (P : PopulationSequence Space) (p d h α : ℝ)
   intro z hz
   exact GP0042B2b_capped_pd_pointwise (values N) (vectors N) z (R N) _ (heigen N)
     _ (c N z) (U N z) hq.le (hc N z) hz.2
+
+example : type_of% @AronowAudit.P004.capped_pd_coverage :=
+  capped_pd_coverage_proof
 
 end
 end AronowAudit.P004.Wave1

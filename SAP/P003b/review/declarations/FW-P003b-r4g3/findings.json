@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P003-T7",
+    "theorem": "SAP.P003b.T7",
+    "fingerprint": "528b249596a9973ebbcf95e614a3ddff32199e36b6f25b53f50350dc9d200bb6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles a balanced n=2,m=1,K=1,alpha=1/2,epsilon=1/8 instance (including alpha-2epsilon>0), arbitrary labeled/canonical observations, and a strictly positive empty preceding-history probability. scratch/InformativeBound.lean separately compiles the same data with K=256 and proves 1-2D exp(-2K epsilon^2)>0, so the probability bounds have informative instances. All conditional guards and assignment/pool nonemptiness are genuine.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T32",
+    "theorem": "SAP.P003b.T32",
+    "fingerprint": "8a0b9bc1a6b8a5fefca0a3b52d97c481734b3ee5ea5fb48c2bd18eb99c44cee0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles observed counts (0,8,0,8), n=16,m=8,alpha=1/2 satisfying every hypothesis. It independently computes Possible o (0,8,8,0) and exact p-value 1, confirming that the accepted set is nonempty and the endpoint definitions do not use empty-set defaults.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T34",
+    "theorem": "SAP.P003b.T34",
+    "fingerprint": "d308233a44b1f24967562d208b1f2590f52d6484faf2b768ac664e1435950f27",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles v=(0,8,8,0), m=8,alpha=1/2,epsilon=1/8 and K=ceil_nat(r)+1 with r equal to the printed logarithmic threshold. This satisfies all outer hypotheses, the K lower bound for part 1, and epsilon<alpha/3 for part 2. An explicit size-eight assignment on Fin 16 also compiles. All finite sample spaces are nonempty.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T6",
+    "theorem": "SAP.P003b.T6",
+    "fingerprint": "2cee29a9bef34411960190153a99fd7e7638a97fe8669ea0cfc544ba87363c09",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently constructs a size-15 labeled assignment on Fin 30 realizing (2,13,1,14) from population (3,0,0,27), computes its multiplicity probability 45/116, checks the exact and A/B/D returned numerators and full traces, and proves the three trace-probability products strictly positive. The uniform product pool supplies fresh independent draws, with no modular wraparound on these searches. Full printed-reading and condition checks are in scratch/RefutationChecks.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T35",
+    "theorem": "SAP.P003b.T35",
+    "fingerprint": "87149f337f30291a757ad63af39414e92f1e1c828648961cc290cae39bca4089",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean verifies the genuine n=2,m=1 experiment, exactly two assignments, the omitted/included true vector on the two observations, the constant-statistic rank identity for arbitrary K, and membership under the corrected full-j procedure. scratch/T35Check.lean proves exclusion from the literal set on all-zero data and inclusion on all-one data for arbitrary K, initial samples and seeds; it independently checks one assignment realizes each observation and these exhaust all assignments. Thus literal coverage 1/2 is independent of the Monte Carlo draws and contradicts 3/4. Every printed condition is checked in scratch/RefutationChecks.md; the corrective-loop note is not treated as a canonical assumption.",
+    "confidence": 0.98
+  }
+]

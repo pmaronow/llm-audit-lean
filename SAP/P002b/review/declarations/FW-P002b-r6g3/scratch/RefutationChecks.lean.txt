@@ -1,0 +1,96 @@
+import SAP.P002b.Defs
+
+open scoped BigOperators ENNReal Matrix
+open SAP.P002b
+set_option maxRecDepth 2000
+set_option maxHeartbeats 800000
+
+namespace AuditRefutation
+noncomputable section
+
+-- The printed-reading witness constants for T29 have nonempty model classes
+-- at every n >= 2. These are actual finite design models, with no undefined moments.
+def zeroPop (n : ℕ) : Population n where
+  y := fun _ _ => 0
+  d := fun _ a => a
+  n1 := n / 2
+
+lemma zero_late (n : ℕ) : late (zeroPop n) = 0 := by
+  simp [late, groupMean, zeroPop]
+
+example (n : ℕ) (hn : 2 ≤ n) : Theta (zeroPop n) 0 (1/4) (1/2) := by
+  have hdivpos : 0 < n / 2 := by omega
+  have hdivlt : n / 2 < n := by omega
+  have hlow : (n : ℝ) ≤ 4 * ((n / 2 : ℕ) : ℝ) := by
+    exact_mod_cast (show n ≤ 4 * (n / 2) by omega)
+  have hupp : 4 * ((n / 2 : ℕ) : ℝ) ≤ 3 * (n : ℝ) := by
+    exact_mod_cast (show 4 * (n / 2) ≤ 3 * n by omega)
+  refine ⟨⟨hn, hdivpos, hdivlt⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simp [MonotoneReceipt, zeroPop]
+  · exact ⟨⟨0, by omega⟩, by simp [compliers, zeroPop]⟩
+  · change (1/4 : ℝ) * n ≤ (n / 2 : ℕ); linarith
+  · change ((n / 2 : ℕ) : ℝ) ≤ (1 - 1/4) * n; linarith
+  · rw [zero_late]
+    simp [w, zeroPop, groupCov, groupVar, groupMean]
+  · intro a
+    rw [zero_late]
+    simp [fourthNorm, v, w, zeroPop, mean, popVar]
+
+example (n : ℕ) (hn : 2 ≤ n) (α : ℝ) : coverage (zeroPop n) 0 α = 1 := by
+  classical
+  have hs : (assignments (zeroPop n)).Nonempty := by
+    apply Finset.powersetCard_nonempty.mpr
+    simpa [zeroPop] using (show n / 2 ≤ n by omega)
+  have hc : ((assignments (zeroPop n)).card : ℝ) ≠ 0 := by
+    exact_mod_cast (Finset.card_ne_zero.mpr hs)
+  have ha (S : Finset (Fin n)) : accepted (zeroPop n) 0 α S := by
+    simp [accepted, rawAR, observedW, observedY, zeroPop, rawTau, rawSigma2,
+      armMean, groupMean, absStudent]
+  unfold coverage probability
+  rw [Finset.filter_eq_self.mpr (fun S _ => ha S)]
+  exact div_self hc
+
+-- The printed-reading adjusted constants also admit a positive-dimensional,
+-- centered, positive-eigenvalue population with finite, well-defined quantities.
+def adjustedZero : CovPopulation 4 1 where
+  pop := { y := fun _ _ => 0, d := fun _ a => a, n1 := 2 }
+  x := fun i _ => (![-3/4,-1/4,1/4,3/4] : Fin 4 → ℝ) i
+
+example : Xi adjustedZero 0 (1/4) 4 (1/2) (1/4) := by
+  have hw (a : Bool) : w adjustedZero.pop a (late adjustedZero.pop) = 0 := by
+    funext i
+    simp [w, late, groupMean, adjustedZero]
+  have hgram : (gram adjustedZero.x Finset.univ).det ≠ 0 := by
+    let e : Option (Fin 1) ≃ Fin 2 := {
+      toFun := fun a => match a with | none => 0 | some _ => 1
+      invFun := fun i => if i = 0 then none else some 0
+      left_inv := by intro a; cases a with
+        | none => rfl
+        | some i => have h : i = 0 := Subsingleton.elim _ _; subst i; rfl
+      right_inv := by intro i; fin_cases i <;> rfl }
+    rw [← Matrix.det_reindex_self e, Matrix.det_fin_two]
+    norm_num [Matrix.reindex_apply, e, gram, groupMean, augmented,
+      adjustedZero, Fin.sum_univ_succ]
+  have hres (a : Bool) : residual adjustedZero a (late adjustedZero.pop) = 0 := by
+    have hscore : score adjustedZero.x Finset.univ (0 : Fin 4 → ℝ) = 0 := by
+      funext j; simp [score, groupMean]
+    funext i
+    simp only [SAP.P002b.residual, psi, hw, ols, if_pos hgram]
+    rw [hscore]
+    simp
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [ValidDesign, adjustedZero]
+  · simp [MonotoneReceipt, adjustedZero]
+  · exact ⟨0, by simp [compliers, adjustedZero]⟩
+  · norm_num [adjustedZero]
+  · norm_num [adjustedZero]
+  · simp [hres, popCov, popVar, mean]
+  · intro a; simp [hres, fourthNorm, popVar, mean]
+  · intro s; norm_num [adjustedZero, Fin.sum_univ_succ]
+  · intro s; norm_num [mean, adjustedZero, Fin.sum_univ_succ]
+  · intro b
+    norm_num [normSq, dotProduct, mean, adjustedZero, Fin.sum_univ_succ]
+    nlinarith [sq_nonneg (b 0)]
+
+end
+end AuditRefutation

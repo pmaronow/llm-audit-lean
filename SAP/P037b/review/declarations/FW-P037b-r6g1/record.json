@@ -1,0 +1,72 @@
+[
+ {
+  "target_id": "P037-T18",
+  "decision": "restricted",
+  "theorem": "SAP.P037b.T18",
+  "restriction": "Retains the residual-multiplier covariance, leverage facts, homoskedastic HC0 shortfall, and positive-norm weighted-row algebra. Omits identification with the released R procedure, the second expanded Gram-inverse sandwich expression and coefficient standard-error/normal-Wald formulas in (a), and identification of the abstract row factor with the expected-to-true coefficient variance ratio.",
+  "rows_used": [
+   "AronowAudit.P037.hc0_homoskedastic_shortfall",
+   "AronowAudit.P037.hc0_row_bias_factor",
+   "AronowAudit.P037.school_leverage_facts",
+   "AronowAudit.P037.wild_bootstrap_is_hc0"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T18Statement",
+  "bridge": "SAP.P037b.Bridge.T18_correspondence"
+ },
+ {
+  "target_id": "P037-T23",
+  "decision": "restricted",
+  "theorem": "SAP.P037b.T23",
+  "restriction": "Retains the six-group inverse, normal-equation, residual-magnitude and HC0 certificates; both predicted means; all named variances and their comparisons; and the centered-fit certificates. Omits an explicit rank-3 assertion, the predicted-difference and variance-decomposition equations, the separate control-residual mean and sample-variance certificates, and the square-root interval-width conclusion or identification of released plotting code.",
+  "rows_used": [
+   "AronowAudit.P037.band_centered_refit_certificate",
+   "AronowAudit.P037.band_counterexample_values",
+   "AronowAudit.P037.band_ols_hc0_certificate"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T23Statement",
+  "bridge": "SAP.P037b.Bridge.T23_correspondence"
+ },
+ {
+  "target_id": "P037-T24",
+  "decision": "restricted",
+  "theorem": "SAP.P037b.T24",
+  "restriction": "Retains the algebraic prediction rows and mean difference, the symmetric-covariance decomposition/equality criterion, and same-sample full-rank recentering of coefficients, predictions, residuals and HC0 variance. Omits the normal-reference interval endpoints in (b), examples realizing both variance orderings in (c), the residual-control-band failure and concrete certificate in (e),(f), the explicit identification of the centered variance with a prediction quadratic form, and verification of the released plotting routines.",
+  "rows_used": [
+   "AronowAudit.P037.centered_refit_is_contrast",
+   "AronowAudit.P037.interaction_prediction_rows",
+   "AronowAudit.P037.prediction_mean_contrast_variance"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T24Statement",
+  "bridge": "SAP.P037b.Bridge.T24_correspondence"
+ },
+ {
+  "target_id": "P037-T19",
+  "decision": "restricted",
+  "theorem": "SAP.P037b.T19",
+  "restriction": "Retains constant effects pointwise and averaged over every nonempty subset, assignment-dependent kept sets, the complete six-assignment table, finite expectations, profiling crossproducts, and the probability limit of the explicitly defined weighted block ratio. Omits identification of that ratio as the OLS treatment coefficient in a general regression on block indicators.",
+  "rows_used": [
+   "AronowAudit.P037.Wave1.outcome_selection_regression_limit_proof",
+   "AronowAudit.P037.outcome_selection_finite_counterexample",
+   "AronowAudit.P037.selected_block_crossproducts"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T19Statement",
+  "bridge": "SAP.P037b.Bridge.T19_correspondence"
+ },
+ {
+  "target_id": "P037-T20",
+  "decision": "restricted",
+  "theorem": "SAP.P037b.T20",
+  "restriction": "States only the finite inverse-probability identities (a),(b) and the same-side threshold sufficient condition in (c). Omits the sharp-null specialization, the referenced T19 counterexample and conditional inclusion probabilities in (d), and verification of the released scripts, data counts and reporting descriptions.",
+  "rows_used": [
+   "AronowAudit.P037.selection_ipw_identities",
+   "AronowAudit.P037.threshold_assignment_invariant"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T20Statement",
+  "bridge": "SAP.P037b.Bridge.T20_correspondence"
+ }
+]

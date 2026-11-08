@@ -336,6 +336,8 @@ theorem uniform_ipw_counterexample_proof :
       · rw [hc]
         exact t1_not_representable 0 (Or.inl rfl)
 
+example : type_of% @AronowAudit.P017.uniform_ipw_counterexample := uniform_ipw_counterexample_proof
+
 end
 
 end AronowAudit.P017.Wave1

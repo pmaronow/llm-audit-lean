@@ -1,0 +1,834 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P013b.T15",
+   "target_id": "P013-T15",
+   "fingerprint": "a1eeebdbdd72f12eef4b8bcefd83c1b06f18562b074bb1ffcc4ec832daef2367",
+   "module": "SAP.P013b.Challenge.Part1",
+   "line": 6,
+   "closure": [
+    {
+     "line": 14,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.mk"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.weight"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.exposure"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.mk"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.outcome"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Positivity"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P013b.Defs.Part5",
+     "name": "SAP.P013b.T15Statement"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.correctionA2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.correctionA2._proof_1"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.covariance"
+    },
+    {
+     "line": 92,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.covarianceA"
+    },
+    {
+     "line": 86,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.covarianceHT"
+    },
+    {
+     "line": 99,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.effectVariance"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.expectation"
+    },
+    {
+     "line": 68,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.htEffect"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.htTotal"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.indicator"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.jointPi"
+    },
+    {
+     "line": 71,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.pairTerm"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.pi"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.variance"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.varianceHT"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P013b.T16",
+   "target_id": "P013-T16",
+   "fingerprint": "755a146c17891d0141e3f456dcda326b4d07fdb07fd17d330e327899accc7ab0",
+   "module": "SAP.P013b.Challenge.Part1",
+   "line": 14,
+   "closure": [
+    {
+     "line": 14,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.mk"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.weight"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.exposure"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.mk"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.outcome"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Positivity"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P013b.Defs.Part5",
+     "name": "SAP.P013b.T16Statement"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.covariance"
+    },
+    {
+     "line": 104,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.differenceTotal"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.expectation"
+    },
+    {
+     "line": 111,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.hajek"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.htCount"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.htTotal"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.indicator"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.observed"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.pi"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.potentialMean"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.potentialTotal"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.variance"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P013b.T17",
+   "target_id": "P013-T17",
+   "fingerprint": "a2d2345153d4334852129b2a97700cde1442f642bc87857fc5b230aca0de080e",
+   "module": "SAP.P013b.Challenge.Part1",
+   "line": 19,
+   "closure": [
+    {
+     "line": 14,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.mk"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.weight"
+    },
+    {
+     "line": 115,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Misspecified"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.exposure"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.mk"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Positivity"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P013b.Defs.Part5",
+     "name": "SAP.P013b.T17Statement"
+    },
+    {
+     "line": 126,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.conditionalPotentialTotal"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.expectation"
+    },
+    {
+     "line": 119,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.htRandomizationTotal"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.indicator"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.pi"
+    },
+    {
+     "line": 123,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.randomizationWeight"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P013b.T18",
+   "target_id": "P013-T18",
+   "fingerprint": "3875090c722f9911e220dc13e5525cbe9f437ab8c40b2d575ccdc40130ecd839",
+   "module": "SAP.P013b.Challenge.Part1",
+   "line": 24,
+   "closure": [
+    {
+     "line": 85,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Condition3"
+    },
+    {
+     "line": 96,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Condition5Printed"
+    },
+    {
+     "line": 100,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Condition6"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.mk"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.weight"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.design"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.exposureSize"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.mk"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.population"
+    },
+    {
+     "line": 47,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.supportSize"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence.control"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence.experiment"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence.mk"
+    },
+    {
+     "line": 54,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence.treated"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.NestedPopulationSetup"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.exposure"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.mk"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.outcome"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Positivity"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.PrintedDependency"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.PrintedNoEdge"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.RowBound"
+    },
+    {
+     "line": 82,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.StandingPositivity"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P013b.Defs.Part5",
+     "name": "SAP.P013b.T18Statement"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.VectorIndependent"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.causalEffect"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.correctionA2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.correctionA2._proof_1"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.covariance"
+    },
+    {
+     "line": 92,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.covarianceA"
+    },
+    {
+     "line": 99,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.effectVariance"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.expectation"
+    },
+    {
+     "line": 68,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.htEffect"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.htTotal"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.indicator"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.jointPi"
+    },
+    {
+     "line": 41,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.normalCDF"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.normalCritical"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.normalCritical._proof_1"
+    },
+    {
+     "line": 71,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.pairTerm"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.pi"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.potentialMean"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.potentialTotal"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.probability"
+    },
+    {
+     "line": 103,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqCoverage"
+    },
+    {
+     "line": 71,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqEstimate"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqLaw"
+    },
+    {
+     "line": 69,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqPopulation"
+    },
+    {
+     "line": 74,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqTarget"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqTrueVariance"
+    },
+    {
+     "line": 79,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqVarianceEstimate"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.variance"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.varianceHT"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P013b.T19",
+   "target_id": "P013-T19",
+   "fingerprint": "cb1925f9c2acd4e86b30a79f5cdceb486a9ab539a847556dec908eabccb9ee30",
+   "module": "SAP.P013b.Challenge.Part1",
+   "line": 32,
+   "closure": [
+    {
+     "line": 85,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Condition3"
+    },
+    {
+     "line": 90,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Condition4"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ConvergesInProbability"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.mk"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Design.weight"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.design"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.exposureSize"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.mk"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.population"
+    },
+    {
+     "line": 47,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.Experiment.supportSize"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence.control"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence.experiment"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence.mk"
+    },
+    {
+     "line": 54,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.ExperimentSequence.treated"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.NestedPopulationSetup"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.PairIndependent"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.exposure"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.mk"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Population.outcome"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.Positivity"
+    },
+    {
+     "line": 82,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.StandingPositivity"
+    },
+    {
+     "line": 56,
+     "module": "SAP.P013b.Defs.Part5",
+     "name": "SAP.P013b.T19Statement"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.causalEffect"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.expectation"
+    },
+    {
+     "line": 68,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.htEffect"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.htTotal"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.indicator"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.jointPi"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.pi"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.potentialMean"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.potentialTotal"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P013b.Defs.Part1",
+     "name": "SAP.P013b.probability"
+    },
+    {
+     "line": 71,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqEstimate"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqLaw"
+    },
+    {
+     "line": 69,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqPopulation"
+    },
+    {
+     "line": 74,
+     "module": "SAP.P013b.Defs.Part2",
+     "name": "SAP.P013b.seqTarget"
+    }
+   ]
+  }
+ ]
+}

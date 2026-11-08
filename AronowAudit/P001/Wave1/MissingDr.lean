@@ -36,6 +36,8 @@ theorem missing_double_robustness_paper_support :
     ⟨MarSelection.n1_proof, MarSelection.n2_proof, MarSelection.n3_proof,
       MarSelection.n4_proof, MarSelection.n5_proof, MarSelection.n6_proof, MarSelection.n7_proof⟩
 
+example : AronowAudit.P001.Wave1.MissingDr.Target := missing_double_robustness_paper_support
+
 end
 
 end AronowAudit.P001.Wave1

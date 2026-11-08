@@ -1,0 +1,67 @@
+import SAP.P005b.Challenge
+open SAP.P005b Finset
+
+noncomputable section
+
+def P5 : Population 5 1 where
+  x := fun i _ => ![(3/2 : ℝ), 1/2, -1/2, -3/2, 0] i
+  yT := ![1, 0, 0, 0, 0]
+  yC := ![0, 0, 0, 0, 0]
+
+theorem P5_std : standardized P5 := by
+  constructor
+  · funext k; fin_cases k
+    simp [xMean, mean, P5, Fin.sum_univ_five]; norm_num
+  · ext k l; fin_cases k; fin_cases l
+    simp [gram, popMean, mean, P5, Fin.sum_univ_five]; norm_num
+
+theorem d52 : design 5 2 = ({{0,1},{0,2},{0,3},{0,4},{1,2},{1,3},{1,4},{2,3},{2,4},{3,4}} :
+    Finset (Finset (Fin 5))) := by unfold design; decide
+
+theorem k01 : SAP.P005b.control ({0,1} : Finset (Fin 5)) = {2,3,4} := by decide
+theorem k02 : SAP.P005b.control ({0,2} : Finset (Fin 5)) = {1,3,4} := by decide
+theorem k03 : SAP.P005b.control ({0,3} : Finset (Fin 5)) = {1,2,4} := by decide
+theorem k04 : SAP.P005b.control ({0,4} : Finset (Fin 5)) = {1,2,3} := by decide
+theorem k12 : SAP.P005b.control ({1,2} : Finset (Fin 5)) = {0,3,4} := by decide
+theorem k13 : SAP.P005b.control ({1,3} : Finset (Fin 5)) = {0,2,4} := by decide
+theorem k14 : SAP.P005b.control ({1,4} : Finset (Fin 5)) = {0,2,3} := by decide
+theorem k23 : SAP.P005b.control ({2,3} : Finset (Fin 5)) = {0,1,4} := by decide
+theorem k24 : SAP.P005b.control ({2,4} : Finset (Fin 5)) = {0,1,3} := by decide
+theorem k34 : SAP.P005b.control ({3,4} : Finset (Fin 5)) = {0,1,2} := by decide
+
+theorem P5_ireg : interactedRegular P5 2 := by
+  intro S hS
+  rw [d52] at hS
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hS
+  rcases hS with rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl|rfl <;>
+  · simp only [Matrix.det_unique, armL, xMean, mean, k01, k02, k03, k04, k12, k13, k14, k23, k24, k34]
+    simp [P5, Finset.sum_insert]
+    norm_num
+
+/-- The universally quantified printed third-component identity of Theorem 4.1 fails at P5. -/
+theorem P5_fails :
+    expectation 2 (fun S => dot (xMean P5 (SAP.P005b.control S)) (armNu3 P5 (SAP.P005b.control S) P5.yC)) -
+        expectation 2 (fun S => dot (xMean P5 S) (armNu3 P5 S P5.yT)) ≠
+      NCCC 5 2 * leverageCov P5 P5.yC - NTTT 5 2 * leverageCov P5 P5.yT := by
+  have hL : expectation 2 (fun S => dot (xMean P5 (SAP.P005b.control S)) (armNu3 P5 (SAP.P005b.control S) P5.yC)) -
+        expectation 2 (fun S => dot (xMean P5 S) (armNu3 P5 S P5.yT)) = 1/64 := by
+    simp only [expectation]
+    rw [show (design 5 2).card = 10 by decide, d52]
+    repeat rw [Finset.sum_insert (by decide)]
+    rw [Finset.sum_singleton, Finset.sum_singleton]
+    simp [Finset.sum_insert, k01, k02, k03, k04, k12, k13, k14, k23, k24, k34, dot, xMean, armNu3,
+      mean, centered, popMean, P5, Fin.sum_univ_five]
+    norm_num
+  have hR : NCCC 5 2 * leverageCov P5 P5.yC - NTTT 5 2 * leverageCov P5 P5.yT = -1/64 := by
+    simp [NCCC, NTTT, leverageCov, popCov, sampleCov, mean, leverage, dot, P5, Fin.sum_univ_five]
+    norm_num
+  rw [hL, hR]; norm_num
+
+example : ¬ (∀ {n d m : ℕ} (P : Population n d),
+      3 ≤ n → 0 < m → m < n → standardized P → interactedRegular P m →
+      expectation m (fun S => dot (xMean P (SAP.P005b.control S)) (armNu3 P (SAP.P005b.control S) P.yC)) -
+        expectation m (fun S => dot (xMean P S) (armNu3 P S P.yT)) =
+          NCCC n m * leverageCov P P.yC - NTTT n m * leverageCov P P.yT) := fun h =>
+  P5_fails (h P5 (by norm_num) (by norm_num) (by norm_num) P5_std P5_ireg)
+
+end

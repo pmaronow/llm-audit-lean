@@ -1,0 +1,140 @@
+import SAP.P025b.Challenge
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxRecDepth 2000
+set_option maxHeartbeats 800000
+
+open scoped BigOperators
+open SAP.P025b
+open MeasureTheory ProbabilityTheory
+
+noncomputable section
+
+-- T17: independently check every literal table cell and the metadata.
+example :
+    List.Forall (fun c : TableCell =>
+      roundsTenth (cellPercent c.1 c.2.2.1 c.2.2.2.1) c.2.2.2.2.2 ∧
+      roundsTenth (cellPercent c.2.1 c.2.2.1 c.2.2.2.1) c.2.2.2.2.1)
+      tableCells := by
+  norm_num [tableCells, List.Forall, roundsTenth, cellPercent, binaryLower, binaryUpper]
+
+example : tableCells.length = 42 ∧
+    (tableCells.filter (fun c => c.2.2.2.2.1 != c.2.2.2.2.2)).length = 6 := by
+  norm_num [tableCells]
+
+-- T18: two distinct admissible bound pairs with the same nontrivial ratio.
+example : 0 < (2 : ℕ) ∧
+    (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) ≤ 1/2 ∧ (1/2 : ℝ) ≤ 1 ∧
+    (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) ≤ 1 ∧ (1 : ℝ) ≤ 1 ∧
+    ((1/2 : ℝ)/(1/4) = (1 : ℝ)/(1/2)) := by
+  norm_num
+
+example : attainable (![0,1] : Fin 2 → ℝ) (fun _ => 1) (1/4) (1/2) (1/3) := by
+  refine ⟨![4,2], ?_, ?_⟩
+  · intro i
+    fin_cases i <;> norm_num
+  · norm_num [ratio, Fin.sum_univ_two]
+
+-- T19: a sorted nonconstant sample with two genuine adjacent ties, and g=2.
+def tiedSample : Fin 4 → ℝ := ![0,0,1,1]
+
+lemma tiedSample_monotone : Monotone tiedSample := by
+  intro i j hij
+  fin_cases i <;> fin_cases j <;> norm_num [tiedSample] at *
+
+example : (2 : ℕ) ≤ 4 ∧ Monotone tiedSample ∧
+    (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) ≤ 1/2 ∧ (1/2 : ℝ) ≤ 1 := by
+  exact ⟨by norm_num, tiedSample_monotone, by norm_num, by norm_num, by norm_num⟩
+
+example : lowerCut tiedSample (fun _ => 1) 2 (2 : Fin 4) ∧
+    upperCut tiedSample (fun _ => 1) 2 (2 : Fin 4) := by
+  constructor
+  · constructor
+    · norm_num [lowerValue, ratio, lowerWeights, tiedSample, Fin.sum_univ_succ]
+    · intro j hj
+      fin_cases j <;>
+        norm_num [lowerValue, ratio, lowerWeights, tiedSample, Fin.sum_univ_succ] at *
+  · constructor
+    · norm_num [upperValue, ratio, upperWeights, tiedSample, Fin.sum_univ_succ]
+    · intro j hj
+      fin_cases j <;>
+        norm_num [upperValue, ratio, upperWeights, tiedSample, Fin.sum_univ_succ] at *
+
+-- T20: mixed, all-zero, all-one, and equal-bound inputs satisfy all premises.
+example : (0 < (2 : ℕ)) ∧ (∀ i : Fin 2, (![0,1] : Fin 2 → ℝ) i = 0 ∨
+    (![0,1] : Fin 2 → ℝ) i = 1) ∧
+    (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) ≤ 1/2 ∧ (1/2 : ℝ) ≤ 1 := by
+  refine ⟨by norm_num, ?_, by norm_num, by norm_num, by norm_num⟩
+  intro i
+  fin_cases i <;> norm_num
+
+example : (0 < (1 : ℕ)) ∧ (∀ i : Fin 1, (fun _ => (0 : ℝ)) i = 0 ∨
+    (fun _ => (0 : ℝ)) i = 1) ∧
+    (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) ≤ 1/2 ∧ (1/2 : ℝ) ≤ 1 := by
+  norm_num
+
+example : (0 < (1 : ℕ)) ∧ (∀ i : Fin 1, (fun _ => (1 : ℝ)) i = 0 ∨
+    (fun _ => (1 : ℝ)) i = 1) ∧
+    (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) ≤ 1/2 ∧ (1/2 : ℝ) ≤ 1 := by
+  norm_num
+
+example : attainable (![0,1] : Fin 2 → ℝ) (fun _ => 1) (1/4) (1/2) (2/3) := by
+  refine ⟨![2,4], ?_, ?_⟩
+  · intro i
+    fin_cases i <;> norm_num
+  · norm_num [ratio, Fin.sum_univ_two]
+
+-- T21: a random design, not a repeated dependent draw or a zero measure.
+def coinDesign : FiniteDesign (Fin 2) (Fin 2) where
+  sample := fun i => {i}
+  probability := fun _ => 1/2
+  nonnegative := by intro i; norm_num
+  total := by norm_num [Fin.sum_univ_two]
+
+lemma coin_inclusion (i : Fin 2) : inclusion coinDesign i = 1/2 := by
+  fin_cases i <;>
+    norm_num [inclusion, designExpectation, coinDesign, Fin.sum_univ_two]
+
+lemma coin_classTotal (j : Fin 2) : classTotal coinDesign id j = 1/2 := by
+  unfold classTotal
+  rw [Finset.sum_filter]
+  fin_cases j <;>
+    norm_num [Fin.sum_univ_two, coin_inclusion]
+
+lemma coin_separation : separation (![0,1] : Fin 2 → ℝ)
+    (classTotal coinDesign id) ((1/2)/(1/4)) := by
+  intro k
+  fin_cases k <;>
+    norm_num [upperValue, lowerValue, ratio, upperWeights, lowerWeights,
+      Fin.sum_univ_two, coin_classTotal]
+
+example : (0 < (2 : ℕ)) ∧ (0 < (2 : ℕ)) ∧
+    Function.Surjective (id : Fin 2 → Fin 2) ∧
+    StrictMono (![0,1] : Fin 2 → ℝ) ∧
+    (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) ≤ 1/2 ∧ (1/2 : ℝ) ≤ 1 ∧
+    (∀ i, (1/4 : ℝ) ≤ inclusion coinDesign i ∧ inclusion coinDesign i ≤ 1/2) ∧
+    separation (![0,1] : Fin 2 → ℝ) (classTotal coinDesign id) ((1/2)/(1/4)) := by
+  refine ⟨by norm_num, by norm_num, Function.surjective_id, ?_,
+    by norm_num, by norm_num, by norm_num, ?_, coin_separation⟩
+  · intro i j hij
+    fin_cases i <;> fin_cases j <;> norm_num at *
+  · intro i
+    rw [coin_inclusion]
+    norm_num
+
+local instance coinLawIsProbability : IsProbabilityMeasure (jointLaw coinDesign) := by
+  unfold jointLaw
+  infer_instance
+
+example : IsProbabilityMeasure (jointLaw coinDesign) := by infer_instance
+
+example : iIndepFun (fun r : ℕ => fun ω : ℕ → Fin 2 => ω r)
+    (jointLaw coinDesign) := by
+  exact iIndepFun_infinitePi (fun _ : ℕ => measurable_id)
+
+example : (jointLaw coinDesign) Set.univ = 1 := by simp
+
+-- The unused conditional-completeness defaults, checked explicitly.
+example : sInf (∅ : Set ℝ) = 0 ∧ sSup (∅ : Set ℝ) = 0 := by
+  norm_num

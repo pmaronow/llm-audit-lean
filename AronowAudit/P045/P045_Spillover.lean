@@ -7,10 +7,10 @@ import Mathlib.Data.Nat.Dist
 import Mathlib.Data.ENat.SuccOrder
 import Mathlib.Analysis.SpecificLimits.Basic
 
-/-!
-P045: Spillover Effects in Experimental Data (2021), pp. 289–319.
+/-! P045: Spillover Effects in Experimental Data (2021), pp. 289–319.
 All randomness is the finite experimental design. A ratio with zero denominator
 is represented as `none` where its domain matters, not as an observed zero.
+Theorem docstrings identify targets; drafted claims use `sorry` explicitly.
 -/
 
 namespace AronowAudit.P045
@@ -346,10 +346,10 @@ theorem sum_tuple_succ {A : Type*} [Fintype A] (n : ℕ)
       rw [Fintype.sum_prod_type]
       rfl
 
-/-- Evaluation of tuple coordinate 2. -/
+/-- Evaluation of tuple coordinate 2; used in the small finite certificates. -/
 theorem cons_at_two {A : Type*} (n : ℕ) (a : A) (u : Fin (n+2) → A) :
     Fin.cons (α := fun _ : Fin (n+3) => A) a u ⟨2, by omega⟩ = u ⟨1, by omega⟩ := rfl
-/-- Evaluation of tuple coordinate 3. -/
+/-- Evaluation of tuple coordinate 3; used in the four-member witness. -/
 theorem cons_at_three {A : Type*} (n : ℕ) (a : A) (u : Fin (n+3) → A) :
     Fin.cons (α := fun _ : Fin (n+4) => A) a u ⟨3, by omega⟩ = u ⟨2, by omega⟩ := rfl
 attribute [local simp] cons_at_two cons_at_three
@@ -472,7 +472,7 @@ def groupOverall {n : ℕ} (y : Fin n → Assignment n → ℝ) (z : Assignment 
   mean (fun i => y i z)
 
 /-- T1's explicit partial/stratified interference schedule: "number of
-treated other members", for four-member groups. -/
+treated other members", adjudication §2, for four-member groups. -/
 def coMembers {n : ℕ} (i : Fin n) (z : Assignment n) : ℝ :=
   ∑ j ∈ univ.erase i, bit (z j)
 
@@ -539,7 +539,7 @@ theorem co_members_marginal_four (p : ℝ) (hp : 0 < p) (hp1 : p < 1)
     <;> ring_nf <;> field_simp [hpn,hqn] <;> ring
 
 /-- Four-member Bernoulli count law, derived by grouping the 16 labelled
-assignments; binomial coefficients are (1,4,6,4,1) (T1). -/
+assignments; binomial coefficients are (1,4,6,4,1) (T1, adjudication §3). -/
 def binomial4 (p : ℝ) (k : Fin 5) : ℝ :=
   (Nat.choose 4 k.val : ℝ) * p^k.val * (1-p)^(4-k.val)
 
@@ -573,6 +573,12 @@ theorem bernoulli4_count_law (p : ℝ) (F : Fin 5 → ℝ) :
     Finset.filter_insert, Finset.filter_singleton, Nat.choose]
   <;> ring
 
+/-- T1: event probabilities may be grouped by the treated count, with
+the exact Bernoulli cube and binomial count law equated explicitly. -/
+theorem bernoulli_count_event_probability (p : ℝ) (E : Fin 5 → Prop) :
+    prob (bernoulli p) (fun z => E (countIndex4 z)) = prob (binomial4 p) E := by
+  classical
+  exact bernoulli4_count_law p (fun k => if E k then 1 else 0)
 
 /-- T1: the exact conditional arm-mean and direct-effect failures, computed
 on the five-point count law certified by `bernoulli4_count_law`. Own-arm
@@ -598,13 +604,13 @@ theorem bernoulli_count_counterexample :
 /-- T1: two-stage outcomes: first-stage fair choice of the ψ group, followed
 by independent four-unit assignments. There are 2·16·16=512 outcomes. -/
 abbrev BernoulliWitnessOutcome := Bool × Assignment 4 × Assignment 4
-/-- "the group with S_g=ψ" in T1(ii): select the higher-saturation assignment after the fair first-stage swap; witness, not printed data. -/
+/-- "the group with S_g=ψ" in T1(ii), E001 adjudication §§2–3: select the higher-saturation assignment after the fair first-stage swap; witness, not printed data. -/
 def witnessHigh (w : BernoulliWitnessOutcome) : Assignment 4 :=
   if w.1 then w.2.1 else w.2.2
-/-- "the group with S_g=φ" in T1(ii): select the lower-saturation assignment after the same swap; witness, not printed data. -/
+/-- "the group with S_g=φ" in T1(ii), E001 adjudication §§2–3: select the lower-saturation assignment after the same swap; witness, not printed data. -/
 def witnessLow (w : BernoulliWitnessOutcome) : Assignment 4 :=
   if w.1 then w.2.2 else w.2.1
-/-- "Second stage: given the first stage, the eight Z_ig are independent" (T1 setting). The fair first-stage factor and the two Bernoulli product weights define the actual witness law. -/
+/-- "Second stage: given the first stage, the eight Z_ig are independent" (T1 setting; E001 adjudication §2). The fair first-stage factor and the two Bernoulli product weights define the actual witness law. -/
 def bernoulliWitnessMass (w : BernoulliWitnessOutcome) : ℝ :=
   (1/2) * bernoulli (1/2) (witnessHigh w) * bernoulli (1/4) (witnessLow w)
 /-- "yhat_g(z;ψ)" (p. 310), evaluated in T1's group assigned the indicated saturation. The accompanying domain records its nonzero denominator. -/
@@ -816,7 +822,7 @@ theorem witness_count_conditional (E : Fin 5 → Fin 5 → Prop)
   rw [hf, witness_count_expect (fun h l => if E h l then F h l else 0),
     witness_count_expect (fun h l => if E h l then 1 else 0)]
 
-/-- T1, full witness, clauses (i)–(v): all unit marginal targets,
+/-- T1, full adjudicated witness, clauses (i)–(v): all unit marginal targets,
 the wrong direct estimate on every defined assignment, all reported
 conditional means and event probabilities, and unbiased overall contrast.
 The 512 outcomes include the first-stage choice explicitly. -/
@@ -1500,7 +1506,7 @@ theorem overall_group_unbiased {n : ℕ} (hn : 0 < n) (q : Design (Assignment n)
   rw [expect_div, expect_sum]
 
 /-- Within-population variance with divisor |S|−1; meaningful as a sample
-variance only for |S|≥2 (p. 310, T3–T4). -/
+variance only for |S|≥2 (p. 310, T3–T4; validator N008 eqs. (1)–(2)). -/
 def rawSampleVar {I : Type*} (S : Finset I) (x : I → ℝ) : ℝ :=
   (∑ i ∈ S, (x i - average S x)^2) / ((S.card : ℝ)-1)
 
@@ -1509,7 +1515,7 @@ For zero or one observation this is `none`, matching the corrected NA. -/
 def sampleVar {I : Type*} (S : Finset I) (x : I → ℝ) : Option ℝ :=
   if 2 ≤ S.card then some (rawSampleVar S x) else none
 
-/-- Finite-population variance with divisor n_g−1 (T4(a)). -/
+/-- Finite-population variance with divisor n_g−1 (T4(a), N008 eq. (1)). -/
 def popVar {I : Type*} [Fintype I] (x : I → ℝ) : ℝ := rawSampleVar univ x
 
 /-- Treated set in a group, as in the fixed-count design of p. 310. -/
@@ -1519,7 +1525,7 @@ def treatedSet {n : ℕ} (z : Assignment n) : Finset (Fin n) := univ.filter (fun
 def directGroup {n : ℕ} (a b : Fin n → ℝ) (z : Assignment n) : ℝ :=
   average (treatedSet z) a - average (univ \ treatedSet z) b
 
-/-- The package's singleton-drop quantity in T3: sample
+/-- The package's singleton-drop quantity in T3, N008 eq. (3): sample
 variance/arm size is retained only for arms with at least two units. -/
 def droppedWithin {n : ℕ} (a b : Fin n → ℝ) (z : Assignment n) : ℝ :=
   (if 2 ≤ (treatedSet z).card then rawSampleVar (treatedSet z) a / (treatedSet z).card else 0) +
@@ -1527,7 +1533,7 @@ def droppedWithin {n : ℕ} (a b : Fin n → ℝ) (z : Assignment n) : ℝ :=
     rawSampleVar (univ \ treatedSet z) b / (univ \ treatedSet z).card else 0)
 
 /-- Direct-effect variance formula computed by the package, p. 311,
-T3–T4. Its within-arm terms implement the singleton drop;
+N008 eq. (4) and T3–T4. Its within-arm terms implement the singleton drop;
 on the repaired domain they equal both required sample-variance terms. -/
 def directVarianceEstimate {G : ℕ} {n : Fin G → ℕ} (C : ℕ)
     (a b : (g : Fin G) → Fin (n g) → ℝ)
@@ -1849,7 +1855,7 @@ theorem three_unit_affine_moments (α β u v : ℝ) :
   all_goals (repeat' constructor <;> try ring <;> simp)
 
 /-- T3, full explicit six-group singleton-arm counterexample (p. 310 toy
-design): additive, dilated and upward-bias schedules are all stated. -/
+design; N008 §5): additive, dilated and upward-bias schedules are all stated. -/
 theorem singleton_variance_counterexample :
     let n : Fin 6 → ℕ := fun _ => 3
     let law (m : ℕ) := selectedLaw n 3 (fun _ => crMass 3 m)
@@ -1961,6 +1967,62 @@ theorem selected_direct_cr_unbiased {G C : ℕ} (hC : 0 < C) (hCG : C ≤ G)
   funext g
   exact direct_group_cr_unbiased (hm g).1 (hm g).2 (a g) (b g)
 
+/-- T4, corrected direct variance theorem, N008 eqs. (1)–(7): every arm
+has ≥2 units and ≥2 groups are selected. Includes the exact nonnegative bias
+and equality iff the unit effects are constant within each group. -/
+theorem direct_variance_correction {G C : ℕ} (hC : 2 ≤ C) (hCG : C ≤ G)
+    (n m : Fin G → ℕ) (hm : ∀ g, 2 ≤ m g ∧ m g + 2 ≤ n g)
+    (a b : (g : Fin G) → Fin (n g) → ℝ) :
+    let q := fun g => crMass (n g) (m g)
+    let law := selectedLaw n C q
+    let θ := fun g => mean (a g) - mean (b g)
+    let V := fun g => popVar (a g)/(m g) + popVar (b g)/((n g-m g : ℕ) : ℝ) -
+      popVar (fun i => a g i-b g i)/(n g)
+    let point := selectedMean C (fun g => directGroup (a g) (b g))
+    let vest := directVarianceEstimate C a b
+    (∀ g, expect (q g) (directGroup (a g) (b g)) = θ g ∧
+      variance (q g) (directGroup (a g) (b g)) = V g) ∧
+    expect law point = mean θ ∧
+    variance law point = ((1-(C : ℝ)/G)/C)*popVar θ + (∑ g, V g)/((C : ℝ)*G) ∧
+    expect law vest - variance law point =
+      (∑ g, popVar (fun i => a g i-b g i)/(n g))/(G : ℝ)^2 ∧
+    0 ≤ expect law vest - variance law point ∧
+    (expect law vest = variance law point ↔ ∀ g, ∀ i j, a g i-b g i = a g j-b g j) := by
+  sorry
+
+/-- T4(d): the exact outside-domain bias when singleton-arm variances are
+dropped, N008 eqs. (8)–(9), for arbitrary three-unit group schedules. -/
+theorem singleton_drop_bias {G C : ℕ} (hC : 2 ≤ C) (hCG : C ≤ G)
+    (a b : Fin G → Fin 3 → ℝ) :
+    let n : Fin G → ℕ := fun _ => 3
+    let bias := fun m : ℕ =>
+      expect (selectedLaw n C (fun _ => crMass 3 m)) (directVarianceEstimate (n := n) C a b) -
+      variance (selectedLaw n C (fun _ => crMass 3 m))
+        (selectedMean (n := n) C (fun g : Fin G => directGroup (a g) (b g)))
+    bias 2 = (Finset.sum (univ : Finset (Fin G)) (fun g =>
+      popVar (fun i : Fin 3 => a g i-b g i)/3 - popVar (b g)))/(G : ℝ)^2 ∧
+    bias 1 = (Finset.sum (univ : Finset (Fin G)) (fun g =>
+      popVar (fun i : Fin 3 => a g i-b g i)/3 - popVar (a g)))/(G : ℝ)^2 := by
+  sorry
+
+/-- T4(d): full specialization of the singleton-drop bias to the p. 310
+dilated schedule; negativity requires a nonconstant baseline in some group.
+The finite-population variances are still divided by n_g−1=2. -/
+theorem singleton_drop_dilated_bias {G C : ℕ} (hC : 2 ≤ C) (hCG : C ≤ G)
+    (x : Fin G → Fin 3 → ℝ) :
+    let n : Fin G → ℕ := fun _ => 3
+    let bias := fun (m : ℕ) (a b : Fin G → Fin 3 → ℝ) =>
+      expect (selectedLaw n C (fun _ => crMass 3 m)) (directVarianceEstimate (n := n) C a b) -
+      variance (selectedLaw n C (fun _ => crMass 3 m))
+        (selectedMean (n := n) C (fun g : Fin G => directGroup (a g) (b g)))
+    bias 2 (fun g i => 2*x g i) (fun g i => (5/4)*x g i) =
+      -(11/(8*(G : ℝ)^2))*(∑ g, popVar (x g)) ∧
+    bias 1 (fun g i => (3/2)*x g i) x =
+      -(13/(6*(G : ℝ)^2))*(∑ g, popVar (x g)) ∧
+    ((∃ g i j, x g i ≠ x g j) →
+      bias 2 (fun g i => 2*x g i) (fun g i => (5/4)*x g i) < 0 ∧
+      bias 1 (fun g i => (3/2)*x g i) x < 0) := by
+  sorry
 
 /-- T4's domain correction: a one-observation arm has undefined sample
 variance. This is why the three-unit toy cannot use the repaired formula. -/
@@ -1969,28 +2031,28 @@ theorem singleton_sample_variance_undefined {I : Type*} [DecidableEq I]
   simp [sampleVar]
 
 /-- Closed first-degree neighbourhood B_i={i}∪{j:A_ij=1}, as documented
-for full-neighbourhood exposure (p. 305). -/
+for full-neighbourhood exposure (p. 305; E011 §1). -/
 def neighborhood {n : ℕ} (A : Fin n → Fin n → Bool) (i : Fin n) : Finset (Fin n) :=
   insert i (univ.filter (fun j => A i j = true))
 
-/-- s_i(z), the number treated in B_i (full-neighbourhood mapping). -/
+/-- s_i(z), the number treated in B_i (full-neighbourhood mapping, E011 §1). -/
 def neighborhoodCount {n : ℕ} (A : Fin n → Fin n → Bool)
     (z : Assignment n) (i : Fin n) : ℕ :=
   ((neighborhood A i).filter (fun j => z j = true)).card
 
 /-- Full-neighbourhood target events: all treated, all control (p. 305).
-The erroneous package control event is s_i<b_i. -/
+The erroneous package control event is s_i<b_i (E011 source transcription). -/
 def allTreated {n : ℕ} (A : Fin n → Fin n → Bool) (z : Assignment n) (i : Fin n) : Prop :=
   neighborhoodCount A z i = (neighborhood A i).card
 /-- "a unit and 100% of its first-degree neighbors are in the control condition" (full-neighbourhood package documentation; T6, p. 305 context). The repaired indicator is s_i=0. -/
 def allControl {n : ℕ} (A : Fin n → Fin n → Bool) (z : Assignment n) (i : Fin n) : Prop :=
   neighborhoodCount A z i = 0
-/-- "exposure<B_size" (mapping in T5 and T27, p. 305 context). This coded complement is deliberately kept distinct from the documented all-control condition. -/
+/-- "exposure<B_size" (staged mapping transcribed in T5 and T27, p. 305 context). This coded complement is deliberately kept distinct from the documented all-control condition. -/
 def badAllControl {n : ℕ} (A : Fin n → Fin n → Bool) (z : Assignment n) (i : Fin n) : Prop :=
   neighborhoodCount A z i < (neighborhood A i).card
 
 /-- HT contrast using the full-neighbourhood extreme events with exact
-event probabilities (p. 297, p. 305). `correct` selects the repaired
+event probabilities (p. 297, p. 305; E011 §3). `correct` selects the repaired
 control event; the other event is the package's complement of all treatment. -/
 def fullHT {n : ℕ} (p : Assignment n → ℝ) (A : Fin n → Fin n → Bool)
     (Y : Fin n → Assignment n → ℝ) (correct : Bool) (z : Assignment n) : ℝ :=
@@ -2003,11 +2065,11 @@ def fullHT {n : ℕ} (p : Assignment n → ℝ) (A : Fin n → Fin n → Bool)
 def allVsNone {n : ℕ} (Y : Fin n → Assignment n → ℝ) : ℝ :=
   mean (fun i => Y i (fun _ => true) - Y i (fun _ => false))
 
-/-- Two adjacent units in the explicit counterexample (T5). -/
+/-- Two adjacent units, E011's explicit counterexample (T5). -/
 def edge2 (i j : Fin 2) : Bool := decide (i ≠ j)
-/-- "y_i(z)=1+z_1+z_2" (T5(iii)): the explicit two-unit schedule. -/
+/-- "y_i(z)=1+z_1+z_2" (T5(iii), E011 §3): the explicit two-unit validator schedule. -/
 def linear2 (_i : Fin 2) (z : Assignment 2) : ℝ := 1 + bit (z 0) + bit (z 1)
-/-- "y_i(z)=1+2 I(z_1=z_2=1)" (T5(iv)): the threshold schedule illustrating that miscoding need not change the expectation. -/
+/-- "y_i(z)=1+2 I(z_1=z_2=1)" (T5(iv), E011 §3): the threshold schedule illustrating that miscoding need not change the expectation. -/
 def threshold2 (_i : Fin 2) (z : Assignment 2) : ℝ :=
   1 + 2 * (if z 0 = true ∧ z 1 = true then 1 else 0)
 
@@ -2189,35 +2251,35 @@ theorem full_neighborhood_ht_correction {n : ℕ} (hn : 0 < n)
       exact event_constant_ht p.mass _ (Y i) _ (hthreshold i) (hb i)
     simpa only [he, allVsNone] using hcomp
 
-/-- R's column-major strict triangle order (T7). Coordinates are
+/-- R's column-major strict triangle order (E012 §2, T7). Coordinates are
 zero based; list order is by column then row, exactly as R indexes cells. -/
 def upperCells (n : ℕ) : List (ℕ × ℕ) :=
   (List.range n).flatMap (fun j => (List.range n).filterMap
     (fun i => if i < j then some (i,j) else none))
-/-- "R lists the selected cells ... column by column" (T7 operation): strict lower-triangle cells in the actual storage order. -/
+/-- "R lists the selected cells ... column by column" (T7 operation, E012 §2): strict lower-triangle cells in the actual storage order. -/
 def lowerCells (n : ℕ) : List (ℕ × ℕ) :=
   (List.range n).flatMap (fun j => (List.range n).filterMap
     (fun i => if j < i then some (i,j) else none))
 
 /-- Literal faulty lower-triangle copy: kth lower cell receives kth upper
-cell. It keeps the upper triangle and diagonal unchanged (T7). -/
+cell. It keeps the upper triangle and diagonal unchanged (T7, E012 §2). -/
 def faultyCopy (n : ℕ) (M : ℕ → ℕ → ℝ) (i j : ℕ) : ℝ :=
   if j < i then
     let cell := (upperCells n)[(lowerCells n).idxOf (i,j)]?.getD (0,0)
     M cell.1 cell.2
   else M i j
 
-/-- T9(a), corrected transpose copy: each lower cell receives its actual transpose. -/
+/-- T9(a), repaired source: each lower cell receives its actual transpose. -/
 def correctedCopy (M : ℕ → ℕ → ℝ) (i j : ℕ) : ℝ :=
   if j < i then M j i else M i j
 
-/-- T7's one-edge four-vertex witness. -/
+/-- T7's one-edge four-vertex witness (E012 §2). -/
 def singleEdge4 (i j : ℕ) : ℝ :=
   if (i=0 ∧ j=3) ∨ (i=3 ∧ j=0) then 1 else 0
 
 /-- T7(ii): a symmetric zero-diagonal binary adjacency is made asymmetric
 even at zero requested modification probability; a true entry is removed
-and a spurious entry is added. This is a concrete witness. -/
+and a spurious entry is added. This is a kernel-checked concrete witness. -/
 theorem faulty_copy_counterexample :
     (∀ i j, singleEdge4 i j = singleEdge4 j i) ∧
     (∀ i, singleEdge4 i i = 0) ∧
@@ -2245,7 +2307,7 @@ theorem corrected_copy_symmetric (M : ℕ → ℕ → ℝ) (i j : ℕ) :
     · simp [hlt, Nat.not_lt_of_ge (le_of_lt hlt)]
     · simp [hgt, Nat.not_lt_of_ge (le_of_lt hgt)]
 
-/-- The package multiplies z' M and therefore reads columns. -/
+/-- The package multiplies z' M and therefore reads columns, E012 §4. -/
 def matrixExposure {n : ℕ} (M : ℕ → ℕ → ℝ) (z : Assignment n) (i : Fin n) : Exposure :=
   if z i then
     if 0 < ∑ j, bit (z j) * M j.val i.val then .d11 else .d10
@@ -2332,7 +2394,7 @@ theorem faulty_copy_asymmetric_iff (u : Fin 6 → Bool) :
 set_option maxRecDepth 4096 in
 /-- T7(i)–(v), full source-semantics statement: column orders, the 32/64
 asymmetry count, changed exposures, and the defect at every q<1. The
-zero-probability invocation concerns the helpers. -/
+zero-probability invocation concerns the helpers, as in the validator. -/
 theorem faulty_copy_full_counterexample :
     upperCells 4 = [(0,1),(0,2),(1,2),(0,3),(1,3),(2,3)] ∧
     lowerCells 4 = [(1,0),(2,0),(3,0),(2,1),(3,1),(3,2)] ∧
@@ -2453,7 +2515,7 @@ theorem deletion_exposure_inclusions {n : ℕ} (T S : Network n)
 /-- T9(d): measured d00 is a conditional mixture, giving the exact HT
 bias −(1/N)∑_i c_i[y_i(d01)−y_i(d00)]. This is an HT assertion;
 it does not silently replace the expectation of a Hajek ratio by a ratio
-of expectations. -/
+of expectations (E012 doubt §3). -/
 theorem missing_ties_ht_bias {n : ℕ} (hn : 0 < n) (p : Design (Assignment n))
     (T S : Network n) (hsub : ∀ i j, S.adj i j = true → T.adj i j = true)
     (y : Fin n → Exposure → ℝ)
@@ -2546,7 +2608,7 @@ def deletedAdj (R : Finset (Fin 10 × Fin 10)) (i j : Fin 10) : Bool :=
 def measuredDegree (R : Finset (Fin 10 × Fin 10)) (i : Fin 10) : ℕ :=
   (univ.filter (fun j => deletedAdj R i j = true)).card
 
-/-- T8's positive baseline schedule: b_2=5/2, all others 1. -/
+/-- T8's positive baseline schedule: b_2=5/2, all others 1 (E012 doubt §7). -/
 def biasBaseline (i : Fin 10) : ℝ := if i=1 then 5/2 else 1
 
 /-- Exact Hajek d01−d00 contrast with one uniformly treated unit t and
@@ -2620,7 +2682,7 @@ theorem zero_deletion_hajek_values (t : Fin 10) :
 baseline dilated outcomes and exact exposure probabilities, the indirect
 Hajek contrast is biased. All ten ratios have nonempty exposure cells;
 its exact bias is 890121037/44498644960, between 1/50 and 1/49. This is
-the zero-deletion case of the monotonicity counterexample. -/
+the zero-deletion part of the validator's larger monotonicity witness. -/
 theorem zero_deletion_hajek_counterexample :
     printedEdges.card=20 ∧ mean biasBaseline/4=23/80 ∧
     (∀ i : Fin 10, 1 ≤ measuredDegree ∅ i ∧ measuredDegree ∅ i ≤ 6) ∧
@@ -3030,7 +3092,7 @@ def pathDistance {n : ℕ} (i j : Fin n) : ℕ∞ := (Nat.dist i.val j.val : ℕ
 
 /-- The actual R centre draw, including its singleton-number rule; `coded`
 selects the defect. For the repaired draw every remaining vertex is equally
-likely. Only nonterminal states use this kernel (T10–T11). -/
+likely. Only nonterminal states use this kernel (E013 §§3–6, T10–T11). -/
 def centreDraw {n : ℕ} (d : Fin n → Fin n → ℕ∞) (ε : ℕ) (coded : Bool)
     (S : Finset (Fin n)) (v : Fin n) : ℝ :=
   let R := univ \ marked d ε S
@@ -3041,7 +3103,7 @@ def centreDraw {n : ℕ} (d : Fin n → Fin n → ℕ∞) (ε : ℕ) (coded : Bo
 
 /-- Probability of a finite terminating trace in the sampler, computed
 from actual transition probabilities. Proper prefixes must be nonterminal,
-and the final centres must mark every vertex. -/
+and the final centres must mark every vertex (E013 §6). -/
 def traceMass {n : ℕ} (d : Fin n → Fin n → ℕ∞) (ε : ℕ) (coded : Bool)
     (cs : List (Fin n)) : ℝ :=
   if (∀ k : Fin cs.length, marked d ε (cs.take k.val).toFinset ≠ univ) ∧
@@ -3050,14 +3112,15 @@ def traceMass {n : ℕ} (d : Fin n → Fin n → ℕ∞) (ε : ℕ) (coded : Boo
   else 0
 
 /-- Terminal centre law, summing over all finite trace lengths; unchanged
-state retries are included, rather than assuming their 1/3 probabilities. -/
+state retries are included, rather than assuming their 1/3 probabilities.
+Normalization and the explicit laws are conclusions of the draft below. -/
 def terminalCentres {n : ℕ} (d : Fin n → Fin n → ℕ∞) (ε : ℕ)
     (coded : Bool) (S : Finset (Fin n)) : ℝ :=
   ∑' t : ℕ, ∑ z : Fin t → Fin n,
     if (List.ofFn z).toFinset = S then traceMass d ε coded (List.ofFn z) else 0
 
 /-- Nearest-centre membership, with ties going to the smallest vertex
-index (p. 305, package sampler). Empty S gives `none`. -/
+index (p. 305, package sampler; E013 §5). Empty S gives `none`. -/
 def nearestCentre {n : ℕ} (d : Fin n → Fin n → ℕ∞)
     (S : Finset (Fin n)) (v : Fin n) : Option (Fin n) :=
   (S.toList.mergeSort (fun a b => decide (d a v < d b v ∨ (d a v = d b v ∧ a ≤ b)))).head?
@@ -3080,7 +3143,7 @@ theorem four_path_marking_certificate :
   decide
 
 /-- T10(ii): every coded draw from the empty state or from the state
-with centre `0` alone is uniform on all four path vertices. -/
+with centre 1 alone is uniform on all four path vertices. -/
 theorem four_path_coded_draws (v : Fin 4) :
     centreDraw pathDistance 3 true ∅ v=1/4 ∧
     centreDraw pathDistance 3 true {0} v=1/4 := by
@@ -3091,7 +3154,7 @@ theorem four_path_coded_draws (v : Fin 4) :
   · norm_num [centreDraw, h0]
   · norm_num [centreDraw, hR, hv]
 
-/-- T10(ii): the finite terminating trace with r retries of centre `0`
+/-- T10(ii): the finite terminating trace with r retries of centre 1
 and eventual second centre j has exactly mass (1/4)^(r+2). The mass is
 computed from the coded kernel, including the unchanged-state retries. -/
 theorem four_path_repeat_trace_mass (r : ℕ) (j : Fin 4) (hj : j ≠ 0) :
@@ -3151,10 +3214,41 @@ theorem four_path_repeat_trace_sum (j : Fin 4) (hj : j ≠ 0) :
   rw [tsum_mul_right, tsum_geometric_of_lt_one (by norm_num) (by norm_num)]
   norm_num
 
+/-- T10, the complete four-path sampler counterexample, including eventual
+probabilities from repeated draws. All 16 treatment vectors are included:
+unlisted vectors have probability zero. The corrected law is also stated. -/
+theorem cluster_sampler_counterexample :
+    let d := pathDistance (n := 4)
+    terminalCentres d 3 true {0,1} = 1/12 ∧
+    terminalCentres d 3 true {0,2} = 1/12 ∧
+    terminalCentres d 3 true {0,3} = 1/3 ∧
+    terminalCentres d 3 true {1} = 1/4 ∧
+    terminalCentres d 3 true {2} = 1/4 ∧
+    (∑ S : Finset (Fin 4), terminalCentres d 3 true S) = 1 ∧
+    prob (terminalCentres d 3 true) (fun S => ¬separated d 3 S) = 1/6 ∧
+    clusteredTreatment d true (1/2) ![false,false,false,false] = 3/8 ∧
+    clusteredTreatment d true (1/2) ![true,true,true,true] = 3/8 ∧
+    clusteredTreatment d true (1/2) ![true,true,false,false] = 5/48 ∧
+    clusteredTreatment d true (1/2) ![false,false,true,true] = 5/48 ∧
+    clusteredTreatment d true (1/2) ![true,false,false,false] = 1/48 ∧
+    clusteredTreatment d true (1/2) ![false,true,true,true] = 1/48 ∧
+    (∀ z : Assignment 4, z ∉ ({![false,false,false,false], ![true,true,true,true],
+      ![true,true,false,false], ![false,false,true,true], ![true,false,false,false], ![false,true,true,true]} : Finset (Assignment 4)) →
+      clusteredTreatment d true (1/2) z = 0) ∧
+    terminalCentres d 3 false {0,3} = 1/2 ∧
+    terminalCentres d 3 false {1} = 1/4 ∧
+    terminalCentres d 3 false {2} = 1/4 ∧
+    clusteredTreatment d false (1/2) ![false,false,false,false] = 3/8 ∧
+    clusteredTreatment d false (1/2) ![true,true,true,true] = 3/8 ∧
+    clusteredTreatment d false (1/2) ![true,true,false,false] = 1/8 ∧
+    clusteredTreatment d false (1/2) ![false,false,true,true] = 1/8 ∧
+    clusteredTreatment d false (1/2) ![true,false,false,false] = 0 ∧
+    clusteredTreatment d false (1/2) ![false,true,true,true] = 0 := by
+  sorry
 
 /-- T10's finite positive-probability bad trace: on the four-path, centres
 1 then 2 (one based) end the loop but violate separation. Its probability
-is 1/16 before the cluster coin flips. -/
+is 1/16 before the cluster coin flips (E013 §4). -/
 theorem singleton_draw_bad_trace :
     traceMass (pathDistance (n := 4)) 3 true [0,1] = 1/16 ∧
     ¬separated (pathDistance (n := 4)) 3 {0,1} := by
@@ -3207,7 +3301,8 @@ theorem epsilon_net_correction {n ε : ℕ} (hε : 1 ≤ ε) (G : SimpleGraph (F
 def withinThree (S : Finset (Fin 9)) : Prop :=
   ∀ s ∈ S, ∀ t ∈ S, pathDistance s t ≤ 3
 
-/-- Decidability of the pairwise distance upper bound on the nine-vertex path. -/
+/-- T20–T21(iii): the nine-path counterexample and the exact list of the
+13 valid corrected 3-nets. Vertex labels here match T20's zero-based labels. -/
 instance (S : Finset (Fin 9)) : Decidable (withinThree S) :=
   inferInstanceAs (Decidable (∀ s ∈ S, ∀ t ∈ S, pathDistance s t ≤ 3))
 
@@ -3234,10 +3329,10 @@ def pairAssignment (e : Fin 10 × Fin 10) : Assignment 10 := fun i => decide (i=
 def pairExposureProb (A : Fin 10 → Fin 10 → Bool) (i : Fin 10) (d : Exposure) : ℝ :=
   average treatmentPairs (fun e => if exposure A (pairAssignment e) i = d then 1 else 0)
 
-/-- Ten-cycle, T12's counterexample. -/
+/-- Ten-cycle, T12's validator witness (E002 §4). -/
 def cycle10 (i j : Fin 10) : Bool :=
   decide ((i.val+1)%10 = j.val ∨ (j.val+1)%10 = i.val)
-/-- "(2,1,1,0)" (T12 setting): the ten-cycle counterexample's fixed four-exposure outcomes. -/
+/-- "(2,1,1,0)" (T12 setting, E002 §4): the ten-cycle counterexample's fixed four-exposure outcomes. -/
 def cycleOut (_i : Fin 10) (d : Exposure) : ℝ :=
   match d with | .d11 => 2 | .d10 => 1 | .d01 => 1 | .d00 => 0
 
@@ -3262,7 +3357,7 @@ theorem pair_exposure_probability_count (A : Fin 10 → Fin 10 → Bool)
   simp [pairExposureProb, average, Finset.sum_ite]
 
 /-- T12(i): the four cycle exposure counts, computed on the 45 pairs,
-give the exact positive probabilities of the counterexample. -/
+give the exact positive probabilities printed in the validator's witness. -/
 theorem cycle_pair_probabilities : ∀ i : Fin 10,
     pairExposureProb cycle10 i .d11 = 2/45 ∧
     pairExposureProb cycle10 i .d10 = 7/45 ∧
@@ -3507,7 +3602,7 @@ theorem naive_bias_correction {n : ℕ} (hn : 0 < n) (p : Design (Assignment n))
     simp [mean,add_div]
 
 /-- T13(f): opposite unit-level spillovers in the adjacent two-unit
-witness. Untreated outcomes are zero. -/
+witness. Untreated outcomes are zero (E002, corrected bias prose). -/
 def cancellingOut2 (i : Fin 2) (d : Exposure) : ℝ :=
   match d with
   | .d11 => if i=0 then 2 else 1
@@ -3562,7 +3657,7 @@ def sameRegimeCount (H : Finset (Fin 6)) : ℕ := (H.filter (fun g => tractPartn
 
 /-- T14's 450-unit witness: 75 units in each of six groups. Groups
 1–3 treat their first 50 units and groups 4–6 their first 25, giving
-the specified 2/3 and 1/3 saturations (pp. 311–312). -/
+the specified 2/3 and 1/3 saturations (E003 witness, pp. 311–312). -/
 def tractWitnessAssignment (g : Fin 6) : Assignment 75 :=
   fun i => decide (i.val < if g.val < 3 then 50 else 25)
 
@@ -3869,7 +3964,7 @@ set_option maxRecDepth 4096 in
 /-- T16(i)–(iv): the printed nonadjacent treatment of units 6 and 9 gives
 HT contrast −3/4, not NA. Discarding empty cells changes the means;
 all exact positive exposure probabilities and both conditioning events
-are included (p. 298 correction). -/
+are included (p. 298 correction, E004 exact witness). -/
 theorem empty_cell_counterexample :
     (∀ i : Fin 10, let g := (univ.filter (fun j => printedAdj i j=true)).card
       pairExposureProb printedAdj i .d11 = (g : ℝ)/45 ∧
@@ -4026,7 +4121,7 @@ def InProbability {Ω : ℕ → Type*} [∀ n, Fintype (Ω n)]
 /-- Independent fair signs and their mean T_N, T22's explicit inference
 counterexample. N=n+1 is always positive; the first sign also defines B. -/
 def sign (b : Bool) : ℝ := if b then 1 else -1
-/-- "T_N=(1/N)∑ X_j" (T22 setting): the actual mean of N independent fair signs in the explicit counterexample. -/
+/-- "T_N=(1/N)∑ X_j" (T22 setting, N002 §2): the actual mean of N independent fair signs in the explicit counterexample. -/
 def signMean {n : ℕ} (z : Assignment n) : ℝ := mean (fun i => sign (z i))
 
 /-- Unnormalized sum of the independent fair signs in T22's sample
@@ -4139,18 +4234,17 @@ theorem sign_mean_chebyshev (n : ℕ) (ε : ℝ) (hε : 0 < ε) :
   dsimp only [bernoulliDesign] at h
   rw [(sign_mean_finite_moments n).2] at h
   simpa [div_div,div_eq_mul_inv,mul_comm,mul_left_comm,mul_assoc] using h
-/-- "B=3/2 when X_1=1 and B=1/2 when X_1=−1" (T22). Its dependence on the first actual sign is retained. -/
+/-- "B=3/2 when X_1=1 and B=1/2 when X_1=−1" (T22, N002 §2). Its dependence on the first actual sign is retained. -/
 def varianceFactor {n : ℕ} (z : Assignment (n+1)) : ℝ := if z 0 then 3/2 else 1/2
-/-- "Vhat_N=B²/N" (T22): the explicit nonnegative variance estimator, with N=n+1, on the varying Bernoulli spaces. -/
+/-- "Vhat_N=B²/N" (T22, N002 §2): the explicit nonnegative variance estimator, with N=n+1, on the varying Bernoulli spaces. -/
 def varianceWitness (n : ℕ) (z : Assignment (n+1)) : ℝ := (varianceFactor z)^2/(n+1 : ℕ)
-/-- "SE_N=sqrt(Vhat_N)" (T22): the reported standard-error estimator of the witness. -/
+/-- "SE_N=sqrt(Vhat_N)" (T22, N002 §2): the reported standard-error estimator of the witness. -/
 def seWitness (n : ℕ) (z : Assignment (n+1)) : ℝ := Real.sqrt (varianceWitness n z)
 
 /-- T22's finite obstruction, for every actual population size N=n+1.
-The specified Bernoulli law has E(B)=1 and E(B²)=5/4. The expected
-standard error is 1/√N, while the variance estimate has positive bias
-1/(4N) relative to 1/N and relative error >1/2 with probability one.
-The sample-mean variance is established separately in `sign_mean_finite_moments`. -/
+The specified Bernoulli law has E(B)=1 and E(B²)=5/4, and its variance
+estimate has exact mean SE, positive bias, and relative error >1/2 with
+probability one. This lemma asserts no unproved sample-mean variance. -/
 theorem mean_se_finite_obstruction (n : ℕ) :
     expect (bernoulli (1/2)) (varianceFactor (n := n))=1 ∧
     expect (bernoulli (1/2)) (fun z : Assignment (n+1) => (varianceFactor z)^2)=5/4 ∧
@@ -4261,7 +4355,7 @@ theorem variance_witness_absolute_consistent :
 /-- T22(i)–(v), full explicit sample-mean/variance sequence. Exact mean
 SE agreement and conservative expectation coexist with relative
 inconsistency; absolute consistency is explicitly retained. This is the
-counterexample estimator, not a claim about either estimator in Table 16.1. -/
+validator's estimator, not a claim about either estimator in Table 16.1. -/
 theorem mean_se_counterexample :
     (∀ n : ℕ,
       expect (bernoulli (1/2)) (signMean (n := n+1)) = 0 ∧
@@ -4517,6 +4611,307 @@ def hierarchyOverall {G : ℕ} {n : Fin G → ℕ}
     (high : Bool) (w : Assignment G × GroupAssignments n) : ℝ :=
   average (regimeGroups w.1 high) (fun g => groupOverall (y g) (w.2 g))
 
+/-- T25, the unbiasedness assertions AS PRINTED on p. 310, preserved
+without silently changing Bernoulli assignment to fixed counts. Each
+conditional expectation uses precisely the domain of its estimator. The
+group-arm assertion is refuted by T1; this theorem is deliberately drafted. -/
+theorem bernoulli_unbiasedness_as_printed :
+    (∀ n : ℕ, 0 < n → ∀ p : ℝ, 0 < p → p < 1 →
+      ∀ y : Fin n → Assignment n → ℝ, ∀ b : Bool,
+      condMean (bernoulli p) (armExists b) (armMean y b) = mean (fun i => marginal (bernoulli p) y i b)) ∧
+    (∀ G : ℕ, 0 < G → ∀ n : Fin G → ℕ, (∀ g, 0 < n g) →
+      ∀ S : Design (Assignment G), ∀ ψ φ : ℝ, 0 < ψ → ψ < 1 → 0 < φ → φ < 1 →
+      ∀ y : (g : Fin G) → Fin (n g) → Assignment (n g) → ℝ,
+      let law := hierarchyLaw n S ψ φ
+      let M := hierarchyArm y
+      let μ := hierarchyTarget y
+      (∀ high b, 0 < prob law (hierarchyDomain high b) →
+        condMean law (hierarchyDomain high b) (M high b) = μ (if high then ψ else φ) b) ∧
+      (∀ high, let E := fun w => hierarchyDomain high true w ∧ hierarchyDomain high false w;
+        0 < prob law E → condMean law E (fun w => M high true w-M high false w) =
+          μ (if high then ψ else φ) true-μ (if high then ψ else φ) false) ∧
+      (let E := fun w => hierarchyDomain true false w ∧ hierarchyDomain false false w;
+        0 < prob law E → condMean law E (fun w => M true false w-M false false w) = μ ψ false-μ φ false) ∧
+      (let E := fun w => hierarchyDomain true true w ∧ hierarchyDomain false false w;
+        0 < prob law E → condMean law E (fun w => M true true w-M false false w) = μ ψ true-μ φ false) ∧
+      (let E := fun w : Assignment G × GroupAssignments n =>
+          (regimeGroups w.1 true).Nonempty ∧ (regimeGroups w.1 false).Nonempty;
+        0 < prob law E → condMean law E (fun w => hierarchyOverall y true w-hierarchyOverall y false w) =
+          mean (fun g => mean (fun i => expect (bernoulli ψ) (y g i))) -
+          mean (fun g => mean (fun i => expect (bernoulli φ) (y g i))))) := by
+  sorry
+
+/-- T26, variance property AS PRINTED on p. 310 with the singleton-drop
+computation actually used by the p. 311 toy. Both arms are positive; the
+repaired ≥2-units-in-each-arm condition is deliberately absent. The
+constant-additive equality is refuted by T3. Printed R decimal outputs are
+transcriptions, not exact statements about an unavailable full schedule. -/
+theorem direct_variance_as_printed {G C : ℕ} (hC : 2 ≤ C) (hCG : C ≤ G)
+    (n m : Fin G → ℕ) (hm : ∀ g, 0 < m g ∧ m g < n g)
+    (a b : (g : Fin G) → Fin (n g) → ℝ) :
+    let law := selectedLaw n C (fun g => crMass (n g) (m g))
+    let point := selectedMean C (fun g => directGroup (a g) (b g))
+    let vest := directVarianceEstimate C a b
+    ((∃ d : ℝ, ∀ g i, a g i=b g i+d) → expect law vest=variance law point) ∧
+    variance law point ≤ expect law vest := by
+  sorry
+
+/-- T27, full-neighbourhood function documentation AS WRITTEN: its second
+returned indicator is claimed to mean everyone in B_i is untreated.
+The code uses s_i<b_i, so T5 refutes this universal claim. -/
+theorem all_control_as_documented {n : ℕ} (A : Network n) (z : Assignment n) (i : Fin n) :
+    badAllControl A.adj z i ↔ ∀ j ∈ neighborhood A.adj i, z j=false := by
+  sorry
+
+/-- Hajek mean using the actual assignment-level outcomes before masking,
+needed to state the misspecified-network readings on p. 303 (T28). -/
+def hajekObserved {n : ℕ} (p : Assignment n → ℝ)
+    (D : Assignment n → Fin n → Exposure) (Y : Fin n → Assignment n → ℝ)
+    (d : Exposure) (z : Assignment n) : Option ℝ :=
+  let den := ∑ i, if D z i=d then 1/exposureProb p D i d else 0
+  if den=0 then none else some (htObserved p D Y d z/den)
+/-- "undirected network" (p. 295): enumerate each true tie once, by its smaller then larger endpoint, for uniform exact-count deletion (T28). -/
+def networkEdges {n : ℕ} (A : Network n) : Finset (Fin n × Fin n) :=
+  univ.filter (fun e => e.1 < e.2 ∧ A.adj e.1 e.2=true)
+/-- "a network ... missing ... ties" (p. 303): remove both matrix orientations of every selected true undirected edge, retaining the other edges. -/
+def deleteNetwork {n : ℕ} (A : Network n) (R : Finset (Fin n × Fin n)) : Fin n → Fin n → Bool :=
+  fun i j => A.adj i j && decide ((i,j) ∉ R ∧ (j,i) ∉ R)
+/-- "bias ... with the proportion of mismeasured ties" (p. 303): average the exact Hajek contrast over treatment and all masks with d ties removed (T28). -/
+def randomDeletionMean {n : ℕ} (p : Assignment n → ℝ) (A : Network n)
+    (y : Fin n → Exposure → ℝ) (k l : Exposure) (d : ℕ) : ℝ :=
+  average ((networkEdges A).powersetCard d) (fun R => expect p (fun z =>
+    (hajekObserved p (exposure (deleteNetwork A R)) (fun i v => y i (exposure A.adj v i)) k z).getD 0 -
+    (hajekObserved p (exposure (deleteNetwork A R)) (fun i v => y i (exposure A.adj v i)) l z).getD 0))
+/-- The Hajek ratio on p. 299 requires a nonzero realized denominator. For T28 this predicate enforces both contrast ratios at every positive-mass assignment for each deletion mask. -/
+def deletionRatiosDefined {n : ℕ} (p : Assignment n → ℝ) (A : Network n)
+    (y : Fin n → Exposure → ℝ) (k l : Exposure) (d : ℕ) : Prop :=
+  ∀ R ∈ (networkEdges A).powersetCard d, ∀ z, 0 < p z →
+    (hajekObserved p (exposure (deleteNetwork A R)) (fun i v => y i (exposure A.adj v i)) k z).isSome ∧
+    (hajekObserved p (exposure (deleteNetwork A R)) (fun i v => y i (exposure A.adj v i)) l z).isSome
+
+/-- T28(R1)–(R2), the universal exact readings AS PRINTED on p. 303:
+absolute Hajek bias is nondecreasing in random deletion share, and zero
+missing ties gives unbiasedness. The displayed domain hypotheses ensure
+the ratios actually exist; T8 refutes both claims even on this domain.
+The valid, qualified HT mixture reading R3 is `missing_ties_ht_bias`. -/
+theorem missing_ties_bias_as_printed {n : ℕ} (hn : 0 < n) (p : Design (Assignment n))
+    (A : Network n) (y : Fin n → Exposure → ℝ) (k : Exposure) (hk : k ≠ .d00) :
+    ((∀ i, 0 < exposureProb p.mass (exposure A.adj) i k ∧
+      0 < exposureProb p.mass (exposure A.adj) i .d00) →
+      deletionRatiosDefined p.mass A y k .d00 0 →
+      randomDeletionMean p.mass A y k .d00 0=effect y k .d00) ∧
+    (∀ d₁ d₂ : ℕ, d₁ ≤ d₂ → d₂ ≤ (networkEdges A).card →
+      deletionRatiosDefined p.mass A y k .d00 d₁ → deletionRatiosDefined p.mass A y k .d00 d₂ →
+      |randomDeletionMean p.mass A y k .d00 d₁-effect y k .d00| ≤
+        |randomDeletionMean p.mass A y k .d00 d₂-effect y k .d00|) := by
+  sorry
+
+/-- T29, sampler documentation AS WRITTEN: coded centres are a 3-net with
+probability one in every finite undirected graph, and treatment uses
+independent nearest-centre cluster coins. The terminal law is explicit;
+T10's positive finite trace refutes the 3-net assertion. -/
+theorem cluster_sampler_as_documented {n : ℕ} (hn : 0 < n)
+    (G : SimpleGraph (Fin n)) (p : ℝ) (hp : 0 ≤ p) (hp1 : p ≤ 1) :
+    (∑ S : Finset (Fin n), terminalCentres G.edist 3 true S)=1 ∧
+    prob (terminalCentres G.edist 3 true) (epsilonNet G.edist 3)=1 ∧
+    (∀ z : Assignment n, clusteredTreatment G.edist true p z =
+      ∑ S : Finset (Fin n), terminalCentres G.edist 3 true S * clusterProb G.edist S p z) := by
+  sorry
 
 end
+#print axioms independent_expect_product
+#print axioms product_two_factors
+#print axioms independent_pair_expect
+#print axioms selected_expect_average
+#print axioms first_stage_sum
+#print axioms uniform_first_stage_mean
+#print axioms independent_coordinate_expect
+#print axioms selected_mean_expect
+#print axioms fixed_assignments_map
+#print axioms cr_subset_average
+#print axioms cr_treated_probability
+#print axioms cr_mass_probability
+#print axioms cr_arm_probability
+#print axioms cr_group_arm_unbiased
+#print axioms cr_co_members_marginal
+#print axioms average_constant_on
+#print axioms toy_required_direct_variance_undefined
+#print axioms pop_var_nonnegative
+#print axioms pop_var_zero_iff_constant
+#print axioms pop_var_scale
+#print axioms expect_finset_sum
+#print axioms independent_centered_sum
+#print axioms raw_sample_variance_centered
+#print axioms independent_average_moments
+#print axioms independent_sample_variance
+#print axioms identical_group_selected_moments
+#print axioms three_unit_affine_moments
+#print axioms direct_group_cr_unbiased
+#print axioms selected_direct_cr_unbiased
+#print axioms third_triangle_cells
+#print axioms faulty_copy_asymmetric_iff
+#print axioms zero_deletion_control_certificate
+#print axioms zero_deletion_graph_certificate
+#print axioms zero_deletion_hajek_values
+#print axioms zero_deletion_hajek_counterexample
+#print axioms deletion_hajek_rat
+#print axioms deletion_bias_rat
+#print axioms one_deletion_bias_bounds
+#print axioms two_deletion_bias_bounds
+#print axioms deleted_degree_loss_bound
+#print axioms deletion_domain_certificate
+#print axioms four_path_marking_certificate
+#print axioms four_path_coded_draws
+#print axioms four_path_repeat_trace_mass
+#print axioms four_path_repeat_trace_sum
+#print axioms pair_exposure_probability_count
+#print axioms cycle_pair_probabilities
+#print axioms cycle_pair_exposure_counts
+#print axioms cycle_pair_estimates
+#print axioms printed_pair_probabilities
+#print axioms printed_weight_certificates
+#print axioms printed_pair_total_certificate
+#print axioms printed_pair_average_certificate
+#print axioms printed_contrast_average
+#print axioms witness_domain_count
+#print axioms bernoulli_arm_count_conditional
+#print axioms witness_count_expect
+#print axioms witness_count_conditional
+#print axioms expect_sum
+#print axioms expect_sub
+#print axioms expect_add
+#print axioms prob_nonneg
+#print axioms prob_mono
+#print axioms mean_sub
+#print axioms mean_neg
+#print axioms mean_nonneg
+#print axioms mean_nonpos
+#print axioms expect_div
+#print axioms expect_mean
+#print axioms expect_event_constant
+#print axioms event_constant_ht
+#print axioms event_ht_conditional
+#print axioms expect_mul_const
+#print axioms event_binary_mixture
+#print axioms ht_total_unbiased
+#print axioms ht_contrast_unbiased
+#print axioms ht_unbiased_headline
+#print axioms empty_ht_total
+#print axioms empty_hajek
+#print axioms sum_tuple_succ
+#print axioms cons_at_two
+#print axioms cons_at_three
+#print axioms cons4_two
+#print axioms cons4_three
+#print axioms cons3_two
+#print axioms bernoulli_total
+#print axioms sum_tuple_at
+#print axioms bernoulli_insert
+#print axioms bernoulli_coordinate_expect
+#print axioms bernoulli_arm_probability
+#print axioms bernoulli_expect_cons
+#print axioms sum_bit_count
+#print axioms co_members_count
+#print axioms co_members_arm_mean
+#print axioms co_members_direct_wrong
+#print axioms co_members_overall_four
+#print axioms co_members_marginal_four
+#print axioms four_arm_domains
+#print axioms bernoulli4_count_law
+#print axioms bernoulli_count_event_probability
+#print axioms bernoulli_count_counterexample
+#print axioms witness_expect_product
+#print axioms witness_mass_is_probability
+#print axioms witness_high_expect
+#print axioms witness_low_expect
+#print axioms bernoulli_direct_failure_means
+#print axioms bernoulli_direct_failure
+#print axioms bernoulli_ratio_counterexample
+#print axioms bernoulli_group_ht_unbiased
+#print axioms co_members_group_ht_formula
+#print axioms co_members_group_ht_expectation
+#print axioms cr_expect_average
+#print axioms fixed_three_supports
+#print axioms marginal_estimator_correction
+#print axioms overall_group_unbiased
+#print axioms singleton_group_finite_moments
+#print axioms singleton_variance_counterexample
+#print axioms direct_variance_correction
+#print axioms singleton_drop_bias
+#print axioms singleton_drop_dilated_bias
+#print axioms singleton_sample_variance_undefined
+#print axioms full_neighborhood_counterexample
+#print axioms full_control_correct
+#print axioms full_neighborhood_events
+#print axioms full_neighborhood_ht_correction
+#print axioms faulty_copy_counterexample
+#print axioms corrected_copy_symmetric
+#print axioms faulty_copy_full_counterexample
+#print axioms corrected_copy_monotone
+#print axioms deletion_exposure_inclusions
+#print axioms missing_ties_ht_bias
+#print axioms nonmonotone_hajek_counterexample
+#print axioms hajek_bias_correction
+#print axioms hops_radius_iff
+#print axioms separated_insert_iff
+#print axioms separated_maximal_iff_covers
+#print axioms finite_graph_has_epsilon_net
+#print axioms unmarked_strictly_decreases
+#print axioms marked_all_iff_covers
+#print axioms greedy_append_iff
+#print axioms greedy_run_properties
+#print axioms greedy_completed_run_exists
+#print axioms cluster_sampler_counterexample
+#print axioms singleton_draw_bad_trace
+#print axioms greedy_three_net_correction
+#print axioms epsilon_net_correction
+#print axioms within_hops_counterexample
+#print axioms naive_denominator_counterexample
+#print axioms naive_expansion_correct
+#print axioms naive_bias_correction
+#print axioms spillover_cancellation_instance
+#print axioms pooling_counterexample
+#print axioms observed_arm_constant
+#print axioms cr_mass_positive
+#print axioms mem_fixed_assignments_iff
+#print axioms pooling_population_counterexample
+#print axioms pooling_empty_subclass
+#print axioms tract_count_certificate
+#print axioms average_two_values
+#print axioms pooled_ratio_correction
+#print axioms tract_partition
+#print axioms tract_mixture_bias
+#print axioms empty_cell_counterexample
+#print axioms nonempty_ht_conditional
+#print axioms coordinate_removal_correct
+#print axioms reindexed_outcome_unique
+#print axioms coordinate_removal_instance
+#print axioms fixed_count_peers_correct
+#print axioms sign_sum_cons
+#print axioms sign_sum_second_moment
+#print axioms sign_mean_finite_moments
+#print axioms finite_chebyshev_zero_mean
+#print axioms finite_markov_nonneg
+#print axioms sign_mean_chebyshev
+#print axioms mean_se_finite_obstruction
+#print axioms variance_witness_not_relative_consistent
+#print axioms variance_witness_absolute_bound
+#print axioms sign_mean_consistent
+#print axioms variance_witness_absolute_consistent
+#print axioms mean_se_counterexample
+#print axioms table_standard_error_comparison
+#print axioms absolute_variance_consistency
+#print axioms nonvanishing_variance_counterexample
+#print axioms mean_square_bound
+#print axioms mean_smul
+#print axioms total_direct_indirect_identity
+#print axioms dilated_regime_mean
+#print axioms dilated_effect_labels
+#print axioms contagion_decomposition
+#print axioms bernoulli_unbiasedness_as_printed
+#print axioms direct_variance_as_printed
+#print axioms all_control_as_documented
+#print axioms missing_ties_bias_as_printed
+#print axioms cluster_sampler_as_documented
+
 end AronowAudit.P045

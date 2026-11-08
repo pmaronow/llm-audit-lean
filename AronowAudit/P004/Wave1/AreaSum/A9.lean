@@ -1,7 +1,7 @@
 import AronowAudit.P004.Wave1.AreaSumBlueprint
 
-/-! P004-T5: the finite table `areaWitnessTable` realizes exactly the
-case-B shares `binShare`. -/
+/-! Node A9 of the T5 area blueprint (trivial arithmetic; written by the blueprint architect):
+the finite table `areaWitnessTable` realizes exactly the case-B shares `binShare`. -/
 
 namespace AronowAudit.P004.Wave1.AreaSum
 open AronowAudit.P004

@@ -9,10 +9,9 @@ open Finset Filter
 set_option maxRecDepth 3000
 set_option maxHeartbeats 2000000
 
-/-!
-For P005-T4, a second-moment bound suffices for the big-O rate,
-without a fourth-moment covariance bound.
--/
+/-! Drafted without running Lean. No held proof is a dependency.
+For T4 a coarser second-moment bound suffices for the exact requested big-O
+statement, so the fourth-moment covariance gap is not needed. -/
 
 lemma t4_expectation_nonneg {n m : ℕ} (f : Finset (Fin n) → ℝ)
     (hf : ∀ S ∈ design n m, 0 ≤ f S) : 0 ≤ expectation m f := by
@@ -245,8 +244,8 @@ lemma t4_centered_mean_second {n m : ℕ} (hn : 2 ≤ n) (hm : 0 < m) (hmn : m �
   have hv := t4_mean_variance_bound hn hm hmn a
   rwa [t4_variance_eq hmn, he, zero_pow (by decide : 2 ≠ 0), sub_zero] at hv
 
-/-- A coarse bound sufficient for T4(f). It uses only second moments
-and |h-d| ≤ nκ, without a fourth-moment bound. -/
+/-- A deliberately coarse bound, strong enough for T4(f). It uses only
+second moments and |h-d| ≤ nκ, avoiding the unproved fourth-moment node. -/
 lemma t4_covariance_coarse {n d s : ℕ} (P : Population n d)
     (hn : 2 ≤ n) (hs : 0 < s) (hsn : s ≤ n) (hP : standardized P)
     (y : Fin n → ℝ) (K : ℝ) (hK0 : 0 ≤ K)
@@ -345,9 +344,9 @@ lemma t4_allocation_rho (N s a : ℝ) (hN : 3 ≤ N) (ha : 0 < a)
     nlinarith [mul_nonneg (le_of_lt hs0) (le_of_lt han)]
   linarith
 
-/-- T4. The finite estimate used here is
+/-- T4's exact frozen type. The finite estimate used here is
 Var(Cov_A(h,y)) ≤ 4 ρ_s n² κ² K, hence ≤ (8K/a)nκ².
-The additional nonnegative term in the rate is harmless. -/
+The additional nonnegative term in the requested rate is harmless. -/
 theorem corrected_leverage_variance_order_proof (d m : ℕ → ℕ)
     (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P) (t : Arm) :
     Asymptotics.IsBigO atTop
@@ -449,9 +448,10 @@ theorem corrected_leverage_variance_order_proof (d m : ℕ → ℕ)
       Real.norm_eq_abs, abs_of_nonneg hrate0, t4_variance_div]
     simpa only [mul_div_assoc] using hscaled
 
-/-!
-T6: the third sampling moment.
--/
+example : type_of% @AronowAudit.P005.corrected_leverage_variance_order :=
+  corrected_leverage_variance_order_proof
+
+/-! T6: independently derive the third sampling moment. -/
 
 lemma t6_cast_choose_three (a : ℕ) :
     (a.choose 3 : ℝ) = (a : ℝ)*(a-1)*(a-2)/6 := by
@@ -672,9 +672,7 @@ lemma t6_nu3_sign {n d : ℕ} (P : Population n d) (S : Finset (Fin n))
       -(dot (xMean P S) (xMean P S)*mean S (centered y)) := by
   simp only [dot, armNu3, mul_neg, ← mul_assoc, Finset.sum_neg_distrib, Finset.sum_mul]
 
-/-- T6: corrected third-component bias. The treated and control cubic
-moments have coefficients NTTT and NCCC; their ν₃ contribution is
-−NCCC leverageCov(P,yC) + NTTT leverageCov(P,yT). -/
+/-- T6, with all original binders and all three repaired signs. -/
 theorem corrected_interacted_third_bias_proof {n d m : ℕ} (P : Population n d)
     (hn : 3 ≤ n) (hm : 0 < m) (hmn : m < n) (hx : xMean P univ = 0) :
     expectation m (fun S => dot (xMean P S) (xMean P S) * mean S (centered P.yT)) =
@@ -698,10 +696,26 @@ theorem corrected_interacted_third_bias_proof {n d m : ℕ} (P : Population n d)
   rw [hneg, hneg, hC, hT]
   ring
 
-/-!
-T8: deterministic Euclidean estimates for the inverse matrix.
--/
+example : type_of% @AronowAudit.P005.corrected_interacted_third_bias :=
+  corrected_interacted_third_bias_proof
 
+/-! T8: the missing standard theorem is stated as an ordinary proposition.
+This definition supplies no proof of it. No final T8 declaration is claimed:
+adding this premise to its frozen type would fail the mandated type check. -/
+
+/-- H-P005-MATRIX-CHERNOFF-SRS, with labels Fin N even when values repeat.
+The average is entrywise and the event uses exactly the project's finite law. -/
+def t8_matrixChernoffSRS : Prop :=
+  ∀ (N d s : ℕ), 0 < N → 1 ≤ d → 0 < s → s ≤ N →
+    ∀ (U : Fin N → Matrix (Fin d) (Fin d) ℝ) (R δ : ℝ),
+      0 < R → 0 < δ → δ < 1 →
+      (∀ i, (U i).transpose = U i) →
+      (∀ i (v : Fin d → ℝ), 0 ≤ dot v (U i *ᵥ v) ∧
+        dot v (U i *ᵥ v) ≤ R * dot v v) →
+      ((fun k l => (∑ i, U i k l)/(N : ℝ)) = (1 : Matrix (Fin d) (Fin d) ℝ)) →
+      probability s (fun S => ∃ v : Fin d → ℝ, dot v v = 1 ∧
+        dot v ((fun k l => (∑ i ∈ S, U i k l)/(s : ℝ)) *ᵥ v) ≤ 1-δ) ≤
+        (d : ℝ)*Real.exp (-(s : ℝ)*δ^2/(2*R))
 
 lemma t8_dot_self_nonneg {d : ℕ} (v : Fin d → ℝ) : 0 ≤ dot v v := by
   exact Finset.sum_nonneg (fun _ _ => mul_self_nonneg _)
@@ -710,6 +724,55 @@ lemma t8_cauchy_schwarz {d : ℕ} (u v : Fin d → ℝ) :
     (dot u v)^2 ≤ dot u u * dot v v := by
   simpa only [dot, pow_two] using Finset.sum_mul_sq_le_sq_mul_sq univ u v
 
+lemma t8_rankOne_mulVec {d : ℕ} (x v : Fin d → ℝ) (k : Fin d) :
+    (Matrix.vecMulVec x x *ᵥ v) k = x k * dot x v := by
+  simp only [Matrix.mulVec, dotProduct, Matrix.vecMulVec_apply, dot,
+    mul_assoc, Finset.mul_sum]
+
+lemma t8_rankOne_quadratic {d : ℕ} (x v : Fin d → ℝ) :
+    dot v (Matrix.vecMulVec x x *ᵥ v) = (dot x v)^2 := by
+  simp only [dot, t8_rankOne_mulVec, ← mul_assoc, ← Finset.sum_mul]
+  change dot v x * dot x v = (dot x v)^2
+  rw [dot_comm v x, pow_two]
+
+/-- The exact finite specialization of H used by the paper proof. -/
+lemma t8_gram_lower_tail
+    (H : t8_matrixChernoffSRS) {n d s : ℕ} (P : Population n d)
+    (hn : 0 < n) (hd : 1 ≤ d) (hs : 0 < s) (hsn : s ≤ n)
+    (hP : standardized P) :
+    probability s (fun S => ∃ v : Fin d → ℝ, dot v v = 1 ∧
+      dot v ((fun k l => (∑ i ∈ S, P.x i k*P.x i l)/(s : ℝ)) *ᵥ v) ≤ 1/2) ≤
+        (d : ℝ)*Real.exp (-(s : ℝ)/(8*(n : ℝ)*kappa P)) := by
+  classical
+  let U : Fin n → Matrix (Fin d) (Fin d) ℝ := fun i => Matrix.vecMulVec (P.x i) (P.x i)
+  have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+  have hd' : (0 : ℝ) < d := by exact_mod_cast (show 0 < d by omega)
+  have hκ : 0 < kappa P := lt_of_lt_of_le (div_pos hd' hn') (kappa_bounds P hn hP.2).1
+  have hR : 0 < (n : ℝ)*kappa P := mul_pos hn' hκ
+  have hsymm : ∀ i, (U i).transpose = U i := by
+    intro i
+    ext k l
+    simp only [U, Matrix.transpose_apply, Matrix.vecMulVec_apply]
+    ring
+  have horder : ∀ i (v : Fin d → ℝ), 0 ≤ dot v (U i *ᵥ v) ∧
+      dot v (U i *ᵥ v) ≤ ((n : ℝ)*kappa P)*dot v v := by
+    intro i v
+    rw [show U i = Matrix.vecMulVec (P.x i) (P.x i) from rfl, t8_rankOne_quadratic]
+    refine ⟨sq_nonneg _, (t8_cauchy_schwarz (P.x i) v).trans ?_⟩
+    exact mul_le_mul_of_nonneg_right (leverage_le_maximum P hn i) (t8_dot_self_nonneg v)
+  have hmean : (fun k l => (∑ i, U i k l)/(n : ℝ)) =
+      (1 : Matrix (Fin d) (Fin d) ℝ) := by
+    ext k l
+    change (∑ i, P.x i k * P.x i l) / (n : ℝ) = _
+    simpa only [gram, popMean, mean, Finset.card_univ, Fintype.card_fin] using congrFun (congrFun hP.2 k) l
+  have hH := H n d s hn hd hs hsn U ((n : ℝ)*kappa P) (1/2)
+    hR (by norm_num) (by norm_num) hsymm horder hmean
+  have hexp : -(s : ℝ)*(1/2 : ℝ)^2/(2*((n : ℝ)*kappa P)) =
+      -(s : ℝ)/(8*(n : ℝ)*kappa P) := by
+    field_simp [ne_of_gt hn', ne_of_gt hκ]
+    <;> ring
+  simpa only [U, Matrix.vecMulVec_apply, show (1 : ℝ)-1/2 = 1/2 by norm_num,
+    hexp] using hH
 
 /-- A deterministic inverse estimate; the square uses the Euclidean dot
 product, avoiding the sup norm on the unbundled coordinate function space. -/
@@ -737,8 +800,39 @@ lemma t8_coercive_inverse_squared {d : ℕ} (A : Matrix (Fin d) (Fin d) ℝ)
   have hprod := mul_pos hpos (sub_pos.mpr hgt)
   nlinarith
 
+/-! T9: the complete logarithm adapter is independent of the missing matrix
+library. Its final application awaits an independent T8 proof. -/
 
+lemma t9_two_log_to_max (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P)
+    (hκ : Tendsto (fun n => kappa (P n)*Real.log (2*d n : ℕ)) atTop (nhds 0)) :
+    Tendsto (fun n => kappa (P n)*Real.log (max (d n) 2 : ℕ)) atTop (nhds 0) := by
+  have hd : ∀ᶠ n in atTop, 1 ≤ d n := by
+    filter_upwards [Filter.eventually_ge_atTop (3 : ℕ)] with n hn
+    exact (h.1 n hn).1
+  have hk : ∀ᶠ n in atTop, 0 ≤ kappa (P n) := by
+    filter_upwards [h.2.2.1, Filter.eventually_ge_atTop (3 : ℕ)] with n hPn hn
+    have hn0 : 0 < n := by omega
+    exact (div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg n)).trans
+      (kappa_bounds (P n) hn0 hPn.2).1
+  exact (repaired_log_conditions d (fun n => kappa (P n)) hd hk).1.mp hκ
 
+/-- Pure reuse adapter. Its argument is an independently supplied proof of
+T8's full type; referring to that type does not invoke the held proof. This
+is deliberately not named as the final T9 theorem. -/
+lemma t9_expansion_two_of_expansion_max
+    (hmax : type_of% @AronowAudit.P005.corrected_interacted_expansion_max)
+    (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P)
+    (hinv : ∀ᶠ n in atTop, interactedRegular (P n) (m n))
+    (hκ : Tendsto (fun n => kappa (P n) * Real.log (2*(d n) : ℕ)) atTop (nhds 0)) :
+    stochasticO m (fun n S => interactedATE (P n) S - ate (P n) - armLeading (P n) S)
+      (fun n => Real.sqrt (kappa (P n)*(d n)/n)) := by
+  exact hmax d m P h hinv (t9_two_log_to_max d m P h hκ)
+
+example (hmax : type_of% @AronowAudit.P005.corrected_interacted_expansion_max) :
+    type_of% @AronowAudit.P005.corrected_interacted_expansion_two :=
+  t9_expansion_two_of_expansion_max hmax
 
 end
 end AronowAudit.P005.Wave1

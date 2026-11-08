@@ -3,8 +3,9 @@ import AronowAudit.P005.Wave1.Lib.FiniteDesignOrderTailC
 import AronowAudit.P005.Wave1.Lib.QuadraticSamplingTailC
 
 /-!
-The unconditional arm estimate follows from the quadratic-form bound
-with nonzero trace and the allocation-uniform first-moment estimate.
+The frozen GP005B1b library already proves the unconditional arm estimate,
+including the nonzero-trace quadratic-form bound and the allocation-uniform
+first-moment estimate. Reuse that proof and check its exact held contract.
 -/
 
 namespace AronowAudit.P005.Wave1
@@ -20,6 +21,12 @@ theorem tailC_arm_debiased_order (d m : ℕ → ℕ)
       armDebiased (P n) A y - (mean A y - dot (xMean (P n) A) (populationSlope (P n) y)))
       (fun n => Real.sqrt (kappa (P n)/n)) := by
   exact corrected_arm_debiased_order_proof d m P h t
+
+example : type_of% @AronowAudit.P005.corrected_arm_debiased_order :=
+  corrected_arm_debiased_order_proof
+
+example : type_of% @AronowAudit.P005.corrected_arm_debiased_order :=
+  tailC_arm_debiased_order
 
 end
 end AronowAudit.P005.Wave1

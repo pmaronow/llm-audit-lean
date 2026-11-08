@@ -45,5 +45,7 @@ theorem aggregation_ae_partition_bridge :
     AronowAudit.P027.Wave1.AePartition.n4_proof
     AronowAudit.P027.Wave1.AePartition.n5_proof
 
+example : AronowAudit.P027.Wave1.AePartition.Target := aggregation_ae_partition_bridge
+
 end
 end AronowAudit.P027.Wave1

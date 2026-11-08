@@ -1,0 +1,40 @@
+import SAP.P026b.Defs
+import SAP.P026b.Defs.WholeW1
+
+open Finset
+open scoped BigOperators
+open SAP.P026b
+
+set_option maxRecDepth 10000
+set_option maxHeartbeats 200000
+
+noncomputable section
+
+-- T18: the complete real-valued counterexample, independently of the Challenge.
+example : T18Statement := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · norm_num [probabilityDesign, realXorThree, Fin.sum_univ_succ]
+  · intro i
+    fin_cases i <;>
+      norm_num [positiveMarginals, marginal, expectation, indicator, realXorThree,
+        Fin.sum_univ_succ]
+  · intro j hj
+    fin_cases j
+    · norm_num [xorFittingSet] at hj
+    · intro u v
+      norm_num [expectation, realXorThree, Fin.sum_univ_succ]
+      ring
+    · intro u v
+      norm_num [expectation, realXorThree, Fin.sum_univ_succ]
+      ring
+  · norm_num [covariance, expectation, indicator, realXorThree, xorFit,
+      fittingOutcomes, observed, Fin.sum_univ_succ]
+
+example : covariance realXorThree (fun w => indicator realXorThree true w 0)
+    (fun w => xorFit (fittingOutcomes realXorThree xorFittingSet
+      (fun _ => 1) (fun _ => 0) w)) = 1 / 4 := by
+  norm_num [covariance, expectation, indicator, realXorThree, xorFit,
+    fittingOutcomes, observed, Fin.sum_univ_succ]
+
+
+end

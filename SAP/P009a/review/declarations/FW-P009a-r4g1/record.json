@@ -1,0 +1,165 @@
+[
+ {
+  "target_id": "P009-T1",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.sparse_coverage_counterexample_proof",
+   "AronowAudit.P009.sparse_moments_finite",
+   "SAP.P009a.WH.W1.T1_whole",
+   "SAP.P009a.WH.W1.T1_assembly",
+   "SAP.P009a.WH.W1.T1_L1_proof",
+   "SAP.P009a.WH.W1.T1_L2_proof",
+   "SAP.P009a.WH.W1.T1_L3_proof",
+   "AronowAudit.P009.SparseCompletion.fair_coordinate",
+   "AronowAudit.P009.SparseCompletion.fair_marginal",
+   "AronowAudit.P009.SparseCompletion.inv_size_zero",
+   "AronowAudit.P009.SparseCompletion.mean_le_constant",
+   "AronowAudit.P009.SparseCompletion.noI_d",
+   "AronowAudit.P009.SparseCompletion.noI_interferes",
+   "AronowAudit.P009.SparseCompletion.sparse_NoI_sequence",
+   "AronowAudit.P009.SparseCompletion.sparse_eate",
+   "AronowAudit.P009.Wave1.sparseCoverage_graph",
+   "AronowAudit.P009.Wave1.sparseCoverage_inflations",
+   "AronowAudit.P009.Wave1.sparseCoverage_msq",
+   "AronowAudit.P009.Wave1.sparseCoverage_sdSigmaSq",
+   "AronowAudit.P009.Wave1.sparseCoverage_sigmaSq",
+   "AronowAudit.P009.fair_first_coordinate",
+   "AronowAudit.P009.sparse_estimators_finite"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.fair_first_coordinate",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P009.sparse_estimators_finite",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   }
+  ],
+  "statement_definition": "SAP.P009a.T1WholeStatement"
+ },
+ {
+  "target_id": "P009-T2",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.corrected_coverage",
+   "AronowAudit.P009.relative_underestimate_inclusion",
+   "AronowAudit.P009.bernoulli_corrected_coverage",
+   "SAP.P009a.WH.W1.T2_whole",
+   "SAP.P009a.WH.W1.T2_assembly",
+   "AronowAudit.P009.BernoulliCompletion.ht_unbiased",
+   "AronowAudit.P009.SparseCompletion.inv_size_zero",
+   "AronowAudit.P009.Wave1.sparseCoverage_graph",
+   "AronowAudit.P009.Wave1.sparse_coverage_counterexample_proof",
+   "AronowAudit.P009.iterated_lower_tail_zero",
+   "AronowAudit.P009.sparse_moments_finite"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.finite_chebyshev",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P009.finite_plugin_coverage_bound",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P009.probability_nonnegative",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P009.probability_union_bound",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   }
+  ],
+  "statement_definition": "SAP.P009a.T2WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P009.BernoulliCompletion.ht_unbiased"
+  ]
+ },
+ {
+  "target_id": "P009-T3",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.signed_weight_counterexamples",
+   "SAP.P009a.WH.W1.T3_whole",
+   "SAP.P009a.WH.W1.T3_assembly",
+   "AronowAudit.P009.SparseCompletion.mean_le_constant",
+   "AronowAudit.P009.sum_cube_succ"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.sum_cube_succ",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P009.sum_cube_zero",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   }
+  ],
+  "statement_definition": "SAP.P009a.T3WholeStatement"
+ },
+ {
+  "target_id": "P009-T4",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.weighted_variance_absolute",
+   "AronowAudit.P009.Wave1.corrected_variance_chains_proof",
+   "SAP.P009a.WH.W2.T4_whole",
+   "SAP.P009a.WH.W2.T4_assembly",
+   "SAP.P009a.WH.W2.T4_L1_proof",
+   "SAP.P009a.WH.W2.T4_L2_proof",
+   "AronowAudit.P009.BernoulliCompletion.covariance_nonedge",
+   "AronowAudit.P009.BernoulliCompletion.variance_div",
+   "AronowAudit.P009.BernoulliCompletion.variance_sub_le",
+   "AronowAudit.P009.MixingBasics.alpha_le_one",
+   "AronowAudit.P009.MixingBasics.alpha_nonnegative",
+   "AronowAudit.P009.Wave1.t4_alpha_comp",
+   "AronowAudit.P009.Wave1.t4_alpha_le_power",
+   "AronowAudit.P009.Wave1.t4_arm_mask",
+   "AronowAudit.P009.Wave1.t4_arm_mixing",
+   "AronowAudit.P009.Wave1.t4_arm_weighted",
+   "AronowAudit.P009.Wave1.t4_bounded_covariance",
+   "AronowAudit.P009.Wave1.t4_count_weighted",
+   "AronowAudit.P009.Wave1.t4_covariance_cancellation",
+   "AronowAudit.P009.Wave1.t4_indicator_alpha",
+   "AronowAudit.P009.Wave1.t4_square_variance",
+   "AronowAudit.P009.Wave1.t4_square_weighted",
+   "AronowAudit.P009.Wave1.t4_trunc_abs",
+   "AronowAudit.P009.corrected_moment_covariance",
+   "AronowAudit.P009.mean_const_mul",
+   "AronowAudit.P009.variance_second_moment"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009a.T4WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P009.corrected_moment_covariance"
+  ]
+ },
+ {
+  "target_id": "P009-T5",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.limsup_interference_counterexample",
+   "AronowAudit.P009.limsup_threshold_counterexample",
+   "SAP.P009a.WH.W2.T5_whole",
+   "SAP.P009a.WH.W2.T5_assembly",
+   "AronowAudit.P009.LimsupCompletion.limsup_density_exact",
+   "AronowAudit.P009.LimsupCompletion.limsup_interferes",
+   "AronowAudit.P009.OneSourceCompletion.source_dependent",
+   "AronowAudit.P009.OneSourceCompletion.source_interferes"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009a.T5WholeStatement"
+ }
+]

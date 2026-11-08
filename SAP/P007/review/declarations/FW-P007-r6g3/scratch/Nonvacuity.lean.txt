@@ -1,0 +1,188 @@
+import SAP.P007.Defs
+
+set_option autoImplicit false
+open Filter Topology
+open scoped BigOperators
+namespace Audit
+open SAP.P007
+attribute [local instance] Classical.propDecidable
+
+noncomputable def pointLaw {α : Type*} [Fintype α] (a : α) : Law α := by
+  classical
+  exact {
+    weight := fun x => if x = a then 1 else 0
+    nonneg := by intro x; split_ifs <;> norm_num
+    total := by simp }
+
+@[simp] theorem probability_point {α : Type*} [Fintype α]
+    (a : α) (P : α → Prop) :
+    probability (pointLaw a) P = if P a then 1 else 0 := by
+  classical
+  change (∑ x, if P x then (if x = a then (1 : ℝ) else 0) else 0) = _
+  calc
+    _ = ∑ x, if x = a then (if P a then (1 : ℝ) else 0) else 0 := by
+      apply Finset.sum_congr rfl
+      intro x _
+      by_cases hx : x = a <;> simp [hx]
+    _ = _ := by simp
+
+theorem independent_point {n h : ℕ} (a : Array n h) :
+    rowIndependent (pointLaw a) := by
+  classical
+  intro E
+  simp only [probability_point]
+  rw [Fintype.prod_boole]
+  by_cases he : ∀ i, E i (a i) <;> simp [he]
+
+noncomputable def missingLaw (n h : ℕ) : Law (Array n h) :=
+  pointLaw (fun _ _ => true)
+
+theorem survival_missing (n h : ℕ) (hh : 0 < h) (i : Fin n)
+    (j : ℕ) (hj : 0 < j) : survival (missingLaw n h) i j = 0 := by
+  classical
+  have hp : ¬ prefixObserved (fun _ : Fin h => true) j := by
+    intro he
+    have hf := he ⟨0, hh⟩ hj
+    cases hf
+  simp [survival, missingLaw, hp]
+
+theorem bound_missing (n h : ℕ) (hh : 0 < h) (q : ℝ)
+    (hq : 0 ≤ q) (hq1 : q < 1) : observationBound (missingLaw n h) q := by
+  refine ⟨hq, hq1, ?_⟩
+  intro i
+  constructor
+  · intro _
+    rw [survival_missing n h hh i 1 (by omega)]
+    exact hq
+  · intro j hj _ hs
+    rw [survival_missing n h hh i j (by omega)] at hs
+    exact False.elim (lt_irrefl 0 hs)
+
+-- Nondegenerate, unequal-row witness for T11; also an instance of T14 and T15.
+def twoByOne : Array 2 1 ≃ Bool × Bool :=
+  (piFinTwoEquiv (fun _ => Row 1)).trans
+    ((Equiv.piUnique (fun _ : Fin 1 => Bool)).prodCongr
+      (Equiv.piUnique (fun _ : Fin 1 => Bool)))
+
+theorem sum_two_by_one (f : Array 2 1 → ℝ) :
+    ∑ x, f x = ∑ a : Bool, ∑ b : Bool, f ![(fun _ => a), (fun _ => b)] := by
+  rw [← twoByOne.symm.sum_comp f, Fintype.sum_prod_type]
+  rfl
+
+noncomputable def unequalLaw : Law (Array 2 1) := {
+  weight := nonidenticalWeights
+  nonneg := by
+    intro x
+    unfold nonidenticalWeights cellWeights
+    apply Finset.prod_nonneg
+    intro i _
+    apply Finset.prod_nonneg
+    intro j _
+    fin_cases i <;> cases x _ j <;> norm_num
+  total := by
+    rw [sum_two_by_one]
+    norm_num [Fintype.sum_bool, nonidenticalWeights, cellWeights,
+      Fin.prod_univ_succ] }
+
+theorem unequal_independent : rowIndependent unequalLaw := by
+  classical
+  intro E
+  by_cases h0t : E 0 (fun _ => true) <;>
+    by_cases h0f : E 0 (fun _ => false) <;>
+    by_cases h1t : E 1 (fun _ => true) <;>
+    by_cases h1f : E 1 (fun _ => false) <;>
+    norm_num [probability, unequalLaw, sum_two_by_one, Fintype.sum_bool,
+      nonidenticalWeights, cellWeights, Fin.prod_univ_succ,
+      Fin.forall_fin_succ, *]
+
+theorem unequal_survival0 : survival unequalLaw 0 1 = 1/4 := by
+  norm_num [survival, probability, unequalLaw, sum_two_by_one, Fintype.sum_bool,
+    nonidenticalWeights, cellWeights, prefixObserved, Fin.forall_fin_succ,
+    Fin.prod_univ_succ]
+
+theorem unequal_survival1 : survival unequalLaw 1 1 = 1/2 := by
+  norm_num [survival, probability, unequalLaw, sum_two_by_one, Fintype.sum_bool,
+    nonidenticalWeights, cellWeights, prefixObserved, Fin.forall_fin_succ,
+    Fin.prod_univ_succ]
+
+theorem unequal_bound : observationBound unequalLaw (1/2) := by
+  refine ⟨by norm_num, by norm_num, ?_⟩
+  intro i
+  constructor
+  · intro _
+    fin_cases i
+    · change survival unequalLaw 0 1 ≤ 1/2
+      rw [unequal_survival0]; norm_num
+    · change survival unequalLaw 1 1 ≤ 1/2
+      rw [unequal_survival1]
+  · intro j hj hj1 _
+    omega
+
+theorem unequal_not_same : ¬ sameRowLaw unequalLaw := by
+  intro hs
+  have he := hs 0 1 (fun r => prefixObserved r 1)
+  change survival unequalLaw 0 1 = survival unequalLaw 1 1 at he
+  rw [unequal_survival0, unequal_survival1] at he
+  norm_num at he
+
+theorem unequal_deleted : allDeleted unequalLaw = 3/8 := by
+  norm_num [allDeleted, probability, unequalLaw, sum_two_by_one, Fintype.sum_bool,
+    nonidenticalWeights, cellWeights, prefixObserved, Fin.forall_fin_succ,
+    Fin.prod_univ_succ]
+
+-- All existential conditions of T11, independently of the Challenge stub.
+example : ∃ L : Law (Array 2 1), L.weight = nonidenticalWeights ∧
+    rowIndependent L ∧ observationBound L (1/2) ∧ ¬ sameRowLaw L ∧
+    survival L 0 1 = 1/4 ∧ survival L 1 1 = 1/2 ∧
+    allDeleted L = 3/8 ∧ lowerBound 2 (1/2) 1 = 1/4 ∧
+    lowerBound 2 (1/2) 1 ≤ allDeleted L := by
+  refine ⟨unequalLaw, rfl, unequal_independent, unequal_bound, unequal_not_same,
+    unequal_survival0, unequal_survival1, unequal_deleted, ?_, ?_⟩
+  · norm_num [lowerBound]
+  · rw [unequal_deleted]; norm_num [lowerBound]
+
+-- T14: positive dimensions, normalized law, and every premise, with both
+-- deletion and survival having strictly intermediate probabilities.
+example : 0 < (2 : ℕ) ∧ 0 < (1 : ℕ) ∧
+    rowIndependent unequalLaw ∧ observationBound unequalLaw (1/2) ∧
+    (1 - (1/2 : ℝ)^1)^2 ≤ allDeleted unequalLaw := by
+  refine ⟨by omega, by omega, unequal_independent, unequal_bound, ?_⟩
+  rw [unequal_deleted]; norm_num
+
+-- T15: the very same genuine law for two rows and one singleton group.
+example : ∃ L : Law (Array 2 1), 0 < (2 : ℕ) ∧ 0 < (1 : ℕ) ∧
+    rowIndependent L ∧ observationBound L (1/2) ∧
+    (1 - (1/2 : ℝ)^1)^2 ≤ allDeleted L := by
+  refine ⟨unequalLaw, by omega, by omega, unequal_independent, unequal_bound, ?_⟩
+  rw [unequal_deleted]; norm_num
+
+-- An explicit positive natural sequence whose ratio to log n diverges.
+noncomputable def dimensions (n : ℕ) : ℕ := ⌈(n : ℝ) * Real.log n⌉₊ + 1
+
+theorem dimensions_pos (n : ℕ) : 0 < dimensions n := by
+  unfold dimensions
+  omega
+
+theorem dimensions_superlog : superlog dimensions := by
+  refine Filter.tendsto_atTop_mono' atTop ?_ (tendsto_natCast_atTop_atTop (R := ℝ))
+  filter_upwards [Filter.eventually_ge_atTop (2 : ℕ)] with n hn
+  have hl : 0 < Real.log (n : ℝ) := Real.log_pos (by exact_mod_cast (show 1 < n by omega))
+  apply (le_div_iff₀ hl).2
+  have hc : (n : ℝ) * Real.log n ≤ (⌈(n : ℝ) * Real.log n⌉₊ : ℝ) := Nat.le_ceil _
+  simpa [dimensions, Nat.cast_add] using le_trans hc (by linarith :
+    (⌈(n : ℝ) * Real.log n⌉₊ : ℝ) ≤ (⌈(n : ℝ) * Real.log n⌉₊ : ℝ) + 1)
+
+-- T16: constructs all data and every hypothesis, for any fixed q in [0,1),
+-- including q=0. There is no use of any Challenge theorem.
+example (q : ℝ) (hq : 0 ≤ q) (hq1 : q < 1) :
+    ∃ (k : ℕ → ℕ) (L : ∀ n, Law (Array n (k n))),
+      (∀ n, 0 < n → 0 < k n) ∧
+      (∀ n, 0 < n → rowIndependent (L n)) ∧
+      (∀ n, 0 < n → observationBound (L n) q) ∧ superlog k := by
+  refine ⟨dimensions, (fun n => missingLaw n (dimensions n)), ?_, ?_, ?_,
+    dimensions_superlog⟩
+  · intro n _; exact dimensions_pos n
+  · intro n _; exact independent_point _
+  · intro n _; exact bound_missing n _ (dimensions_pos n) q hq hq1
+
+end Audit

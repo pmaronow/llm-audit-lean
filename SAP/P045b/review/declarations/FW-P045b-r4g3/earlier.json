@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P045b.T29",
+  "target_id": "P045-T29",
+  "round": 3,
+  "verdict": "restriction_inaccurate",
+  "severity": "minor",
+  "issues": [
+   "SAP/P045b/Challenge/Part2.lean:21 — the docstring says 'the documented sampler does not always return a three-net'. The statement is about the sampler as coded: `terminalCentres G.edist 3 true` (SAP/P045b/Defs/Part5.lean:54-57) with `coded = true`, whose branch at SAP/P045b/Defs/Part2.lean:84-86 draws uniformly from {0,…,u} when exactly one vertex u is unmarked (R's sample() on a length-one vector), possibly picking an already-marked vertex. The sampler as documented (uniform draw among unmarked vertices, Ugander et al.; `coded = false`) always returns a 3-net: each new centre is unmarked, so at distance ≥ 3 from all earlier centres, and it stops only when every vertex is covered. The canonical note confirms this ('with the corrected draw the reading is true (P045-T11)'). The T27 docstring in the same file (line 16) uses 'documented … indicator' to mean the documentation's specification, as opposed to what the package returns. Read the same way, 'the documented sampler' names the correct algorithm, so the docstring's first sentence misdescribes what is refuted. The statement, the definitions and the `refuted` label are correct."
+  ]
+ }
+]

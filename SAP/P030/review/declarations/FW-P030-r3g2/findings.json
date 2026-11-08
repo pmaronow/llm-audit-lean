@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P030-T6",
+    "theorem": "SAP.P030.T6",
+    "fingerprint": "f98f4c6a808b1a5a97d1de47f50cde60817e26a77c866c7a35696fa262a48891",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:11, :15 and :22: N=10, Omega=tenOmega, S=tenS, obs=tenAssignment 6, Y=tenYnull, g=tenG; obs belongs to Omega, both NoEffects and NoInterference hold, the conditional fixed-outcome null holds, and the two counterexample assignments belong to the conditional support. Compiled scratch/Witnesses.lean:39 independently computes their actual statistic squares as 1/90 and 25/36 and proves the actual statistics differ. scratch/numerics.py independently checks that the conditional set has exactly six assignments and verifies the complete finite data.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T7",
+    "theorem": "SAP.P030.T7",
+    "fingerprint": "ce01b000797c7d7e0163b22898cc40323a638929590f8c521247962f467a8509",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:49: N=2, assignments (false,false) and (false,true), fixed indicator (true,false), obs=(false,false), with both assignments in the conditional support. The schedule Y(i,z)=7+2*Z_i satisfies no interference and the fixed-outcome null, allowing a nonzero direct coefficient. A constant schedule satisfies NoEffects. The separate antecedent in the variation implication is realized in scratch/Check.lean:82 by Y(i,z)=Z_1, with outcome 0 versus 1 at fixed index 0. Thus the implication branches have genuine instances.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T8",
+    "theorem": "SAP.P030.T8",
+    "fingerprint": "b6f462e4ace1cb0acb60dc840057681e331ce89126551aab9d00ce2b5abb0f23",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed numerical counterexample, with no inconsistent premises. Compiled scratch/Check.lean:99, :103 and :109 verifies nonconstancy, observed midranks, square sums 5 and 9/2, and cross product -9/2. Compiled scratch/Witnesses.lean:60 gives printed values -4/5 and -3/5 and correct squared correlation 9/10. scratch/Check.lean:117 and :122 and scratch/Witnesses.lean:69 verify both nonconstant weak-example vectors, their order implication, positive square sums 2 and 3/2, squared correlation 3/4, and inequality to both 1 and -1. scratch/numerics.py verifies all six table rows, both printed-formula arrays, the tied-vector ordering reversal, and every stated rounding tolerance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T9",
+    "theorem": "SAP.P030.T9",
+    "fingerprint": "f9bec98cfb1de183c9a842093e378f39ec8379705ad98c7bfadd2d12ec027f9e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:117 simultaneously realizes n=3>=2, nonconstant a=(1,2,3), nonconstant b=(0,0,1), and positive conventional divisors m=3 and m=2; :122 checks the weak-order example and its positive square sums. Compiled scratch/Witnesses.lean:85 realizes the positive proportionality/order-preserving branch with a=b=(1,2,3), c=1, and the negative/order-reversing branch with a=(1,2,3), b=(3,2,1), c=-1. scratch/Witnesses.lean:69 checks that the weak example is a genuine failure of perfect correlation, and scratch/numerics.py verifies all six table values and roundings.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T10",
+    "theorem": "SAP.P030.T10",
+    "fingerprint": "7a32f16a88ae7bf697e5534495c5235c67ef13380314c148eac7730feacb2874",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:138 uses N=2, d(i,j)=abs((i.val:Real)-(j.val:Real)), z=(false,true), i=0. The diagonal is zero, every off-diagonal distance is strictly positive, both nonempty off-diagonal sums equal 4/9, and the separate partial quotient at (0,0) is none. Compiled scratch/Check.lean:155 instantiates the divergence hypothesis with B=1 and d=1/3, giving k(d)=4>1. The negated exponential representation is a nonexistence assertion, so it has no existential witness to construct; the scalar inverse-square function is explicit and positive throughout the claimed domain.",
+    "confidence": 0.99
+  }
+]

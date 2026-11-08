@@ -1,0 +1,257 @@
+import SAP.P001e.Challenge
+
+set_option maxHeartbeats 800000
+set_option linter.unusedVariables false
+open MeasureTheory ProbabilityTheory Set Filter
+open scoped ENNReal NNReal BigOperators Topology Classical
+
+namespace Review
+noncomputable section
+open SAP.P001e
+
+-- These checks construct data; none invokes a Challenge theorem.
+lemma constant_conditionalMean {Ω E : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace E] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (X : Ω → E) (c : ℝ) :
+    IsConditionalMean μ X (fun _ => c) (fun _ => c) := by
+  refine ⟨measurable_const, integrable_const c, ?_, ?_⟩
+  · simpa only [Function.comp_def] using integrable_const (μ := μ) c
+  · intro A hA; rfl
+
+lemma mean_given_constant {Ω E : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace E] (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (x : E) (f : Ω → ℝ) (hf : Integrable f μ) :
+    IsConditionalMean μ (fun _ => x) f (fun _ => ∫ ω, f ω ∂μ) := by
+  refine ⟨measurable_const, hf, ?_, ?_⟩
+  · simpa only [Function.comp_def] using integrable_const (μ := μ) (∫ ω, f ω ∂μ)
+  · intro A hA
+    by_cases hx : x ∈ A <;> simp [Set.preimage, hx]
+
+lemma constant_condIndependent {Ω E F G : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace E] [MeasurableSpace F] [MeasurableSpace G]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+    (c : F) (Z : Ω → G) : CondIndependent μ X hX (fun _ => c) Z := by
+  intro A B hA hB
+  by_cases hc : c ∈ A
+  · simp only [hc, true_and, ite_true, condExp_const hX.comap_le, one_mul]
+    exact Filter.EventuallyEq.rfl
+  · simp only [hc, false_and, ite_false, condExp_const hX.comap_le, zero_mul]
+    exact Filter.EventuallyEq.rfl
+
+def coin : Measure (Fin 2) := (PMF.uniformOfFintype (Fin 2)).toMeasure
+instance : IsProbabilityMeasure coin := by unfold coin; infer_instance
+def bit (i : Fin 2) : ℝ := (i.val : ℝ)
+
+lemma coin_bit_probability : probability coin {i | bit i = 1} = 1/2 := by
+  norm_num [probability, coin, PMF.toMeasure_apply_fintype, Set.indicator,
+    PMF.uniformOfFintype_apply, Fin.sum_univ_two, bit]
+
+lemma coin_bit_mean : (∫ i, bit i ∂coin) = 1/2 := by
+  norm_num [coin, PMF.integral_eq_sum, PMF.uniformOfFintype_apply,
+    Fin.sum_univ_two, bit]
+
+-- T87: both response strata have positive probability; all MAR premises hold.
+example :
+    Measurable (fun _ : Fin 2 => fun _ : Fin 1 => (0 : ℝ)) ∧
+    Measurable (fun _ : Fin 2 => (5 : ℝ)) ∧ Measurable bit ∧
+    Integrable (fun _ : Fin 2 => (5 : ℝ)) coin ∧
+    (∀ᵐ i ∂coin, bit i=0 ∨ bit i=1) ∧
+    IsConditionalMean (coin.restrict {i | bit i=1})
+      (fun _ => fun _ : Fin 1 => (0 : ℝ)) (fun _ => 5) (fun _ => 5) ∧
+    IsConditionalMean coin (fun _ => fun _ : Fin 1 => (0 : ℝ)) bit (fun _ => 1/2) ∧
+    (∃ ε : ℝ, 0 < ε ∧ ∀ᵐ i ∂coin, ε < (1/2 : ℝ)) ∧
+    CondIndependent coin (fun _ => fun _ : Fin 1 => (0 : ℝ)) measurable_const
+      (fun _ => (5 : ℝ)) bit ∧
+    0 < probability coin {i | bit i=0} ∧ 0 < probability coin {i | bit i=1} := by
+  refine ⟨measurable_const, measurable_const, measurable_of_finite _, integrable_const _,
+    Filter.Eventually.of_forall ?_, constant_conditionalMean _ _ _, ?_, ?_,
+    constant_condIndependent _ _ _ _ _, ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num [bit]
+  · simpa only [coin_bit_mean] using
+      mean_given_constant coin (fun _ : Fin 1 => (0 : ℝ)) bit Integrable.of_finite
+  · exact ⟨1/4, by norm_num, Filter.Eventually.of_forall (by intro i; norm_num)⟩
+  · norm_num [probability, coin, PMF.toMeasure_apply_fintype, Set.indicator,
+      PMF.uniformOfFintype_apply, Fin.sum_univ_two, bit]
+  · rw [coin_bit_probability]; norm_num
+
+def sampleLaw : Measure (ℕ → Fin 2) := Measure.infinitePi (fun _ : ℕ => coin)
+instance : IsProbabilityMeasure sampleLaw := by unfold sampleLaw; infer_instance
+def sampleD (n : ℕ) (ω : ℕ → Fin 2) : ℝ := bit (ω n)
+
+lemma sampleD_measurable (n : ℕ) : Measurable (sampleD n) :=
+  (measurable_of_finite bit).comp (measurable_pi_apply n)
+
+lemma sampleD_probability : probability sampleLaw {ω | sampleD 0 ω=1} = 1/2 := by
+  change (sampleLaw ((Function.eval 0) ⁻¹' {i | bit i=1})).toReal = 1/2
+  rw [← Measure.map_apply (measurable_pi_apply 0) (Set.toFinite _).measurableSet]
+  change ((Measure.infinitePi (fun _ : ℕ => coin)).map (Function.eval 0)
+    {i | bit i=1}).toReal = 1/2
+  rw [Measure.infinitePi_map_eval]
+  exact coin_bit_probability
+
+lemma sample_iid : IsIID sampleLaw (fun i ω =>
+    (realizedOutcome 0 1 (sampleD i ω), sampleD i ω)) := by
+  have hg : Measurable (fun i : Fin 2 => (bit i, bit i)) := measurable_of_finite _
+  simp only [realizedOutcome, one_mul, zero_mul, add_zero]
+  refine ⟨fun i => (sampleD_measurable i).prodMk (sampleD_measurable i), ?_, ?_⟩
+  · exact iIndepFun_infinitePi (X := fun (_ : ℕ) i => (bit i, bit i)) (fun _ => hg)
+  · intro i
+    have he : IdentDistrib (Function.eval i) (Function.eval (0 : ℕ)) sampleLaw sampleLaw :=
+      ⟨(measurable_pi_apply i).aemeasurable, (measurable_pi_apply 0).aemeasurable,
+        by simp [sampleLaw, Measure.infinitePi_map_eval]⟩
+    exact he.comp hg
+
+-- T88: genuine independent Bernoulli assignments, with Y(0)=0 and Y(1)=1.
+example :
+    (∀ i : ℕ, Measurable (fun _ : ℕ → Fin 2 => (0 : ℝ))) ∧
+    (∀ i : ℕ, Measurable (fun _ : ℕ → Fin 2 => (1 : ℝ))) ∧
+    (∀ i, Measurable (sampleD i)) ∧ (0 : ℝ) ≤ 1 ∧
+    (∀ i, ∀ᵐ ω ∂sampleLaw, (0 : ℝ) ∈ Icc (0 : ℝ) 1 ∧
+      (1 : ℝ) ∈ Icc (0 : ℝ) 1 ∧ (sampleD i ω=0 ∨ sampleD i ω=1)) ∧
+    (0 < probability sampleLaw {ω | sampleD 0 ω=1} ∧
+      probability sampleLaw {ω | sampleD 0 ω=1} < 1) ∧
+    IsIID sampleLaw (fun i ω =>
+      (realizedOutcome 0 1 (sampleD i ω), sampleD i ω)) := by
+  refine ⟨fun _ => measurable_const, fun _ => measurable_const, sampleD_measurable,
+    by norm_num, ?_, ?_, sample_iid⟩
+  · intro i; apply Filter.Eventually.of_forall; intro ω
+    have hi : bit (ω i)=0 ∨ bit (ω i)=1 := by
+      generalize ω i = j
+      fin_cases j <;> norm_num [bit]
+    exact ⟨by norm_num, by norm_num, hi⟩
+  · rw [sampleD_probability]; norm_num
+
+-- T89: the fixed finite witness is normalized, all conditional denominators are
+-- positive, and the altered covariate occurs with positive probability.
+example : (∀ i, 0 < postWeights i) ∧ (∑ i, postWeights i)=1 ∧
+    (∀ x ∈ ({0,1} : Finset ℝ), ∀ d ∈ ({0,1} : Finset ℝ),
+      0 < finiteProbability postWeights (fun i => postCovariate i=x ∧ postAssignment i=d)) ∧
+    finiteProbability postWeights (fun i => postCovariate1 i-postCovariate0 i=1)=1/3 ∧
+    postAdjustedContrast= -1/4 := by
+  norm_num [postWeights, finiteProbability, postCovariate, postAssignment,
+    postCovariate1, postCovariate0, postAdjustedContrast, finiteCellMean,
+    postOutcome, Fin.sum_univ_succ]
+
+def uniformDose : Measure ℝ := volume.restrict (Icc (0 : ℝ) 1)
+instance : IsProbabilityMeasure uniformDose := by
+  constructor
+  norm_num [uniformDose]
+
+lemma spike_measurable : Measurable spikeResponse := by
+  unfold spikeResponse
+  exact Measurable.ite (measurableSet_eq_fun measurable_id measurable_const)
+    measurable_const measurable_const
+
+-- T90: prove the complete closed witness independently of the Challenge proof.
+example : T90Statement := by
+  refine ⟨Measure.map_congr ?_, ?_, ?_, by norm_num⟩
+  · have hne : ∀ᵐ t ∂(volume.restrict (Icc (0 : ℝ) 1)), t ≠ (1/2 : ℝ) := by
+      rw [ae_iff]
+      simp
+    filter_upwards [hne] with t ht
+    simp only [spikeResponse, ht, ite_false]
+  · norm_num [spikeResponse]
+  · norm_num [spikeResponse]
+
+-- The spike model also meets the independence, measurability, and moment
+-- conditions of the printed reading; its failure is not a measurability trick.
+example :
+    CondIndependent uniformDose (fun _ : ℝ => ()) measurable_const
+      (fun _ : ℝ => fun t : ℝ => spikeResponse t) (fun t => t) ∧
+    (∀ t, Integrable (fun _ : ℝ => spikeResponse t) uniformDose) ∧
+    Measurable spikeResponse ∧ Integrable spikeResponse uniformDose := by
+  refine ⟨constant_condIndependent _ _ _ _ _, fun _ => integrable_const _,
+    spike_measurable, ?_⟩
+  apply (integrable_zero ℝ ℝ uniformDose).congr
+  have hne : ∀ᵐ t ∂uniformDose, t ≠ (1/2 : ℝ) := by rw [ae_iff]; simp [uniformDose]
+  filter_upwards [hne] with t ht
+  simp only [Pi.zero_apply, spikeResponse, ht, ite_false]
+
+-- T91(a): all-real deterministic process Y(t)=t and fair binary dose.
+example :
+    Measurable (fun _ : Fin 2 => ()) ∧ Measurable bit ∧
+    (∀ t : ℝ, Measurable (fun _ : Fin 2 => t)) ∧
+    (∀ t : ℝ, Integrable (fun _ : Fin 2 => t) coin) ∧
+    Measurable (fun i : Fin 2 => (fun (t : ℝ) (_ : Fin 2) => t) (bit i) i) ∧
+    Integrable (fun i : Fin 2 => (fun (t : ℝ) (_ : Fin 2) => t) (bit i) i) coin ∧
+    CondIndependent coin (fun _ => ()) measurable_const
+      (fun _ : Fin 2 => fun t : ℝ => t) bit ∧
+    (∀ x : Unit, 0 < probability coin {i | ()=x} →
+      0 < probability coin {i | ()=x ∧ bit i=0} ∧
+      0 < probability coin {i | ()=x ∧ bit i=1}) := by
+  refine ⟨measurable_const, measurable_of_finite _, fun _ => measurable_const,
+    fun _ => integrable_const _, measurable_of_finite _, Integrable.of_finite,
+    constant_condIndependent _ _ _ _ _, ?_⟩
+  intro x hx; cases x
+  norm_num [probability, coin, PMF.toMeasure_apply_fintype, Set.indicator,
+    PMF.uniformOfFintype_apply, Fin.sum_univ_two, bit]
+
+lemma unit_cell_constant (t : ℝ) :
+    cellMean uniformDose (fun _ : ℝ => ()) (fun _ => t) () = t := by
+  simp [cellMean, probability]
+
+lemma uniform_identity_integrable : Integrable (fun t : ℝ => t) uniformDose :=
+  continuous_id.integrableOn_Icc
+
+lemma uniform_ball_positive (d ε : ℝ) (hd0 : 0 < d) (hd1 : d < 1) (hε : 0 < ε) :
+    0 < uniformDose (Metric.ball d ε) := by
+  let r := min (ε/2) ((1-d)/2)
+  have hr : 0 < r := lt_min (by linarith) (by linarith)
+  have hrε : r ≤ ε/2 := min_le_left _ _
+  have hr1 : r ≤ (1-d)/2 := min_le_right _ _
+  have hI : Ioo d (d+r) ⊆ Icc (0 : ℝ) 1 := by
+    intro t ht
+    exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  have hB : Ioo d (d+r) ⊆ Metric.ball d ε := by
+    intro t ht
+    rw [Metric.mem_ball, Real.dist_eq, abs_of_pos (sub_pos.mpr ht.1)]
+    linarith [ht.2]
+  calc
+    0 < uniformDose (Ioo d (d+r)) := by
+      rw [uniformDose, Measure.restrict_eq_self _ hI, Real.volume_Ioo]
+      exact ENNReal.ofReal_pos.mpr (by linarith)
+    _ ≤ uniformDose (Metric.ball d ε) := measure_mono hB
+
+-- T91(b): a genuinely continuous dose, Unit curve state, and evaluation t↦t.
+-- The two queried doses are distinct and lie in the interior of [0,1].
+example :
+    Measurable (fun _ : ℝ => ()) ∧ Measurable (fun t : ℝ => t) ∧
+    Measurable (fun _ : ℝ => ()) ∧
+    Measurable (fun z : ℝ × Unit => z.1) ∧
+    Function.Injective (fun _ : Unit => fun t : ℝ => t) ∧
+    CondIndependent uniformDose (fun _ : ℝ => ()) measurable_const
+      (fun _ : ℝ => ()) (fun t => t) ∧
+    (∀ t : ℝ, Integrable (fun _ : ℝ => t) uniformDose) ∧
+    Integrable (fun t : ℝ => t) uniformDose ∧
+    (∀ x : Unit, 0 < probability uniformDose {ω : ℝ | ()=x} →
+      ContinuousAt (fun t => cellMean uniformDose (fun _ : ℝ => ()) (fun _ => t) x) (1/4) ∧
+      ContinuousAt (fun t => cellMean uniformDose (fun _ : ℝ => ()) (fun _ => t) x) (3/4)) ∧
+    (∀ x : Unit, 0 < probability uniformDose {ω : ℝ | ()=x} →
+      ∀ ε : ℝ, 0 < ε →
+        0 < uniformDose {ω : ℝ | ()=x ∧ ω ∈ Metric.ball (1/4) ε} ∧
+        0 < uniformDose {ω : ℝ | ()=x ∧ ω ∈ Metric.ball (3/4) ε}) := by
+  refine ⟨measurable_const, measurable_id, measurable_const, measurable_fst,
+    fun _ _ _ => Subsingleton.elim _ _, constant_condIndependent _ _ _ _ _,
+    fun _ => integrable_const _, uniform_identity_integrable, ?_, ?_⟩
+  · intro x hx; cases x
+    simp only [unit_cell_constant]
+    exact ⟨continuousAt_id, continuousAt_id⟩
+  · intro x hx ε hε; cases x
+    simpa only [Metric.ball, Set.mem_setOf_eq, true_and] using
+      And.intro (uniform_ball_positive (1/4) ε (by norm_num) (by norm_num) hε)
+        (uniform_ball_positive (3/4) ε (by norm_num) (by norm_num) hε)
+
+-- There really is a continuous observed CEF version for this model.
+example : ∃ mobs : Unit → ℝ → ℝ, ∀ x : Unit,
+    IsConditionalMean (uniformDose.restrict {ω : ℝ | ()=x})
+      (fun t : ℝ => t) (fun t => t) (mobs x) ∧
+    ContinuousAt (mobs x) (1/4) ∧ ContinuousAt (mobs x) (3/4) := by
+  refine ⟨fun _ t => t, ?_⟩
+  intro x; cases x
+  simp only [Set.ofPred_true, Measure.restrict_univ]
+  refine ⟨⟨measurable_id, uniform_identity_integrable, ?_, fun _ _ => rfl⟩,
+    continuousAt_id, continuousAt_id⟩
+  simpa only [Function.comp_def] using uniform_identity_integrable
+
+end
+end Review

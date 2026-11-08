@@ -1,0 +1,31 @@
+import SAP.P005a.Defs.WholeW2
+set_option maxRecDepth 4000
+set_option maxHeartbeats 1200000
+open SAP.P005a Finset
+open scoped BigOperators Matrix
+private lemma design62 : design 6 2 = {{0,1}, {0,2}, {0,3}, {0,4}, {0,5}, {1,2}, {1,3}, {1,4}, {1,5}, {2,3}, {2,4}, {2,5}, {3,4}, {3,5}, {4,5}} := by decide
+private lemma complement01 : SAP.P005a.control ({0,1} : Finset (Fin 6)) = {2,3,4,5} := by decide
+private lemma complement02 : SAP.P005a.control ({0,2} : Finset (Fin 6)) = {1,3,4,5} := by decide
+private lemma complement03 : SAP.P005a.control ({0,3} : Finset (Fin 6)) = {1,2,4,5} := by decide
+private lemma complement04 : SAP.P005a.control ({0,4} : Finset (Fin 6)) = {1,2,3,5} := by decide
+private lemma complement05 : SAP.P005a.control ({0,5} : Finset (Fin 6)) = {1,2,3,4} := by decide
+private lemma complement12 : SAP.P005a.control ({1,2} : Finset (Fin 6)) = {0,3,4,5} := by decide
+private lemma complement13 : SAP.P005a.control ({1,3} : Finset (Fin 6)) = {0,2,4,5} := by decide
+private lemma complement14 : SAP.P005a.control ({1,4} : Finset (Fin 6)) = {0,2,3,5} := by decide
+private lemma complement15 : SAP.P005a.control ({1,5} : Finset (Fin 6)) = {0,2,3,4} := by decide
+private lemma complement23 : SAP.P005a.control ({2,3} : Finset (Fin 6)) = {0,1,4,5} := by decide
+private lemma complement24 : SAP.P005a.control ({2,4} : Finset (Fin 6)) = {0,1,3,5} := by decide
+private lemma complement25 : SAP.P005a.control ({2,5} : Finset (Fin 6)) = {0,1,3,4} := by decide
+private lemma complement34 : SAP.P005a.control ({3,4} : Finset (Fin 6)) = {0,1,2,5} := by decide
+private lemma complement35 : SAP.P005a.control ({3,5} : Finset (Fin 6)) = {0,1,2,4} := by decide
+private lemma complement45 : SAP.P005a.control ({4,5} : Finset (Fin 6)) = {0,1,2,3} := by decide
+example : interactedRegular weightPopulation 2 := by
+  have hs : weightScale ^ 2 = (3/20 : ℝ) := Real.sq_sqrt (by norm_num)
+  intro S hS
+  rw [design62] at hS
+  simp only [mem_insert, mem_singleton] at hS
+  rcases hS with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+  all_goals constructor <;>
+    norm_num [armL, xMean, mean, weightPopulation, scalarPopulation, weightA,
+      complement01, complement02, complement03, complement04, complement05, complement12, complement13, complement14, complement15, complement23, complement24, complement25, complement34, complement35, complement45, Matrix.det_fin_one] <;>
+    nlinarith [hs]

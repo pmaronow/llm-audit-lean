@@ -1,0 +1,135 @@
+import SAP.P019b.Challenge
+
+open scoped BigOperators
+open SAP.P019b
+noncomputable section
+open Classical
+
+namespace T22Audit
+
+-- The latent response is recorded before assignment can affect it.
+-- R has probability 1/4; B and Z are independent fair bits.
+def nullStudy : Study WholeOrderAtom :=
+  { wholeOrderStudy with Y := fun a => a.1 }
+
+theorem null_monotone : nullStudy.monotone := by
+  intro a ha hy
+  rfl
+
+theorem null_noLiars : nullStudy.noLiarsDesign := by
+  rintro ⟨r, b, z⟩ ha
+  cases b <;> cases z <;>
+    norm_num [nullStudy, wholeOrderStudy, bitVal]
+
+theorem null_independent : nullStudy.treatmentIndependent := by
+  intro f z
+  cases z <;>
+    simp [nullStudy, wholeOrderStudy, wholeOrderLaw, FiniteLaw.mean,
+      FiniteLaw.prob, Fintype.sum_prod_type] <;> ring
+
+theorem null_nondegenerate : nullStudy.nondegenerate := by
+  constructor
+  · intro z y
+    cases z <;> cases y <;>
+      norm_num [Study.cell, FiniteLaw.cv, FiniteLaw.ce, FiniteLaw.prob,
+        FiniteLaw.mean, nullStudy, wholeOrderStudy, wholeOrderLaw,
+        Fintype.sum_prod_type, Fintype.sum_bool]
+  · norm_num [FiniteLaw.variance, FiniteLaw.mean, nullStudy, wholeOrderStudy,
+      wholeOrderLaw, bitVal, Fintype.sum_prod_type, Fintype.sum_bool]
+
+example : nullStudy.monotone ∧ nullStudy.noLiarsDesign ∧
+    nullStudy.treatmentIndependent ∧ nullStudy.nondegenerate ∧
+    (∀ z : Bool, nullStudy.law.prob (fun a => nullStudy.Z a = z) = 1/2) ∧
+    nullStudy.delta = 0 := by
+  refine ⟨null_monotone, null_noLiars, null_independent, null_nondegenerate, ?_, ?_⟩
+  · intro z
+    cases z <;>
+      norm_num [nullStudy, wholeOrderStudy, wholeOrderLaw, FiniteLaw.prob,
+        FiniteLaw.mean, Fintype.sum_prod_type, Fintype.sum_bool]
+  · norm_num [Study.delta, nullStudy, wholeOrderStudy, wholeOrderLaw, bitVal,
+      FiniteLaw.ce, FiniteLaw.prob, FiniteLaw.mean,
+      Fintype.sum_prod_type, Fintype.sum_bool]
+
+-- Independently recompute the protocol's population quantities, without T22.
+example : wholeOrderStudy.monotone ∧ wholeOrderStudy.noLiarsDesign ∧
+    wholeOrderStudy.nondegenerate ∧
+    (∀ z y : Bool,
+      wholeOrderLaw.prob (wholeOrderStudy.cell z y) = (if z = y then 3/8 else 1/8) ∧
+      wholeOrderLaw.cv (fun a => (wholeOrderStudy.V a : ℝ))
+        (wholeOrderStudy.cell z y) = 1/4) ∧
+    wholeOrderStudy.delta = 1/2 := by
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro a ha hy
+    rfl
+  · rintro ⟨r, b, z⟩ ha
+    cases b <;> cases z <;> norm_num [wholeOrderStudy, bitVal]
+  · constructor
+    · intro z y
+      cases z <;> cases y <;>
+        norm_num [Study.cell, wholeOrderStudy, wholeOrderLaw,
+          FiniteLaw.cv, FiniteLaw.ce, FiniteLaw.prob, FiniteLaw.mean,
+          Fintype.sum_prod_type, Fintype.sum_bool, xor]
+    · norm_num [wholeOrderStudy, wholeOrderLaw, bitVal, xor,
+        FiniteLaw.variance, FiniteLaw.mean, Fintype.sum_prod_type, Fintype.sum_bool]
+  · intro z y
+    cases z <;> cases y <;>
+      norm_num [Study.cell, wholeOrderStudy, wholeOrderLaw,
+        FiniteLaw.cv, FiniteLaw.ce, FiniteLaw.prob, FiniteLaw.mean,
+        Fintype.sum_prod_type, Fintype.sum_bool, xor]
+  · norm_num [Study.delta, wholeOrderStudy, wholeOrderLaw, bitVal, xor,
+      FiniteLaw.ce, FiniteLaw.prob, FiniteLaw.mean,
+      Fintype.sum_prod_type, Fintype.sum_bool]
+
+-- Directly witness the failure of Assumption 3 by f(W,X,Y)=1_{Y=true}.
+example : ¬ wholeOrderStudy.treatmentIndependent := by
+  intro h
+  have hY := h (fun _ _ y => bitVal y) true
+  norm_num [wholeOrderStudy, wholeOrderLaw, bitVal, xor,
+    FiniteLaw.prob, FiniteLaw.mean, Fintype.sum_prod_type, Fintype.sum_bool] at hY
+
+example : (∀ (f : Bool → Bool → ℝ) (z : Bool),
+    wholeOrderLaw.mean (fun a => if wholeOrderStudy.Z a = z then f a.1 a.2.1 else 0) =
+      wholeOrderLaw.prob (fun a => wholeOrderStudy.Z a = z) *
+        wholeOrderLaw.mean (fun a => f a.1 a.2.1)) ∧
+    (∀ z : Bool, wholeOrderLaw.prob (fun a => wholeOrderStudy.Z a = z) = 1/2) ∧
+    (∀ a : WholeOrderAtom,
+      wholeOrderStudy.Y a = if wholeOrderStudy.Z a then !a.1 else a.1) ∧
+    wholeOrderLaw.variance (fun a => bitVal (wholeOrderStudy.Y a)) = 1/4 ∧
+    wholeOrderLaw.variance (fun a => bitVal (wholeOrderStudy.Z a)) = 1/4 := by
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro f z
+    cases z <;>
+      simp [wholeOrderStudy, wholeOrderLaw, FiniteLaw.mean,
+        FiniteLaw.prob, Fintype.sum_prod_type] <;> ring
+  · intro z
+    cases z <;> norm_num [wholeOrderStudy, wholeOrderLaw, FiniteLaw.prob,
+      FiniteLaw.mean, Fintype.sum_prod_type, Fintype.sum_bool]
+  · rintro ⟨r, b, z⟩
+    cases r <;> cases z <;> rfl
+  · norm_num [wholeOrderStudy, wholeOrderLaw, bitVal, xor,
+      FiniteLaw.variance, FiniteLaw.mean, Fintype.sum_prod_type, Fintype.sum_bool]
+  · norm_num [wholeOrderStudy, wholeOrderLaw, bitVal,
+      FiniteLaw.variance, FiniteLaw.mean, Fintype.sum_prod_type, Fintype.sum_bool]
+
+example : ∀ a : WholeOrderAtom,
+    wholeOrderHistory a 0 = .discloseAssignment (wholeOrderStudy.Z a) ∧
+    wholeOrderHistory a 1 = .recordDirectAnswer (wholeOrderStudy.Y a) ∧
+    wholeOrderHistory a 2 = .presentList (wholeOrderStudy.Z a) ∧
+    ∀ t : Fin 3, t < 2 →
+      wholeOrderHistory a t ≠ .presentList (wholeOrderStudy.Z a) := by
+  intro a
+  refine ⟨by simp [wholeOrderHistory], by simp [wholeOrderHistory],
+    by simp [wholeOrderHistory], ?_⟩
+  intro t ht
+  fin_cases t <;> simp_all [wholeOrderHistory]
+
+-- Deficient samples and negative completions really use Lean's totalization.
+example (c1 c0 cV : ℝ) :
+    nullStudy.deltaHat (fun i : Fin 0 => Fin.elim0 i) c1 c0 = c1 - c0 ∧
+    nullStudy.deltaVarianceHat (fun i : Fin 0 => Fin.elim0 i) cV = cV := by
+  simp [Study.deltaHat, Study.directArmMean, Study.armCount, Study.deltaVarianceHat]
+
+example (a : ℝ) : a / Real.sqrt (-1 : ℝ) = 0 := by
+  norm_num
+
+end T22Audit

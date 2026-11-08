@@ -18,7 +18,7 @@ instance TailB_instNeZero_population (S : ExperimentSequence) (q : ℕ) :
 def TailB_marginalLaw (H : JointLaw) (t : Bool) : ProbabilityMeasure ℝ :=
   H.map (fun p => if t then p.1 else p.2)
 
-/-- The marginal probability CDF equals `lawCDF`. -/
+/-- The marginal probability CDF is exactly the audit CDF. -/
 theorem TailB_marginal_cdf (H : JointLaw) (t : Bool) (x : ℝ) :
     cdf (TailB_marginalLaw H t : Measure ℝ) x = lawCDF H t x := by
   cases t
@@ -134,7 +134,7 @@ theorem TailB_compatible_coordinate_memLp (H J : JointLaw)
     exact (memLp_map_measure_iff measurable_id.aestronglyMeasurable
       measurable_fst.aemeasurable).mp hmap
 
-/-- The two moment conclusions of Proposition 1. -/
+/-- The two moment conclusions of the literal Proposition 1 contract. -/
 theorem TailB_proposition1_moments (S : ExperimentSequence) (H : JointLaw) (θ ρ : ℝ)
     (h : Conditions123 S H θ ρ) (hUI : UniformSquareIntegrability S) :
     (∀ J ∈ compatibleLaws H, ∀ t : Bool, ∀ j : ℕ, j ≤ 2 →
@@ -209,7 +209,7 @@ theorem TailB_l2Mean_toLp (f : ℝ → ℝ) (hf : MemLp f 2 unifOI) :
     TailB_l2Mean (hf.toLp f) = ∫ u, f u ∂unifOI := by
   simp only [TailB_l2Mean, TailB_toLp_inner, mul_one]
 
-/-- Finite quantile mean and variance functionals equal `finiteMean` and `finiteVariance`. -/
+/-- Finite quantile mean and variance functionals have the exact audit values. -/
 theorem TailB_l2_empirical_moments {N : ℕ} [NeZero N] (y : Fin N → ℝ) :
     TailB_l2Mean ((TailB_empirical_quantile_memLp y).toLp
       (quantile (TailB_empiricalLaw y : Measure ℝ))) = finiteMean y ∧
@@ -519,24 +519,14 @@ theorem TailB_bound_consistency (S : ExperimentSequence) (H : JointLaw) (θ ρ :
   simp only [Prod.dist_eq, Real.dist_eq, sub_zero, ← mul_sub, abs_mul,
     abs_of_nonneg (show (0 : ℝ) ≤ (S.design q).N from Nat.cast_nonneg _)]
 
-/-- P022-T15: Proposition 1 under its stated hypotheses. -/
-theorem TailB_proposition1 : (∀ (S : ExperimentSequence)
-      (H : JointLaw)
-      (θ ρ : ℝ)
-      (h : Conditions123 S H θ ρ)
-      (hUI : UniformSquareIntegrability S),
-      (∀ h ∈ compatibleLaws H, ∀ t : Bool, ∀ j : ℕ, j ≤ 2 →
-      Integrable (fun p : ℝ × ℝ => (if t then p.1 else p.2) ^ j)
-        (h : Measure (ℝ × ℝ))) ∧
-    (∀ h ∈ compatibleLaws H, Integrable (fun p : ℝ × ℝ => p.1 * p.2)
-      (h : Measure (ℝ × ℝ))) ∧
-    (∀ B, Tendsto (fun q => ((S.design q).N : ℝ) * populationBound (S.design q)
-      (rowOutcomes S true q) (rowOutcomes S false q) B) atTop (𝓝 (limitingBound H θ ρ B))) ∧
-    boundConsistency S) := by
+/-- P022-T15: the exact Proposition 1 contract, with no added hypotheses. -/
+theorem TailB_proposition1 : type_of% @AronowAudit.P022.proposition1 := by
   intro S H θ ρ h hUI
   obtain ⟨hm, hcross⟩ := TailB_proposition1_moments S H θ ρ h hUI
   exact ⟨hm, hcross, TailB_population_bound_limits S H θ ρ h hUI,
     TailB_bound_consistency S H θ ρ h hUI⟩
+
+example : type_of% @AronowAudit.P022.proposition1 := TailB_proposition1
 
 end
 

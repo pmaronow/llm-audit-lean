@@ -1,0 +1,116 @@
+[
+  {
+    "theorem": "SAP.P001d.T58",
+    "target_id": "P001-T58",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The specified signed kernel, evenness, integrability, normalization, one-observation density identity and negative integrated value agree with the canonical counterexample, for every observation a. Strict decrease on (a-2,a-1), the triangular sampling-density example, its interval bound, and the fixed square-root functional's probability-one domain failure are absent. The surviving negative value really refutes CDF validity. There is no probabilistic or integrability premise that could make this unconditional example vacuous."
+  },
+  {
+    "theorem": "SAP.P001d.T59",
+    "target_id": "P001-T59",
+    "my_reading_vs_claim": "whole",
+    "reason": "For positive n and h it asserts all the canonical density/CDF properties with precisely a.e. nonnegativity, evenness and mass one. The real integral equal to 1 implies Integrable K, so omission of a separate integrability/measurability hypothesis does not exploit the undefined-integral convention. A.e. versions are allowed by the standing assumptions. Monotonicity, continuity and both endpoint limits fully express the required CDF property; applying an arbitrary functional on CDFs is then definitional. The rectangular kernel is an admissible instance."
+  },
+  {
+    "theorem": "SAP.P001d.T60",
+    "target_id": "P001-T60",
+    "my_reading_vs_claim": "whole",
+    "reason": "The change-of-variable identity and rectangular-kernel empirical-CDF identity are exactly the canonical formulas, including the exclusion X_i=x-h and inclusion of the other endpoint. Positive sample size and bandwidth are explicit; integrability is supplied for the general integral formula. For example, n=1, X_0=0 and h=1 is admissible."
+  },
+  {
+    "theorem": "SAP.P001d.T61",
+    "target_id": "P001-T61",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The actual heavy-tailed mixture is used, not an abstract law assuming its desired conclusions. All median normal/weak-bootstrap/variance-obstruction conclusions on positive odd sizes are present. Population tail/CDF formulas, uniqueness, the derivative predicate, explicit identification of the finite regular statistic with T0 of the empirical CDF, the full-size T0 marginal limit and its weak-bootstrap conclusion are absent. The finite regular statistic instead has the asserted odd-size marginal limit and variance obstruction. The local functional identity is correct because F_H(0)=1/2; the arbitrary-function infimum branch is never used there. Pointwise strict error <1/4 is a slightly weaker premise than uniform norm <1/4, but still implies the conclusion at zero. On odd sizes the finite fallback is the correct empirical quantile. The mixture is a probability law and its infinite product supplies a nonvacuity instance."
+  },
+  {
+    "theorem": "SAP.P001d.T62",
+    "target_id": "P001-T62",
+    "my_reading_vs_claim": "broader",
+    "reason": "All canonical moment-criterion, standard-error, exact sample-mean variance and sufficient median-moment conclusions are present. The first assertion drops the marginal asymptotic-normality and IID premises because the conditional moment equivalence only needs the stated weak-bootstrap premise. This is a valid strengthening, not a missing conclusion. Integer tail thresholds give the same condition by monotonicity, and every probability inside limsup is in [0,1], so real limsup is legitimate. Local density, unique median and a positive fractional moment are expressly required for the median case. IID standard normal coordinates with the sample mean satisfy the first premises; IID uniform[-1,1] coordinates satisfy the median premises with m=0, f(m)=1/2 and any positive moment."
+  },
+  {
+    "theorem": "SAP.P001d.T63",
+    "target_id": "P001-T63",
+    "my_reading_vs_claim": "broader",
+    "reason": "It includes IID cluster averages, equality with their sample mean, unbiasedness, the coordinate-mean formula, both variance formulas and the weak law. Coordinate L2 is the finite-moment regime needed by the variance/covariance bundle. It also allows zero coordinate variance, whereas the printed WLLN states strictly positive variances; positivity is unnecessary for that conclusion. Cluster size and numbers of averaged clusters are positive. Independent Gaussian clusters, with or without dependence inside each cluster, supply nondegenerate instances."
+  },
+  {
+    "theorem": "SAP.P001d.T64",
+    "target_id": "P001-T64",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The final design-effect formula, both extreme cases, and independent uniform resampling of l whole clusters with lm observations are correct. Instead of starting with common positive variances and off-diagonal correlations and concluding the covariance and count expansions, it assumes the equivalent covariance values directly and omits those intermediate conclusions. The parameter s is the common variance. Neither an empty cluster type nor the erroneous all-pairs correlation premise is used. Gaussian clusters X_ij=sqrt(s)*(sqrt(rho)*Z_i+sqrt(1-rho)*Z_ij), using independent standard normals, satisfy the hypotheses for every permitted s,rho; l=m=2 supplies a nonempty resampling instance."
+  },
+  {
+    "theorem": "SAP.P001d.T65",
+    "target_id": "P001-T65",
+    "my_reading_vs_claim": "whole",
+    "reason": "The full-rank inverse-formula unique OLS minimizer, stacked residual definition, normal equations and all three residual identities are present. The canonical claim's note explicitly says 'Theorem 4.1.5 inherits the invertibility of X^T X'; on that canonical reading this is not an added restriction, despite the Challenge docstring's contrary description. Taking n=2, K=0, the all-ones intercept column and y=(0,2) gives invertible Gram matrix [2] and residual (-1,1)."
+  },
+  {
+    "theorem": "SAP.P001d.T66",
+    "target_id": "P001-T66",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The corrected coefficient-to-diagonal indexing is represented accurately, with printed index k+1 corresponding to Fin index k. The two conclusions are unfoldings of coefficientSE. The canonical equalities between outer-product sums and design products and between normalized and unnormalized covariance formulas are all absent. Residuals and the variance scale are supplied, with the stated invertibility, nonempty-sample and nonnegativity guards; they are not reconstructed as OLS residuals or an estimated residual variance. The intercept-only two-observation example e=(-1,1), s2=1 has both selected covariance diagonals 1/2, so these guards are jointly satisfiable."
+  },
+  {
+    "theorem": "SAP.P001d.T67",
+    "target_id": "P001-T67",
+    "my_reading_vs_claim": "broader",
+    "reason": "It includes the conditional-second-moment identity, population moment factorization and exact sandwich simplification of the canonical formal content, and works for arbitrary measurable finite-dimensional X, including designs without a constant coordinate. The centered-square CEF hypothesis is homoskedasticity with the supplied zero conditional mean; its simplification to epsilon squared is definitional and does not assume the moment-factorization/sandwich conclusions. All matrix entries being integrated are explicitly integrable. For example X=(1,Z) with Z standard normal and an independent standard normal epsilon gives Gram I, sigma2=1 and finite moments. The canonical approximation to sample covariance is explanatory material, not part of its specified exact formal content."
+  },
+  {
+    "theorem": "SAP.P001d.T68",
+    "target_id": "P001-T68",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The additive independent mean-zero-noise conditional-mean assertion is correct in the permitted a.e.-version sense, but global Borel measurability of g is stronger than the canonical condition that g be a function of X, which only requires composite measurability. Integrability of the noise is already inherent in its finite zero expectation. Independent standard normal X,W and g(x)=x give an admissible nonzero instance; W=0 and g=0 give an elementary certificate."
+  },
+  {
+    "theorem": "SAP.P001d.T69",
+    "target_id": "P001-T69",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The uniform-covariate example, derivative branch values, two covariate means, APD=1, PDA=-1 and inequality are all correct, universally over integrable responses with the stipulated CEF version. The separately printed and corrected general APD plug-in estimator and its label on p.166 are absent. The first-coordinate derivative is an actual derivative, so the totalized nondifferentiability convention does no work. On ([0,1]^2, product uniform measure), the coordinate projections and Y=apdExample(X1,X2) satisfy the hypotheses and are bounded."
+  },
+  {
+    "theorem": "SAP.P001d.T70",
+    "target_id": "P001-T70",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All core assertions are present: the unsquared criterion is unbounded below and has no minimizer for every nonempty sample, the squared criterion is polynomial-design RSS for all designs, and full rank gives the unique inverse-formula minimizer. The parenthetical necessary condition of at least J+1 distinct observed x values is omitted. The constant polynomial term ensures unboundedness even if every x is zero. For the full-rank branch, n=2,J=1,x=(0,1) gives Gram determinant 1."
+  },
+  {
+    "theorem": "SAP.P001d.T71",
+    "target_id": "P001-T71",
+    "my_reading_vs_claim": "broader",
+    "reason": "The coefficient domain has K+1 coordinates, the penalty skips the intercept, all seminorm properties and the non-norm witness are stated, lambda=0 gives exactly the OLS minimizer set, and nonnegative lambda gives convexity. It permits every design matrix, including ones without an intercept column; this is a valid generalization of the algebraic assertions. No minimizer existence or uniqueness is used to manufacture the equivalence. For example n=2,K=1,X=((1,0),(1,1)),y=(0,1) and lambda=1 are admissible."
+  },
+  {
+    "theorem": "SAP.P001d.T72",
+    "target_id": "P001-T72",
+    "my_reading_vs_claim": "broader",
+    "reason": "For every positive scale it gives an everywhere nonnegative integrable density of mass one and an integrable first moment equal to x dot beta, expressing the canonical density and CEF computation at each fixed x. Arbitrary x are allowed, so the intercept-design instances are covered. At zero scale it explicitly studies the totalized algebraic extension, which is the zero function and has mass zero; this rejects that extension as a probability density. It does not identify the zero function with a degenerate Gaussian law, and the docstring expressly calls the zero-scale formula totalized. This is an encoding of the scale exclusion, not an analytic claim that the printed partial formula has a value at zero. The positive-scale model does not use division by zero. K=0,x=1,b=0,s=1 is a standard-normal instance."
+  },
+  {
+    "theorem": "SAP.P001d.T73",
+    "target_id": "P001-T73",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact four-atom model has positive conditioning masses, the claimed linear conditional-mean values, residual mean zero, covariance with X zero and a failing independence product equation. This really refutes general independence of CEF deviations. The separate residual atom enumeration, conditional residual means, orthogonality to arbitrary g(X), conditional-variance assertions and total variance 5 are not asserted. All finite conditional divisions used in the conclusion have denominator 1/2. The unconditional finite arithmetic can be checked independently without a Challenge proof."
+  },
+  {
+    "theorem": "SAP.P001d.T74",
+    "target_id": "P001-T74",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The general CEF-deviation assertions are limited to square-integrable Y,m(X), and orthogonality to globally measurable g with g(X) square-integrable. A measurable conditional centered-square mean v is supplied via IsCEF, rather than constructed; subtracting the residual's zero CEF in that certificate yields the stated conditional-square identity and total variance. The independent-Gaussian residual conclusion uses an explicit translated-product joint-law premise and drops the pointwise conditional-law statement at every covariate value. The finite nonindependence example is included through T73. All retained assertions are true; on a product of two standard-normal spaces, X the first coordinate, m(x)=x, Y=X+Z and v=1 satisfy both probabilistic branches, with genuinely nonconstant signal and noise."
+  },
+  {
+    "theorem": "SAP.P001d.T75",
+    "target_id": "P001-T75",
+    "my_reading_vs_claim": "broader",
+    "reason": "The two nonnegative weights 1-h(x dot beta),h(x dot beta) sum to one and their mean is exactly h(x dot beta) in [0,1], as in the canonical fixed-covariate conditional-PMF computation. The claim does not require construction of a joint distribution: its formal content is this two-point sum for each x. The theorem also permits arbitrary x instead of requiring an intercept coordinate. No extra measurability of h is needed for a fixed two-point PMF. K=0,x=1,b=0,h constant 1/2 supplies a nondegenerate Bernoulli instance."
+  },
+  {
+    "theorem": "SAP.P001d.T76",
+    "target_id": "P001-T76",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The positive fixed-scale likelihood/OLS optimizer-set equivalence and independence of that set from scale are exactly correct, for arbitrary data and singular as well as nonsingular designs. The full-rank unique maximizer and inverse-Gram coefficient formula at the end of the canonical formal content are absent. No existence of an optimizer is assumed in the equivalences. A nonempty intercept-only sample, or n=2,K=1 with rows (1,0),(1,1), admits the required positive scales and ordinary least-squares minimizers."
+  }
+]

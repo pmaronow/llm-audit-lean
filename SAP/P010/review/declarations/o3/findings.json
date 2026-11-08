@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P010-T11",
+    "theorem": "SAP.P010.T11",
+    "fingerprint": "ce8adeecb7e3e5d2671a6a62d0bbe21d50742307458d86cbeb7c2945a0c5cf9a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": "",
+    "nonvacuity": "Closed proposition: no hypotheses to satisfy. The witness is genuine for the printed formal reading. R=1 codes replication; pi=1/2 (4+4 subjects); cellPropensity = Pr[R=1|X] = (1/4, 3/4) equals the unique ML fit of the saturated logistic model (log-likelihood log q0+3log(1-q0)+3log q1+log(1-q1) from the 8 subjects; sigmoid(log 1/3)=1/4, sigmoid(log 1/3+log 9)=3/4). Weights go to the replication sample. Checked with exact fractions in Python: odds 1/3, 3; masses 1/12, 9/4; sum 7/3; share 27/28 != 1/4; reciprocal weights give (3/4, 1/4); a grid search confirms the likelihood maximiser (1/4, 3/4).",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T12",
+    "theorem": "SAP.P010.T12",
+    "fingerprint": "3f1e62134610ab0c141625ab82183ad02c05b36000439b3ed508553478107f23",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": "",
+    "nonvacuity": "scratch/Nonvac.lean (compiles): Omega = Unit, nu = dirac (), pi = 1/2, fR = fO = 1 satisfy every hypothesis (0<pi<1, a.e. positivity, integrability, unit integrals); here Z = 1 < top, so the finite-Z branch is live. The Z = top branch is also live (argued, not compiled): Omega = N with counting measure, fO(n) = c/(n+1)^3, fR(n) = c'/(n+1)^2 normalised; then fR^2/fO is proportional to 1/(n+1), so Z = top.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T13",
+    "theorem": "SAP.P010.T13",
+    "fingerprint": "42dabe1cd8545040cb2c4fe7745c1eca58410690655d31693739c321ad700485",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": "",
+    "nonvacuity": "Closed counterexample statement about the explicit witness normalCommonPopulation (Defs/Part5.lean:138), which is exactly the validator's: B~Bern(4/5), Y(1)=Y(2)~N(0,1), fair Z, mutually independent, S(1)=S(2)=B. The statement itself proves every condition of the printed reading: Assumptions 1-3 (populationAssumptions), Pr[all pass]=4/5>0, continuity (noAtoms), full support, r=1/4<1. It also proves LHS=0 and printed RHS=-phi(q)/(3/4)<0. scratch/T13q.lean (compiles, using the certified T13 and T15 statements) derives conditionalLaw(Y(0) | S(0)=1) = N(0,1) and 1-r = 3/4, so the hard-coded q = Phi^{-1}(3/4) is the printed Q_{Y(1)|S(1)=1}(1-r). Numerically -0.4237020969 < 0, matching the claim.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T14",
+    "theorem": "SAP.P010.T14",
+    "fingerprint": "983ba1637d7932242a83c3a180fec75b418c751469c8f35fa0b4bea62f79fa4d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": "",
+    "nonvacuity": "scratch/Nonvac.lean (compiles): K=1, d=0, mu1 = N(0,1).map (y |-> (fun _ => y, fun _ => true, 0, fun _ => 0)) satisfies IsProbabilityMeasure, 0 < mu1 allPass, noAtoms (conditionalLaw mu1 (potentialOutcome 0) (wouldPass 0)) and Integrable (potentialOutcome 0) (mu1.restrict (wouldPass 0)). The hypotheses are natural (probability law, positive always-passer mass, continuous conditional law with finite mean) and jointly satisfiable.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T15",
+    "theorem": "SAP.P010.T15",
+    "fingerprint": "cbc3b86cf2e2fc7e85f8be7ce01a0d4cc4739151096be00c6ef8a857f19709a3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": "",
+    "nonvacuity": "scratch/Nonvac.lean (compiles): the same mu1 (K=1) satisfies populationAssumptions (independence from the constant arm, Pr(Z=0)=1, passRate=1), 0 < mu1 allPass, noAtoms (mu1.map response) and Integrable response (mu1.restrict (passed ∩ assigned 0)); its trimmingRatio is 0 < 1, so the guarded clause is live. A K=2 instance with trimming 1/4 is normalCommonPopulation: T13 supplies the first three hypotheses, and scratch/T13q.lean proves the integrability hypothesis and applies T15 to it.",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,191 @@
+import SAP.P043.Challenge
+
+open SAP.P043 MeasureTheory ProbabilityTheory
+open scoped BigOperators
+
+noncomputable section
+
+-- Independent checks use definitions and Mathlib, not the target theorem stubs.
+
+example {Ω : Type*} [Fintype Ω] (P : Population Ω) : FairAssignmentClaims P := by
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro z
+    cases z <;> norm_num [armProb]
+  · intro z i
+    have hw := P.nonneg i
+    cases z <;> dsimp [jointMass, armProb] <;> positivity
+  · simp only [jointMass, ← Finset.mul_sum, P.total, mul_one]
+    norm_num [armProb, Fintype.sum_bool]
+  · intro z
+    simp only [jointMass, ← Finset.mul_sum, P.total, mul_one]
+    cases z <;> norm_num [armProb]
+  · intro A z
+    simp only [jointMass, eventProb, mean, mul_assoc, Finset.mul_sum]
+
+example {Ω : Type*} (m : IVModel Ω) : IVConsistencyClaims m := by
+  exact ⟨fun _ _ _ => rfl, fun _ _ => ⟨rfl, rfl⟩⟩
+
+-- T1: the finite laws are normalized, nonempty, independent product laws.
+example : (∑ i, linearPopulation.mass i) = 1 ∧
+    (∑ i, integerPopulation.mass i) = 1 :=
+  ⟨linearPopulation.total, integerPopulation.total⟩
+
+example : (∀ t i, jointMass linearPopulation (1/2) t i = 1/8) ∧
+    (∀ t i, jointMass integerPopulation (1/2) t i = 1/1000) := by
+  constructor
+  · intro t i
+    cases t <;> norm_num [jointMass, armProb, linearPopulation,
+      productPopulation, uniformPopulation]
+  · intro t i
+    cases t <;> norm_num [jointMass, armProb, integerPopulation,
+      productPopulation, uniformPopulation]
+
+example : ∀ (A : (Fin 5 × Fin 100) → Prop) t,
+    (∑ i, jointMass integerPopulation (1/2) t i * indicator (A i)) =
+      armProb (1/2) t * eventProb integerPopulation A := by
+  intro A t
+  simp only [jointMass, eventProb, mean, mul_assoc, Finset.mul_sum]
+
+example : mediated linearPopulation linearWitness = 3/50 ∧
+    direct linearPopulation linearWitness = -3/50 ∧
+    reducedForm linearPopulation (1/2) linearWitness = 0 := by
+  norm_num [mediated, direct, reducedForm, contrast, armMean, jointMass,
+    armProb, mean, linearPopulation, productPopulation, uniformPopulation,
+    linearWitness, linearU₁, linearU₂, assignment, observedSupport,
+    Fintype.sum_prod_type, Fintype.sum_bool]
+
+example (i : Fin 5 × Fin 100) :
+    integerWitness.knowledge false i < integerWitness.knowledge true i := by
+  simp only [integerWitness, assignment, Bool.false_eq_true, ite_false, zero_mul,
+    add_zero, ite_true, one_mul]
+  unfold indicator
+  split_ifs <;> norm_num
+
+-- T2: an inhabited probability space with all five finite expectations,
+-- nondegenerate assignment, and nonzero mediated/direct effects.
+def auditProb : Measure Unit := Measure.dirac ()
+
+instance : IsProbabilityMeasure auditProb := by
+  unfold auditProb
+  infer_instance
+
+def auditP : unitInterval := ⟨1/2, by constructor <;> norm_num⟩
+
+def auditMediation : MediationModel Unit :=
+  linearModel 0 1 0 1 1 (fun _ => 0) (fun _ => 0)
+
+example : 0 < (auditP : ℝ) ∧ (auditP : ℝ) < 1 := by
+  norm_num [auditP]
+
+example : IntegrableMediationPotentials auditProb auditMediation := by
+  norm_num [IntegrableMediationPotentials, auditMediation, linearModel,
+    assignment, integrable_const]
+
+example : lawMediated auditProb auditMediation = 1 ∧
+    lawDirect auditProb auditMediation = 1 := by
+  norm_num [lawMediated, lawDirect, auditMediation, linearModel, assignment,
+    auditProb]
+
+example : Integrable (fun _ : Unit => (0 : ℝ)) auditProb := integrable_const _
+
+example : ∃ d : Fin 2 → ℝ, 0 ≤ ∑ j, d j ∧ ¬ (∀ j, 0 ≤ d j) := by
+  refine ⟨![-1, 2], ?_, ?_⟩
+  · norm_num [Fin.sum_univ_two]
+  · intro h
+    have := h 0
+    norm_num at this
+
+-- T4: the stated nonmonotone witnesses have positive first stages,
+-- genuine increasers and positive conditioning masses.
+example : firstStage upDownPopulation (1/2) upDownWitness = 1/3 ∧
+    increaserEffect upDownPopulation upDownWitness = 1 ∧
+    eventProb upDownPopulation (increaser upDownWitness) = 2/3 := by
+  norm_num [firstStage, contrast, armMean, jointMass, armProb, ivKnowledge,
+    upDownPopulation, upDownWitness, increaserEffect, eventMean, eventProb,
+    mean, indicator, increaser, knowledgeMargin, Fintype.sum_bool]
+
+example : eventProb (uniformPopulation (Fin 5)) (increaser modelA) = 2/5 ∧
+    eventProb (uniformPopulation (Fin 5)) (increaser modelB) = 3/5 := by
+  norm_num [eventProb, mean, uniformPopulation, increaser, modelA, modelB,
+    indicator, Fin.sum_univ_succ]
+
+example : increaserEffect (uniformPopulation (Fin 5)) modelA = 1 ∧
+    increaserEffect (uniformPopulation (Fin 5)) modelB = 4/3 := by
+  norm_num [increaserEffect, eventMean, eventProb, mean, uniformPopulation,
+    increaser, modelA, modelB, indicator, knowledgeMargin, Fin.sum_univ_succ]
+
+example : observableLaw (uniformPopulation (Fin 5)) (1/2) modelA =
+    observableLaw (uniformPopulation (Fin 5)) (1/2) modelB := by
+  funext x
+  rcases x with ⟨z, k, y⟩
+  cases z <;>
+    simp [armProb, observableLaw, conditionalObservableLaw, eventProb, mean,
+      uniformPopulation, ivOutcome, modelA, modelB, indicator, knowledgeMargin,
+      Fin.sum_univ_succ] <;> ring_nf <;> simp
+
+example : UpDownCrossedMargin (true, 9) := by
+  norm_num [UpDownCrossedMargin, increaser, upDownWitness]
+
+example : ∃ (n : ℕ) (x : Fin n → Bool × ℕ) (w : Fin n → ℝ),
+    (∀ a, 0 ≤ w a) ∧ (∀ a, UpDownCrossedMargin (x a)) ∧ (∑ a, w a) = 1 := by
+  refine ⟨1, fun _ => (true, 9), fun _ => 1, ?_, ?_, ?_⟩
+  · intro a
+    norm_num
+  · intro a
+    norm_num [UpDownCrossedMargin, increaser, upDownWitness]
+  · simp
+
+example : ∃ ν : Measure (Bool × ℕ), IsProbabilityMeasure ν ∧
+    (∀ᵐ x ∂ν, UpDownCrossedMargin x) := by
+  refine ⟨Measure.dirac (true, 9), inferInstance, ?_⟩
+  simpa only [ae_dirac_eq, Filter.eventually_pure] using
+    (show UpDownCrossedMargin (true, 9) from by
+      norm_num [UpDownCrossedMargin, increaser, upDownWitness])
+
+-- T5: all outer hypotheses together, with two positive crossed margins.
+def auditIV : IVModel Bool :=
+  ⟨fun z i => if z then (if i then 10 else 9) else 8,
+   fun k i => if i then 2 + 2 * indicator (9 ≤ k) + indicator (10 ≤ k)
+     else 3 + indicator (9 ≤ k)⟩
+
+example : (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    (∀ i, auditIV.knowledge false i ≤ 10 ∧ auditIV.knowledge true i ≤ 10) ∧
+    (∀ i, auditIV.knowledge false i ≤ auditIV.knowledge true i) ∧
+    0 < mean (uniformPopulation Bool)
+      (fun i => (auditIV.knowledge true i : ℝ) - auditIV.knowledge false i) := by
+  norm_num [auditIV, mean, uniformPopulation, Fintype.sum_bool]
+
+example : ivRatio (uniformPopulation Bool) (1/2) auditIV = 4/3 ∧
+    marginWeight (uniformPopulation Bool) (1/2) auditIV 9 = 2/3 ∧
+    marginWeight (uniformPopulation Bool) (1/2) auditIV 10 = 1/3 ∧
+    marginEffect (uniformPopulation Bool) auditIV 9 = 3/2 ∧
+    marginEffect (uniformPopulation Bool) auditIV 10 = 1 := by
+  norm_num [ivRatio, ivReducedForm, firstStage, contrast, armMean, jointMass,
+    armProb, ivKnowledge, ivOutcome, auditIV, uniformPopulation, marginWeight,
+    marginProb, marginEffect, eventMean, eventProb, mean, indicator,
+    doseIncrement, Fintype.sum_bool]
+
+-- T6: inhabited observations and nonreference/reference strata, and q=0.
+example : let s : Fin 2 → Fin 2 := id
+    let γ : Fin 1 → ℝ := fun _ => 3
+    stratumEffect s γ 0 = 3 ∧ stratumEffect s γ 1 = 0 ∧
+    (∑ k : Fin 1, stratumDummy s 0 k) = 1 ∧
+    (∑ k : Fin 1, stratumDummy s 1 k) = 0 := by
+  dsimp only
+  simp only [stratumEffect, Fin.sum_univ_one]
+  norm_num [stratumDummy]
+
+example (i : Fin 1) :
+    stratumEffect (fun _ : Fin 1 => (0 : Fin 1)) (fun k : Fin 0 => Fin.elim0 k) i = 0 ∧
+    stratumCoefficient (fun k : Fin 0 => Fin.elim0 k) (0 : Fin 1) = 0 := by
+  constructor
+  · simp [stratumEffect]
+  · change stratumCoefficient (fun k : Fin 0 => Fin.elim0 k) (Fin.last 0) = 0
+    rw [stratumCoefficient, Fin.lastCases_last]
+
+example : ∀ i : Fin 2, (![5, 7] : Fin 2 → ℝ) i =
+    correctedRegressionRHS (id : Fin 2 → Fin 2) (fun _ : Fin 1 => 3)
+      id (fun _ => 0) 2 5 i := by
+  intro i
+  fin_cases i <;> simp only [correctedRegressionRHS, stratumEffect, Fin.sum_univ_one]
+  all_goals norm_num [stratumDummy]

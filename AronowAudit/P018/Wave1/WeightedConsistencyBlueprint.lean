@@ -1,29 +1,38 @@
 import AronowAudit.P018.P018_Audit
 
 /-!
-# P018-T10 (Corollary 2): weighted sandwich consistency for one common directed kernel
+# Blueprint: P018-T10 (C2), weighted sandwich consistency for one common directed kernel
 
-The model uses one measurable ordered-pair data kernel `(X, Y)`, evaluated in
-orientation `(u,v)` or `(v,u)` (`dir`), with at most one record per orientation
-(`dir` injective). This is the directed-pair reading of p. 567 and Appendix D,
-p. 575, with common functions of the two sampled units as in the standing model on
-p. 566. Allowing an arbitrary kernel for each record `(N, d, t)` can leave block
-scores with non-zero means. Normalized weights `w/a_N` are arbitrary, deterministic,
-positive and uniformly bounded, and the normalized expected weighted Gram has a
-positive definite limit (corrected Corollary 2).
+Record: P018-T10 / `AronowAudit.P018.weighted_consistency_corrected`; resolution
+`repair_and_prove`.
 
-Rescaling by `a_N` leaves the estimator unchanged. By iid exchangeability every
-record has the same `Q = E[XX']`, `r = E[XY]`, so `H_N = c_N Q`, `Q` is nonsingular
-and `β_N = Q⁻¹ r =: β` for `N ≥ 2`; hence every weighted block score is centred.
-Local dependence (two-unit supports, `≤ N³` overlapping dyad pairs,
-`≤ 12 N⁵` dependent pairs of overlap products) gives `O(1/N)` variances for the
-normalized Gram, score and meat. Chebyshev, inverse continuity, the normal equations,
-the residual substitution bound and the sandwich difference identity yield consistency.
+Scope repair (mapper record 2, accepted by both referees).  The frozen draft lets every
+record `(N, d, t)` carry an arbitrary kernel (`RepeatedStanding` only), which exceeds the
+standing model S9 (common functions of the two sampled units, p. 566) and can leave block
+scores with non-zero means.  The repaired contract restores *one* measurable ordered-pair
+data kernel `(X, Y)`, evaluated in orientation `(u,v)` or `(v,u)` (`dir`), with at most one
+record per orientation (`dir` injective); this is the directed-pair reading of p. 567 and
+Appendix D, p. 575.  Normalized weights `w/a_N` stay arbitrary, deterministic, positive and
+uniformly bounded, and the normalized expected weighted Gram has a positive definite limit
+(corrected C2).  The conclusion is the frozen one, verbatim.
 
-`Target` follows from `CoreTarget` (the same statement for already-normalized
-weights `v`, bundled in `Setting`) by exact rescaling. Generic statements `G1`–`G8`
-are probability and counting facts; model statements `M0`–`M11` are implications
-between the intermediate predicates used by `assemble`.
+Paper proof (map record 2): rescale by `a_N` (`weighted_scale_invariance`, proved); by
+iid exchangeability every record has the same `Q = E[XX']`, `r = E[XY]`, so
+`H_N = c_N Q`, `Q` is nonsingular and `β_N = Q⁻¹ r =: β` for `N ≥ 2`; hence every weighted
+block score is centred.  Local dependence (two-unit supports, `≤ N³` overlapping dyad
+pairs, `≤ 12 N⁵` dependent pairs of overlap products) gives `O(1/N)` variances for the
+normalized Gram, score and meat; Chebyshev, inverse continuity, the normal equations,
+the residual substitution bound and `sandwich_difference` finish.
+
+Structure.  `Target` (the repaired contract) follows from `CoreTarget` (the same statement
+for already-normalized weights `v`, bundled in `Setting`) by exact rescaling.  Generic nodes
+`G1`–`G8` are reusable probability/counting facts; model nodes `M0`–`M11` are stated as
+implications between named intermediate predicates, so `assemble` checks the whole DAG.
+
+Writers prove `theorem gk_proof : Gk` / `theorem mk_proof : Mk` in
+`AronowAudit/P018/Wave1/WeightedConsistency/Gk.lean` / `.../Mk.lean`.
+Final file: `AronowAudit/P018/Wave1/WeightedConsistency.lean`, theorem
+`AronowAudit.P018.Wave1.weighted_consistency_common_directed_kernel`.
 -/
 
 set_option autoImplicit false
@@ -39,7 +48,7 @@ noncomputable section
 
 /-! ## Target -/
 
-/-- **Target (P018-T10, corrected Corollary 2, common directed kernel).** -/
+/-- **Target (P018-T10, corrected C2, common directed kernel).** -/
 def Target : Prop :=
   ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k),
     RepeatedStanding R → (∀ N d, R.T N d ≤ 2) →
@@ -55,6 +64,25 @@ def Target : Prop :=
     Tendsto (fun N : ℕ => recordWeightedH R (fun d t => w N d t / a N)) atTop (𝓝 H) →
     inProbability (repeatedLaw R) (fun N ω =>
       (N : ℝ) • recordWeightedVariance R (w N) ω - recordWeightedTarget R (w N))
+
+/-- Fidelity check: the frozen draft's hypotheses plus the common directed kernel
+(`X, Y, dir, hdir, hCommon`) give, through `Target`, exactly the frozen draft's conclusion
+(same expression, same norm and topology instances).  Only the frozen theorem's *type* is
+read; its unfinished draft proof is never used. -/
+example (hT : Target.{u}) {U : Type u} [MeasurableSpace U] {k : ℕ}
+    (R : RepeatedKernel U k) (hR : RepeatedStanding R) (hDirections : ∀ N d, R.T N d ≤ 2)
+    (w : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → ℝ) (a : ℕ → ℝ) (ha : ∀ N : ℕ, 0 < a N)
+    (hw : ∃ C : ℝ, ∀ N d t, 0 < w N d t / a N ∧ w N d t / a N ≤ C)
+    (H : Mat k) (hH : H.PosDef)
+    (hlim : Tendsto (fun N : ℕ => recordWeightedH R (fun d t => w N d t / a N)) atTop (𝓝 H))
+    (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
+    (hdir : ∀ N d, Function.Injective (dir N d))
+    (hCommon : ∀ N d (t : Fin (R.T N d)) u₁ u₂,
+      R.X N d t u₁ u₂ = (if dir N d t then X u₂ u₁ else X u₁ u₂) ∧
+      R.Y N d t u₁ u₂ = (if dir N d t then Y u₂ u₁ else Y u₁ u₂)) :
+    type_of% (AronowAudit.P018.weighted_consistency_corrected R hR hDirections w a ha hw H hH
+      hlim) :=
+  hT R hR hDirections X Y dir hdir hCommon w a ha hw H hH hlim
 
 /-! ## Objects of the normalized problem -/
 
@@ -191,17 +219,23 @@ def CoreTarget : Prop :=
     inProbability (repeatedLaw R) (fun N ω =>
       (N : ℝ) • recordWeightedVariance R (v N) ω - recordWeightedTarget R (v N))
 
-/-! ## Generic propositions -/
+/-! ## Generic nodes -/
 
-/-- Two distinct coordinates of an iid product have the product law,
-as required by Appendix A's iid unit sampling. -/
+/-- **Node G1** (map record 2: "By invariance of the product law ... every directed record";
+Appendix A's iid unit sampling). Two distinct coordinates of an iid product have the
+product law. Suggested route: `ProbabilityTheory.iIndepFun_pi`,
+`ProbabilityTheory.indepFun_iff_map_prod_eq_prod_map_map`, `measurePreserving_eval`. -/
 def G1 : Prop :=
   ∀ {U : Type u} [MeasurableSpace U] (μ : Measure U) [IsProbabilityMeasure μ] {N : ℕ}
     (i j : Fin N), i ≠ j →
       (Measure.pi (fun _ : Fin N => μ)).map (fun ω => (ω i, ω j)) = μ.prod μ
 
-/-- Measurable, square-integrable functions of disjoint finite coordinate sets
-of an iid product have covariance zero. -/
+/-- **Node G2** (map record 1, "Products with disjoint unit supports are independent";
+used by record 2). Functions of disjoint coordinate sets of an iid product are
+uncorrelated. Suggested route: factor `Z = Z ∘ ext ∘ restrict_S` (extend by a fixed point
+of the nonempty `U`), `ProbabilityTheory.iIndepFun_pi`,
+`ProbabilityTheory.iIndepFun.indepFun_finset`, `IndepFun.comp`,
+`ProbabilityTheory.IndepFun.covariance_eq_zero`. -/
 def G2 : Prop :=
   ∀ {U : Type u} [MeasurableSpace U] (μ : Measure U) [IsProbabilityMeasure μ] {N : ℕ}
     (S T : Finset (Fin N)) (Z W : (Fin N → U) → ℝ), Disjoint S T →
@@ -211,9 +245,12 @@ def G2 : Prop :=
     MemLp Z 2 (Measure.pi (fun _ : Fin N => μ)) → MemLp W 2 (Measure.pi (fun _ : Fin N => μ)) →
     covariance Z W (Measure.pi (fun _ : Fin N => μ)) = 0
 
-/-- For measurable functions of an iid sample with specified coordinate supports
-and almost-sure absolute bound `B`, the variance of their sum is at most
-`2B²` times the number of ordered pairs with intersecting supports. -/
+/-- **Node G3** (map record 1: "If |Z|,|W|≤B^2, then |Cov(Z,W)|≤2B^4 ... any sum of bounded
+two-unit variables has variance at most a constant times N^3"). Variance of a sum of
+bounded, locally dependent variables. Proof: `variance` of the sum is the double sum of
+covariances (`ProbabilityTheory.variance_fun_sum`/`covariance_fun_sum_fun_sum`); disjoint
+supports give `0` (`G2`; the writer may import its proof), the others are at most
+`2B²` in absolute value. -/
 def G3 : Prop :=
   ∀ {U : Type u} [MeasurableSpace U] (μ : Measure U) [IsProbabilityMeasure μ] {N : ℕ}
     {E : Type} [Fintype E] (σ : E → Finset (Fin N)) (Z : E → (Fin N → U) → ℝ) (B : ℝ),
@@ -223,8 +260,12 @@ def G3 : Prop :=
     variance (fun ω => ∑ e, Z e ω) (Measure.pi (fun _ : Fin N => μ)) ≤
       2 * B ^ 2 * ∑ e, ((Finset.univ.filter (fun e' => (σ e ∩ σ e').Nonempty)).card : ℝ)
 
-/-- There are at most `N³` ordered overlapping dyad pairs and at most `12N⁵`
-ordered pairs of overlap products with intersecting supports. -/
+/-- **Node G4** (map record 1: "|Q|≤N^3 ... at most 3N^2 such canonical triples contain v
+... at most 9N^5 ordered pairs of products"). Dependency counts: ordered overlapping dyad
+pairs, and dependent pairs of overlap products (support size `≤ 3`, at most `4N²`
+overlapping pairs contain a given unit). Suggested route: `intersection_count`,
+`members_card`, `number_of_dyads` (all proved; do not use the drafted `dyad_counts`),
+and `Finset.card_le_card_of_surjOn`/`card_biUnion_le` over incident units. -/
 def G4 : Prop :=
   ∀ N : ℕ,
     (∑ d : Dyad N, ((Finset.univ.filter
@@ -233,9 +274,11 @@ def G4 : Prop :=
         (fun P' : Dyad N × Dyad N => (pairSupport P ∩ pairSupport P').Nonempty)).card : ℝ)) ≤
       12 * (N : ℝ) ^ 5
 
-/-- For square-integrable matrix or vector entries on changing probability spaces,
-entrywise variances tending to zero imply convergence in probability of the
-centered matrices or vectors. -/
+/-- **Node G5** (map record 1: "Chebyshev and the N^5 count give ... →0 in probability").
+Entrywise Chebyshev for matrix- and vector-valued sequences on changing probability
+spaces. Suggested route: `ProbabilityTheory.meas_ge_le_variance_div_sq` (or the proved
+`AronowAudit.P018.corrected_chebyshev`) per entry, then a finite union over entries for the
+elementwise sup norm (`norm_le_pi_norm`, `pi_norm_lt_iff`). -/
 def G5 : Prop :=
   ∀ {Ω : ℕ → Type u} [∀ N, MeasurableSpace (Ω N)] {k : ℕ}
     (μ : ∀ N, Measure (Ω N)) [∀ N, IsProbabilityMeasure (μ N)],
@@ -246,10 +289,10 @@ def G5 : Prop :=
       (∀ a, Tendsto (fun N => variance (fun ω => F N ω a) (μ N)) atTop (𝓝 0)) →
       inProbability μ (fun N ω => F N ω - meanVec (μ N) (F N)))
 
-/-- Convergence in probability is preserved under sums and eventual equality.
-Deterministic null matrix sequences converge in probability. If a random matrix
-converges in probability to a constant and a random vector converges in probability
-to zero, their product converges in probability to zero. -/
+/-- **Node G6** (map record 1: "Arbitrary totalized values on singular samples do not affect
+this conclusion"; standard in-probability algebra). Sums, deterministic null sequences,
+eventual equality, and a convergent random matrix times a null random vector.
+Only outer-measure monotonicity and finite subadditivity are needed (no measurability). -/
 def G6 : Prop :=
   ∀ {Ω : ℕ → Type u} [∀ N, MeasurableSpace (Ω N)] {k : ℕ}
     (μ : ∀ N, Measure (Ω N)) [∀ N, IsProbabilityMeasure (μ N)],
@@ -266,8 +309,12 @@ def G6 : Prop :=
       inProbability μ (fun N ω => A N ω - A0) → inProbability μ s →
       inProbability μ (fun N ω => (A N ω).mulVec (s N ω)))
 
-/-- The totalized matrix inverse preserves deterministic convergence and
-convergence in probability to a nonsingular limit. -/
+/-- **Node G7** (map record 1: "Continuity of inversion on the open set of invertible
+matrices gives its inverse converging to H^(-1)"). Deterministic and in-probability
+continuous mapping for the (totalized) matrix inverse at a nonsingular limit.
+Suggested route: `Matrix.nonsing_inv_eq_ringInverse`, `NormedRing.inverse_continuousAt`
+under a local `Matrix.linftyOpNormedRing` (same topology), or `Matrix.inv_def` with
+`Continuous.matrix_det`/adjugate continuity; then an ε-δ argument for `inProbability`. -/
 def G7 : Prop :=
   ∀ {k : ℕ} (G0 : Mat k), G0.det ≠ 0 →
     (∀ G : ℕ → Mat k, Tendsto G atTop (𝓝 G0) → Tendsto (fun N => (G N)⁻¹) atTop (𝓝 G0⁻¹)) ∧
@@ -276,10 +323,11 @@ def G7 : Prop :=
       inProbability μ (fun N ω => G N ω - G0) →
       inProbability μ (fun N ω => (G N ω)⁻¹ - G0⁻¹))
 
-/-- If the random and deterministic bread matrices converge to the same limit
-in probability and deterministically, respectively, the deterministic meat is bounded,
-and the random meat approaches it in probability, the sandwich difference tends
-to zero in probability. -/
+/-- **Node G8** (map record 1: "The exact identity B_N M_N B_N-B0_N T_N B0_N = ... makes each
+term tend to zero in probability"). Sandwich passage with a random bread converging in
+probability, a deterministic bread converging to the same limit, and a bounded
+deterministic meat. Suggested route: `AronowAudit.P018.sandwich_difference` (proved), and
+`‖A * B‖ ≤ k ‖A‖ ‖B‖` for the elementwise sup norm (entrywise bounds). -/
 def G8 : Prop :=
   ∀ {Ω : ℕ → Type u} [∀ N, MeasurableSpace (Ω N)] {k : ℕ}
     (μ : ∀ N, Measure (Ω N)) [∀ N, IsProbabilityMeasure (μ N)]
@@ -289,41 +337,49 @@ def G8 : Prop :=
     inProbability μ (fun N ω => Mn N ω - T N) →
     inProbability μ (fun N ω => sandwich (Bn N ω) (Mn N ω) - sandwich (B0 N) (T N))
 
-/-! ## Model implications -/
+/-! ## Model nodes -/
 
-/-- `G1` and `RepeatedStanding` imply measurability and uniform almost-sure
-boundedness of the records under the sample law. -/
+/-- **Node M0** (map record 2: "The recorded measurability and boundedness transfer"). Record
+regularity from `RepeatedStanding`: measurability, and the uniform a.e. bound transferred
+from `R.μ.prod R.μ` to the sample law through `G1` (`firstUnit d ≠ secondUnit d`). -/
 def M0 : Prop :=
   G1.{u} → ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k),
     RepeatedStanding R → RecordRegular R
 
-/-- The normalized setting implies measurability, almost-sure boundedness,
-and an intercept coordinate for the common kernel. -/
+/-- **Node M1** (map record 2: "The recorded measurability and boundedness transfer to the
+common kernel by using any actual record and swapping its arguments if necessary"). Use the
+single dyad at `N = 2` and a record `t` (counts are positive); for `dir = true` compose with
+`Prod.swap` (`Measure.prod_swap`). -/
 def M1 : Prop :=
   ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
     (v : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → ℝ) (C : ℝ) (H : Mat k),
     Setting R X Y dir v C H → KernelRegular R.μ X Y
 
-/-- `G1` and the normalized setting with a regular common kernel imply that
-every record has the common moments `Q` and `r`. -/
+/-- **Node M2** (map record 2: "By invariance of the product law under swapping U,V, every
+directed record has these same Q and r"). Push the record forward with `G1`, use
+`Measure.prod_swap` for reversed records, and `integral_map`. -/
 def M2 : Prop :=
   G1.{u} → ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
     (v : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → ℝ) (C : ℝ) (H : Mat k),
     Setting R X Y dir v C H → KernelRegular R.μ X Y → RecordMoments R X Y
 
-/-- Under the normalized setting, record regularity and common record moments imply
-`PopDesign`: `Q` is nonsingular, `H_N = c_N Q` and `β_N = β` for `N ≥ 2`,
-and `c_N` has a positive limit `c` with `H = c Q`. -/
+/-- **Node M3** (map record 2: "H_N=c_N Q ... If it were singular, det(H_N)=c_N^k det(Q) would
+vanish ... beta_w,N=(c_N Q)^(-1)c_N r=Q^(-1)r=beta"). Linearity of `meanMat`/`meanVec` over
+the finite record sums (integrability from `RecordRegular`) gives `H_N = c_N Q` and the
+`XY` analogue; the intercept gives `Q_jj = 1`, so `c_N = (H_N)_jj → H_jj > 0`
+(`Matrix.PosDef.diag_pos`), `H = c Q`, `det H = c^k det Q > 0`; then
+`matrix_inverse_scale_total` gives `β_N = β`. -/
 def M3 : Prop :=
   ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
     (v : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → ℝ) (C : ℝ) (H : Mat k),
     Setting R X Y dir v C H → RecordRegular R → RecordMoments R X Y → PopDesign R X Y v H
 
-/-- Under the normalized setting, record regularity, common moments and
-`PopDesign` imply that every weighted block score at `β` has mean zero. -/
+/-- **Node M4** (map record 2: "In particular E[X_dt(Y_dt-X_dt' beta)]=r-Q beta=0 for each
+record, for either orientation. Hence every normalized weighted block score q_d ... has mean
+zero"). -/
 def M4 : Prop :=
   ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
@@ -331,16 +387,18 @@ def M4 : Prop :=
     Setting R X Y dir v C H → RecordRegular R → RecordMoments R X Y → PopDesign R X Y v H →
       Centered R X Y v
 
-/-- `G3`, `G4` and `G5` imply normalized sample Gram consistency under
-the normalized setting and record regularity. -/
+/-- **Node M5** (map record 2: "Var(G_ab/D)=O(1/N)"). Weighted Gram law of large numbers:
+each entry of `D⁻¹ X'WX` is `D⁻¹ Σ_d Z_d` with two-unit supports `members d` and bound
+`2CB²`; `G3` and `G4` give variance `≤ 2(2CB²)² N³ / D² → 0`, and `G5` concludes
+(its mean is `recordWeightedH` by `meanMat_scale`). -/
 def M5 : Prop :=
   G3.{u} → G4 → G5.{u} → ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
     (v : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → ℝ) (C : ℝ) (H : Mat k),
     Setting R X Y dir v C H → RecordRegular R → GramLLN R v
 
-/-- `G3`, `G4` and `G5` imply that the normalized score at `β` vanishes
-in probability under the normalized setting, record regularity and centered block scores. -/
+/-- **Node M6** (map record 2: "Var(S_a/D)=O(1/N)"). Score law of large numbers at `β`:
+centred (`Centered`), bounded two-unit block scores; `G3`, `G4`, `G5`. -/
 def M6 : Prop :=
   G3.{u} → G4 → G5.{u} → ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
@@ -348,8 +406,12 @@ def M6 : Prop :=
     Setting R X Y dir v C H → RecordRegular R → Centered R X Y v →
       ScoreLLN R v (popBeta R.μ X Y)
 
-/-- `G6` and `G7` imply coefficient consistency under the normalized setting,
-`PopDesign`, normalized Gram consistency and a normalized score vanishing in probability. -/
+/-- **Node M7** (map record 2: "The inverse normalized sample Gram converges in probability
+to H^(-1), sample singularity has vanishing probability, and the exact normal equations
+yield beta_hat-beta→0 in probability"). On nonsingular samples
+`β̂ - β = (D⁻¹G)⁻¹ (D⁻¹ Σ_d q_d(β))` (as in `ols_score_identity`); `D⁻¹G →p H`
+(GramLLN plus `H_N → H`), `G7` for the inverse, `G6` for the product; singular samples
+have vanishing probability since `det` is continuous and `det H ≠ 0`. -/
 def M7 : Prop :=
   G6.{u} → G7.{u} → ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
@@ -357,8 +419,11 @@ def M7 : Prop :=
     Setting R X Y dir v C H → PopDesign R X Y v H → GramLLN R v →
       ScoreLLN R v (popBeta R.μ X Y) → CoefConsistent R v (popBeta R.μ X Y)
 
-/-- `G2`, the normalized setting, record regularity and centered block scores
-imply that the expected scaled meat at `β` equals the scaled score covariance for `N ≥ 2`. -/
+/-- **Node M8** (map record 2: "Here E S=0, and individual block means vanish, so
+E meat(q)=Var(S) with no deterministic mean-product remainder"). Exact expectation of the
+scaled meat at `β`. Suggested route: `AronowAudit.P018.variance_sparse_identity` (proved)
+with `s = members`, zero means from `Centered`, disjoint covariances from `G2`; linearity
+of `meanMat` over the finite overlap sum; `meanMat_scale`. -/
 def M8 : Prop :=
   G2.{u} → ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
@@ -367,17 +432,22 @@ def M8 : Prop :=
       ∀ N, 2 ≤ N → meanMat (repeatedLaw R N) (scaledMeatAt R v N (popBeta R.μ X Y)) =
         targetMeat R v (popBeta R.μ X Y) N
 
-/-- `G3`, `G4` and `G5` imply concentration of the scaled meat at `β`
-around its mean under the normalized setting and record regularity. -/
+/-- **Node M9** (map record 2: "Var((N/D^2) sum_overlap q_d,a q_f,b)=O(1/N)"). Meat law of
+large numbers at `β`: each entry is a sum over `Dyad N × Dyad N` of overlap products with
+supports `pairSupport` (bounded by `B_q²`); `G3`, the second bound of `G4`
+(`N²/D⁴ · 12 N⁵ → 0`), and `G5`. -/
 def M9 : Prop :=
   G3.{u} → G4 → G5.{u} → ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
     (v : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → ℝ) (C : ℝ) (H : Mat k),
     Setting R X Y dir v C H → RecordRegular R → MeatLLN R v (popBeta R.μ X Y)
 
-/-- `G4`, `G6`, the normalized setting, record regularity and coefficient
-consistency imply that replacing `β` by the fitted coefficient changes the scaled meat
-by a quantity tending to zero in probability. -/
+/-- **Node M10** (map record 2: "The fitted block-score change is
+-sum_t v_dt X_dt X_dt'(beta_hat-beta) ... bounds the normalized fitted-meat change by
+C1||beta_hat-beta||+C2||beta_hat-beta||^2, because (N/D^2)|Q_N| stays bounded"). Residual
+substitution. Suggested route: `AronowAudit.P018.residual_substitution_bound` (proved),
+the first bound of `G4` with `(N/D²) N³ ≤ 16` for `N ≥ 2`, a.e. record bounds from
+`RecordRegular` (finite intersection of a.e. sets), and `G6`. -/
 def M10 : Prop :=
   G4 → G6.{u} → ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
@@ -385,8 +455,10 @@ def M10 : Prop :=
     Setting R X Y dir v C H → RecordRegular R → CoefConsistent R v (popBeta R.μ X Y) →
       SubstitutionNull R v (popBeta R.μ X Y)
 
-/-- `G3`, `G4`, the normalized setting and record regularity imply a uniform
-bound on the deterministic scaled score covariance at `β`. -/
+/-- **Node M11** (map record 2: "The deterministic normalized score covariance (N/D^2)Var(S)
+stays bounded by the N^3 score-covariance count"). Entries of `Var(S)` are bounded by the
+diagonal variances (`|cov| ≤ √(Var Var)`), each `≤ 2B_q² N³` by `G3` and `G4`, and
+`(N/D²) N³ ≤ 16` for `N ≥ 2` (for `N < 2`, `Dreal N = 0` and `targetMeat = 0`). -/
 def M11 : Prop :=
   G3.{u} → G4 → ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k)
     (X : U → U → Vec k) (Y : U → U → ℝ) (dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool)
@@ -394,7 +466,7 @@ def M11 : Prop :=
     Setting R X Y dir v C H → RecordRegular R →
       ∃ c : ℝ, ∀ N, ‖targetMeat R v (popBeta R.μ X Y) N‖ ≤ c
 
-/-! ## Rescaling identities -/
+/-! ## Glue (proved here) -/
 
 theorem Dreal_ne_zero {N : ℕ} (hN : 2 ≤ N) : Dreal N ≠ 0 := by
   unfold Dreal
@@ -429,7 +501,7 @@ theorem target_rescale {U : Type u} [MeasurableSpace U] {k N : ℕ} (R : Repeate
 
 /-! ## Assembly -/
 
-/-- The generic and model implications yield sandwich consistency for normalized weights. -/
+/-- **Core assembly.** The nodes give consistency for normalized weights. -/
 theorem assemble_core (g1 : G1.{u}) (g2 : G2.{u}) (g3 : G3.{u}) (g4 : G4) (g5 : G5.{u})
     (g6 : G6.{u}) (g7 : G7.{u}) (g8 : G8.{u}) (m0 : M0.{u}) (m1 : M1.{u}) (m2 : M2.{u})
     (m3 : M3.{u}) (m4 : M4.{u}) (m5 : M5.{u}) (m6 : M6.{u}) (m7 : M7.{u}) (m8 : M8.{u})
@@ -475,7 +547,7 @@ theorem assemble_core (g1 : G1.{u}) (g2 : G2.{u}) (g3 : G3.{u}) (g4 : G4) (g5 : 
   rw [variance_rescale R (v N) ω hN, target_rescale R (v N) β ((hpop.2.1 N hN).2)]
   rfl
 
-/-- Rescaling by `a_N` yields the corrected consistency statement. -/
+/-- **Assembly.** The nodes suffice for the repaired contract: rescale by `a_N`. -/
 theorem assemble (g1 : G1.{u}) (g2 : G2.{u}) (g3 : G3.{u}) (g4 : G4) (g5 : G5.{u})
     (g6 : G6.{u}) (g7 : G7.{u}) (g8 : G8.{u}) (m0 : M0.{u}) (m1 : M1.{u}) (m2 : M2.{u})
     (m3 : M3.{u}) (m4 : M4.{u}) (m5 : M5.{u}) (m6 : M6.{u}) (m7 : M7.{u}) (m8 : M8.{u})

@@ -1,0 +1,20 @@
+[
+  {
+    "theorem": "SAP.P005b.T25",
+    "target_id": "P005-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "T25Statement states the entire canonical noninteracted expansion: uniform complete randomization, fixed real finite-population arrays, one uniform second-moment bound, eventual centering and identity Gram matrix, fixed treatment-fraction bounds, invertibility under every assignment, d_n/n tending to zero, the common population slope N, the centered leading terms with their printed signs, and the O_p(sqrt(kappa_n*d_n/n)) remainder. Positive dimension is expressly required by definitions_needed, and all-assignment invertibility is the standing reading of footnote 4, not an extra restriction. Discarding finitely many initial sizes is harmless for this asymptotic assertion. The order definition is the canonical tail-probability definition, with eventually positive rates. The hypotheses are jointly satisfiable by d_n=1, m_n=floor(n/2), and normalized centered distinct arithmetic-progression covariates, as detailed in REPORT.md. No definition encodes the conclusion or uses an operative junk value."
+  },
+  {
+    "theorem": "SAP.P005b.T26",
+    "target_id": "P005-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "T26WholeStatement includes every assertion in the canonical statement, not only T26Statement: the common-slope o_p(sqrt(1/n)) expansion when kappa_n tends to zero; the O_p(sqrt(kappa_n/n)) bound without leverage decay; and exact identification of the remainder with the p. 1516 term (*). The finite identity has the correct negative dot product and positive treated/negative control leverage-covariance corrections. All finite means, covariance divisors, leverage normalization, population and sample slopes, and bias-estimator cancellation agree with the canonical notions. The asymptotic assumptions and every-assignment regularity are exactly the printed setting up to irrelevant initial sizes, including the explicit positive-dimension convention. The finite identity guards its arm-size and n-2 denominators and its particular matrix inverse. Normalized centered distinct arithmetic-progression covariates with d_n=1 and m_n=floor(n/2) satisfy all hypotheses including leverage decay; REPORT.md gives the full argument and scratch/Nonvacuity.lean checks concrete finite data."
+  },
+  {
+    "theorem": "SAP.P005b.T27",
+    "target_id": "P005-T27",
+    "my_reading_vs_claim": "whole",
+    "reason": "T27WholeStatement includes both clauses of the canonical assertion: the interacted o_p(sqrt(1/n)) expansion under kappa_n tending to zero and the O_p(sqrt(kappa_n/n)) remainder without that condition. The treatment leading term uses its own population slope, the subtracted control term uses the control slope, and the within-arm covariance matrices and bias-correction weights have the stated normalizations and signs. Each arm is the complement of the other under uniform complete randomization; eventual invertibility for both matrices under every assignment is precisely the standing Section 4 reading. Positive dimension and one uniform moment constant are explicit canonical requirements. All denominators and inverse conventions are protected at relevant sizes, and the rate is eventually positive. The joint hypotheses, including both-arm regularity and leverage decay, are satisfied by the distinct standardized one-dimensional arithmetic-progression sequence described in REPORT.md; scratch/Nonvacuity.lean checks its finite counterparts independently of the target conclusions."
+  }
+]

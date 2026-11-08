@@ -1,0 +1,62 @@
+[
+  {
+    "theorem": "SAP.P016b.T12",
+    "target_id": "P016-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The EIG mean assertion, both nonempty-group KS counterexamples, strictly-positive finite-law exact-tail validity, six upper p-values, and complete rejection-probability function match canonical clauses (i)-(iv). The raw KS score table (1,1/2,1/2,1/2,1/2,1) in clause (iv) is not itself asserted. ExactValidity's positivity is already an explicit canonical T12(iii) hypothesis, not a hidden addition. The statements appear true. A four-unit counterexample raises the treated values of (2,3,0,1), under z=(0,0,1,1), to (2,3,2,3), decreasing both KS variants from 1 to 0. Uniform law on the six assignments has strictly positive weights and nonempty groups. Independent enumeration verifies both numerical tables."
+  },
+  {
+    "theorem": "SAP.P016b.T13",
+    "target_id": "P016-T13",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The raw-tail definitions, no-ties rank law, two explicit weak-cutoff violations, power-of-two finite design, exact mixture formulas, strict-cutoff comparisons, and positive zero-p mass agree with the canonical claim. NoTiesRawLaw additionally confines alpha to [0,1), excluding admissible canonical boundary/larger cases (e.g. B=1, alpha=1, c=0); it also does not assert the five decimal approximations. The RSS equality characterization plus the actual balanced design entails that each fiber is exactly the assignment and its distinct complement, even without a separate cardinality-two conjunct. A uniform random permutation of the distinct real numbers 0,...,B gives a concrete exchangeable, almost-surely injective law for every B>0. Independently enumerated all 12870 balanced assignments and the 6435 complement-pair fibers, and bounded the mixture probabilities outwards at both B=1000 and B=10000. The claim and formal restriction appear true and nonvacuous."
+  },
+  {
+    "theorem": "SAP.P016b.T14",
+    "target_id": "P016-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "All rank, strict-cutoff, corrected-tail, and iid permutation-invariance conclusions match clauses (a)-(d). The finite iidMass equality is precisely joint-law invariance for the vector of statistics and allows zero weights. Clause (e) explicitly identifies its exact-tail result as P016-T12(iii), whose canonical statement requires q(z)>0 at every represented point; ExactValidity uses exactly that hypothesis. Thus its positivity does not add a restriction relative to the expressly referenced claim, despite the Challenge docstring calling it additional. No guard assumes a rejection bound. For nonvacuity, a Dirac law on the constant-zero vector is an exchangeable probability with ties for every B; a uniform random permutation of 0,...,B is a tie-free example. Uniform finite laws give exact-tail examples, and a two-point law with weights 1 and 0 gives a nonempty iid example with a zero-weight point. All assertions appear true."
+  },
+  {
+    "theorem": "SAP.P016b.T15",
+    "target_id": "P016-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "All entries of the four-unit adjusted vectors, the treated ECDF discrepancy at 6, the two evaluations of the ECDF of (1,3), and the diagonal characterization/exclusion of (1/2,2) are asserted exactly. The vectors explicitly retain the control values and distinguish the treated distributions. These are closed witnesses with nonzero group and sample sizes and multipliers, so no conditional hypothesis or empty-domain convention can create vacuity. Their arithmetic is correct, and they refute the specified literal readings of the printed local slips."
+  },
+  {
+    "theorem": "SAP.P016b.T16",
+    "target_id": "P016-T16",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The coordinate adjustment identities and parameter sensitivities, control ECDF invariance, ECDF cardinality formula, and separate-versus-diagonal parameter witnesses match canonical (a)-(c). The ECDF equalities are restricted to a nonempty control group and, for the whole-sample identity, n>0; the statement does not assert the corresponding Lean total-division extensions on empty populations. Nonzero multipliers match the canonical inverse-model domain. Bundling nonzero a,a' around the additive assertions causes no substantive loss, since those conclusions do not depend on those multipliers and they can be chosen as 1. Concrete z=(0,0,1,1), Y=(9,11,10,12), a=2, a'=3, t=1/2, t'=0 satisfies all nondegeneracy premises, with treated outcomes nonzero. The parameter witnesses are explicit and the statements appear true."
+  },
+  {
+    "theorem": "SAP.P016b.T17",
+    "target_id": "P016-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "For arbitrary Y,z with both groups nonempty and arbitrary t, the theorem sets u=Y-z*t and states the treated imputation identity and printed comparison = adjusted contrast+t = raw contrast. meanDifference u z is exactly the corrected comparison. It separately states the canonical instance u=(0,1,2,3), t=10, z=(0,0,1,1), with adjusted contrast 2 and imputed-treated comparison 12. This instance is compatible with the generic adjustment by taking Y=(0,1,12,13). The conditional interpretation of the undefined printed symbol is disclosed; there is no asserted power optimality. Denominators are positive and the claims are elementary true identities."
+  },
+  {
+    "theorem": "SAP.P016b.T18",
+    "target_id": "P016-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "CalibrationWitness encodes the exact 256-unit outcomes and group allocation, both means, divisor-256 variance, both parameters, every discrepancy and its multiplicity, zero median, forward mean shifts, inverse mean reductions, and their ratio. The universal nonnegative-median conjunct supplies the global-minimum conclusion. No distributional-family assumption or simulated-data identification is added. Exact rational recomputation verifies every number and exactly 127 nonzero treated discrepancies. The treated and control sizes are 128, the half-size is 128, t and a are nonzero, and the closed constructed witness is nonvacuous."
+  },
+  {
+    "theorem": "SAP.P016b.T19",
+    "target_id": "P016-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every mathematical clause (a)-(f) is present: coordinate discrepancies, half the least treated discrepancy, all nonzero-outcome roots and global minima, individual and expected adjustment reductions, the unique matched parameter, and the numerical T18 mismatch. m>0 gives the ordinary domain of the two-central-order-statistic median and makes the finite infimum and uniform balanced expectation nonempty; there is no use of empty-infimum or empty-expectation defaults. The a!=0 domain in the matching equivalence is inherited from the multiplicative adjustment in canonical (d), which (e) expressly invokes. The canonical note explicitly says the empirical powers and simulation-data mean-shift comparison are not a target; omitting those and the quoted 1.035312 data approximation does not remove a mathematical clause. For nonvacuity take m=1, z=(1,0), y=(1,2), t=1/2, a=3/2 and treated j=0; the treated infimum set is nonempty and bounded below by zero. The 256-unit numerical witness independently verifies the nonmatching mean reductions."
+  },
+  {
+    "theorem": "SAP.P016b.T20",
+    "target_id": "P016-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The observed-potential-outcome identity, additive adjustment recovery, and all four componentwise network-mapping conclusions are asserted for exactly the canonical nonnegative-matrix, beta>0, real-tau domain. Treated neighbors use the required column sum sum_j z_j*S_ji. No symmetry, binary-entry, beta>=1, or tau>=0 hypothesis is inserted. Nonnegativity makes exp(-tau^2*h) lie in (0,1], so the control multiplier is a convex combination of 1 and beta; the treated multiplier is beta. All denominators are therefore positive. For an explicit nonempty instance take n=2, S=0, beta=2, tau=1/2, arbitrary assignments, and y0=(1,2), y(z)_i=f_i(z)*y0_i. These satisfy the outcome-model premise without presupposing the adjustment conclusion."
+  },
+  {
+    "theorem": "SAP.P016b.T21",
+    "target_id": "P016-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem uses the exact canonical 256-unit balanced uniform design, fixed symmetric binary S, true parameters beta=2 and tau=1/2, arbitrary baseline outcomes, and arbitrary statistic T. Quantifying T after fixing S permits its dependence on that network. Assignmentwise adjustment recovery, validity of all three exact tails at weak and strict .05 cutoffs, and the two fresh-iid strict-rule bounds are present. The arbitrary statistic removes any need to separately encode the six example statistics. Normalized uniform weights are consistent: balanced assignments correspond bijectively to the choose(256,128) treated subsets. One explicit assignment treats indices 128,...,255; choose S=0 and y0_i=1, and use the uniform law with that cardinality. Thus neither the uniform-weight hypothesis nor the network premises are vacuous. No empirical 4%/2% assertion is imported."
+  }
+]

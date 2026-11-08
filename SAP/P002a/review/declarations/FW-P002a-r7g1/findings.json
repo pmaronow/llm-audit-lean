@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P002-T1",
+    "theorem": "SAP.P002a.T1",
+    "fingerprint": "97680fc41ac846a877ed2cb1f7b00dcc4ba2e31487b7098b5f2eec4ab17d17c4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles independent proofs theta_witness and xi_witness for negativeDeltaModel 1 at precisely the canonical constants, and an existential example proving both memberships and strictly positive potential-outcome and residual variances in both arms. Its population OLS coefficients are independently proved zero. scratch/enumerate.py independently enumerates all 66 assignments using exact fractions: raw variance 5/396 versus printed bound 65/4752, and oracle variance 36/55 versus printed bound 39/55. The repeated blocks have the same zero means, fourth moments one and residuals equal to outcomes; their variances are positive for every m>=1. The canonical target asserts this counterexample, so the record's whole label is correct.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P002-T2",
+    "theorem": "SAP.P002a.T2",
+    "fingerprint": "ab3414f0afbbbeed9807809190460aac1fb7b5c95254c219f53f451cf8a6d6f4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently constructs the nondegenerate twelve-unit model in Theta(-1/2,1/6,2) and Xi(-1/2,1/2,2,2,1/6), with twelve compliers, so the hypotheses of both corrected bounds and the group chain are jointly satisfiable. All scalar positivity/balance guards hold at these constants. Its nonnegative covariance also admits delta=0 for the printed specialization. Exact enumeration gives corrected bounds 65/7128 <= 5/396 and 26/55 <= 36/55. The same scratch file independently proves membership of the two-unit zero model in the specified raw and adjusted collapsed classes, exercising the permitted zero-variance cases.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P002-T3",
+    "theorem": "SAP.P002a.T3",
+    "fingerprint": "75cea9e35e138683c46b21937075a7bb4ec6c55f4dc511421c6fbe43377e47a2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The printed reading is that both variance lower bounds with factor 1-delta hold for every admissible model (and hence every adjusted subsequence term), for the stated constants with delta<1. scratch/Check.lean independently proves the twelve-unit witness meets exclusion through the outcome type, monotone all-complier receipt, nonempty compliers, valid design, balance, both moment bounds, covariance bounds, centered covariates, positive Gram lower bound, and strict positivity of both potential-outcome and residual variances. scratch/enumerate.py checks the exact uniform complete-randomization law and both strict failures using fractions. No replicate dependence or undefined quantity is used. The repeated-block sequence gives failures at unbounded sizes with the same constants. This contradicts the canonical printed assertions themselves, so the record's refuted label and the docstring are accurate.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P002-T4",
+    "theorem": "SAP.P002a.T4",
+    "fingerprint": "148a7e5efd8722e0f4dd7c0a6f6162c3494a36b926f6fa05d725d570899a0456",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently proves Theta(degenerateModel 2 0,0,1/4,1/2) and Xi(degenerateCovModel 2 0,0,1/4,4,1/2,1/4). The general witnesses have w=0, all units complying and floor(n/2) treated for every n>=2 and every beta; the grid has mean zero and second moment (n^2-1)/(3n^2)>=1/4. Thus neither asymptotic class infimum exploits emptiness. scratch/enumerate.py independently verifies the heterogeneous six-unit model's 20 original assignments have numerator and variance estimate zero, and 312 of the 400 reassigned statistics are nonzero. Nonzero absolute and squared statistics are equivalent here. The zero-over-zero convention is explicitly part of the canonical counterexample. The record correctly labels this whole.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P002-T5",
+    "theorem": "SAP.P002a.T5",
+    "fingerprint": "7a3bd01706005d0a60f743e5ddea98e8854091e6747805517211f2e60a04ed6e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Sequence.lean independently constructs sizes(j)=2(j+1) and models(j)=signModel(j+1), and compiles one example satisfying every hypothesis of raw sharpness with delta=0, r=1/2, A=2, alpha=1/20: strictly increasing sizes, membership at every size, constant additive effect zero, and positive baseline variance at every size. No Challenge theorem or asymptotic conclusion is used in that construction. scratch/Check.lean supplies independent nondegenerate raw/adjusted model instances and the nonempty collapsed classes. The adjusted nondegenerate witness can use repeated orthogonal sign blocks (negativeDeltaModel m) with delta=0, e=1/2, A=B=2, r=1/6; standard finite-population normal approximation gives nominal coverage. The necessary-witness definitions include convergence because the canonical corrected Remark expressly requires it. Empty ENNReal infima and bottom-filter liminf equal infinity; this affects only the vacuous bounded-size case, is disclosed, and imposes no cofinality restriction on the canonical lower bounds.",
+    "confidence": "high"
+  }
+]

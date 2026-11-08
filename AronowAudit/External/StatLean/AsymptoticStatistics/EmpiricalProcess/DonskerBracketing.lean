@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.Donsker
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.Bracketing
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.Maximal
@@ -12,21 +8,19 @@ import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 /-!
-# Marginal CLTs and equicontinuity from finite bracketing entropy
+# Theorem 19.5: Donsker via bracketing entropy integral
 
-For a class of measurable functions under a probability measure, finiteness of
-the L² bracketing entropy integral at scale `1` implies `IsPDonsker`: the working
-conjunction of marginal CLTs and L² asymptotic equicontinuity defined in
-`Donsker.lean`.
+Every class `F` of measurable functions with `J_{[]}(1, F, L_2(P)) < ∞` is
+`P`-Donsker. The proof splits `IsPDonsker = IsMarginalCLT ∧
+IsAsymptoticallyEquicontinuous`: the marginal-CLT half is provable from
+Mathlib's iid CLT; the equicontinuity half derives and consumes the localized
+universal-constant bound of Lemma 19.34
+(`localizedChainBound_of_finiteEntropy`). The crude, `n`-dependent estimates
+in `Maximal.lean` are separate auxiliary results.
 
-The proof obtains square integrability from a finite bracket cover. For
-equicontinuity it uses the measurable-majorant bound
-`localizedChainBound_measurableMajorant_of_finiteEntropy`, vanishing envelope
-tails, and Markov's inequality. The empty class is handled separately.
+vdV §19.2 Theorem 19.5.
 
 Principal declaration: `isPDonsker_of_finite_bracketing_entropy_integral`.
-Reference: van der Vaart, *Asymptotic Statistics* (Cambridge, 1998), §19.2,
-Theorem 19.5.
 -/
 
 namespace AsymptoticStatistics.EmpiricalProcess
@@ -103,6 +97,39 @@ private lemma marginalCLT_of_finite_bracketing_entropy_integral_aux
       _ ≤ |l i x| := neg_le_abs _
       _ ≤ |l i x| + |u i x| := by linarith [abs_nonneg (u i x)]
 
+/-- **Markov: L¹-integral convergence implies probability concentration**.
+
+Given a sequence `ψ n : Ξ → ℝ≥0∞` of nonnegative measurable functions
+with `∫⁻ ψ n dμ → 0`, then for every `ε > 0`,
+`μ {ξ | ε ≤ ψ n ξ} → 0`.
+
+For the random-pair application in the equicontinuity proof, the L²-vanishing
+hypothesis `∫ ξ, ‖fhat n ξ − ghat n
+ξ‖²_{L²(P)} ∂μ → 0` is converted, by this lemma applied to
+`ψ n ξ = ENNReal.ofReal (‖fhat n ξ − ghat n ξ‖²_{L²(P)})`, into the
+probability bound `μ{ξ | δ² ≤ ‖fhat − ghat‖²_{L²(P)}} → 0`: exactly
+the "L²-consistency in probability" form that controls the bad-set
+of the random pair.
+
+The proof goes via `meas_ge_le_lintegral_div` (Markov in ENNReal form)
+and the squeeze `0 ≤ μ{·} ≤ ε⁻¹ · ∫⁻ ψ → 0`. -/
+private lemma tendsto_meas_le_of_tendsto_integral_zero
+    {Ξ : Type*} [MeasurableSpace Ξ] (μ : Measure Ξ)
+    (ψ : ℕ → Ξ → ℝ≥0∞) (hψ_meas : ∀ n, Measurable (ψ n))
+    (h_int : Tendsto (fun n => ∫⁻ ξ, ψ n ξ ∂μ) atTop (𝓝 0))
+    {ε : ℝ≥0∞} (hε : 0 < ε) (hε_top : ε < ⊤) :
+    Tendsto (fun n => μ {ξ | ε ≤ ψ n ξ}) atTop (𝓝 0) := by
+  -- Markov in ENNReal form: `μ{ξ | ε ≤ ψ n ξ} ≤ (∫⁻ ψ n dμ) / ε`.
+  -- The upper bound tends to `0 / ε = 0`; squeeze.
+  have hε_ne : ε ≠ 0 := hε.ne'
+  have hε_top_ne : ε ≠ ⊤ := hε_top.ne
+  have h_markov : ∀ n, μ {ξ | ε ≤ ψ n ξ} ≤ (∫⁻ ξ, ψ n ξ ∂μ) / ε :=
+    fun n => meas_ge_le_lintegral_div (hψ_meas n).aemeasurable hε_ne hε_top_ne
+  have h_div : Tendsto (fun n => (∫⁻ ξ, ψ n ξ ∂μ) / ε) atTop (𝓝 (0 / ε)) :=
+    ENNReal.Tendsto.div_const h_int (Or.inr hε_ne)
+  rw [ENNReal.zero_div] at h_div
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_div
+    (Eventually.of_forall fun _ => zero_le) (Eventually.of_forall h_markov)
 
 /-- **Envelope extraction from a finite bracketing-entropy integral** (file-local).
 
@@ -224,15 +251,141 @@ private lemma equi_chain_chain_sequence_exists'
       nlinarith
     exact (h_restrict_eq _ hpos hle).symm
 
+/-- **Strong-iid equicontinuity under finite
+bracketing entropy**.
 
-/-- **Equicontinuity from finite bracketing entropy.**
+Same conclusion as
+`equicontinuity_consumer_step_finite_entropy` (vdV §19.2 chaining),
+but with **mutual** independence (`iIndepFun X μ`) replacing
+the pairwise hypothesis exposed by the predicate
+`IsAsymptoticallyEquicontinuous`. The textbook chaining argument
+genuinely consumes mutual independence (for the per-level
+`finite_sup_bound` invocation in the localized chaining argument, which
+factorises the empirical-process variance into a sum of
+per-summand variances).
 
-For a nonempty measurable class, extract a square-integrable envelope and scales
-along which the bracketing entropy integral tends to zero. Apply
-`localizedChainBound_measurableMajorant_of_finiteEntropy` to bound the localized
-empirical-process supremum by a measurable majorant. Markov's inequality and the
-vanishing envelope tail then bound the outer probability of the oscillation event.
--/
+**Proof structure (vdV §19.2).**
+1. Pick `δ ↓ 0` along a sequence `δ_q ↓ 0` with
+   `J_{[]}(δ_q, F − F, L²) → 0`.
+2. By `hasFiniteBracketingCover_difference_class`, the
+   difference class `F − F` inherits finite bracketing-entropy at every
+   scale; choose envelope `Φ` from the level-1 bracket cover (concretely
+   `Φ = max_i (|l i| + |u i|)` from a finite cover at scale 1).
+3. Apply `localizedChainBound_of_finiteEntropy` to the difference slice
+   `F_δ := {f − g ∈ F − F : ‖f − g‖_{L²} ≤ δ_q}`, giving universal `K`:
+     `∫⁻ supNormOver F_δ (G_n) ∂μ ≤ K · (J_{[]}(δ_q, F − F, L²) +
+       √n · envelope_tail)`.
+4. Markov (`tendsto_meas_le_of_tendsto_integral_zero`) converts the
+   lintegral bound to a probability bound on
+   `μ{ξ | η < supNormOver F_δ (G_n)(ω(ξ))}`.
+5. The L²-consistency hypothesis combined with Markov pushes the event
+   `‖fhat n − ghat n‖_{L²(P)} > δ_q` to μ-measure 0; on its complement
+   `(fhat n ξ − ghat n ξ) ∈ F_{δ_q}`, so the deviation is controlled by
+   step 4.
+6. Diagonal `δ_q ↓ 0` drives the maximal-inequality bound to 0.
+
+The chain construction, envelope extraction, Markov bound, and diagonal limit
+are summarized by `equicontinuity_chaining_assembly_brick`. -/
+private lemma equicontinuity_consumer_step_strong_iid
+    (F : Set (Ω → ℝ)) (P : Measure Ω) [IsProbabilityMeasure P]
+    (h_int : bracketingEntropyIntegral 1 F P < ⊤)
+    {Ξ : Type} [MeasurableSpace Ξ] (μ : Measure Ξ)
+    [IsProbabilityMeasure μ] (X : ℕ → Ξ → Ω)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hX_iindep : ProbabilityTheory.iIndepFun X μ)
+    (hX_id : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P)
+    (fhat ghat : ℕ → Ξ → (Ω → ℝ))
+    (h_fhat_meas : ∀ n, Measurable (Function.uncurry (fhat n)))
+    (h_ghat_meas : ∀ n, Measurable (Function.uncurry (ghat n)))
+    (h_fhat_in : ∀ n ξ, fhat n ξ ∈ F)
+    (h_ghat_in : ∀ n ξ, ghat n ξ ∈ F)
+    (h_l2_int : ∀ n, MeasureTheory.Integrable
+      (fun ξ => ∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P) μ)
+    (h_l2 : Tendsto (fun n => ∫ ξ, (∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P) ∂μ)
+        atTop (𝓝 0))
+    -- The δq-LOCALIZED chaining bound (vdV Lemma 19.34, localized form); see
+    -- `chaining_integral_universal_K` in `Maximal.lean`.
+    (hChainBound_outer :
+      ∃ c : ℝ, 0 < c ∧
+      ∀ (Φ : Ω → ℝ), Measurable Φ → IsEnvelope (differenceClass F) Φ → MemLp Φ 2 P →
+        ∀ {δq : ℝ}, 0 < δq → δq ≤ 1 / 4 →
+          ∃ M : ℝ, 0 < M ∧ ∀ (n : ℕ),
+            ∫⁻ ξ, supNormOver (localizedDifferenceClass F P δq)
+                  (fun h => empiricalProcess P n (fun i : Fin n => X i.val ξ) h) ∂μ
+              ≤ ENNReal.ofReal c * bracketingEntropyIntegral δq F P
+                + ENNReal.ofReal c *
+                  (ENNReal.ofReal (Real.sqrt n)
+                    * ∫⁻ ω, ENNReal.ofReal (|Φ ω|)
+                        * Set.indicator {x | Real.sqrt n * M < |Φ x|} 1 ω ∂P))
+    (η : ℝ) (hη : 0 < η) :
+    Tendsto (fun n =>
+      μ {ξ | η < |empiricalProcess P n (fun i : Fin n => X i.val ξ) (fhat n ξ)
+                   - empiricalProcess P n (fun i : Fin n => X i.val ξ) (ghat n ξ)|})
+      atTop (𝓝 0) :=
+  equicontinuity_chaining_assembly_brick F P h_int μ X hX_meas hX_iindep hX_id
+    hX_law fhat ghat h_fhat_meas h_ghat_meas h_fhat_in h_ghat_in h_l2_int h_l2
+    hChainBound_outer η hη
+
+/-- **Tendsto form of equicontinuity under finite bracketing entropy**.
+
+This is the vdV §19.2 chaining conclusion in the form used by
+`IsAsymptoticallyEquicontinuous`. It follows from
+`equicontinuity_consumer_step_strong_iid`.
+
+`IsAsymptoticallyEquicontinuous` (`Donsker.lean`) takes `iIndepFun`
+directly; for example, `Measure.infinitePi` and `iIndepFun_infinitePi`
+provide this hypothesis for the canonical iid sample. -/
+private lemma equicontinuity_consumer_step_finite_entropy
+    (F : Set (Ω → ℝ)) (P : Measure Ω) [IsProbabilityMeasure P]
+    (h_int : bracketingEntropyIntegral 1 F P < ⊤)
+    {Ξ : Type} [MeasurableSpace Ξ] (μ : Measure Ξ)
+    [IsProbabilityMeasure μ] (X : ℕ → Ξ → Ω)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hX_iindep : ProbabilityTheory.iIndepFun X μ)
+    (hX_id : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P)
+    (fhat ghat : ℕ → Ξ → (Ω → ℝ))
+    (h_fhat_meas : ∀ n, Measurable (Function.uncurry (fhat n)))
+    (h_ghat_meas : ∀ n, Measurable (Function.uncurry (ghat n)))
+    (h_fhat_in : ∀ n ξ, fhat n ξ ∈ F)
+    (h_ghat_in : ∀ n ξ, ghat n ξ ∈ F)
+    (h_l2_int : ∀ n, MeasureTheory.Integrable
+      (fun ξ => ∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P) μ)
+    (h_l2 : Tendsto (fun n => ∫ ξ, (∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P) ∂μ)
+        atTop (𝓝 0))
+    -- The δq-LOCALIZED chaining bound (vdV Lemma 19.34, localized form); see
+    -- `chaining_integral_universal_K` in `Maximal.lean`.
+    (hChainBound_outer :
+      ∃ c : ℝ, 0 < c ∧
+      ∀ (Φ : Ω → ℝ), Measurable Φ → IsEnvelope (differenceClass F) Φ → MemLp Φ 2 P →
+        ∀ {δq : ℝ}, 0 < δq → δq ≤ 1 / 4 →
+          ∃ M : ℝ, 0 < M ∧ ∀ (n : ℕ),
+            ∫⁻ ξ, supNormOver (localizedDifferenceClass F P δq)
+                  (fun h => empiricalProcess P n (fun i : Fin n => X i.val ξ) h) ∂μ
+              ≤ ENNReal.ofReal c * bracketingEntropyIntegral δq F P
+                + ENNReal.ofReal c *
+                  (ENNReal.ofReal (Real.sqrt n)
+                    * ∫⁻ ω, ENNReal.ofReal (|Φ ω|)
+                        * Set.indicator {x | Real.sqrt n * M < |Φ x|} 1 ω ∂P))
+    (η : ℝ) (hη : 0 < η) :
+    Tendsto (fun n =>
+      μ {ξ | η < |empiricalProcess P n (fun i : Fin n => X i.val ξ) (fhat n ξ)
+                   - empiricalProcess P n (fun i : Fin n => X i.val ξ) (ghat n ξ)|})
+      atTop (𝓝 0) :=
+  equicontinuity_consumer_step_strong_iid F P h_int μ X hX_meas hX_iindep
+    hX_id hX_law fhat ghat h_fhat_meas h_ghat_meas h_fhat_in h_ghat_in
+    h_l2_int h_l2 hChainBound_outer η hη
+
+/-- **Equicontinuity half of Theorem 19.5**.
+
+Unfolds the universal quantifiers of `IsAsymptoticallyEquicontinuous` and applies
+`equicontinuity_consumer_step_finite_entropy`, which forwards to
+`equicontinuity_consumer_step_strong_iid` (vdV §19.2 chaining under
+mutual independence). The two textbook ingredients
+`hasFiniteBracketingCover_difference_class` (vdV Lemma 19.31) and
+`tendsto_meas_le_of_tendsto_integral_zero` = Markov bridge from
+L²-vanishing to probability concentration are used in this argument. -/
 private lemma asymptoticallyEquicontinuous_of_finite_bracketing_entropy_integral_aux
     (F : Set (Ω → ℝ)) (P : Measure Ω) [IsProbabilityMeasure P]
     (hF_ne : F.Nonempty)
@@ -421,21 +574,41 @@ private lemma isPDonsker_of_finite_bracketing_entropy_integral_aux
    asymptoticallyEquicontinuous_of_finite_bracketing_entropy_integral_aux F P
      hF_ne hF_meas h_int⟩
 
-/-- **Finite bracketing entropy implies `IsPDonsker`.**
+/-- **Theorem 19.5 (Donsker via bracketing entropy integral)**.
 
-For a class of measurable functions under a probability measure, finiteness of
-`J_{[]}(1, F, L²(P))` gives the marginal-CLT and asymptotic-equicontinuity
-conjunction `IsPDonsker F P`.
+Every class `F` of measurable functions with `J_{[]}(1, F, L_2(P)) < ⊤`
+is `P`-Donsker.
 
-A finite bracket cover supplies square integrability for the marginal CLTs.
-For a nonempty class, the equicontinuity argument uses
-`localizedChainBound_measurableMajorant_of_finiteEntropy`, vanishing envelope
-tails and Markov's inequality. The empty class satisfies both conjuncts vacuously.
-No separate positivity assumption on the entropy integral is required.
+vdV §19.2 Theorem 19.5.
 
-Reference: van der Vaart, *Asymptotic Statistics* (Cambridge, 1998), §19.2,
-Theorem 19.5.
--/
+**Proof outline** (vdV §19.2):
+1. Split `IsPDonsker = IsMarginalCLT ∧ IsAsymptoticallyEquicontinuous`.
+2. **Marginal CLT half**: extract any single ε-bracket from the finite
+   cover at a scale where `bracketingNumber < ⊤` (available because
+   `J_{[]}(1, F, L²(P)) < ⊤`); for `f ∈ F` find a containing bracket
+   `[l, u]` with `|f| ≤ |l| + (u − l)`; apply
+   `IsEpsBracket.memLp_lower`/`memLp_upper` to conclude `MemLp f 2 P`.
+3. **Equicontinuity half**: derives the universal constant and localized
+   difference-class bound from `localizedChainBound_of_finiteEntropy`.
+For each small `δq`, Lemma 19.34 gives
+   `∫⁻ supNormOver (localizedDifferenceClass F P δq) (G_n)
+      ≤ c · J_{[]}(δq,F) + c · √n · envelope_tail`.
+   The envelope tail vanishes and `J_{[]}(δq,F) → 0` as `δq ↓ 0`.
+   Markov converts the lintegral bound to a probability bound on
+   `μ {ξ | η < |G_n(fhat) - G_n(ghat)|}`.
+
+The marginal-CLT half uses bracket extraction
+(`exists_finite_bracketingNumber_of_integral_lt_top`) and `MemLp.of_le_mul`.
+For equicontinuity, on the `L²`-good event the random difference belongs to
+`localizedDifferenceClass F P δq`; its empirical-process norm is therefore
+bounded by the localized supremum supplied by
+`localizedChainBound_of_finiteEntropy` (vdV Lemma 19.34).
+
+No separate positivity assumption on the entropy integral is required. The
+nonempty case obtains positivity from
+`bracketingEntropyIntegral_pos_of_nonempty`; the empty class is Donsker
+vacuously. Thus the hypotheses are precisely measurability and finiteness of
+`J_{[]}(1, F, L²(P))`, as in vdV Theorem 19.5. -/
 theorem isPDonsker_of_finite_bracketing_entropy_integral
     (F : Set (Ω → ℝ)) (P : Measure Ω) [IsProbabilityMeasure P]
     (hF_meas : ∀ f ∈ F, Measurable f)

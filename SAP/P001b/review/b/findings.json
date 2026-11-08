@@ -1,0 +1,192 @@
+[
+  {
+    "target_id": "P001-T20",
+    "theorem": "SAP.P001b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: E=Unit, t=c=1/2, finite positive support, equal arm supports, and epsilon=1/4. The sole denominator is one; these masses realize a binary-treatment probability law with both arms positive.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T21",
+    "theorem": "SAP.P001b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A closed statement with four actual atoms of masses (3/8,1/8,1/8,3/8). Independent Lean checks from Defs establish nonnegative normalized weights, both gender probabilities 1/2, conditional means 55 and 30, ATE 5, and failure of conditional independence. The voter thresholds give exactly 20,25,60,65 no-voters out of 100 in the four relevant potential-outcome cases.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T22",
+    "theorem": "SAP.P001b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Definitionally the same nonempty four-atom model as T21, with no external premises. Its normalization, positive conditioning masses, conditional means, ATE, and conditional-independence failure are independently compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T23",
+    "theorem": "SAP.P001b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Omega=Unit, its usual measurable space, mu=Dirac(()), A=empty and B=univ. Both events are measurable and A is a proper subset of B, so the reversed-gloss failure has a genuine instance. The probability-space instance is compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T24",
+    "theorem": "SAP.P001b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: Omega=Unit with its Dirac probability and the Unit-indexed family whose sole member is univ. It is a nonempty measurable disjoint covering partition with probability-one cell. Zero-mass nonempty cells are also possible: on R with Dirac(0), the partition {0}, R minus {0} has one such cell, so the first formula is not restricted to positive cells.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T25",
+    "theorem": "SAP.P001b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The definition zeroMass gives the unique member of Fin 1 weight one; the random variable is identically zero. Its lower-tail probability is one and every point mass at 1,2,3 is zero. There are no antecedents or empty index types.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T26",
+    "theorem": "SAP.P001b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: q(k)=1 if k=0 and zero otherwise is everywhere nonnegative, summable, and has sum one. This instance has missing nonpositive mass one, so the missing-mass identity is substantive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T27",
+    "theorem": "SAP.P001b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The concrete index set contains (0,0). At level m there are 2^m positive weights 2^(-2m-1), totaling 2^(-m-1); their geometric sum is one. The locations lie densely in (0,1), and none equals 1/3. These give a genuine countable atomic probability law and its stated CDF; no divergent-sum default is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T28",
+    "theorem": "SAP.P001b.T28",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The supplied six-point fair die is a nonempty instance with values 1 through 6. Nonnegative weights, total mass one, and StrictMono dieValue are compiled in scratch/Check.lean. The countable-range part also has the one-point Dirac example; the ordered finite part uses m=5 for the die.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T29",
+    "theorem": "SAP.P001b.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use normalized Lebesgue measure restricted to [0,1]. Its CDF is max(0,min(1,x)); the three explicit functions are bounded measurable functions supported in [0,1] and differ only on finite null sets. They are genuinely integrable and normalized, so their integral equalities do not use the zero value of nonintegrable Bochner integrals.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T30",
+    "theorem": "SAP.P001b.T30",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: normalLaw=gaussianReal 0 1 and normalPDF=gaussianPDFReal 0 1 satisfy Density, including the identity-map version. Their product law has productPDF as a JointDensity and both marginal densities equal normalPDF. For the separate boundary example take y=1/2; the inner derivative is the uniform CDF and fails to be differentiable at zero.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T31",
+    "theorem": "SAP.P001b.T31",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed explicit construction. Every stage retains 0 and 1. Component lengths are L_n=2^(-n-1)+2^(-2n-1), so stage measures are 1/2+2^(-n-1) and the nested closed intersection has measure 1/2. Thus the subtype is nonempty and its doubled pullback measure has total mass one. Closedness makes the inclusion a measurable embedding, excluding the zero fallback of comap.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T32",
+    "theorem": "SAP.P001b.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The universal premises are realized by the compiled standard Gaussian law with X=id and its density. For the existential part, C=[0,1/2] minus Q is Borel with Lebesgue measure 1/2; put twice restricted Lebesgue measure on its subtype and take the inclusion. Its literal range is C, density is 2*indicator_C, and rational density prevents every nondegenerate interval from lying in C.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T33",
+    "theorem": "SAP.P001b.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: Omega=R, X=id, g=h=id; X is surjective and takes different values at 0 and 1. Equipping R with the standard Gaussian probability gives a canonical random-variable instance as well. Arbitrary domains containing the range can be extended off their domains without affecting the equivalence.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T34",
+    "theorem": "SAP.P001b.T34",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A closed example: the open rectangle (0,1) times (-1,0) has area one. Its indicator is a normalized integrable density, its support lies inside the printed event, and it vanishes on every triangular integration section with y>=0. Thus an actual jointly continuous law gives event probability one and printed integral zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T35",
+    "theorem": "SAP.P001b.T35",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled productLaw=standard Gaussian product and productPDF satisfy the probability and JointDensity premises. This law assigns positive mass both to the triangle and to the omitted negative-y region, so the correction and its equality criterion have nontrivial instances. Global joint integrability supplies the Fubini hypotheses almost everywhere.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T36",
+    "theorem": "SAP.P001b.T36",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no external premises. Real analyticity of the exact infiniteSliceDensity is independently compiled in scratch/Check.lean. Both defining denominators are strictly positive. Its y-integral is exp(x)/(1+exp(x))^2, whose x-integral is one. At y=0 the integrand tends to 1/pi, forcing the extended nonnegative integral to infinity. For y!=0 and t=exp(x), the slice integral has integrand t/[pi*(1+t)^2*(1+y^2*t^2)], bounded near zero by t/pi and for t>=1 by 1/(pi*y^2*t^3).",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T37",
+    "theorem": "SAP.P001b.T37",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled product Gaussian density and its marginal densities satisfy the first branch. The same Borel productPDF at x=0 has an integrable section with strictly positive integral, also compiled, so the conditional normalization branch has a genuine finite positive denominator. Finite marginal versions may additionally be changed on null sets; no extra Borel hypothesis is imposed on these versions.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T38",
+    "theorem": "SAP.P001b.T38",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The standard Gaussian input is a probability measure (compiled), and its zero multiple has law Dirac(0) with unit atom. Unit scales are strictly positive and rho=1 and rho=-1 are permitted by the printed closed parameter range; both actual normalization denominators vanish (compiled). The endpoint refutation uses these vanishing denominators, not the zero assigned to undefined ordinary quotients by Lean total division.",
+    "confidence": 0.99
+  }
+]

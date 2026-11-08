@@ -1,0 +1,62 @@
+[
+  {
+    "theorem": "SAP.P016a.T1",
+    "target_id": "P016-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "T1Statement includes both enumerations with injectivity and completeness, the two explicitly external pairing covariances, every RSS/KS table entry, both inclusive tail probabilities under each design, and both design covariances. The group means and ECDFs use the positive group sizes of the displayed assignments. All numerical witnesses passed independent exact-rational checks. No claim that the paper assumes a cross-group pairing is inserted."
+  },
+  {
+    "theorem": "SAP.P016a.T2",
+    "target_id": "P016-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "All of canonical (A)-(G) are included, with fixed outcomes, positive group sizes, and the essential common-treated-count condition in the ordering and probability identities. sameMargins preserves group multisets including multiplicity. The finite-law representation permits every canonical finite design law; a FiniteLaw cannot exist on an empty type. The least-squares sInf ranges are nonempty and bounded below. Extra n>=2 hypotheses follow from the two positive groups. The network-alignment and equal-KS/unequal-RSS examples match exactly. Lean checked the positive-group domain, nonuniform law, and nonempty bounded-below objective range."
+  },
+  {
+    "theorem": "SAP.P016a.T3",
+    "target_id": "P016-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "The four-unit and eight-index six-unit banks, score similarities, conditional means, raw distance and similarity sums, centered exposures, standardization, affine obstructions, all three regression minima, both determinants, exact rational table obstruction, and three cutoff/tail examples are present. The table decimals are explicitly treated as the canonical exact rationals, not as a claim of numerical robustness. Positive variance of the displayed centered exposures makes ordinary standardization legitimate; the numerical and least-squares witnesses passed exact-rational checks."
+  },
+  {
+    "theorem": "SAP.P016a.T4",
+    "target_id": "P016-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem covers model cancellation, zero mean/unit sample variance after standardization, regression invariance, the defined-score orientation identity, nonaffinity, inclusive-tail coverage, cutoff equality, and the T3 witnesses. It does not formalize identification with the complete coded application: the fixed 10000-assignment matching bank, 500 reference draws, the application's directional p-value procedure, projected maximum-p coordinate bounds, or association of Figure 4 and its coefficient/rectangle with that procedure. In the orientation conjunct, the common treated count of every bank assignment is required even for the raw identity; the canonical raw identity alone does not need that bank restriction. Both positive SD hypotheses are explicit for the standardized sign identity (one follows from the other and the centered identity). These are real restrictions, not a false or empty-domain result. A nonempty singleton design with S=similarity(scores4), matchedBank4, and assignment complete4(1), together with nonzero model coefficients, was checked in Lean."
+  },
+  {
+    "theorem": "SAP.P016a.T6",
+    "target_id": "P016-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "T6 proves only consistency/cancellation for the printed raw-distance-input model with a fixed g whose output has across-unit sample variance 1 on every point of a nonempty finite design, together with the strict p<1/20 convention. It does not identify that model with the released application, SSR+Design regression/testing, figures or empirical rejection proportions. g is an arbitrary vector function subject to the stated variance property; it is not identified with the released centered-similarity exposure, nor asserted to equal any particular standardization algorithm. Thus this is a true algebraic consequence of the printed model under a specified variance convention, rather than the entire canonical passage. A genuine raw-distance standardization instance on three scores 0,1,2 and two nonempty assignments, with nonzero coefficients, was checked in Lean."
+  },
+  {
+    "theorem": "SAP.P016a.T7",
+    "target_id": "P016-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both canonical true-additive-null counterexamples are fully represented, including the complete six-assignment design, raw and adjusted means and inclusive tails, rejection probability 1 for every alpha>0, the seventy-assignment balanced design and its cardinality, strict raw treated/control separation, both signed and absolute KS versions, raw rejection probability 1, and both corrected reference and rejection probabilities. The index types are nonempty and both groups positive; the Balanced(8,4) instance was checked in Lean. Independent exact enumeration verified all seventy-assignment probabilities."
+  },
+  {
+    "theorem": "SAP.P016a.T8",
+    "target_id": "P016-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "The adjustment identity is universal in the true and hypothesized additive effects and gives the fixed baseline at the truth. For every finite design law and arbitrary statistic, equality of masses for every real predicate states equality of the observed/reference laws at that baseline, and the inclusive upper-tail probability is superuniform for every alpha in [0,1]. The positive-group mean-shift identity and its iff t=0 conclusion are exact. No effect-increasing or other conclusion-like hypothesis is added. Arbitrary finite indexed design laws are a harmless generalization of finite assignment sets, and a nonuniform normalized law and the algebraic baseline identity were checked in Lean."
+  },
+  {
+    "theorem": "SAP.P016a.T9",
+    "target_id": "P016-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three canonical discrepancies are present with the specified values: signed versus absolute KS under both labelings; pooled TSS=5, its general constant-statistic distribution and inclusive tails equal to 1, and the six RSS entries and observed RSS lower tail 1/3; and the explicit six-unit network with minima 0 versus 2 with/without the intercept. The respective scalar/vector formulas are defined coherently. Fixed examples passed exact-rational checks; the general constant-law assertion uses an actual normalized probability law and cannot exploit an empty index type."
+  },
+  {
+    "theorem": "SAP.P016a.T10",
+    "target_id": "P016-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "Canonical (a)-(d) are all included: the exact basic-regression minimizers and RSS, attainment and unique fitted vectors for every real design matrix without a rank condition, finite-sample KS equal to the threshold supremum with ties allowed plus label invariance and [0,1] bounds, and the symmetric binary adjacency row/column identities. The common positive-group setting matches the claim. The infimum range is nonempty and bounded below even at k=0, and the KS range is nonempty and bounded by 1, so no totalized unbounded extrema are doing the work. Lean checked the objective-range facts; exact arithmetic also checked a zero-column matrix."
+  },
+  {
+    "theorem": "SAP.P016a.T11",
+    "target_id": "P016-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "EffectIncreasing unfolds to exactly the canonical directional, weak coordinatewise condition with universal quantification over z,y,y'. The weak and strict KS witnesses and their CDF values, both SSR changes, and the four explicit negations of EffectIncreasing are included. The RSS examples alter only treated coordinates while controls remain equal, and therefore really do refute both orientations under the stated directional property. All numerical values and coordinate inequalities passed independent exact-rational checks. No invalidity or power claim beyond these counterexamples is asserted."
+  }
+]

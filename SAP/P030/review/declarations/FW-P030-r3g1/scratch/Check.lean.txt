@@ -1,0 +1,103 @@
+import SAP.P030.Challenge
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open SAP.P030
+open scoped BigOperators
+
+namespace ReviewP030
+
+noncomputable section
+
+-- Direct constructions: none of these checks uses T1--T5.
+example : NoEffects fiveΩ fiveY ∧ NoInterference fiveΩ fiveY := by
+  constructor
+  · intro i z hz z' hz'
+    rfl
+  · intro i z hz z' hz' heq
+    rfl
+
+example : fiveΩ.Nonempty ∧
+    (conditionalAssignments fiveΩ fiveS (fiveAssignment 0)).Nonempty := by
+  classical
+  have h : fiveAssignment 0 ∈ fiveΩ :=
+    Finset.mem_image.mpr ⟨0, Finset.mem_univ _, rfl⟩
+  exact ⟨⟨_, h⟩, ⟨_, Finset.mem_filter.mpr ⟨h, by intros; rfl⟩⟩⟩
+
+example : NoEffects tenΩ tenYnull ∧ NoInterference tenΩ tenYnull ∧
+    FixedOutcomeNull tableΩ tenS tenYnull := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro i z hz z' hz'
+    rfl
+  · intro i z hz z' hz' heq
+    rfl
+  · intro i hi z hz z' hz'
+    rfl
+
+example : tenΩ.Nonempty ∧ tableΩ.Nonempty ∧
+    (conditionalAssignments tenΩ tenS (tenAssignment 6)).Nonempty := by
+  classical
+  have h : tenAssignment 6 ∈ tenΩ :=
+    Finset.mem_image.mpr ⟨6, Finset.mem_univ _, rfl⟩
+  have ht : tenAssignment (tableTreatment 5) ∈ tableΩ :=
+    Finset.mem_image.mpr ⟨5, Finset.mem_univ _, rfl⟩
+  exact ⟨⟨_, h⟩, ⟨_, ht⟩, ⟨_, Finset.mem_filter.mpr ⟨h, by intros; rfl⟩⟩⟩
+
+example (a : Fin 2) :
+    (Finset.univ.filter (fun j => fiveS j = false ∧ fiveAssignment a j = true)).Nonempty := by
+  classical
+  refine ⟨⟨a.val + 3, by omega⟩, ?_⟩
+  fin_cases a <;> norm_num [fiveS, fiveAssignment]
+
+example (r : Fin 6) :
+    (Finset.univ.filter (fun j => tenS j = false ∧
+      tenAssignment (tableTreatment r) j = true)).Nonempty := by
+  classical
+  refine ⟨tableTreatment r, ?_⟩
+  fin_cases r <;> norm_num [tenS, tenAssignment, tableTreatment]
+
+lemma fiveOutcomes_values : fiveOutcomes = ![0,1,2] := by
+  ext i
+  fin_cases i <;> norm_num [fiveOutcomes, fiveY, fiveFixed]
+
+lemma tableY_values : tableY = ![1,3,2,1] := by
+  ext i
+  fin_cases i <;> norm_num [tableY, tenYnull, tenFixed]
+
+example : rankSquares fiveOutcomes = 2 := by
+  classical
+  rw [fiveOutcomes_values]
+  norm_num [rankSquares, centeredRanks, averageRank,
+    Fin.sum_univ_succ, Fin.card_filter_univ_succ]
+
+example : rankSquares tableY = 9/2 := by
+  classical
+  rw [tableY_values]
+  norm_num [rankSquares, centeredRanks, averageRank,
+    Fin.sum_univ_succ, Fin.card_filter_univ_succ]
+
+-- A finite law with genuinely unequal, positive masses, and a nonconstant f.
+def unequalLaw : FiniteLaw (Fin 2) where
+  support := Finset.univ
+  mass := ![1/3,2/3]
+  nonneg := by intro z hz; fin_cases z <;> norm_num
+  total := by norm_num [Fin.sum_univ_succ]
+
+example : lowerTail unequalLaw (fun i => (i.val : ℝ)) 0 = 1/3 ∧
+    upperTail unequalLaw (fun i => (i.val : ℝ)) 1 = 2/3 := by
+  norm_num [lowerTail, upperTail, probability, unequalLaw, Fin.sum_univ_succ]
+
+-- The constant-statistic clause in T5 has nonempty, nontrivial instances.
+example : ∃ (Ω : Finset (Fin 2)) (t : Fin 2 → ℝ),
+    Ω.Nonempty ∧ (∀ z ∈ Ω, ∀ z' ∈ Ω, t z = t z') ∧
+    (∀ z ∈ Ω, uniformProbability Ω (fun w => t w = t z) = 1) ∧
+    (∀ z ∈ Ω, uniformProbability Ω (fun w => t w ≤ t z) = 1) := by
+  classical
+  refine ⟨Finset.univ, fun _ => 7, Finset.univ_nonempty, ?_, ?_, ?_⟩
+  · intros; rfl
+  · intros; norm_num [uniformProbability]
+  · intros; norm_num [uniformProbability]
+
+end
+end ReviewP030

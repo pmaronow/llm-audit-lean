@@ -4,7 +4,8 @@ import AronowAudit.P053.P053_NormalQuantiles
 import Mathlib.Analysis.SpecificLimits.Basic
 
 /-!
-T18 and T19: Hájek linearization rates and a dependency CLT counterexample.
+Drafts for T18 and T19.  This file was written by a drafter who did not run Lean.
+The held declarations are used only in the two requested type checks.
 -/
 namespace AronowAudit.P004.Wave1
 
@@ -410,7 +411,7 @@ lemma t18_bigop_rootn (p : ∀ N, Fin N → ℝ) (hp : ∀ N i, 0 < p N i ∧ p 
     rw [he] at hz
     linarith
 
-/-- T18: the Hájek linearization remainder satisfies both stochastic rate bounds. -/
+/-- T18: the original binders and conclusion, including both rates. -/
 theorem hajek_linearization_proof (P : PopulationSequence Space) (p d : ℝ)
     (hp : 0 < p ∧ p < 1) (hd : 0 ≤ d) (hP : SpatialLocalConditions P)
     (hWD : ∀ᶠ N in atTop, WellDefined (P N) d) :
@@ -479,6 +480,8 @@ theorem hajek_linearization_proof (P : PopulationSequence Space) (p d : ℝ)
   refine ⟨?_, hO⟩
   have hi := t18_bigop_rootn (fun N (_ : Fin N) => p) (fun _ _ => hp) _ hO
   simpa only [neg_sub] using hi
+
+example : type_of% @AronowAudit.P004.hajek_linearization := hajek_linearization_proof
 
 /-! T19: a single fair sign, deterministic other coordinates, and a CDF obstruction. -/
 
@@ -578,7 +581,7 @@ lemma t19_normal_gap : normalCDF (-(1/2 : ℝ)) < 1/2 := by
   rw [AronowAudit.P053.NormalCompletion.normal_cdf_zero] at hm
   simpa only [ProbabilityTheory.cdf_eq_real, measureReal_def, normalCDF] using hm
 
-/-- T19: the dependency CLT counterexample, with full tuple-event independence. -/
+/-- T19: the complete frozen conjunction, with full tuple-event independence. -/
 theorem dependency_clt_counterexample_proof :
     (∀ N : ℕ, 0 < N →
       (∀ i z, |loneRademacher N i z| ≤ 1) ∧
@@ -627,6 +630,8 @@ theorem dependency_clt_counterexample_proof :
         atTop (nhds (1/2 : ℝ)) := tendsto_const_nhds.congr' he.symm
     have heq : normalCDF (-(1/2 : ℝ)) = 1/2 := tendsto_nhds_unique hnormal hhalf
     exact (ne_of_lt t19_normal_gap) heq
+
+example : type_of% @AronowAudit.P004.dependency_clt_counterexample := dependency_clt_counterexample_proof
 
 end
 end AronowAudit.P004.Wave1

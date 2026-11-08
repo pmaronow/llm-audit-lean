@@ -3,7 +3,7 @@ import Mathlib.Probability.CentralLimitTheorem
 import Mathlib.Probability.Independence.InfinitePi
 import Mathlib.Probability.ProbabilityMassFunction.Integrals
 
-/-! The iid CLT on the auxiliary infinite fair-coin product space.
+/-! Node 6: the iid CLT on the auxiliary infinite fair-coin product space.
 The two moment calculations take place on `Fin 2`, before pulling them back
 by a coordinate projection. No finite-population CLT is used. -/
 

@@ -6,7 +6,10 @@ import Mathlib.Topology.Algebra.Monoid
 
 /-!
 Finite-dimensional continuous mapping for the finite design laws.
-The probability helpers use the finite-expectation algebra.
+
+The elementary helpers in `DLbSupport` are shared by the other files assigned
+to d-P004-DLb. They use only the proved finite-expectation algebra in P004.
+No Lean process was run when preparing this draft.
 -/
 
 namespace AronowAudit.P004.Wave1.DesignLimits

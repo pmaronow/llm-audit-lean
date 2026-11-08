@@ -8,7 +8,7 @@ open scoped ENNReal Topology
 
 set_option maxHeartbeats 800000
 
-/-- The extended inverse agrees with the real generalized inverse
+/-- The audit's extended inverse agrees with the real generalized inverse
 at every interior level. No strict increase of the CDF is required. -/
 theorem tcQuantile_inverse_bridge (F : Measure ℝ) [IsProbabilityMeasure F]
     {u : ℝ} (hu : 0 < u) (hu1 : u < 1) :
@@ -49,7 +49,7 @@ theorem tcQuantile_aemeasurable (F : Measure ℝ) [IsProbabilityMeasure F] :
     AEMeasurable (quantileReal F) Causalean.Stat.unifOI :=
   (Causalean.Stat.aemeasurable_quantile_unifOI F).congr (tcQuantile_ae_bridge F).symm
 
-/-- Inverse-transform transport for the exact quantile definition. -/
+/-- Inverse-transform transport for the audit's exact quantile definition. -/
 theorem tcQuantile_transport (F : Measure ℝ) [IsProbabilityMeasure F] :
     Causalean.Stat.unifOI.map (quantileReal F) = F := by
   rw [Measure.map_congr (tcQuantile_ae_bridge F)]
@@ -109,7 +109,7 @@ theorem tcQuantile_upper_preimage (F : Measure ℝ) [IsProbabilityMeasure F]
   exact propext (tcQuantile_upper_level F hc hs hs1 hu.1 hu.2)
 
 /-- Exact lower restricted transport; replacing open endpoints is harmless
-only in the uniform measure, never in the cutoff definition. -/
+only in the uniform measure, never in the audit cutoff definition. -/
 theorem tcQuantile_lower_transport (F : Measure ℝ) [IsProbabilityMeasure F]
     (hc : Atomless F) {t : ℝ} (ht : 0 < t) (ht1 : t ≤ 1) :
     (volume.restrict (Ioc (0 : ℝ) t)).map (quantileReal F) =
@@ -179,7 +179,7 @@ theorem tcQuantile_upper_mass (F : Measure ℝ) [IsProbabilityMeasure F]
     (F {y : ℝ | quantile F s ≤ (y : EReal)}).toReal = 1-s :=
   upper_tail_proof_corrected_tail_mass F hc hs hs1
 
-/-- Both tail integrals, including the retained-mass-one case. -/
+/-- Both audit tail integrals, including the retained-mass-one case. -/
 theorem quantile_tail_integrals (F : Measure ℝ) [IsProbabilityMeasure F]
     (hc : Atomless F) (hi : Integrable id F) :
     Integrable (quantileReal F) (volume.restrict (Set.Icc (0 : ℝ) 1)) ∧

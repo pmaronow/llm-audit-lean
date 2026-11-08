@@ -1,0 +1,1429 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P012a.T6",
+   "target_id": "P012-T6",
+   "fingerprint": "ec2832ca38bdba826a400b86064bf159b4a263bf6517769d21bc5764e9d3333a",
+   "module": "SAP.P012a.Challenge.Part1",
+   "line": 70,
+   "closure": [
+    {
+     "line": 58,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Admissible"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Augmented"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Compatible"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.degree"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.mk"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.parent"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.sampled"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.seeds"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.time"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.trait"
+    },
+    {
+     "line": 176,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.FullHomophilyRegion"
+    },
+    {
+     "line": 96,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.HomophilyDefined"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Simple"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.edges"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.mk"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.trait"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.vertices"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P012a.Defs.Part4",
+     "name": "SAP.P012a.T6Statement"
+    },
+    {
+     "line": 226,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.T6WholeStatement"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Vertex"
+    },
+    {
+     "line": 204,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2Enumerates"
+    },
+    {
+     "line": 156,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2HCounts"
+    },
+    {
+     "line": 165,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2HCounts.additions"
+    },
+    {
+     "line": 159,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2HCounts.d0"
+    },
+    {
+     "line": 160,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2HCounts.d1"
+    },
+    {
+     "line": 163,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2HCounts.mixed"
+    },
+    {
+     "line": 158,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2HCounts.mk"
+    },
+    {
+     "line": 161,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2HCounts.ones"
+    },
+    {
+     "line": 164,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2HCounts.visits"
+    },
+    {
+     "line": 162,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2HCounts.zeros"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.W2LeafStructure"
+    },
+    {
+     "line": 141,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.a"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.adjacency"
+    },
+    {
+     "line": 143,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.b"
+    },
+    {
+     "line": 145,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.cR"
+    },
+    {
+     "line": 130,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.edgeCount"
+    },
+    {
+     "line": 87,
+     "module": "SAP.P012a.Defs.Part3",
+     "name": "SAP.P012a.exact_h_regionClaim"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.graphDegree"
+    },
+    {
+     "line": 88,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.hDenominator"
+    },
+    {
+     "line": 149,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.hLower"
+    },
+    {
+     "line": 83,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.hNumerator"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.hNumerator._proof_1"
+    },
+    {
+     "line": 151,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.hUpper"
+    },
+    {
+     "line": 94,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.hValue"
+    },
+    {
+     "line": 172,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.hValues"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.homophily"
+    },
+    {
+     "line": 192,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.leafCompletion"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.leafCompletion.match_1"
+    },
+    {
+     "line": 189,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.leafEdges"
+    },
+    {
+     "line": 186,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.leafVertices"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.Part4",
+     "name": "SAP.P012a.lowerQuotient._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.Part4",
+     "name": "SAP.P012a.lowerQuotient._proof_2"
+    },
+    {
+     "line": 133,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.mixedCount"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.nonseeds"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.notYetSampled.match_1"
+    },
+    {
+     "line": 147,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.phi"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.Part3",
+     "name": "SAP.P012a.proposal_counterexampleClaim._proof_2"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentDegree"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentEdges"
+    },
+    {
+     "line": 137,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentState"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.s"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.sampledTraitDegree"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.sampledVertices"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.spare"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.totalSpare"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.traitSpare"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.u"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.unsampled"
+    },
+    {
+     "line": 175,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.w2EdgeStep"
+    },
+    {
+     "line": 209,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.w2Finish"
+    },
+    {
+     "line": 199,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.w2Scan"
+    },
+    {
+     "line": 194,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.w2ScanEdges"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.w2ScanEdges._f"
+    },
+    {
+     "line": 189,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.w2ScanVertices"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.w2ScanVertices._f"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.w2ScanVertices.match_1"
+    },
+    {
+     "line": 168,
+     "module": "SAP.P012a.Defs.WholeW2",
+     "name": "SAP.P012a.w2VertexStep"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.z"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P012a.T7",
+   "target_id": "P012-T7",
+   "fingerprint": "6c5f04d1c2184595e3c79c5676c15b0176cc15bb77f7e8bfb53d41e0a5dfa87c",
+   "module": "SAP.P012a.Challenge.Part1",
+   "line": 86,
+   "closure": [
+    {
+     "line": 58,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Admissible"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Augmented"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Compatible"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.degree"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.mk"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.parent"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.sampled"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.seeds"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.time"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.trait"
+    },
+    {
+     "line": 180,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.FullPreferentialRegion"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeCell"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeCell.mk"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeCell.reciprocal"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeCell.remaining"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeCell.trait"
+    },
+    {
+     "line": 140,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeOnePass"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeRecord"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeRecord.degree"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeRecord.label"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeRecord.mk"
+    },
+    {
+     "line": 38,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeRecord.parent"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeRecord.seed"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeRecord.trait"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeState"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeState.cells"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeState.count"
+    },
+    {
+     "line": 51,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeState.high"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeState.low"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeState.mk"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeState.reads"
+    },
+    {
+     "line": 54,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeState.reciprocals"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.PWholeState.work"
+    },
+    {
+     "line": 120,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.PreferentialDefined"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Simple"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.edges"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.mk"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.trait"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.vertices"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P012a.Defs.Part4",
+     "name": "SAP.P012a.T7Statement"
+    },
+    {
+     "line": 158,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.T7WholeStatement"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Vertex"
+    },
+    {
+     "line": 84,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.WholeChronological"
+    },
+    {
+     "line": 157,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.childMatches"
+    },
+    {
+     "line": 106,
+     "module": "SAP.P012a.Defs.Part3",
+     "name": "SAP.P012a.exact_p_regionClaim"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.graphDegree"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.instInhabitedPWholeCell"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.instInhabitedPWholeCell.default"
+    },
+    {
+     "line": 154,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.laterChildren"
+    },
+    {
+     "line": 192,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.leafCompletion"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.leafCompletion.match_1"
+    },
+    {
+     "line": 189,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.leafEdges"
+    },
+    {
+     "line": 186,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.leafVertices"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.nonseeds"
+    },
+    {
+     "line": 101,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.notYetSampled"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.notYetSampled.match_1"
+    },
+    {
+     "line": 160,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.observedMatch"
+    },
+    {
+     "line": 163,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.pLower"
+    },
+    {
+     "line": 112,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.pSum"
+    },
+    {
+     "line": 168,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.pUpper"
+    },
+    {
+     "line": 118,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.pValue"
+    },
+    {
+     "line": 174,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.pValues"
+    },
+    {
+     "line": 93,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.pWholeDenom"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.pWholeInitial"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.pWholeOutput"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.pWholeRecord"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.pWholeRun"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.pWholeStep"
+    },
+    {
+     "line": 124,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.preferential"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentDegree"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentEdges"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.s"
+    },
+    {
+     "line": 109,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.sameSusceptible"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.sampledVertices"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.spare"
+    },
+    {
+     "line": 106,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.susceptible"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.u"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.wholeNeighbors"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P012a.T8",
+   "target_id": "P012-T8",
+   "fingerprint": "faed0852fcc50b422229c17fc47575576b5a3a05e91189ded0544009beaea6d7",
+   "module": "SAP.P012a.Challenge.Part1",
+   "line": 100,
+   "closure": [
+    {
+     "line": 58,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Admissible"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Augmented"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Compatible"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.degree"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.mk"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.parent"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.sampled"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.seeds"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.time"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.trait"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Simple"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.edges"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.mk"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.trait"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.vertices"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P012a.Defs.Part4",
+     "name": "SAP.P012a.T8Statement"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Vertex"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.addEdge"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.cleanup"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.graphDegree"
+    },
+    {
+     "line": 198,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.induced"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.nonseeds"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.proofStepData"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentDegree"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentEdges"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.removeEdge"
+    },
+    {
+     "line": 107,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.result1BadEnd"
+    },
+    {
+     "line": 102,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.result1BadStart"
+    },
+    {
+     "line": 125,
+     "module": "SAP.P012a.Defs.Part3",
+     "name": "SAP.P012a.result1_proof_counterexampleClaim"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.s"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.sampledVertices"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.u"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P012a.T9",
+   "target_id": "P012-T9",
+   "fingerprint": "0c21d70eaee6fea99f0945c1a559aefc7aa3f8fcdb16abe6ba6c72b5b97bfed4",
+   "module": "SAP.P012a.Challenge.Part1",
+   "line": 105,
+   "closure": [
+    {
+     "line": 58,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Admissible"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Augmented"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Compatible"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.degree"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.mk"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.parent"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.sampled"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.seeds"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.time"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.trait"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Simple"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.edges"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.mk"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.trait"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.vertices"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P012a.Defs.Part4",
+     "name": "SAP.P012a.T9Statement"
+    },
+    {
+     "line": 178,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.T9WholeStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.T9WholeStatement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.T9WholeStatement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.T9WholeStatement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.T9WholeStatement._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.T9WholeStatement._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.T9WholeStatement._proof_6"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Vertex"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.addEdge"
+    },
+    {
+     "line": 205,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.degreeTraitSum"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.graphDegree"
+    },
+    {
+     "line": 88,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.hDenominator"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.hNumerator._proof_1"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.nonseeds"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.proofStepData"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentDegree"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentEdges"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.removeEdge"
+    },
+    {
+     "line": 117,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.result2BadEnd"
+    },
+    {
+     "line": 112,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.result2BadStart"
+    },
+    {
+     "line": 136,
+     "module": "SAP.P012a.Defs.Part3",
+     "name": "SAP.P012a.result2_proof_counterexampleClaim"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.s"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.sampledVertices"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.u"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.z"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P012a.T10",
+   "target_id": "P012-T10",
+   "fingerprint": "f4998b73ddb489b9d5f880d9c5c150ec138bc01448ce512abbff8723665a0434",
+   "module": "SAP.P012a.Challenge.Part1",
+   "line": 115,
+   "closure": [
+    {
+     "line": 58,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Admissible"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Augmented"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Compatible"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.degree"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.mk"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.parent"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.sampled"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.seeds"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.time"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Data.trait"
+    },
+    {
+     "line": 201,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.InducedCompatible"
+    },
+    {
+     "line": 210,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.R1WholeGeometry"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Simple"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.edges"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.mk"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.trait"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.State.vertices"
+    },
+    {
+     "line": 229,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.T10WholeStatement"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.Vertex"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.WholeRelabeling"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.addEdge"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.cleanup"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.graphDegree"
+    },
+    {
+     "line": 198,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.induced"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.nonseeds"
+    },
+    {
+     "line": 205,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.r1WholeEnd"
+    },
+    {
+     "line": 196,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.r1WholeLeaves"
+    },
+    {
+     "line": 199,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.r1WholeStart"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentDegree"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.recruitmentEdges"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.removeEdge"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.s"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.sampledVertices"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.spare"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P012a.Defs.Part1",
+     "name": "SAP.P012a.u"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P012a.Defs.Part2",
+     "name": "SAP.P012a.unsampled"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P012a.Defs.WholeW1",
+     "name": "SAP.P012a.wholeNeighbors"
+    }
+   ]
+  }
+ ]
+}

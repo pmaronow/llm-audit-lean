@@ -1,0 +1,48 @@
+import SAP.P029b.Defs
+import SAP.P029b.Defs.WholeW2
+
+open SAP.P029b MeasureTheory ProbabilityTheory Set
+open scoped BigOperators ENNReal
+
+noncomputable section
+namespace Review
+
+set_option maxHeartbeats 400000
+-- T20: a finite typical-ignorability witness, with randomized assignment.
+def p4 (_ : Fin 4) : ℝ := 1/4
+def p8 : Fin 4 × Bool → ℝ := randomized p4 (1/2)
+def counterUnit (i : Fin 4) : PotentialUnit Unit :=
+  ⟨(), decide (i.val = 2), decide (i.val < 3), 0, if i.val < 2 then 1 else 0⟩
+
+example : FIV p8 (liftUnit counterUnit) Prod.snd ∧
+    fTypicalIgnorability p8 (liftUnit counterUnit) Prod.snd () ∧
+    ¬ fLatentIgnorability p8 (liftUnit counterUnit) := by
+  constructor
+  · unfold FIV
+    refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+    · constructor
+      · intro i; rcases i with ⟨i,z⟩; fin_cases i <;> cases z <;>
+          norm_num [p8, p4, randomized]
+      · norm_num [p8, p4, randomized, Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · norm_num [fP, p8, p4, randomized, Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · norm_num [fP, p8, p4, randomized, Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · intro a b
+      cases b <;> simp [fP, p8, p4, randomized, liftUnit, counterUnit,
+        Fintype.sum_prod_type, Fin.sum_univ_succ] <;> ring
+    · norm_num [fP, p8, p4, randomized, liftUnit, counterUnit,
+        PotentialUnit.defier, Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · norm_num [fCE, fE, fP, p8, p4, randomized, liftUnit, counterUnit,
+        PotentialUnit.receipt, bit, Fintype.sum_prod_type, Fin.sum_univ_succ]
+  · constructor
+    · norm_num [fTypicalIgnorability, fCE, fE, fP, p8, p4, randomized,
+        liftUnit, counterUnit, PotentialUnit.receipt,
+        Fintype.sum_prod_type, Fin.sum_univ_succ]
+    · intro h
+      have h0 := h () (by norm_num [fP, p8, p4, randomized, liftUnit,
+        counterUnit, Fintype.sum_prod_type, Fin.sum_univ_succ])
+      norm_num [fCE, fE, fP, p8, p4, randomized, liftUnit, counterUnit,
+        PotentialUnit.tau, PotentialUnit.complier,
+        Fintype.sum_prod_type, Fin.sum_univ_succ] at h0
+
+
+end Review

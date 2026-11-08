@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P032-T8",
+    "theorem": "SAP.P032.T8",
+    "fingerprint": "0b108c791f84b2bc9e4ea53ae152e1589ea202c3e6bb72adfef6478bcd630753",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses: the assertion concerns fixed, inhabited finite data. scratch/Nonvacuity.lean:12 independently verifies p_A=1/2, p_B=3/4, H_A=6 and H_B=9/2 using only SAP.P032.Defs. Further compiled examples verify binary outcomes, all dyads have two members, the incident/singleton cluster counts, linkage of all five estimates to the fitted completions, every component value, Rubin Q, positive completed-data DCR variances, and the genuine strict gap codePooledVariance < correctPooledVariance (line 101). The log arguments are 1 and 3 and every denominator is nonzero. Compilation exited 0 with no diagnostics. scratch/ExactChecks.py additionally recomputes both direct ordered-pair sums and verifies their values 2/9 and 8/81. The only canonical omissions are exactly those disclosed in the restricted record and docstring.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P032-T10",
+    "theorem": "SAP.P032.T10",
+    "fingerprint": "c2c9f697030c6ba5eb60d261ff2e3d30239917e1443b8f3348de41ed6e082cd4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses: the assertion concerns the fixed 22-row table. scratch/Nonvacuity.lean:109 compiles examples showing all row denominators are positive and all loss witnesses lie in [0,n]; line 112 checks each witness satisfies the exact rational tolerance. Lines 118 and 124 independently verify both threshold sets and construct the genuine equality row (n=4, loss=2, printed share 0.500, SER 4.158). Compilation exited 0 with no diagnostics. scratch/ExactChecks.py exhaustively enumerates every bounded candidate integer for all 22 rows, verifies unique recovery, compares every printed input with claims.json, and verifies every neighboring count and both attained SER endpoints.",
+    "confidence": "high"
+  }
+]

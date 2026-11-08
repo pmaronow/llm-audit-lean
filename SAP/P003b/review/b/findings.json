@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P003-T24",
+    "theorem": "SAP.P003b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=2,m=1,w constantly (false,false),z={0}. In fact any binary table on two units satisfies the premises. The finite count law was compared with direct labeled assignments for totals 2 through 6.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T25",
+    "theorem": "SAP.P003b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The asserted o=(0,2,0,2),alpha=1/2 has positive balanced arms, accepted numerators {-1,0,1}, and endpoints (-1/4,1/4). Defs-only Lean checks verify these endpoints, the impossible vector's p=2/3 and its impossibility. The balanced equalities also passed 417 independent finite observation/level checks.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T8",
+    "theorem": "SAP.P003b.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "z=1.959963984540055 lies strictly inside the exact rational enclosure, as verified by Lean norm_num. The singleton run k=12 satisfies the finite-run coverage premises. The two design spaces have positive sizes choose(50,25) and choose(100,50). Independent exact arithmetic confirms both coverage fractions and the specified design medians.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T19",
+    "theorem": "SAP.P003b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N0=N1=2 gives 10 compositions per stratum and 100 pairs, versus choose(11,7)=330 total-only eight-coordinate compositions. The composition spaces are nonempty for every nonnegative pair of totals. Counts, convolution and the degree-six bound were checked independently for 36 pairs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T20",
+    "theorem": "SAP.P003b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The distribution block admits n=2,m=1,w=((1,1),(0,0)) and its reversal, which have equal counts. The update block admits v=(1,0,0,1). The integer block admits n=4,u=(1,2,1,0),x=1,j=3,b=1, with observed integers n11=0,n10=2,n01=0; both required equalities hold. The parity premise admits a=d=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T26",
+    "theorem": "SAP.P003b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed, faithful refutation: v=(11,0,3,6),m=3,alpha=109/500. Every mask is legal and both extremal accepted sets are nonempty on every state. Independent exact enumeration gives 891 covered assignments out of 1140, hence 297/380, which is 1/2375 below 1-alpha. The deterministic assignment-dependent mask for this fixed population is allowed by S12, so no empty-endpoint or randomization convention causes the failure.",
+    "confidence": 0.999
+  },
+  {
+    "target_id": "P003-T27",
+    "theorem": "SAP.P003b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The legal printed input k1=1,k2=2,r=2,f constantly false satisfies the threshold condition. Every positive fuel returns 1, while zero fuel returns none. A Defs-only Lean proof shows that no fuel and evaluation-count pair returns the required r=2. Thus it refutes the printed correctness-and-budget assertion independently of the budget, using the canonical first-return priority.",
+    "confidence": 0.999
+  },
+  {
+    "target_id": "P003-T30",
+    "theorem": "SAP.P003b.T30",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(0,1,0,1),alpha=1/2 has positive balanced arms and estimate zero. Its possible all-zero population has p=1, and Lean proves its accepted set nonempty. This and 416 other balanced observation/level pairs passed independent exhaustive membership, lattice and endpoint checks.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T31",
+    "theorem": "SAP.P003b.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(0,1,0,1),alpha=1/2 satisfies both positive-arm hypotheses and has a nonempty accepted set, proved from Defs using the possible all-zero population with p=1. Thus N-1=1 and all displayed denominators are positive. In general positive arms imply N>=2 and the finite nonempty set has genuine extrema. The canonical target explicitly qualifies endpoint-definedness by nonemptiness.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T33",
+    "theorem": "SAP.P003b.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(0,2,0,2),v=(0,1,2,1) has common total 4, positive balanced observed arms, min(b,c)=1 and max(b,c)=2. Lean verifies all hypotheses. Independent exact monotonicity comparisons passed for 8084 cases with totals 4,6,8,10, including vectors impossible for the observed data.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T7",
+    "theorem": "SAP.P003b.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "v=(0,0,0,16),m=8,K=1000,alpha=1/2,epsilon=1/8 satisfies all premises, including alpha-2epsilon>0, and gives a strictly positive lower probability bound. Assignment(16,8) has 12870 elements. Lean explicitly constructs the MonteSpace product for K=1; constant functions into the same inhabited assignment type construct it for any positive K. The observed data for this population are (0,8,0,8).",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P003-T32",
+    "theorem": "SAP.P003b.T32",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(0,8,0,8),alpha=1/2 satisfies N=16>=15 and positive balance. Independent exhaustive acceptance extrema agree with the corrected search; its upper numerator is 2 and it performs 14 upper tests. The reflected run gives the lower endpoint. Lean separately verifies the design hypotheses.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P003-T34",
+    "theorem": "SAP.P003b.T34",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "v=(0,0,0,16),m=8,K=1000,alpha=1/2,epsilon=1/8 satisfies the common hypotheses and both conditional antecedents: epsilon<alpha/3 and K>32*ln(2048). Its observed data are (0,8,0,8), and all observed-assignment and batch spaces are nonempty. The theorem applies the K antecedent only to the first conclusion, as the canonical claim does; the larger-epsilon acceptance rule is also the literal rule allowed by the canonical note.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P003-T6",
+    "theorem": "SAP.P003b.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Data (2,13,1,14) have positive design probability 45/116 under population (3,0,0,27),m=15. All A/B/D trace-product probabilities are strictly positive. Independent exact branching gives probability pairs approximately (0.8628471,0.9488541) and (0.0300453,0.0037985), establishing both inequalities E. Independent-batch Chebyshev lower bounds multiply to exactly 4693104776190294207/5012394999999664375 for a sufficient event in F. Full exact fractions are saved in scratch/verification.json. These are refutations of the printed intermediate proof steps, not of the final inclusion bounds.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T35",
+    "theorem": "SAP.P003b.T35",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "v=(1,0,0,1),m=1,K=1,alpha=1/2,theta=tau,R constantly zero is a genuine two-unit general-design instance; the same population has a,d>0 for the reuse clause. Lean constructs GeneralSpace(2,1,1). Factorial seeds are in inhabited finite types and give uniform residues for the positive cell counts. Independent exact one-step law checks passed for 1218 populations/design sizes through total 8. Validity or exhaustive coverage is not assumed as a premise.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P003-T36",
+    "theorem": "SAP.P003b.T36",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the finite clause choose c0=c1=c2=1,K=1,o=(0,1,0,1). For the joint asymptotic clause take o(n,K)=(0,floor(n/2),0,n-floor(n/2)); its total is n for every pair, and both arms are positive for n>=2. Lean proves existence of this family with both required properties. The product-order atTop filter is nontrivial. The statement bounds the disclosed arithmetic cost model, not execution of exhaustive Lean table enumeration.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T18",
+    "theorem": "SAP.P003b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the conditional upper clause choose alpha=1/2,epsilon=1/8,c=1,tests(n)=n,operations(n)=recommendedK(1/8,n)*n^2; both eventual premises hold and operations is nonnegative. For the lower clause choose r=4,n=16,K=1: each of the five first-query candidates admits a zero-tail-indicator assignment, so their all-reject prefix has positive probability. For the expected-cost antecedents choose r=6,n=64,K=1000. The dyadic family is unbounded and every balanced assignment space is inhabited. Full-shuffle costs are exactly the disclosed trace-length*K*(n-1) model.",
+    "confidence": 0.96
+  }
+]

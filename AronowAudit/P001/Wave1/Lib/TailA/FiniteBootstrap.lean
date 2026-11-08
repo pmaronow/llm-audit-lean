@@ -77,6 +77,13 @@ theorem empirical_value_law_eq_index_map {E : Type*} [MeasurableSpace E]
     rw [uniform_resampling_eq_pi hp]
     exact StatLean.ComputationalStatistics.resampleLaw_eq_map_indexResampling
 
+/-- Conditional multinomial count law (labels remain distinct when values coincide). -/
+theorem uniform_resampling_counts {n : ℕ} (hn : 0 < n) :
+    (UniformResampling n).map StatLean.ComputationalStatistics.categoricalCounts =
+      StatLean.Bayesian.multinomialKernel n n (fun _ => (n : ℝ)⁻¹) := by
+  haveI instNonzero : NeZero n := ⟨Nat.ne_of_gt hn⟩
+  rw [uniform_resampling_eq_pi hn]
+  exact StatLean.ComputationalStatistics.bootstrapCounts_multinomial
 
 /-- The conditional law of the centered and root-size scaled statistic. -/
 def CenteredBootstrapLaw {n : ℕ} (T : (Fin n → ℝ) → ℝ)
@@ -88,6 +95,18 @@ instance instProbabilityCenteredBootstrapLaw {n : ℕ} (T : (Fin n → ℝ) → 
   unfold CenteredBootstrapLaw
   exact Measure.isProbabilityMeasure_map_iff Measurable.of_discrete.aemeasurable |>.mpr inferInstance
 
+/-- Every measurable test is integrable for fixed data; no population moments are needed. -/
+theorem centered_bootstrap_integrable {n : ℕ} (T : (Fin n → ℝ) → ℝ)
+    (x : Fin n → ℝ) {f : ℝ → ℝ} (hf : Measurable f) :
+    Integrable f (CenteredBootstrapLaw T x) := by
+  rw [CenteredBootstrapLaw]
+  exact (integrable_map_measure hf.aestronglyMeasurable
+    Measurable.of_discrete.aemeasurable).mpr Integrable.of_finite
+
+theorem centered_bootstrap_moments {n : ℕ} (T : (Fin n → ℝ) → ℝ)
+    (x : Fin n → ℝ) (k : ℕ) :
+    Integrable (fun z : ℝ => |z| ^ k) (CenteredBootstrapLaw T x) :=
+  centered_bootstrap_integrable T x (by fun_prop)
 
 /-- Every measurable test has every Lp moment for a fixed data set, even at infinity. -/
 theorem centered_bootstrap_memLp {n : ℕ} (T : (Fin n → ℝ) → ℝ)
@@ -115,6 +134,10 @@ theorem centered_bootstrap_variance {n : ℕ} (T : (Fin n → ℝ) → ℝ)
   rw [hm]
   exact congrArg ((n : ℝ) * ·) (uniform_resampling_mean n _)
 
+/-- Empty data give the point mass at zero. -/
+theorem centered_bootstrap_zero (T : (Fin 0 → ℝ) → ℝ) (x : Fin 0 → ℝ) :
+    CenteredBootstrapLaw T x = Measure.dirac 0 := by
+  simp [CenteredBootstrapLaw, Measure.map_const]
 
 /-- Jointly measurable dependence on the observed data, for a measurable statistic. -/
 theorem centered_bootstrap_measurable {n : ℕ} {T : (Fin n → ℝ) → ℝ}
@@ -143,6 +166,9 @@ instance instMarkovCenteredBootstrapKernel {n : ℕ} {T : (Fin n → ℝ) → �
     (hT : Measurable T) : IsMarkovKernel (centeredBootstrapKernel hT) :=
   ⟨fun _ => instProbabilityCenteredBootstrapLaw _ _⟩
 
+theorem centered_bootstrap_kernel_apply {n : ℕ} {T : (Fin n → ℝ) → ℝ}
+    (hT : Measurable T) (x : Fin n → ℝ) :
+    centeredBootstrapKernel hT x = CenteredBootstrapLaw T x := rfl
 
 /-- The product of uniform one-label laws is uniform on the entire map space. -/
 theorem uniform_resampling_eq_uniform_pi {n : ℕ} [NeZero n] (hn : 0 < n) :
@@ -236,6 +262,25 @@ theorem occupancy_moment_le_stirling {n : ℕ} (hn : 0 < n) (j : Fin n) (k : ℕ
   apply (div_le_one (pow_pos (Nat.cast_pos.mpr hn) r)).mpr
   exact_mod_cast Nat.descFactorial_le_pow n r
 
+/-- The fourth and eighth Bell numbers give the concrete bounds used downstream. -/
+theorem occupancy_fixed_moments {n : ℕ} (hn : 0 < n) (j : Fin n) :
+    mean (UniformResampling n) (fun a =>
+      (((Finset.univ.filter (fun i => a i = j)).card : ℝ)^4)) ≤ 15 ∧
+    mean (UniformResampling n) (fun a =>
+      (((Finset.univ.filter (fun i => a i = j)).card : ℝ)^8)) ≤ 4140 := by
+  constructor
+  · convert occupancy_moment_le_stirling hn j 4 using 1 <;> norm_num [Finset.sum_range_succ,
+      Nat.stirlingSecond]
+  · convert occupancy_moment_le_stirling hn j 8 using 1 <;> norm_num [Finset.sum_range_succ,
+      Nat.stirlingSecond]
+
+theorem occupancy_all_fixed_orders (k : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (n : ℕ) (hn : 0 < n) (j : Fin n),
+      mean (UniformResampling n) (fun a =>
+        (((Finset.univ.filter (fun i => a i = j)).card : ℝ)^k)) ≤ C := by
+  refine ⟨∑ r ∈ Finset.range (k + 1), (Nat.stirlingSecond k r : ℝ),
+    Finset.sum_nonneg (fun _ _ => Nat.cast_nonneg _), ?_⟩
+  exact fun _ hn j => occupancy_moment_le_stirling hn j k
 
 /-- A finite iid sample's event count has the binomial law, including zero draws. -/
 theorem finite_bootstrap_iid_count_law {E : Type*} [MeasurableSpace E]

@@ -1,0 +1,32 @@
+[
+  {
+    "target_id": "P023-T11",
+    "theorem": "SAP.P023.T11",
+    "fingerprint": "0c87c088325f5cea313dd088a9d513efa19a6ee0906ef5199eabb49512475e7a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean. For Fin 2, k=1/2, x=(-1/4,1/4), d=(0,1), y=(3,5), the file proves 0<k<1, TwoParty, Condition1, positive RD denominators, rd=2, and IsOLS for distinct coefficient vectors (3,2,0,0) and (2,2,1,17) with the same party coefficient. Nuisance bins are empty. A separate compiled endpoint example x=(-1/4,1/2) has positive denominators and rd=2 but fails Condition1, confirming why its necessity remark is omitted.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json:9: whole coverage and null restriction omitted the canonical Condition 1 necessity remark without the required restricted label and disclosure.",
+        "status": "fixed",
+        "reason": "record.json:4 now says restricted, record.json:6 states the exact omitted necessity remark, and both SAP/P023/Challenge/Part1.lean:89 and SAP/P023/Defs/WholeW2.lean:21 disclose it. The valid all-solutions estimator equality is preserved. Canonical definitions_needed at claims.json:26, rather than its historical note, determines the narrower coverage."
+      }
+    ]
+  },
+  {
+    "target_id": "P023-T12",
+    "theorem": "SAP.P023.T12",
+    "fingerprint": "70269d9897070eef37520086d4e1856d9f85570805b3dd2d441700705819f9d3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/T12Witness.lean using the supplied T6 continuous-function witness, without using T12: the continuous bounded h with h(0)=0 has arbitrarily late population coefficients at least 1, contradicting the epsilon=1 bias-tail clause. scratch/T12-witness.md checks all hypotheses analytically for X uniform on [-1,1], Y=1/2+h(X) after continuous extension, nu the joint law, independent coordinate samples with law nu, g=f=1/2+h, alpha=1/2 and k_N=1/sqrt(N+1). Outcomes are bounded, all relevant moments finite, population Gram matrices positive definite at every degree, local support holds, the cutoff has no atom, both expected window counts diverge, and conditional residual variance is zero. Empty-window and singular-design probabilities tend to zero for each fixed degree. The full infinite IID construction was not recompiled; the tail contradiction was compiled and the sampling-system admissibility was checked mathematically.",
+    "confidence": "high",
+    "resolved": []
+  }
+]

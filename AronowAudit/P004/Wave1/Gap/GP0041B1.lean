@@ -5,7 +5,8 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.MeasureTheory.Measure.WithDensity
 
 /-!
-Signed Monte Carlo, annulus radial measure, and polygon range results.
+Drafts for dd-GP0041B1. No Lean process was run in preparing this file.
+The held declarations are used only in the three `type_of%` checks.
 -/
 
 namespace AronowAudit.P004.Wave1
@@ -144,6 +145,9 @@ theorem mc_signed_spatial_counterexample_proof :
   · rw [mc_signed_printed_filter]
     norm_num
   · norm_num [mcPlusPvalue, mc_signed_exceedances]
+
+example : type_of% @AronowAudit.P004.mc_signed_spatial_counterexample :=
+  mc_signed_spatial_counterexample_proof
 
 /-! ## P004-T15: the normalized radial pushforward of the actual annulus -/
 
@@ -293,6 +297,9 @@ theorem annulus_radial_measure_proof (center : EuclideanSpace ℝ (Fin 2)) (a b 
     congr 1
     field_simp [Real.pi_ne_zero, ne_of_gt hΔ]
     <;> ring
+
+example : type_of% @AronowAudit.P004.annulus_radial_measure :=
+  annulus_radial_measure_proof
 
 /-! ## P004-T16: the fixed positive-area rectangle witness -/
 
@@ -512,6 +519,9 @@ theorem polygon_range_counterexample_proof :
   exact ⟨polygon_range_wellDefined, polygon_range_source_range,
     polygon_range_outcome_bound, polygon_range_averages, polygon_range_shared_source,
     polygon_range_separation, by norm_num, polygon_range_covariance⟩
+
+example : type_of% @AronowAudit.P004.polygon_range_counterexample :=
+  polygon_range_counterexample_proof
 
 end
 end AronowAudit.P004.Wave1

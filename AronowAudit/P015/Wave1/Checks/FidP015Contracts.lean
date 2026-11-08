@@ -5,14 +5,68 @@ namespace AronowAudit.P015.Wave1.FidP015Contracts
 open scoped BigOperators
 open MeasureTheory Matrix
 
+/-! Independent statement copies from `map-fid-P015/map.json`, records 0--2.
+Neither referee changes a Lean statement. Referee 2's only T8 fix is prose:
+"This states the target's existing unit-intercept and admissible-predictor conditions;
+do not add hypotheses to the new named-law theorem."
+The approved binders and conclusions below are copied from the mapper records,
+with theorem parameters universally closed, rather than inferred from the finals.
+-/
 
+/-- Approved statement for P015-T8: `map-fid-P015/map.json`, record 0,
+`proposed_statement_lean`; accepted by both `ref1-fid-P015` and `ref2-fid-P015`
+without Lean statement changes. -/
+def approvedContract_T8 : Prop := ∀ (η : ℝ),
+    (MeasureTheory.IsProbabilityMeasure
+        (AronowAudit.P015.Wave1.bernoulliResponseLaw η) ∧
+      MeasureTheory.Integrable (fun y : ℝ => y)
+        (AronowAudit.P015.Wave1.bernoulliResponseLaw η) ∧
+      (∫ y : ℝ, y ∂(AronowAudit.P015.Wave1.bernoulliResponseLaw η)) =
+        AronowAudit.P015.logistic η ∧
+      AronowAudit.P015.logistic η =
+        deriv (fun a : ℝ => Real.log (1 + Real.exp a)) η) ∧
+    (MeasureTheory.IsProbabilityMeasure
+        (AronowAudit.P015.Wave1.poissonResponseLaw η) ∧
+      MeasureTheory.Integrable (fun n : ℕ => (n : ℝ))
+        (AronowAudit.P015.Wave1.poissonResponseLaw η) ∧
+      (∫ n : ℕ, (n : ℝ) ∂(AronowAudit.P015.Wave1.poissonResponseLaw η)) =
+        Real.exp η ∧
+      Real.exp η = deriv Real.exp η)
 
+example : approvedContract_T8 := @AronowAudit.P015.Wave1.canonical_named_model_means
+
+-- Retain the approved, named hypothesis binder `hW` verbatim.
+set_option linter.unusedVariables false in
+/-- Approved statement for P015-T21: `map-fid-P015/map.json`, record 1,
+`proposed_statement_lean`; accepted by both `ref1-fid-P015` and `ref2-fid-P015`
+without Lean statement changes. -/
+def approvedContract_T21 : Prop := ∀ (N K : ℕ)
+    (W : Matrix (Fin N) (Fin (K + 2)) ℝ)
+    (hW : ∀ i, W i 0 = 1) (b c : ℝ)
+    (θ : Fin (K + 2) → ℝ) (Y : Fin N → ℝ),
+    (∀ i, W.mulVec (AronowAudit.P015.affineTheta 0 b c θ) i =
+      b + c * W.mulVec θ i) ∧
+    W.transpose.mulVec (fun i => Y i - b - c * W.mulVec θ i) =
+      W.transpose.mulVec (fun i =>
+        Y i - W.mulVec (AronowAudit.P015.affineTheta 0 b c θ) i)
+
+example : approvedContract_T21 := @AronowAudit.P015.Wave1.affine_predictor
+
+/-- Approved statement for P015-T11: `map-fid-P015/map.json`, record 2,
+`proposed_statement_lean`; accepted by both `ref1-fid-P015` and `ref2-fid-P015`
+without Lean statement changes. -/
+def approvedContract_T11 : Prop :=
+    AronowAudit.P015.TaylorCounterexample
+
+example : approvedContract_T11 := @AronowAudit.P015.Wave1.taylor_counterexample
 
 /-- P015-T11, printed p. 257 (PDF p. 8), left column, and Appendix C,
 p. 265 (PDF p. 16): the unrestricted arbitrary-precision Taylor promise at
-the logit of the outcome mean.
+the logit of the outcome mean. Sources: `runs/P015/staged/main.txt:479-482`
+and `:1010-1059`, `runs/P015/lean/targets.json` P015-T11 (especially
+`definitions_needed`), and `map-fid-P015` record 2 with both referee records.
 
-Conventions for the finite-sample statement:
+Conventions left open by the paper, fixed as in the recorded target:
 * This is the fitted-mean interpretation of the Taylor substitution used to
   approximate the weights. The paper defines no separate nonlinear weights.
 * `G` arbitrary groups encode a finite binary sample without loss: group `i`
@@ -23,9 +77,9 @@ Conventions for the finite-sample statement:
 * Column 0 is the unit intercept, column 1 is the arbitrary real treatment,
   and the other `K` columns are arbitrary real controls. The weighted Gram
   determinant expresses full column rank of the repeated individual design.
-* `p` is the empirical outcome mean, in the finite-data reading of p. 257;
-  `0 < p < 1` makes its logit finite. A fit is any real global likelihood
-  maximizer; no uniqueness or special coefficient values are imposed.
+* `p` is the empirical outcome mean, as in the target's finite-data reading
+  of p. 257; `0 < p < 1` makes its logit finite. A fit is any real global
+  likelihood maximizer; no uniqueness or special coefficient values are imposed.
 * A Taylor polynomial is `logisticTaylor degree (logit p)`, using the actual
   iterated derivatives through every natural degree, including zero. Arbitrary
   precision means: for each positive absolute-error tolerance, some common
@@ -59,8 +113,8 @@ namespace AronowAudit.P015.Wave1
 open scoped BigOperators
 open Matrix
 
-/-- The two-cell counterexample refutes the universally quantified
-printed P015-T11 fitted-mean Taylor assertion at tolerance `1/4`. -/
+/-- The approved two-cell certificate refutes the fully universally closed
+printed P015-T11 fitted-mean Taylor contract at tolerance `1/4`. -/
 theorem taylor_counterexample_printed_negation :
     ¬ FidP015Contracts.printedContract_T11 := by
   intro h
@@ -121,9 +175,19 @@ theorem taylor_counterexample_printed_negation :
     (certificate.1.2.2.2.2.2.2.2 degree).1
   linarith
 
+#print axioms AronowAudit.P015.Wave1.taylor_counterexample_printed_negation
+#print axioms AronowAudit.P015.Wave1.canonical_named_model_means
+#print axioms AronowAudit.P015.Wave1.affine_predictor
+#print axioms AronowAudit.P015.Wave1.taylor_counterexample
+
 end AronowAudit.P015.Wave1
 
 namespace AronowAudit.P015.Wave1.FidP015Contracts
 
+/-- Exact printed-contract negation credited to P015-T11. -/
+abbrev Target_T11 : Prop := ¬ printedContract_T11
+
+example : Target_T11 := AronowAudit.P015.Wave1.taylor_counterexample_printed_negation
+example : Target_T11 ↔ ¬ printedContract_T11 := Iff.rfl
 
 end AronowAudit.P015.Wave1.FidP015Contracts

@@ -1,0 +1,232 @@
+[
+  {
+    "target_id": "P010-T1",
+    "theorem": "SAP.P010.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed exact intervals [0,61/285], [87/281,27/47], [56/139,1] are nonempty; their retained counts are positive. Defs-only Lean checks prove denominator positivity and validity of all supplied binary counts; exact Python checks establish the two positive gaps.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T2",
+    "theorem": "SAP.P010.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All three concrete sample sizes and passer counts are positive; keptLower=(284,281,278), keptUpper=(285,282,279). Every natural j from 1 through the actual passer count was checked with exact rational arithmetic. The fractional denominator is 40739821/77997088>0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T3",
+    "theorem": "SAP.P010.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit missingPassingPopulation(false) and (true) are mixtures of probability exponential/Laplace product laws with weights 1/4,1/4,1/2 and independent fair assignment. Both have always-passer mass 1/4, pass rates (1/2,3/4), full observed support and all moments. These facts follow mathematically from the displayed densities, independently of a Challenge proof.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T4",
+    "theorem": "SAP.P010.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take K=2,d=0, mu=normalCommonPopulation and either arm. Fair assignment is independent of the potential vector; both pass rates are 4/5, allPass has mass 4/5, the passer law is standard normal, r=1/4<1, and the observed passer response is atomless and integrable. This is a mathematical instance from the explicit construction, not an appeal to T13.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P010-T5",
+    "theorem": "SAP.P010.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The supplied boundedPasserPopulation is 1/3 common-pass Beta(3,3) plus 2/3 common-fail density 5/[2(1+|x|)^6], independently assigned to either arm. Both components integrate to one; the mixture has finite third moment 19/84, allPass mass 1/3, pass rates 1/3 and r=2. Every t in (0,1), for example t=1/2 with beta tail mass 1/2, gives positive allPass mass in a compatible endpoint population.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T6",
+    "theorem": "SAP.P010.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take boundedPasserPopulation, K=2,d=0, either arm: pass rates 1/3, r=2>=1, allPass mass 1/3. The observed law has an atomless density, and the selected passer law is bounded Beta(3,3), hence integrable. This activates the else branch with finite essential endpoints 0,1 and a nonempty compatible-mean set (mu itself is compatible).",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P010-T7",
+    "theorem": "SAP.P010.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Four explicitly listed states each have mass 1/4. Exact finite enumeration verifies probability, per-arm ignorability, both positive assignment masses, all checks true, and the 1/4 versus 1/8 factorization failure; both ordinary selected means are 1/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T8",
+    "theorem": "SAP.P010.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "normalCommonPopulation has two arms, common Bernoulli(4/5) check status, Gaussian finite first moments and independent fair assignment. A separate Lean-certified two-arm finite model in scratch/AuditCheck.lean also satisfies populationAssumptions, common checks and integrable potential outcomes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T9",
+    "theorem": "SAP.P010.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two Bernoulli-stratum mass vectors are (2,3,3,17)/25 and (3,2,2,18)/25, all strictly positive. Independent normal noise and fair assignment give genuine probability laws with full support, finite moments and r=1/4. The exact parameters and numerical widths were independently checked.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P010-T10",
+    "theorem": "SAP.P010.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use p0=p1=4/5, rho=1/4, lambda=sigma=1: a=17/25 and all four stratum masses are positive. Thus every outer feasibility hypothesis holds, including the nonzero correlation denominator. The second admissible rho=1/2 also activates the mean-change comparison. For the invariant-law clause there are genuine distinct laws with identical observables, namely the two missingPassingPopulation laws.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P010-T11",
+    "theorem": "SAP.P010.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All eight subject cells have positive counts. The fitted probabilities (1/4,3/4) are interior, the log likelihood is finite and strictly concave in each cell probability, and the printed weighted total is 7/3>0. Its normalized cell-1 mass 27/28 differs from 1/4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T12",
+    "theorem": "SAP.P010.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take counting measure on Fin 2, pi=1/2, fR=(1/4,3/4), fO=(3/4,1/4). All densities are strictly positive and integrate to one; J=sum fR^2/fO=7/3 is finite and positive. A Defs-only Lean check also gives a unit-space witness satisfying every density hypothesis including the additional printed-odds integrability condition.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T13",
+    "theorem": "SAP.P010.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit common-check Gaussian construction has allPass mass 4/5 and pass rates 4/5 with fair independent assignment. Standard Gaussian moments exist; both normal quantiles are interior and both retained tails have mass 3/4. The printed lower-tail mean is strictly negative while the target is zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T14",
+    "theorem": "SAP.P010.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use normalCommonPopulation and either arm. Its conditional potential-passer law is standard normal, mu(allPass)=4/5>0, and the conditional first absolute moment is finite. Choosing p=1/4 gives a positive-mass upper-tail coupling; p=0 is also meaningful, with the entire real line retained.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P010-T15",
+    "theorem": "SAP.P010.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fixed: the upper-tail identity is now under trimmingRatio μ a < 1, together with the upper-bound conclusions (Defs/Part6.lean:208-211). Take K=2,d=0, normalCommonPopulation: independent fair assignment, common Bernoulli(4/5) checks, standard normal outcomes, positive allPass mass 4/5, pass rates 4/5 and r=1/4. The selected-arm event has mass 2/5 and its retained upper-tail event mass 3/10, so the asserted means are ordinary integrable positive-event means. r=0 retains the entire passer law; r>=1 now asserts only the meaningful unconditional law/share identities, without a tail-mean assertion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T16",
+    "theorem": "SAP.P010.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For q=1/2 the six listed states each have mass 1/6. Exact finite enumeration verifies the stated pass rates, common marginal status distribution and selected contrast. More generally all 0<q<1 give positive masses q/3 and (1-q)/3. Defs-only Lean proves every real function integrable on every event under selectionPopulation(q), so all displayed means are ordinary.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T17",
+    "theorem": "SAP.P010.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The Lean-certified two-arm finite measure in scratch/AuditCheck.lean assigns half the population to each arm and has both potential checks always true, so observed and potential pass probabilities are both one. A nondegenerate alternative is selectionPopulation(1/2), where both are 2/3.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T18",
+    "theorem": "SAP.P010.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The Lean-certified two-arm finite model has common potential checks, positive pass and assignment probabilities and integrable potential outcomes. The normalCommonPopulation is a further atomless, nonconstant-outcome instance with always-passer mass 4/5 and finite first moments.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T19",
+    "theorem": "SAP.P010.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The Lean-certified two-arm finite model has positive assignment in both arms and integrable potential outcomes. For a nonzero-effect example, independently fair-assign constant potentials Y0=0,Y1=1, with arbitrary fixed checks; the observed arm contrast and unconditional effect are both one. No assumption about passing is needed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T20",
+    "theorem": "SAP.P010.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The Lean-certified two-arm finite model has all potential checks true and fair positive assignment, satisfying every premise. One may instead use common Bernoulli(4/5) checks independent of assignment so both observed status values occur with positive probability.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T21",
+    "theorem": "SAP.P010.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fixed: use selectionPopulation(1/2). Six atoms each have mass 1/6; each arm has assignment mass 1/2 and selected-arm mass 1/3, and allPass has mass 1/3. Both pass rates are 2/3, per-arm ignorability holds and observed check status is independent of assignment. The selected means are 0 and 1/2 and the always-passer effect is zero. scratch/DeltaCheck.lean independently proves both selected masses and allPass mass (converted to reals) are 1/3 and every real function is integrable on every event of this population, including all three required restricted integrands. Exact finite enumeration independently verifies the probability conditions and unequal contrasts. The former Cauchy witness fails the new integrability conjuncts.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T22",
+    "theorem": "SAP.P010.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For a nondegenerate instance, take K=2,d=1, independent fair assignment Z, common Bernoulli(1/2) potential checks B, independent Bernoulli(1/2) covariate X, and constant potential outcomes. Both status values and both X values have positive probability, Assumption 4 holds and both conditional balance statements are genuine. Constant-covariate finite examples are permitted as well.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T23",
+    "theorem": "SAP.P010.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fixed: selectionPopulation(1/2) has its one-coordinate covariate constantly zero. Each selected-arm/X=0 event has mass 1/3, and allPass/X=0 has mass 1/3; each selected event contains two atoms of mass 1/6. Its selected means are 0 and 1/2, its always-passer effect is zero, and covariate ignorability and conditional balance hold. scratch/DeltaCheck.lean independently certifies these event masses and all three restricted integrability requirements. Exact finite enumeration verifies the remaining probability conditions and contrast. This corrects the 1/6 selected-event mass mistakenly stated in the earlier findings.json; 1/6 is the mass of one atom, not the full selected event.",
+    "confidence": 0.99
+  }
+]

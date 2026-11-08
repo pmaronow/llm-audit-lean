@@ -11,8 +11,8 @@ set_option maxRecDepth 8192
 open scoped BigOperators Matrix NNReal
 open MeasureTheory ProbabilityTheory
 
-/-- Squared Euclidean length, the `‖c-Aβ‖²` least-squares
-criterion (T3--T4; the paper prints no matrix notation). -/
+/-- Squared Euclidean length, the validator's `‖c-Aβ‖²` least-squares
+criterion (T3--T4, E002 derivation; the paper prints no matrix notation). -/
 noncomputable def squaredLength {n : ℕ} (v : Fin n → ℝ) : ℝ := dotProduct v v
 
 /-- Full column rank, represented by injectivity of the design's coefficient
@@ -51,8 +51,7 @@ noncomputable def olsResidualStandardError {n p : ℕ}
   Real.sqrt (olsSSE A y / ((n : ℝ)-p))
 
 /-- Conventional coefficient t statistic, T3--T4: coefficient divided by
-the nonnegative square root of the conventional squared SE. Its statistical
-interpretation requires a strictly positive denominator. -/
+the positive square root of the conventional squared SE. -/
 noncomputable def olsT {n p : ℕ} (A : Matrix (Fin n) (Fin p) ℝ)
     (c : Fin n → ℝ) (j : Fin p) : ℝ :=
   ols A c j / Real.sqrt (olsSESquared A c j)
@@ -137,19 +136,19 @@ theorem gram_certificate_full_rank {n p : ℕ} (A : Matrix (Fin n) (Fin p) ℝ)
   exact hl.injective
 
 
-/-- The six-observation u vector, T3(i); not
+/-- The validator's six-observation u vector, T3(i), E002 derivation; not
 one of the paper's election samples. -/
 noncomputable def witnessU : Fin 6 → ℝ := ![1, -1, 0, 0, 0, 0]
-/-- The six-observation v vector, T3(i). -/
+/-- The validator's six-observation v vector, T3(i), E002 derivation. -/
 noncomputable def witnessV : Fin 6 → ℝ := ![0, 0, 1, -1, 0, 0]
-/-- The six-observation w vector, T3(i). -/
+/-- The validator's six-observation w vector, T3(i), E002 derivation. -/
 noncomputable def witnessW : Fin 6 → ℝ := ![0, 0, 0, 0, 1, -1]
-/-- The response y=u+(3/2)v+w, T3(i), with all numbers explicit. -/
+/-- The validator's response y=u+(3/2)v+w, T3(i), with all numbers explicit. -/
 noncomputable def witnessY : Fin 6 → ℝ := ![1, -1, 3/2, -3/2, 1, -1]
 /-- The first-stage design [1,u], T3(i). -/
 noncomputable def witnessZ : Matrix (Fin 6) (Fin 2) ℝ := fun i j => ![1, witnessU i] j
 /-- Residual-regression design [1,x], the procedure used for the line of
-Figure 4 (p. 138); here applied to the six-observation witness. -/
+Figure 4 (p. 138); here applied to the validator's six-observation witness. -/
 noncomputable def residualLine {n : ℕ} (x : Fin n → ℝ) : Matrix (Fin n) (Fin 2) ℝ :=
   fun i j => ![1, x i] j
 /-- Append the tested regressor to the first-stage controls, [Z,x], T4(c). -/
@@ -157,7 +156,7 @@ noncomputable def fullDesign {n k : ℕ} (Z : Matrix (Fin n) (Fin k) ℝ) (x : F
     Matrix (Fin n) (Fin (k+1)) ℝ :=
   fun i j => if hj : j.val < k then Z i ⟨j.val, hj⟩ else x i
 
-/-- The projection Z(ZᵀZ)⁻¹Zᵀ, T3(i), T4(a). -/
+/-- The projection Z(ZᵀZ)⁻¹Zᵀ, T3(i), T4(a), E002's exact linear calculation. -/
 noncomputable def controlProjection {n k : ℕ} (Z : Matrix (Fin n) (Fin k) ℝ) :
     Matrix (Fin n) (Fin n) ℝ := Z * (Zᵀ * Z)⁻¹ * Zᵀ
 /-- Residual maker I-P, T3(i), T4(a). -/
@@ -176,8 +175,8 @@ theorem full_rank_gram_unit {n k : ℕ} (Z : Matrix (Fin n) (Fin k) ℝ)
 
 
 /-- T4(a), finite matrix part: the control and residual projections are
-symmetric and idempotent. The residual maker annihilates the controls
-and gives the OLS residual with its normal equations. -/
+symmetric and idempotent, annihilate the controls, and the residual maker
+gives the OLS residual with its normal equations. -/
 theorem ols_projection_identities {n k : ℕ} (Z : Matrix (Fin n) (Fin k) ℝ)
     (hZ : FullColumnRank Z) :
     (controlProjection Z)ᵀ = controlProjection Z ∧
@@ -301,13 +300,13 @@ theorem witness_residual_projection :
   exact ⟨hp.2.2.1, hm, hrank, (hp.2.2.2.2.2 witnessY).1⟩
 
 
-/-- Closed form of the two-sided t4 tail for t≥0, T3(iii).
-This analytic formula defines the nominal
+/-- Closed form of the two-sided t4 tail for t≥0, T3(iii), E002 derivation.
+The target permits this analytic formula as the definition of the nominal
 p-value; no density-integration theorem is assumed. -/
 noncomputable def studentFourTail (t : ℝ) : ℝ :=
   let z := t / Real.sqrt (4 + t^2)
   1 - (3/2 : ℝ)*z + (1/2 : ℝ)*z^3
-/-- Closed form of the two-sided t3 tail for t≥0, T3(iii). -/
+/-- Closed form of the two-sided t3 tail for t≥0, T3(iii), E002 derivation. -/
 noncomputable def studentThreeTail (t : ℝ) : ℝ :=
   let q := t / Real.sqrt 3
   1 - (2 / Real.pi) * (Real.arctan q + q / (1+q^2))
@@ -371,6 +370,7 @@ theorem residual_test_five_percent_disagreement :
   refine ⟨hfour, hreject, hthree, ?_⟩
   rw [hthree]
   linarith
+
 
 
 /-- T3(ii): exact residual-line OLS fit with x=v.
@@ -745,6 +745,7 @@ theorem nested_standard_error_scalar (R₁ R₂ s₁ s₂ : ℝ)
     _ = (s₂/Real.sqrt R₂)*s₁/s₂ := by field_simp
 
 
+
 namespace FiniteCompletion
 open scoped BigOperators Matrix
 noncomputable section
@@ -931,6 +932,7 @@ theorem nested_standard_error_bound_full {n k₁ k₂ : ℕ}
 
 end
 end FullNestedBound
+
 
 
 namespace RegressionCompletion
@@ -1530,14 +1532,16 @@ noncomputable def studentLaw (ν : ℕ) : Measure ℝ :=
     (fun z => z 0 / Real.sqrt ((∑ i ∈ Finset.univ.erase (0 : Fin (ν+1)), (z i)^2) / ν))
 
 /-- The chi-square law of ν degrees of freedom as the sum of squares of ν
-independent standard normals, T3(v). -/
+independent standard normals, T3(v)'s definition in E002's derivation. -/
 noncomputable def chiSquaredLaw (ν : ℕ) : Measure ℝ :=
   (Measure.pi (fun _ : Fin ν => gaussianReal 0 1)).map (fun z => ∑ i, (z i)^2)
 
 
-/-- Covariance matrix via population means and expectations, T4(f).
-This is a distributional OLS definition, not an assumption made by the
-empirical paper itself. -/
+
+
+/-- Covariance matrix via population means and expectations, T4(f), E002
+derivation. This is a distributional OLS definition, not an assumption made
+by the empirical paper itself. -/
 noncomputable def vectorCovariance {Ω : Type*} [MeasurableSpace Ω] {n : ℕ}
     (μ : Measure Ω) (ε : Ω → Fin n → ℝ) : Matrix (Fin n) (Fin n) ℝ :=
   fun i j => ∫ ω, (ε ω i - ∫ η, ε η i ∂μ) * (ε ω j - ∫ η, ε η j ∂μ) ∂μ
@@ -1733,10 +1737,10 @@ lemma residual_law {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
 end
 end CovarianceCompletion
 
-/-- T4(f): residual covariance is σ²M. For σ>0 it has rank n-k and
-differs from σ²I; for σ=0 it is zero.
-The distributional comparison takes the full-model t law as an explicit
-hypothesis; no such law is assumed for the nonlinear fits of the paper. -/
+/-- T4(f): residual covariance is σ²M and has nuisance-induced dependence.
+Gaussian full-model inference is stated with its classical t law as an
+explicit hypothesis, as the target allows; no such law is assumed for the
+nonlinear fits of the paper. -/
 theorem corrected_residual_covariance_and_law {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] {n k : ℕ}
     (Z : Matrix (Fin n) (Fin k) ℝ) (x : Fin n → ℝ) (γ : Fin k → ℝ)
@@ -1868,7 +1872,7 @@ theorem printed_standard_error_exact_gap :
     (27/20 : ℝ) - 7141/7512 = 15001/37560 ∧ (0 : ℝ) < 15001/37560 := by
   norm_num
 
-
+-- BEGIN GENERATED TABLE CERTIFICATES
 
 
 /-- The seventeen deposited rows (1948,1952,...,2012) of incmargin, q1415,
@@ -1907,14 +1911,14 @@ noncomputable def gramA1 : Matrix (Fin 3) (Fin 3) ℝ := !![(17/1 : ℝ), (22274
     (22274347101/1000000000 : ℝ), (56191363635337591927/1000000000000000000 : ℝ), (24895450589/125000000 : ℝ);
     (128/1 : ℝ), (24895450589/125000000 : ℝ), (1312/1 : ℝ)]
 /-- Exact inverse-Gram certificate for the deposited A1 design, T7(iii).
-Its product with the Gram matrix is the identity. -/
+It is checked by multiplication in Lean, not assumed from the validator. -/
 noncomputable def inverseGramA1 : Matrix (Fin 3) (Fin 3) ℝ := !![(1064278988990160375165/4470670631662545158236 : ℝ), (-29148453073250000000/1117667657915636289559 : ℝ), (-344531910510220578343/17882682526650180632944 : ℝ);
     (-29148453073250000000/1117667657915636289559 : ℝ), (46250000000000000000/1117667657915636289559 : ℝ), (-4177069149812500000/1117667657915636289559 : ℝ);
     (-344531910510220578343/17882682526650180632944 : ℝ), (-4177069149812500000/1117667657915636289559 : ℝ), (229553321512455979279/71530730106600722531776 : ℝ)]
 /-- Exact right-hand side of A1's normal equations, T7(iii). -/
 noncomputable def rhsA1 : Fin 3 → ℝ := ![(7051/100 : ℝ), (20887037112487/100000000000 : ℝ), (2746/25 : ℝ)]
-/-- Exact A1 coefficient vector, T7(iii).
-The entries satisfy the normal equations for the design and outcome. -/
+/-- Exact A1 coefficient vector, T7(iii) and the named E003 exact results.
+The entries are checked against the design and outcome in Lean. -/
 noncomputable def coefficientsA1 : Fin 3 → ℝ := ![(2061423620329160546377923/223533531583127257911800 : ℝ), (7146187962914975000000/1117667657915636289559 : ℝ), (-1597443326895646253537849/894134126332509031647200 : ℝ)]
 
 /-- T7(iii): the deposited A1 design has full column rank, the stated
@@ -1986,15 +1990,15 @@ noncomputable def gramA2 : Matrix (Fin 4) (Fin 4) ℝ := !![(17/1 : ℝ), (22274
     (128/1 : ℝ), (24895450589/125000000 : ℝ), (1312/1 : ℝ), (1285086856931/250000000 : ℝ);
     (180862630971/500000000 : ℝ), (166163407087136723917/250000000000000000 : ℝ), (1285086856931/250000000 : ℝ), (28852298026797981773173/500000000000000000 : ℝ)]
 /-- Exact inverse-Gram certificate for the deposited A2 design, T7(iii).
-Its product with the Gram matrix is the identity. -/
+It is checked by multiplication in Lean, not assumed from the validator. -/
 noncomputable def inverseGramA2 : Matrix (Fin 4) (Fin 4) ℝ := !![(78862331612291980327451396327214859407064613/296887231059390189791731950374739324942216354 : ℝ), (-1239014374721653685225668604737552500000000/49481205176565031631955325062456554157036059 : ℝ), (-15250704789727539031697536657708827510597805/593774462118780379583463900749478649884432708 : ℝ), (135271334301711092139996948421627000000000/148443615529695094895865975187369662471108177 : ℝ);
     (-1239014374721653685225668604737552500000000/49481205176565031631955325062456554157036059 : ℝ), (2049512234685310922589560500000000000000000/49481205176565031631955325062456554157036059 : ℝ), (-196900609401460031735370121123203750000000/49481205176565031631955325062456554157036059 : ℝ), (1700117562225489614011000000000000000000/49481205176565031631955325062456554157036059 : ℝ);
     (-15250704789727539031697536657708827510597805/593774462118780379583463900749478649884432708 : ℝ), (-196900609401460031735370121123203750000000/49481205176565031631955325062456554157036059 : ℝ), (1396292878548449824344524762988715757368409/296887231059390189791731950374739324942216354 : ℝ), (-31487298550813897482575965955611750000000/148443615529695094895865975187369662471108177 : ℝ);
     (135271334301711092139996948421627000000000/148443615529695094895865975187369662471108177 : ℝ), (1700117562225489614011000000000000000000/49481205176565031631955325062456554157036059 : ℝ), (-31487298550813897482575965955611750000000/148443615529695094895865975187369662471108177 : ℝ), (4470670631662545158236000000000000000000/148443615529695094895865975187369662471108177 : ℝ)]
 /-- Exact right-hand side of A2's normal equations, T7(iii). -/
 noncomputable def rhsA2 : Fin 4 → ℝ := ![(7051/100 : ℝ), (20887037112487/100000000000 : ℝ), (2746/25 : ℝ), (-111227985112891/50000000000 : ℝ)]
-/-- Exact A2 coefficient vector, T7(iii).
-The entries satisfy the normal equations for the design and outcome. -/
+/-- Exact A2 coefficient vector, T7(iii) and the named E003 exact results.
+The entries are checked against the design and outcome in Lean. -/
 noncomputable def coefficientsA2 : Fin 4 → ℝ := ![(25684156229514428563777695313037499225923245817/2968872310593901897917319503747393249422163540 : ℝ), (315309901567374756223272228924480076940000000/49481205176565031631955325062456554157036059 : ℝ), (-6137053209578193764329374573380726129631314269/3711090388242377372396649379684241561777704425 : ℝ), (-2800544261937919072726551897176219660000000/148443615529695094895865975187369662471108177 : ℝ)]
 
 /-- T7(iii): the deposited A2 design has full column rank, the stated
@@ -2067,7 +2071,7 @@ noncomputable def gramA3 : Matrix (Fin 5) (Fin 5) ℝ := !![(17/1 : ℝ), (22274
     (180862630971/500000000 : ℝ), (166163407087136723917/250000000000000000 : ℝ), (1285086856931/250000000 : ℝ), (28852298026797981773173/500000000000000000 : ℝ), (24003737119460923291/500000000000000000 : ℝ);
     (-40646817/100000000 : ℝ), (848156779439308911/1000000000000000000 : ℝ), (1152045359/250000000 : ℝ), (24003737119460923291/500000000000000000 : ℝ), (543209621800141297/500000000000000000 : ℝ)]
 /-- Exact inverse-Gram certificate for the deposited A3 design, T7(iii).
-Its product with the Gram matrix is the identity. -/
+It is checked by multiplication in Lean, not assumed from the validator. -/
 noncomputable def inverseGramA3 : Matrix (Fin 5) (Fin 5) ℝ := !![(82338956538638989696278690468373247034797257396400809607513693/263545025594799089766460841230799927145443792347888343866175781 : ℝ), (-2777024895194139847461368627424659827362246935349240000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (-15783460161245936548154975572968532741689521148468529099655767/527090051189598179532921682461599854290887584695776687732351562 : ℝ), (232467466336626311870035348319406057448788252657119000000000/263545025594799089766460841230799927145443792347888343866175781 : ℝ), (20170411806100145199272081424308558958792422645788779000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ);
     (-2777024895194139847461368627424659827362246935349240000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (3719744731245302902274768025019627921906944000000000000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (-297021775846677777312510059204071862534120979229935000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (3378395885337343062109757946975066914623000000000000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (-2832384437959485648083391652225064936484715000000000000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ);
     (-15783460161245936548154975572968532741689521148468529099655767/527090051189598179532921682461599854290887584695776687732351562 : ℝ), (-297021775846677777312510059204071862534120979229935000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (10733512582473787677446420252747376150424315496594727657959821/2108360204758392718131686729846399417163550338783106750929406248 : ℝ), (-55201974641604264148521540715188221282458287050810750000000/263545025594799089766460841230799927145443792347888343866175781 : ℝ), (-1836189029063668748517896049361057910717313413487991500000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ);
@@ -2075,8 +2079,8 @@ noncomputable def inverseGramA3 : Matrix (Fin 5) (Fin 5) ℝ := !![(823389565386
     (20170411806100145199272081424308558958792422645788779000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (-2832384437959485648083391652225064936484715000000000000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (-1836189029063668748517896049361057910717313413487991500000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (-12579218353503464057576660917862181679568000000000000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (98962410353130063263910650124913108314072118000000000000000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ)]
 /-- Exact right-hand side of A3's normal equations, T7(iii). -/
 noncomputable def rhsA3 : Fin 5 → ℝ := ![(7051/100 : ℝ), (20887037112487/100000000000 : ℝ), (2746/25 : ℝ), (-111227985112891/50000000000 : ℝ), (-704815468797/100000000000 : ℝ)]
-/-- Exact A3 coefficient vector, T7(iii).
-The entries satisfy the normal equations for the design and outcome. -/
+/-- Exact A3 coefficient vector, T7(iii) and the named E003 exact results.
+The entries are checked against the design and outcome in Lean. -/
 noncomputable def coefficientsA3 : Fin 5 → ℝ := ![(56378680668760324252433213339653942088949112019789364103424592173/6588625639869977244161521030769998178636094808697208596654394525 : ℝ), (560959205595590684404193874010188762669512981839878401170000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ), (-17342663386991901794850512124376610236356646928578241142225864371/10541801023791963590658433649231997085817751693915533754647031240 : ℝ), (-4956573971418376117599707529401755107347693844013013020000000/263545025594799089766460841230799927145443792347888343866175781 : ℝ), (-40591609457254980209769484284745347505452605434070339820000000/87848341864933029922153613743599975715147930782629447955391927 : ℝ)]
 
 /-- T7(iii): the deposited A3 design has full column rank, the stated
@@ -2158,8 +2162,50 @@ theorem table_A1_standard_error_rounding :
   · apply (Real.sqrt_lt' (by norm_num)).2
     norm_num
 
-
+-- END GENERATED TABLE CERTIFICATES
 
 
 end AronowAudit.P039
 
+#print axioms AronowAudit.P039.squaredLength_nonnegative
+#print axioms AronowAudit.P039.squaredLength_zero_iff
+#print axioms AronowAudit.P039.normal_equation_expansion
+#print axioms AronowAudit.P039.normal_equation_unique
+#print axioms AronowAudit.P039.gram_certificate_full_rank
+#print axioms AronowAudit.P039.full_rank_gram_unit
+#print axioms AronowAudit.P039.ols_projection_identities
+#print axioms AronowAudit.P039.full_rank_ols_unique
+#print axioms AronowAudit.P039.nested_minimum_squares
+#print axioms AronowAudit.P039.witness_baseline
+#print axioms AronowAudit.P039.witness_residual_projection
+#print axioms AronowAudit.P039.residual_test_five_percent_disagreement
+#print axioms AronowAudit.P039.residual_orthogonal_witness_fit
+#print axioms AronowAudit.P039.full_orthogonal_witness_fit
+#print axioms AronowAudit.P039.residual_correlated_witness_fit
+#print axioms AronowAudit.P039.full_correlated_witness_fit
+#print axioms AronowAudit.P039.regression_procedure_counterexample
+#print axioms AronowAudit.P039.correlated_regressor_residual_ratio
+#print axioms AronowAudit.P039.regression_five_percent_counterexample
+#print axioms AronowAudit.P039.residual_attenuation_algebra
+#print axioms AronowAudit.P039.residual_t_squared_algebra
+#print axioms AronowAudit.P039.nested_standard_error_scalar
+#print axioms AronowAudit.P039.corrected_residual_regression
+#print axioms AronowAudit.P039.corrected_residual_covariance_and_law
+#print axioms AronowAudit.P039.nested_standard_error_bound
+#print axioms AronowAudit.P039.printed_standard_error_incompatible
+#print axioms AronowAudit.P039.printed_nested_standard_errors_impossible
+#print axioms AronowAudit.P039.printed_standard_error_exact_gap
+#print axioms AronowAudit.P039.table_A1_exact_fit
+#print axioms AronowAudit.P039.table_A1_unique_minimizer
+#print axioms AronowAudit.P039.table_A1_coefficient_rounding
+#print axioms AronowAudit.P039.table_A2_exact_fit
+#print axioms AronowAudit.P039.table_A2_unique_minimizer
+#print axioms AronowAudit.P039.table_A2_coefficient_rounding
+#print axioms AronowAudit.P039.table_A3_exact_fit
+#print axioms AronowAudit.P039.table_A3_unique_minimizer
+#print axioms AronowAudit.P039.table_A3_coefficient_rounding
+#print axioms AronowAudit.P039.table_A1_standard_error_rounding
+
+#print axioms AronowAudit.P039.nested_standard_error_bound_full
+
+#print axioms AronowAudit.P039.corrected_residual_regression

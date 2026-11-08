@@ -1,0 +1,64 @@
+[
+  {
+    "target_id": "P045-T27",
+    "theorem": "SAP.P045b.T27",
+    "fingerprint": "53cfa80a660613f01617e62a438190d5a1eaf7919df387acc609fdadac4f298f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Instances.lean using only SAP.P045b.Defs. The two-vertex single-edge Network is symmetric and loopless; mixed treats vertex 0 and controls vertex 1. At vertex 0 the implemented count test is true (1 < 2) and the all-control specification is false. This is an actual counterexample under every condition of the canonical function contract. The printed reading and condition-by-condition witness check are in refutation-checks.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T29",
+    "theorem": "SAP.P045b.T29",
+    "fingerprint": "d93b71ee8ad60b0438152ddf38e4b63d294032a126150cbd68f96cb0222cdcc1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Sampler.lean using only Defs. For the absolute-difference distance of the simple four-vertex path it verifies the marked sets, singleton-number draw, stopped trace [0,1] of exact mass 1/16, and failure of the 3-net separation property for {0,1}. Take p=1/2. The exact retry absorption calculation in scratch/check_witness.py gives normalized terminal mass 1, total 3-net mass 5/6, and terminal mass 1/12 for each of {0,1} and {0,2}. The geometric summability argument and checks of all printed conditions are in refutation-checks.md; the witness does not use the nonsummable-tsum convention.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json, round 3: the former phrase 'the documented sampler does not always return a three-net' confused the intended uniform-unmarked algorithm with the coded implementation.",
+        "status": "fixed",
+        "reason": "SAP/P045b/Challenge/Part2.lean:21 now says 'the package's cluster sampler as coded'; line 23 identifies the documentation's contract for that implementation, retains the singleton-number draw and retry traces, and explicitly excludes the intended uniform-unmarked sampler. SAP/P045b/Defs/Part5.lean:32-36 still fixes coded=true. The current docstring describes the actual statement accurately."
+      }
+    ]
+  },
+  {
+    "target_id": "P045-T30",
+    "theorem": "SAP.P045b.T30",
+    "fingerprint": "b38aa1b47fc7d672c7f31fa3506e4321a342eb9d3d7baef0c1631c67ae9ee035",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Instances.lean. It constructs n=1, exposure type Bool, a valid fair assignment Design, D(z,i)=z(i), and potential outcomes y(true)=5, y(false)=2. Both exact exposure marginals are positive (1/2), so every premise for the total and contrast clauses is satisfied. Separate direct computations give expected HT true-exposure total 5 and expected true-versus-false HT contrast 3, without invoking the Challenge theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T31",
+    "theorem": "SAP.P045b.T31",
+    "fingerprint": "5425de5959992dfc512702e4714495d15545850cff72e189442258cc426b9bcc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Instances.lean with two households. The first mediator equals treatment and the second is constantly false; outcomes are 2 times the treatment indicator plus 3 times the mediator indicator. It computes theta=7/2, gamma(true)=gamma(false)=3/2 and eta(true)=eta(false)=2, and verifies the unchanged second household has zero contagion summand for both treatment values. The sole size premise 0 < Nc holds; all tables are total and real-valued.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T32",
+    "theorem": "SAP.P045b.T32",
+    "fingerprint": "57461f8d8a149f0bc27d0877f90d743118a7c243f80063733d153c76938f01d7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Concrete witness data are E=Fin 4, labels=Equiv.refl, f(r)=fourExposure labels cliqueAdj (cliqueAssignments r), and w,q the smoothed weights and joints of the 65 rows indexed by t.succAbove. scratch/Clique.lean constructs those tables with their exact defining equations and positive smoothed marginals; it also checks the graph properties, a valid uniform Design, concrete assignment/exposure values, nonnegative rational joint masses, and zero target effect. Independently, scratch/check_witness.py exhaustively verifies the complete two-treated assignment support, all marginal and joint counts, both normalized joint laws, all canonical numerical certificates, every fixed-table formula and shortfall, and explicit network-preserving relabelings for all 66 tables. Its exact-fraction results are in scratch/exact-checks.json. Nonzero denominators and canonical rational-to-real embedding justify the same finite calculations over the reals, and the statement explicitly supplies the real-estimator shortfall. There are no antecedent assumptions hiding the certificate's conclusions. The canonical table is explicitly sampled without replacement, so iid replicate rows are not a condition of this counterexample.",
+    "confidence": 0.99
+  }
+]

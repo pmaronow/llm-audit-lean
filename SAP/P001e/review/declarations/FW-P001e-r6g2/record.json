@@ -1,0 +1,78 @@
+[
+ {
+  "target_id": "P001-T82",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T82",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.binary_response_conditional_propensity_exists"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.conditional_kernel_propensity_range",
+    "reason": "The existence row already supplies boundedness and normalized binary conditional laws."
+   },
+   {
+    "lean_name": "AronowAudit.P001.propensity_range_correction",
+    "reason": "The existence row already supplies the conditional-mean identification and impossible-range criterion."
+   }
+  ]
+ },
+ {
+  "target_id": "P001-T83",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T83",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.mar_reweighting_corrected_hypothesis_proof",
+   "SAP.P001e.WH.W1.T83_whole",
+   "SAP.P001e.WH.W1.T83_assembly",
+   "SAP.P001e.WH.W1.T83_L1_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001e.T83WholeStatement"
+ },
+ {
+  "target_id": "P001-T84",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T84",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.missing_ipw_logit_ml_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.missing_ipw_not_poststratified",
+    "reason": "Duplicate wrapper of the unique-logistic-fit counterexample used here."
+   }
+  ]
+ },
+ {
+  "target_id": "P001-T85",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T85",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.missing_ipw_difference_and_stabilization",
+   "AronowAudit.P001.missing_ipw_saturated_cells",
+   "AronowAudit.P001.missing_ipw_saturation_necessary",
+   "SAP.P001e.WH.W2.T85_whole",
+   "SAP.P001e.WH.W2.T85_assembly",
+   "SAP.P001e.WH.W2.T85_L1_proof",
+   "SAP.P001e.WH.W2.T85_L2_proof",
+   "SAP.P001e.WH.W2.cell85"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001e.T85WholeStatement"
+ },
+ {
+  "target_id": "P001-T86",
+  "decision": "restricted",
+  "theorem": "SAP.P001e.T86",
+  "restriction": "Uses pointwise binary response and pointwise uniform positive propensity bounded above by one. Retains the one-unit conditional and unconditional mean-one identities and the reciprocal-weight lower bound with its equality criterion. Omits the finite-sample mean-one conclusion, the finite-sample stabilized-estimator formula, convergence with fitted propensities and the efficiency discussion.",
+  "rows_used": [
+   "AronowAudit.P001.response_weights_denominator_correction"
+  ],
+  "rows_not_used": []
+ }
+]

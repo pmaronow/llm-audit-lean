@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P013-T1",
+    "theorem": "SAP.P013a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit family exists for every r>=2: r independent four-atom pairs with N=2r, epsilon=1/N^2 and weights (epsilon,1/2-epsilon,1/2-epsilon,epsilon), all strictly positive. Both potential outcomes of successive pair members are 1 and -1. All marginals are 1/2; all distinct-unit joints are positive; Vhat is strictly positive on every assignment. At N=6, exact enumeration gives V=E Vhat=34/27, Pr(all split)=4913/5832 and Var(N Vhat)=65536/4131. Its characteristic function tends to exp(-4u^2), giving the asserted N(0,8) limit. The omitted decimal evaluation and replacement of row-sum equality by <=2 are accurately disclosed in both docstring and record.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T2",
+    "theorem": "SAP.P013a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every N=n+1, assign N units independently to fair binary exposures and set y_i(0)=y_i(1)=1 from one fixed infinite outcome table. Relabel the 2^N assignments by Fin(2^N) to obtain an ExperimentSequence. Use treated=1, control=0, identity exposure labels and identity dependency matrices, with outcome bound 1, reciprocal bound 2 and row bound 1. Then V=Vhat=4/N, so C6 holds with c=4 and both scaled concentration conditions and the lower-tail condition hold exactly. Every distinct-unit joint is 1/4, so b=1/4 and b_n=1/4 satisfy both rate domains; the empty domain at N=1 does not affect eventual bounds. This instance satisfies every added common-table hypothesis. All additions and omitted conclusions are accurately disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T3",
+    "theorem": "SAP.P013a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four assignments have weights 2/9,4/9,1/9,2/9 and positive marginal probabilities at both labels. For treated outcomes (2,-1), T=1, p0=1/3 and R=1; the generic simulatedHTTotal has expectation 2/9, proved in scratch/Check.lean using only Defs. Relative bias is 7/9>4/9 and >1/2, while the logarithmic rule for b=1/2 is satisfied. The (1,-1) variant has total zero and expectation -1/3, and refutes the absolute-bias inequality without dividing by that total.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T4",
+    "theorem": "SAP.P013a.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A single fair binary-exposure unit with outcome 1 at both exposures, R=1 and p0=1/2 has T=1, kappa=1 and E Htilde=3/4, exercising the nonzero-total common-sign bound and replicate rule. The signed two-unit instance has T=1 and kappa=3; its zero-total variant exercises the absolute bound. All simulated denominators are positive. Exact integer comparisons confirm that (1999/2000)^(R+1)<=1/200 holds at R=10593 and fails at R=10592.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T5",
+    "theorem": "SAP.P013a.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every positive N, two equally weighted assignments give all units the same fair Bernoulli exposure. Both labels have marginal probability 1/2, every (1,1) joint is 1/2, and no pair is independent. The identity relation nevertheless satisfies printed dependency and row bound 1; choosing zero outcomes supplies C3. Along N=n+1, every admissible g is identically true and its normalized pair count is 1, so C4 fails. This witnesses an actual counterexample sequence; the theorem is not vacuous merely because it identifies vacuity in the paper's graph definition. Identity and triangle no-edge claims also passed exhaustive finite checks.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T6",
+    "theorem": "SAP.P013a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Independent fair binary exposures on any positive finite population satisfy genuine dependency for the identity graph with row bound 1. Nonadjacent distinct exposure variables are independent, and the pair count is N. A sequence of these populations satisfies directed corrected C5 and C4. The equivalence for arbitrary sets, and both directed and symmetric pair-count inequalities, were additionally checked for every 3x3 Boolean matrix and every ordered pair of subsets.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T7",
+    "theorem": "SAP.P013a.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The displayed fixed outcome table and uniform probability 2^(-N) on all binary assignments exist for each N>=1. The minimum defining blockIndex is attained, and block offsets are nonnegative. The first four units have both outcomes 1, ensuring positive Vhat for every N and realization. At N=8 the exact values are b=4, NV=4, E(N Vhat)=6 and Var(N Vhat)=4. All finite identities were checked at N=1,4,6,8. The Rademacher CLT and alternating endpoint block proportions give the two different positive variance limits and normal laws required to refute the printed convergence steps.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T8",
+    "theorem": "SAP.P013a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On N independent fair Bernoulli assignments put R_i=2Z_i-1, estimate_N=(2/N)sum R_i, target_N=0 and V_N=Vhat_N=4/N. Then V_N is the strictly positive actual variance, v_N=W_N=4, c=s=4, Var(W_N)=0, and the standardized estimate has the ordinary Rademacher normal limit. Thus every premise, including all-realization positivity in the last implication, is satisfiable. That additional hypothesis is confined to the studentization clause and is fully disclosed; negative estimates count as noncoverage in the other clauses as the canonical note permits.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T9",
+    "theorem": "SAP.P013a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use independent fair binary exposures and the fixed table y_i(0)=y_i(1)=1. Standing positivity, C3, C4 and NestedPopulationSetup all hold, with identity pair indicators and normalized count 1/N. The treated HT mean error is N^(-1)sum(2Z_i-1) and has variance 1/N. The separate studentization identity has nonzero examples, e.g. estimate=3,target=1,V=4,Vhat=1. The docstring and record accurately list the common-table addition and every omitted part of the canonical target.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T10",
+    "theorem": "SAP.P013a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "These are unconditional arithmetic impossibilities, so no probabilistic hypothesis instance is needed. Each rounding bin is individually nonempty. For the first row the endpoint midpoint lies in [0.2925,0.2935] while the estimate lies in [0.2945,0.2955]; for the second those intervals are [0.3075,0.3085] and [0.3055,0.3065]. Disjointness is the intended contradiction, not an inconsistent ancillary hypothesis. Symmetric intervals themselves plainly exist, e.g. e=1,s=1,z=1 gives endpoints 0 and 2.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T11",
+    "theorem": "SAP.P013a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take U={0,...,59}, focal unit i=59, neighbors={0,...,38}, and n=6. All assumptions hold, including N<=10n+5. There are choose(60,6)>0 equiprobable samples. The strictly positive probabilities are p=choose(20,5)/choose(60,6)=204/658735 and q=choose(20,6)/choose(60,6)=102/131747=(5/2)p. Here p<=27/40000 and q<1/100, so the small-p branch is active. The large-q branch also has an instance: N=400,n=40, with q>1/100. Exact checks over every 40<=N<=150 and 1<=n<=N-39 agree with the ratio and all bounds.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T12",
+    "theorem": "SAP.P013a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The record correctly says refuted. Both negated universal assertions are violated by the legitimate nonzero-total signed example N=2,d=1,R=1,p0=1/3,T=1, with b=1/2 for the rule. Positivity and the attained minimum hold; generic simulatedHTTotal expectation 2/9 is compiled in scratch/Check.lean. Thus bias 7/9 exceeds both 4/9 and b even though R meets the logarithmic threshold. This refutes the printed reading without using Lean's division by zero. correct_whole here denotes a correct complete refutation, not endorsement of the false printed proposition.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T13",
+    "theorem": "SAP.P013a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four-atom two-unit design with treated outcomes (2,-1) and control outcomes (0,0) has positive marginals, T_1=1, Var(H_1)=17/2 and Var(tauhat_10)=17/8. Independent fair units with both outcomes 1 also exercise the nonzero negative diagonal covariance: Cov(H_1,H_0)=-N. Generic finite enumeration checks these expectation, variance and covariance expansions on the paired and block families, including signed outcomes and zero joint probabilities.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T14",
+    "theorem": "SAP.P013a.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A compiled example has two complementary fair exposures, positive marginals 1/2, zero treated joint for the two distinct units, and treated outcomes (1,-1). It gives Var(H)=4, E varianceHT=2, missingA=-2 and E correctionA2=2. Thus both the missing-joint bias and the correction operate nontrivially. The all-positive-joints branch has the independent four-atom signed design as a separate instance. The explicit zero-joint convention matches the paper and creates no spurious division or empty-domain conclusion.",
+    "confidence": "high"
+  }
+]

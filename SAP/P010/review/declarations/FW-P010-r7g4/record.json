@@ -1,0 +1,74 @@
+[
+ {
+  "target_id": "P010-T16",
+  "decision": "whole",
+  "theorem": "SAP.P010.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.selection_counterexample_corrected"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T16_correspondence",
+  "statement_definition": "SAP.P010.T16Statement"
+ },
+ {
+  "target_id": "P010-T17",
+  "decision": "whole",
+  "theorem": "SAP.P010.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.nonzero_passing_corrected",
+   "AronowAudit.P010.measurable_observedS",
+   "AronowAudit.P010.measurable_assignment"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T17_correspondence",
+  "statement_definition": "SAP.P010.T17WholeStatement",
+  "declaration_review_round_3": {
+   "finding": "not_faithful/major: the former characterization allowed both positivity predicates to be false and did not impose the canonical all-arm passing requirement; the whole label overstated coverage.",
+   "resolution": "Replaced the characterization by the explicit corrected conditional-probability requirement under positive potential passing in every arm, using only the existing equivalence in the sufficient direction. Relabelled restricted and disclosed every condition. Only T17Statement changes among shared definitions.",
+   "source": "fw/round3/T17/r4g4/findings.json",
+   "status": "resolved",
+   "shared_definition_changed": "SAP.P010.T17Statement",
+   "declarations_requiring_review": [
+    "SAP.P010.T17"
+   ]
+  }
+ },
+ {
+  "target_id": "P010-T18",
+  "decision": "whole",
+  "theorem": "SAP.P010.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.corollary_one"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T18_correspondence",
+  "statement_definition": "SAP.P010.T18Statement"
+ },
+ {
+  "target_id": "P010-T19",
+  "decision": "whole",
+  "theorem": "SAP.P010.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.lemma_one"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T19_correspondence",
+  "statement_definition": "SAP.P010.T19Statement"
+ },
+ {
+  "target_id": "P010-T20",
+  "decision": "whole",
+  "theorem": "SAP.P010.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.corollary_two"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T20_correspondence",
+  "statement_definition": "SAP.P010.T20Statement"
+ }
+]

@@ -18,13 +18,13 @@ from the standard uniform distribution". One direct multiplier has the
 Lebesgue probability law restricted to (0,1), whose length is one. -/
 noncomputable def unitUniformLaw : Measure ℝ := volume.restrict (Ioo 0 1)
 
-/-- Normalized school probability weights: p_i=w_i/sum_j w_j.
-Raw direct uniform weights are the interpretation of the table notes;
-normalized exponential weights implement the correction. -/
+/-- The validator's definition of normalized school probability weights:
+p_i=w_i/sum_j w_j. Raw direct uniform weights are the interpretation of the
+table notes; normalized exponential weights implement the correction. -/
 noncomputable def normalizeWeights {n : ℕ} (w : Fin n → ℝ) : Fin n → ℝ :=
   fun i => w i / ∑ j, w j
 
-/-- P037-T5(a), Bayesian-bootstrap definition (after Rubin):
+/-- P037-T5(a), validator's Bayesian-bootstrap definition (after Rubin):
 the open simplex in n-1 free coordinates, with all masses positive. -/
 def openProbabilitySimplex (m : ℕ) : Set (Fin m → ℝ) :=
   {p | (∀ i, 0 < p i) ∧ ∑ i, p i < 1}
@@ -72,15 +72,16 @@ theorem bootstrap_ratio_cancellation (u v total : ℝ)
     constructor <;> intro h <;> linarith
 
 /-- P037-T4(i): the area of {0<u<v/3<1} in the unit square is 1/6.
-This theorem evaluates the reduced integral. -/
+This verifies the reduced integral; the product-law reduction is separately
+stated in the complete counterexample theorem. -/
 theorem uniform_witness_integral :
     (∫ v : ℝ in (0:ℝ)..1, ∫ u : ℝ in (0:ℝ)..(v/3), (1:ℝ)) = 1/6 := by
   simp only [intervalIntegral.integral_const, smul_eq_mul, sub_zero, mul_one]
   rw [intervalIntegral.integral_div]
   norm_num
 
-/-- P037-T4(ii): the two exponential tail integrals in the event calculation
-are exactly 1 and 3/4, hence their difference is 1/4.
+/-- P037-T4(ii): the two exponential tail integrals in the validator's
+event calculation are exactly 1 and 3/4, hence their difference is 1/4.
 No approximation or numerical quadrature enters this certificate. -/
 theorem exponential_witness_integrals :
     (∫ v : ℝ in Ioi 0, Real.exp (-v)) = 1 ∧
@@ -90,6 +91,22 @@ theorem exponential_witness_integrals :
   rw [integral_exp_mul_Ioi (by norm_num : (-(4/3):ℝ) < 0)]
   norm_num
 
+/-- P037-T4(i)--(iii): under the complete independent weight laws, the
+same event has probability 1/6 for direct uniforms and 1/4 for the
+Dirichlet Bayesian bootstrap. Thus the laws differ for every n+2 ≥ 2.
+This includes the analytic product-measure and simplex reductions. -/
+theorem uniform_weights_not_bayesian_bootstrap (n : ℕ) :
+    (normalizedUniformLaw n (bootstrapWitnessEvent n)).toReal = 1/6 ∧
+    (bayesianBootstrapLaw (n+1) (bootstrapWitnessEvent n)).toReal = 1/4 ∧
+    normalizedUniformLaw n ≠ bayesianBootstrapLaw (n+1) := by
+  sorry
+
+/-- P037-T5(b): normalizing independent Exp(1) draws gives precisely
+the constant-density Dirichlet(1,...,1) law on all school masses. This is
+the correction's full change-of-variables statement, not its definition. -/
+theorem exponentials_give_bayesian_bootstrap (n : ℕ) :
+    normalizedExponentialLaw n = bayesianBootstrapLaw (n+1) := by
+  sorry
 
 /-- P037-T5(b): the inverse-CDF construction -log(V) applied to a
 uniform draw gives Exp(1); independence is preserved by coordinate maps. -/
@@ -144,20 +161,20 @@ def WeightedLeastSquares {I K : Type*} [Fintype I] [Fintype K]
     (w : I → ℝ) (X : I → K → ℝ) (y : I → ℝ) (b : K → ℝ) : Prop :=
   ∀ k, ∑ i, w i * X i k * (y i - ∑ l, X i l*b l) = 0
 
-/-- P037-T4(iv): the weighted Gram matrix X' diag(w) X,
-for the school-weighted refits described in SI pp. 41--42. -/
+/-- P037-T4(iv), validator E005 derivation §4: the weighted Gram matrix
+X' diag(w) X, for the school-weighted refits described in SI pp. 41--42. -/
 noncomputable def weightedGram {I K : Type*} [Fintype I]
     (w : I → ℝ) (X : Matrix I K ℝ) : Matrix K K ℝ :=
   fun k l => ∑ i, w i * X i k * X i l
 
-/-- P037-T4(iv): X' diag(w) y. -/
+/-- P037-T4(iv), validator E005 derivation §4: X' diag(w) y. -/
 noncomputable def weightedRhs {I K : Type*} [Fintype I]
     (w : I → ℝ) (X : Matrix I K ℝ) (y : I → ℝ) : K → ℝ :=
   fun k => ∑ i, w i * X i k * y i
 
-/-- P037-T4(iv): “b̂(w) = (X'WX)^(-1)X'Wy”.
-This is the actual inverse-formula coefficient; positive weights and
-full column rank are hypotheses of its scaling theorem. -/
+/-- P037-T4(iv), validator E005 derivation §4: "b̂(w) =
+(X'WX)^(-1)X'Wy". This is the actual inverse-formula coefficient;
+positive weights and full column rank are hypotheses of its scaling theorem. -/
 noncomputable def weightedCoefficient {I K : Type*} [Fintype I] [Fintype K]
     [DecidableEq K] (w : I → ℝ) (X : Matrix I K ℝ) (y : I → ℝ) : K → ℝ :=
   (weightedGram w X)⁻¹.mulVec (weightedRhs w X y)
@@ -165,7 +182,7 @@ noncomputable def weightedCoefficient {I K : Type*} [Fintype I] [Fintype K]
 /-- P037-T4(iv), P037-T5(d): for positive school weights and a full
 column-rank design matrix, a common positive scaling leaves the actual
 inverse-formula WLS coefficient unchanged. It also preserves the normal
-equations' solution set. -/
+equations' solution set. This repairs the earlier solution-set-only statement. -/
 theorem weighted_least_squares_scale {I K : Type*} [Fintype I] [Fintype K]
     [DecidableEq K] (w : I → ℝ) (X : Matrix I K ℝ) (y : I → ℝ) (b : K → ℝ)
     (_hw : ∀ i, 0 < w i) (_hX : Function.Injective X.mulVec)
@@ -199,4 +216,13 @@ theorem weighted_least_squares_scale {I K : Type*} [Fintype I] [Fintype K]
     simp only [mul_assoc, ← Finset.mul_sum, mul_eq_zero, hcancel, false_or]
 
 end AronowAudit.P037
+
+#print axioms AronowAudit.P037.bootstrap_ratio_cancellation
+#print axioms AronowAudit.P037.uniform_witness_integral
+#print axioms AronowAudit.P037.exponential_witness_integrals
+#print axioms AronowAudit.P037.uniform_weights_not_bayesian_bootstrap
+#print axioms AronowAudit.P037.exponentials_give_bayesian_bootstrap
+#print axioms AronowAudit.P037.uniform_log_gives_exponential
+#print axioms AronowAudit.P037.simplex_gamma_integral
+#print axioms AronowAudit.P037.weighted_least_squares_scale
 

@@ -1,0 +1,62 @@
+[
+ {
+  "target_id": "P010-T21",
+  "decision": "whole",
+  "theorem": "SAP.P010.T21",
+  "restriction": null,
+  "rows_used": [],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P010.corollary_three",
+    "reason": "Its existential conclusion omits the required integrability certificates; use the already proved concrete finite witness instead."
+   }
+  ],
+  "bridge": "SAP.P010.Bridge.T21_correspondence",
+  "statement_definition": "SAP.P010.T21Statement",
+  "supporting_declarations": [
+   "AronowAudit.P010.selection_counterexample_corrected",
+   "AronowAudit.P010.finiteLaw_apply_real",
+   "MeasureTheory.integrable_dirac",
+   "MeasureTheory.Integrable.smul_measure",
+   "MeasureTheory.integrable_finsetSum_measure",
+   "MeasureTheory.Integrable.restrict"
+  ]
+ },
+ {
+  "target_id": "P010-T22",
+  "decision": "whole",
+  "theorem": "SAP.P010.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.corollary_four"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T22_correspondence",
+  "statement_definition": "SAP.P010.T22Statement"
+ },
+ {
+  "target_id": "P010-T23",
+  "decision": "whole",
+  "theorem": "SAP.P010.T23",
+  "restriction": null,
+  "rows_used": [],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P010.corollary_five",
+    "reason": "Its existential conclusion omits the required integrability certificates; use the already proved concrete finite witness instead."
+   }
+  ],
+  "bridge": "SAP.P010.Bridge.T23_correspondence",
+  "statement_definition": "SAP.P010.T23Statement",
+  "supporting_declarations": [
+   "AronowAudit.P010.selection_counterexample_corrected",
+   "AronowAudit.P010.finiteLaw_apply_real",
+   "MeasureTheory.integrable_dirac",
+   "MeasureTheory.Integrable.smul_measure",
+   "MeasureTheory.integrable_finsetSum_measure",
+   "MeasureTheory.Integrable.restrict",
+   "AronowAudit.P010.finiteLaw_ae",
+   "AronowAudit.P010.eventMean_congr_set"
+  ]
+ }
+]

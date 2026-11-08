@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P026-T1",
+    "theorem": "SAP.P026a.T1",
+    "fingerprint": "a366fb6a2b1bac9ad95ac9051a87ee10ba30668b39585c8545508435c7c01642",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:101 and :112 from Defs alone: the 00,01,11 law is normalized, has positive marginals, positive disagreement and same-arm joints, has q10(0,1)=0, and its printed variance bias is -1/2. Exact independent enumeration in scratch/recompute.py also checks the fourteen-state fixed-count witness, its support and all displayed pointwise values and moments.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T2",
+    "theorem": "SAP.P026a.T2",
+    "fingerprint": "ee0e16a7ba0cb264b80936f4cecae6649d0d424264ff4a617fb2de299f218257",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:13, :19 and :25: U=C=Fin 2, singleton clusters, all four allocations of weight 1/4. All marginal, separation, same-arm-support and positive-allocation hypotheses hold simultaneously; outcomes/predictions are arbitrary fixed real vectors and the sharp-null specialization takes x=z. scratch/recompute.py independently verifies the six-cluster strict example, including biases -1/9 and +1/36.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P026-T3",
+    "theorem": "SAP.P026a.T3",
+    "fingerprint": "99d8259ee1715cb4e2afd89ba8bf092000c8e303b19af0ac46f3288517767ff3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:25: the nonempty fair two-singleton-cluster law has positive directed cross-arm and same-arm joints and separated indicators. The real version of the 00,01,11 design supplies the support-failure existential (the rational hypotheses are compiled at :101 and embed exactly in the reals). Exact enumeration checks the 90-state product design and attained minima 1/6, 1/15, 1/6.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P026-T4",
+    "theorem": "SAP.P026a.T4",
+    "fingerprint": "6a06717ec3deb7b44228a086cbd269d76438bcaa0b5811aa1da908911441c48e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:123, :128, :136 and :143: both XOR laws are normalized with positive marginals; the six-unit law has exactly three treated and its fit equals treatment; all distinct coordinates in the three-unit law are independent for arbitrary test functions, yet fit covariance is 1/4. Exact enumeration additionally verifies the six-unit complete independence sets, generalized estimators, biases and product-fit covariance -1/8 and mean 7/6. Fixed X=1 and f(X,theta)=X*theta realize the printed fitting setting.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T5",
+    "theorem": "SAP.P026a.T5",
+    "fingerprint": "b91bb1a4fb0335e2972acc7a5d50dff73eaa328cf3997478942b4aa8c0b9d307",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:40, :52, :65, :75 and :87: a fair two-unit law has mutual independence, independent singleton block vectors, nonempty fitting sets satisfying whole-vector independence for each unit, and whole-response-vector independence for constant outcomes even when fitting includes the focal unit. At :156 the complete real nonlinear existential is constructed with the four-state XOR law, J={1,2}, and G(v)=v1+v2-2*v1*v2, positive marginals, permitted pairwise-independent inputs, and nonzero covariance.",
+    "confidence": 0.99
+  }
+]

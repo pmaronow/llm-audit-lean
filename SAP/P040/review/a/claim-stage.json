@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P040.T1",
+    "target_id": "P040-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part1.lean:77-102 retains A1, the arbitrary-set and lower-bound forms of A2, all reconstructed endpoint arithmetic in A3(a), and A3(b)-(d) uniformly for every z in [1.9599,1.9601]. This includes z=49/25 (a satisfiable range, also checked in scratch/Check.lean), and it retains the two failure probabilities and their comparisons with both tail levels. It omits A4's assertion that the actual standard-normal .975 quantile belongs to this range, including the consequent identification of the exact-quantile reconstruction in definitions_needed. There is no normal quantile in the definitions or conclusion. The added binomial model is the canonical model, not an extra restriction. Its normalized finite law at p=4/5 and explicit rules I(k)=empty at 14 and all reals otherwise, and ell(k)=1, witness nonvacuity of the internal premises. Exact rational checks reproduce the masses and coverage; monotonicity of radius in positive z and rational comparisons at both range endpoints establish the claimed patterns throughout the range. This is a finite-sample calibration counterexample to an exact coverage interpretation, not a contradiction of the canonical passage's nominal approximate-confidence assertion. The Challenge docstring states this distinction."
+  },
+  {
+    "theorem": "SAP.P040.T3",
+    "target_id": "P040-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part2.lean:55-56 asserts the observed proportion rounding and the full reconstructed Wald arithmetic. These are precisely the mathematical content P1 and P2 retained by the canonical statement, with supporting squared-radius and exclusion facts. The customer counts are fixed inputs, not omitted stochastic conclusions. The canonical statement explicitly declines to attribute uniform exact finite-sample .95 coverage to the printed passage; the P3 rendering mentioned in definitions_needed does not add such an assertion. No extra hypothesis or vacuous implication occurs. The exact 14/15 and endpoint arithmetic agree with the canonical values."
+  },
+  {
+    "theorem": "SAP.P040.T2",
+    "target_id": "P040-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part2.lean:12-52 retains (i)-(vi): the point estimate, inclusive binomial tails, continuity and strict monotonicity, derivative, existence and uniqueness of all three actual roots, interval identities, numerical brackets and six- and two-place rounding, both inclusions of .80, the uniform coverage of both test-inversion rules for every p in [0,1], and the method-free obstruction. Endpoint existence is a conclusion, not a premise. Extending the polynomial tail identities and derivative to all real p is a true algebraic strengthening and does not extend the probability interpretation outside [0,1]. Roots lie strictly in (0,1), denominators are nonzero, and all finite count types are inhabited. Rational bisection independently verifies the endpoint brackets. Uniform coverage follows by taking the first count with upper tail below alpha and the last count with lower tail below alpha, whose respective bad-event masses are below alpha, and applying the union bound; it is not merely a numerical grid claim. The binomial product model at p=4/5 is a concrete nonvacuity instance, including membership in both exact sets."
+  },
+  {
+    "theorem": "SAP.P040.T4",
+    "target_id": "P040-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part4.lean:20-53 identifies the actual adjusted cafe and bulk fits with the exact coefficients, HC1 variances and squared statistics of B1-B2; it asserts all the stated decimal rounding and both normal p-value enclosures and mismatches of B3-B4. The Student-t rounding also agrees with the canonical consequence. The 30 rows match standing assumption S6(d) entry for entry. Independent rational linear algebra gives ranks 9 and 9 for the reduced and original adjusted matrices, invertible Gram matrix, and strictly positive variances, so neither the totalized matrix inverse nor division by zero supplies the result. The normal and Student reference integrands are continuous on their finite integration intervals, with q>0 and nu=21, so integral totalization is irrelevant. High-precision series reproduce all stated p-value enclosures. This counterexample addresses the article's explicit normal-reference description; it is not labelled as a negation of a different canonical assertion."
+  },
+  {
+    "theorem": "SAP.P040.T5",
+    "target_id": "P040-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part4.lean:56-86 retains all (i)-(iv): ranks and degrees of freedom, dependence of the seven centered weekday indicators and equality of adjusted column spaces, the genuine Student-21 density, the two corrected reference values and their rounding, all eight exact regression statistics and their actual-fit identification, both-reference p>.10 conclusions and attained minima, and the normal-reference alternative. No exact null-distribution or exact-size claim is introduced. The actual matrices have ranks 2,9,9, and all eight HC1 variances are strictly positive by independent exact-rational recomputation. Thus natural subtraction in residual degrees of freedom is ordinary 30-2 or 30-9; Gram inverses and variance divisions are nonsingular. Both reference integrals are of continuous functions with positive degrees of freedom (21 or 28), and all q values are positive. Independent high-precision series reproduce the stated minima and all p-value comparisons. There are no extra assumptions or empty universal index sets."
+  }
+]

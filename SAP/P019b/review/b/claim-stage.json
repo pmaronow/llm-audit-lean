@@ -1,0 +1,68 @@
+[
+  {
+    "theorem": "SAP.P019b.T12",
+    "target_id": "P019-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical note expressly says that the formal content of T12 is the corrected first sentence and assigns the large-sample p-value sentence to T21. For that scope, T12 has exactly Assumptions 1–3, positive probabilities for both Y=1 treatment cells, and beta=1. The longer quotation also contains the p-value sentence, which T12 does not assert. Conditional expectations are used on positive cells; the finite-support law is sufficient for bounded list-count data. The CNN witness satisfies these hypotheses."
+  },
+  {
+    "theorem": "SAP.P019b.T13",
+    "target_id": "P019-T13",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The explicit Fin 12 law and two sets of reading/watching labels correctly encode the canonical pair: identical observables, all four assumptions, X=reading-or-watching, watching probabilities 1/4 and 1/2, disagreement probabilities 0 and 1/4, combined=mu=1/2, beta=1 and delta=0. The theorem does not assert the canonical numerical cell-probability/mean/variance tables, marginal variances, direct mean, standard list contrast, observable-atom table, or explicit classification of the X=1,Y=0 class. The omitted numerical assertions are compatible with the actual definitions; there is no false witness or changed question semantics."
+  },
+  {
+    "theorem": "SAP.P019b.T14",
+    "target_id": "P019-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem states the entire canonical general calculation with R,Q Boolean, Y=Q, X=R or Q, the no-liars equation, full independence of (W,R,Q) and Z, and strict interior probabilities for Z and Q. Its conjunction includes each of (i)–(v), including both estimands, the reader-only excess and both iff conditions, and both placebo identities. No nondegeneracy hypothesis is added. The same finite representation covers all possible finite-list response laws. The truthful CNN labeling supplies an instance."
+  },
+  {
+    "theorem": "SAP.P019b.T15",
+    "target_id": "P019-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical mathematical assertions are present with the right parameter domains: per-arm n>0, p1,p2 in [0,1], positive unpooled S, and alpha in (0,1). The definition of planning power is a Gaussian rejection event, rather than defining the desired equality to be true. The statement proves its two-tail decomposition, V-S identity, positive omitted-tail bound with equality exactly at the null, and the n=50 (total N=100) null example. It does not claim exact binomial or finite-sample power. S>0 forces V>0, so the roots and denominators are meaningful."
+  },
+  {
+    "theorem": "SAP.P019b.T16",
+    "target_id": "P019-T16",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Only the population contrast for the printed ceiling response min(W+1,4), under W~Binomial(4,2/5) and an independent affected-share mixture, is asserted: beta=1-(16/625)rho for rho in [0,1]. This is the exact consequence given in the canonical note, not the full canonical target's simulation mechanisms, liar/false-confessor rules, finite-sample power curves or approximate 80% and 30% rejection claims. The mixture is explicit and not a conditional-expectation or division-by-zero shortcut. The baseline masses sum to one and rho=1/5 gives 3109/3125."
+  },
+  {
+    "theorem": "SAP.P019b.T17",
+    "target_id": "P019-T17",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The full Lemma 1 identity is stated under Assumptions 1–4. For the remark the theorem uses positive false-confession probability and concludes the exact excess formula and strict inequality, but does not expressly state E[X|Y=1]<1. The canonical note identifies failure of monotonicity with precisely positive false-confession probability; in this finite law the two are equivalent, since a positive finite sum has a positive summand. Thus this reformulation is not an extra substantive hypothesis. Both the standing assumptions and the separate nonmonotone branch have concrete finite instances."
+  },
+  {
+    "theorem": "SAP.P019b.T18",
+    "target_id": "P019-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "The assertion is the limit of n times the actual sampling variance under unconditioned IID sampling, equal to exactly equation (3). Assumptions 1–3 are maintained in the supplied standing assumptions, so stating all four is not a hidden strengthening. Every fixed real pair of empty-cell completions is quantified before the limit; these are bounded for each fixed study, and their exceptional-event contributions vanish exponentially. Finite-support count data ensure all moments exist. There is no weak-convergence-only substitute for the deterministic variance limit."
+  },
+  {
+    "theorem": "SAP.P019b.T19",
+    "target_id": "P019-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statement includes positive sigma squared, root-n tightness, the centered root-n Gaussian limit with variance (not standard deviation) sigma squared, consistency of n times the exact printed plug-in variance, and limiting 1-alpha Wald coverage for every alpha in (0,1). It uses all four maintained assumptions and any fixed real completions. Gaussian test-function integrals are integrable; sigma squared is positive, so toNNReal does not mask a negative variance. Deficient-cell conventions affect events of vanishing probability and do not alter the inference claim."
+  },
+  {
+    "theorem": "SAP.P019b.T20",
+    "target_id": "P019-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both deterministic actual-variance limits are asserted under Assumptions 1–4, for arbitrary fixed real empty-cell/arm completions, along with the strict comparison of their coefficients. The standard coefficient is exactly Var(V|Z=1)/gamma+Var(V|Z=0)/(1-gamma). Strictness is supported by the positive Y=1 probability and confessor-cell variances in nondegenerate, rather than by a conclusion-shaped premise. No finite-n strict comparison is claimed. The CNN law supplies a nondegenerate instance."
+  },
+  {
+    "theorem": "SAP.P019b.T21",
+    "target_id": "P019-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "Under the printed Assumptions 1–4 null, the statement includes beta=1, the studentized standard-normal limit and the asymptotic-uniform CDF of exactly the printed two-sided p-value. Sample variances use divisor N-1. Completions are arbitrary fixed real constants, with statistic zero and p-value one at nonpositive variance. All confessor-cell probabilities and limiting variances are strictly positive under standing; no sample is conditioned away. The preceding contextual distributional identity in definitions_needed is not substituted for, or claimed as part of, the Proposition 3 target."
+  },
+  {
+    "theorem": "SAP.P019b.T22",
+    "target_id": "P019-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The mathematical population and inference sentences are fully rendered: full treatment independence and positive arms imply delta=0; adding nondegeneracy yields the studentized standard-normal limit and asymptotic-uniform printed p-values, for every fixed completion. No monotonicity or no-liars hypothesis is added. The canonical following sentences about a causal-effect interpretation and randomization plus questionnaire order guaranteeing Assumption 3 are absent. No causal model or questionnaire-order variable is defined, so the theorem cannot certify those assertions."
+  }
+]

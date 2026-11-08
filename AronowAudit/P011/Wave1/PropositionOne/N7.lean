@@ -11,7 +11,7 @@ open scoped BigOperators Topology
 
 noncomputable section
 
-/-- A normalized sum over the two Bool coordinates is the path witness's four-state mean. -/
+/-- A normalized sum over the two Bool coordinates is the paper's four-state mean. -/
 private lemma sign_pair_average (f : ℝ → ℝ → ℝ) :
     (∑ u : Fin 2 → Bool, f (sign (u 0)) (sign (u 1))) /
         (Fintype.card (Fin 2 → Bool) : ℝ) = pathMean f := by

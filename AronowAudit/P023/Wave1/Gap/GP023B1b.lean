@@ -11,7 +11,7 @@ import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 
 /-!
 Exact proofs of the P023-T4 fit criterion and numerical sampling separation.
-Population coefficients are
+The risk argument adapts the GP023B1 draft. Population coefficients are
 identified by explicit rational Gram inverses. Sampling uses the IID strong
 law for finitely many moments and a direct local-noise bound for RD.
 -/
@@ -29,7 +29,7 @@ variable {ι κ : Type*} [Fintype ι] [Fintype κ]
 open MeasureTheory Set Filter
 open scoped ENNReal Topology
 
-/-! ## Risk and fit helpers -/
+/-! ## Record 2: risk and fit helpers -/
 
 lemma GP023B1b_continuous (a η : ℝ) : Continuous (sigmoid a η) := by
   unfold sigmoid
@@ -440,7 +440,8 @@ lemma GP023B1b_feasible_predict (J : ℕ) (a x : ℝ) :
   simp
   <;> ring
 
-/-- Risk bounds for the sigmoid witness and its polynomial fits. -/
+/-- All conjuncts of Record 2 except the population degree-seven formula.
+There are no extra hypotheses in this partial result. -/
 theorem GP023B1b_risk_claims (a η : ℝ) (ha : 0 < a) (hη : 0 < η ∧ η ≤ 1) :
     let ν := witnessLaw uniformMargins (sigmoid a η)
     ProbabilityLaw ν ∧ marginLaw ν = uniformMargins ∧
@@ -483,7 +484,7 @@ theorem GP023B1b_risk_claims (a η : ℝ) (ha : 0 < a) (hη : 0 < η ∧ η ≤ 
   · convert hrel using 1 <;> ring
 
 
-/-! The finite population moment equations. -/
+/-! The finite population moment system is certified directly. -/
 
 lemma GP023B1b_uniform_halves {f fm fp : ℝ → ℝ}
     (hm : Continuous fm) (hp : Continuous fp)
@@ -1197,15 +1198,18 @@ theorem sigmoid_fit_criterion_proof (a η : ℝ) (ha : 0 < a) (hη : 0 < η ∧ 
   obtain ⟨hp, hm, hr, hfit⟩ := GP023B1b_risk_claims a η ha hη
   exact ⟨hp, hm, hr, hfit, fun he => he ▸ GP023B1b_degree7_coefficient η hη⟩
 
-/-! ## Sampling separation -/
+example : type_of% @AronowAudit.P023.sigmoid_fit_criterion := sigmoid_fit_criterion_proof
+
+/-! ## Record 3: sampling separation -/
 
 def GP023B1b_sample_noiseSum {Ω : Type*} (sample : ℕ → Ω → ℝ × ℝ)
     (A : Set ℝ) (u : ℝ × ℝ → ℝ) (N : ℕ) (ω : Ω) : ℝ := by
   classical
   exact ∑ i : Fin N, if (sample i ω).1 ∈ A then u (sample i ω) else 0
 
-/-- A centered local-noise bound on the IID sampling space.
-Centering for the two-point witness is established below. -/
+/-- A centered local-noise bound on the actual IID sampling space. The
+statistical inputs here are helper premises, not new premises of either
+frozen node; the witness-specific centering is established below. -/
 lemma GP023B1b_sample_local_noise_bound {Ω : Type*} [MeasurableSpace Ω]
     (P : Measure Ω) (ν : Measure (ℝ × ℝ)) (sample : ℕ → Ω → ℝ × ℝ)
     (hiid : IIDSample P ν sample) (A : Set ℝ) (hA : MeasurableSet A)
@@ -2007,6 +2011,8 @@ theorem sigmoid_sample_separation_proof {Ω : Type*} [MeasurableSpace Ω]
     ConvergesInProbability P (sampleRD sample k) 0 := by
   exact ⟨GP023B1b_degree1_sample P sample hiid, GP023B1b_degree7_sample P sample hiid,
     GP023B1b_rd_limit P sample hiid k hpos hk hnk⟩
+
+example : type_of% @AronowAudit.P023.sigmoid_sample_separation := sigmoid_sample_separation_proof
 
 end
 end AronowAudit.P023.Wave1

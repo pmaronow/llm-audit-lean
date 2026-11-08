@@ -1,0 +1,152 @@
+[
+ {
+  "target_id": "P026-T1",
+  "decision": "whole",
+  "theorem": "SAP.P026a.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.asymmetricSix_counterexample",
+   "AronowAudit.P026.asymmetricTwo_counterexample",
+   "SAP.P026a.WH.W1.T1_whole",
+   "SAP.P026a.WH.W1.T1_assembly",
+   "SAP.P026a.WH.W1.T1_L1_proof",
+   "SAP.P026a.WH.W1.T1_L2_proof",
+   "SAP.P026a.Bridge.target1"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P026a.T1WholeStatement",
+  "bridge": "SAP.P026a.Bridge.target1"
+ },
+ {
+  "target_id": "P026-T2",
+  "decision": "whole",
+  "theorem": "SAP.P026a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.correctedBiasExpression_nonneg_T2",
+   "AronowAudit.P026.PaperScope.corrected_covariance_bias_T2",
+   "AronowAudit.P026.PaperScope.corrected_residual_variance_T2",
+   "AronowAudit.P026.PaperScope.corrected_sharp_null_T2",
+   "AronowAudit.P026.PaperScope.corrected_variance_bias_T2",
+   "AronowAudit.P026.PaperScope.corrected_variance_decomposition_T2",
+   "AronowAudit.P026.PaperScope.disagreement_identity_T2",
+   "AronowAudit.P026.PaperScope.disagreement_positive_iff_T2",
+   "AronowAudit.P026.PaperScope.ht_cluster_covariance_T2",
+   "AronowAudit.P026.PaperScope.printed_variance_bias_T2",
+   "AronowAudit.P026.repaired_sharp_null_strict_bias"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.cross_diagonal",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.joint_diagonal",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.joint_nonneg",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.zeroSum_squares_nonneg",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   }
+  ],
+  "statement_definition": "SAP.P026a.T2Statement",
+  "bridge": "SAP.P026a.Bridge.target2",
+  "supporting_declarations": [
+   "AronowAudit.P026.asymmetricTwo_counterexample",
+   "AronowAudit.P026.generalized_residual"
+  ]
+ },
+ {
+  "target_id": "P026-T3",
+  "decision": "whole",
+  "theorem": "SAP.P026a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.support_repair_T3",
+   "AronowAudit.P026.PaperScope.support_residual_variance_T3",
+   "AronowAudit.P026.table_support"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P026a.T3Statement",
+  "bridge": "SAP.P026a.Bridge.target3",
+  "supporting_declarations": [
+   "AronowAudit.P026.generalized_residual",
+   "AronowAudit.P026.Refutations.asymmetric_real_certificate"
+  ]
+ },
+ {
+  "target_id": "P026-T4",
+  "decision": "whole",
+  "theorem": "SAP.P026a.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.xorSix_counterexample",
+   "AronowAudit.P026.xorThree_counterexamples",
+   "SAP.P026a.WH.W1.T4_whole",
+   "SAP.P026a.WH.W1.T4_assembly",
+   "SAP.P026a.WH.W1.T4_L1_proof",
+   "SAP.P026a.Bridge.target4"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P026a.T4WholeStatement",
+  "bridge": "SAP.P026a.Bridge.target4"
+ },
+ {
+  "target_id": "P026-T5",
+  "decision": "whole",
+  "theorem": "SAP.P026a.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.additive_fitting_unbiased_T5",
+   "AronowAudit.P026.PaperScope.mutually_independent_leave_out_T5",
+   "AronowAudit.P026.PaperScope.mutually_independent_other_blocks_T5",
+   "AronowAudit.P026.PaperScope.outcome_vector_fitting_independence_T5",
+   "AronowAudit.P026.PaperScope.vector_fitting_independence_T5",
+   "AronowAudit.P026.PaperScope.vector_fitting_unbiased_T5",
+   "SAP.P026a.WH.W1.T5_whole",
+   "SAP.P026a.WH.W1.T5_assembly",
+   "SAP.P026a.Bridge.target5",
+   "AronowAudit.P026.generalized_unbiased",
+   "AronowAudit.P026.vector_fitting_independence",
+   "AronowAudit.P026.outcome_vector_fitting_independence",
+   "AronowAudit.P026.independent_comp",
+   "AronowAudit.P026.Refutations.printed_pairwise_fitting_refuted"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.covariance_add_right",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.covariance_const_right",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.covariance_div_right",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.covariance_sum_right",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.independent_comp",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.independent_covariance_zero",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.unit_vector_fitting_unbiased",
+    "reason": "Duplicate assignment-vector-only unbiasedness theorem; it does not supply the omitted observed-outcome branch."
+   }
+  ],
+  "statement_definition": "SAP.P026a.T5WholeStatement",
+  "bridge": "SAP.P026a.Bridge.target5"
+ }
+]

@@ -1,0 +1,38 @@
+[
+ {
+  "theorem": "SAP.P019b.T18",
+  "target_id": "P019-T18",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P019b/Defs/Part5.lean:13: T18Statement quantifies over (Omega : Type) [Fintype Omega] and Study Omega. This is a theorem only for finite underlying probability spaces. The canonical iid finite-list setting permits arbitrary measurable subject spaces; bounded observables do not make the underlying space finite. Although a finite observable encoding can support an extension, neither that arbitrary-space extension nor its sampling-variance transport is asserted by this target or its closure.",
+   "SAP/P019b/Challenge/Part1.lean:53: The docstring describes Proposition 1 under the maintained Assumptions 1–4 without disclosing the additional finite-space restriction.",
+   "record.json:26: The decision is whole, with restriction null at record.json:28, despite the finite-space quantifier in the audited statement."
+  ]
+ },
+ {
+  "theorem": "SAP.P019b.T19",
+  "target_id": "P019-T19",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P019b/Defs/Part5.lean:18: The outer quantifier requires Fintype Omega and a finite-law Study. Consequently the root-n tightness, Gaussian limit, plug-in consistency and Wald coverage assertions are stated only for finite subject spaces. The canonical claim has arbitrary measurable subject spaces with bounded list observables. This target contains no extension transporting these assertions from an observable finite encoding.",
+   "SAP/P019b/Challenge/Part1.lean:58: The inference docstring names only Assumptions 1–4 and the completion conventions; it omits the finite-space restriction.",
+   "record.json:61: The decision whole and restriction null at record.json:63 misdescribe the scope of T19Statement."
+  ]
+ },
+ {
+  "theorem": "SAP.P019b.T20",
+  "target_id": "P019-T20",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P019b/Defs/Part5.lean:30: T20Statement restricts Omega to a finite type before stating both sampling-variance limits and their strict comparison. The canonical result is for the general iid finite-list setting, which does not require a finite underlying probability space. The actual arbitrary-space sampling variances and their limits are absent from this target; no general-space transport assertion appears in its closure.",
+   "SAP/P019b/Challenge/Part1.lean:64: The docstring presents Proposition 2 under Assumptions 1–4 and fixed completions without declaring the finite-space domain.",
+   "record.json:85: The decision whole, with restriction null at record.json:87, fails to disclose this narrower theorem."
+  ]
+ }
+]

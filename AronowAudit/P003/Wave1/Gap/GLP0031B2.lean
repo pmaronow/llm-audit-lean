@@ -4,7 +4,7 @@ import Mathlib.Data.Fintype.BigOperators
 import AronowAudit.External.Causalean.Experimentation.FinitePopulationMoments
 
 /-! Exact finite proofs for P003-T18 and P003-T2.
-The four-cell assignment-fibre calculation is shared by both results.
+The four-cell assignment-fibre calculation is shared by both records.
 The shuffle expectation uses finite second moments of independent Monte Carlo draws;
 the displayed logarithmic budget implies the sufficient bound K ≥ 64. -/
 
@@ -935,6 +935,9 @@ theorem shuffleB2_prob_mean {A : Type*} [Fintype A] (E : A → Prop) :
     uniformProb E = shuffleB2_mean (fun a => if E a then 1 else 0) := by
   simp only [uniformProb,shuffleB2_mean,Finset.sum_boole]
 
+theorem shuffleB2_mean_nonneg {A : Type*} [Fintype A] {f : A → ℝ} (h : ∀ a, 0 ≤ f a) :
+    0 ≤ shuffleB2_mean f := by
+  exact div_nonneg (Finset.sum_nonneg (fun a _ => h a)) (Nat.cast_nonneg _)
 
 theorem shuffleB2_markov {A : Type*} [Fintype A] (E : A → Prop) (X : A → ℝ)
     (hX : ∀ a, 0 ≤ X a) (c : ℝ) (hc : 0 < c) (hE : ∀ a, E a → c ≤ X a) :
@@ -1399,6 +1402,8 @@ theorem balanced_shuffle_lower_bounds_proof (r K : ℕ) (hr : 4 ≤ r) (hK : 0 <
       exact_mod_cast hh
     exact shuffleB2_expected x K hx16 hk64
 
+example : type_of% @AronowAudit.P003.balanced_shuffle_lower_bounds := balanced_shuffle_lower_bounds_proof
+
 theorem balanced_plus_coupling_proof {n : ℕ} (m : ℕ) (hm : 0 < m) (hn : n = 2*m)
     (y y' : Fin n → Bool) (z r : Finset (Fin n)) (hz : z.card = m)
     (hy' : ∀ i, i ∉ r → y' i = y i) (w : PotentialTable n)
@@ -1479,5 +1484,7 @@ theorem balanced_plus_coupling_proof {n : ℕ} (m : ℕ) (hm : 0 < m) (hn : n = 
     exact ⟨(hrand q).1,(hrand q).2,hbound q⟩
   · rw [htau]
     exact le_add_of_nonneg_right hh
+
+example : type_of% @AronowAudit.P003.balanced_plus_coupling := balanced_plus_coupling_proof
 
 end AronowAudit.P003.Wave1

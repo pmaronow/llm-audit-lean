@@ -1,4 +1,5 @@
-
+/- Restored from lw-GLP0091B6/proof-attempt.lean.txt (622 lines),
+   by worker dx-tc01; the spacing proposition below is a definition, never a premise. -/
 import AronowAudit.P009.P009_FullBiasCompletion
 import Mathlib.Data.Fin.Tuple.Sort
 import Mathlib.MeasureTheory.Integral.Pi
@@ -224,6 +225,10 @@ lemma t23_linear_square {n : ℕ} (a : Fin n → ℝ) :
     rw [← Finset.sum_mul]
     ring
 
+/-- Changing baselines does not change whether the finite design is complete. -/
+lemma t23_complete_baseline {n : ℕ} (P : Law (Assignment n)) (b : Fin n → ℝ)
+    (hCR : Complete (⟨P, fullOutcome (fun _ => 0)⟩ : Experiment n) (n / 2)) :
+    Complete (⟨P, fullOutcome b⟩ : Experiment n) (n / 2) := hCR
 
 lemma t23_paired_baseline {n : ℕ} (P : Law (Assignment n)) (ρ : Pairing n)
     (b : Fin n → ℝ)
@@ -556,7 +561,7 @@ lemma t23_gap_integrable {n : ℕ} (L : ℝ) (hL : 0 < L) (j : ℕ) (hj : j + 1 
   rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
   nlinarith
 
-/-- The second-moment identity for adjacent uniform order-statistic spacings.
+/-- A precise proposition for the missing standard input H-P009-USP2.
 The measure is the product of normalized restricted Lebesgue laws, and the
 sorting rule is Mathlib's deterministic ordering by value and then label. -/
 def t23_UniformSpacingSecondMoment : Prop :=

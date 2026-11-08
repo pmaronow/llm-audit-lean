@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P001-T6",
+    "theorem": "SAP.P001a.T6",
+    "fingerprint": "ecca1390f8a2a40744f9939847a1582f9c76cf2641a050cb6f8cf2f1cf0e0e02",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles an infinite iid U[0,1] experiment, WholeSieveData with Y=m=V=0, and the zero least-squares fit for every degree cap. For all remaining hypotheses take shifted normalized Legendre polynomials, J(n)=floor(n^(1/4)) and c=1/2: orthonormality and the K^2 envelope give E||G-I||_F^2 <= (K^3-K)/n, hence Gram stability by Markov; J tends to infinity and both required dimension rates vanish. Full mathematical verification is in scratch/AuditNotes.md. The infinite orthogonality/rate/Gram portion is argued, not claimed compiled; Mathlib has no ready analytic Legendre-orthogonality API in the inspected file.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T7",
+    "theorem": "SAP.P001a.T7",
+    "fingerprint": "da5a9eef0cd52acd79d8cdc5f5f6a6df2b78acc8737c3c8774e4cc42ba7495e3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean constructs a probability measure on the countable product of the exact four-atom law, measurable X and Y, IID pairs and the exact required first-pair law. It also checks normalization of the changed-marginal law at q=1/4. Both covariate atoms have positive mass, conditional probabilities are 1/4 and 3/4, the Bernoulli family is normalized and positive on its binary support, and the clipped empirical mean is a genuine unique measurable MLE. The printed-reading conditions and regularity checks are listed individually in scratch/AuditNotes.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T8",
+    "theorem": "SAP.P001a.T8",
+    "fingerprint": "27d7f090eb3ddd8120768607e693a63a26472cb62f8d658ce25dfe6c95e75eb1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean constructs genuine normalized Dirac conditional kernels with real density 1, checks finite section entropy, finite expected log and self-KL zero, and compiles one example simultaneously satisfying every hypothesis of the consistency conjunct: actual iid law, measurable singleton-valued estimator, nonnegative vanishing error, separation, uniform convergence and exact product maximization. A nontrivial compact Bernoulli parameter-family instance is also justified mathematically in scratch/AuditNotes.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T9",
+    "theorem": "SAP.P001a.T9",
+    "fingerprint": "61ba0f9431e4b76ff48755208f0a22c7f4233c016aa8f6b0ea2bb3b4c9e20d47",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean proves MixtureAdmissible ![1/2,1/4,1,sigma,0,1,1] for every sigma>0, checks strict positivity of the three sample entries and a positive normal density. The genuine path has L >= C/sigma with C=exp(-5)/(32 sqrt(2*pi))>0; sigma=C/(abs(B)+1)>0 exceeds any bound B while every admissible likelihood is finite. Every condition of the printed unrestricted-mixture reading is checked individually in scratch/AuditNotes.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T10",
+    "theorem": "SAP.P001a.T10",
+    "fingerprint": "16ac5e4555174195f3fe2a8b3c906a4218622b98d6c1c00771f22630f09d7024",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean checks the positive sample ![1,2,3] and nonemptiness of mixtureRestriction 2 2 (1/2) (1/2) 2 using ![1/2,1/4,1,1,0,1,1]. Thus all hypotheses of the restricted-attainment clause hold together. The same positive sample and the admissible positive-scale path check the unrestricted clause; for arbitrary positive samples the normal mean can be fixed at the first observation while the exponential component stays positive at all others.",
+    "confidence": 0.98
+  }
+]

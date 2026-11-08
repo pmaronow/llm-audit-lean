@@ -303,5 +303,7 @@ theorem simulation_sampling_variance_proof {n : ℕ} (hn : 0 < n) (heven : Even 
   · exact (integral_congr_ae (Filter.Eventually.of_forall
       (fun b => (hp b).2.2.2.2))).trans hmse
 
+example : type_of% @AronowAudit.P009.simulation_sampling_variance := simulation_sampling_variance_proof
+
 end
 end AronowAudit.P009.Wave1

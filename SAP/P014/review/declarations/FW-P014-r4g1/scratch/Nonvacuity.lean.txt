@@ -1,0 +1,183 @@
+import SAP.P014.Defs
+
+open scoped BigOperators
+open scoped ENNReal
+open MeasureTheory
+open SAP.P014
+
+namespace Audit
+noncomputable section
+
+def halfLaw : Measure Bool :=
+  ENNReal.ofReal (1 / 2) • Measure.dirac false +
+  ENNReal.ofReal (1 / 2) • Measure.dirac true
+
+instance : IsProbabilityMeasure halfLaw := by
+  constructor
+  simp only [halfLaw, Measure.add_apply, Measure.smul_apply, Measure.dirac_apply_of_mem,
+    Set.mem_univ, smul_eq_mul, mul_one]
+  rw [← ENNReal.ofReal_add (by norm_num) (by norm_num)]
+  norm_num
+
+def S : Finset (Fin 2) := Finset.univ
+def v (i : S) : ℝ := if (i : Fin 2) = 0 then -1 else 1
+def X (ω : Bool) (i : Fin 2) : ℝ := if ω = (i == 0) then 1 else -1
+def Z (ω : Bool) : TreatmentVector 2 := thresholdAssignment (X ω)
+def Y : PotentialOutcomes 2 := fun i z => if z i then 3 else 2
+
+lemma event_formula (P : Bool → Prop) [DecidablePred P] :
+    eventProbability halfLaw P =
+      (if P false then (1 / 2 : ℝ) else 0) +
+       (if P true then (1 / 2 : ℝ) else 0) := by
+  classical
+  by_cases hf : P false <;> by_cases ht : P true <;>
+    simp [eventProbability, halfLaw, Measure.add_apply, Measure.smul_apply,
+      Measure.dirac_apply', hf, ht, ENNReal.toReal_add]
+
+example : Measurable Z := measurable_of_finite _
+
+example : 0 < (1 : ℕ) ∧ (1 : ℕ) < S.card ∧
+    (∀ᵐ ω ∂halfLaw, armSize S (Z ω) true = 1) ∧
+    (∀ i ∈ S, eventProbability halfLaw (fun ω => Z ω i = true) = (1 : ℝ) / S.card) := by
+  classical
+  refine ⟨by norm_num, by norm_num [S], ?_, ?_⟩
+  · filter_upwards [] with ω
+    simp only [armSize, S, Fin.sum_univ_two]
+    cases ω <;> norm_num [Z, thresholdAssignment, X]
+  · intro i hi
+    fin_cases i <;> norm_num [event_formula, Z, thresholdAssignment, X, S]
+
+lemma v_injective : Function.Injective v := by
+  intro i j h
+  apply Subtype.ext
+  have hi : (i : Fin 2) = 0 ∨ (i : Fin 2) = 1 := by omega
+  have hj : (j : Fin 2) = 0 ∨ (j : Fin 2) = 1 := by omega
+  rcases hi with hi | hi <;> rcases hj with hj | hj <;>
+    simp_all [v] <;> norm_num at h
+
+lemma v_in_window : ∀ i : S, insideWindow 2 (v i) := by
+  intro i
+  unfold v insideWindow
+  split_ifs <;> norm_num
+
+lemma v_count : (Finset.univ.filter (fun i : S => 0 ≤ v i)).card = 1 := by
+  classical
+  let i1 : S := ⟨1, by simp [S]⟩
+  have heq : Finset.univ.filter (fun i : S => 0 ≤ v i) = {i1} := by
+    ext i
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+    have hi : (i : Fin 2) = 0 ∨ (i : Fin 2) = 1 := by omega
+    rcases hi with hi | hi <;>
+      norm_num [v, hi, Subtype.ext_iff, i1]
+  rw [heq]
+  rfl
+
+lemma score_conditions : CorrectedLocalConditions halfLaw X 2 S v := by
+  classical
+  refine ⟨fun i => measurable_of_finite _, ?_, ?_⟩
+  · intro i
+    fin_cases i <;> norm_num [event_formula, X, S, insideWindow]
+  · intro σ
+    let i0 : S := ⟨0, by simp [S]⟩
+    let i1 : S := ⟨1, by simp [S]⟩
+    have h01 : i0 ≠ i1 := by decide
+    have hs : (σ i0 : Fin 2) ≠ (σ i1 : Fin 2) := by
+      intro h
+      exact h01 (σ.injective (Subtype.ext h))
+    have hcases (i : S) : (σ i : Fin 2) = 0 ∨ (σ i : Fin 2) = 1 := by omega
+    rcases hcases i0 with h0 | h0 <;> rcases hcases i1 with h1 | h1
+    all_goals try { exact (hs (h0.trans h1.symm)).elim }
+    all_goals
+      have hforall (P : S → Prop) : (∀ i, P i) ↔ (P i0 ∧ P i1) := by
+        constructor
+        · exact fun h => ⟨h i0, h i1⟩
+        · intro h i
+          have hi : i = i0 ∨ i = i1 := by
+            have hv : (i : Fin 2) = 0 ∨ (i : Fin 2) = 1 := by omega
+            rcases hv with hv | hv
+            · exact Or.inl (Subtype.ext hv)
+            · exact Or.inr (Subtype.ext hv)
+          rcases hi with rfl | rfl
+          · exact h.1
+          · exact h.2
+      norm_num [event_formula, hforall, X, v, h0, h1, i0, i1, S] at *
+
+def A : FiniteDistribution (TreatmentVector 2) :=
+  ⟨{![true, false], ![false, true]}, fun _ => 1 / 2⟩
+
+example : IsDistribution A := by
+  norm_num [IsDistribution, A, funext_iff, Fin.forall_fin_two]
+
+example :
+    (∀ z ∈ A.atoms, armSize S z true = (1 : ℕ)) ∧
+    (∀ i ∈ S, armProbability A i true = (1 : ℝ) / S.card) ∧
+    ConditionallyUniform A S ∧ Noninterfering S Y := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro z hz
+    simp only [A, Finset.mem_insert, Finset.mem_singleton] at hz
+    rcases hz with rfl | rfl <;>
+      simp only [armSize, S, Fin.sum_univ_two] <;> norm_num
+  · intro i hi
+    fin_cases i <;> norm_num [armProbability, armAssignments, A, S,
+      Finset.filter_insert, Finset.filter_singleton, funext_iff, Fin.forall_fin_two]
+  · intro i hi a z hz
+    fin_cases i <;> cases a <;>
+      norm_num [armAssignments, armProbability, A, Finset.filter_insert,
+        Finset.filter_singleton, funext_iff, Fin.forall_fin_two] at hz ⊢
+  · intro i hi z z' h
+    simp only [Y, h]
+
+example : ∀ z : TreatmentVector 2,
+    eventProbability halfLaw (fun ω => Z ω = z) =
+      if z ∈ A.atoms then A.weight z else 0 := by
+  classical
+  intro z
+  cases h0 : z 0 <;> cases h1 : z 1 <;>
+    norm_num [event_formula, Z, thresholdAssignment, X, A, funext_iff,
+      Fin.forall_fin_two, h0, h1]
+
+-- All hypotheses of the score parts of T2, T3(c), and T7 are realized.
+example : 0 < (2 : ℝ) ∧ 2 ≤ S.card ∧ Function.Injective v ∧
+    (∀ i, insideWindow 2 (v i)) ∧ 0 < (1 : ℕ) ∧ 1 < S.card ∧
+    (Finset.univ.filter (fun i : S => 0 ≤ v i)).card = 1 ∧
+    CorrectedLocalConditions halfLaw X 2 S v ∧
+    (∀ᵐ ω ∂halfLaw, ∀ i ∉ S, Z ω i = false) := by
+  refine ⟨by norm_num, by norm_num [S], v_injective, v_in_window,
+    by norm_num, by norm_num [S], v_count, score_conditions, ?_⟩
+  filter_upwards [] with ω
+  simp [S]
+
+-- The hypothesis in the necessity part holds for every potential-outcome array.
+example : ∀ y : PotentialOutcomes 2, ∀ i : Fin 2, ∀ a : Bool,
+    supportAverage A y i a = conditionalAverage A y i a := by
+  classical
+  intro y i a
+  fin_cases i <;> cases a <;>
+    norm_num [supportAverage, conditionalAverage, armMoment, armProbability,
+      armAssignments, A, Finset.filter_insert, Finset.filter_singleton,
+      funext_iff, Fin.forall_fin_two]
+
+example : PositiveArms A S ∧ (∀ z ∈ A.atoms, A.weight z = 1 / (A.atoms.card : ℝ)) := by
+  classical
+  constructor
+  · intro i hi a
+    fin_cases i <;> cases a <;>
+      norm_num [armProbability, armAssignments, A, Finset.filter_insert,
+        Finset.filter_singleton]
+  · norm_num [A, funext_iff, Fin.forall_fin_two]
+
+-- Nonzero values in the purely algebraic target, on a nonempty window.
+example : S.Nonempty ∧
+    windowContrast S (fun _ a => if a then 3 else 2) = 1 := by
+  constructor
+  · exact ⟨0, Finset.mem_univ _⟩
+  · norm_num [windowContrast, S]
+
+-- The diagonal has mass one while distinct subjects have zero tie mass.
+example : eventProbability halfLaw (fun ω => X ω 0 = X ω 0) = 1 ∧
+    eventProbability halfLaw (fun ω => X ω 0 = X ω 1) = 0 := by
+  norm_num [event_formula, X]
+
+end
+end Audit

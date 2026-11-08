@@ -1,0 +1,123 @@
+[
+  {
+    "target_id": "P025-T1",
+    "theorem": "SAP.P025a.T1",
+    "fingerprint": "04c7158f8a38e2dd90328eaaeceda91f113328cb5e72401d3a080c2e0f2f3c94",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not compiled Lean: assign probability 1/2 to each of samples {1} and {0,1} from the population y=(0,1). Actual inclusions are (1/2,1), the full sample has positive probability 1/2, and the constant second inclusion indicator is independent of the first. Bounds alpha=1/2,beta=1 give the nonempty real box [1,2]^2. Its vectors (2,1) and (1,2) attain 1/3 and 2/3; the displayed nonnegative residuals certify the whole real box. The general premises are jointly satisfied by this sorted nonconstant sample and gamma=2; n=1 and gamma=1 supply the degenerate branches. Exact Fraction checks in scratch/exact_audit.py pass. No scratch Lean was run because the accessible packet lacks Mathlib dependencies and SSH was blocked.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T10",
+    "theorem": "SAP.P025a.T10",
+    "fingerprint": "495023d56244ab3f61952fbec3fc6e814c88a3ae678ec558ace0cbcdd2c5de64",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not compiled Lean: four equiprobable draws independently choose one of units 0,1 and one of units 2,3 and always include units 4,5. Outcomes (0,0,1,1,2,3) give actual inclusions (1/2,1/2,1/2,1/2,1,1), positive class totals all one, class sizes (2,2,1,1), true class weights (2,2,1,1), and mean 7/6. Independent repetitions exist as the product of this finite law. The residual denominator is positive and each of its four slack terms is nonnegative on the entire real box. Vanishing residual forces exactly that vector. The corrected cut is two, with printed value 1 versus 7/6; the printed rule's zero cut is separately undefined. Exact arithmetic and finite-design checks pass. No scratch Lean was run; SSH was blocked and the accessible packet lacks Mathlib dependencies.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T11",
+    "theorem": "SAP.P025a.T11",
+    "fingerprint": "3284d1c0459aad74fb478115993cd2f46baf240e7a9550d46b0ccf3510898368",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical instances, not compiled Lean: n=2,y=(0,1),alpha=beta=1 satisfies every sample hypothesis, has the singleton weight box, outcome-test first cut one and stationary first index zero. Alpha=1/2,beta=1 exercises the strict branch, where both first indices are one. For the pair argument choose c1=c2=0,p=q=1,u=0,v=1,a=1,b=2: all premises hold and both replacement objectives 1/2 exceed the inverted objective 1/3. With a=b=1 both differences vanish despite negative E1,E2. For the population branch take N=J=2, identity class map, outcomes (0,1), and pi identically c=1/2; class masses are c, sizes one, and both endpoints are the true mean 1/2. Constant inclusions can be realized by a finite Bernoulli product design. All denominator hypotheses hold. Exact boundary and pair checks pass. No scratch Lean was run; remote access was blocked and Mathlib dependencies were not available in the packet.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T2",
+    "theorem": "SAP.P025a.T2",
+    "fingerprint": "9ed4674abe92ba47790a92409fcead8013bc18139b15cecae4d82a0d19b9acc5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not compiled Lean: the two equiprobable samples {1} and {0,1} have actual inclusions and singleton-class totals (1/2,1). Their PMF has a countable independent product, exactly the path law defined in the statement; coordinate laws, sample independence and tagged pooling implement independent Brewer replication. For h>0 every pooled sample contains each copy's unit 1. The mean is 1/2, true class weights (2,1) lie in [1,2]^2, and the full-box residuals give extrema 1/2 and 4/5. At zero both cut expressions equal 2/3 rather than outcome zero; at one they are 1/2 and 4/5 rather than outcome one, so Assumption 2 holds. The general class premises are jointly realized by these data. Exact rational and finite-product checks pass; the infinite-product conclusion is assessed mathematically, not inferred from those finite checks. No scratch Lean was run because SSH was blocked and packet Mathlib dependencies are absent.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T3",
+    "theorem": "SAP.P025a.T3",
+    "fingerprint": "3b9fe8ff39dcea85697a5f6d8ea6cc9141b80ce39a74080db99f1ad04f8916b6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical instances, not compiled Lean: n=2,y=(0,1),alpha=1/2,beta=1 satisfies all hypotheses with kL=kH=1. Original-scale threshold vectors (2,1),(1,2) give values 1/3,2/3. Their segment (2-t,1+t), 0<=t<=1, is feasible with ratio (1+t)/3 and positive denominator three, so every intermediate value is attained continuously. A singleton y=(7), any positive ordered bounds, and the equal-bound case alpha=beta=1 supply nonempty boundary cases; tied outcomes introduce no incompatible premise. In general positive weights make every attainable set nonempty and bounded, and the endpoint segment has positive denominator. The conditional supplement does not create vacuity because the first conjunct supplies the cuts unconditionally. Exact rational increment, separator and vertex checks pass; these checks are finite corroboration, not universal proofs. No scratch Lean was run due to unavailable packet dependencies and blocked SSH.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T4",
+    "theorem": "SAP.P025a.T4",
+    "fingerprint": "e199230c94c6c5765635a5cb292f9a8cc97a81f290e07a11eec561555b2c6ef4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical instance, not compiled Lean: J=2,y=(0,1),mass=(1/2,1),alpha=1/2,beta=1 satisfies nonempty classes, strict order, positive masses and all bound assumptions. Corrected first cuts are both one, prescribed original-scale vectors (2,1),(1,2) are feasible, and their ratios are 1/2,4/5. These masses are realized as actual class totals in the two-unit design. J=1 is compatible with StrictMono, and alpha=beta=1 gives a valid singleton box, so neither boundary is vacuous. Every general feasible ratio has positive denominator and lies between the extreme outcomes, making both endpoint definitions meaningful. Exact rational weighted-cut, partition and increment checks pass. No scratch Lean was run because Mathlib dependencies were absent from the accessible packet and SSH was blocked.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T5",
+    "theorem": "SAP.P025a.T5",
+    "fingerprint": "ec4214b53157f2b26fd9aa7e09f90ecdef25492b6ca93cb8f0d4387415d555ad",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not compiled Lean: every one of the seven specified quota families satisfies 0<s<=N, has binomial(N,s)>0 members and uniform mass 1/binomial(N,s). Each unit belongs to binomial(N-1,s-1) subsets, hence has actual marginal s/N. Four independent coordinate draws have normalized product mass and factor every rectangular event. Pair A sizes (48,16,864,288) and pair B (48,12,1156,289), with quotas (44,4,291,288), give exactly the canonical actual inclusions in [1/4,1], equal population prevalences 3/4 and 4/5, and the reported counts on every draw. Because s/(s/N)=N, each draw's Hajek estimate equals its population prevalence with positive denominator. A has exchange ratio 288/97<3; B has gallery ratio 11/4<3. Exact Fraction and binomial checks verify the counts, margins, rounding, ratios, interval endpoints and rounded-input identities. No enormous subset family was enumerated, and no Lean scratch was compiled; SSH was blocked and packet dependencies were absent.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T6",
+    "theorem": "SAP.P025a.T6",
+    "fingerprint": "db07120b1f8f06debecd96603c679dff377473af49751a6ed55ede8d65d85731",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical instance, not compiled Lean: pG=44/48,pE=291/579,g1=11/12,g0=1/4,e1=97/288,e0=1,gamma=4 jointly satisfy the strict ordered-prevalence hypotheses, positive selection parameters, equal reweighted estimates 3/4 and both common-cap inequalities. Their directional ratios 11/3 and 288/97 have product 1056/97<16. The two binary intervals overlap at 3/4 for this gamma. Strict prevalence and positive selections keep all denominators positive and the odds-ratio square root real and positive. Exact Fraction checks verify both numerical odds ratios, the overlap/nonoverlap comparisons at four/three, and every decimal threshold by exact squaring; no floating-point inference is used. The overlap and product equivalences also follow by multiplying positive denominators and using injectivity of q/(1-q) on (0,1). No scratch Lean was run because SSH was blocked and accessible Mathlib dependencies were absent.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T7",
+    "theorem": "SAP.P025a.T7",
+    "fingerprint": "7d15c540de6be8979a3da2b646493ba63abc787890a22f0143a4e16d245d6b4f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Genuine refutation witness, checked mathematically rather than compiled Lean: n=2,y=(0,1),alpha=1/2,beta=1 is nonempty, sorted and inside the stated positive ordered bounds. The actual finite design with samples {1} and {0,1}, each of probability 1/2, has inclusions (1/2,1) and yields the full sample with positive probability. The printed first cut must be zero, with lower value 1/2. Feasible reciprocal-probability weights (2,1) have positive denominator three and give 1/3, directly contradicting the printed optimizer and interval assertion under its own reading. The universal upper-half hypotheses also have this instance; upper cut one yields the attained maximum 2/3. Exact rational checks corroborate the witness. No undefined quantity or omitted design condition supports the refutation. No scratch Lean was run; dependencies were absent in the packet and SSH was blocked.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T8",
+    "theorem": "SAP.P025a.T8",
+    "fingerprint": "d8bee1daaa223b2b9ccba2b9abbe9c9ef9d7bf0e2db2be64496b770dd314a21c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Genuine refutation witness, checked mathematically rather than compiled Lean: the normalized four-draw six-unit design has outcomes (0,0,1,1,2,3), surjective actual outcome classes (0,1,2,3), inclusions (1/2,1/2,1/2,1/2,1,1), class totals all one, and bounds alpha=1/2,beta=1. Independent copies can be drawn from the countable product of that one-step finite law; there is no repeated single draw. Every strict class/positive-mass hypothesis holds, as do all eight Assumption 2 comparisons even though they are not needed here. Printed cut zero has ratio 3/2 while feasible weights (2,2,1,1) give the certified minimum 7/6 with positive denominator six. Thus the canonical printed lower-optimizer clause is false under its own conditions. The separate Option none at zero is not the reason for refutation. Positive masses and weights also make the universal upper theorem's domain nonempty and its extrema meaningful. Exact rational and finite-law checks pass. No scratch Lean was run due to absent packet Mathlib dependencies and blocked SSH.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T9",
+    "theorem": "SAP.P025a.T9",
+    "fingerprint": "ebfc43b97c23209a87802bf451f333c3bb9bbf1ea88a7346acf4f81827468ea3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical instance, not compiled Lean: J=4,y=(0,1,2,3),mass=(1,1,1,1),alpha=1/2,beta=1 satisfies all hypotheses and is realized by the six-unit design. At corrected first cut two the disjoint numerator/denominator are 7 and 6; the two duplicated classes contribute numerator one and denominator two, yielding printed value 8/8=1 and discrepancy -1/6. Both invalid-cut branches zero and one are present in the same nonempty data. For general positive masses and a nonempty class set, both D and D plus the two extra masses are positive; the endpoint is over a nonempty bounded set. J=1 and equal bounds remain legitimate instances rather than excluded cases. Exact partition and duplicate-tail checks pass on the finite rational grid. No scratch Lean was compiled because the accessible packet lacks Mathlib dependencies and SSH was blocked.",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,85 @@
+import SAP.P012a.Challenge
+
+open SAP.P012a
+open Finset
+open scoped Classical
+
+set_option maxRecDepth 20000
+set_option maxHeartbeats 1000000
+
+theorem nvPairEq {α : Type*} [DecidableEq α] (a b c d : α) :
+    ({a,b} : Finset α) = {c,d} ↔ (a=c ∧ b=d) ∨ (a=d ∧ b=c) := by
+  rw [← Finset.coe_inj]
+  simpa only [Finset.coe_insert, Finset.coe_singleton] using
+    (Set.pair_eq_pair_iff (x := a) (y := b) (z := c) (w := d))
+
+noncomputable def nv11Data : Data :=
+  ⟨{1,2}, {1}, fun _ => 1, id, fun _ => 2, fun i => i == 2⟩
+
+noncomputable def nv11Start : State := leafCompletion nv11Data true
+noncomputable def nv11End : State := wholeSwap nv11Start 1 2 0 0
+
+-- All input conditions of both the slot-zero and arbitrary-slot swap clauses.
+theorem nv11Inputs :
+    Admissible nv11Data ∧
+    1 ∈ nv11Data.sampled ∧ 2 ∈ nv11Data.sampled ∧
+    recruitmentDegree nv11Data 1 < nv11Data.degree 1 ∧
+    recruitmentDegree nv11Data 2 < nv11Data.degree 2 ∧
+    nv11Data.trait 1 = false ∧ nv11Data.trait 2 = true ∧
+    0 < spare nv11Data 1 ∧ 0 < spare nv11Data 2 ∧
+    nv11Start.vertices = (leafCompletion nv11Data true).vertices ∧
+    nv11Start.edges = (leafCompletion nv11Data true).edges ∧
+    (∀ k ∈ nv11Data.sampled, nv11Start.trait (s k) = nv11Data.trait k) ∧
+    nv11Start.trait (u 1 0) = false ∧ nv11Start.trait (u 2 0) = true := by
+  norm_num [nv11Data, nv11Start, Admissible, spare, recruitmentDegree,
+    recruitmentEdges, nonseeds, leafCompletion, Finset.subset_iff, s, u,
+    Finset.filter_insert, Finset.filter_singleton, Finset.sdiff_singleton_eq_erase]
+
+-- The constructed compatible pair has genuine defined, unequal h values.
+theorem nv11Witness :
+    Compatible nv11Data nv11Start ∧ Compatible nv11Data nv11End ∧
+    HomophilyDefined nv11Start ∧ HomophilyDefined nv11End ∧
+    homophily nv11Start = some (1/3) ∧ homophily nv11End = some (-1) ∧
+    hValue nv11Start - hValue nv11End = 4/3 := by
+  norm_num [nv11Data, nv11Start, nv11End, wholeSwap, addEdge, removeEdge,
+    Compatible, Augmented, Simple, HomophilyDefined, homophily, hValue,
+    hNumerator, hDenominator, adjacency, z, graphDegree, leafCompletion,
+    leafVertices, leafEdges, spare, recruitmentDegree, recruitmentEdges,
+    nonseeds, sampledVertices, Finset.subset_iff, s, u,
+    Finset.filter_insert, Finset.filter_singleton, Finset.sdiff_singleton_eq_erase,
+    Finset.range_add_one, nvPairEq, Finset.card_insert_eq_ite,
+    Finset.erase_insert_of_ne]
+
+-- Independent check of the closed T12 witness, with every compatibility guard.
+theorem nv12Inputs :
+    Admissible a2Data ∧
+    Compatible a2Data (a2State true) ∧ Compatible a2Data (a2State false) ∧
+    recruitmentDegree a2Data 1 = 2 ∧ a2Data.degree 1 = 3 ∧
+    a2Data.trait 1 = true ∧ a2Data.parent 2 = 1 ∧ a2Data.parent 3 = 1 ∧
+    (∀ i ∈ a2Data.sampled, {s i,u 4 0} ∈ (a2State true).edges ↔ i = 1) ∧
+    PreferentialDefined a2Data (a2State true) ∧
+    PreferentialDefined a2Data (a2State false) := by
+  norm_num [Admissible, Compatible, Augmented, Simple, PreferentialDefined,
+    a2Data, a2State, graphDegree, recruitmentDegree, recruitmentEdges,
+    nonseeds, sampledVertices, susceptible, notYetSampled,
+    Finset.subset_iff, s, u, Finset.filter_insert, Finset.filter_singleton,
+    Finset.sdiff_singleton_eq_erase, nvPairEq, Finset.card_insert_eq_ite,
+    Finset.erase_insert_of_ne]
+  decide
+
+theorem nv12Values :
+    preferential a2Data (a2State true) = some 0 ∧
+    preferential a2Data (a2State false) = some (5/12) ∧
+    pValue a2Data (a2State true) - pValue a2Data (a2State false) = -5/12 ∧
+    -1 / ((nonseeds a2Data).card *
+      ((susceptible a2Data (a2State true) 1 2).card : ℝ)) = -1/6 ∧
+    -1 / ((nonseeds a2Data).card *
+      ((susceptible a2Data (a2State true) 1 3).card : ℝ)) = -1/4 := by
+  norm_num [preferential, PreferentialDefined, pValue, pSum, sameSusceptible,
+    susceptible, notYetSampled, nonseeds, a2Data, a2State, s, u,
+    Finset.filter_insert, Finset.filter_singleton, Finset.sdiff_singleton_eq_erase]
+
+#print axioms nv11Inputs
+#print axioms nv11Witness
+#print axioms nv12Inputs
+#print axioms nv12Values

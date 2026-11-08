@@ -2,7 +2,7 @@ import AronowAudit.P004.Wave1.ObservationalCoverageBlueprint
 import AronowAudit.P004.Wave1.ObservationalCoverage.O4
 
 /-! Second moments for the actual active-population design.  The elementary helpers in
-this file are also used by O10--O12. -/
+this file are also used by O10--O12.  This is a drafter's source: Lean has not been run. -/
 
 namespace AronowAudit.P004.Wave1.ObservationalCoverage
 

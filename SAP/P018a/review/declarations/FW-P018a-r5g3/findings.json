@@ -1,0 +1,46 @@
+[
+  {
+    "target_id": "P018-T11",
+    "theorem": "SAP.P018a.T11",
+    "fingerprint": "e73ad5528d11aa457e570bb0f2dae140754b28baf5b20e4c061ba5f42f4e4d24",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:15–54 and :135–139 independently of the target theorem: fairLaw is a probability measure, Standing signKernel holds with bound 2 and Q=1, there are three dyads at N=3, every sample Gram is [3], and the unit coordinates are independent under the product law. The repeated construction has positive count T and coefficient Gram T for T>=1. The mixed witness is the explicit nonempty product of uniform[-1,1] and fair-sign probability laws; independence centers the scores, boundedness gives all moments, and Q=diag(1,2/3) is nonsingular. The latter is checked mathematically, not reproved by the scratch file.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T12",
+    "theorem": "SAP.P018a.T12",
+    "fingerprint": "786be742c628cec527b01aa95203e0d73b5effd7dba3ca265d783c3eca770d4a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:85–132: U=Bool, k=1, N=3, R=singleRecord signKernel, all weights 1. The example simultaneously proves WholeRecordRegular R 3, N>=2, L=3>0, nonsingular repeatedH, nonsingular recordWeightedH, nonsingular expected unnormalized Gram, and Standing signKernel. signGram at :48 proves sample rank for every sample, and :135–139 proves independence of the units. This satisfies every premise of the general contracts, sparse covariance, reductions and normalization identity in a nonzero dimension.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T13",
+    "theorem": "SAP.P018a.T13",
+    "fingerprint": "45aad60b162cc788bff192f23ee8bcd76211e096b049ed99c4b995c150664ab0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:56–80 using only definitions and Mathlib: all six responses are binary, the six endpoint sets are distinct pairs, sample Gram determinant is 140, logistic bread determinant at beta=0 is 35/4, the logistic score sum is zero, and the printed/corrected (1,1) meat entries are respectively 14 and 27/2. Thus the specified finite data are genuine and the discrepancy does not use a singular inverse or an unfitted residual array. Global strict concavity and unique maximization are clauses of the certified target, not assumed in these checks.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T14",
+    "theorem": "SAP.P018a.T14",
+    "fingerprint": "12bf0b083f48248c11e9b70ed4b645ce9756a304fa5835f0e5af0dfdd2061c51",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:142–148: an existential example explicitly constructs s=sixMembers, X=logitX, Y=logitY, beta=0, with every endpoint set of cardinality 2, injective s, binary Y and nonzero logistic-bread determinant simultaneously. The independent calculations at :77–80 establish unequal printed and corrected meat entries for these same data.",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,122 @@
+[
+ {
+  "target_id": "P006-T1",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T1_average_counterexample",
+   "AronowAudit.P006.T1_conditional_mean_mismatch",
+   "AronowAudit.P006.binaryWelfare_SUTVA",
+   "AronowAudit.P006.realized_rewards_SUTVA",
+   "AronowAudit.P006.rewardE001_formula",
+   "AronowAudit.P006.wATT_zero"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P006.coin_is_probability",
+    "reason": "The exact Bernoulli probability helper is not separately invoked; the fixed finite model is explicit in the definitions."
+   },
+   {
+    "lean_name": "AronowAudit.P006.treatedCount_two",
+    "reason": "Treatment counts are already present in the exact printed reward definition and the exported witness theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P006.twoATO_formula",
+    "reason": "The specialized expected-reward polynomial is used directly instead of the more general two-unit expansion."
+   },
+   {
+    "lean_name": "AronowAudit.P006.wATO_two",
+    "reason": "The realized reward expansion is already incorporated in the specialized witness; SUTVA transport uses the separately credited invariance row."
+   }
+  ],
+  "statement_definition": "SAP.P006a.T1Statement"
+ },
+ {
+  "target_id": "P006-T2",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T2_one_unit_factor",
+   "AronowAudit.P006.T2_population_conditional_rule",
+   "AronowAudit.P006.Wave1.T2_corrected_average_split",
+   "AronowAudit.P006.Wave1.T2_finite_threshold_proof",
+   "SAP.P006a.WH.W1.T2_whole",
+   "SAP.P006a.WH.W1.T2_assembly",
+   "SAP.P006a.WH.W1.T2_L1_proof",
+   "SAP.P006a.WH.W1.T2_L2_proof",
+   "AronowAudit.P006.T1_average_counterexample",
+   "AronowAudit.P006.Wave1.T2_actual_averages",
+   "AronowAudit.P006.Wave1.T2_treatment_stats",
+   "AronowAudit.P006.Wave1.T2_nonempty_mass",
+   "AronowAudit.P006.Wave1.T2_objective_formula",
+   "AronowAudit.P006.Wave1.T2_event_mean",
+   "AronowAudit.P006.Wave1.T2_best_congr",
+   "AronowAudit.P006.Wave1.T2_geometric",
+   "AronowAudit.P006.Wave1.T2_fid_baseline_vectorUnbiased",
+   "AronowAudit.P006.Wave1.T6_independent_vector",
+   "AronowAudit.P006.Wave1.T7_bit_norm",
+   "AronowAudit.P006.Wave1.T7_bit_mul",
+   "AronowAudit.P006.Wave1.T2_total_moment"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P006a.T2WholeStatement"
+ },
+ {
+  "target_id": "P006-T3",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.Wave1.T3_corrected_ATT_regret_proof",
+   "AronowAudit.P006.bestValue_eq",
+   "SAP.P006a.WH.W1.T3_whole",
+   "SAP.P006a.WH.W1.T3_assembly",
+   "AronowAudit.P006.T1_average_counterexample",
+   "AronowAudit.P006.Wave1.RepairT6T7_actual_welfare",
+   "AronowAudit.P006.Wave1.T2_actual_averages",
+   "AronowAudit.P006.Wave1.T2_treatment_stats",
+   "AronowAudit.P006.emptyFactor_ge_one",
+   "AronowAudit.P006.Wave1.T7_policy_mul"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P006.positive_factor_regret",
+    "reason": "The experiment theorem already exports the abstract positive-factor regret consequence."
+   }
+  ],
+  "statement_definition": "SAP.P006a.T3WholeStatement"
+ },
+ {
+  "target_id": "P006-T4",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T4_unbiasedness_counterexamples",
+   "AronowAudit.P006.T4_zero_heterogeneity_bound_failure",
+   "AronowAudit.P006.wATT_one_eq_TT",
+   "AronowAudit.P006.witnesses_AB_formula"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P006.oneTT_formula",
+    "reason": "The specialized witness formula supplies the actual expected rewards; the general one-unit expansion is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P006a.T4Statement"
+ },
+ {
+  "target_id": "P006-T5",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T5_ranking_counterexample",
+   "AronowAudit.P006.ranking_witness_formula"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P006a.T5Statement"
+ }
+]

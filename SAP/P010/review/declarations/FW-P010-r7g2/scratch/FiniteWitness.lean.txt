@@ -1,0 +1,81 @@
+import SAP.P010.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+open MeasureTheory ProbabilityTheory Set
+open scoped ENNReal NNReal Classical Topology BigOperators
+
+namespace PalomarReviewFinite
+open SAP.P010
+
+macro "ennr" : tactic => `(tactic|
+  (apply (ENNReal.toReal_eq_toReal_iff' (by finiteness) (by finiteness)).mp
+   norm_num [ENNReal.toReal_add, ENNReal.toReal_add, ENNReal.toReal_mul, ENNReal.toReal_div]))
+
+-- All calculations here use only Defs and Mathlib, without a Challenge theorem.
+lemma finite_integrable {n K d : ℕ} (atoms : Fin n → Population K d)
+    (mass : Fin n → ℝ≥0∞) (hf : ∀ i, mass i ≠ ∞) (f : Population K d → ℝ) :
+    Integrable f (finitePopulation atoms mass) := by
+  rw [finitePopulation, Measure.sum_fintype]
+  exact integrable_finsetSum_measure.mpr (fun i _ =>
+    (integrable_dirac (by simp)).smul_measure (hf i))
+
+lemma joint_prob : IsProbabilityMeasure jointDependencePopulation := by
+  constructor
+  norm_num [ENNReal.toReal_add, jointDependencePopulation, finitePopulation, Measure.sum_apply_of_countable,
+    tsum_fintype, Fin.sum_univ_succ, Measure.dirac_apply] <;> try ennr
+
+lemma joint_independent (a : Fin 2) :
+    IndepFun (fun ω => (potentialOutcome a ω, potentialCheck a ω)) arm jointDependencePopulation := by
+  rw [indepFun_iff_measure_inter_preimage_eq_mul]
+  intro s t _ _
+  by_cases h0 : ((0 : ℝ),true) ∈ s <;> by_cases h1 : ((1 : ℝ),true) ∈ s <;>
+    by_cases ht0 : (0 : Fin 2) ∈ t <;> by_cases ht1 : (1 : Fin 2) ∈ t <;>
+    fin_cases a <;>
+    norm_num [ENNReal.toReal_add, jointDependencePopulation, finitePopulation, Measure.sum_apply_of_countable,
+      tsum_fintype, Fin.sum_univ_succ, Measure.dirac_apply, jointDependenceAtoms,
+      potentialOutcome, potentialCheck, arm, h0, h1, ht0, ht1] <;> try ennr
+
+lemma joint_assumptions : populationAssumptions jointDependencePopulation := by
+  refine ⟨joint_prob, ⟨joint_independent, ?_⟩, ?_⟩
+  · intro a
+    fin_cases a <;>
+      norm_num [ENNReal.toReal_add, assigned, arm, jointDependencePopulation, finitePopulation,
+        Measure.sum_apply_of_countable, tsum_fintype, Fin.sum_univ_succ,
+        Measure.dirac_apply, jointDependenceAtoms] <;> try ennr
+  · intro a
+    fin_cases a <;>
+      norm_num [ENNReal.toReal_add, passRate, passed, check, assigned, arm, jointDependencePopulation,
+        finitePopulation, Measure.sum_apply_of_countable, tsum_fintype,
+        Fin.sum_univ_succ, Measure.dirac_apply, jointDependenceAtoms] <;> try ennr
+
+example : populationAssumptions jointDependencePopulation ∧
+    jointDependencePopulation sameCheck = 1 ∧ jointDependencePopulation allPass = 1 ∧
+    (∀ a, jointDependencePopulation (passed ∩ assigned a) = 1/2) ∧
+    Integrable response jointDependencePopulation ∧
+    Integrable (fun ω => potentialOutcome 0 ω - potentialOutcome 1 ω) jointDependencePopulation := by
+  refine ⟨joint_assumptions, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [ENNReal.toReal_add, sameCheck, jointDependencePopulation, finitePopulation,
+      Measure.sum_apply_of_countable, tsum_fintype, Fin.sum_univ_succ,
+      Measure.dirac_apply, jointDependenceAtoms] <;> try ennr
+  · norm_num [ENNReal.toReal_add, allPass, jointDependencePopulation, finitePopulation,
+      Measure.sum_apply_of_countable, tsum_fintype, Fin.sum_univ_succ,
+      Measure.dirac_apply, jointDependenceAtoms] <;> try ennr
+  · intro a
+    fin_cases a <;>
+      norm_num [ENNReal.toReal_add, passed, check, assigned, arm, jointDependencePopulation,
+        finitePopulation, Measure.sum_apply_of_countable, tsum_fintype,
+        Fin.sum_univ_succ, Measure.dirac_apply, jointDependenceAtoms] <;> try ennr
+  · exact finite_integrable _ _ (by intro i; norm_num) _
+  · exact finite_integrable _ _ (by intro i; norm_num) _
+
+example : jointDependencePopulation {ω | potentialOutcome 0 ω = 0 ∧ potentialOutcome 1 ω = 0 ∧
+      check ω = true ∧ arm ω = 0} = 1/4 ∧
+    jointDependencePopulation {ω | potentialOutcome 0 ω = 0 ∧ potentialOutcome 1 ω = 0 ∧ check ω = true} *
+      jointDependencePopulation (assigned 0) = 1/8 := by
+  norm_num [ENNReal.toReal_add, jointDependencePopulation, finitePopulation, Measure.sum_apply_of_countable,
+    tsum_fintype, Fin.sum_univ_succ, Measure.dirac_apply, jointDependenceAtoms,
+    potentialOutcome, check, assigned, arm]
+  constructor <;> ennr
+
+end PalomarReviewFinite

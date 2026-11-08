@@ -1,0 +1,324 @@
+[
+ {
+  "target_id": "P024-T1",
+  "decision": "whole",
+  "theorem": "SAP.P024.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P024.calendar_ht_counterexample",
+   "AronowAudit.P024.calendar_null_counterexample",
+   "AronowAudit.P024.calendar_p_grid",
+   "AronowAudit.P024.randomized_timing_no_trend_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P024.T1Statement"
+ },
+ {
+  "target_id": "P024-T2",
+  "decision": "whole",
+  "theorem": "SAP.P024.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P024.randomization_test_valid",
+   "AronowAudit.P024.raw_before_after_bias",
+   "AronowAudit.P024.raw_observed_effect_bias",
+   "AronowAudit.P024.timing_overlap_unbiased"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P024.expectation_add",
+    "reason": "Auxiliary already incorporated in timing_overlap_unbiased or randomization_test_valid; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.expectation_const",
+    "reason": "Auxiliary already incorporated in timing_overlap_unbiased or randomization_test_valid; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.expectation_div",
+    "reason": "Auxiliary already incorporated in timing_overlap_unbiased or randomization_test_valid; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.expectation_mul",
+    "reason": "Auxiliary already incorporated in timing_overlap_unbiased or randomization_test_valid; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.expectation_sub",
+    "reason": "Auxiliary already incorporated in timing_overlap_unbiased or randomization_test_valid; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.expectation_sum",
+    "reason": "Auxiliary already incorporated in timing_overlap_unbiased or randomization_test_valid; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.ht_coordinate_unbiased",
+    "reason": "Auxiliary already incorporated in timing_overlap_unbiased or randomization_test_valid; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.timing_ht_unbiased",
+    "reason": "Auxiliary already incorporated in timing_overlap_unbiased or randomization_test_valid; no separate invocation."
+   }
+  ],
+  "statement_definition": "SAP.P024.T2Statement"
+ },
+ {
+  "target_id": "P024-T4",
+  "decision": "whole",
+  "theorem": "SAP.P024.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P024.dominant_cluster_inconsistent",
+   "AronowAudit.P024.dominant_complete_distribution",
+   "AronowAudit.P024.dominant_complete_limits",
+   "AronowAudit.P024.dominant_conditional_unbiased",
+   "AronowAudit.P024.dominant_effect",
+   "AronowAudit.P024.dominant_error_bound",
+   "AronowAudit.P024.dominant_exact_value",
+   "AronowAudit.P024.dominant_individual_outcomes",
+   "AronowAudit.P024.dominant_max_weight",
+   "AronowAudit.P024.dominant_probability_lower_bound",
+   "AronowAudit.P024.dominant_share_limit",
+   "AronowAudit.P024.dominant_six_actual_checks",
+   "AronowAudit.P024.dominant_six_checks",
+   "AronowAudit.P024.dominant_total_size",
+   "AronowAudit.P024.nonempty_arm_probability",
+   "AronowAudit.P024.uniform_subsets_independent"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P024.cluster_dim_subset",
+    "reason": "Auxiliary already incorporated in the retained exact formulas, design distribution, or numerical checks; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.clustered_consistency_counterexample",
+    "reason": "Its assembled witness is obtained here from its separately credited components; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.dominant_means",
+    "reason": "Its mean calculations are already inside the exact-value theorem; the concrete population specifies the individual outcomes."
+   },
+   {
+    "lean_name": "AronowAudit.P024.expectation_if_constant",
+    "reason": "Auxiliary already incorporated in the retained exact formulas, design distribution, or numerical checks; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.half_dominant_ratio_limit",
+    "reason": "The same ratio limit is included in dominant_complete_limits."
+   },
+   {
+    "lean_name": "AronowAudit.P024.probability_all",
+    "reason": "Auxiliary already incorporated in the retained exact formulas, design distribution, or numerical checks; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.probability_indicator_expected",
+    "reason": "Auxiliary already incorporated in the retained exact formulas, design distribution, or numerical checks; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.sum_two_values",
+    "reason": "Auxiliary already incorporated in the retained exact formulas, design distribution, or numerical checks; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.uniform_fixed_subset_marginal",
+    "reason": "Auxiliary already incorporated in the retained exact formulas, design distribution, or numerical checks; no separate invocation."
+   }
+  ],
+  "statement_definition": "SAP.P024.T4Statement"
+ },
+ {
+  "target_id": "P024-T5",
+  "decision": "whole",
+  "theorem": "SAP.P024.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P024.corrected_cluster_consistency",
+   "AronowAudit.P024.no_dominance_iff_squared_weights",
+   "AronowAudit.P024.population_weights",
+   "SAP.P024.WH.W1.T5_whole",
+   "SAP.P024.WH.W1.T5_assembly",
+   "SAP.P024.WH.W1.T5_L1_proof",
+   "SAP.P024.WH.W1.P.T5_L1.fewDozen_means",
+   "AronowAudit.P024.cluster_dim_subset",
+   "AronowAudit.P024.sum_two_values",
+   "AronowAudit.P024.dominant_complete_distribution",
+   "AronowAudit.P024.expectation_if_constant",
+   "AronowAudit.P024.uniform_subsets_independent",
+   "AronowAudit.P024.dominant_effect",
+   "AronowAudit.P024.dominant_share_limit",
+   "AronowAudit.P024.dominant_cluster_inconsistent"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P024.assignment_total_complement",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.assignment_total_indicator",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.cluster_population_probability_bound",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.complete_joint_probability",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.complete_marginal",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.complete_pair_inclusion",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.complete_probability_count",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.complete_weighted_moments",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.exchangeable_weighted_moments",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.expectation_mono",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.finite_chebyshev",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.finite_mean_abs_bound",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.finite_ratio_good_event",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.finite_sample_probability_bound",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.finite_variance_identity",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.independent_exclusion_probability",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.independent_marginal",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.independent_pair_moment",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.independent_weighted_moments",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.normalized_total_moments",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.population_effect_normalized",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.population_estimator_normalized",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.population_total_positive",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.probability_bounds",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.probability_mono",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.probability_not",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.probability_union_le",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.ratio_error_bound",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.two_arm_ratio_bound",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.uniform_probability_card",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.variance_const_sub",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.weight_square_bounds",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P024.weighted_mean_abs_bound",
+    "reason": "Auxiliary already incorporated in corrected_cluster_consistency or the retained weight equivalence; no separate invocation."
+   }
+  ],
+  "statement_definition": "SAP.P024.T5WholeStatement"
+ },
+ {
+  "target_id": "P024-T6",
+  "decision": "restricted",
+  "theorem": "SAP.P024.T6",
+  "restriction": "Require either a treatment count m fixed almost surely, 0<m<N, with every actual unit marginal m/N, or an assignment law on proper nonempty subsets uniform conditional on its treatment count. This includes complete individual randomization and independent common-p individual assignment conditioned on nonempty arms. Arbitrary equal-marginal dependent laws with varying counts are not covered.",
+  "rows_used": [
+   "AronowAudit.P024.individual_observed_dim_unbiased",
+   "SAP.P024.WH.W2.T6_whole",
+   "SAP.P024.WH.W2.T6_assembly",
+   "SAP.P024.WH.W2.fixedSupportUnbiasedW2",
+   "AronowAudit.P024.complete_marginal",
+   "AronowAudit.P024.equal_cluster_bernoulli_scope_repair",
+   "AronowAudit.P024.bernoulli_nonempty_mass_probability",
+   "AronowAudit.P024.bernoulli_nonempty_mass_positive",
+   "AronowAudit.P024.equal_cluster_exchangeable_nonempty"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P024.complete_individual_dim_unbiased",
+    "reason": "Uniform fixed-count assignment is subsumed by the retained fixed-count common-marginal result."
+   },
+   {
+    "lean_name": "AronowAudit.P024.fixed_dim_ht",
+    "reason": "Auxiliary fixed-divisor algebra is already incorporated in the retained observed-denominator result."
+   },
+   {
+    "lean_name": "AronowAudit.P024.individual_dim_unbiased",
+    "reason": "The retained observed-denominator result already incorporates this fixed-divisor intermediate."
+   },
+   {
+    "lean_name": "SAP.P024.WH.W1.T6_whole",
+    "reason": "Historical counterexample declaration; not used in the retained positive specialization."
+   },
+   {
+    "lean_name": "SAP.P024.WH.W1.T6_assembly",
+    "reason": "Historical counterexample declaration; not used in the retained positive specialization."
+   }
+  ],
+  "statement_definition": "SAP.P024.T6WholeStatement_W2"
+ }
+]

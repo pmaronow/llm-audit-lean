@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Recheck credited declarations in an already built Lake project, one work at a time.
+"""Recheck all current Solution theorems in an already built Lake project, one work at a time.
 
 This requires substantial memory for some works. Each work runs in a separate
 Lean process, so imported environments are released before the next work.
@@ -41,7 +41,8 @@ def main():
     parser.add_argument('--output', type=Path, default=Path('.lake/axiom-output'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    rows = [json.loads(line) for line in (root / 'catalog/results.jsonl').read_text().splitlines()]
+    index = json.loads((root / 'package/current-results.json').read_bytes())
+    rows = [row for row in index['targets'] if row['theorem']]
     works = sorted({r['work_id'] for r in rows})
     if args.work and args.work not in works:
         parser.error('Unknown work identifier')
@@ -51,8 +52,8 @@ def main():
     all_axioms = {}
     for work in ([args.work] if args.work else works):
         selected = [r for r in rows if r['work_id'] == work]
-        names = sorted({r['lean_name'] for r in selected})
-        imports = sorted({r['module'] for r in selected})
+        names = sorted({r['theorem'] for r in selected})
+        imports = [f'SAP.Works.{work}.Solution']
         source = '\n'.join(['import ' + m for m in imports] + [''] + ['#print axioms ' + n for n in names]) + '\n'
         path = args.output.resolve() / (work + '.lean')
         path.write_text(source)
@@ -66,7 +67,7 @@ def main():
         all_axioms.update(checked)
         (args.output / (work + '.json')).write_text(json.dumps(checked, indent=2, sort_keys=True) + '\n')
     (args.output / 'axioms.json').write_text(json.dumps(all_axioms, indent=2, sort_keys=True) + '\n')
-    print(f'Checked {len(all_axioms)} distinct credited declarations; only standard axioms.')
+    print(f'Checked {len(all_axioms)} current Solution theorems; only standard axioms.')
     return 0
 
 

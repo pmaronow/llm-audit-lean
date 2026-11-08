@@ -1,10 +1,11 @@
 /-
 The proof of `condExp_on_fiber` adapts the restriction and uniqueness argument
 of Mathlib's `condExp_generateFrom_singleton` to arbitrary measurable fibers.
-Source module: Mathlib.Probability.Kernel.Condexp.
+Source: Mathlib/Probability/Kernel/Condexp.lean, revision
+ d13f23b723b8a846827a245b89c10fc7d3f11612.
 Copyright (c) 2023 Rémy Degenne. Released under Apache 2.0, as described in
-Mathlib's LICENSE.
-See NOTICE at the repository root.
+Mathlib's LICENSE. The finite-support mean and independence extensions below
+are new proofs in this repository.
 -/
 import Mathlib.Probability.Independence.Basic
 import Mathlib.Probability.Kernel.Condexp
@@ -110,5 +111,8 @@ lemma condExp_eq_of_fiber_integrals {Ω B : Type*} [MeasurableSpace Ω]
   filter_upwards [hs,(eventually_all_finset S).mpr hx] with ω hω hall
   exact hall (X ω) hω rfl
 
+#print axioms condExp_eq_of_fiber_integrals
+#print axioms condIndep_of_fiber_indep
+#print axioms condExp_on_fiber
 end
 end AronowAudit.P015.FiniteConditioning

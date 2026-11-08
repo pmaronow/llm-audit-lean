@@ -4,7 +4,8 @@ import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 
-/-! Fixed-design, compact-constrained logistic maximum likelihood. -/
+/-! Fixed-design, compact-constrained logistic maximum likelihood.
+The held declaration is used only for the concluding type check. -/
 namespace AronowAudit.P004.Wave1
 
 open scoped BigOperators Matrix Classical Topology
@@ -718,6 +719,8 @@ theorem corrected_mle_proof {k : ℕ} (O : ∀ N, Fin N → Fin k → ℝ)
       mle_expansion_bound (O N) θ₀ (θhat N z) z U m c hN hU.le hm hc (hO N) hw0 hgram hs
   have hE := mle_good_event_rate p hp D E K B r hK hB hr hmoment hexp
   exact ⟨hE, mle_littleop p hp E hE⟩
+
+example : type_of% @AronowAudit.P004.corrected_mle := corrected_mle_proof
 
 end
 end AronowAudit.P004.Wave1

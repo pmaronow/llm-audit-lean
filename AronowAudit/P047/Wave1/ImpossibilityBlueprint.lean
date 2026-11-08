@@ -2,27 +2,37 @@ import AronowAudit.P047.P047_Identification
 import Mathlib.MeasureTheory.Function.Floor
 
 /-!
-# P047-T3: unknown-propensity impossibility with randomized procedures
+# Blueprint: P047-T3, unknown-propensity impossibility with randomized procedures
 
-`Target` quantifies an arbitrary auxiliary seed `(R, Q)` independent of the
-sample. Procedures are measurable functions of the observed sample and seed.
-Interval endpoints are measurable `EReal` functions, allowing finite,
-unbounded or empty intervals. The definitions `randRisk`, `randStrictRisk`,
-`randCoverage` and `widthProb` express the risk, coverage and width
-probabilities over `UnknownModel`, with the fixed `baselineLaw`.
-The width event is `lo + ((1/6 : ℝ) : EReal) < hi`.
+Wave 1, group P005-P006-P017-P023-P046-P047. Resolution `repair_and_prove` (mapper §9, accepted
+by both referees with no fixes).
 
-For `M + 1` equal cells of `(0,1]` and a type vector
-`σ : Fin (M+1) → Bool`, the family laws `familyMeasure M family σ` are
-generated from three independent uniforms `(W, V_A, V_Y)`:
-`A = 1{V_A ≤ e_σ(W)}`, `Y0 = 0`, `Y1 = 1{V_Y ≤ m_σ(W)}`,
-with `e = cellPropensity`, `m = cellMean`. Averaging over the fair type prior,
-the observed n-sample laws of both families agree with the baseline on the
-no-collision event. Each observed-data-and-seed event probability therefore
-differs by at most `n(n-1)/(2(M+1))`.
+The frozen draft `AronowAudit.P047.unknown_propensity_impossibility` (line 870) covers only
+deterministic procedures and finite ordered interval endpoints. The repaired `Target` (mapper's
+`unknown_propensity_impossibility_randomized`) quantifies an arbitrary auxiliary seed `(R, Q)`
+independent of the sample (procedures are measurable functions of observed sample and seed) and
+measurable `EReal` endpoints (finite, unbounded or empty intervals); the class `UnknownModel`,
+`observedSample`, `ate`, the constants and the single fixed `baselineLaw` are unchanged. The
+`let`-bound risk/coverage functions of the mapper's statement are the named definitions
+`randRisk`, `randStrictRisk`, `randCoverage`, `widthProb` below (`Target` is checked against the
+literal `let` form by `Iff.rfl`). The width event is written with `((1/6 : ℝ) : EReal)`.
 
-`Sk` denotes statement k; `Nk` expresses the implication from its hypotheses
-to `Sk`.
+Construction (mapper §9): for `M + 1` equal cells of `(0,1]` (`cellLabel`) and a type vector
+`σ : Fin (M+1) → Bool`, family laws `familyMeasure M family σ` are generated from three
+independent uniforms `(W, V_A, V_Y)`: `A = 1{V_A ≤ e_σ(W)}`, `Y0 = 0`, `Y1 = 1{V_Y ≤ m_σ(W)}`
+with `e = cellPropensity`, `m = cellMean`. Averaging over the fair type prior, the observed
+`n`-sample laws of both families agree with the baseline on the no-collision event, so every
+observed-data-and-seed event probability differs by at most `n(n-1)/(2(M+1))`.
+
+Writers: prove `theorem nk_proof : Nk` in `AronowAudit/P047/Wave1/Impossibility/Nk.lean`.
+`Sk` is the statement of node k; `Nk` is `Sk` with, as hypotheses, the statements it may use.
+Do not use the admitted `unknown_propensity_impossibility`. Proved and usable:
+`familyEffect_prior_concentration`, `familyEffect_eq_cell_average`, `familyEffect_bounds`,
+`single_cell_observable_agreement`, `cell_overlap`, `cell_mean_bounds`,
+`event_difference_of_agreement_on_good`, `uniform_labels_pair_collision`,
+`iid_uniform_labels_collision`, `collision_union_bound`, `two_point_estimator_algebra`,
+`two_point_interval_algebra`, `measurable_observed`, `measurable_potential`, `measurable_arm`,
+`baseline_covariate_law`, `baseline_ate`, `measurable_baseline_map`, `highIndicator_mean`.
 -/
 
 set_option autoImplicit false
@@ -38,8 +48,8 @@ noncomputable section
 
 /-! ## Risk, coverage and width with an auxiliary seed -/
 
-/-- Worst-case `≥ η` error probability of a randomized estimator over `UnknownModel`,
-with zero inserted for the empty-class convention. -/
+/-- Worst-case `≥ η` error probability of a randomized estimator over `UnknownModel`
+(zero inserted for the empty-class convention, as in `unknownRisk`). -/
 def randRisk {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q]
     (E : (n : ℕ) → ((Fin n → ObservedUnit) × R) → ℝ) (n : ℕ) (η : ℝ) : ℝ :=
   sSup (insert (0 : ℝ) {r | ∃ L : CausalLaw, UnknownModel L ∧
@@ -53,8 +63,8 @@ def randStrictRisk {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabili
     r = ((sampleLaw L.measure).prod Q).real
       {z | η < |E n (observedSample n z.1, z.2) - ate L|}})
 
-/-- Worst-case coverage of a randomized `EReal`-endpoint interval,
-with one inserted for the empty-class convention. -/
+/-- Worst-case coverage of a randomized `EReal`-endpoint interval (one inserted, as in
+`honestCoverage`). -/
 def randCoverage {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q]
     (lo hi : (n : ℕ) → ((Fin n → ObservedUnit) × R) → EReal) (n : ℕ) : ℝ :=
   sInf (insert (1 : ℝ) {r | ∃ L : CausalLaw, UnknownModel L ∧
@@ -71,8 +81,8 @@ def widthProb {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMea
 
 /-! ## Target -/
 
-/-- Target P047-T3: second bullet, pp. 85–86, with an arbitrary independent
-seed and measurable extended-real endpoints. -/
+/-- **Target (P047-T3, repaired).** Second bullet, pp. 85–86, with an arbitrary independent seed
+and measurable extended-real endpoints (mapper's `unknown_propensity_impossibility_randomized`). -/
 def Target : Prop :=
   ∀ {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q],
     (∀ E : (n : ℕ) → ((Fin n → ObservedUnit) × R) → ℝ, (∀ n, Measurable (E n)) →
@@ -84,6 +94,40 @@ def Target : Prop :=
         1 - α ≤ Filter.liminf (randCoverage Q lo hi) atTop →
         (1 - 2 * α ≤ Filter.liminf (widthProb Q lo hi) atTop) ∧ 0 < 1 - 2 * α)
 
+/-- The mapper's literal statement with `let`-bound functions (endpoint constant written
+`((1/6 : ℝ) : EReal)`). -/
+def MapperStatement : Prop :=
+  ∀ {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q],
+    (∀ E : (n : ℕ) → ((Fin n → ObservedUnit) × R) → ℝ,
+      (∀ n, Measurable (E n)) →
+      let risk := fun (n : ℕ) (η : ℝ) =>
+        sSup (insert (0 : ℝ) {r | ∃ L : CausalLaw, UnknownModel L ∧
+          r = ((sampleLaw L.measure).prod Q).real
+            {z | η ≤ |E n (observedSample n z.1, z.2) - ate L|}})
+      let strictRisk := fun (n : ℕ) (η : ℝ) =>
+        sSup (insert (0 : ℝ) {r | ∃ L : CausalLaw, UnknownModel L ∧
+          r = ((sampleLaw L.measure).prod Q).real
+            {z | η < |E n (observedSample n z.1, z.2) - ate L|}})
+      (∀ n : ℕ, 1 ≤ n → (1 / 2 : ℝ) ≤ risk n (1 / 12)) ∧
+      (∃ η : ℝ, 0 < η ∧
+        0 < Filter.limsup (fun n => strictRisk n η) atTop)) ∧
+    (∀ lo hi : (n : ℕ) → ((Fin n → ObservedUnit) × R) → EReal,
+      (∀ n, Measurable (lo n)) → (∀ n, Measurable (hi n)) →
+      let coverage := fun n =>
+        sInf (insert (1 : ℝ) {r | ∃ L : CausalLaw, UnknownModel L ∧
+          r = ((sampleLaw L.measure).prod Q).real
+            {z | lo n (observedSample n z.1, z.2) ≤ (ate L : EReal) ∧
+              (ate L : EReal) ≤ hi n (observedSample n z.1, z.2)}})
+      ∀ α : ℝ, 0 < α → α < 1 / 2 →
+        1 - α ≤ Filter.liminf coverage atTop →
+        (1 - 2 * α ≤ Filter.liminf
+          (fun n => ((sampleLaw baselineLaw).prod Q).real
+            {z | lo n (observedSample n z.1, z.2) + ((1 / 6 : ℝ) : EReal) <
+              hi n (observedSample n z.1, z.2)}) atTop) ∧
+        0 < 1 - 2 * α)
+
+/-- Fidelity check: `Target` is the mapper's statement, up to naming the `let`s. -/
+example : Target.{u} ↔ MapperStatement.{u} := Iff.rfl
 
 /-! ## The two-family construction -/
 
@@ -141,8 +185,10 @@ def JointIgnorableM (μ : Measure UnitData) (e : ℝ → ℝ) : Prop :=
       fun u => armPropensity e a u * (μ[fun v => f (potential false v, potential true v) |
         covariateSigma]) u
 
-/-- Every type vector of each family gives a member of `UnknownModel`
-with the stated ATE. -/
+example (L : CausalLaw) : JointIgnorable L ↔ JointIgnorableM L.measure L.propensity := Iff.rfl
+
+/-- The bundled family laws: every type vector of each family gives a member of `UnknownModel`
+with the stated ATE. (Proved below from nodes N1–N5.) -/
 def FamilyLaws : Prop :=
   ∀ (M : ℕ) (family : Bool) (σ : Fin (M + 1) → Bool), ∃ L : CausalLaw,
     L.measure = familyMeasure M family σ ∧ UnknownModel L ∧ ate L = familyEffect family (M + 1) σ
@@ -164,19 +210,29 @@ def genQ (e m : ℝ → ℝ) (w : ℝ) (k : Fin 3) : ℝ :=
 /-- The common mixed record probabilities `(1/4, 1/4, 1/2)` (also those of the baseline). -/
 def baseObs (k : Fin 3) : ℝ := if k = 2 then 1 / 2 else 1 / 4
 
-/-! ## Mathematical statements -/
+example (M : ℕ) (family : Bool) (σ : Fin (M + 1) → Bool) :
+    genQ (cellProp M σ) (cellMeanFn M family σ) =
+      fun w k => cellObservable family (σ (cellLabel M w)) k := rfl
 
-/-- S1: each cell has `uniform01`-mass `1/(M+1)`.
-On `(0,1]`, the fibre of `cellLabel M` at j is
-`Ioc (j/(M+1)) ((j+1)/(M+1))`, whose length is `1/(M+1)`. -/
+example (n : ℕ) (s : ℕ → UnitData) (i : Fin n) : observedSample n s i = obsUnit (s i) := rfl
+
+/-! ## Node statements -/
+
+/-- **Statement S1** (mapper §9 step 3 and node `uniform_cell_label`, "Partition (0,1] into the M
+intervals I_j ... each of uniform probability 1/M"): each cell has `uniform01`-mass
+`1/(M+1)`. Identify `{w ∈ (0,1] | cellLabel M w = j}` with `Ioc (j/(M+1)) ((j+1)/(M+1))`
+(`Nat.ceil_eq_iff`), then `Real.volume_Ioc`. -/
 def S1 : Prop :=
   ∀ (M : ℕ) (j : Fin (M + 1)), uniform01 {w | cellLabel M w = j} = ENNReal.ofReal (1 / (M + 1 : ℝ))
 
-/-- S2: conditional expectation given W of any measurable function of
-(A,Y0,Y1) under the generated law. Fubini gives the finite conditional
-table from P(V≤p)=p for uniform V and p∈[0,1]. The test function is
-integrable because the three binary coordinates take only four possible
-combinations under the generator. -/
+/-- **Statement S2** (mapper §9 step 1, "for any f on the potential-outcome pair the conditional
+expectation is (1-mσ(W))f(0,0)+mσ(W)f(0,1), and the arm-weighted version is this expression
+multiplied by eσ(W) or 1-eσ(W). These finite conditional formulas follow by Fubini for every
+bounded test of W"): conditional expectation given `W` of any measurable function of
+`(A, Y0, Y1)` under the generated law. Use `ae_eq_condExp_of_forall_setIntegral_eq`
+(`covariateSigma`-sets are `covariate ⁻¹' B`), `integral_map`, `integral_prod`, and
+`P(V ≤ p) = p` under `uniform01` for `p ∈ [0,1]`; `g ∘ (·).2` is integrable because it is a.e.
+one of four values. -/
 def S2 : Prop :=
   ∀ (e m : ℝ → ℝ), Measurable e → Measurable m → (∀ w, 0 ≤ e w ∧ e w ≤ 1) →
     (∀ w, 0 ≤ m w ∧ m w ≤ 1) → ∀ g : Bool × ℝ × ℝ → ℝ, Measurable g →
@@ -184,14 +240,18 @@ def S2 : Prop :=
         e u.1 * m u.1 * g (true, 0, 1) + e u.1 * (1 - m u.1) * g (true, 0, 0) +
           (1 - e u.1) * m u.1 * g (false, 0, 1) + (1 - e u.1) * (1 - m u.1) * g (false, 0, 0)
 
-/-- S3: armwise and joint ignorability for the generated law follow
-from S2, applied to an arm-weighted outcome test and to the outcome test. -/
+/-- **Statement S3** (mapper §9 step 1, "Thus they establish both Ignorable for CausalLaw and
+JointIgnorable for UnknownModel, not merely mean ignorability"): both ignorability fields for
+the generated law, from S2 (apply S2 to `g = 1{b = a}·f(...)` and to `g = f(...)`, then
+`filter_upwards` and `ring`). -/
 def S3 : Prop :=
   ∀ (e m : ℝ → ℝ), Measurable e → Measurable m → (∀ w, 0 ≤ e w ∧ e w ≤ 1) →
     (∀ w, 0 ≤ m w ∧ m w ≤ 1) → Ignorable (genMeasure e m) e ∧ JointIgnorableM (genMeasure e m) e
 
-/-- S4: W has the uniform law, outcomes are binary, and the ATE is the
-`uniform01` integral of m. The inner uniform integral of 1{v≤m(w)} is m(w). -/
+/-- **Statement S4** (mapper §9 step 1, "W has the exact uniform01 law. Outcomes are binary and
+eσ∈[1/4,3/4] everywhere"): the remaining `UnknownModel` facts and the ATE as the
+`uniform01`-integral of `m`. Use `Measure.map_map`, `Measure.map_fst_prod`, `ae_map_iff`,
+`integral_map`, `integral_prod` (inner `∫ 1{v ≤ m w} dv = m w`). -/
 def S4 : Prop :=
   ∀ (e m : ℝ → ℝ), Measurable e → Measurable m → (∀ w, 1 / 4 ≤ e w ∧ e w ≤ 3 / 4) →
     (∀ w, 0 ≤ m w ∧ m w ≤ 1) →
@@ -200,24 +260,29 @@ def S4 : Prop :=
     (∀ᵐ u ∂(genMeasure e m), (1 / 4 : ℝ) ≤ e (covariate u) ∧ e (covariate u) ≤ 3 / 4) ∧
     (∫ u, potential true u - potential false u ∂(genMeasure e m)) = ∫ w, m w ∂uniform01
 
-/-- S5: integrating over the equal-length cells gives the family ATEs
-θ_A(σ)=1-(2/3)U and θ_B(σ)=(2/3)U. S1 identifies the finite pushforward
-of the cell label, and `familyEffect_eq_cell_average` gives these expressions. -/
+/-- **Statement S5** (mapper §9 step 2, "integrating over the equal-length cells gives
+θ_A(σ)=1-(2/3)U_M, θ_B(σ)=(2/3)U_M"): the family ATE. Split `uniform01` over the cells (S1,
+`MeasureTheory.integral_fintype`-style decomposition via `integral_finset_biUnion` or the
+pushforward `uniform01.map (cellLabel M)`), then `familyEffect_eq_cell_average`. -/
 def S5 : Prop :=
   ∀ (M : ℕ) (family : Bool) (σ : Fin (M + 1) → Bool),
     (∫ w, cellMeanFn M family σ w ∂uniform01) = familyEffect family (M + 1) σ
 
-/-- S6: the observed n-sample from an i.i.d. sample has the product law
-of the one-unit observed law, by restriction to the first n coordinates
-and pushforward through the measurable observation map. -/
+/-- **Statement S6** (mapper §9 step 3, iid structure): the observed `n`-sample of an i.i.d.
+sample has the product law of the one-unit observed law. Use
+`Measure.infinitePi_map_restrict` (first `n` coordinates), `Measure.map_map`,
+`Measure.pi_map_pi` and the measurability of `obsUnit` (`measurable_observed`). -/
 def S6 : Prop :=
   ∀ (μ : Measure UnitData) [IsProbabilityMeasure μ] (n : ℕ),
     (sampleLaw μ).map (observedSample n) = Measure.pi (fun _ : Fin n => μ.map obsUnit)
 
-/-- S7: a product of laws obtained by drawing uniform W and then record k
-with probability q(W,k) has the n-fold record formula. The joint law is
-a density with respect to uniform measure times counting measure,
-pushed through `record`; finite summation and Fubini give the event formula. -/
+/-- **Statement S7** (mapper §9 step 3, "Conditional on the complete vector w, the observable
+(A_i,Y_i) probabilities in a cell are (e m, e(1-m), 1-e)"): the product of "uniform `W`, then
+record `k` with probability `q(W,k)`" laws has the `n`-fold record formula. Suggested route:
+identify `ν` with `((uniform01.prod Measure.count).withDensity (q · ·)).map record` by
+`Measure.ext_of_generateFrom`-free `Measure.ext` (both finite, equal on measurable sets), push
+`Measure.pi` through the map and the density (`Measure.pi_map_pi`, `Measure.pi` of
+`withDensity`), then Fubini over the finite factor `Fin n → Fin 3`. -/
 def S7 : Prop :=
   ∀ (ν : Measure ObservedUnit) [IsProbabilityMeasure ν] (q : ℝ → Fin 3 → ℝ),
     (∀ k, Measurable fun w => q w k) → (∀ w k, 0 ≤ q w k) →
@@ -229,44 +294,50 @@ def S7 : Prop :=
           E.indicator (fun _ => (1 : ℝ)) (fun i => record (w i) (k i))
           ∂(Measure.pi fun _ : Fin n => uniform01)
 
-/-- S8: the generated one-unit observed law is uniform W followed by
-record k with probability `genQ e m W k`. The two inner uniform integrals
-give these record probabilities. -/
+/-- **Statement S8** (mapper §9 step 3, one unit of a family): the one-unit observed law of the
+generated law is "uniform `W`, then record `k` with probability `genQ e m W k`". Use
+`Measure.map_map`, `integral_map`, `integral_prod` (two inner uniform integrals). -/
 def S8 : Prop :=
   ∀ (e m : ℝ → ℝ), Measurable e → Measurable m → (∀ w, 0 ≤ e w ∧ e w ≤ 1) →
     (∀ w, 0 ≤ m w ∧ m w ≤ 1) → ∀ B : Set ObservedUnit, MeasurableSet B →
       ((genMeasure e m).map obsUnit).real B =
         ∫ w, ∑ k, genQ e m w k * B.indicator (fun _ => (1 : ℝ)) (record w k) ∂uniform01
 
-/-- S9: the baseline one-unit observed law is uniform W followed by
-record k with probability `baseObs k`, independent of W. -/
+/-- **Statement S9** (mapper §9 step 3, "These are exactly S's conditional observable
+probabilities, independent of w"): the baseline's one-unit observed law is "uniform `W`, then
+record `k` with probability `baseObs k`". Unfold `baselineLaw`, use `integral_map`
+(`measurable_baseline_map`), `integral_prod` and `fairBool` (`bernoulliMeasure`) integrals. -/
 def S9 : Prop :=
   ∀ B : Set ObservedUnit, MeasurableSet B →
     (baselineLaw.map obsUnit).real B =
       ∫ w, ∑ k, baseObs k * B.indicator (fun _ => (1 : ℝ)) (record w k) ∂uniform01
 
-/-- S10: finite prior averaging on distinct cells. The selected type
-coordinates are independent, so the average of the product of observable
-probabilities equals the product of their common means. -/
+/-- **Statement S10** (mapper §9 step 3, "On G the n cell labels are different, so the n used
+prior coordinates are independent; averaging the PRODUCT of their observable probabilities is
+therefore the product of these common means"): finite prior averaging on distinct cells. Use
+`Finset.prod_univ_sum`/`Fintype.prod_sum`-type factorisation over `σ` (the coordinates
+`σ (c i)` are distinct) and `single_cell_observable_agreement`. -/
 def S10 : Prop :=
   ∀ (M : ℕ) (family : Bool) (n : ℕ) (c : Fin n → Fin (M + 1)), Function.Injective c →
     ∀ k : Fin n → Fin 3,
       ∑ σ : Fin (M + 1) → Bool, (1 / 2 : ℝ) ^ (M + 1) * ∏ i, cellObservable family (σ (c i)) (k i) =
         ∏ i, baseObs (k i)
 
-/-- S11: the collision bound for i.i.d. uniform covariates. Each pair
-has equal cell labels with probability 1/(M+1); the union bound over
-n(n-1)/2 pairs gives n(n-1)/(2(M+1)). -/
+/-- **Statement S11** (mapper §9 step 3, "A particular pair has equal labels with probability
+M*(1/M)²=1/M. Union over the n(n-1)/2 pairs gives Pr(Gᶜ)≤d"): the collision bound for i.i.d.
+uniform covariates. Use S1, `iIndepFun_pi`, `uniform_labels_pair_collision` /
+`collision_union_bound` (or a direct union bound over pairs). -/
 def S11 : Prop :=
   ∀ (M n : ℕ),
     (Measure.pi fun _ : Fin n => uniform01).real
         {w | ¬ Function.Injective (fun i => cellLabel M (w i))} ≤
       (n : ℝ) * (n - 1) / (2 * (M + 1))
 
-/-- S12: transfer between each family mixture and the baseline for every
-measurable observed-sample event. Both probabilities have the integral
-record formula from S6–S9. On the no-collision set the integrands agree
-by S10; both lie in [0,1], so S11 bounds the difference. -/
+/-- **Statement S12** (mapper §9 step 3, "It follows that B_A, B_B and S^n have the same
+conditional probability ... |B_F(E)-S^n(E)|≤d"): the seedless transfer between each family
+mixture and the baseline, for every measurable observed-sample event. From S6–S9 both sides
+are `∫ w, Σ_k (·) 1_E` over `(0,1]^n`; on the no-collision set the integrands agree (S10); both
+integrands lie in `[0,1]`; bound the difference by S11. -/
 def S12 : Prop :=
   ∀ (M : ℕ) (family : Bool) (n : ℕ) (E : Set (Fin n → ObservedUnit)), MeasurableSet E →
     |∑ σ : Fin (M + 1) → Bool, (1 / 2 : ℝ) ^ (M + 1) *
@@ -274,9 +345,11 @@ def S12 : Prop :=
       (sampleLaw baselineLaw).real {s | observedSample n s ∈ E}| ≤
       (n : ℝ) * (n - 1) / (2 * (M + 1))
 
-/-- S13: adding an arbitrary independent seed preserves the event
-probability bound. Conditioning on the seed, applying S12 to each
-measurable event section, and integrating gives the result. -/
+/-- **Statement S13** (mapper §9 step 3, "Adding the independent seed preserves all equalities
+and bounds: condition on the seed and integrate the corresponding event sections"): the
+transfer with an arbitrary independent seed. Use `Measure.prod_apply` (sections
+`{o | (o, r) ∈ E}` are measurable), `Measure.map_apply` for `observedSample n`, linearity of the
+`Q`-integral of the finite mixture, and S12 inside the integral. -/
 def S13 : Prop :=
   ∀ {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q]
     (M : ℕ) (family : Bool) (n : ℕ) (E : Set ((Fin n → ObservedUnit) × R)), MeasurableSet E →
@@ -286,45 +359,50 @@ def S13 : Prop :=
       ((sampleLaw baselineLaw).prod Q).real {z | (observedSample n z.1, z.2) ∈ E}| ≤
       (n : ℝ) * (n - 1) / (2 * (M + 1))
 
-/-- S14: prior concentration as a finite sum. For each family,
-P(|θ_F-center_F|≥1/12)≤16/(M+1). Each point mass of the fair product
-prior is (1/2)^(M+1). -/
+/-- **Statement S14** (mapper §9 step 2, "Chebyshev gives, in each family,
+Pr_prior(|θ_F-center_F|≥1/12)≤16/M"): the prior concentration as a finite sum. From
+`familyEffect_prior_concentration` at `M + 1` and `typePrior (M+1) {σ} = (1/2)^(M+1)`
+(`Measure.pi_pi`, `fairBool` singleton masses). -/
 def S14 : Prop :=
   ∀ (family : Bool) (M : ℕ),
     ∑ σ : Fin (M + 1) → Bool, (1 / 2 : ℝ) ^ (M + 1) *
         (if (1 / 12 : ℝ) ≤ |familyEffect family (M + 1) σ - familyCenter family| then 1 else 0) ≤
       16 / (M + 1)
 
-/-- S15: the finite-M minimax bound. The test event is
-{(o,ρ) | 1/2 ≤ E n (o,ρ)}. Each family law belongs to `UnknownModel`,
-so its error probability is bounded by `randRisk`. Combining the two
-transfers through the baseline in S13 with the concentration bound S14
-gives risk ≥ 1/2-16/(M+1)-n(n-1)/(2(M+1)). -/
+/-- **Statement S15** (mapper §9 step 4, "Under A, on the good-type event and the complementary
+error event, estimate>1/2. Hence B_A(E)≥1-r-16/M. Under B, ... B_B(E)≤r+16/M ... Therefore
+r≥1/2-16/M-n(n-1)/(4M)"; constant here from `|B_F - S| ≤ d` for each family): the finite-`M`
+minimax bound. Test event `{(o, ρ) | 1/2 ≤ E n (o, ρ)}`; each family law is in `UnknownModel`
+(`FamilyLaws`), so its error probability is `≤ randRisk` (`le_csSup`, bounded by `1`);
+combine S13 (twice, through the baseline) and S14; `two_point_estimator_algebra`-style
+arithmetic. -/
 def S15 : Prop :=
   ∀ {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q]
     (E : (n : ℕ) → ((Fin n → ObservedUnit) × R) → ℝ), (∀ n, Measurable (E n)) →
     ∀ n : ℕ, 1 ≤ n → ∀ M : ℕ,
       (1 / 2 : ℝ) - 16 / (M + 1) - (n : ℝ) * (n - 1) / (2 * (M + 1)) ≤ randRisk Q E n (1 / 12)
 
-/-- S16: letting M grow removes an error of the form C/(M+1),
-by the Archimedean property. -/
+/-- **Statement S16** (mapper §9 step 4, "Let M grow, or use the Archimedean property to
+contradict any r<1/2"): generic limit step. -/
 def S16 : Prop :=
   ∀ (r C : ℝ), (∀ M : ℕ, (1 / 2 : ℝ) - C / (M + 1) ≤ r) → (1 / 2 : ℝ) ≤ r
 
-/-- S17: event inclusion gives `randRisk (1/12) ≤ randStrictRisk (1/24)`.
-The strict risk is therefore at least 1/2 for every n≥1, so its limsup
-is at least 1/2>0. -/
+/-- **Statement S17** (mapper §9 step 4, "the strict risk at η=1/24 is at least 1/2 for every
+n≥1. Its limsup is therefore at least 1/2>0"): `randRisk (1/12) ≤ randStrictRisk (1/24)`
+(event inclusion, `csSup_le`/`le_csSup`, both bounded by `1`), then
+`Filter.le_limsup_of_frequently_le` with boundedness. -/
 def S17 : Prop :=
   ∀ {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q]
     (E : (n : ℕ) → ((Fin n → ObservedUnit) × R) → ℝ), (∀ n, Measurable (E n)) →
     (∀ n : ℕ, 1 ≤ n → (1 / 2 : ℝ) ≤ randRisk Q E n (1 / 12)) →
     ∃ η : ℝ, 0 < η ∧ 0 < Filter.limsup (fun n => randStrictRisk Q E n η) atTop
 
-/-- S18: the finite-M width bound. Under family A with a good type,
-coverage forces 7/12 < hi; under family B it forces lo < 5/12.
-Together these imply lo+1/6<hi in EReal, including infinite endpoints.
-The two transfers and prior concentration give the probability bound
-2c_n-1-32/(M+1)-n(n-1)/(M+1). -/
+/-- **Statement S18** (mapper §9 step 5, "Good-type coverage implies D_F, so B_F(D_F)≥c_n-16/M.
+The two transfers in step 3 give (S^n⊗Q)(D_A), (S^n⊗Q)(D_B) ≥ c_n-16/M-d. The intersection
+probability is at least 2c_n-1-32/M-2d ... lo+1/6<hi in EReal"): the finite-`M` width bound.
+Bands: under family A with good type, coverage forces `7/12 < hi`; under B, `lo < 5/12`;
+both together force `lo + 1/6 < hi` in `EReal` (`EReal.add_lt_add`-type reasoning, including
+`lo = ⊥`); `two_point_interval_algebra`-style arithmetic. -/
 def S18 : Prop :=
   ∀ {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q]
     (lo hi : (n : ℕ) → ((Fin n → ObservedUnit) × R) → EReal),
@@ -333,68 +411,69 @@ def S18 : Prop :=
       2 * randCoverage Q lo hi n - 1 - 32 / (M + 1) - (n : ℝ) * (n - 1) / (M + 1) ≤
         widthProb Q lo hi n
 
-/-- S19: letting M grow yields q_n≥2c_n-1. If liminf c_n≥1-α,
-then liminf q_n≥1-2α, for bounded sequences. -/
+/-- **Statement S19** (mapper §9 step 5, "q_n≥2c_n-1 exactly. If liminf c_n≥1-α, then for every
+ε>0, eventually c_n≥1-α-ε ... Hence liminf q_n≥1-2α"): generic limit step for bounded
+sequences (`Filter.le_liminf_of_le`, `Filter.liminf_le_liminf`, boundedness from `[0,1]`). -/
 def S19 : Prop :=
   ∀ (c q : ℕ → ℝ), (∀ n, 0 ≤ c n ∧ c n ≤ 1) → (∀ n, 0 ≤ q n ∧ q n ≤ 1) →
     (∀ n M : ℕ, 2 * c n - 1 - 32 / (M + 1) - (n : ℝ) * (n - 1) / (M + 1) ≤ q n) →
     ∀ α : ℝ, 0 < α → α < 1 / 2 → 1 - α ≤ Filter.liminf c atTop →
       (1 - 2 * α ≤ Filter.liminf q atTop) ∧ 0 < 1 - 2 * α
 
-/-- S20: coverage and width probabilities lie in [0,1]. The inserted
-one does not affect the coverage infimum for a nonempty model. -/
+/-- **Statement S20** (mapper §9 step 5, "Its inserted one does not affect a nonempty infimum,
+and 0≤c_n≤1"): coverage and width probabilities lie in `[0,1]`. -/
 def S20 : Prop :=
   ∀ {R : Type u} [MeasurableSpace R] (Q : Measure R) [IsProbabilityMeasure Q]
     (lo hi : (n : ℕ) → ((Fin n → ObservedUnit) × R) → EReal) (n : ℕ),
     (0 ≤ randCoverage Q lo hi n ∧ randCoverage Q lo hi n ≤ 1) ∧
     (0 ≤ widthProb Q lo hi n ∧ widthProb Q lo hi n ≤ 1)
 
-/-! ## Implications (`Nk` = hypotheses → `Sk`) -/
+/-! ## Nodes (`Nk` = statements it may use → `Sk`) -/
 
-/-- Alias for `S1`. -/
+/-- Node N1 = S1. -/
 def N1 : Prop := S1
-/-- Alias for `S2`. -/
+/-- Node N2 = S2. -/
 def N2 : Prop := S2
-/-- N3: S2 implies S3. -/
+/-- Node N3: may use S2. -/
 def N3 : Prop := S2 → S3
-/-- Alias for `S4`. -/
+/-- Node N4 = S4. -/
 def N4 : Prop := S4
-/-- N5: S1 implies S5. -/
+/-- Node N5: may use S1. -/
 def N5 : Prop := S1 → S5
-/-- Alias for `S6`. -/
+/-- Node N6 = S6. -/
 def N6 : Prop := S6
-/-- Alias for `S7`. -/
+/-- Node N7 = S7. -/
 def N7 : Prop := S7
-/-- Alias for `S8`. -/
+/-- Node N8 = S8. -/
 def N8 : Prop := S8
-/-- Alias for `S9`. -/
+/-- Node N9 = S9. -/
 def N9 : Prop := S9
-/-- Alias for `S10`. -/
+/-- Node N10 = S10. -/
 def N10 : Prop := S10
-/-- N11: S1 implies S11. -/
+/-- Node N11: may use S1. -/
 def N11 : Prop := S1 → S11
-/-- N12: S6–S11 imply S12. -/
+/-- Node N12: may use S6, S7, S8, S9, S10, S11. -/
 def N12 : Prop := S6 → S7 → S8 → S9 → S10 → S11 → S12
-/-- N13: S12 implies S13. -/
+/-- Node N13: may use S12. -/
 def N13 : Prop := S12 → S13.{u}
-/-- Alias for `S14`. -/
+/-- Node N14 = S14. -/
 def N14 : Prop := S14
-/-- N15: `FamilyLaws`, S13 and S14 imply S15. -/
+/-- Node N15: may use `FamilyLaws`, S13, S14. -/
 def N15 : Prop := FamilyLaws → S13.{u} → S14 → S15.{u}
-/-- Alias for `S16`. -/
+/-- Node N16 = S16 (generic). -/
 def N16 : Prop := S16
-/-- Alias for `S17`. -/
+/-- Node N17 = S17. -/
 def N17 : Prop := S17.{u}
-/-- N18: `FamilyLaws`, S13 and S14 imply S18. -/
+/-- Node N18: may use `FamilyLaws`, S13, S14. -/
 def N18 : Prop := FamilyLaws → S13.{u} → S14 → S18.{u}
-/-- Alias for `S19`. -/
+/-- Node N19 = S19 (generic). -/
 def N19 : Prop := S19
-/-- Alias for `S20`. -/
+/-- Node N20 = S20. -/
 def N20 : Prop := S20.{u}
 
-/-! ## The family laws and impossibility theorem -/
+/-! ## Assembly -/
 
-/-- Statements S3–S5 imply `FamilyLaws`. -/
+/-- The family laws from nodes 2–5 (node 5 uses S1) (bundling into `CausalLaw`). -/
 theorem familyLaws_of (s3 : S3) (s4 : S4) (s5 : S5) : FamilyLaws := by
   intro M family σ
   have he := measurable_cellProp M σ
@@ -413,7 +492,7 @@ theorem familyLaws_of (s3 : S3) (s4 : S4) (s5 : S5) : FamilyLaws := by
   rw [show familyMeasure M family σ = genMeasure (cellProp M σ) (cellMeanFn M family σ) from rfl,
     hate, s5 M family σ]
 
-/-- The twenty statements imply the impossibility theorem. -/
+/-- **Assembly.** The nodes prove the repaired theorem. -/
 theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7 : N7)
     (h8 : N8) (h9 : N9) (h10 : N10) (h11 : N11) (h12 : N12) (h13 : N13.{u}) (h14 : N14)
     (h15 : N15.{u}) (h16 : N16) (h17 : N17.{u}) (h18 : N18.{u}) (h19 : N19) (h20 : N20.{u}) :
@@ -438,6 +517,10 @@ theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7
   · intro lo hi hlo hhi α hα hα2 hcov
     exact h19 (randCoverage Q lo hi) (widthProb Q lo hi) (fun n => (h20 Q lo hi n).1)
       (fun n => (h20 Q lo hi n).2) (fun n M => s18 Q lo hi hlo hhi n M) α hα hα2 hcov
+
+/-- Sanity check: `FamilyLaws` is consistent with the existing finite construction, i.e. the
+family ATE is the existing `familyEffect` at `M + 1` cells, whose prior centres are `2/3`, `1/3`. -/
+example : familyCenter true = 2 / 3 ∧ familyCenter false = 1 / 3 := ⟨rfl, rfl⟩
 
 end
 

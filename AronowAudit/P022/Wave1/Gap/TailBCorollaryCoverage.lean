@@ -195,29 +195,8 @@ theorem tb13_coverage_lower (H : JointLaw) (θ ρ : ℝ)
   change normalCDF (normalCritical α) ≤ normalCDF (normalCritical α/Real.sqrt (gamma H θ ρ)) at hm
   linarith
 
-/-- P022-T17: Corollary 1 and the conservative coverage limit. -/
-theorem TailB_corollary1_and_coverage : (∀ (S : ExperimentSequence)
-      (H : JointLaw)
-      (θ ρ : ℝ)
-      (h : Conditions123 S H θ ρ)
-      (h3 : BoundedThirdMoments S)
-      (hns : NonsingularLaw H),
-      0 < gamma H θ ρ ∧ gamma H θ ρ ≤ 1 ∧
-    Tendsto (fun q => ((S.design q).N : ℝ) * trueVariance (S.design q)
-      (rowOutcomes S true q) (rowOutcomes S false q)) atTop (𝓝 (limitingTrueVariance H θ ρ)) ∧
-    weakStandardNormal S (fun q π =>
-      (estimatedEffect (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) π -
-        averageEffect (S.design q) (rowOutcomes S true q) (rowOutcomes S false q)) /
-          Real.sqrt (gamma H θ ρ * estimatedVariance (S.design q)
-            (rowOutcomes S true q) (rowOutcomes S false q) .H π)) ∧
-    (∀ α, 0 < α → α < 1 →
-      Tendsto (fun q => designProbability (S.design q) (fun π =>
-        |estimatedEffect (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) π -
-          averageEffect (S.design q) (rowOutcomes S true q) (rowOutcomes S false q)| ≤
-            normalCritical α * Real.sqrt (estimatedVariance (S.design q)
-              (rowOutcomes S true q) (rowOutcomes S false q) .H π))) atTop
-        (𝓝 (2 * normalCDF (normalCritical α / Real.sqrt (gamma H θ ρ)) - 1)) ∧
-      1 - α ≤ 2 * normalCDF (normalCritical α / Real.sqrt (gamma H θ ρ)) - 1)) := by
+/-- P022-T17, with every conjunct and every hypothesis of the held type unchanged. -/
+theorem TailB_corollary1_and_coverage : type_of% @AronowAudit.P022.corollary1_and_coverage := by
   intro S H θ ρ h h3 hns
   have hUI := tb13_square_integrability S h3
   have hs := tb13_limiting_variance_pos S H θ ρ h hUI hns
@@ -229,6 +208,8 @@ theorem TailB_corollary1_and_coverage : (∀ (S : ExperimentSequence)
     tb13_studentized_clt S H θ ρ h h3 hns, fun α hα hα1 =>
       ⟨tb13_coverage_limit S H θ ρ h h3 hns α hα hα1,
         tb13_coverage_lower H θ ρ hg hg1 α hα hα1⟩⟩
+
+example : type_of% @AronowAudit.P022.corollary1_and_coverage := AronowAudit.P022.Wave1.TailB_corollary1_and_coverage
 
 end
 end AronowAudit.P022.Wave1

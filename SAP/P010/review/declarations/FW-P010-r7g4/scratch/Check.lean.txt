@@ -1,0 +1,159 @@
+import SAP.P010.Defs
+
+open MeasureTheory ProbabilityTheory Set Filter
+open scoped ENNReal NNReal Classical Topology BigOperators
+
+namespace Audit
+
+-- T16's complete list of input hypotheses has an interior instance.
+example : 0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1 := by norm_num
+
+open SAP.P010
+
+-- These lemmas evaluate the witness directly; none uses a Challenge theorem.
+lemma selection_mass (q : ℝ) (E : Set (Population 2 1)) :
+    selectionPopulation q E =
+      ∑ i : Fin 6, ENNReal.ofReal (if i.val < 3 then q/3 else (1-q)/3) *
+        (if selectionPopulationAtoms i ∈ E then 1 else 0) := by
+  simp [selectionPopulation, finitePopulation, Measure.dirac_apply, Set.indicator_apply]
+
+lemma selection_probability : IsProbabilityMeasure (selectionPopulation (1/2)) := by
+  constructor
+  norm_num [selection_mass, Fin.sum_univ_succ]
+  apply (ENNReal.toReal_eq_toReal_iff' (by finiteness) (by finiteness)).mp
+  norm_num
+
+example : selectionPopulation (1/2) allPass = 1/3 := by
+  norm_num [selection_mass, Fin.sum_univ_succ, selectionPopulationAtoms,
+    allPass, Fin.forall_fin_two]
+  apply (ENNReal.toReal_eq_toReal_iff' (by finiteness) (by finiteness)).mp
+  norm_num [ENNReal.toReal_add]
+
+lemma selection_arms : ∀ a : Fin 2, 0 < selectionPopulation (1/2) (assigned a) := by
+  intro a
+  fin_cases a <;>
+    norm_num [selection_mass, Fin.sum_univ_succ, selectionPopulationAtoms, assigned, arm]
+
+lemma selection_rates : ∀ a : Fin 2, passRate (selectionPopulation (1/2)) a = 2/3 := by
+  intro a
+  fin_cases a <;>
+    norm_num [passRate, selection_mass, Fin.sum_univ_succ,
+      selectionPopulationAtoms, passed, check, assigned, arm, ENNReal.toReal_add]
+
+example :
+    selectionPopulation (1/2)
+      {ω | potentialCheck 0 ω = true ∧ potentialCheck 1 ω = false} = 1/3 ∧
+    selectionPopulation (1/2)
+      {ω | potentialCheck 0 ω = false ∧ potentialCheck 1 ω = true} = 1/3 := by
+  constructor <;>
+    norm_num [selection_mass, Fin.sum_univ_succ, selectionPopulationAtoms, potentialCheck]
+  all_goals
+    apply (ENNReal.toReal_eq_toReal_iff' (by finiteness) (by finiteness)).mp
+    norm_num [ENNReal.toReal_add]
+
+example : IndepFun check arm (selectionPopulation (1/2)) := by
+  rw [indepFun_iff_measure_inter_preimage_eq_mul]
+  intro U V hU hV
+  by_cases hut : true ∈ U <;> by_cases huf : false ∈ U <;>
+    by_cases hv0 : (0 : Fin 2) ∈ V <;> by_cases hv1 : (1 : Fin 2) ∈ V <;>
+    norm_num [selection_mass, Fin.sum_univ_succ, selectionPopulationAtoms,
+      check, arm, hut, huf, hv0, hv1]
+  all_goals
+    apply (ENNReal.toReal_eq_toReal_iff' (by finiteness) (by finiteness)).mp
+    norm_num [ENNReal.toReal_add, ENNReal.toReal_mul]
+
+-- Full-vector independence is stronger than the per-arm hypothesis and is
+-- required by the canonical description of this particular construction.
+lemma selection_full_independence : IndepFun (fun ω : Population 2 1 => (ω.1, ω.2.1)) arm
+    (selectionPopulation (1/2)) := by
+  rw [indepFun_iff_measure_inter_preimage_eq_mul]
+  intro U V hU hV
+  by_cases hu0 : ((![1,1] : Fin 2 → ℝ), (![false,true] : Fin 2 → Bool)) ∈ U <;>
+    by_cases hu1 : ((![0,0] : Fin 2 → ℝ), (![true,false] : Fin 2 → Bool)) ∈ U <;>
+    by_cases hu2 : ((![0,0] : Fin 2 → ℝ), (![true,true] : Fin 2 → Bool)) ∈ U <;>
+    by_cases hv0 : (0 : Fin 2) ∈ V <;>
+    by_cases hv1 : (1 : Fin 2) ∈ V <;>
+    norm_num [selection_mass, Fin.sum_univ_succ, selectionPopulationAtoms, arm,
+      hu0, hu1, hu2, hv0, hv1]
+  all_goals
+    apply (ENNReal.toReal_eq_toReal_iff' (by finiteness) (by finiteness)).mp
+    norm_num [ENNReal.toReal_add, ENNReal.toReal_mul]
+
+lemma selection_assumptions : populationAssumptions (selectionPopulation (1/2)) := by
+  refine ⟨selection_probability, ⟨?_, selection_arms⟩, ?_⟩
+  · intro a
+    have h := selection_full_independence.comp
+      (φ := fun v : (Fin 2 → ℝ) × (Fin 2 → Bool) => (v.1 a, v.2 a))
+      (ψ := id) (by fun_prop) measurable_id
+    simpa [Function.comp_def, potentialOutcome, potentialCheck] using h
+  · intro a
+    rw [selection_rates]
+    norm_num
+
+lemma selection_fair : selectionPopulation (1/2) =
+    finitePopulation selectionPopulationAtoms (fun _ => ENNReal.ofReal (1/6 : ℝ)) := by
+  unfold selectionPopulation
+  congr 1
+  funext i
+  split_ifs <;> norm_num
+
+lemma selection_integrable (f : Population 2 1 → ℝ) :
+    Integrable f (selectionPopulation (1/2)) := by
+  rw [selection_fair]
+  apply integrable_sum_dirac (by simp)
+  exact (hasSum_fintype _).summable
+
+lemma selection_restrict (E : Set (Population 2 1)) :
+    (selectionPopulation (1/2)).restrict E =
+      Measure.sum (fun i : Fin 6 =>
+        (if selectionPopulationAtoms i ∈ E then ENNReal.ofReal (1/6 : ℝ) else 0) •
+          Measure.dirac (selectionPopulationAtoms i)) := by
+  rw [selection_fair]
+  simp only [finitePopulation, Measure.restrict_sum_of_countable,
+    Measure.restrict_smul, restrict_dirac]
+  congr 1
+  funext i
+  split_ifs <;> simp
+
+lemma selection_set_integral (f : Population 2 1 → ℝ) (E : Set (Population 2 1)) :
+    (∫ ω in E, f ω ∂selectionPopulation (1/2)) =
+      ∑ i : Fin 6, if selectionPopulationAtoms i ∈ E then
+        (1/6 : ℝ) * f (selectionPopulationAtoms i) else 0 := by
+  rw [selection_restrict, integral_sum_dirac (by intro i; split_ifs <;> simp)]
+  rw [tsum_fintype]
+  apply Finset.sum_congr rfl
+  intro i hi
+  split_ifs <;> norm_num [smul_eq_mul]
+
+example :
+    meanOn (selectionPopulation (1/2)) response (passed ∩ assigned 0) = 0 ∧
+    meanOn (selectionPopulation (1/2)) response (passed ∩ assigned 1) = 1/2 := by
+  constructor <;>
+    norm_num [meanOn, selection_set_integral, selection_mass, Fin.sum_univ_succ,
+      selectionPopulationAtoms, response, arm, passed, check, assigned, ENNReal.toReal_add]
+
+example : ∀ᵐ ω ∂selectionPopulation (1/2),
+    potentialOutcome 1 ω - potentialOutcome 0 ω = 0 := by
+  rw [ae_iff]
+  norm_num [selection_mass, Fin.sum_univ_succ, selectionPopulationAtoms, potentialOutcome]
+
+example :
+    (∫ ω, (if potentialCheck 1 ω then (1 : ℝ) else 0) -
+      (if potentialCheck 0 ω then (1 : ℝ) else 0) ∂selectionPopulation (1/2)) = 0 := by
+  have h := selection_set_integral (fun ω =>
+    (if potentialCheck 1 ω then (1 : ℝ) else 0) -
+    (if potentialCheck 0 ω then (1 : ℝ) else 0)) Set.univ
+  norm_num [Fin.sum_univ_succ, selectionPopulationAtoms, potentialCheck] at h
+  exact h
+
+example :
+    meanOn (selectionPopulation (1/2)) (fun ω => potentialOutcome 1 ω - potentialOutcome 0 ω)
+      allPass = 0 ∧
+    meanOn (selectionPopulation (1/2)) (fun ω => potentialOutcome 1 ω - potentialOutcome 0 ω)
+      {ω | potentialCheck 0 ω = true ∧ potentialCheck 1 ω = false} = 0 ∧
+    meanOn (selectionPopulation (1/2)) (fun ω => potentialOutcome 1 ω - potentialOutcome 0 ω)
+      {ω | potentialCheck 0 ω = false ∧ potentialCheck 1 ω = true} = 0 := by
+  norm_num [meanOn, selection_set_integral, selection_mass, Fin.sum_univ_succ,
+    selectionPopulationAtoms, potentialOutcome, potentialCheck, allPass, Fin.forall_fin_two]
+
+end Audit

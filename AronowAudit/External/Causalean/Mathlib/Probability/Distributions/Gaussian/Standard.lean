@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -81,6 +80,24 @@ instance isGaussian_piGaussian : IsGaussian (piGaussian E) := by
     (hIndep.hasGaussianLaw hLaw).isGaussian_map
   simpa using hJoint
 
+omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
+/-- Each coordinate is `MemLp` of order 2 under the product measure. -/
+lemma memLp_eval (i : Fin (Module.finrank ℝ E)) :
+    MemLp (fun ω : Fin (Module.finrank ℝ E) → ℝ => ω i) 2 (piGaussian E) := by
+  have h : MemLp id 2 (gaussianReal (0 : ℝ) 1) := memLp_id_gaussianReal' 2 (by simp)
+  exact h.comp_measurePreserving (measurePreserving_eval _ i)
+
+/-- Transporting a measure through a continuous linear equivalence transports its vector integral
+through the same equivalence. -/
+lemma integral_id_map_equiv {F G : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [MeasurableSpace F] [BorelSpace F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G] [MeasurableSpace G] [BorelSpace G]
+    [SecondCountableTopology G]
+    {μ : Measure F} (L : F ≃L[ℝ] G) :
+    ∫ x, x ∂(μ.map L) = L (∫ x, x ∂μ) := by
+  rw [integral_map (φ := L) (f := fun x => x) (by fun_prop)
+    (aestronglyMeasurable_id.congr (by rfl))]
+  exact L.integral_comp_comm (fun x => x)
 
 /-- The standard Gaussian measure is a probability measure. -/
 instance isProbabilityMeasure_stdGaussian : IsProbabilityMeasure (stdGaussian E) := by

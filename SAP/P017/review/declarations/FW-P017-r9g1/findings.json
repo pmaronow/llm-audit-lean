@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P017-T1",
+    "theorem": "SAP.P017.T1",
+    "fingerprint": "31805451ec597652b26d4346df23040fb75ef8508b09c110b58cd9b6ca6f5eb0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully: ipwPopulation and iidSamples ipwPopulation are probability measures; ipw_draws_independent proves independence of the actual full-data sample coordinates; the constant sequences ((1/2),(-1,0)) and ((1/2),(1,0)) belong to the respective bad events at every n and have IPW summands 2 and -2. These are ordinary points of the specified population support. The product-law calculation gives each event probability (1/4)^n>0. This closed theorem has no antecedent that could be inconsistent.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T2",
+    "theorem": "SAP.P017.T2",
+    "fingerprint": "9dc98e92164eac4d68bd42c790738a366586d666c4fd338a7183b22497f83e1f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully with G=fairPair(-1,1), tau=id. pair_integrable proves the integrability requirement, and tau is measurable. Constant weight 1 is explicitly proved admissible with weighted mean zero. Positive mass at tau=1 and on both sides of target zero verifies that both explicit-weight branches have genuine instances. No Challenge theorem is used in these checks.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T3",
+    "theorem": "SAP.P017.T3",
+    "fingerprint": "a30477045c4dfd58b09611bccf2a2bc23b32d0a108fe9e36eee7d37c93de12a7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully with G=fairPair(-1,1), tau=id: pair_mean=0, pair_support={-1,1}, pair_radius=1, tau measurable and integrable. The finite-range branch has an explicit almost-sure Finset witness. With P=N(0,1) and hat_n(z)=z/sqrt(n), exactNormal_rootN proves the positive-variance RootNNormal premise, also at this population mean. Thus the population and asymptotic hypotheses are jointly satisfiable. These proofs have no sorryAx dependency.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T4",
+    "theorem": "SAP.P017.T4",
+    "fingerprint": "77dedf6f7d3e5b86bd69d425e268969bbe6776e80910efe27e8b35219726df1e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully with G=fairPair(-1,1), tau=id and d=1/2. It proves measurability, integrability, effectRadius=1>0 and 0<d<effectRadius together. Constant weight 1 provides a genuine admissible weight. The probability-measure and support hypotheses are ordinary finite-probability instances. No regularity requirement on an estimator is needed for the universal deterministic conclusion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T5",
+    "theorem": "SAP.P017.T5",
+    "fingerprint": "31c98c6735876134f42c459ade89cf31e4800563941d8a6b7ee9f6dbdb0250e4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully: normalPopulation and its IID sampling law are probability measures, and normal_draws_independent proves independence of the actual full-data sample coordinates. At n=2 the constant sample with Gaussian coordinate zero gives shiftedDifference=-1/2 while the actual clipping residual is zero. The central event itself has positive Gaussian probability; the witness uses the normal sample mean with deterministic remainder 1/n, whose root-n scaling tends to zero. reciprocal_extended_pos and littleOp_reciprocal_extension prove that an everywhere-positive extension of 1/n preserves the asserted failure. The checks do not use T5 or another Challenge theorem.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P018b.T20",
+  "target_id": "P018-T20",
+  "round": 7,
+  "verdict": "label_wrong",
+  "severity": "major",
+  "issues": [
+   "record.json:4 labels T20 whole and record.json:6 gives no restriction, while SAP/P018b/Defs/WholeW1.lean:511, :513, :514 and :515 impose common record kernels, a uniform record cap, positive limiting Gram, and vanishing scaled overlap products of expected block scores; :520, :523, :524, :527 and :529 restrict the directed weighted case. These substantive C1/C2 premises are disclosed, but their equivalence to the canonical T10 hypotheses is not established by the supplied claims.json, which contains only T20-T24. A whole classification is therefore unsupported; the actual certified scope is the explicitly conditioned result.",
+   "SAP/P018b/Challenge/Part1.lean:56 and SAP/P018b/Defs/WholeW1.lean:448 call the displayed premises the referenced T10 consistency contracts. The supplied canonical T20(ii) references T10 without providing its hypotheses; these docstrings cannot themselves establish that the added premises belong to the canonical contract. record.json:29 acknowledges substantive premises but does not record a restriction."
+  ]
+ }
+]

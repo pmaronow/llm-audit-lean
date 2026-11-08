@@ -3,7 +3,8 @@ import Mathlib.Data.Fin.Tuple.Basic
 import Mathlib.Algebra.BigOperators.Fin
 
 /-!
-The finite partition arguments below retain null fibres.
+Draft for dd-GP019B4. No Lean executable was run in preparing this file.
+The finite partition arguments below deliberately retain null fibres.
 -/
 
 namespace AronowAudit.P019.Wave1
@@ -18,7 +19,8 @@ open Classical
 
 variable {Ω : Type*} [Fintype Ω]
 
-/- Helpers for finite conditional means and product variances. -/
+/- Helpers for finite_product_counterexample, also used by the two general
+   results below. None refers to an unproved audit declaration. -/
 
 private theorem fpc_ce_sub (P : FiniteLaw Ω) (f g : Ω → ℝ)
     (D : Ω → Prop) [DecidablePred D] :
@@ -702,7 +704,11 @@ theorem corrected_conditional_means_proof (S : Study Ω) (hs : S.standing)
     · simpa using ccm_nonempty S hs n k hk true
     · simpa using ccm_nonempty S hs n k hk false
 
+example : type_of% @AronowAudit.P019.corrected_conditional_means :=
+  corrected_conditional_means_proof
 
+/- The shared helpers fpc_product_moments and fpc_product_formula occur
+before record 13 because its numerical specialization needs them too. -/
 
 theorem corrected_product_variance_proof (S : Study Ω) (hs : S.standing) (n : ℕ) (hn : 2 ≤ n)
     (c1 c0 : ℝ) :
@@ -721,6 +727,9 @@ theorem corrected_product_variance_proof (S : Study Ω) (hs : S.standing) (n : �
         P.cv A S.occupied * P.cv B S.occupied) =
       P.ccov (fun s => A s^2) h S.occupied := by
   exact fpc_product_formula S hs n hn c1 c0
+
+example : type_of% @AronowAudit.P019.corrected_product_variance :=
+  corrected_product_variance_proof
 
 end
 end AronowAudit.P019.Wave1

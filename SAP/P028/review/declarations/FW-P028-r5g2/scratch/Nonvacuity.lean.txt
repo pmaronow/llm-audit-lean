@@ -1,0 +1,212 @@
+import SAP.P028.Defs.WholeW1
+import SAP.P028.Defs.WholeW2
+
+open MeasureTheory ProbabilityTheory SAP.P028
+open scoped ENNReal BigOperators
+noncomputable section
+open Classical
+
+namespace Audit
+
+def coin : Measure Bool :=
+  bernoulliMeasure true false ⟨1/2, by constructor <;> norm_num⟩
+instance : IsProbabilityMeasure coin := by unfold coin; infer_instance
+def square : Measure (Bool × Bool) := coin.prod coin
+instance : IsProbabilityMeasure square := by unfold square; infer_instance
+def cube : Measure ((Bool × Bool) × Bool) := square.prod coin
+instance : IsProbabilityMeasure cube := by unfold cube; infer_instance
+
+lemma mass_sum {α : Type*} [Fintype α] [MeasurableSpace α]
+    [MeasurableSingletonClass α] [DiscreteMeasurableSpace α]
+    (μ : Measure α) [IsFiniteMeasure μ] (E : Set α) :
+    μ.real E = ∑ i, if i ∈ E then μ.real {i} else 0 := by
+  rw [← integral_indicator_one (by measurability), integral_fintype Integrable.of_finite]
+  simp [Set.indicator_apply, smul_eq_mul, mul_ite]
+
+lemma on_sum {α : Type*} [Fintype α] [MeasurableSpace α]
+    [MeasurableSingletonClass α] [DiscreteMeasurableSpace α]
+    (μ : Measure α) [IsFiniteMeasure μ] (f : α → ℝ) (E : Set α) :
+    (∫ i in E, f i ∂μ) = ∑ i, if i ∈ E then μ.real {i} * f i else 0 := by
+  rw [← integral_indicator (by measurability), integral_fintype Integrable.of_finite]
+  simp [Set.indicator_apply, smul_eq_mul, mul_ite]
+
+@[simp] lemma coin_singleton (b : Bool) : coin.real {b} = 1/2 := by
+  cases b <;> norm_num [coin, bernoulliMeasure_real_apply _ (measurableSet_singleton _)]
+
+lemma prod_real_singleton {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
+    (μ : Measure α) (ν : Measure β) [SFinite ν] (a : α) (b : β) :
+    (μ.prod ν).real {(a,b)} = μ.real {a} * ν.real {b} := by
+  simp only [measureReal_def, ← Set.singleton_prod_singleton, Measure.prod_prod,
+    ENNReal.toReal_mul]
+
+@[simp] lemma square_singleton (b : Bool × Bool) : square.real {b} = 1/4 := by
+  rcases b with ⟨b,c⟩
+  norm_num [square, prod_real_singleton]
+@[simp] lemma cube_singleton (b : (Bool × Bool) × Bool) : cube.real {b} = 1/8 := by
+  rcases b with ⟨b,c⟩
+  norm_num [cube, prod_real_singleton]
+
+lemma coin_mass (E : Set Bool) : coin.real E =
+    (if true ∈ E then (1/2:ℝ) else 0) + (if false ∈ E then (1/2:ℝ) else 0) := by
+  rw [mass_sum]
+  simp
+lemma square_mass (E : Set (Bool × Bool)) : square.real E =
+    ∑ b : Bool, ∑ c : Bool, if (b,c) ∈ E then (1/4:ℝ) else 0 := by
+  rw [mass_sum]
+  simp [Fintype.sum_prod_type]
+lemma cube_mass (E : Set ((Bool × Bool) × Bool)) : cube.real E =
+    ∑ b : Bool, ∑ c : Bool, ∑ d : Bool, if ((b,c),d) ∈ E then (1/8:ℝ) else 0 := by
+  rw [mass_sum]
+  simp [Fintype.sum_prod_type]
+
+-- T7: independently check the complete fixed witness, not using T7.
+example : T7Statement := by
+  norm_num [T7Statement, fullComplianceFacts, twoAtomProb, twoAtomMean,
+    fullPotential, fd, fy, fc, bit, Fintype.sum_bool, lowerControl, upperControl,
+    lowerTreated, upperTreated, effect]
+
+-- T8: a full-compliance model satisfying every structure hypothesis.
+def fullModel : CausalModel Bool where
+  μ := coin
+  probability := inferInstance
+  S := fun _ => 2
+  Y := fun d _ => realBit d
+  Z := id
+  measurableS := measurable_const
+  measurableY := fun _ => measurable_const
+  integrableY := fun _ => integrable_const _
+  measurableZ := measurable_id
+  randomAssignment := indepFun_const_left _ _
+  armPositive := by
+    intro z
+    rw [coin_mass]
+    cases z <;> norm_num
+  nonzeroFirstStage := by
+    norm_num [treatment, realBit, coin_mass]
+
+example : boundedOutcomes fullModel ∧ complierProbability fullModel = 1 ∧
+    (∀ z, armMean fullModel z = realBit z) ∧
+    (∀ d, complierMean fullModel d = realBit d) := by
+  constructor
+  · intro d ω; cases d <;> norm_num [fullModel, realBit]
+  constructor
+  · norm_num [complierProbability, complierEvent, fullModel, coin_mass]
+  constructor
+  · intro z
+    simp only [armMean, eventMean, armEvent, observedY, observedD, fullModel]
+    rw [on_sum, coin_mass]
+    cases z <;> norm_num [Fintype.sum_bool, treatment, realBit]
+  · intro d
+    norm_num [complierMean, eventMean, complierEvent, fullModel, coin_mass]
+
+-- T8 and T10: genuine independent fair assignment in a partial-compliance family.
+def levelsModel (t : ℝ) : CausalModel (Bool × Bool) where
+  μ := square
+  probability := inferInstance
+  S := fun ω => if ω.1 then 2 else 1
+  Y := fun _ ω => if ω.1 then t else 3/2-t
+  Z := Prod.snd
+  measurableS := Measurable.of_discrete
+  measurableY := fun _ => Measurable.of_discrete
+  integrableY := fun _ => Integrable.of_finite
+  measurableZ := measurable_snd
+  randomAssignment := indepFun_prod (X := fun b : Bool =>
+    ((if b then 2 else 1 : Fin 3), (if b then t else 3/2-t),
+      (if b then t else 3/2-t))) Measurable.of_discrete measurable_id
+  armPositive := by
+    intro z
+    rw [square_mass]
+    cases z <;> norm_num [Fintype.sum_bool]
+  nonzeroFirstStage := by
+    rw [integral_fintype Integrable.of_finite]
+    norm_num [Fintype.sum_prod_type, Fintype.sum_bool, treatment, realBit]
+
+lemma levels_bounded (t : ℝ) (ht : t ∈ Set.Icc (1/2:ℝ) 1) :
+    boundedOutcomes (levelsModel t) := by
+  intro d ω
+  dsimp [levelsModel]
+  split_ifs <;> constructor <;> linarith [ht.1, ht.2]
+
+lemma levels_values (t : ℝ) : complierProbability (levelsModel t) = 1/2 ∧
+    (∀ z, armMean (levelsModel t) z = 3/4) ∧
+    cace (levelsModel t) = 0 ∧ (∀ d, complierMean (levelsModel t) d = t) := by
+  constructor
+  · simp only [complierProbability, complierEvent, levelsModel]
+    rw [square_mass]
+    norm_num [Fintype.sum_bool]
+  constructor
+  · intro z
+    simp only [armMean, eventMean, observedY, observedD, armEvent, levelsModel]
+    rw [on_sum, square_mass]
+    cases z <;> norm_num [Fintype.sum_prod_type, Fintype.sum_bool] <;> ring
+  constructor
+  · simp [cace, eventMean, levelsModel]
+  · intro d
+    simp only [complierMean, eventMean, complierEvent, levelsModel]
+    rw [on_sum, square_mass]
+    norm_num [Fintype.sum_prod_type, Fintype.sum_bool]
+    ring
+
+-- This exactly verifies the two-model existential of T10 without importing its theorem.
+example : nonidentificationOfLevels := by
+  refine ⟨levelsModel (1/2), levelsModel 1, levels_bounded _ (by norm_num),
+    levels_bounded _ (by norm_num), ?_⟩
+  have h0 := levels_values (1/2)
+  have h1 := levels_values 1
+  exact ⟨h0.1, h1.1, h0.2.1 false, h0.2.1 true, h1.2.1 false, h1.2.1 true,
+    h0.2.2.1, h1.2.2.1, h0.2.2.2 false, h0.2.2.2 true,
+    h1.2.2.2 false, h1.2.2.2 true⟩
+
+-- T9: all three strata have positive mass; assignment is an independent third coin.
+def cellModel : T9Model ((Bool × Bool) × Bool) where
+  μ := cube
+  probability := inferInstance
+  S := fun ω => if ω.1.1 then 2 else if ω.1.2 then 0 else 1
+  Y := fun d _ => realBit d
+  Z := Prod.snd
+  measurableS := Measurable.of_discrete
+  measurableY := fun _ => measurable_const
+  measurableZ := measurable_snd
+  randomAssignment := indepFun_prod (X := fun b : Bool × Bool =>
+    ((if b.1 then 2 else if b.2 then 0 else 1 : Fin 3), realBit false, realBit true))
+    Measurable.of_discrete measurable_id
+  armPositive := by
+    intro z
+    rw [cube_mass]
+    cases z <;> norm_num [Fintype.sum_bool]
+  nonzeroFirstStage := by
+    rw [integral_fintype Integrable.of_finite]
+    norm_num [Fintype.sum_prod_type, Fintype.sum_bool, treatment, realBit]
+
+example : T9FiniteCells cellModel := by
+  intro d z
+  constructor
+  · simp only [T9Model.cellEvent, T9Model.observedD, cellModel]
+    rw [cube_mass]
+    cases d <;> cases z <;> norm_num [Fintype.sum_bool, treatment]
+  · exact Integrable.of_finite
+
+-- A population instance for T10, with every required moment.
+def wholeModel : WholeCausalData (Bool × Bool) where
+  μ := (levelsModel (1/2)).μ
+  probability := (levelsModel (1/2)).probability
+  S := (levelsModel (1/2)).S
+  Y := (levelsModel (1/2)).Y
+  Z := (levelsModel (1/2)).Z
+  measurableS := (levelsModel (1/2)).measurableS
+  measurableY := (levelsModel (1/2)).measurableY
+  measurableZ := (levelsModel (1/2)).measurableZ
+  randomAssignment := (levelsModel (1/2)).randomAssignment
+  armPositive := (levelsModel (1/2)).armPositive
+  nonzeroFirstStage := (levelsModel (1/2)).nonzeroFirstStage
+
+example : wholeArmMoments wholeModel := fun _ => Integrable.of_finite
+
+def sample : WholeSample 2 := (![0,1], ![false,true], ![false,true])
+example : (∀ z, wholeSampleCount sample z = 1) ∧ wholeSampleP sample = 1 ∧
+    wholeSampleWald sample = 1 ∧ wholeSampleCross sample.2.2 sample.1 = 1/2 ∧
+    wholeSampleCross sample.2.2 (fun i => realBit (sample.2.1 i)) = 1/2 := by
+  norm_num [sample, wholeSampleCount, wholeSampleP, wholeSampleWald, wholeSampleE,
+    wholeSampleMean, wholeSampleCross, Fin.sum_univ_succ, realBit]
+
+end Audit

@@ -1,0 +1,110 @@
+[
+ {
+  "target_id": "P008-T15",
+  "decision": "whole",
+  "theorem": "SAP.P008b.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.band_average_display",
+   "AronowAudit.P008.band_contains_no_nodes",
+   "SAP.P008b.WH.W1.T15_whole",
+   "SAP.P008b.WH.W1.T15_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P008b.T15WholeStatement"
+ },
+ {
+  "target_id": "P008-T16",
+  "decision": "whole",
+  "theorem": "SAP.P008b.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.donut_counterexample",
+   "AronowAudit.P008.polygon_donut_counterexample",
+   "SAP.P008b.WH.W3.T16_whole",
+   "SAP.P008b.WH.W3.T16_assembly",
+   "SAP.P008b.WH.W3.T16_L1_proof",
+   "SAP.P008b.WH.W3.T16_L2_proof",
+   "SAP.P008b.WH.W3.P.T16_L1.square_nonempty",
+   "SAP.P008b.WH.W3.P.T16_L1.square_closed",
+   "SAP.P008b.WH.W3.P.T16_L1.coord_bound",
+   "SAP.P008b.WH.W3.P.T16_L2.square_closed",
+   "SAP.P008b.WH.W3.P.T16_L2.coord_bound"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.donut_spatial_distances",
+    "reason": "The complete polygon counterexample already includes both geometry conclusions."
+   }
+  ],
+  "statement_definition": "SAP.P008b.T16WholeStatement_W3"
+ },
+ {
+  "target_id": "P008-T17",
+  "decision": "whole",
+  "theorem": "SAP.P008b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.distance_to_circle",
+   "AronowAudit.P008.positive_radius_band_geometry",
+   "AronowAudit.P008.nested_buffer_average",
+   "SAP.P008b.WH.W2.T17_whole",
+   "SAP.P008b.WH.W2.T17_assembly"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.radial_band_geometry",
+    "reason": "The positive-radius geometry row includes the clipped band and width conclusion."
+   }
+  ],
+  "statement_definition": "SAP.P008b.T17WholeStatement"
+ },
+ {
+  "target_id": "P008-T18",
+  "decision": "whole",
+  "theorem": "SAP.P008b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.toy_kernel_lower_bound",
+   "AronowAudit.P008.toy_raster_amr_formula",
+   "SAP.P008b.WH.W2.T18_whole",
+   "SAP.P008b.WH.W2.T18_assembly",
+   "SAP.P008b.WH.W2.T18_L1_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.additive_switch",
+    "reason": "The raster AMR row already supplies the switching and marginalized effects."
+   },
+   {
+    "lean_name": "AronowAudit.P008.spatial_toy_raster_amr_formula",
+    "reason": "The generic nonnegative-distance raster row covers all supplied centroid-distance arrays."
+   },
+   {
+    "lean_name": "AronowAudit.P008.toy_amplitude_and_bound",
+    "reason": "The raster AMR row already supplies amplitude scaling and the convex lower bound."
+   }
+  ],
+  "statement_definition": "SAP.P008b.T18WholeStatement"
+ },
+ {
+  "target_id": "P008-T19",
+  "decision": "whole",
+  "theorem": "SAP.P008b.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.polygon_raster_counterexample",
+   "AronowAudit.P008.expect_const"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.boundary_counterexample",
+    "reason": "The full 200-cell raster row supplies this target with the specified independent design."
+   },
+   {
+    "lean_name": "AronowAudit.P008.boundary_hajek_counterexample",
+    "reason": "The full raster row supplies the specified 200-cell field and independent assignment law."
+   }
+  ]
+ }
+]

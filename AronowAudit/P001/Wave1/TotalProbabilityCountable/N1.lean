@@ -1,6 +1,6 @@
 import AronowAudit.P001.Wave1.TotalProbabilityCountableBlueprint
 
-/-! P001-T24:
+/-! Node N1 of the P001-T24 blueprint (trivial; written by the blueprint architect):
 binary complement additivity `P(B) = P(B ∩ C) + P(B ∩ Cᶜ)` for measurable `C`. -/
 
 namespace AronowAudit.P001.Wave1.TotalProbabilityCountable

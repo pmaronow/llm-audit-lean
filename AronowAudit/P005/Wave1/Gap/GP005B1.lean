@@ -8,10 +8,8 @@ open Finset Filter
 set_option maxRecDepth 3000
 set_option maxHeartbeats 2000000
 
-/-!
-The sampling identities include the second and third moments used by
-the control-arm and treated-arm expectation formulas.
--/
+/-! Drafted without invoking Lean. The `control_arm_` helpers include the
+shared second and third sampling moments needed by both expectation nodes. -/
 
 lemma control_arm_expectation_add {n : ℕ} (s : ℕ)
     (f g : Finset (Fin n) → ℝ) :
@@ -548,7 +546,7 @@ lemma control_arm_unbiased_any_size {n d s : ℕ} (P : Population n d)
     control_arm_coefficient_factor hn hs]
   simp only [sub_self, zero_mul, add_zero]
 
-/-- The control-arm expectation, unique debiasing coefficient and unbiasedness. -/
+/-- Record 0: the frozen control-arm contract. -/
 theorem control_arm_expectation_proof {n d m : ℕ} (P : Population n d) (hn : 3 ≤ n)
     (hm : 0 < m) (hmn : m < n) (hc : 2 ≤ n-m) (hx : xMean P univ = 0) (c : ℝ) :
     expectation m (fun S => mean (control S) P.yC -
@@ -573,7 +571,9 @@ theorem control_arm_expectation_proof {n d m : ℕ} (P : Population n d) (hn : 3
   · rw [control_arm_transport (le_of_lt hmn) (fun S => armDebiased P S P.yC)]
     exact hz
 
-/-- The treated-arm expectation, debiasing coefficient and unbiasedness. -/
+example : type_of% @AronowAudit.P005.control_arm_expectation := control_arm_expectation_proof
+
+/-- Record 2: the frozen treated-arm contract. -/
 theorem treated_arm_expectation_proof {n d m : ℕ} (P : Population n d) (hn : 3 ≤ n)
     (hm : 2 ≤ m) (hmn : m < n) (hx : xMean P univ = 0) (c : ℝ) :
     expectation m (fun S => mean S P.yT - dot (xMean P S) (armN P S P.yT) +
@@ -609,6 +609,8 @@ theorem treated_arm_expectation_proof {n d m : ℕ} (P : Population n d) (hn : 3
     field_simp [n2, m0, nm0]
     <;> ring
   rw [hweight]
+
+example : type_of% @AronowAudit.P005.treated_arm_expectation := treated_arm_expectation_proof
 
 end
 end AronowAudit.P005.Wave1

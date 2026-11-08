@@ -1,0 +1,175 @@
+import SAP.P008b.Challenge
+
+open SAP.P008b MeasureTheory
+open scoped BigOperators
+
+noncomputable section
+namespace Audit
+open Classical in
+attribute [local instance] propDecidable
+
+def nullModel : MetricSpatialModel (Fin 1) 1 where
+  coord _ := 0
+  coord_injective := fun _ _ _ => Subsingleton.elim _ _
+  node _ := 0
+  metric := inferInstance
+  ζ := Measure.count
+  Y _ _ := 0
+
+theorem null_circle : nullModel.circle 0 0 = Set.univ := by
+  ext x
+  change (dist (0 : Plane) 0 = 0) ↔ True
+  simp
+
+theorem T26_hypotheses :
+    0 < (1 : ℕ) ∧ nullModel.sharpNull ∧
+      ∀ Q : FiniteLaw (Assignment 1), nullModel.validCircle Q 0 0 := by
+  refine ⟨by decide, by simp [MetricSpatialModel.sharpNull, nullModel], ?_⟩
+  intro Q
+  refine ⟨MeasurableSet.of_discrete, ?_, ?_, ?_⟩
+  · change 0 < (Measure.count (nullModel.circle 0 0)).toReal
+    rw [null_circle]
+    norm_num
+  · change Measure.count (nullModel.circle 0 0) ≠ ⊤
+    simp
+  · intro b z hz
+    change Integrable _ (Measure.count.restrict _)
+    exact Integrable.of_finite
+
+theorem cancel_distance (x : Fin 3) :
+    wholeCancellingModel.distance (wholeCancellingModel.node 0) x =
+      if x = 1 then 0 else 1 := by
+  change dist (wholeLine (1 - 1)) (wholeLine ((x.val : ℚ) - 1)) =
+    if x = 1 then 0 else 1
+  rw [PiLp.dist_eq_of_L2]
+  fin_cases x <;> norm_num [wholeLine, Fin.sum_univ_succ, Real.dist_eq]
+
+theorem cancel_circle_zero : wholeCancellingModel.circle 0 0 = {1} := by
+  ext x
+  simp only [MetricSpatialModel.circle, Set.mem_ofPred_eq, cancel_distance]
+  fin_cases x <;> norm_num
+
+theorem cancel_circle_one : wholeCancellingModel.circle 0 1 = ({0, 2} : Set (Fin 3)) := by
+  ext x
+  simp only [MetricSpatialModel.circle, Set.mem_ofPred_eq, cancel_distance]
+  fin_cases x <;> norm_num
+
+theorem cancel_valid (Q : FiniteLaw (Assignment 1)) :
+    wholeCancellingModel.validCircle Q 0 0 ∧
+      wholeCancellingModel.validCircle Q 0 1 := by
+  constructor
+  · refine ⟨MeasurableSet.of_discrete, ?_, ?_, ?_⟩
+    · change 0 < (Measure.count (wholeCancellingModel.circle 0 0)).toReal
+      rw [cancel_circle_zero]
+      simp
+    · change Measure.count (wholeCancellingModel.circle 0 0) ≠ ⊤
+      simp
+    · intro b z hz
+      change Integrable _ (Measure.count.restrict _)
+      exact Integrable.of_finite
+  · refine ⟨MeasurableSet.of_discrete, ?_, ?_, ?_⟩
+    · change 0 < (Measure.count (wholeCancellingModel.circle 0 1)).toReal
+      rw [cancel_circle_one]
+      rw [show ({0, 2} : Set (Fin 3)) = (({0, 2} : Finset (Fin 3)) : Set (Fin 3)) by
+        ext x
+        simp]
+      rw [Measure.count_apply_finset]
+      norm_num
+    · change Measure.count (wholeCancellingModel.circle 0 1) ≠ ⊤
+      simp
+    · intro b z hz
+      change Integrable _ (Measure.count.restrict _)
+      exact Integrable.of_finite
+
+theorem cancel_nonnull :
+    wholeCancellingModel.Y 2 ![true] ≠ wholeCancellingModel.Y 2 ![false] := by
+  norm_num [wholeCancellingModel, bit]
+
+theorem count_integral (s : Set (Fin 3)) (f : Fin 3 → ℝ) :
+    (∫ x in s, f x ∂Measure.count) = ∑ x, if x ∈ s then f x else 0 := by
+  rw [← integral_indicator MeasurableSet.of_discrete, integral_count]
+  rfl
+
+theorem cancel_M_zero (z : Assignment 1) : wholeCancellingModel.M 0 0 z = 0 := by
+  unfold MetricSpatialModel.M MetricSpatialModel.regionAverage
+  rw [cancel_circle_zero]
+  change (Measure.count ({1} : Set (Fin 3))).toReal⁻¹ *
+    (∫ x in ({1} : Set (Fin 3)), ((x.val : ℝ) - 1) * bit (z 0) ∂Measure.count) = 0
+  rw [count_integral]
+  norm_num [Fin.sum_univ_succ]
+
+theorem cancel_M_one (z : Assignment 1) : wholeCancellingModel.M 0 1 z = 0 := by
+  unfold MetricSpatialModel.M MetricSpatialModel.regionAverage
+  rw [cancel_circle_one]
+  change (Measure.count ({0, 2} : Set (Fin 3))).toReal⁻¹ *
+    (∫ x in ({0, 2} : Set (Fin 3)), ((x.val : ℝ) - 1) * bit (z 0) ∂Measure.count) = 0
+  rw [count_integral]
+  simp [Fin.sum_univ_succ]
+
+theorem valid_radius (Q : FiniteLaw (Assignment 1)) (d : ℝ)
+    (h : wholeCancellingModel.validCircle Q 0 d) : d = 0 ∨ d = 1 := by
+  by_contra hn
+  have h0 : d ≠ 0 := fun he => hn (Or.inl he)
+  have h1 : d ≠ 1 := fun he => hn (Or.inr he)
+  have hc : wholeCancellingModel.circle 0 d = ∅ := by
+    ext x
+    simp only [MetricSpatialModel.circle, Set.mem_ofPred_eq, cancel_distance, Set.mem_empty_iff_false,
+      iff_false]
+    split_ifs <;> exact Ne.symm (by assumption)
+  have hp := h.2.1
+  rw [hc] at hp
+  simpa using hp
+
+theorem cancel_all_valid (Q : FiniteLaw (Assignment 1)) (d : ℝ)
+    (h : wholeCancellingModel.validCircle Q 0 d) : wholeCancellingModel.amr Q d = 0 := by
+  have hM : ∀ z, wholeCancellingModel.M 0 d z = 0 := by
+    rcases valid_radius Q d h with rfl | rfl
+    · exact cancel_M_zero
+    · exact cancel_M_one
+  simp [MetricSpatialModel.amr, finiteAMR, marginal, FiniteLaw.expect, hM]
+
+def additiveModel : SpatialModel 1 where
+  field := {0}
+  node _ := 0
+  node_mem _ := by simp
+  ζ := Measure.dirac 0
+  Y _ z := 2 + bit (z 0) * 3
+
+theorem additive_circle : additiveModel.selectedCircle dist 0 0 = {0} := by
+  ext x
+  simp [SpatialModel.selectedCircle, additiveModel]
+
+theorem T27_hypotheses :
+    0 < (1 : ℕ) ∧
+    (∀ x ∈ additiveModel.field, ∀ z,
+      additiveModel.Y x z = additiveOutcome (fun _ => 2) (fun _ _ => 3) x z) ∧
+    (∀ x ∈ additiveModel.field, ∀ z,
+      additiveModel.Y x z = additiveOutcome (fun _ => 2)
+        (fun i x => (fun _ : ℝ => (3 : ℝ)) (dist (additiveModel.node i) x)) x z) ∧
+    ∀ Q : FiniteLaw (Assignment 1), additiveModel.validSelectedCircle dist Q 0 0 := by
+  refine ⟨by decide, ?_, ?_, ?_⟩
+  · intro x hx z
+    simp [additiveModel, additiveOutcome]
+  · intro x hx z
+    simp [additiveModel, additiveOutcome]
+  · intro Q
+    have hm : additiveModel.selectedMeasure dist 0 0 = Measure.dirac (0 : Plane) := by
+      change (Measure.dirac (0 : Plane)).restrict (additiveModel.selectedCircle dist 0 0) = _
+      rw [additive_circle]
+      simp
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · simp [hm]
+    · simp [hm]
+    · simp [hm, additive_circle]
+    · intro b z hz
+      rw [hm]
+      change Integrable (fun _ => _) (Measure.dirac (0 : Plane))
+      exact integrable_const _
+
+#print axioms T26_hypotheses
+#print axioms cancel_valid
+#print axioms cancel_nonnull
+#print axioms cancel_all_valid
+#print axioms T27_hypotheses
+
+end Audit

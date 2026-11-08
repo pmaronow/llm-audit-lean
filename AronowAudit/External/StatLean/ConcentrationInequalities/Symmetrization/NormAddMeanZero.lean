@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Prod
 
@@ -16,8 +12,8 @@ construction): the pointwise core is
 $$ \|y\| \;=\; \Bigl\| \int (y + g(z))\, dP_2(z) \Bigr\|
    \;\le\; \int \|y + g(z)\|\, dP_2(z) $$
 (Jensen for norms), and the product form follows by integrating over $P_1$.
-This is used in symmetrization Lemma 6.3.2, Gaussian symmetrization Lemma 6.6.2,
-and Exercise 8.11.
+Both directions of the symmetrization Lemma 6.3.2, the Gaussian
+symmetrization Lemma 6.6.2, and Exercise 8.11 consume this one lemma.
 
 **Reference.** Roman Vershynin, *High-Dimensional Probability*, 2nd ed.,
 Cambridge University Press, §6.3, Eq. (6.13) (stated with "(Check it!)";
@@ -31,7 +27,9 @@ needed). Product form: integrate the pointwise inequality over `P₁` with
 `Integrable.integral_norm_prod_left` and
 `MeasurePreserving.integrable_comp` along `measurePreserving_fst`/`snd`.
 Integrability of `f` and `g` is a genuine hypothesis (the book's
-`E‖·‖ < ∞` standing assumption).
+`E‖·‖ < ∞` standing assumption). Named-sorry fallback of this work item:
+`integral_norm_le_integral_norm_add_prod` (the product/Fubini form), with the
+pointwise core fully proven.
 
 **Bibliographic comments.** This inequality is folklore (a one-line
 consequence of Jensen's inequality for the norm); in the Banach-space
@@ -68,7 +66,8 @@ theorem norm_le_integral_norm_add {β : Type*} {mβ : MeasurableSpace β}
 
 /-- **HDP Eq. (6.13)**, product form: for independent `Y ∼ P₁`-component `f`
 and mean-zero `Z ∼ P₂`-component `g` (independence by construction on
-`P₁.prod P₂`), `E‖Y‖ ≤ E‖Y + Z‖`. -/
+`P₁.prod P₂`), `E‖Y‖ ≤ E‖Y + Z‖`. Named-sorry debt candidate of this work
+item. -/
 theorem integral_norm_le_integral_norm_add_prod {α β : Type*}
     {mα : MeasurableSpace α} {mβ : MeasurableSpace β}
     (P₁ : Measure α) (P₂ : Measure β)

@@ -11,11 +11,11 @@ import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 
 /-!
-Carlson, Incerti and Aronow, *Dyadic Clustering in International
+Audit of Carlson, Incerti and Aronow, *Dyadic Clustering in International
 Relations*, Political Analysis 32 (2024), 186–198. All finite sums over pairs
-are ordered sums. No finite-sample factors or spectral projection are hidden
+are ORDERED sums. No finite-sample factors or spectral projection are hidden
 inside the sandwich definitions. False printed claims are recorded only as
-propositions and refuted separately.
+propositions and refuted separately. See lean.json for per-statement status.
 -/
 namespace AronowAudit.P032
 set_option linter.unusedSectionVars false
@@ -51,15 +51,14 @@ def recordPattern (r s : R) : ℝ := if r = s then 1 else 0
 
 /-- The "dyad-member-i-specific clustered" component (p. 191): incident
 records form one cluster, outsiders each form a singleton. The singleton
-convention follows the released code (targets T4/T11).
-This Lean definition specifies what the published software computes. -/
+convention is supplied by the validators and released code (targets T4/T11). -/
 def memberPattern (d : R → Dyad M) (i : M) (r s : R) : ℝ :=
   (if i ∈ (d r).members ∧ i ∈ (d s).members then 1 else 0) +
   (if r = s ∧ i ∉ (d r).members then 1 else 0)
 
 /-- "substituting residuals for errors" in the sandwich (p. 189): with
 bread-premultiplied record scores z, the unadjusted covariance is
-Σ_{r,s} P_{rs} z_r z_s^T (T4). -/
+Σ_{r,s} P_{rs} z_r z_s^T. The z notation is the validators' (T4). -/
 def scoreSandwich (pattern : R → R → ℝ) (z : R → P → ℝ) : Matrix P P ℝ :=
   fun i j => ∑ r, ∑ s, pattern r s * z r i * z s j
 
@@ -163,7 +162,7 @@ theorem corrected_decomposition (d : R → Dyad M) (z : R → P → ℝ) :
 
 /-- T4(iv): when the subtracted covariance is α times an id-clustered
 matrix instead of the record matrix, the exact unprojected discrepancy is
-(N−2)(V0−α Vid). -/
+(N−2)(V0−α Vid). This does not assert what an unexecuted Stata call returns. -/
 theorem id_substitution_discrepancy (d : R → Dyad M) (z : R → P → ℝ)
     (Vid : Matrix P P ℝ) (α : ℝ) :
     (∑ i, scoreSandwich (memberPattern d i) z) -
@@ -206,7 +205,7 @@ theorem variance_sign_conditions (d : R → Dyad M) (A : Matrix R R ℝ) (h : R 
   constructor <;> constructor <;> intro hn <;> linarith
 
 /-- Id-clustered covariance groups records with a common subject id;
-this is Vid (T3/T4), not the paper's record-level V0. -/
+this is the validators' Vid (T3/T4), not the paper's record-level V0. -/
 def idPattern {G : Type*} [DecidableEq G] (g : R → G) (r s : R) : ℝ :=
   if g r = g s then 1 else 0
 
@@ -530,8 +529,8 @@ theorem positive_part_psd (V : Matrix P P ℝ) (hV : V.IsHermitian) :
     (positivePart V hV).PosSemidef := spectral_clip_psd _ _
 
 /-- The released software's rule in T6(e): clip only when a diagonal
-entry is negative.
-This Lean definition specifies what the published software computes. -/
+entry is negative. This definition records the mathematical operation,
+not a claim to have run R or Stata here. -/
 def gatedPart (V : Matrix P P ℝ) (hV : V.IsHermitian) : Matrix P P ℝ :=
   if ∃ i, V i i < 0 then positivePart V hV else V
 
@@ -675,7 +674,7 @@ theorem toy_sign_cases {Ω : Type*} [MeasurableSpace Ω]
   · intro hac hv; rw [he']; have := mul_neg_of_neg_of_pos hac hv; nlinarith
   · intro hz; rw [he']; rcases hz with hz | hz <;> simp [hz]
 
-/-- For the bounded counterexamples (T1), a finite probability
+/-- For the validators' bounded counterexamples (T1), a finite probability
 law has nonnegative atom weights of total one. It is an actual probability
 space, not a formal covariance matrix without a realizing error distribution. -/
 structure FiniteLaw (S : Type*) [Fintype S] where
@@ -689,7 +688,7 @@ def finiteExpectation {S : Type*} [Fintype S] (law : FiniteLaw S) (f : S → ℝ
   ∑ s, law.weight s * f s
 
 /-- Finite-law sampling variance E[(f−Ef)²], the same population variance
-as p. 189, for the finite-support examples. -/
+as p. 189, for the validators' finite-support examples. -/
 def finiteVariance {S : Type*} [Fintype S] (law : FiniteLaw S) (f : S → ℝ) : ℝ :=
   finiteExpectation law (fun s => (f s - finiteExpectation law f)^2)
 
@@ -826,7 +825,7 @@ theorem slope_and_sign_control :
   norm_num [quadratic, pairOmega, dyRestriction, dyPattern, disjointDyads,
     Matrix.det_fin_one, Fin.sum_univ_succ]
 
-/-- T5, the formal reading of "will still underestimate"
+/-- T5, the validators' formal reading of "will still underestimate"
 (p. 187; lower-bound passages pp. 187,196): for every full-rank design,
 contrast and PSD error covariance with some nonzero non-incident covariance,
 the population dyadic sandwich is a weak lower bound. This is a proposition
@@ -979,7 +978,7 @@ theorem six_omega_square_certificate (h : Fin 6 → ℝ) :
 
 /-- T3: one counting-process record (start,stop], with status 1 an event,
 0 an interval end and 2 a competing event treated as censoring. The model
-has Breslow ties, no weights or strata. -/
+has Breslow ties, no weights or strata (validator proof.md §4). -/
 structure CoxRecord where
   id : Fin 6
   dyad : Dyad (Fin 4)
@@ -1008,9 +1007,9 @@ abbrev coxEvent (r : Fin 10) (t : ℕ) : Prop :=
 
 /-- T3: number at risk, number of events and risk-set covariate mean. -/
 def coxRiskN (t : ℕ) : ℝ := ∑ r, if coxRisk r t then 1 else 0
-/-- T3(a): "two events" at each event time; count records with an event of interest at t. -/
+/-- T3(a), validator N004 proof: "two events" at each event time; count records with an event of interest at t. -/
 def coxEventN (t : ℕ) : ℝ := ∑ r, if coxEvent r t then 1 else 0
-/-- T3(a): "covariate mean 0" in each risk set; define the risk-set sum of x divided by its size. -/
+/-- T3(a), validator N004 proof: "covariate mean 0" in each risk set; define the risk-set sum of x divided by its size. -/
 def coxRiskMean (t : ℕ) : ℝ :=
   (∑ r, if coxRisk r t then (coxRecords r).x else 0) / coxRiskN t
 
@@ -1122,7 +1121,7 @@ theorem cox_substitution_counterexample :
   norm_num [quadratic, dyPattern, coxRecords, sixDyads, coxInfluence, coxScores,
     Fin.sum_univ_succ]
 
-/-- T6: all ten edges among five members, in the order defined below. -/
+/-- T6: all ten edges among five members, in the validator's order. -/
 def tenDyads : Fin 10 → Dyad (Fin 5) := fun r =>
   ⟨![({0,1} : Finset (Fin 5)),{0,2},{1,2},{0,3},{1,3},
     {2,3},{0,4},{1,4},{2,4},{3,4}] r, by fin_cases r <;> decide⟩
@@ -1130,9 +1129,9 @@ def tenDyads : Fin 10 → Dyad (Fin 5) := fun r =>
 /-- T6: exact least-squares data x=(3,0,2,1,−1,1,−3,−2,3,−2),
 y=(3,−2,−2,1,1,0,0,2,1,0), coefficient order intercept then slope. -/
 def tenX : Fin 10 → ℝ := ![3,0,2,1,-1,1,-3,-2,3,-2]
-/-- T6(a): "y=(3,−2,−2,1,1,0,0,2,1,0)"; exact response observations in the ten-dyad witness. -/
+/-- T6(a), validator E005 derivation: "y=(3,−2,−2,1,1,0,0,2,1,0)"; exact response observations in the ten-dyad witness. -/
 def tenY : Fin 10 → ℝ := ![3,-2,-2,1,1,0,0,2,1,0]
-/-- T6(a): "OLS with intercept and one covariate"; the two columns are 1 and tenX. -/
+/-- T6(a), validator E005 derivation: "OLS with intercept and one covariate"; the two columns are 1 and tenX. -/
 def tenDesign : Matrix (Fin 10) (Fin 2) ℝ := fun r => ![1,tenX r]
 
 /-- T6(a): explicit ordinary least-squares bread, not an arbitrary matrix. -/
@@ -1140,12 +1139,12 @@ def tenBread : Matrix (Fin 2) (Fin 2) ℝ := (1/208 : ℝ) • !![21,-1;-1,5]
 
 /-- T6(a): exact residuals and record scores of the fitted model. -/
 def tenResidual : Fin 10 → ℝ := fun r => ![31,-31,-33,7,9,-6,-2,23,5,-3] r / 13
-/-- T6(b): the record score is "x_r uhat_r"; here it is the fitted residual times both design coordinates. -/
+/-- T6(b), validator E005 derivation: the record score is "x_r uhat_r"; here it is the fitted residual times both design coordinates. -/
 def tenScore (r : Fin 10) : Fin 2 → ℝ := fun i => tenResidual r * tenDesign r i
 
 /-- T6(b),(c): direct DCR meat and the final variance matrix. -/
 def tenMeat : Matrix (Fin 2) (Fin 2) ℝ := scoreSandwich (dyPattern tenDyads) tenScore
-/-- T6(c) and p. 189 sandwich: "bread, meat, and bread"; the actual fitted ten-dyad DCR covariance. -/
+/-- T6(c), validator E005 derivation and p. 189 sandwich: "bread, meat, and bread"; the actual fitted ten-dyad DCR covariance. -/
 def tenVariance : Matrix (Fin 2) (Fin 2) ℝ := tenBread * tenMeat * tenBread
 
 /-- T6(a): full-rank least-squares fit, inverse bread, residuals, and
@@ -1229,7 +1228,7 @@ theorem positive_diagonal_counterexample :
 T6 matrix. These are real roots, not rounded numerical eigenvalues. -/
 def tenEigenPlus : ℝ := ((467922/3655808 : ℝ) +
   Real.sqrt ((467922/3655808 : ℝ)^2-4*(-70529/308915776)))/2
-/-- T7(iv): "lambda_±=(tau±sqrt(tau²−4delta))/2"; the exact smaller eigenvalue of the ten-dyad covariance. -/
+/-- T7(iv), validator E005 correction: "lambda_±=(tau±sqrt(tau²−4delta))/2"; the exact smaller eigenvalue of the ten-dyad covariance. -/
 def tenEigenMinus : ℝ := ((467922/3655808 : ℝ) -
   Real.sqrt ((467922/3655808 : ℝ)^2-4*(-70529/308915776)))/2
 
@@ -1238,7 +1237,7 @@ M≥2 is an explicit hypothesis on the theorems below. -/
 def imputationMean {m : ℕ} (b : Fin m → P → ℝ) : P → ℝ :=
   fun i => (m : ℝ)⁻¹ * ∑ t, b t i
 
-/-- T8/T9: B=(M−1)^−1 Σ(b_m−bbar)(b_m−bbar)^T.
+/-- T8/T9, validator derivation: B=(M−1)^−1 Σ(b_m−bbar)(b_m−bbar)^T.
 This is the BETWEEN-imputation covariance, not an independent sandwich component. -/
 def betweenImputations {m : ℕ} (b : Fin m → P → ℝ) : Matrix P P ℝ :=
   fun i j => ((m : ℝ)-1)⁻¹ *
@@ -1342,21 +1341,21 @@ def miOutcome (B : Bool) (r : Fin 6 × Fin 4) : ℝ :=
 /-- T8: intercept-only binary logit fit p=sample mean, b=log(p/(1−p)),
 H=np(1−p), efficient record score y_r−p. Neither completion is separated. -/
 def miProbability (B : Bool) : ℝ := (1/24 : ℝ)*∑ r, miOutcome B r
-/-- T8(a): "b=log(p/(1−p))"; the closed-form intercept-only binary-logit estimate of each completion. -/
+/-- T8(a), validator N012 derivation: "b=log(p/(1−p))"; the closed-form intercept-only binary-logit estimate of each completion. -/
 def miEstimate (B : Bool) : ℝ := Real.log (miProbability B/(1-miProbability B))
-/-- T8(a): "H=24p(1−p)"; observed information at the completed-data logit fit. -/
+/-- T8(a), validator N012 derivation: "H=24p(1−p)"; observed information at the completed-data logit fit. -/
 def miInformation (B : Bool) : ℝ := 24*miProbability B*(1-miProbability B)
-/-- T8(a): "s_r=y_r−p"; the efficient record score at that completion’s fitted probability. -/
+/-- T8(a), validator N012 derivation: "s_r=y_r−p"; the efficient record score at that completion’s fitted probability. -/
 def miScore (B : Bool) (r : Fin 6 × Fin 4) : ℝ := miOutcome B r - miProbability B
 
 /-- T8(b): unadjusted record, repeated-dyad and member components from
 the same logit scores and information. Each member has one incident cluster
 of 12 observations and 12 outsider singletons, so G_i=13. -/
 def miRecordU (B : Bool) : ℝ := (miInformation B)^(-2 : ℤ)*scalarRecord (miScore B)
-/-- T8(b): "U=H^−2 sum_clusters(sum_r s_r)²"; use the repeated-dyad partition of all 24 observations. -/
+/-- T8(b), validator N012 derivation: "U=H^−2 sum_clusters(sum_r s_r)²"; use the repeated-dyad partition of all 24 observations. -/
 def miDyadU (B : Bool) : ℝ :=
   (miInformation B)^(-2 : ℤ)*scalarCluster Prod.fst (miScore B)
-/-- T8(b): "one cluster of the 12 incident observations and 12 singletons"; the member-specific unadjusted sandwich. -/
+/-- T8(b), validator N012 derivation: "one cluster of the 12 incident observations and 12 singletons"; the member-specific unadjusted sandwich. -/
 def miMemberU (B : Bool) (i : Fin 4) : ℝ :=
   (miInformation B)^(-2 : ℤ)*scalarMember (fun r => sixDyads r.1) i (miScore B)
 
@@ -1423,9 +1422,9 @@ theorem mi_between_certificate :
 
 /-- T8(e),(f): the component means over the actual five imputations. -/
 def miMeanMember (i : Fin 4) : ℝ := (3*miMemberU false i+2*miMemberU true i)/5
-/-- T8(f): "Ubar_j" is the component mean across five completions, three A and two B; repeated-dyad component. -/
+/-- T8(f), validator N012 derivation: "Ubar_j" is the component mean across five completions, three A and two B; repeated-dyad component. -/
 def miMeanDyad : ℝ := (3*miDyadU false+2*miDyadU true)/5
-/-- T8(f): "Ubar_j" is the component mean across five completions, three A and two B; record component. -/
+/-- T8(f), validator N012 derivation: "Ubar_j" is the component mean across five completions, three A and two B; record component. -/
 def miMeanRecord : ℝ := (3*miRecordU false+2*miRecordU true)/5
 
 /-- T8: the target covariance pools within-DCR then adds Rubin Q once. -/
@@ -1433,8 +1432,7 @@ def miCorrectTotal : ℝ :=
   (∑ i, miMeanMember i)-miMeanDyad-2*miMeanRecord + rubinBetween miFiveEstimates 0 0
 
 /-- T8: the pooled-first code operation multiplies each entire pooled
-component by its undo factor, including its copy of the shared Rubin Q.
-This Lean definition specifies what the published software computes. -/
+component by its undo factor, including its copy of the shared Rubin Q. -/
 def miCodeTotal : ℝ :=
   (∑ i : Fin 4, (12/13 : ℝ)*(miMeanMember i/(12/13)+rubinBetween miFiveEstimates 0 0)) -
     (5/6 : ℝ)*(miMeanDyad/(5/6)+rubinBetween miFiveEstimates 0 0) -
@@ -1484,7 +1482,8 @@ structure StudyRow where
   lossMilli : ℕ
   serMilli : ℕ
 
-/-- T10: the 22 rows in printed Table A.2 order (supplement p. A3). -/
+/-- T10: the 22 rows in printed Table A.2 order (supplement p. A3).
+The unique recovered integer losses agree with the validator's check.lean. -/
 def studies : Fin 22 → StudyRow :=
   ![⟨6,1,167,2739⟩, ⟨173,43,249,2187⟩, ⟨29,6,207,2200⟩,
     ⟨8,3,375,1099⟩, ⟨9,8,889,3269⟩, ⟨24,0,0,1526⟩,
@@ -1662,7 +1661,7 @@ theorem four_expected_gap_arithmetic (m : ℕ) (hm : 1 ≤ m) :
 three complementary-pair shocks and six own-edge shocks. -/
 def signValue (a : Fin 2) : ℝ := if a = 0 then -1 else 1
 
-/-- T1(f): the exact bounded error loading formula.
+/-- T1(f): the exact bounded error loading formula of the validator.
 Complementary-pair signs are + for edges 0,1,2 and − for 3,4,5.
 Node signs occupy indices 0…3, pair signs 4…6, own signs 7…12. -/
 def sixErrorsFromSigns (a : Fin 13 → Fin 2) (r : Fin 6) : ℝ :=
@@ -1884,14 +1883,14 @@ have eigenvalues 7/4,3/4,3/4,3/4. Columns of E6 have eigenvalues
 1/4,1/4,1,3/2,3/2,3/2. Explicit inverses certify completeness/multiplicity. -/
 def fourEigenbasis : Matrix (Fin 4) (Fin 4) ℝ :=
   !![1,1,0,1; 1,-1,0,1; -1,0,1,1; -1,0,-1,1]
-/-- T1(d): eigenvalues "7/4 and 3/4 (three times)"; explicit inverse of the displayed eigenbasis certifies multiplicities. -/
+/-- T1(d), validator E001 covariance: eigenvalues "7/4 and 3/4 (three times)"; explicit inverse of the displayed eigenbasis certifies multiplicities. -/
 def fourEigenbasisInv : Matrix (Fin 4) (Fin 4) ℝ :=
   !![1/4,1/4,-1/4,-1/4; 1/2,-1/2,0,0; 0,0,1/2,-1/2; 1/4,1/4,1/4,1/4]
-/-- T1(f): eigenvalues "1/4 (twice), 1 (once), 3/2 (three times)"; columns give a complete exact eigenbasis. -/
+/-- T1(f), validator E001 covariance: eigenvalues "1/4 (twice), 1 (once), 3/2 (three times)"; columns give a complete exact eigenbasis. -/
 def sixEigenbasis : Matrix (Fin 6) (Fin 6) ℝ :=
   !![1,1,1,1,0,0; -1,0,1,0,1,0; 0,-1,1,0,0,1;
     0,-1,1,0,0,-1; -1,0,1,0,-1,0; 1,1,1,-1,0,0]
-/-- T1(f): eigenvalues "1/4 (twice), 1 (once), 3/2 (three times)"; explicit inverse certifies completeness of sixEigenbasis. -/
+/-- T1(f), validator E001 covariance: eigenvalues "1/4 (twice), 1 (once), 3/2 (three times)"; explicit inverse certifies completeness of sixEigenbasis. -/
 def sixEigenbasisInv : Matrix (Fin 6) (Fin 6) ℝ :=
   !![1/6,-2/6,1/6,1/6,-2/6,1/6; 1/6,1/6,-2/6,-2/6,1/6,1/6;
     1/6,1/6,1/6,1/6,1/6,1/6; 1/2,0,0,0,0,-1/2;
@@ -2650,7 +2649,7 @@ theorem four_replicated_ratio_ae {Ω : Type*} [MeasurableSpace Ω]
   · norm_num
 
 
-/-- T1(e), asymptotic limit: the actual estimator divided
+/-- T1(e), asymptotic claim as requested: the actual estimator divided
 by the actual sampling variance tends to 5/3 IN PROBABILITY. The errors
 remain bounded, exogenous, iid by blocks on disjoint member sets. -/
 theorem four_replicated_limit {Ω : Type*} [MeasurableSpace Ω]
@@ -2685,7 +2684,7 @@ theorem four_replicated_limit {Ω : Type*} [MeasurableSpace Ω]
 
 
 /-- T1(f): each primitive is a fair sign, with probabilities 1/2,1/2
-on −1,+1. This is the explicit bounded-error construction. -/
+on −1,+1. This is the validator's explicit bounded-error construction. -/
 def fairSignLaw : FiniteLaw (Fin 2) where
   weight := fun _ => 1/2
   nonneg := by intro a; norm_num
@@ -2766,7 +2765,7 @@ theorem fair_sign_moments :
       iIndepFun_pi (X := fun _ : Fin 13 => signValue) (fun _ => (measurable_of_countable signValue).aemeasurable)
     exact (hind.indepFun hij).covariance_eq_zero MemLp.of_discrete MemLp.of_discrete
 
-/-- T1(f): the 6×13 exact loading matrix of the error
+/-- T1(f): the 6×13 exact loading matrix of the validator's error
 formula, ordered as four node signs, three complementary-pair signs, six own signs. -/
 def sixLoading : Matrix (Fin 6) (Fin 13) ℝ :=
   let t := Real.sqrt 2
@@ -3138,7 +3137,7 @@ theorem six_replicated_finite {Ω : Type*} [MeasurableSpace Ω]
     exact (six_expected_gap_arithmetic m hm).2.1
 
 
-/-- T1(f), asymptotic limit: n Vhat converges ALMOST SURELY
+/-- T1(f), asymptotic claim as requested: n Vhat converges ALMOST SURELY
 to 3/2, with n=6m, on the explicit iid bounded fair-sign blocks. -/
 theorem six_replicated_limit {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (block : ℕ → Ω → (Fin 13 → Fin 2))
@@ -3297,3 +3296,136 @@ theorem printed_ratio_limit_claim_false : ¬PrintedRatioLimitLowerBound := by
 end
 end AronowAudit.P032
 
+#print axioms AronowAudit.P032.dyad_intersection_cases
+#print axioms AronowAudit.P032.decomposition_coefficient
+#print axioms AronowAudit.P032.corrected_decomposition
+#print axioms AronowAudit.P032.id_substitution_discrepancy
+#print axioms AronowAudit.P032.variance_difference
+#print axioms AronowAudit.P032.variance_sign_conditions
+#print axioms AronowAudit.P032.id_cross_products
+#print axioms AronowAudit.P032.singleton_id_covariance
+#print axioms AronowAudit.P032.bread_symmetric
+#print axioms AronowAudit.P032.quadratic_eq_dot
+#print axioms AronowAudit.P032.sandwich_quadratic
+#print axioms AronowAudit.P032.quadratic_sub
+#print axioms AronowAudit.P032.dyadic_restriction_symmetric
+#print axioms AronowAudit.P032.sandwich_hermitian
+#print axioms AronowAudit.P032.ols_contrast_error
+#print axioms AronowAudit.P032.headline_decomposition
+#print axioms AronowAudit.P032.centered_linear_variance
+#print axioms AronowAudit.P032.ols_contrast_variance
+#print axioms AronowAudit.P032.all_contrasts_lower_bound_iff
+#print axioms AronowAudit.P032.omitted_sandwich_psd_iff
+#print axioms AronowAudit.P032.spectral_clip_psd
+#print axioms AronowAudit.P032.spectral_clip_quadratic
+#print axioms AronowAudit.P032.spectral_clip_fixed_iff
+#print axioms AronowAudit.P032.positive_part_psd
+#print axioms AronowAudit.P032.gated_psd_iff
+#print axioms AronowAudit.P032.psd_two_by_two_iff
+#print axioms AronowAudit.P032.toy_variance_identity
+#print axioms AronowAudit.P032.toy_shared_country_covariance
+#print axioms AronowAudit.P032.toy_sign_cases
+#print axioms AronowAudit.P032.pair_error_moments
+#print axioms AronowAudit.P032.pair_omega_positive_definite
+#print axioms AronowAudit.P032.intercept_counterexample
+#print axioms AronowAudit.P032.slope_and_sign_control
+#print axioms AronowAudit.P032.printed_population_claim_false
+#print axioms AronowAudit.P032.four_block_moments
+#print axioms AronowAudit.P032.four_omega_square_certificate
+#print axioms AronowAudit.P032.four_block_counterexample
+#print axioms AronowAudit.P032.six_block_variances
+#print axioms AronowAudit.P032.six_omega_square_certificate
+#print axioms AronowAudit.P032.cox_risk_score_certificate
+#print axioms AronowAudit.P032.cox_unique_fit
+#print axioms AronowAudit.P032.cox_components
+#print axioms AronowAudit.P032.cox_substitution_counterexample
+#print axioms AronowAudit.P032.ten_ols_certificate
+#print axioms AronowAudit.P032.ten_variance_certificate
+#print axioms AronowAudit.P032.positive_diagonal_counterexample
+#print axioms AronowAudit.P032.rubin_pooling_gap
+#print axioms AronowAudit.P032.dcr_weights_sum
+#print axioms AronowAudit.P032.asylike_coefficient_gap
+#print axioms AronowAudit.P032.mi_completed_data_certificate
+#print axioms AronowAudit.P032.mi_between_certificate
+#print axioms AronowAudit.P032.mi_pooling_counterexample
+#print axioms AronowAudit.P032.study_unique_integer_recovery
+#print axioms AronowAudit.P032.study_threshold_counts
+#print axioms AronowAudit.P032.study_neighboring_counts
+#print axioms AronowAudit.P032.intercept_dcr_centering
+#print axioms AronowAudit.P032.four_residual_expectation_counterexample
+#print axioms AronowAudit.P032.four_expected_gap_arithmetic
+#print axioms AronowAudit.P032.six_expected_gap_arithmetic
+#print axioms AronowAudit.P032.finite_law_probability
+#print axioms AronowAudit.P032.finite_law_integral
+#print axioms AronowAudit.P032.finite_law_variance
+#print axioms AronowAudit.P032.intercept_fit_certificate
+#print axioms AronowAudit.P032.ten_variance_hermitian
+#print axioms AronowAudit.P032.positive_part_fixed_iff
+#print axioms AronowAudit.P032.printed_expectation_claim_false
+#print axioms AronowAudit.P032.block_eigenbasis_certificates
+#print axioms AronowAudit.P032.omitted_sign_not_determined
+#print axioms AronowAudit.P032.id_substitution_cross_discrepancy
+#print axioms AronowAudit.P032.rubin_unadjusted_commutes
+#print axioms AronowAudit.P032.sum_squares_positive
+#print axioms AronowAudit.P032.block_covariances_positive_definite
+#print axioms AronowAudit.P032.cox_exact_risk_sets
+#print axioms AronowAudit.P032.cox_subject_score_totals
+#print axioms AronowAudit.P032.cox_id_is_repeated_dyad
+#print axioms AronowAudit.P032.ten_meat_decomposition
+#print axioms AronowAudit.P032.mi_partition_counts
+#print axioms AronowAudit.P032.rounding_consistent_iff_rational
+#print axioms AronowAudit.P032.study_unique_rational_recovery
+#print axioms AronowAudit.P032.finite_ols_variance
+#print axioms AronowAudit.P032.bounded_pair_sampling_models
+#print axioms AronowAudit.P032.lifted_intersection
+#print axioms AronowAudit.P032.replicated_pattern
+#print axioms AronowAudit.P032.replicated_row_sum
+#print axioms AronowAudit.P032.replicated_quadratic
+#print axioms AronowAudit.P032.four_replicated_centering
+#print axioms AronowAudit.P032.six_replicated_centering
+#print axioms AronowAudit.P032.finite_law_map
+#print axioms AronowAudit.P032.finite_law_composed_integral
+#print axioms AronowAudit.P032.spectral_clip_one_positive
+#print axioms AronowAudit.P032.positive_part_one_positive
+#print axioms AronowAudit.P032.ten_eigenvalue_signs
+#print axioms AronowAudit.P032.ten_eigenvalues_identified
+#print axioms AronowAudit.P032.ten_positive_part_rank_one
+#print axioms AronowAudit.P032.pair_eigenbasis_certificate
+#print axioms AronowAudit.P032.four_block_statistics
+#print axioms AronowAudit.P032.finite_law_identDistrib
+#print axioms AronowAudit.P032.finite_law_composed_memLp
+#print axioms AronowAudit.P032.iid_finite_statistic_variance
+#print axioms AronowAudit.P032.iid_finite_statistic_integral
+#print axioms AronowAudit.P032.four_replicated_moments
+#print axioms AronowAudit.P032.four_replicated_finite
+#print axioms AronowAudit.P032.iid_finite_statistic_strong_law
+#print axioms AronowAudit.P032.four_replicated_ratio_formula
+#print axioms AronowAudit.P032.four_replicated_ratio_ae
+#print axioms AronowAudit.P032.four_replicated_limit
+#print axioms AronowAudit.P032.finite_law_atom
+#print axioms AronowAudit.P032.six_sign_measure_product
+#print axioms AronowAudit.P032.fair_sign_moments
+#print axioms AronowAudit.P032.six_loading_identity
+#print axioms AronowAudit.P032.linear_covariance_identity
+#print axioms AronowAudit.P032.six_loading_gram_certificate
+#print axioms AronowAudit.P032.six_sign_error_moments
+#print axioms AronowAudit.P032.finite_expectation_sum
+#print axioms AronowAudit.P032.finite_expectation_quadratic
+#print axioms AronowAudit.P032.six_sign_statistics
+#print axioms AronowAudit.P032.six_errors_bounded
+#print axioms AronowAudit.P032.iid_block_covariance
+#print axioms AronowAudit.P032.block_matrix_quadratic
+#print axioms AronowAudit.P032.block_matrix_restriction
+#print axioms AronowAudit.P032.block_matrix_record_restriction
+#print axioms AronowAudit.P032.constant_quadratic
+#print axioms AronowAudit.P032.six_replicated_population_values
+#print axioms AronowAudit.P032.six_replicated_moments
+#print axioms AronowAudit.P032.six_scaled_estimator_formula
+#print axioms AronowAudit.P032.six_replicated_finite
+#print axioms AronowAudit.P032.six_replicated_limit
+#print axioms AronowAudit.P032.finite_law_iid_exists
+#print axioms AronowAudit.P032.printed_ratio_limit_claim_false
+#print axioms AronowAudit.P032.PrintedPopulationLowerBound
+#print axioms AronowAudit.P032.PrintedStrictPopulationLowerBound
+#print axioms AronowAudit.P032.PrintedExpectationLowerBound
+#print axioms AronowAudit.P032.PrintedRatioLimitLowerBound

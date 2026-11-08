@@ -1,0 +1,143 @@
+[
+ {
+  "target_id": "P029-T14",
+  "decision": "whole",
+  "theorem": "SAP.P029b.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.Wave1.one_sided_saturated_unbiasedness_proof",
+   "AronowAudit.P029.Wave1.saturated_binomial_bias_bound_proof",
+   "AronowAudit.P029.Wave1.saturated_score_consistency_proof",
+   "AronowAudit.P029.positive_part_error_bound",
+   "SAP.P029b.WH.W1.T14_whole",
+   "SAP.P029b.WH.W1.T14_assembly",
+   "SAP.P029b.WH.W1.T14_L1_proof",
+   "SAP.P029b.WH.W1.T14_L2_proof",
+   "SAP.P029b.WH.W1.T14_L3_proof",
+   "AronowAudit.P029.nested_receipt_parameters",
+   "AronowAudit.P029.weighted_cell_unique_max"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.Wave1.saturated_ml_characterization_conditional",
+    "reason": "Its proof requires an external ordered-binomial theorem as a hypothesis; the supplied unconditional whole proof establishes optimization instead."
+   },
+   {
+    "lean_name": "AronowAudit.P029.positive_part_bias_identity",
+    "reason": "The binomial bias row already supplies the target-specific identity and sign."
+   }
+  ],
+  "statement_definition": "SAP.P029b.T14WholeStatement"
+ },
+ {
+  "target_id": "P029-T15",
+  "decision": "whole",
+  "theorem": "SAP.P029b.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.constant_quantile",
+   "AronowAudit.P029.constant_score_counterexample_law",
+   "AronowAudit.P029.cutoff_not_zero",
+   "AronowAudit.P029.winsorization_cutoff_counterexample",
+   "SAP.P029b.WH.W1.T15_whole",
+   "SAP.P029b.WH.W1.T15_assembly",
+   "SAP.P029b.WH.W1.constantInverseW1",
+   "SAP.P029b.WH.W1.powerLevelW1"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P029b.T15WholeStatement"
+ },
+ {
+  "target_id": "P029-T16",
+  "decision": "whole",
+  "theorem": "SAP.P029b.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.Wave1.winsorization_corrected_limit_proof",
+   "AronowAudit.P029.bounded_weighted_mean_change",
+   "AronowAudit.P029.quantile_changed_fraction_tends_zero",
+   "AronowAudit.P029.quantile_count_and_lower_bound",
+   "AronowAudit.P029.weight_change_bound",
+   "SAP.P029b.WH.W1.T16_whole",
+   "SAP.P029b.WH.W1.T16_assembly",
+   "SAP.P029b.WH.W1.T16_L1_proof",
+   "SAP.P029b.WH.W1.T16_L2_proof",
+   "SAP.P029b.WH.W1.T16_L3_proof",
+   "SAP.P029b.WH.W1.powerLevelW1",
+   "AronowAudit.P029.constant_quantile",
+   "AronowAudit.P029.cutoff_not_zero",
+   "AronowAudit.P029.Wave1.wcl_quantile_level_bound",
+   "AronowAudit.P029.Wave1.wcl_mass_mul_mean",
+   "AronowAudit.P029.Wave1.wcl_profile_integral",
+   "AronowAudit.P029.Wave1.wcl_cell_integral",
+   "AronowAudit.P029.Wave1.wcl_event_cell_integral",
+   "AronowAudit.P029.Wave1.wcl_ae_positive_cell",
+   "AronowAudit.P029.Wave1.GP029B3b_appendix_complier_measurable",
+   "AronowAudit.P029.Wave1.GP029B3b_appendix_indicator_integrable",
+   "AronowAudit.P029.Wave1.GP029B3b_appendix_effect_integrable"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.inverse_score_accuracy",
+    "reason": "Reciprocal-error auxiliary is used within the existing limit argument; it is not a separate claim clause."
+   },
+   {
+    "lean_name": "AronowAudit.P029.outcome_tail_weight_bound",
+    "reason": "Tail-truncation auxiliary is already contained in the existing corrected-limit proof."
+   },
+   {
+    "lean_name": "AronowAudit.P029.ratio_perturbation",
+    "reason": "Ratio algebra is an auxiliary already subsumed by the corrected-limit proof."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P029.constant_quantile",
+   "AronowAudit.P029.cutoff_not_zero"
+  ],
+  "supporting_note": "Both are usable T15 rows in this unit; reused only for the explicit constant-cutoff clause in corrected T16.",
+  "statement_definition": "SAP.P029b.T16WholeStatement"
+ },
+ {
+  "target_id": "P029-T17",
+  "decision": "whole",
+  "theorem": "SAP.P029b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.one_sided_likelihood_reduction",
+   "AronowAudit.P029.one_sided_unit_likelihood",
+   "AronowAudit.P029.printed_one_sided_factor_countercheck",
+   "SAP.P029b.WH.W1.T17_whole",
+   "SAP.P029b.WH.W1.T17_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P029b.T17WholeStatement"
+ },
+ {
+  "target_id": "P029-T18",
+  "decision": "whole",
+  "theorem": "SAP.P029b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.Wave1.corrected_nested_receipt_model_proof",
+   "AronowAudit.P029.compliance_type_partition",
+   "AronowAudit.P029.corrected_equation_nine_integrand",
+   "AronowAudit.P029.nested_probability_range",
+   "AronowAudit.P029.receipt_conditioning_countercheck",
+   "SAP.P029b.WH.W1.T18_whole",
+   "SAP.P029b.WH.W1.T18_assembly",
+   "SAP.P029b.WH.W1.T18_L1_proof",
+   "SAP.P029b.WH.W1.T18_L2_proof",
+   "SAP.P029b.WH.W1.T18_L3_proof",
+   "AronowAudit.P029.Wave1.GP029B3b_appendix_observed_mean",
+   "AronowAudit.P029.unit_itt_identities"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.nested_receipt_parameters",
+    "reason": "The actual conditional-probability and positive-AC identities are supplied by the whole proof; this separate algebraic parameterization lemma is unnecessary."
+   }
+  ],
+  "statement_definition": "SAP.P029b.T18WholeStatement",
+  "statement_summary": "Under random assignment and no defiers, every law with no always-takers, conditional compliance probability one half at the profile, and assignment probability one half gives the printed misconditioning discrepancy; the theorem also retains the type, receipt, range, integral, and sample-display identities."
+ }
+]

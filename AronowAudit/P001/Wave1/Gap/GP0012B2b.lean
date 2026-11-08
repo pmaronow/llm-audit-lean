@@ -1,6 +1,6 @@
 import AronowAudit.P001.Wave1.PdaMeanNotIdentified
 
-/-! The fixed joint law has two continuously differentiable CEF versions with different derivatives at its mean. -/
+/-! The fixed joint law has two smooth CEF versions with different derivatives at its mean. -/
 
 namespace AronowAudit.P001.Wave1
 
@@ -29,6 +29,8 @@ theorem pda_joint_cef_counterexample_proof : IsProbabilityMeasure gapJointLaw �
       deriv (fun _ : ℝ => (0 : ℝ)) (mean gapJointLaw Prod.fst) = 0 := by
     simp only [deriv_const]
   exact ⟨hprob, hpdf, hmean, hzero, hbumpCEF, hsmooth, hbumpDeriv, hzeroDeriv⟩
+
+example : type_of% @AronowAudit.P001.pda_joint_cef_counterexample := pda_joint_cef_counterexample_proof
 
 end
 end AronowAudit.P001.Wave1

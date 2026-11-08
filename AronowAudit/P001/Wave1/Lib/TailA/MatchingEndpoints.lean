@@ -96,5 +96,25 @@ instance instProbabilityMatchingCanonicalLiftedLaw :
   unfold matchingCanonicalLiftedLaw
   exact (Measure.isProbabilityMeasure_map_iff measurable_up.aemeasurable).mpr inferInstance
 
+theorem matching_endpoint_canonical_lifted_law (n : ℕ) :
+    (matchingCanonicalLiftedLaw.{u}).map (fun ω => ω.down n) = matchingUnitLaw := by
+  rw [matchingCanonicalLiftedLaw,Measure.map_map
+    (show Measurable (fun ω : ULift.{u} (ℕ → MatchUnit) => ω.down n) from
+      (measurable_pi_apply n).comp measurable_down) measurable_up]
+  exact Measure.infinitePi_map_eval _ _
+
+theorem matching_endpoint_canonical_lifted_iid :
+    IID (matchingCanonicalLiftedLaw.{u}) (fun (n : ℕ) ω => ω.down n) := by
+  have hm (n : ℕ) : Measurable (fun ω : ULift.{u} (ℕ → MatchUnit) => ω.down n) :=
+    (measurable_pi_apply n).comp measurable_down
+  refine ⟨hm,?_,?_⟩
+  · rw [iIndepFun_iff_map_fun_eq_infinitePi_map hm]
+    simp_rw [matching_endpoint_canonical_lifted_law]
+    change (matchingCanonicalLaw.map ULift.up).map ULift.down = matchingCanonicalLaw
+    rw [Measure.map_map measurable_down measurable_up]
+    exact Measure.map_id
+  · intro n
+    exact ⟨(hm n).aemeasurable,(hm 0).aemeasurable,by
+      rw [matching_endpoint_canonical_lifted_law,matching_endpoint_canonical_lifted_law]⟩
 
 end AronowAudit.P001.TailA

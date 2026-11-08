@@ -1,8 +1,8 @@
 import AronowAudit.P026.P026_VarianceCompletion
 
-/- Finite probability models for the paper. Randomness is the
+/- Actual paper probability models for the scope repairs. Randomness is the
 allocation vector itself; population size and cluster totals come from the
-fixed finite population. -/
+fixed finite population. The older generic algebra remains available. -/
 namespace AronowAudit.P026.PaperScope
 open Finset
 open scoped BigOperators
@@ -61,6 +61,10 @@ theorem actual_cluster_aggregation (E : ClusterExperiment U C) (y : U → ℝ)
   exact cluster_aggregation E.unitDesign E.clusterDesign E.cluster E.covers rfl
     (fun _ _ => rfl) y a w
 
+theorem totals_sharp_null (E : ClusterExperiment U C) (y1 y0 : U → ℝ)
+    (hnull : ∀ i, y1 i=y0 i) : E.totals y1=E.totals y0 := by
+  congr 1
+  exact funext hnull
 
 end ClusterExperiment
 
@@ -87,6 +91,8 @@ end UnitExperiment
 
 namespace ClusterExperiment
 variable {U C : Type*} [Fintype U] [DecidableEq U] [Fintype C] [DecidableEq C]
+lemma nonzero_cluster_marginal (E : ClusterExperiment U C) (a : Bool) (i : C) :
+    marginal E.clusterDesign a i ≠ 0 := E.assignment.nonzero_marginal a i
 end ClusterExperiment
 
 theorem disagreement_identity_T2 {U C : Type*} [Fintype U] [DecidableEq U] [Nonempty U] [Fintype C] [DecidableEq C] [Nonempty C] (E : ClusterExperiment U C)
@@ -391,6 +397,13 @@ theorem generalized_residual_T16 {I : Type*} [Fintype I] [DecidableEq I] [Nonemp
       ht E.design (Fintype.card I) (fun i => y1 i - (rule.values E y1 y0) w i) (fun i => y0 i - (rule.values E y1 y0) w i) w := by
   exact AronowAudit.P026.generalized_residual (D := E.design) (N := (Fintype.card I)) (y1 := y1) (y0 := y0) (f := (rule.values E y1 y0)) (w := w)
 
+theorem generalized_bias_two_arm_T16 {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I] (E : UnitExperiment I)
+    (y1 y0 :  I → ℝ)
+    (K Q : ℕ)
+    (rule : PredictionRule I K Q) : expectation E.design (generalized E.design (Fintype.card I) y1 y0 (rule.values E y1 y0)) - ate (Fintype.card I) y1 y0 =
+      -(∑ i, covariance E.design (fun w => indicator E.design true w i) (fun w => (rule.values E y1 y0) w i) *
+        (1 / marginal E.design true i + 1 / marginal E.design false i)) / (Fintype.card I) := by
+  exact AronowAudit.P026.generalized_bias_two_arm (D := E.design) (hD := E.probability) (hp := E.marginals) (N := (Fintype.card I)) (hN := Fintype.card_pos) (y1 := y1) (y0 := y0) (f := (rule.values E y1 y0))
 
 theorem generalized_unbiased_T16 {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I] (E : UnitExperiment I)
     (y1 y0 :  I → ℝ)
@@ -543,5 +556,67 @@ theorem ht_cluster_covariance_T24 {U C : Type*} [Fintype U] [DecidableEq U] [Non
       clusterCovarianceExpression E.clusterDesign (E.totals x) (E.totals z) := by
   exact AronowAudit.P026.ht_cluster_covariance (D := E.clusterDesign) (hp := E.cluster_marginals) (x := (E.totals x)) (z := (E.totals z))
 
+#print axioms UnitExperiment.probability
+#print axioms UnitExperiment.marginals
+#print axioms ClusterExperiment.cluster_probability
+#print axioms ClusterExperiment.cluster_marginals
+#print axioms ClusterExperiment.unit_probability
+#print axioms ClusterExperiment.unit_marginals
+#print axioms ClusterExperiment.actual_cluster_aggregation
+#print axioms ClusterExperiment.totals_sharp_null
+#print axioms disagreement_identity_T2
+#print axioms disagreement_positive_iff_T2
+#print axioms ht_cluster_covariance_T2
+#print axioms printed_variance_bias_T2
+#print axioms corrected_covariance_bias_T2
+#print axioms corrected_variance_bias_T2
+#print axioms corrected_sharp_null_T2
+#print axioms corrected_variance_decomposition_T2
+#print axioms corrected_residual_variance_T2
+#print axioms correctedBiasExpression_nonneg_T2
+#print axioms support_repair_T3
+#print axioms support_residual_variance_T3
+#print axioms vector_fitting_independence_T5
+#print axioms outcome_vector_fitting_independence_T5
+#print axioms vector_fitting_unbiased_T5
+#print axioms additive_fitting_unbiased_T5
+#print axioms ht_cluster_covariance_T8
+#print axioms covariance_bound_gap_T8
+#print axioms appendixE_corrected_T8
+#print axioms cluster_aggregation_T10
+#print axioms ht_arm_variance_T11
+#print axioms arm_variance_corrected_T11
+#print axioms unit_sampling_variance_identity_T12
+#print axioms variance_sub_div_T12
+#print axioms ht_covariance_full_T12
+#print axioms ht_arm_variance_T12
+#print axioms ht_covariance_split_T12
+#print axioms ht_variance_identity_T12
+#print axioms unit_generalized_bias_T13
+#print axioms generalized_total_bias_T13
+#print axioms generalized_bias_T13
+#print axioms generalized_bias_two_arm_T13
+#print axioms fixed_prediction_unbiased_T16
+#print axioms generalized_residual_T16
+#print axioms generalized_bias_two_arm_T16
+#print axioms generalized_unbiased_T16
+#print axioms sharp_null_fit_unbiased_T16
+#print axioms htTotal_unbiased_T20
+#print axioms ht_unbiased_T20
+#print axioms unit_generalized_unbiased_T22
+#print axioms generalized_unbiased_T22
+#print axioms generalized_adjustment_T22
+#print axioms fixed_prediction_unbiased_T22
+#print axioms htTotal_affine_T23
+#print axioms ht_affine_T23
+#print axioms ht_affine_invariant_iff_T23
+#print axioms generalized_affine_T23
+#print axioms unit_generalized_fixed_variance_T24
+#print axioms generalized_residual_T24
+#print axioms generalized_fixed_variance_T24
+#print axioms ht_arm_variance_T24
+#print axioms ht_covariance_full_T24
+#print axioms ht_covariance_split_T24
+#print axioms ht_cluster_covariance_T24
 end
 end AronowAudit.P026.PaperScope

@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P030-T1",
+    "theorem": "SAP.P030.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed explicit example: N=5, fixed units {0,1,2}, positions (0,4,8,-1,-2), fixed outcomes (0,1,2), and the two assignments treating unit 3 or 4. Both nearest-treated sets have one member; both rank-square sums are 2. Independent exact arithmetic verifies the two correlations are 1 and both inclusive tails are 1. No hypothesis is assumed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T2",
+    "theorem": "SAP.P030.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed explicit example: ten one-treated assignments, conditioning on untreated fixed units {0,7,8,9} leaves the six assignments treating units 1 through 6, with probability 1/6 each. The assignment-independent outcome schedule satisfies NoEffects, NoInterference and FixedOutcomeNull (compiled in scratch/Check.lean). Independent exact moments give distance square sums (5,5,5,9/2,5,5) and outcome square sum 9/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T3",
+    "theorem": "SAP.P030.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The normalized FiniteLaw support is provably nonempty (scratch/Check.lean). A compiled example is the uniform law on Fin 2 with f=(0,1), where L(0)=1/2 and U(0)=1. The five-unit T1 instance witnesses strictness without empty units or zero variances. Exact checks also cover 7,260 small finite-law instances, including ties and zero-mass support points.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P030-T4",
+    "theorem": "SAP.P030.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A genuine witness is the five-unit T1 experiment with alpha=1/20, observation treating zero-based unit 3, and g the Spearman correlation of the three fixed outcomes with nearest treated-variant distances. It satisfies no interference, has two conditional assignments and positive rank variances, and gives rejection probability 1 > 1/20. The refutation therefore also refutes the canonical printed assertion, without an empty-unit or undefined-statistic witness.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P030-T5",
+    "theorem": "SAP.P030.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit ten-unit null experiment has six conditional assignments, fixed-outcome square sum 9/2, and positive distance square sums. Actual statistic values -1/sqrt(90) and -5/6 occur at assignments treating zero-based units 1 and 4 and are distinct; the third value is -3/sqrt(10). The generic constant-statistic implication separately has the inhabited example A=Fin 2, Omega=univ, t=0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T6",
+    "theorem": "SAP.P030.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the universal hypotheses take N=10, Omega=tenOmega, S=tenS, obs=tenAssignment 6, Y=tenYnull and g=tenG. The observed membership, conditional nonemptiness and all three null predicates have compiled checks. The explicit varying-statistic conjunct has the genuine two unequal statistics described in T5; it does not assume statistic constancy.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T7",
+    "theorem": "SAP.P030.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the same nonempty ten-unit conditional design. Both tenYnull and the direct-effect schedule Y(i,z)=i.val+treatment(z,i) satisfy no interference in compiled checks. The latter permits nonzero direct effects. The opposite antecedent of fixed-outcome variation is realizable under the actual adjacency alternative: fixed unit 7 has outcome 2 when unit 1 is treated and outcome 3 when unit 6 is treated.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T8",
+    "theorem": "SAP.P030.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six-row example has outcome square sum 9/2 and positive distance square sums. The ordering vectors (1,2,1,1) and (0,2,1,1) have square sums 3 and 9/2, respectively. The weak-monotonicity vectors (1,2,3) and (0,0,1) have square sums 2 and 3/2. Independent rational centered moments verify every counterexample and printed-formula value; no zero denominator is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T9",
+    "theorem": "SAP.P030.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the universal hypotheses use n=2 and a=b=(0,1), or a=(0,1), b=(1,0). Nonconstancy and rank-square sum 1/2 are compiled in scratch/Check.lean; c=1 and c=-1 realize both proportionality signs and the increasing/decreasing cases. The separate weak-monotonicity and six-row assertions use positive-variance explicit vectors.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P030-T10",
+    "theorem": "SAP.P030.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the matrix hypotheses use N=2, positions (0,1), and d(i,j)=abs(i.val-j.val); positive off-diagonal distances are compiled. A diagonal unit exists and has d(i,i)=0. The scalar branch has d=1, with inverseSquare 1=4/9 compiled; the divergence antecedent is inhabited, for example B=1 and d=1/3. No conclusion evaluates an included summand at zero distance.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P030-T11",
+    "theorem": "SAP.P030.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The partition hypotheses are inhabited by F={0}, C={1}, T={2}, U={0,1,2}; disjointness and the union are compiled. The inconsistent large counts occur only inside a negated conclusion, not as simultaneous hypotheses. Each of the four listed natural-number repair quadruples satisfies N=F+C+T; the printed sum and residual were checked exactly.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T12",
+    "theorem": "SAP.P030.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the ten-unit null example with a=tenAssignment 6: its conditional set has six assignments and its uniform p-values are (1,1,1,1/2,1/3,1/3). Compiled checks establish nonemptiness and the null hypotheses. At attainable levels 1/3, 1/2 and 1, rejection probabilities equal the levels; below the smallest attained value the maximum is the explicitly adjoined zero. The two-point nonconstant-law example also exercises the generic finite-law arithmetic.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P030-T13",
+    "theorem": "SAP.P030.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled instance: N=2, M=1, focal unit 0 and neighbors={1}. Both own-treatment conditional supports are nonempty; E=1/2, E1=0 and E0=1, giving strict inequalities. To realize unequal neighborhood sizes take N=3, M=1, focal 0 with {1}, and focal 1 with {0,2}; expectations are 1/3 and 2/3. Independent exact enumeration checks all neighbor sets of focal unit 0 for N=2 through 7 and every M=0 through N, with empty conditional supports never used as conditional expectations.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T14",
+    "theorem": "SAP.P030.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed adjacency model uses ten actual units with observed assignment treating unit 6. Its observed fixed outcomes are (1,3,2,1); the conditional set has six assignments with nonempty nearest-treated sets and positive rank variances. Independent construction from adjacency counts reproduces psi, theta, all ten observed outcomes, the six distance rows and squared correlations; exactly two of the six values are at most the observed one.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T15",
+    "theorem": "SAP.P030.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both parity hypotheses have positive-count instances: C=2, M=1, k=1 and C=1, M=1, k=0 (compiled). The corresponding maximizers are {1} and {0,1}. Independent enumeration verifies the exact maximizer sets for C=1 through 50 and M in {1,2,7}.",
+    "confidence": 0.99
+  }
+]

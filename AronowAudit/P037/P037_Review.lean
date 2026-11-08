@@ -1,7 +1,7 @@
 import AronowAudit.P037.P037_FiniteDesign
 
 /-!
-An expected-projection argument.
+Accepted 19 October review of P037-E001: an expected-projection argument.
 The residual below uses design-expected projection coefficients. It is not
 the seed innovation D(C-μ), nor an assignment-specific fitted residual.
 The result allows arbitrary fixed untreated levels. It establishes expected
@@ -149,7 +149,7 @@ def NormalEquations {Ω I K : Type*} [Fintype Ω] [Fintype I] [Fintype K]
   let e := fun w i => Y w i - (τ * t w i + (∑ k, g k * V k i) + b * z w i)
   cross d t e = 0 ∧ (∀ k, cross d (fun _ => V k) e = 0) ∧ cross d z e = 0
 
-/-- Common-slope response model: arbitrary fixed untreated
+/-- Accepted common-slope response model: arbitrary fixed untreated
 levels a, a common treatment intercept τ₀, and schoolwise moderation η.
 The hY equality is on demeaned variables, with H = M(D⊙η). -/
 theorem expected_projection_bias_identity {Ω I K : Type*}
@@ -209,6 +209,11 @@ Keeping analysis membership fixed is what makes this operator fixed. -/
 noncomputable def blockDemean {B : ℕ} (x : (Fin B × Fin 4) → ℝ) :
     (Fin B × Fin 4) → ℝ := fun i => x i - (1/4:ℝ) * ∑ j, x (i.1,j)
 
+theorem blockDemean_add {B : ℕ} (x y : (Fin B × Fin 4) → ℝ) :
+    blockDemean (fun i => x i + y i) = fun i => blockDemean x i + blockDemean y i := by
+  funext i
+  simp only [blockDemean, Finset.sum_add_distrib]
+  ring
 
 theorem blockDemean_sub {B : ℕ} (x y : (Fin B × Fin 4) → ℝ) :
     blockDemean (fun i => x i - y i) = fun i => blockDemean x i - blockDemean y i := by
@@ -291,12 +296,12 @@ theorem raw_residual_centered {Ω K : Type*} [Fintype Ω] [Fintype K] {B : ℕ}
   simp only [blockDemean_mul, blockDemean_idempotent]
   rfl
 
-/-- Full finite fixed-analysis-model result. T is the 0/1 school-treatment
-indicator (the proof in fact only needs its stated first moments).
-Untreated levels a_i and treatment moderation η_i are arbitrary fixed vectors.
-The normal equations are for the actual raw DC regressor and original fixed
-controls after block effects are profiled. All projection orthogonality is
-derived, not assumed.
+/-- Full finite fixed-analysis-model version of the accepted positive
+result. T is the 0/1 school-treatment indicator (the proof in fact only
+needs its stated first moments). Untreated levels a_i and treatment
+moderation η_i are arbitrary fixed vectors. The normal equations are for
+the actual raw DC regressor and original fixed controls after block effects
+are profiled. All projection orthogonality is derived, not assumed.
 
 This is an expected-equations statement. It makes no finite-sample OLS
 unbiasedness claim and does not validate the response model empirically. -/
@@ -387,6 +392,65 @@ theorem common_intercept_identifies_slope {Ω K : Type*}
   simp only [mul_zero, hz, zero_div] at hi
   linarith
 
+/-- Four equally likely states: two complementary two-of-four treatment
+assignments crossed with two composition fractions. -/
+noncomputable def exampleDesign : FiniteDesign (Fin 4) where
+  weight := fun _ => 1/4
+  nonneg := by intro w; norm_num
+  total := by norm_num [Fin.sum_univ_four]
+
+noncomputable def exampleTreatment (w : Fin 4) (i : Fin 1 × Fin 4) : ℝ :=
+  if (w.val < 2) = (i.2.val < 2) then 1 else 0
+
+noncomputable def exampleComposition (w : Fin 4) (_i : Fin 1 × Fin 4) : ℝ :=
+  if w.val = 0 ∨ w.val = 2 then 1/4 else 3/4
+
+noncomputable def exampleOutcome (w : Fin 4) (i : Fin 1 × Fin 4) : ℝ :=
+  (i.2.val:ℝ)/10 + exampleTreatment w i * (3/10 + (2/5) * exampleComposition w i)
+
+/-- Nonvacuity: a genuine binary treatment design, bounded composition,
+nonconstant untreated levels, positive treatment and residual variation,
+and the actual expected normal equations satisfy the theorem's hypotheses.
+There are no extra fixed controls, and the constant composition mean is
+annihilated by block effects. -/
+theorem block_model_nondegenerate_instance :
+    (∀ i, designMean exampleDesign (fun w => exampleTreatment w i) = 1/2) ∧
+    (∀ i, designMean exampleDesign
+      (fun w => exampleTreatment w i * exampleComposition w i) = (1/2:ℝ)*(1/2)) ∧
+    (∀ i : Fin 1 × Fin 4, blockDemean (fun _ => (1/2:ℝ)) i =
+      ∑ k : Fin 0, (Fin.elim0 k : ℝ) * blockDemean (Fin.elim0 k) i) ∧
+    cross exampleDesign (fun w => blockDemean (exampleTreatment w))
+      (fun w => blockDemean (exampleTreatment w)) = 1 ∧
+    cross exampleDesign
+      (blockResidual exampleDesign exampleTreatment exampleComposition (fun k : Fin 0 => Fin.elim0 k)
+        (fun k => Fin.elim0 k) (1/2))
+      (blockResidual exampleDesign exampleTreatment exampleComposition (fun k : Fin 0 => Fin.elim0 k)
+        (fun k => Fin.elim0 k) (1/2)) = 1/16 ∧
+    NormalEquations exampleDesign (fun w => blockDemean (exampleTreatment w))
+      (fun w => blockDemean (fun i => exampleTreatment w i * exampleComposition w i))
+      (fun k : Fin 0 => Fin.elim0 k) (fun w => blockDemean (exampleOutcome w))
+      (3/10) (fun k => Fin.elim0 k) (2/5) := by
+  constructor
+  · intro i
+    rcases i with ⟨b,i⟩
+    fin_cases b; fin_cases i <;>
+      norm_num [designMean, exampleDesign, exampleTreatment, Fin.sum_univ_four]
+  constructor
+  · intro i
+    rcases i with ⟨b,i⟩
+    fin_cases b; fin_cases i <;>
+      norm_num [designMean, exampleDesign, exampleTreatment, exampleComposition, Fin.sum_univ_four]
+  constructor
+  · intro i
+    norm_num [blockDemean]
+  simp only [cross, inner, blockDemean, blockResidual, residual, treatmentProjection,
+    NormalEquations, designMean, exampleDesign, exampleTreatment, exampleComposition,
+    exampleOutcome, Fintype.sum_prod_type, Fin.sum_univ_one, Fin.sum_univ_four,
+    Fin.sum_univ_zero]
+  norm_num
 
 end AronowAudit.P037.ExpectedProjection
 
+#print axioms AronowAudit.P037.ExpectedProjection.block_model_bias_identity
+#print axioms AronowAudit.P037.ExpectedProjection.common_intercept_identifies_slope
+#print axioms AronowAudit.P037.ExpectedProjection.block_model_nondegenerate_instance

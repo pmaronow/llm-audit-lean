@@ -8,7 +8,7 @@ open MeasureTheory Set Filter
 open scoped Topology
 set_option maxHeartbeats 600000
 
-/-- The exact coefficient for the actual residual, with a fixed quantified remainder. -/
+/-- C023-SHARPLOG: the exact coefficient for the actual residual, with a fixed quantified remainder. -/
 theorem uniform_residual_L1_asymptotic :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 2 ≤ n →
       |expectation uniformMargins (fun x => |popResidual uniformMargins (2*n-1) x|) -
@@ -137,7 +137,7 @@ theorem tc11_odd_amplification_sharp :
   rw [he]
   exact (abs_add_le _ _).trans (add_le_add hfirst hsecond)
 
-/-- The exact bounded remainder around `(4/pi) log J` at every large degree. -/
+/-- C023-SHARPLOG: the exact bounded remainder around `(4/pi) log J` at every large degree. -/
 theorem uniform_amplification_sharp_log :
     ∃ C : ℝ, 0 ≤ C ∧ ∃ J₀, ∀ J ≥ J₀, 1 ≤ J →
       |amplification uniformMargins J - (4/Real.pi)*Real.log J| ≤ C := by

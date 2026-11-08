@@ -1,0 +1,314 @@
+import SAP.P002b.Defs
+
+set_option autoImplicit false
+set_option maxRecDepth 3000
+set_option maxHeartbeats 800000
+
+open scoped BigOperators Matrix
+open SAP.P002b
+
+namespace Audit
+noncomputable section
+
+-- Directly evaluate the counterexample, without using a Challenge stub.
+example : T16Statement := by
+  norm_num [T16Statement, coordinateExample, mean, normSq, augmented,
+    maximum, Fin.sum_univ_succ, Fin.univ_succ]
+  have hfilter : ({x ∈ ({0, 1} : Finset (Fin 2)) | x.val = 1}).card = 1 := by decide
+  norm_num only [hfilter]
+
+-- A nonzero array with positive dimension satisfies all finite T17 hypotheses.
+example : (0 < (4 : ℕ)) ∧ (0 ≤ (1/2 : ℝ)) ∧
+    (∀ s, mean (fun i => coordinateExample i s ^ 4) ≤ (1/2 : ℝ)) := by
+  norm_num [coordinateExample, mean, Fin.sum_univ_succ]
+
+-- A whole infinite sequence satisfies every hypothesis of the T17 order clause.
+def ones (j : ℕ) : Fin (j+1) → Fin 2 → ℝ := fun _ _ => 1
+
+example : (0 ≤ (1 : ℝ)) ∧ ∀ j s, mean (fun i => ones j i s ^ 4) ≤ 1 := by
+  constructor
+  · norm_num
+  · intro j s
+    have hj : (j : ℝ) + 1 ≠ 0 := by positivity
+    simpa [ones, mean] using (le_of_eq (div_self hj))
+
+def pop : CovPopulation 4 1 where
+  pop := {
+    y := fun i _ => (![0, 1, 0, 0] : Fin 4 → ℝ) i
+    d := fun _ a => a
+    n1 := 2 }
+  x := fun i _ => (![-1, 0, 0, 1] : Fin 4 → ℝ) i
+
+def treated : Finset (Fin 4) := {0, 1}
+
+lemma det_option_one (M : Matrix (Option (Fin 1)) (Option (Fin 1)) ℝ) :
+    M.det = M none none * M (some 0) (some 0) -
+      M none (some 0) * M (some 0) none := by
+  have h := Matrix.det_submatrix_equiv_self (finSuccEquiv 1) M
+  rw [Matrix.det_fin_two] at h
+  simpa only [Matrix.submatrix_apply,
+    show (1 : Fin 2) = (0 : Fin 1).succ from rfl,
+    finSuccEquiv_succ, finSuccEquiv_zero] using h.symm
+
+lemma valid : ValidDesign pop.pop := by
+  norm_num [ValidDesign, pop]
+
+lemma assignment : treated ∈ assignments pop.pop := by
+  simp [assignments, pop, treated]
+
+lemma centered : ∀ s, ∑ i, pop.x i s = 0 := by
+  intro s
+  norm_num [pop, Fin.sum_univ_succ]
+
+lemma gram_treated : (gram pop.x treated).det = 1/4 := by
+  rw [det_option_one]
+  norm_num [gram, groupMean, treated, pop, augmented]
+
+lemma gram_control : (gram pop.x treatedᶜ).det = 1/4 := by
+  have hc : treatedᶜ = ({2, 3} : Finset (Fin 4)) := by decide
+  rw [hc]
+  rw [det_option_one]
+  norm_num [gram, groupMean, pop, augmented]
+
+lemma gram_all : (gram pop.x Finset.univ).det = 1/2 := by
+  rw [det_option_one]
+  norm_num [gram, groupMean, pop, augmented, Fin.sum_univ_succ]
+
+def vec (c b : ℝ) : Option (Fin 1) → ℝ
+  | none => c
+  | some _ => b
+
+lemma ols_eq_of_score_eq {n k : ℕ} (x : Fin n → Fin k → ℝ)
+    (S : Finset (Fin n)) (q : Fin n → ℝ) (c : Option (Fin k) → ℝ)
+    (hd : (gram x S).det ≠ 0) (heq : score x S q = (gram x S) *ᵥ c) :
+    ols x S q = c := by
+  let _ := Matrix.invertibleOfIsUnitDet (gram x S) (isUnit_iff_ne_zero.mpr hd)
+  simp only [ols, ite_eq_left hd]
+  exact Matrix.inv_mulVec_eq_vec heq
+
+lemma psi_zero (a : Bool) : psi pop a 0 = vec (1/4) 0 := by
+  apply ols_eq_of_score_eq
+  · rw [gram_all]; norm_num
+  · ext s
+    cases s with
+    | none =>
+      norm_num [score, gram, groupMean, w, pop, binary, augmented, vec,
+        Matrix.mulVec, dotProduct, Fin.sum_univ_succ, Fintype.sum_option]
+    | some s =>
+      fin_cases s
+      norm_num [score, gram, groupMean, w, pop, binary, augmented, vec,
+        Matrix.mulVec, dotProduct, Fin.sum_univ_succ, Fintype.sum_option]
+
+lemma fitted_treated : fitted pop (observedW pop.pop 0 treated) treated true = vec 1 1 := by
+  apply ols_eq_of_score_eq
+  · simpa only [Bool.true_eq, ite_true] using
+      (show (gram pop.x treated).det ≠ 0 by rw [gram_treated]; norm_num)
+  · ext s
+    cases s with
+    | none =>
+      norm_num [score, gram, groupMean, observedW, observedY, observedD,
+        treated, pop, binary, augmented, vec, Matrix.mulVec, dotProduct,
+        Fin.sum_univ_succ, Fintype.sum_option]
+    | some s =>
+      fin_cases s
+      norm_num [score, gram, groupMean, observedW, observedY, observedD,
+        treated, pop, binary, augmented, vec, Matrix.mulVec, dotProduct,
+        Fin.sum_univ_succ, Fintype.sum_option]
+
+lemma fitted_control : fitted pop (observedW pop.pop 0 treated) treated false = vec 0 0 := by
+  apply ols_eq_of_score_eq
+  · simpa only [Bool.false_eq_true, ite_false] using
+      (show (gram pop.x treatedᶜ).det ≠ 0 by rw [gram_control]; norm_num)
+  · have hc : treatedᶜ = ({2, 3} : Finset (Fin 4)) := by decide
+    ext s
+    cases s with
+    | none =>
+      norm_num [score, gram, groupMean, observedW, observedY, observedD,
+        hc, pop, binary, augmented, vec, Matrix.mulVec, dotProduct,
+        Fin.sum_univ_succ, Fintype.sum_option]
+    | some s =>
+      fin_cases s
+      norm_num [score, gram, groupMean, observedW, observedY, observedD,
+        hc, pop, binary, augmented, vec, Matrix.mulVec, dotProduct,
+        Fin.sum_univ_succ, Fintype.sum_option]
+
+-- The sign-corrected contrast is nonzero in this genuine fitted-data example.
+example : adjustedTau pop (observedW pop.pop 0 treated) treated -
+    oracleTau pop 0 treated = 1/2 := by
+  have hc : treatedᶜ = ({2, 3} : Finset (Fin 4)) := by decide
+  unfold adjustedTau oracleTau
+  rw [fitted_treated, fitted_control, psi_zero, psi_zero]
+  simp only [adjustedWith, hc]
+  norm_num [groupMean, slopeDot, observedW, observedY, observedD,
+    treated, pop, binary, vec, Fin.sum_univ_succ]
+
+-- This is an actual nonzero E.39 term, including the intercept error.
+example : -2 * groupMean treated (fun i => residual pop true 0 i *
+    dotProduct (augmented pop.x i)
+      (fitted pop (observedW pop.pop 0 treated) treated true - psi pop true 0)) = -5/8 := by
+  rw [fitted_treated, psi_zero]
+  simp only [SAP.P002b.residual, psi_zero]
+  norm_num [groupMean, treated, w, pop,
+    binary, dotProduct, Fintype.sum_option, augmented, vec, Fin.sum_univ_succ]
+
+-- Both T18 and both choices of T19's arm have all hypotheses simultaneously.
+example : ValidDesign pop.pop ∧ treated ∈ assignments pop.pop ∧
+    (gram pop.x treated).det ≠ 0 ∧ (gram pop.x treatedᶜ).det ≠ 0 := by
+  exact ⟨valid, assignment, by rw [gram_treated]; norm_num,
+    by rw [gram_control]; norm_num⟩
+
+-- Every hypothesis of the finite T20 clause holds, without singular OLS.
+example : ValidDesign pop.pop ∧ MonotoneReceipt pop.pop ∧
+    (compliers pop.pop).Nonempty ∧
+    (∀ s, ∑ i, pop.x i s = 0) ∧ (gram pop.x Finset.univ).det ≠ 0 := by
+  refine ⟨valid, ?_, ?_, centered, ?_⟩
+  · simp [MonotoneReceipt, pop]
+  · simp [compliers, pop]
+  · rw [gram_all]
+    norm_num
+
+-- An explicit growing, balanced, positive-dimensional Xi sequence.
+-- Zero responses are allowed by Xi; the covariate Gram is the identity.
+def seqSizes (j : ℕ) : ℕ := (j+1) + (j+1)
+
+def seqPopulation (j : ℕ) : CovPopulation (seqSizes j) 1 where
+  pop := { y := fun _ _ => 0, d := fun _ a => a, n1 := j+1 }
+  x := fun i _ => Fin.addCases (fun _ : Fin (j+1) => (1 : ℝ))
+    (fun _ : Fin (j+1) => (-1 : ℝ)) i
+
+lemma seq_sum (j : ℕ) (f : ℝ → ℝ) :
+    (∑ i, f ((seqPopulation j).x i 0)) =
+      ((j+1 : ℕ) : ℝ) * f 1 + ((j+1 : ℕ) : ℝ) * f (-1) := by
+  change (∑ i : Fin ((j+1)+(j+1)),
+    f (Fin.addCases (fun _ : Fin (j+1) => (1 : ℝ))
+      (fun _ : Fin (j+1) => (-1 : ℝ)) i)) = _
+  rw [Fin.sum_univ_add]
+  simp only [Fin.addCases_left, Fin.addCases_right, Finset.sum_const, Finset.card_univ,
+    Fintype.card_fin, nsmul_eq_mul]
+
+lemma seq_centered (j : ℕ) : ∀ s, ∑ i, (seqPopulation j).x i s = 0 := by
+  intro s
+  have hs : s = 0 := Subsingleton.elim _ _
+  subst s
+  simpa using seq_sum j (fun t => t)
+
+lemma seq_mean_pow (j p : ℕ) (hp : (-1 : ℝ)^p = 1) :
+    mean (fun i => (seqPopulation j).x i 0 ^ p) = 1 := by
+  unfold mean
+  rw [seq_sum j (fun t => t^p)]
+  simp only [one_pow, hp, mul_one, seqSizes, Nat.cast_add, Nat.cast_one]
+  exact div_self (by positivity)
+
+lemma mean_const {n : ℕ} (hn : n ≠ 0) (c : ℝ) :
+    mean (fun _ : Fin n => c) = c := by
+  have hnR : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hn
+  simp only [mean, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+  field_simp
+
+lemma seq_gram (j : ℕ) : (gram (seqPopulation j).x Finset.univ).det = 1 := by
+  have hn : seqSizes j ≠ 0 := by dsimp [seqSizes]; omega
+  have h0 : groupMean Finset.univ (fun _ : Fin (seqSizes j) => (1 : ℝ)) = 1 := by
+    simpa [groupMean, mean] using mean_const hn 1
+  have h1 : groupMean Finset.univ (fun i => (seqPopulation j).x i 0) = 0 := by
+    simp [groupMean, seq_centered]
+  have h2 : groupMean Finset.univ (fun i =>
+      (seqPopulation j).x i 0 * (seqPopulation j).x i 0) = 1 := by
+    simpa [groupMean, mean, pow_two] using seq_mean_pow j 2 (by norm_num)
+  rw [det_option_one]
+  simp only [gram, augmented, one_mul, mul_one]
+  rw [h0, h1, h2]
+  norm_num
+
+lemma seq_late (j : ℕ) : late (seqPopulation j).pop = 0 := by
+  simp [late, groupMean, seqPopulation]
+
+lemma seq_psi (j : ℕ) (a : Bool) : psi (seqPopulation j) a 0 = 0 := by
+  apply ols_eq_of_score_eq
+  · rw [seq_gram]; norm_num
+  · ext s
+    simp [SAP.P002b.score, groupMean, w, seqPopulation, binary]
+
+lemma seq_residual (j : ℕ) (a : Bool) :
+    SAP.P002b.residual (seqPopulation j) a (late (seqPopulation j).pop) = 0 := by
+  rw [seq_late]
+  ext i
+  simp only [SAP.P002b.residual, seq_psi]
+  simp [w, seqPopulation, dotProduct]
+
+lemma mean_mul {n : ℕ} (q : Fin n → ℝ) (c : ℝ) :
+    mean (fun i => q i * c) = mean q * c := by
+  simp only [mean, ← Finset.sum_mul]
+  ring
+
+lemma seq_xi (j : ℕ) : Xi (seqPopulation j) 0 1 1 1 (1/2) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, seq_centered j, ?_, ?_⟩
+  · dsimp [ValidDesign, seqPopulation, seqSizes]
+    omega
+  · simp [MonotoneReceipt, seqPopulation]
+  · simp only [compliers, seqPopulation, and_self, Finset.filter_true]
+    exact ⟨⟨0, by dsimp [seqSizes]; omega⟩, Finset.mem_univ _⟩
+  · dsimp [seqPopulation]
+    norm_num [seqSizes, Nat.cast_add, Nat.cast_one]
+    linarith
+  · dsimp [seqPopulation]
+    norm_num [seqSizes, Nat.cast_add, Nat.cast_one]
+    linarith
+  · rw [seq_residual, seq_residual]
+    norm_num [popCov, popVar, mean]
+  · intro a
+    rw [seq_residual]
+    norm_num [fourthNorm, popVar, mean]
+  · intro s
+    have hs : s = 0 := Subsingleton.elim _ _
+    subst s
+    rw [seq_mean_pow j 4 (by norm_num)]
+  · intro b
+    simp only [normSq, dotProduct, Fin.sum_univ_one, one_mul]
+    simp_rw [mul_pow]
+    rw [mean_mul, seq_mean_pow j 2 (by norm_num)]
+    simp
+
+-- All sequence and scalar hypotheses of T20, including Xi for every index.
+example : StrictMono seqSizes ∧ 0 < (1 : ℕ) ∧ (0 : ℝ) < 1 ∧
+    (0 : ℝ) < 1 ∧ (0 : ℝ) < 1 ∧ (0 : ℝ) < 1 ∧
+    ((0 : ℝ) < 1/2 ∧ (1/2 : ℝ) ≤ 1/2) ∧
+    ∀ j, Xi (seqPopulation j) 0 1 1 1 (1/2) := by
+  refine ⟨?_, by norm_num, by norm_num, by norm_num, by norm_num,
+    by norm_num, by norm_num, seq_xi⟩
+  intro i j hij
+  dsimp [seqSizes]
+  omega
+
+-- Xi also contains the preceding example with nonzero population residuals.
+example : Xi pop 0 (1/2) 1 2 (1/2) := by
+  have hl : late pop.pop = 0 := by simp [late, groupMean, pop]
+  let u : Fin 4 → ℝ := ![-1/4, 3/4, -1/4, -1/4]
+  have hres (a : Bool) : SAP.P002b.residual pop a 0 = u := by
+    funext i
+    simp only [SAP.P002b.residual, psi_zero]
+    fin_cases i <;> norm_num [u, w, pop, binary, dotProduct,
+      Fintype.sum_option, augmented, vec, Fin.sum_univ_succ]
+  have hu4 : mean (fun i => u i ^ 4) = 21/256 := by
+    norm_num [mean, u, Fin.sum_univ_succ]
+  have huv : popVar u = 1/4 := by
+    norm_num [popVar, mean, u, Fin.sum_univ_succ]
+  refine ⟨valid, ?_, ?_, ?_, ?_, ?_, ?_, centered, ?_, ?_⟩
+  · simp [MonotoneReceipt, pop]
+  · simp [compliers, pop]
+  · norm_num [pop]
+  · norm_num [pop]
+  · simp only [hl, hres]
+    norm_num [popCov, popVar, mean, u, Fin.sum_univ_succ]
+  · intro a
+    simp only [hl, hres, fourthNorm, hu4, huv]
+    have hh : Real.sqrt (Real.sqrt (21/256 : ℝ)) ≤ 1 :=
+      Real.sqrt_le_one.mpr (Real.sqrt_le_one.mpr (by norm_num))
+    convert hh using 1 <;> norm_num
+  · intro s
+    norm_num [mean, pop, Fin.sum_univ_succ]
+  · intro b
+    norm_num [normSq, mean, pop, dotProduct, Fin.sum_univ_succ]
+    nlinarith [sq_nonneg (b 0)]
+
+end
+end Audit

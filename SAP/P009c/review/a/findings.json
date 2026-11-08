@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P009-T35",
+    "theorem": "SAP.P009c.T35",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2, independent fair assignments and Y_i(z)=z_i. This is a positive finite experiment, has no interference and interior marginals, is Bernoulli, and has ATE=EATE=ADSE=1. scratch/Check.lean compiles the fair law, Bernoulli property, no interference, Regular(2,4,1), and EATE=1 for this example.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T36",
+    "theorem": "SAP.P009c.T36",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=2 with zero outcomes, the full-cube interference and dependence matrices are the identity. Thus C1=C2=Cinf=dAvg=1 and the chain holds with positive denominators. scratch/Check.lean compiles the structural relations and C1=dAvg=1. scratch/Enumerate.py additionally checks all 4096 directed interference structures with mandatory diagonal on four units.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T37",
+    "theorem": "SAP.P009c.T37",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A nonconstant-effect instance uses n=2, Y_1(z)=z_1(1-2z_2), Y_2(z)=0, K=1, P the point mass at (0,0), and Q the point mass at (0,1). The effects are bounded by 1 on the full cube; the two EATEs are 1/2 and -1/2, and TV(P,Q)=1. All hypotheses are satisfied without positive conditioning probabilities being needed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T38",
+    "theorem": "SAP.P009c.T38",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=2, Y_1(z)=z_1(1-2z_2), Y_2(z)=0 and K=1, with any design. Then tau(z)=(1-2z_2)/2 is nonconstant, the full-cube effect bound holds, Cinf=2, and r=1 or r=2 gives meaningful finite ground distances and constants. For r=1 the assignments (0,0),(0,1) have tau difference 1 and right-hand bound 2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T39",
+    "theorem": "SAP.P009c.T39",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the same two-unit nonconstant-effect outcomes as T37, K=1, r=1, P=delta_(0,0), Q=delta_(0,1). The unique coupling has expected L1 distance 1, so wasserstein=1; the EATE difference is 1 and the claimed bound is 2. Coupling nonemptiness and bounded costs are explicit in this instance and hold generally by the product coupling and finiteness.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T40",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The target is not mathematically empty: take n_t=2(t+1), complete randomization of n_t/2 units, and Y_i(z)=z_1(z_i-1/2) for every unit. Then Regular holds with k=2,q=4,s=1, dAvg=n_t, EATE=1/2, and HT=Hajek=z_1 on support, so both errors have absolute value 1/2. The omission is nevertheless justified on the supplied record: the only credited row is declared wrong_credit and expressly unusable even by component extraction. The Hájek completion defect is material for arbitrary designs, which can put all their mass on the two empty-arm assignments. This judgment accepts the supplied row-status declaration without inspecting an unavailable formalization.",
+    "confidence": 0.92
+  },
+  {
+    "target_id": "P009-T41",
+    "theorem": "SAP.P009c.T41",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n_t=2(t+1), independent fair assignments and zero outcomes. RegularSequence holds with k=2,q=4,s=1; I=D=identity, dAvg=1 and dAvg/n_t tends to zero. The retained HT conclusions therefore have genuine hypotheses. All-false and all-true assignments each have mass 2^(-n_t)>0, confirming the exact domain issue disclosed for the omitted Hájek conclusions. A two-unit instance and a supported empty arm compile in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T42",
+    "theorem": "SAP.P009c.T42",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n_t=2(t+1), zero outcomes and the uniform complete design with m_t=t+1 treated units. Use fixed p=1/2, so floor(p*n_t)=m_t with 0<m_t<n_t at every t. Marginals are 1/2 and RegularSequence(2,4,1) holds. The mandatory-diagonal counts give dAvg=C1=1, hence both restricted interference and C1=o(sqrt(n_t)). Both weighted arms equal n_t on support. The n=2 complete law and its supported arms compile in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T43",
+    "theorem": "SAP.P009c.T43",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both design branches are inhabited: for n_t=2(t+1), use zero outcomes and either independent fair assignments or uniform complete randomization of n_t/2 units. Both have RegularSequence(2,4,1), dAvg=1=O(1), and positive rate 1/sqrt(n_t). The complete branch has both arms nonempty on support; the Bernoulli branch has supported empty arms. Finite versions of both laws compile in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T44",
+    "theorem": "SAP.P009c.T44",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n_t=2(t+1), pair consecutive units, independently randomize one treated unit per pair, and set all outcomes to zero. RegularSequence(2,4,1) holds. I=D=identity, dAvg=1, e_ij is exactly the partner indicator, eAvg=1 and rSum=0. All three required little-o conditions hold, and both weighted arms equal n_t on support. scratch/Check.lean compiles the n=2 fixed-point-free pairing, paired design and supported-arm property.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T45",
+    "theorem": "SAP.P009c.T45",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n_t=2(t+1), consecutive independent randomized pairs and zero outcomes. Take k=2 and q=s=infinity. Both observed and forced potential outcomes are uniformly bounded, so the global moment maxima exist and are attained at infinity. Here dAvg=1, alphaExt=1/4 (only partner pairs contribute), alphaInt=0, and all required ratios to n_t tend to zero. SupportedArms holds, so this witness inhabits the Hájek part as well as HT. The pairing, finite law and supported arms compile at n=2 in scratch/Check.lean. The stronger global-maximality and Hájek-domain requirements are accurately disclosed in the docstring and record.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P009-T46",
+    "theorem": "SAP.P009c.T46",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same zero-outcome paired sequence as T45 satisfies RegularMix with k=2 and q=s=infinity. The observed exponent infinity is attained at that very k and every candidate exponent is at most infinity. Also dAvg=1, alphaExt=1/4 and SupportedArms holds, so the mixing, restricted-interference and conditional Hájek hypotheses all hold together. No maximal potential exponent or separation condition is needed by this statement. The Hájek support restriction and use of the fixed-k observed maximum are accurately disclosed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T47",
+    "theorem": "SAP.P009c.T47",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n_t=2(t+1), independent fair assignments and Y_i(z)=z_i. RegularSequence(2,4,1), q>=4, Bernoulli and no interference all hold; dAvg=1, msq=1 and B1=B2=0. Thus the specialization has a nonzero moving center. The two-unit regularity and msq=1 compile in scratch/Check.lean. Independently, scratch/Enumerate.py verifies the exact expectation identity behind the general B1/B2 decomposition in 100 rational Bernoulli examples with probabilities 1/3,2/5,3/4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T48",
+    "theorem": "SAP.P009c.T48",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n_t=2(t+1), independent fair assignments and Y_i(z)=z_i. RegularSequence(2,4,1), Bernoulli and restricted interference hold. Each unit HT contribution is 2Z_i, so sigma_i^2=1 for every i and sdSigmaSq=0. Also dAvg=dRMS=1; the required little-o quotient is identically zero with denominator one. The finite regularity and nonzero effect witness compile in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T49",
+    "theorem": "SAP.P009c.T49",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n_t=2(t+1), independent fair assignments and Y_i(z)=z_i, RegularSequence(2,4,1) holds, dAvg=dMax=1, and msq=1. Thus the first alternative has quotient 1/sqrt(n_t) tending to zero, while the second has restricted interference and the eventual lower bound msq>=1. Both alternatives are genuinely satisfiable. The two-unit Bernoulli, regularity and msq=1 checks compile in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T50",
+    "theorem": "SAP.P009c.T50",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same fair Bernoulli sequence with Y_i(z)=z_i has D=identity, hence lambdaMax=dAvg=dMax=1 and msq=1. Both sufficient alternatives hold, with the first quotient 1/sqrt(n_t) and the second lower bound one. The finite spectral sandwich is also attained at both ends. For every positive n its unit sphere is nonempty (a coordinate vector lies on it), so lambdaMax does not exploit an empty or unbounded supremum.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T51",
+    "theorem": "SAP.P009c.T51",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For an explicit nontrivial instance choose n_t=(t+2)^2, fair independent assignments, k=2, alpha=1/2 and x=0. Let h=t+2, f(z)=(2z_1-1)z_2, Dbar=2-1/h, and set Y_i(z)=sqrt(Dbar)(z_i-1/2)f(z) for i<=h and zero otherwise. The structural dependence graph is the h-unit clique plus isolated diagonal vertices, so dAvg=Dbar and dMax=h. Outcomes and forced outcomes are uniformly bounded by one. The normalized centered HT estimator is exactly f, with masses (1/4,1/2,1/4), so this instance satisfies even the requested output properties. The finite sharpLaw mean zero and variance 1/2 compile in scratch/Check.lean. This construction is an example, not a substitute for the theorem's quantification over all regular Bernoulli sequences.",
+    "confidence": 0.97
+  }
+]

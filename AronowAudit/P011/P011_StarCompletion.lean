@@ -100,3 +100,4 @@ theorem star_relaxation_singleton (upper : Bool) (k : ℕ)
   exact StarCompletion.star_relaxation_singleton_completed upper k a
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.star_relaxation_singleton

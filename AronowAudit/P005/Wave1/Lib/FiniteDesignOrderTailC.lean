@@ -10,6 +10,28 @@ open Finset Filter
 set_option maxRecDepth 3000
 set_option maxHeartbeats 2000000
 
+theorem finite_markov {n m : ℕ} (F : Finset (Fin n) → ℝ)
+    (hF : ∀ S ∈ design n m, 0 ≤ F S) (u : ℝ) (hu : 0 < u) :
+    probability m (fun S => u < F S) ≤ expectation m F / u := by
+  classical
+  have hsum : (((design n m).filter (fun S => u < F S)).card : ℝ) * u ≤
+      ∑ S ∈ design n m, F S := by
+    calc
+      _ = ∑ S ∈ design n m, if u < F S then u else 0 := by
+        rw [← Finset.sum_filter]
+        simp only [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ _ := by
+        apply Finset.sum_le_sum
+        intro S hS
+        by_cases hSu : u < F S
+        · simpa only [if_pos hSu] using hSu.le
+        · simpa only [if_neg hSu] using hF S hS
+  apply (le_div_iff₀ hu).mpr
+  change (((((design n m).filter (fun S => u < F S)).card : ℝ) /
+    ((design n m).card : ℝ)) * u) ≤
+      (∑ S ∈ design n m, F S) / ((design n m).card : ℝ)
+  rw [div_mul_eq_mul_div]
+  exact div_le_div_of_nonneg_right hsum (Nat.cast_nonneg _)
 
 theorem tailC_probability_nonneg {n m : ℕ} (E : Finset (Fin n) → Prop) :
     0 ≤ probability m E := by
@@ -90,6 +112,69 @@ theorem tailC_order_combine (m : ℕ → ℕ)
       exact (not_lt_of_ge hbound) hbad)
   exact lt_of_le_of_lt hp (by linarith [h₁ n hn₁, h₂ n hn₂])
 
+/-- Finite Chebyshev on the actual complete-randomization support. -/
+theorem tailC_finite_chebyshev {n m : ℕ} (F : Finset (Fin n) → ℝ)
+    (u : ℝ) (hu : 0 < u) :
+    probability m (fun S => u < |F S - expectation m F|) ≤ variance m F / u^2 := by
+  calc
+    _ ≤ probability m (fun S => u^2 < (F S - expectation m F)^2) := by
+      apply tailC_probability_mono
+      intro S _ hS
+      have hh := (sq_lt_sq₀ hu.le (abs_nonneg (F S - expectation m F))).2 hS
+      simpa only [sq_abs] using hh
+    _ ≤ _ := finite_markov (m := m) (fun S => (F S - expectation m F)^2)
+      (fun _ _ => sq_nonneg _) (u^2) (sq_pos_of_pos hu)
+
+/-- Deterministic domination of rates preserves stochastic order. -/
+theorem tailC_order_rate_mono (m : ℕ → ℕ)
+    (U : (n : ℕ) → Finset (Fin n) → ℝ) (r q : ℕ → ℝ)
+    (hU : stochasticO m U r) (B : ℝ) (hB : 0 < B)
+    (hbound : ∀ᶠ n in atTop, r n ≤ B * q n) :
+    stochasticO m U q := by
+  intro ε hε
+  obtain ⟨M, hM, n₀, htail⟩ := hU ε hε
+  obtain ⟨n₁, hn₁⟩ := eventually_atTop.1 hbound
+  refine ⟨M * B, mul_pos hM hB, max n₀ n₁, ?_⟩
+  intro n hn
+  have hnb : r n ≤ B * q n := hn₁ n ((le_max_right _ _).trans hn)
+  have hthreshold : M * r n ≤ (M * B) * q n := by
+    simpa only [mul_assoc] using mul_le_mul_of_nonneg_left hnb hM.le
+  exact lt_of_le_of_lt
+    (tailC_probability_mono _ _ (fun S _ hS => lt_of_le_of_lt hthreshold hS))
+    (htail n ((le_max_left _ _).trans hn))
+
+/-- Products of tight processes on the changing finite sample spaces. -/
+theorem order_product (m : ℕ → ℕ)
+    (U V : (n : ℕ) → Finset (Fin n) → ℝ) (r q : ℕ → ℝ)
+    (hU : stochasticO m U r) (hV : stochasticO m V q)
+    (hr : ∀ᶠ n in atTop, 0 ≤ r n)
+    (hq : ∀ᶠ n in atTop, 0 ≤ q n) :
+    stochasticO m (fun n S => U n S * V n S) (fun n => r n * q n) := by
+  classical
+  intro ε hε
+  obtain ⟨M₁, hM₁, n₁, h₁⟩ := hU (ε/2) (by linarith)
+  obtain ⟨M₂, hM₂, n₂, h₂⟩ := hV (ε/2) (by linarith)
+  obtain ⟨n₃, h₃⟩ := eventually_atTop.1 (hr.and hq)
+  refine ⟨M₁ * M₂, mul_pos hM₁ hM₂, max n₁ (max n₂ n₃), ?_⟩
+  intro n hn
+  have hn₁ : n₁ ≤ n := (le_max_left _ _).trans hn
+  have hn₂ : n₂ ≤ n := (le_max_left _ _).trans ((le_max_right _ _).trans hn)
+  have hn₃ : n₃ ≤ n := (le_max_right _ _).trans ((le_max_right _ _).trans hn)
+  obtain ⟨hrn, _hqn⟩ := h₃ n hn₃
+  have hp := tailC_probability_union_bound (m := m n)
+    (fun S => |U n S * V n S| > (M₁ * M₂) * (r n * q n))
+    (fun S => |U n S| > M₁ * r n) (fun S => |V n S| > M₂ * q n) (by
+      intro S _ hbad
+      by_contra hnot
+      push Not at hnot
+      have hbound : |U n S * V n S| ≤ (M₁ * M₂) * (r n * q n) := by
+        rw [abs_mul]
+        calc
+          _ ≤ (M₁ * r n) * (M₂ * q n) :=
+            mul_le_mul hnot.1 hnot.2 (abs_nonneg _) (mul_nonneg hM₁.le hrn)
+          _ = _ := by ring
+      exact (not_lt_of_ge hbound) hbad)
+  exact lt_of_le_of_lt hp (by linarith [h₁ n hn₁, h₂ n hn₂])
 
 theorem small_scale_littleO (m : ℕ → ℕ)
     (R : (n : ℕ) → Finset (Fin n) → ℝ) (κ : ℕ → ℝ)

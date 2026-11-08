@@ -9,9 +9,10 @@ import Mathlib.Tactic
 /-!
 P047: Rejoinder: Nonparametric Identification Is Not Enough, but Randomized
 Controlled Trials Are, Observational Studies 11.1 (2025), pp. 85–90.
-The rejoinder has prose bullets, not numbered mathematical results.
-The definitions use common known bounds B and ε. All probabilities are
-probability measures.
+The rejoinder has prose bullets, not numbered mathematical results. Definitions
+below implement the formal readings fixed in targets.json, including common
+known bounds B and ε. No results from the unavailable original article are
+silently assumed. All probabilities are genuine probability measures.
 -/
 
 namespace AronowAudit.P047
@@ -22,19 +23,22 @@ open MeasureTheory ProbabilityTheory Filter
 open scoped ENNReal NNReal Topology BigOperators
 
 /-- “averages of bounded potential outcomes”, §1 p.85. One complete unit is
-`(W,A,Y(0),Y(1))`, with a real covariate, binary treatment and real outcomes. -/
+`(W,A,Y(0),Y(1))`, with a real covariate, binary treatment and real outcomes.
+This is the canonical space for the objects in targets.json S3–S4. -/
 abbrev UnitData := ℝ × Bool × (ℝ × ℝ)
 
 /-- “at least one continuous covariate”, §1 p.85: the covariate coordinate W. -/
 def covariate (u : UnitData) : ℝ := u.1
 
-/-- The binary treatment X, denoted A here; §1 p.85. -/
+/-- The binary treatment X in the inherited notation (targets.json S3),
+called A by the validators; §1 p.85. -/
 def arm (a : Bool) (u : UnitData) : ℝ := if u.2.1 = a then 1 else 0
 
 /-- “potential outcomes”, §1 p.85, represented by Y(0) and Y(1). -/
 def potential (a : Bool) (u : UnitData) : ℝ := if a then u.2.2.2 else u.2.2.1
 
-/-- Consistency: `Y=(1-A)Y(0)+AY(1)`; rejoinder §1 p.85. -/
+/-- Consistency, inherited from the original article as transcribed in
+targets.json S3: `Y=(1-A)Y(0)+AY(1)`; rejoinder §1 p.85. -/
 def observed (u : UnitData) : ℝ :=
   arm true u * potential true u + arm false u * potential false u
 
@@ -47,14 +51,12 @@ abbrev covariateSigma : MeasurableSpace UnitData :=
 def armPropensity (e : ℝ → ℝ) (a : Bool) (u : UnitData) : ℝ :=
   if a then e (covariate u) else 1 - e (covariate u)
 
-/-- Armwise ignorability for binary treatment, used for T1–T2 (§1 p.85):
-for each arm and every measurable integrable test f of that potential outcome,
+/-- “ignorability”, §1 p.85, in an equivalent binary-treatment formulation:
+for each arm and EVERY measurable integrable test f of that potential outcome,
 `E[1{A=a} f(Y(a)) | W] = p_a(W) E[f(Y(a)) | W]`.
-Indicators f give conditional distributional independence for each potential
-outcome separately, not merely conditional mean independence. For a probability
-law, taking f=1 also identifies e as P(A=1|W). Joint independence of treatment
-and the pair of potential outcomes is the stronger condition `JointIgnorable`
-below. -/
+Indicators f give the conditional distributional independence, not merely
+conditional mean independence. Taking f=1 also identifies e as P(A=1|W).
+The two outcomes need not be conditionally independent of one another. -/
 def Ignorable (P : Measure UnitData) (e : ℝ → ℝ) : Prop :=
   ∀ (a : Bool) (f : ℝ → ℝ), Measurable f →
     Integrable (fun u => f (potential a u)) P →
@@ -74,8 +76,8 @@ structure CausalLaw where
 
 attribute [instance] CausalLaw.probability
 
-/-- “bounded” and “positivity”, §1 p.85, with fixed common known
-constants: |Y(a)|≤B and ε≤e(W)≤1-ε, almost surely.
+/-- “bounded” and “positivity”, §1 p.85, read with the fixed common known
+constants in targets.json: |Y(a)|≤B and ε≤e(W)≤1-ε, almost surely.
 This definition imposes no smoothness on any function or covariate law. -/
 def BoundedOverlap (L : CausalLaw) (B ε : ℝ) : Prop :=
   0 < B ∧ 0 < ε ∧ ε ≤ 1 / 2 ∧
@@ -84,12 +86,12 @@ def BoundedOverlap (L : CausalLaw) (B ε : ℝ) : Prop :=
       L.propensity (covariate u) ≤ 1 - ε)
 
 /-- Horvitz–Thompson contribution for one potential-outcome mean,
-target T1(vi); Proposition 2 of the original article. -/
+target T1(vi); inherited Proposition 2, transcribed in targets.json S3. -/
 def armIPW (L : CausalLaw) (a : Bool) (u : UnitData) : ℝ :=
   arm a u * potential a u / armPropensity L.propensity a u
 
 /-- “simple estimators”, first bullet §1 p.85, with the observable ATE score
-Z=AY/e(W)-(1-A)Y/(1-e(W)) in targets T1 and T2. -/
+Z=AY/e(W)-(1-A)Y/(1-e(W)) specified in targets.json T1 and T2. -/
 def score (L : CausalLaw) (u : UnitData) : ℝ :=
   arm true u * observed u / L.propensity (covariate u) -
     arm false u * observed u / (1 - L.propensity (covariate u))
@@ -101,8 +103,8 @@ def ate (L : CausalLaw) : ℝ :=
 /-- “averages ... of potential outcomes”, §1 p.85: θ=E[Y(1)]. -/
 def treatedMean (L : CausalLaw) : ℝ := ∫ u, potential true u ∂L.measure
 
-/-- Repeated i.i.d. sampling: a countable product of the one-unit
-probability law. A sample of size n uses only coordinates 0,...,n-1. -/
+/-- Repeated i.i.d. sampling, targets.json S3–S4: a countable product of the
+one-unit probability law. A sample of size n uses only coordinates 0,...,n-1. -/
 def sampleLaw (P : Measure UnitData) [IsProbabilityMeasure P] :
     Measure (ℕ → UnitData) := Measure.infinitePi fun _ : ℕ => P
 
@@ -129,7 +131,7 @@ def confidenceInterval (L : CausalLaw) (B ε α : ℝ) (n : ℕ)
     (estimator L n s + halfWidth B ε α n)
 
 /-- The one-mean concentration half-width ε⁻¹√(log(2/α)/(2n)),
-target T1(vi), first bullet §1 p.85. -/
+targets.json T1(vi), first bullet §1 p.85. -/
 def treatedHalfWidth (ε α : ℝ) (n : ℕ) : ℝ :=
   1 / ε * Real.sqrt (Real.log (2 / α) / (2 * n))
 
@@ -313,8 +315,8 @@ theorem score_unbiased (L : CausalLaw) {B ε : ℝ}
         covariateSigma]) u ∂L.measure := integral_congr_ae (conditional_score_identity L h)
     _ = ate L := integral_condExp covariateSigma_le
 
-/-- A sample coordinate has exactly the population law under the
-i.i.d. construction. -/
+/-- A sample coordinate has exactly the population law, not a hypothesis
+about estimator behavior; i.i.d. construction in targets.json S3–S4. -/
 theorem sample_coordinate_hasLaw (P : Measure UnitData) [IsProbabilityMeasure P] (i : ℕ) :
     HasLaw (fun s : ℕ → UnitData => s i) P (sampleLaw P) :=
   ⟨(measurable_pi_apply i).aemeasurable, Measure.infinitePi_map_eval (fun _ => P) i⟩
@@ -767,8 +769,9 @@ instance uniform01_probability : IsProbabilityMeasure uniform01 := by
   simp [uniform01, Real.volume_Ioc]
 
 /-- Joint ignorability for T3's binary-outcome subclass, pp.85–86, as the
-conditional factorization for every integrable measurable test of the
-pair of potential outcomes. This is stronger than armwise ignorability. -/
+conditional factorization for EVERY integrable measurable test of the
+PAIR of potential outcomes. This is stronger than the arm-by-arm condition
+only where T3's target explicitly requests the joint form. -/
 def JointIgnorable (L : CausalLaw) : Prop :=
   ∀ (a : Bool) (f : ℝ × ℝ → ℝ), Measurable f →
     Integrable (fun u => f (potential false u, potential true u)) L.measure →
@@ -797,6 +800,45 @@ from the input to T3's estimator, second bullet pp.85–86. -/
 def observedSample (n : ℕ) (s : ℕ → UnitData) : Fin n → ObservedUnit :=
   fun i => (covariate (s i.val), (s i.val).2.1, observed (s i.val))
 
+/-- An arbitrary sequence of measurable estimators of observed samples,
+the SAME functions under every population law; target T3(a), pp.85–86. -/
+structure UnknownEstimator where
+  value : (n : ℕ) → (Fin n → ObservedUnit) → ℝ
+  measurable_value : ∀ n, Measurable (value n)
+
+/-- An arbitrary measurable interval procedure, the same endpoint functions
+under every law; target T3(b), pp.85–86. Endpoints are finite and ordered. -/
+structure UnknownInterval where
+  lower : (n : ℕ) → (Fin n → ObservedUnit) → ℝ
+  upper : (n : ℕ) → (Fin n → ObservedUnit) → ℝ
+  measurable_lower : ∀ n, Measurable (lower n)
+  measurable_upper : ∀ n, Measurable (upper n)
+  ordered : ∀ n s, lower n s ≤ upper n s
+
+/-- Worst-case error over T3's full class, using ≥η. Zero is inserted only
+to fix the supremum convention for an empty class. -/
+def unknownRisk (E : UnknownEstimator) (n : ℕ) (η : ℝ) : ℝ :=
+  sSup (insert 0 {r | ∃ L : CausalLaw, UnknownModel L ∧
+    r = (sampleLaw L.measure).real
+      {s | η ≤ |E.value n (observedSample n s) - ate L|}})
+
+/-- Strict-error version of T3's worst-case risk, used in the limsup
+statement of nonexistence of uniform consistency; pp.85–86. -/
+def unknownStrictRisk (E : UnknownEstimator) (n : ℕ) (η : ℝ) : ℝ :=
+  sSup (insert 0 {r | ∃ L : CausalLaw, UnknownModel L ∧
+    r = (sampleLaw L.measure).real
+      {s | η < |E.value n (observedSample n s) - ate L|}})
+
+/-- Worst-case coverage infimum over the full class in T3(b), pp.85–86.
+Inserting one does not change a nonempty class's infimum of probabilities. -/
+def honestCoverage (C : UnknownInterval) (n : ℕ) : ℝ :=
+  sInf (insert 1 {r | ∃ L : CausalLaw, UnknownModel L ∧
+    r = (sampleLaw L.measure).real {s | ate L ∈ Set.Icc
+      (C.lower n (observedSample n s)) (C.upper n (observedSample n s))}})
+
+/-- Interval width, upper endpoint minus lower endpoint; T3(b), pp.85–86. -/
+def intervalWidth (C : UnknownInterval) (n : ℕ) (s : ℕ → UnitData) : ℝ :=
+  C.upper n (observedSample n s) - C.lower n (observedSample n s)
 
 /-- A fair binary distribution, used only to construct the fixed law S
 in target T3(b), pp.85–86. -/
@@ -818,10 +860,29 @@ instance baselineLaw_probability : IsProbabilityMeasure baselineLaw := by
   unfold baselineLaw
   infer_instance
 
+/-- Target T3 in full, second bullet pp.85–86. Every measurable observed-data
+estimator has worst-case error ≥1/2 at radius 1/12 for every positive n,
+and fails uniform consistency. Every asymptotically honest interval with
+0<α<1/2 has liminf S^n(width>1/6)≥1-2α>0 at the explicit SINGLE fixed law S.
+No assertion about testability or sufficiency of a one-function restriction
+is added. This theorem is deliberately left drafted if the full mixture
+and coupling argument has not been proved. -/
+theorem unknown_propensity_impossibility :
+    (∀ E : UnknownEstimator,
+      (∀ n : ℕ, 1 ≤ n → (1 / 2 : ℝ) ≤ unknownRisk E n (1 / 12)) ∧
+      (∃ η : ℝ, 0 < η ∧ 0 < Filter.limsup (fun n => unknownStrictRisk E n η) atTop)) ∧
+    (∀ C : UnknownInterval, ∀ α : ℝ, 0 < α → α < 1 / 2 →
+      1 - α ≤ Filter.liminf (honestCoverage C) atTop →
+      (1 - 2 * α ≤ Filter.liminf
+        (fun n => (sampleLaw baselineLaw).real {s | (1 / 6 : ℝ) < intervalWidth C n s})
+        atTop) ∧ 0 < 1 - 2 * α) := by
+  sorry
+
+
 
 /-- Cell treatment probability in the two families specified in T3's
-finite construction: e_high=3/4 and e_low=1/4. The construction formalizes
-the second bullet, pp.85–86, and is not printed in the rejoinder. -/
+finite construction: e_high=3/4 and e_low=1/4. Rejoinder second bullet
+pp.85–86; the construction is supplied in targets.json, not printed. -/
 def cellPropensity (high : Bool) : ℝ := if high then 3 / 4 else 1 / 4
 
 /-- Cell outcome mean in T3's finite construction: family A (true) has
@@ -1006,6 +1067,7 @@ theorem separated_bands_force_width {lo hi x y : ℝ}
   linarith [hx.1, hy.2, hCx.2, hCy.1]
 
 
+
 /-- The supplied propensity really is the conditional probability of
 treatment, a consequence of the ALL-tests ignorability definition; §1 p.85. -/
 theorem propensity_is_conditional_probability (L : CausalLaw) :
@@ -1108,9 +1170,9 @@ theorem familyEffect_prior_concentration (family : Bool) {M : ℕ} (hM : 1 ≤ M
   field_simp <;> ring
 
 /-- Probability-transfer algebra in T3's interval step (f). The hypotheses
-are the two mixture marginal event bounds, two total-variation transfers
-to S and the union/intersection bound. Their conclusion is the finite
-lower bound; the mixture transfer bounds are hypotheses of this lemma. -/
+are the two mixture marginal event bounds, two TV transfers to S and the
+union/intersection bound. Their conclusion is the advertised finite
+lower bound; this lemma does not assert the missing mixture TV facts. -/
 theorem two_point_interval_algebra {α pA pB sA sB sAB q M : ℝ} (n : ℕ)
     (hA : 1 - α - 16 / M ≤ pA) (hB : 1 - α - 16 / M ≤ pB)
     (hSA : pA - (n : ℝ) * (n - 1) / (2 * M) ≤ sA)
@@ -1190,9 +1252,10 @@ theorem iid_uniform_labels_collision {Ω : Type*} [MeasurableSpace Ω]
   exact hh
 
 /-- The total-variation transfer step used in T3(c): if two laws agree
-on every measurable event restricted to a common event G, and each law
-gives Gᶜ probability at most d, their probabilities differ by at most d
-for every measurable event. Agreement on G is a hypothesis of this lemma. -/
+on EVERY measurable event restricted to a common good event G, and each
+law gives Gᶜ probability at most d, then their probabilities differ by at
+most d for every measurable event. This is a proved generic lemma; the
+continuous family mixtures' agreement on G remains unproved. -/
 theorem event_difference_of_agreement_on_good {Ω : Type*} [MeasurableSpace Ω]
     {P Q : Measure Ω} [IsProbabilityMeasure P] [IsProbabilityMeasure Q]
     {G : Set Ω} (hG : MeasurableSet G) {d : ℝ}
@@ -1211,8 +1274,10 @@ theorem event_difference_of_agreement_on_good {Ω : Type*} [MeasurableSpace Ω]
     measureReal_nonneg (μ := Q) (s := E \ G)]
 
 
+
 /-- Consistency gives 1{A=a}Y(a)=1{A=a}Y, so each HT arm contribution
-is computed from observed data; target T1(vi), first bullet §1 p.85. -/
+is computed from observed data. This is the inherited consistency equation
+and estimator in targets.json S3, T1(vi); rejoinder first bullet §1 p.85. -/
 theorem armIPW_eq_observed (L : CausalLaw) (a : Bool) (u : UnitData) :
     armIPW L a u = arm a u * observed u / armPropensity L.propensity a u := by
   rcases u with ⟨w, t, y0, y1⟩
@@ -1266,5 +1331,76 @@ theorem baseline_ate :
 
 
 end
+
+#print axioms measurable_covariate
+#print axioms covariateSigma_le
+#print axioms measurable_covariate_conditioning
+#print axioms measurable_arm
+#print axioms measurable_potential
+#print axioms measurable_observed
+#print axioms measurable_armPropensity_conditioning
+#print axioms measurable_armIPW
+#print axioms score_eq_armIPW
+#print axioms measurable_score
+#print axioms integrable_potential
+#print axioms armPropensity_ge
+#print axioms armIPW_abs_le
+#print axioms score_abs_le
+#print axioms score_memLp
+#print axioms score_variance_le
+#print axioms integrable_arm_numerator
+#print axioms integrable_armIPW
+#print axioms conditional_armIPW
+#print axioms conditional_score_identity
+#print axioms score_unbiased
+#print axioms sample_coordinate_hasLaw
+#print axioms sample_scores_independent
+#print axioms sample_score_identDistrib
+#print axioms estimator_unbiased
+#print axioms subgaussian_abs_tail
+#print axioms bounded_independent_average_tail
+#print axioms estimator_hoeffding
+#print axioms estimator_central_limit
+#print axioms measurable_estimator
+#print axioms symmetric_interval_coverage
+#print axioms halfWidth_exponential
+#print axioms confidenceInterval_coverage
+#print axioms confidenceInterval_root_width
+#print axioms known_propensity_finite_sample
+#print axioms treated_mean_finite_sample
+#print axioms estimator_root_tail
+#print axioms estimator_uniform_root_consistency
+#print axioms known_propensity_asymptotics
+#print axioms unknown_propensity_impossibility
+#print axioms cell_overlap
+#print axioms cell_mean_bounds
+#print axioms single_cell_observable_agreement
+#print axioms measurable_highIndicator
+#print axioms highIndicator_memLp
+#print axioms highIndicator_mean
+#print axioms highIndicator_variance
+#print axioms measurable_highProportion
+#print axioms highProportion_moments
+#print axioms familyEffect_eq_cell_average
+#print axioms collision_union_bound
+#print axioms two_point_estimator_algebra
+#print axioms separated_bands_force_width
+#print axioms propensity_is_conditional_probability
+#print axioms confidenceInterval_endpoint_width
+#print axioms highProportion_bounds
+#print axioms measurable_familyEffect
+#print axioms familyEffect_bounds
+#print axioms familyEffect_memLp
+#print axioms familyEffect_moments
+#print axioms familyEffect_prior_concentration
+#print axioms two_point_interval_algebra
+#print axioms uniform_labels_pair_collision
+#print axioms iid_uniform_labels_collision
+#print axioms event_difference_of_agreement_on_good
+#print axioms armIPW_eq_observed
+#print axioms treatedEstimator_eq_observed_sum
+#print axioms measurable_baseline_map
+#print axioms baseline_covariate_law
+#print axioms baseline_ate
 
 end AronowAudit.P047

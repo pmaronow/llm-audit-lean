@@ -1,0 +1,62 @@
+[
+  {
+    "theorem": "SAP.P025b.T12",
+    "target_id": "P025-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The closed census instance correctly refutes the Appendix implication and equality of least cuts at gamma=1, and the two Supplement strict-improvement equivalences collapse to the same false strict self-comparison while both arithmetic left sides equal -1. It retains the essential counterexample, but canonical part (f)'s singleton feasible box, sample/population-mean optimization endpoint identities (2),(3),(6),(7), and explicit Proposition 1 formula evaluation are not asserted. There are no inconsistent premises or empty indices. The positive census weights have denominator 2."
+  },
+  {
+    "theorem": "SAP.P025b.T13",
+    "target_id": "P025-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both actual pooled unit-weight optimization endpoints converge almost surely under the iid replicate design, without separation, and consequently under the finite-index separation assumption. This matches the canonical repaired proposition, including eventual nonempty samples and the corrected separation domain. A finite population's subset-valued sample law is finite, so finite K and measurable singletons do not restrict its possible design laws. Surjectivity and strictly increasing class outcomes render exactly the nonempty distinct outcome classes. The finite_lemmas field supplies supporting proof steps rather than additional conclusions of the canonical statement. No limit is assumed as a hypothesis, and PMF.toMeasure and infinitePi are probability measures."
+  },
+  {
+    "theorem": "SAP.P025b.T14",
+    "target_id": "P025-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The explicit eight-outcome pair design has six units, all marginal probabilities 1/2, class totals and replicate counts 1, failed separation, and the two tied upper cut values. The box extrema are attained at 5/4 and 2 and the actual pooled extrema equal them for every positive replicate count on every path, so the claimed failure of necessity is genuine. The theorem does not assert canonical part (c)'s polynomial identities or evaluations at the three named optimizer vectors, or part (d)'s class-weight-sum formula and surjection onto the box. Every sample has three units; denominators are positive."
+  },
+  {
+    "theorem": "SAP.P025b.T15",
+    "target_id": "P025-T15",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Positive integer class sizes, shares compatibility via a positive free scale, the class-weight certificate, both outer bounds, shares-only infimum/supremum sharpness, the continuous proportional region and its extrema, rational realizability and endpoint-attainment equivalences, and absolute-total/known-size calibration match canonical parts (a)-(e). The added marginal-vector characterization makes the compatibility definition faithful to populations with bounded inclusion probabilities. The theorem omits the explicit assertion that sharpness can fail with richer information and the parenthetical automatic existence when gamma>1 and rational-share characterization of existence when gamma=1. The initial existence hypothesis is canonical, not an assumed endpoint conclusion. For example J=2, y=(0,1), q=(1/2,1/2), alpha=1/4, beta=1/2, m=(1,1), T=1 satisfies it; equality of bounds also has compatible rational examples."
+  },
+  {
+    "theorem": "SAP.P025b.T16",
+    "target_id": "P025-T16",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both retained-total counterexamples state the exact integer-compatible mean sets and the strict gaps against the global continuous-box extrema. The first includes a realizable omit-one design and the separation assumption, hence refutes sharpness even when the stated sufficient convergence hypotheses hold. The second has exactly the 251 means k/1000 with 500<=k<=750 and upper gap 1/20. The canonical evaluations at the specified endpoint weight vectors, the second example's displayed 1000-unit population with its unit probabilities, and the uniform fixed-quota sampling construction for every compatible class size are not asserted. The use of natural 1000-k is harmless under k<=750."
+  },
+  {
+    "theorem": "SAP.P025b.T17",
+    "target_id": "P025-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "The integer count equivalences, six exact rational corrected values, all 42 correct and rounded-input cell roundings, exactly six differences of one tenth, and all required gallery/exchange grid comparisons are present. Tuple projections correctly use the count proportion with t_exact and rounded proportion with t_input. The half-open rounding interval has the specified width and all actual values avoid ties. Independent Fraction arithmetic verified every cell, count window, grid comparison and displayed rational identity. No denominator vanishes."
+  },
+  {
+    "theorem": "SAP.P025b.T18",
+    "target_id": "P025-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "For every nonempty finite real outcome vector and two admissible bound pairs of equal ratio, the full attainable sets, normalized-box attainable set and both endpoints agree. At ratio one the physical feasible box is exactly the constant 1/alpha vector and both endpoints equal the arithmetic sample mean. This is canonical parts (a)-(b). The second bound pair poses no extra restriction on the ratio-one clause because it can always be chosen equal to the first. Positivity and n>0 prevent totalized division or empty-set extrema from doing the work."
+  },
+  {
+    "theorem": "SAP.P025b.T19",
+    "target_id": "P025-T19",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The physical upper and corrected lower first-cut weights are equal for every tied pair, and thus in particular for every adjacent tied pair of the canonical Lemma 1. The two cut predicates use the specified least valid finite index and the corrected non-strict <= lower test, not the printed incorrect >= test. The theorem extends harmlessly to n=1. It does not separately assert the gamma>1 no-cut formulation or canonical Supplement proof steps (i)-(iv), including the constant-outcome cut, positive upper cut for nonconstant outcomes, and the recurrence/strict inequalities. Valid cuts with nontrivial ties exist, for example y=(0,0,1), alpha=1/4, beta=1/2, kL=kH=2."
+  },
+  {
+    "theorem": "SAP.P025b.T20",
+    "target_id": "P025-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "For every nonempty binary sample and admissible probability bounds, the full real attainable set is the exact closed interval with the canonical binary formulas and both endpoint equalities, including p=0, p=1 and gamma=1. No sorting is needed because the sums are invariant under permutation, so its absence does not change the claim. Positive box weights and n>0 ensure positive objective denominators; 0<=p<=1 and gamma>=1 ensure positive binary-formula denominators."
+  },
+  {
+    "theorem": "SAP.P025b.T21",
+    "target_id": "P025-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is the printed sufficient-condition Proposition 3 under the canonical interpretation: iid pooled replicate samples, the actual unit-box optimization endpoints, distinct positive-mass classes, separation only for 0<=k<J, and almost-sure convergence to the class-total extrema. Eventual nonemptiness is explicitly concluded. The finite_lemmas field describes the supporting proof, not additional conclusions of the canonical proposition. Separation is satisfiable with J=2 and distinct binary outcomes, including a design that can return an empty sample; no hidden independence within a sample is required."
+  }
+]

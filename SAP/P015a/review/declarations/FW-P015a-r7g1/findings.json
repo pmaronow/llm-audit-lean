@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P015-T1",
+    "theorem": "SAP.P015a.T1",
+    "fingerprint": "3f9efed97e2cb72c69152af256b45cefc46fa7852ba925065c9176cf5e249d51",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean using only SAP.P015a.Defs.WholeW1, with no Challenge import, new axioms or sorry. Independently verifies the epsilon=1/1000000 probability vector, conditional independence from potential outcomes being functions of X, strict binary overlap at both profiles, positive residual-weight normalizer, nonsingular population OLS Gram matrix, the exact observed-outcome IPW vector, its mean 3/2 and variance 2000071/4. The remaining quantified hypotheses have explicit instances: epsilon=1/1000000, n=1 and delta=1. The independent finite product laws are nonempty and the n=0 value affects no limit.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T2",
+    "theorem": "SAP.P015a.T2",
+    "fingerprint": "e6121b6cbfe593f5864df8ae170e2f0961f8e82b1f55cda747cd3696a3fe3bf8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean. Defines atomLaw as the uniform Fin 4 PMF measure and iidLaw as its countable product on Nat -> Fin 4; proves IsProbabilityMeasure iidLaw and UniformIndependentSampling iidLaw (fun i s => s i), including measurability, genuine independence and all four marginals. Any statistic sequence is admissible, for example the constant-zero sequence. Also checks the positive weight normalizer 5/8, effective masses, world B conditional independence, pointwise equal observed triples and differing target means 2 and 13/5. All sampling antecedents are simultaneously inhabited.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T3",
+    "theorem": "SAP.P015a.T3",
+    "fingerprint": "aa3484081f1f48445071dc6b554c6d692edf516fe29374c44d991240fd046bc5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean. Verifies all four conditional endpoint probabilities equal 1/2, the ordered draw (0,0,2,3) has independent-product probability 1/256>0, and the controls and full-design Gram determinants are 4 and 2. The statement has no external hypotheses. Repeating atom 0 in an outcome of independent draws does not violate independence. The finite design can be augmented with Y(d)=d to satisfy affine potential outcomes and unconfoundedness without changing any weight.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T13",
+    "theorem": "SAP.P015a.T13",
+    "fingerprint": "cf16b114c265f1da3e955801fa23f026c0cfcb90e2e2d09e583fbded458c1eae",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with p=1/2, proving 0<p<1 and logOdds p=0. The universally quantified evaluation point a may be any real number. Sigmoid has a genuine derivative everywhere, and the erroneous fraction is evaluated at a nonzero denominator. No additional hypothesis or empty domain occurs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T12",
+    "theorem": "SAP.P015a.T12",
+    "fingerprint": "638c634d407a10c950c0901bd7f577c2e1bd223178f7772d56208ee19f4b82ac",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with p=1/2, r=1, rho=2, proving every interval/radius antecedent, including 2<inverseLogitRadius(logOdds(1/2)). Also verifies the explicit 200-observation Gram determinant 10000 and the displayed finite coefficient vector producing predictors (-log 99,log 99). The grouped successes (1,99) and counts (100,100) give valid binary data. Existence, uniqueness, attained maxima and power-series properties are conclusions of the certified theorem, not hypotheses.",
+    "confidence": 0.99
+  }
+]

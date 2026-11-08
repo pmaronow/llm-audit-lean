@@ -18,6 +18,11 @@ set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 set_option linter.unnecessarySeqFocus false
 
+private theorem E29_expectation_congr {n} (P : Population n)
+    {f g : Finset (Fin n) → ℝ}
+    (h : ∀ S ∈ assignments P, f S = g S) : expectation P f = expectation P g := by
+  unfold expectation
+  rw [Finset.sum_congr rfl h]
 
 private theorem E29_expectation_mono {n} (P : Population n)
     {f g : Finset (Fin n) → ℝ}
@@ -64,6 +69,9 @@ private theorem E29_tail_majorant {n} (P : Population n)
 private theorem E29_mean_nonneg {n} (f : Fin n → ℝ) (h : ∀ i, 0 ≤ f i) :
     0 ≤ mean f := div_nonneg (Finset.sum_nonneg (fun i _ => h i)) (Nat.cast_nonneg _)
 
+private theorem E29_mean_mono {n} {f g : Fin n → ℝ} (h : ∀ i, f i ≤ g i) :
+    mean f ≤ mean g :=
+  div_le_div_of_nonneg_right (Finset.sum_le_sum (fun i _ => h i)) (Nat.cast_nonneg _)
 
 private theorem E29_mean_cauchy {n} (f g : Fin n → ℝ) :
     (mean (fun i => f i * g i)) ^ 2 ≤
@@ -657,6 +665,8 @@ theorem corrected_E29_proof (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
       (tendsto_const_nhds.div_atTop hN).add (tendsto_const_nhds.div_atTop hroot)
   exact squeeze_zero (fun n => E29_probability_nonneg _ _)
     (fun n => E29_finite_tail (P n) δ e A B r hk hδ he hA hB hr (hP n) κ hκ) hmajor
+
+example : type_of% @AronowAudit.P002.corrected_E29 := corrected_E29_proof
 
 end
 end AronowAudit.P002.Wave1

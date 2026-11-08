@@ -1,0 +1,91 @@
+[
+ {
+  "target_id": "P005-T20",
+  "decision": "refuted",
+  "theorem": "SAP.P005b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.ConfidenceFollowup02.printed_interacted_third_bias_refuted",
+   "AronowAudit.P005.Wave1.interacted_exact_decomposition_completion",
+   "AronowAudit.P005.Wave1.printed_interacted_expansion_refuted"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P005-T21",
+  "decision": "whole",
+  "theorem": "SAP.P005b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.noninteracted_exact_unbiasedness_proof",
+   "AronowAudit.P005.Wave1.noninteracted_exact_decomposition_proof",
+   "AronowAudit.P005.noninteracted_debiased_expansion",
+   "AronowAudit.P005.collected_covariance_coefficients"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.mean_unbiased",
+    "reason": "The exact-unbiasedness row already incorporates the sample-mean identity; not separately invoked."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P005.noninteracted_debiased_expansion",
+   "AronowAudit.P005.Wave1.noninteracted_exact_decomposition_proof",
+   "AronowAudit.P005.Wave1.control_arm_covariance_expectation",
+   "AronowAudit.P005.Wave1.control_arm_transport",
+   "AronowAudit.P005.expectation_mul",
+   "AronowAudit.P005.Wave1.t13_E_sub",
+   "AronowAudit.P005.collected_covariance_coefficients"
+  ],
+  "statement_definition": "SAP.P005b.T21WholeStatement"
+ },
+ {
+  "target_id": "P005-T22",
+  "decision": "whole",
+  "theorem": "SAP.P005b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.interacted_exact_unbiasedness_proof",
+   "AronowAudit.P005.interacted_debiased_cancellation"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P005.Wave1.control_arm_unbiased_any_size",
+   "AronowAudit.P005.Wave1.control_arm_transport"
+  ]
+ },
+ {
+  "target_id": "P005-T23",
+  "decision": "whole",
+  "theorem": "SAP.P005b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.noninteracted_exact_decomposition_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.noninteracted_slope_decomposition",
+    "reason": "The selected decomposition row already contains the slope decomposition."
+   }
+  ]
+ },
+ {
+  "target_id": "P005-T24",
+  "decision": "whole",
+  "theorem": "SAP.P005b.T24",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.interacted_exact_decomposition_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.armN_decomposition",
+    "reason": "The selected decomposition row already contains the two arm slope and numerator identities."
+   },
+   {
+    "lean_name": "AronowAudit.P005.arm_slope_decomposition",
+    "reason": "The selected decomposition row already contains the two arm slope and numerator identities."
+   }
+  ]
+ }
+]

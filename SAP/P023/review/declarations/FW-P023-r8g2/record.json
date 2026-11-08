@@ -1,0 +1,139 @@
+[
+ {
+  "target_id": "P023-T6",
+  "decision": "whole",
+  "theorem": "SAP.P023.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.Wave1.continuity_only_counterexample_proof",
+   "AronowAudit.P023.uniform_law_normalized"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P023.central_binomial_wallis_bounds",
+    "reason": "Supporting bound is internal to the complete continuity witness, not a separate clause of the target."
+   },
+   {
+    "lean_name": "AronowAudit.P023.gliding_hump_finite_inequality",
+    "reason": "Construction helper is internal to the complete fixed-mean witness."
+   }
+  ],
+  "statement_definition": "SAP.P023.T6Statement",
+  "supporting_declarations": [
+   {
+    "lean_name": "AronowAudit.P023.Wave1.tc11_growing_bias_not_lipschitz",
+    "file": "AronowAudit/P023/Wave1/Lib/PopulationContinuityTailC.lean",
+    "line": 59,
+    "reason": "Existing fully quantified helper, already used in the credited continuity witness proof; directly transports the universal non-Lipschitz exclusion for every function with the prescribed increasing-degree bias growth."
+   }
+  ],
+  "review_notes": "Declaration review round 3: restored universal clause (v), not merely non-Lipschitzness of the selected witness. T6Statement now conjoins NoLipschitzContinuityCounterexample, proved by direct application of the existing source helper. All previous clauses are retained, with no new hypotheses or analytic argument."
+ },
+ {
+  "target_id": "P023-T7",
+  "decision": "whole",
+  "theorem": "SAP.P023.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.Wave1.corrected_population_bias_proof",
+   "AronowAudit.P023.Wave1.uniform_residual_constants_proof",
+   "AronowAudit.P023.finite_conditional_bias",
+   "AronowAudit.P023.corrected_finite_polynomial_weights"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P023.residual_amplification_lower_bound",
+    "reason": "The population bias row already includes the amplification lower bound."
+   },
+   {
+    "lean_name": "AronowAudit.P023.residual_bias_integral_identity",
+    "reason": "The population bias row already includes the residual bias identity."
+   },
+   {
+    "lean_name": "AronowAudit.P023.residual_rms_error_bound",
+    "reason": "The population bias row already includes the RMS bound."
+   },
+   {
+    "lean_name": "AronowAudit.P023.residual_uniform_error_bound",
+    "reason": "The population bias row already includes the uniform bound."
+   }
+  ],
+  "statement_definition": "SAP.P023.T7Statement"
+ },
+ {
+  "target_id": "P023-T8",
+  "decision": "whole",
+  "theorem": "SAP.P023.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.Wave1.corrected_proposition2_proof",
+   "AronowAudit.P023.Wave1.GLP023B4c_marginal_probability",
+   "AronowAudit.P023.Wave1.GLP023B4c_T8_cpb_residual_moments",
+   "AronowAudit.P023.Wave1.GLP023B4c_rayleigh"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P023.Wave1.density_residual_comparison_proof",
+    "reason": "Supporting result is already subsumed by the complete corrected proposition; it is not added as a hypothesis or separate claim."
+   },
+   {
+    "lean_name": "AronowAudit.P023.Wave1.iid_regression_matrix_bounds_proof",
+    "reason": "Supporting result is already subsumed by the complete corrected proposition; it is not added as a hypothesis or separate claim."
+   },
+   {
+    "lean_name": "AronowAudit.P023.Wave1.jackson_kernel_approximation_proof",
+    "reason": "Supporting result is already subsumed by the complete corrected proposition; it is not added as a hypothesis or separate claim."
+   },
+   {
+    "lean_name": "AronowAudit.P023.central_binomial_lower_bound",
+    "reason": "Supporting result is already subsumed by the complete corrected proposition; it is not added as a hypothesis or separate claim."
+   },
+   {
+    "lean_name": "AronowAudit.P023.iid_window_count_bound",
+    "reason": "Supporting result is already subsumed by the complete corrected proposition; it is not added as a hypothesis or separate claim."
+   },
+   {
+    "lean_name": "AronowAudit.P023.repaired_population_rd_limit",
+    "reason": "Supporting result is already subsumed by the complete corrected proposition; it is not added as a hypothesis or separate claim."
+   },
+   {
+    "lean_name": "AronowAudit.P023.repaired_rate_from_finite_bounds",
+    "reason": "Supporting result is already subsumed by the complete corrected proposition; it is not added as a hypothesis or separate claim."
+   },
+   {
+    "lean_name": "AronowAudit.P023.repaired_rd_finite_bounds",
+    "reason": "Supporting result is already subsumed by the complete corrected proposition; it is not added as a hypothesis or separate claim."
+   }
+  ],
+  "statement_definition": "SAP.P023.T8WholeStatement"
+ },
+ {
+  "target_id": "P023-T9",
+  "decision": "whole",
+  "theorem": "SAP.P023.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.corrected_appendix_pairs"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P023.T9Statement"
+ },
+ {
+  "target_id": "P023-T10",
+  "decision": "refuted",
+  "theorem": "SAP.P023.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.coarsened_localization",
+   "AronowAudit.P023.linear_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P023.printed_polynomial_localization_refuted",
+    "reason": "Its negated universal includes degree zero and cannot directly establish the strengthened positive-degree refutation; the credited degree-one witness supplies that refutation."
+   }
+  ],
+  "statement_definition": "SAP.P023.T10Statement",
+  "proof_notes": "Revision 2 requires degree at least one inside the negated universal. Instantiation at the existing six-election degree-one witness proves the stronger refutation by conjunction elimination and definitional transport."
+ }
+]

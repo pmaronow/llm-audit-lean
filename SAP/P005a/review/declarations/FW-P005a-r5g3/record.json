@@ -1,0 +1,76 @@
+[
+ {
+  "target_id": "P005-T12",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.interacted_inverse_counterexample",
+   "SAP.P005a.WH.W3.T12_whole",
+   "SAP.P005a.WH.W3.T12_assembly",
+   "AronowAudit.P005.univ_six",
+   "AronowAudit.P005.standardized_scalar",
+   "AronowAudit.P005.sampleCov_scale_both",
+   "AronowAudit.P005.scalar_leverage",
+   "AronowAudit.P005.mean_unbiased",
+   "AronowAudit.P005.Wave1.t13_dot_mean_E",
+   "AronowAudit.P005.Wave1.corrected_control_bias_estimator_proof",
+   "AronowAudit.P005.scalar_slope_product_scale",
+   "AronowAudit.P005.scalar_dot_armN",
+   "AronowAudit.P005.scalar_inverse_product_scale",
+   "AronowAudit.P005.arm_slope_decomposition",
+   "AronowAudit.P005.sampleCov_scale_left"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.scalar_inverse_product_scale",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.scalar_slope_product_scale",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   }
+  ],
+  "statement_definition": "SAP.P005a.T12WholeStatement"
+ },
+ {
+  "target_id": "P005-T13",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.corrected_control_bias_estimator_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P005a.T13Statement"
+ },
+ {
+  "target_id": "P005-T14",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.noninteracted_exact_decomposition_proof",
+   "AronowAudit.P005.control_minus_treated_mean_identities",
+   "AronowAudit.P005.inverse_component_observable",
+   "AronowAudit.P005.noninteracted_debiased_expansion",
+   "SAP.P005a.WH.W1.T14_whole",
+   "SAP.P005a.WH.W1.T14_assembly",
+   "SAP.P005a.WH.W1.T14_L1_proof",
+   "SAP.P005a.WH.W1.t14_existing",
+   "SAP.P005a.WH.W1.observable_general",
+   "AronowAudit.P005.mean_congr"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.mean_congr",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.mean_dot",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   }
+  ],
+  "statement_definition": "SAP.P005a.T14WholeStatement"
+ }
+]

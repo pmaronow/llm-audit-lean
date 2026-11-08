@@ -1,0 +1,120 @@
+[
+ {
+  "target_id": "P012-T1",
+  "decision": "whole",
+  "theorem": "SAP.P012a.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P012.proposal_counterexample",
+   "AronowAudit.P012.proposal_counterexample_b",
+   "AronowAudit.P012.cleanup_counterexample",
+   "AronowAudit.P012.empty_trait_pool_counterexample",
+   "SAP.P012a.WH.W1.T1_whole",
+   "SAP.P012a.WH.W1.T1_assembly",
+   "SAP.P012a.WH.W1.T1_L1_proof",
+   "SAP.P012a.WH.W1.T1_L2_proof",
+   "SAP.P012a.WH.W1.T1_L3_proof",
+   "SAP.P012a.WH.W1.T1_L4_proof",
+   "AronowAudit.P012.zero_spare_compatible_unique"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P012a.T1WholeStatement"
+ },
+ {
+  "target_id": "P012-T2",
+  "decision": "whole",
+  "theorem": "SAP.P012a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P012.corrected_proposal_preserves",
+   "SAP.P012a.WH.W2.T2_whole",
+   "SAP.P012a.WH.W2.T2_assembly",
+   "SAP.P012a.WH.W2.T2_L1_proof",
+   "SAP.P012a.WH.W2.T2_L2_proof",
+   "SAP.P012a.WH.W2.T2_L3_proof",
+   "AronowAudit.P012.add_edge_base",
+   "AronowAudit.P012.degree_add_step",
+   "AronowAudit.P012.degree_remove_step",
+   "AronowAudit.P012.recruitment_edge_sampled",
+   "AronowAudit.P012.remove_edge_base",
+   "AronowAudit.P012.replacement_properties",
+   "AronowAudit.P012.pair_edge_eq"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P012.add_vertex_base",
+    "reason": "Not separately invoked; the selected aggregate declarations and supplied whole-statement proofs establish this component."
+   },
+   {
+    "lean_name": "AronowAudit.P012.cleanup_compatible",
+    "reason": "Not separately invoked; the selected aggregate declarations and supplied whole-statement proofs establish this component."
+   },
+   {
+    "lean_name": "AronowAudit.P012.corrected_graph_preserves",
+    "reason": "Not separately invoked; the selected aggregate declarations and supplied whole-statement proofs establish this component."
+   },
+   {
+    "lean_name": "AronowAudit.P012.corrected_trait_preserves",
+    "reason": "Not separately invoked; the selected aggregate declarations and supplied whole-statement proofs establish this component."
+   }
+  ],
+  "statement_definition": "SAP.P012a.T2WholeStatement"
+ },
+ {
+  "target_id": "P012-T3",
+  "decision": "whole",
+  "theorem": "SAP.P012a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P012.table_counterexample",
+   "AronowAudit.P012.opposite_leaf_counts",
+   "AronowAudit.P012.uniform_leaf_bound",
+   "AronowAudit.P012.uniform_integer_leaf_bound",
+   "AronowAudit.P012.table_numeric_gaps",
+   "AronowAudit.P012.phi_formula",
+   "SAP.P012a.WH.W2.T3_whole",
+   "SAP.P012a.WH.W2.T3_assembly",
+   "SAP.P012a.WH.W2.T3_L1_proof",
+   "AronowAudit.P012.binary_edge_counts",
+   "AronowAudit.P012.graph_homophily_formula",
+   "AronowAudit.P012.leafCompletion_compatible",
+   "AronowAudit.P012.private_edge_incidence",
+   "AronowAudit.P012.private_leaf_member",
+   "AronowAudit.P012.recruitment_skeleton_counts"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P012.leaf_edge_card",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.spare_total_identity",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P012a.T3WholeStatement"
+ },
+ {
+  "target_id": "P012-T4",
+  "decision": "whole",
+  "theorem": "SAP.P012a.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P012.corrected_table_bound",
+   "AronowAudit.P012.table_degree_converse"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P012-T5",
+  "decision": "restricted",
+  "theorem": "SAP.P012a.T5",
+  "restriction": "Retains the exact symbolic attained lower limit, its quotient formula, the lower bound on every defined compatible value, and both uniform bounds under the published totals. Omits the assertion about which recruitment-edge count triples the published paper reports and their recoverability from the paper.",
+  "rows_used": [
+   "AronowAudit.P012.exact_h_lower",
+   "AronowAudit.P012.table_counterexample",
+   "AronowAudit.P012.phi_formula"
+  ],
+  "rows_not_used": []
+ }
+]

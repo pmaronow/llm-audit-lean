@@ -2,7 +2,11 @@ import AronowAudit.P001.P001_Foundations
 import Mathlib.Algebra.Polynomial.Sequence
 import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
-/-! Polynomial-sieve consistency from empirical noise scores. -/
+/-!
+Record 10 is proved directly from empirical noise scores, without using the
+unproved stable-Gram consistency or random-design inverse-trace declarations.
+The other requested records are omitted; see the run report.
+-/
 
 namespace AronowAudit.P001.Wave1
 
@@ -323,7 +327,8 @@ private lemma GP0013B1b_score_null {Ω : Type*} [MeasurableSpace Ω]
           (((J n+1 : ℕ) : ℝ)*V/(n : ℝ))/t := (le_div_iff₀ ht).mpr (by linarith [hmom.2])
       _ = (V/t)*(((J n+1 : ℕ) : ℝ)/(n : ℝ)) := by ring
 
-/-- Full-support sieve consistency under compact containment. -/
+/-- Exact full-support target. The proof only needs the supplied compact containment;
+the PDF and exact paper-support binders are retained verbatim. -/
 theorem sieve_consistency_full_interval_support_proof {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
    (X Y : ℕ → Ω → ℝ) (hiid : IID μ (fun i ω => (X i ω, Y i ω)))
    (a b V : ℝ) (hab : a  <  b) (hV : 0  ≤  V) (hY2 : MemLp (Y 0) 2 μ)
@@ -435,6 +440,8 @@ theorem sieve_consistency_full_interval_support_proof {Ω : Type*} [MeasurableSp
     exact (ENNReal.toReal_mono (measure_ne_top μ _) hm).trans (measureReal_union_le _ _)
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hu
     (Filter.Eventually.of_forall (fun _ => ENNReal.toReal_nonneg)) hevent
+
+example : type_of% @AronowAudit.P001.sieve_consistency_full_interval_support := sieve_consistency_full_interval_support_proof
 
 end
 end AronowAudit.P001.Wave1

@@ -1,20 +1,27 @@
 import AronowAudit.P001.Wave1.MarSelectionBlueprint
 
 /-!
-# IPW and double robustness under strong ignorability (P001-T117)
+# Blueprint: IPW and double robustness under strong ignorability, paper support (P001-T117)
 
-Theorem 7.2.5 (p. 265, proof pp. 265-266) and Theorem 7.2.8
-(pp. 267-268, proof pp. 268-269). IPW follows from strong ignorability;
-the nuisance functions and both correctness alternatives are quantified inside
-the double-robustness conjunct. The statement includes `Supp[D] = {0,1}`
-and a.e. binary values, overlap, and bounds.
+Record 16 of group P001a: P001-T117 / held `AronowAudit.P001.causal_ipw_and_double_robustness`;
+resolution `repair_and_prove`. Theorem 7.2.5 (p. 265, proof pp. 265-266) and Theorem 7.2.8
+(pp. 267-268, proof pp. 268-269). The repair (mapper's `causal_ipw_and_dr_paper_contract`)
+states IPW as a conclusion of strong ignorability alone and quantifies the nuisance
+functions and both correctness alternatives only inside the DR conjunct; it restores
+`Supp[D] = {0,1}` (`hD0`, `hD1`) and uses a.e. binary values / overlap / bounds.
 
-The shared arm identity is applied with `U = (Y0, Y1)` to the treated arm
-(`R = D`, propensity `p`, `V = Y1`, `Z = Y`) and to the control arm
-(`R = 1 - D`, propensity `1 - p`, weight `1 - q`, `V = Y0`, `Z = Y`).
-IPW is the case `m = 0`, `q = p` of the second correctness alternative.
-`N1` transfers conditional independence to `1 - D`, and `N2` transfers
-the propensity CEF to `1 - D`.
+Referee correction (both referees, record 16): the held header's nuisance premises are
+dispensable (take `m0 = m1 = 0`, `q = p`), so a proof of the held theorem would already
+give nuisance-free IPW; the new placement is a packaging / explicit-contract repair, not a
+logical weakening of the obtainable IPW claim. The real gap is the unproved CI factorization
+and residual cancellations. The Lean statement is unchanged by this correction.
+
+Proof structure: every claim is the shared arm identity `MarSelection.N7`, applied with
+`U = (Y0, Y1)` to the treated arm (`R = D`, propensity `p`, `V = Y1`, `Z = Y`) and to the
+control arm (`R = 1 - D`, propensity `1 - p`, weight `1 - q`, `V = Y0`, `Z = Y`); IPW is the
+case `m = 0`, `q = p` of the second alternative. Record nodes: `N1` (CI passes to `1 - D`),
+`N2` (the propensity CEF passes to `1 - D`). Writers prove `theorem nk_proof : Nk` in
+`AronowAudit/P001/Wave1/CausalIpwDr/Nk.lean`.
 -/
 
 set_option autoImplicit false
@@ -28,8 +35,8 @@ open scoped BigOperators ENNReal
 
 noncomputable section
 
-/-- IPW and double robustness with both treatment arms in support and
-a.e. binary values, overlap, and bounds. -/
+/-- The frozen statement the record is resolved by (mapper's
+`AronowAudit.P001.Wave1.causal_ipw_and_dr_paper_contract`). -/
 def Target : Prop :=
   ∀ {Ω : Type u} [MeasurableSpace Ω] {K : ℕ} (μ : Measure Ω) [IsProbabilityMeasure μ]
     (X : Ω → Fin K → ℝ) (hX : Measurable X) (Y0 Y1 D : Ω → ℝ),
@@ -53,26 +60,28 @@ def Target : Prop :=
         mean μ (fun ω => m1 (X ω) + D ω * (Y ω - m1 (X ω)) / q (X ω) -
           m0 (X ω) - (1 - D ω) * (Y ω - m0 (X ω)) / (1 - q (X ω))))
 
-/-- Conditional independence of `U` and `D` given `X` passes to `1 - D`.
-Proof outline: unfold `CI`; for measurable `B`, `{1 - D ∈ B} = {D ∈ B'}` with
-`B' = (fun d => 1 - d) ⁻¹' B` measurable. The indicator functions agree
-pointwise, so conditional-expectation congruence gives the factorization. -/
+/-- **Node N1** (paper proof, record 16, "Shared lemmas" item 3: "In causal arm d use Yd
+and selection D or 1-D"). Conditional independence of `U` and `D` given `X` passes to
+`1 - D`. Suggested route: unfold `CI`; for measurable `B`, `{1 - D ∈ B} = {D ∈ B'}` with
+`B' = (fun d => 1 - d) ⁻¹' B` measurable (`measurable_const.sub measurable_id`); the
+indicator functions agree pointwise (`if_congr`/`simp`), so `condExp_congr_ae`/`rfl`-level
+rewriting gives the factorization. -/
 def N1 : Prop :=
   ∀ {Ω : Type u} {E : Type v} {F : Type w} [MeasurableSpace Ω] [MeasurableSpace E]
     [MeasurableSpace F] (μ : Measure Ω) (X : Ω → E) (hX : Measurable X) (U : Ω → F)
     (D : Ω → ℝ), CI μ X hX U D → CI μ X hX U (fun ω => 1 - D ω)
 
-/-- The propensity CEF passes to `1 - D` with propensity `1 - p`.
-Proof outline: measurability of `1 - p`, linearity of set integrals,
-and integrability of constants give the required event-integral identity. -/
+/-- **Node N2** (paper proof, record 16: "For d=0 use 1-D and 1-ρ in exactly the same
+test"). The propensity CEF passes to `1 - D` with propensity `1 - p`. Suggested route:
+`Measurable (1 - p)`; `integral_sub`/`setIntegral_sub` with `integrable_const`; on a
+probability space `∫_{X⁻¹A} 1 = ∫_{X⁻¹A} 1`, and `hp.2.2.2 A hA`. -/
 def N2 : Prop :=
   ∀ {Ω : Type u} {E : Type v} [MeasurableSpace Ω] [MeasurableSpace E] (μ : Measure Ω)
     [IsProbabilityMeasure μ] (X : Ω → E) (D : Ω → ℝ) (p : E → ℝ),
     IsCEF μ X D p → IsCEF μ X (fun ω => 1 - D ω) (fun x => 1 - p x)
 
-/-- Four applications of the shared arm identity (two for IPW with
-`m = 0`, `q = p`; two for DR), using `N1`, `N2` for the control arm,
-and then linearity give the result. -/
+/-- The nodes suffice: four applications of the shared arm identity `N7` (two for IPW with
+`m = 0`, `q = p`; two for DR), using `N1`, `N2` for the control arm, then linearity. -/
 theorem assemble (hS : MarSelection.AllShared.{u, 0, 0}) (h1 : N1.{u, 0, 0})
     (h2 : N2.{u, 0}) : Target.{u} := by
   intro Ω _ K μ _ X hX Y0 Y1 D hY0 hY1 hD hi0 hi1 hbin _ _ p hp hpos hCI Y

@@ -1,0 +1,65 @@
+import SAP.P018b.Defs
+import SAP.P018b.Defs.WholeW3
+
+set_option autoImplicit false
+noncomputable section
+open Finset Matrix MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Topology Matrix.Norms.Elementwise ENNReal
+namespace Audit
+open SAP.P018b
+
+def d01 : Dyad 3 := ⟨{0, 1}, by decide⟩
+def d12 : Dyad 3 := ⟨{1, 2}, by decide⟩
+example : firstUnit d01 = 0 := by decide
+example : secondUnit d01 = 1 := by decide
+example : firstUnit d12 = 1 := by decide
+example : secondUnit d12 = 2 := by decide
+
+example : (sharedCov 3 1 1) d01 d12 = 1 := by
+  have hset : ({0,1} : Finset (Fin 3)) ≠ {1,2} := by decide
+  norm_num [sharedCov, endpointZ1, endpointZ2, Matrix.mul_apply,
+    hset, Matrix.one_apply, Fin.sum_univ_succ, d01, d12, firstUnit, secondUnit, members]
+
+example (t1 t2 s : ℝ) : (twoRoleCov 3 t1 t2 s) d01 d12 = 0 := by
+  have hset : ({0,1} : Finset (Fin 3)) ≠ {1,2} := by decide
+  norm_num [twoRoleCov, endpointZ1, endpointZ2, Matrix.mul_apply,
+    hset, Matrix.one_apply, Fin.sum_univ_succ, d01, d12, firstUnit, secondUnit, members]
+
+example : ¬ ∃ t1 t2 s : ℝ, sharedCov 3 1 1 = twoRoleCov 3 t1 t2 s := by
+  have hset : ({0,1} : Finset (Fin 3)) ≠ {1,2} := by decide
+  rintro ⟨t1, t2, s, h⟩
+  have hh := congrArg (fun M : Matrix (Dyad 3) (Dyad 3) ℝ => M d01 d12) h
+  norm_num [sharedCov, twoRoleCov, endpointZ1, endpointZ2, Matrix.mul_apply,
+    hset, Matrix.one_apply, Fin.sum_univ_succ, d01, d12, firstUnit, secondUnit, members] at hh
+
+theorem sign_standing : Standing signKernel := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · dsimp [signKernel, fairLaw]
+    infer_instance
+  · exact measurable_const
+  · exact measurable_of_countable _
+  · intro u v
+    exact ⟨rfl, add_comm _ _⟩
+  · refine ⟨2, by norm_num, Filter.Eventually.of_forall ?_⟩
+    intro uv
+    rcases uv with ⟨u,v⟩
+    cases u <;> cases v <;> norm_num [signKernel, signValue, Pi.norm_def]
+  · exact ⟨0, fun _ _ => rfl⟩
+  · norm_num [populationGram, meanMat, outer, signKernel,
+      Matrix.det_fin_one, fairLaw]
+
+
+theorem sign_sampleRank : SampleRank signKernel := by
+  refine ⟨2, fun N hN => Filter.Eventually.of_forall ?_⟩
+  intro ω
+  have hc : 0 < N.choose 2 := Nat.choose_pos hN
+  have hg : (sampleGram (design signKernel ω)) 0 0 = (Fintype.card (Dyad N) : ℝ) := by
+    simp [sampleGram, Matrix.sum_apply, design, signKernel, outer]
+  rw [Matrix.det_fin_one, hg]
+  simpa only [Fintype.card_coe, dyads, Finset.card_powersetCard,
+    Finset.card_fin] using
+    (Nat.cast_ne_zero.mpr (Nat.ne_of_gt hc) : (N.choose 2 : ℝ) ≠ 0)
+
+example : ∃ K : Kernel Bool 1, Standing K ∧ SampleRank K :=
+  ⟨signKernel, sign_standing, sign_sampleRank⟩
+end Audit

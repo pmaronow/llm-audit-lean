@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P001g.T121",
+  "target_id": "P001-T121",
+  "round": 12,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P001g/Defs/Part5.lean:33: hmax requires only attainment and allows tied product-likelihood maximizers. The canonical definitions_needed invokes Definition 5.2.2 and its arg max notation; the book's Glossary of Mathematical Notation, p.285, explicitly assumes uniqueness for that notation. On every positive-size sample from the true support {0,1}, all candidate likelihoods are independent of b, so every valid maximizer has a distinct valid equally maximizing vector. The witness therefore violates the printed estimator's uniqueness condition, rather than refuting the canonical assertion on its domain. See scratch/MixtureCheck.lean and the source citation in REPORT.md.",
+   "SAP/P001g/Challenge/Part1.lean:43: the docstring declares the printed claim false, and record.json:4 labels this refuted, although the theorem refutes only consistency for arbitrary selections among tied maximizers. Neither the stated compact-model scope nor failure of one part of the consistency-and-efficiency conjunction repairs the missing canonical condition."
+  ]
+ }
+]

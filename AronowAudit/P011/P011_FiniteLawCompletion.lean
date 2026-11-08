@@ -1,4 +1,4 @@
-/- Finite uniform-law bridges and the P011 T10 mean-mixture moments. -/
+/- Finite uniform-law bridges and the exact original P011 T10 mean-mixture moments. No added hypotheses. -/
 import AronowAudit.P011.P011_ThreePointCompletion
 namespace AronowAudit.P011.NewFiniteCompletion
 open MeasureTheory ProbabilityTheory Filter Finset
@@ -144,6 +144,7 @@ lemma mixture_finite_moments_completed (a b : ℝ) (s : ℕ → Bool) (n : ℕ) 
     (by intro i; simp [Fintype.sum_prod_type,Fintype.sum_bool,sign] <;>ring)
     (by intro i; simp [Fintype.sum_prod_type,Fintype.sum_bool,sign] <;>ring)
   exact ⟨hfixed.1,hfixed.2.1,hfixed.2.2,hmix.1,by simpa [average] using hmix.2.1,hmix.2.2⟩
+#print axioms mixture_finite_moments_completed
 end
 end AronowAudit.P011.NewFiniteCompletion
 
@@ -164,3 +165,4 @@ theorem mixture_finite_moments (a b : ℝ) (s : ℕ → Bool) (n : ℕ) (hn : 0 
 end
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.mixture_finite_moments

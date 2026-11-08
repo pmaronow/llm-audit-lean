@@ -1,0 +1,56 @@
+import SAP.P014.Challenge
+open SAP.P014 MeasureTheory
+open scoped ENNReal
+
+abbrev S2 : Finset (Fin 2) := Finset.univ
+def za : TreatmentVector 2 := ![true, false]
+def zb : TreatmentVector 2 := ![false, true]
+lemma zab : za ≠ zb := by decide
+
+noncomputable def L2 : FiniteDistribution (TreatmentVector 2) := ⟨{za, zb}, fun _ => 1/2⟩
+
+lemma L2_dist : IsDistribution L2 := by
+  refine ⟨by simp [L2], ?_⟩
+  simp [L2, Finset.sum_pair zab]; norm_num
+
+lemma L2_arm (i : Fin 2) (a : Bool) : ∃ z, armAssignments L2 i a = {z} := by
+  fin_cases i <;> cases a <;> simp [armAssignments, L2, Finset.filter_insert, Finset.filter_singleton, za, zb]
+
+lemma L2w (x : TreatmentVector 2) : L2.weight x = 1/2 := rfl
+
+lemma L2_count : ∀ z ∈ L2.atoms, armSize S2 z true = ((1:ℕ):ℝ) := by
+  intro z hz; simp [L2] at hz
+  rcases hz with rfl | rfl <;> simp [armSize, za, zb]
+
+lemma L2_prop : ∀ i ∈ S2, armProbability L2 i true = ((1:ℕ):ℝ) / S2.card := by
+  intro i _
+  obtain ⟨z, hz⟩ := L2_arm i true
+  rw [armProbability, hz, Finset.sum_singleton, L2w]; simp
+
+lemma L2_unif : ∀ z ∈ L2.atoms, L2.weight z = 1 / (L2.atoms.card : ℝ) := by
+  intro z _; simp [L2, Finset.card_pair zab]
+
+lemma L2_CU : ConditionallyUniform L2 S2 := by
+  intro i _ a z hz
+  obtain ⟨w, hw⟩ := L2_arm i a
+  rw [hw] at hz ⊢; rw [armProbability, hw, Finset.sum_singleton, L2w, L2w]; simp
+
+-- nonvacuity of T3ConditionalPart
+example (y : PotentialOutcomes 2) :=
+  (SAP.P014.T3.{0}).1 L2 L2_dist S2 y 1 (by norm_num) (by simp) L2_count L2_prop L2_CU
+-- nonvacuity of T3UniformPart
+example : ConditionallyUniform L2 S2 := (SAP.P014.T3.{0}).2.1 L2 L2_dist S2 L2_unif
+-- nonvacuity of T3NoninterferencePart (own-treatment-only outcomes)
+noncomputable def yNI : PotentialOutcomes 2 := fun i z => if z i then 1 else 0
+lemma yNI_ni : Noninterfering S2 yNI := by intro i _ z z' h; simp [yNI, h]
+example := (SAP.P014.T3.{0}).2.2.2.1 L2 L2_dist S2 yNI 1 (by norm_num) (by simp) L2_count L2_prop yNI_ni
+-- nonvacuity of T3NecessityPart: positivity and agreement for every y
+lemma L2_pos : ∀ i a, 0 < armProbability L2 i a := by
+  intro i a; obtain ⟨z, hz⟩ := L2_arm i a; rw [armProbability, hz, Finset.sum_singleton, L2w]; norm_num
+lemma L2_agree (i : Fin 2) (a : Bool) : ∀ y : PotentialOutcomes 2,
+    supportAverage L2 y i a = conditionalAverage L2 y i a := by
+  intro y; obtain ⟨z, hz⟩ := L2_arm i a
+  rw [supportAverage, conditionalAverage, armMoment, armProbability, hz]
+  simp only [Finset.sum_singleton, L2w, Finset.card_singleton]; field_simp; simp
+example (i : Fin 2) (a : Bool) :=
+  (SAP.P014.T3.{0}).2.2.2.2 L2 L2_dist i a (L2_pos i a) (L2_agree i a)

@@ -1,16 +1,23 @@
 import AronowAudit.P027.P027_Audit
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
-/-! # Continuous uniform-start law of the periodic PPS design (P027-T2)
+/-! # Blueprint: continuous uniform-start law of the periodic PPS design (P027-T2)
 
-Supplement pp. A3–A4: sizes alternate 2, 10; systematic PPS uses cumulative
-sizes with one uniform start on `[0, 6q)`, where `q = 2r`.
+Dossier group P027, record 4 (`phase_correction_values` for T2, resolution `bridge`),
+shared by records 3 (T19, `phase_wr_value`) and 7 (T6, `phase_correction_values`),
+which are associate-only. Supplement pp. A3–A4: sizes alternate 2, 10; systematic
+PPS by cumulative sizes with one uniform start on `[0, 6q)`, `q = 2r`. The source's
+general bridge `periodic_systematic_bridge` has a `sorry` body and must not be used.
 
-The result describes the cumulative left endpoints of the units, the half-open
-phase-interval partition of `[0, 12r)`, and the normalized uniform-start law.
-Every start in phase interval `I_g` selects exactly phase `g` of `phaseOriginal`.
-The interval masses are `phaseProb`, and the selected-subset law agrees with the
-finite phase law for every real sample statistic `F`.
+This bridge proves, with an actual normalized probability law: the cumulative
+left endpoints of the units; the half-open phase-interval partition of `[0, 12r)`;
+that every start in phase interval `I_g` selects exactly phase `g` of
+`phaseOriginal`; the interval masses `phaseProb`; and that the law of the selected
+subset under the uniform start equals the finite phase law, for every real sample
+statistic `F`. Map-P027 report, record 4; both referees accepted without fixes.
+
+Final declaration (writer): `AronowAudit.P027.Wave1.periodic_uniform_start_bridge`
+in `AronowAudit/P027/Wave1/UniformStart.lean`.
 -/
 
 namespace AronowAudit.P027.Wave1.UniformStart
@@ -20,7 +27,7 @@ noncomputable section
 open AronowAudit.P027 MeasureTheory
 attribute [local instance] Classical.propDecidable
 
-/-- The continuous uniform-start law agrees with the finite phase law. -/
+/-- Frozen target (map-P027 record 4, `periodic_uniform_start_bridge`). -/
 def Target : Prop :=
   ∀ (r m : ℕ) (hr : 0 < r), 0 < m →
     let K := (Σ _ : Fin r × Fin 2, Fin m)
@@ -72,27 +79,27 @@ def sysSel (r m : ℕ) (u : ℝ) (k : Σ _ : Fin r × Fin 2, Fin m) : Bool :=
 def startMeasure (r : ℕ) : Measure ℝ :=
   (ENNReal.ofReal (12 * (r : ℝ)))⁻¹ • (volume.restrict (Set.Ico (0 : ℝ) (12 * (r : ℝ))))
 
-/-- N1: Each full block of q units has r pairs (2,10), with total size
-12r = L. In block j, the i preceding pairs have total size 12i; a high unit
-has the additional preceding low size 2. Thus the cumulative left endpoint
-of `((i,b),j)` is `12i + 2b + 12rj`. -/
+/-- N1 (paper-proof step "Each full block of q units has r pairs (2,10), total size
+12r = L. In block j the i preceding pairs have total size 12i; the high unit has the
+additional preceding low size 2"): the cumulative left endpoint of `((i,b),j)` is
+`12i + 2b + 12rj`. -/
 def N1 : Prop :=
   ∀ (r m : ℕ) (k : Σ _ : Fin r × Fin 2, Fin m),
     unitLeft r m k = phaseStartLeft k.1 + 12 * (r : ℝ) * (k.2 : ℝ)
 
-/-- N2: Over i = 0,…,r−1 the phase intervals form a disjoint partition
-of `[0, 12r)`. Half-open endpoints give exact uniqueness even at a boundary:
-each phase interval lies in `[0, 12r)`, and each start there lies in exactly one. -/
+/-- N2 (paper-proof step "Over i = 0,…,r−1 these intervals are a disjoint partition
+of [0,L). Half-open endpoints give exact uniqueness even at a boundary"): every phase
+interval lies in `[0, 12r)` and every start in `[0, 12r)` lies in exactly one. -/
 def N2 : Prop :=
   ∀ r : ℕ,
     (∀ g : Fin r × Fin 2, phaseInterval g ⊆ Set.Ico (0 : ℝ) (12 * (r : ℝ))) ∧
     (∀ u : ℝ, u ∈ Set.Ico (0 : ℝ) (12 * (r : ℝ)) → ∃! g : Fin r × Fin 2, u ∈ phaseInterval g)
 
-/-- N3: For a start `u ∈ I_g`, the point u+Lj' belongs to block j',
-while the interval for unit (h,j) belongs to block j. The point lies in that
-unit's interval exactly when j' = j and u ∈ I_h. Disjointness of the phase
-intervals then gives h = g. Thus `u + j'·12r` lies in the cumulative interval
-of `(h, j)` iff `j' = j` and `h = g`. -/
+/-- N3 (paper-proof step "The point u+Lj' belongs to block j'; the interval for
+k = (h,j) belongs to block j. Consequently u+Lj' lies in that unit's interval if and
+only if j' = j and u belongs to I_h. Disjointness of the I_h gives h = g"): for a
+start `u ∈ I_g`, the translated point `u + j'·12r` lies in the cumulative interval of
+unit `(h, j)` iff `j' = j` and `h = g`. -/
 def N3 : Prop :=
   ∀ (r : ℕ) (g h : Fin r × Fin 2) (u : ℝ), u ∈ phaseInterval g → ∀ (j j' : ℕ),
     (phaseStartLeft h + 12 * (r : ℝ) * (j : ℝ) ≤ u + (j' : ℝ) * (12 * (r : ℝ)) ∧
@@ -100,20 +107,21 @@ def N3 : Prop :=
         phaseStartLeft h + 12 * (r : ℝ) * (j : ℝ) + (if h.2 = 0 then 2 else 10)) ↔
     (j' = j ∧ h = g)
 
-/-- N4: Let ν = (ofReal L)⁻¹ · volume restricted to [0,L). Since L > 0,
-ν(ℝ) = 1. Each I_g lies in [0,L) and has length 2 or 10, so
-ν(I_g) = length(I_g)/L = 1/(6r) or 5/(6r). The complement of [0,L) is ν-null. -/
+/-- N4 (paper-proof step "Let ν = (ofReal L)⁻¹ · volume restricted to [0,L). L>0, so
+ν(ℝ)=1. Each I_g lies in [0,L) and has length 2 or 10. Hence ν(I_g) = length(I_g)/L
+= 1/(6r) or 5/(6r)"; "The complement of [0,L) is ν-null"). -/
 def N4 : Prop :=
   ∀ r : ℕ, 0 < r →
     IsProbabilityMeasure (startMeasure r) ∧
     startMeasure r (Set.Ico (0 : ℝ) (12 * (r : ℝ)))ᶜ = 0 ∧
     ∀ g : Fin r × Fin 2, startMeasure r (phaseInterval g) = ENNReal.ofReal (phaseProb r g)
 
-/-- N5: On the conull partition, u ↦ F(s(u)) equals the finite sum
-Σ_g 1_(I_g)(u) F(...). Each summand is measurable and integrable because it is
-constant on a measurable finite-measure interval. More generally, a function
-constant on each cell of a finite measurable partition of a conull set is
-integrable, with integral `Σ_i ν(I_i) c_i`. No measurability of `f` is assumed. -/
+/-- N5 (paper-proof step "u ↦ F(s(u)) equals Σ_g 1_(I_g)(u) F(...) on the support of
+ν. Every term is measurable and integrable, because it is a constant on a measurable
+finite-measure interval; the finite sum is integrable"), stated generically: a
+function that is constant on each cell of a finite measurable partition of a
+conull set is integrable, with integral `Σ_i ν(I_i) c_i`. No measurability of `f`
+is assumed. -/
 def N5 : Prop :=
   ∀ {X ι : Type} [MeasurableSpace X] [Fintype ι] (ν : Measure X) [IsFiniteMeasure ν]
     (S : Set X), ν Sᶜ = 0 →

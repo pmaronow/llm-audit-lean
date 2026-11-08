@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P018-T1",
+    "theorem": "SAP.P018a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual probability model is iid Uniform[-1,1] units, k=2, X=(1,2+u+v), Y=(u+v)^2. Its data are bounded almost surely. Q has determinant 2/3; the rows for dyads {0,1} and {0,2} have determinant U_2-U_1, nonzero almost surely for every N>=3. Independent rational polynomial integration in scratch/finite_checks.py reproduces Q, H, Gamma, beta-related moments and Vstar, including positive determinants. Thus the zero conditional covariance is due to residuals being measurable from the design, while the unconditional score covariance is nonzero; it is not a conditional-expectation fallback.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T2",
+    "theorem": "SAP.P018a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For a nonzero omitted term, use the T1 uniform-unit model at N=3: Standing holds with det Q=2/3, m_d=e_d, all c_df=0, and M=Cov(S)=[[12/5,24/5],[24/5,4712/315]] is nonzero. The intercept-only fair-sign model also satisfies Standing with Q=1, beta=0 and V_N=4. scratch/Check.lean additionally compiles Standing for a genuine one-dimensional Unit/Dirac constant-design kernel.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T3",
+    "theorem": "SAP.P018a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair-sign scalar model has Q=1, beta=0, Gram D_N>0 for N>=2, fitted residual U_i+U_j-2*mean(U) bounded by 4, E[e_ij^2]=2-4/N and E[e_ij e_ik]=1-4/N; the required extra moments are nonzero eventually (N>=5). All entries of its regressor second/cross moments equal 1. The spike measures are ordinary finite two-point probability laws for N>=1. The inverse-design law integrates t^-2 over [1,infinity) to 1, exp(-T) is bounded and nonconstant, and det Q=2 Var(exp(-T))>0. Atomlessness gives sample rank for N>=3; P(all T_i>=m)=m^-N gives the stated exponential lower bound on the extended inverse-norm moment. Eight-sign covariance values and scalar-sign expected meats for N=4,...,8 were independently enumerated exactly.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T4",
+    "theorem": "SAP.P018a.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair-sign intercept-only model satisfies Standing with nonzero target V_N=4 and nonsingular Gram for every N>=2. The simpler Unit/Dirac model X=1,Y=0 is also a compiled Standing instance in scratch/Check.lean. The Chebyshev branches have nonempty examples such as Z_N=V constant on a probability space (all L2, mean errors and variances zero). No inverse moments or a uniform fitted-residual hypothesis are needed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T5",
+    "theorem": "SAP.P018a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit N=3 matrices use a nonempty two-regressor design and invertible working covariance; independent exact arithmetic reproduces LF=I, LCL^T and ratio 284/379. The lower-bound hypotheses are simultaneously satisfiable with N=1, mu=N(0,1), a_0(omega)=omega, D=1, yc=0 and estimate(y)=y_0: yc is independent of the average, the estimator is measurable and translation equivariant, both second moments are finite, and the shifted estimator has variance 4.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T6",
+    "theorem": "SAP.P018a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The incidence claims are nontrivial already for N=3 and tau=sigma=1: the shared covariance entry for dyads {0,1},{1,2} is 1 and every two-role model has entry 0. The random-vector branch is instantiated by independent standard Gaussian vectors a and nu, tau=sigma=1, with all coordinates L2. The algebra branch has the nonempty choice m=k=1, C=[1], F=[1], for which both determinant hypotheses hold and L=[1].",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T7",
+    "theorem": "SAP.P018a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The kernel is the ordinary product of two fair-sign laws with k=2 and positive population determinant 1. Regressor levels are 0 and 2; on full-rank samples fitted values are group means of outcomes in [-2,2], so fitted residuals lie in [-4,4]; on singular samples the zero inverse leaves residuals in [-2,2]. Regressor second/cross moments are nonzero, and fitted neighboring residual moments tend to 1, so the eventual nonzero conditions are compatible. The explicit N=8 sign pattern occurs with probability 4^-8, has Gram determinant 768 and sandwich slope entry -13/288. These matrices were recomputed exactly. The theorem does not assert eventual almost-sure sample rank for this discrete model.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T8",
+    "theorem": "SAP.P018a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The extra pivot hypothesis has a nondegenerate continuous example: iid U_i uniform[-1,1], X_ij=1 and Y_ij=U_i+U_j. Standing holds, beta=0, Vstar=4/3 and c=1 gives positive limiting variance. Writing v_i=U_i-mean(U), Vhat=(N-2)(N-3)*sum_i v_i^2/D_N^2, which is strictly positive almost surely for every N>=4 because the units have an atomless law. Thus eventual almost-sure positivity is stronger than the canonical assumption but is not contradictory or an assumption of the normal-pivot conclusion.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T9",
+    "theorem": "SAP.P018a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use actual independent fair signs and all unordered dyads for every N>=2. Each geometric weight 2^(-(i+j+2)) is positive, the scalar weighted Gram is positive, and all finite-sample moments exist on the finite sample space. The first-eight-sign event has probability 1/256. The variance limit is independently checked as 9*(1/3-2/7+1/15)=36/35. The repeated counts 2^(i+j+2) are positive finite integers for each dyad and size; reversing unit labels converts them to a common positive multiple of the geometric weights, which cancels in both estimators.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T10",
+    "theorem": "SAP.P018a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For C1 take singleRecord(signKernel), with T_Nd=1, T0=1, common record kernels X=1 and Y=sign(u)+sign(v). Then H_R,N=1 for N>=2 and every expected block score is zero, so the overlap-mean condition is identically zero and the target equals 4. For C2 take the same kernel, weights w_Nd=1, scales a_N=1, bound C=1 and positive limiting H=[1]. For C3 use N=2, one record per dyad, w=1 and a=2: sample and population weighted Grams both have nonzero determinants. C4 uses the separate concentrated-weight instance of T9. The sufficient-condition and counterexample branches do not demand contradictory conditions on a single weight array.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T11",
+    "theorem": "SAP.P018a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair-sign intercept-only model has a nonempty finite sample space for each N, fixed Gram D_N>0 for N>=3, beta=0, and bhat=2*mean(U), giving N Var(bhat)=4. D_N>=3 prevents zero denominators and gives 4/D_N!=4. Exact enumeration of the expected fitted meat for N=4,...,8 agrees with (N-1)(N-2)(N-3); the scalar target and restored-sum algebra are ordinary nonzero-denominator arithmetic.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T12",
+    "theorem": "SAP.P018a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=3, R=singleRecord(signKernel), k=1 and record weights identically 1. RepeatedAtSize holds with bounded data and positive counts, L=D=3, expected and sample Grams are 3, H_R=H_Rw=1, beta_R=beta_Rw=0, and all integrals are finite on a finite probability space. Both targets equal 4, so the covariance interpretations are nonzero. This one instance also satisfies the single-record reduction and last normalization hypotheses. Weight positivity is not a hidden requirement of the weighted branch, but the example satisfies it.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T13",
+    "theorem": "SAP.P018a.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six given binary observations are an actual finite dataset. The Gram determinant is 140 and the logistic bread determinant is 35/4, so every displayed inverse is ordinary. The score at zero vanishes; positive logistic weights and rank two give a negative definite log-likelihood Hessian at every parameter and hence the stated unique maximizer. Independent exact arithmetic reproduces both middle factors and covariance matrices and verifies their positive leading minors/determinants. The determinant and bread-inverse arithmetic also compiles in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T14",
+    "theorem": "SAP.P018a.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A compiled nonempty instance in scratch/Check.lean has V=Fin 2, E=Fin 1, s_0={0,1}, k=1, X_0=1, beta=0, and logistic bread determinant 1/4; choose Y_0=1 to satisfy binary outcomes. Thus injectivity and two-member sets do not force empty observation types. The separate six-dyad, two-regressor dataset of T13 gives a nonzero difference between the printed and corrected middle factors.",
+    "confidence": "high"
+  }
+]

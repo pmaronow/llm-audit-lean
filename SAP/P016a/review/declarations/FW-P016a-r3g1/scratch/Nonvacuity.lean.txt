@@ -1,0 +1,130 @@
+import SAP.P016a.Defs
+
+set_option autoImplicit false
+set_option maxRecDepth 100000
+set_option maxHeartbeats 800000
+
+open SAP.P016a
+open scoped BigOperators
+
+-- T1: both designs consist of assignments with two nonempty groups.
+example :
+    (∀ k : Fin 6, groupSize (complete4 k) false = 2 ∧
+      groupSize (complete4 k) true = 2) ∧
+    (∀ k : Fin 4, groupSize (blocked4 k) false = 2 ∧
+      groupSize (blocked4 k) true = 2) := by decide
+
+example : ∃ P : FiniteLaw (Fin 6), ∀ k, 0 < P.weight k := by
+  refine ⟨uniformLaw (Fin 6), ?_⟩
+  intro k
+  norm_num [uniformLaw]
+
+example : pairedCovariance2 ![0,2] ![1,3] = 1 ∧
+    pairedCovariance2 ![0,2] ![3,1] = -1 := by
+  norm_num [pairedCovariance2]
+
+-- T2: one common concrete instance of every hypothesis kind in its
+-- universal clauses; outcomes are nonconstant and the law has full support.
+example : ∃ (u v : Outcome 4) (z w : Assignment 4)
+    (P : FiniteLaw (Fin 6)) (assign : Fin 6 → Assignment 4),
+    2 ≤ (4 : ℕ) ∧ 0 < groupSize z false ∧ 0 < groupSize z true ∧
+    groupSize w true = groupSize z true ∧ sameMargins u z v w ∧
+    (∀ k, groupSize (assign k) true = groupSize z true) ∧
+    (∀ k, groupSize (assign k) false = 2 ∧ groupSize (assign k) true = 2) ∧
+    (∀ k, 0 < P.weight k) ∧ u 0 ≠ u 3 := by
+  refine ⟨u4, u4, complete4 1, complete4 1, uniformLaw (Fin 6), complete4,
+    by decide, by decide, by decide, rfl, ?_, by decide, by decide, ?_, ?_⟩
+  · intro g
+    rfl
+  · intro k
+    norm_num [uniformLaw]
+  · norm_num [u4]
+
+-- T3: every unit-label conditional averaging cell is represented.
+example : ∀ (i : Fin 4) (a : Bool), ∃ b, matchedBank4 b i = a := by decide
+
+example : ∀ (i : Fin 6) (a : Bool), ∃ b, matchedBank6 b i = a := by decide
+
+example : (∀ i : Fin 4, -1 ≤ scores4 i ∧ scores4 i ≤ 1) ∧
+    (∀ i : Fin 6, -1 ≤ scores6 i ∧ scores6 i ≤ 1) := by
+  constructor
+  · intro i
+    fin_cases i <;> norm_num [scores4]
+  · intro i
+    fin_cases i <;> norm_num [scores6]
+
+private lemma fourVariance :
+    sampleVariance (centeredExposure (similarity (fun k => some (scores4 k)))
+      matchedBank4 (complete4 1)) = 1/48 := by
+  simp only [sampleVariance, centeredExposure, conditionalMean, exposureSum,
+    similarity, scores4, matchedBank4, complete4, bit, pooledMean, Fin.sum_univ_succ]
+  norm_num
+
+private lemma fourSD :
+    0 < sampleSD (centeredExposure (similarity (fun k => some (scores4 k)))
+      matchedBank4 (complete4 1)) := by
+  unfold sampleSD
+  rw [fourVariance]
+  exact Real.sqrt_pos.mpr (by norm_num)
+
+example : sampleVariance
+    (![5/16,5/16,1/8,1/8,-3/16,-3/16] : Outcome 6) = 49/960 := by
+  norm_num [sampleVariance, pooledMean, Fin.sum_univ_succ]
+
+-- T4: a nonempty singleton design, covered bank, symmetric zero-diagonal
+-- similarity, positive exposure SD, and nonzero direct and indirect effects.
+example : ∃ (S : Fin 4 → Fin 4 → ℝ) (bank : Fin 4 → Assignment 4)
+    (Ω : Finset (Assignment 4)) (y0 : Outcome 4)
+    (y : Assignment 4 → Outcome 4) (b1 b2 : ℝ),
+    2 ≤ (4 : ℕ) ∧ (∀ i j, S i j = S j i) ∧ (∀ i, S i i = 0) ∧
+    (∀ i a, ∃ b, bank b i = a) ∧ Ω.Nonempty ∧
+    (∀ z ∈ Ω, 0 < sampleSD (centeredExposure S bank z)) ∧
+    (∀ z ∈ Ω, ∀ i, y z i = y0 i + bit (z i)*b1 + b2*codedExposure S bank z i) ∧
+    b1 ≠ 0 ∧ b2 ≠ 0 := by
+  classical
+  let S := similarity (fun k => some (scores4 k))
+  refine ⟨S, matchedBank4, {complete4 1}, u4,
+    (fun z i => u4 i + bit (z i)*2 + 3*codedExposure S matchedBank4 z i),
+    2, 3, by decide, ?_, ?_, by decide, ?_, ?_, ?_, by norm_num, by norm_num⟩
+  · intro i j
+    fin_cases i <;> fin_cases j <;> norm_num [S, similarity, scores4]
+  · intro i
+    simp [S, similarity]
+  · exact ⟨complete4 1, Finset.mem_singleton_self _⟩
+  · intro z hz
+    simp only [Finset.mem_singleton] at hz
+    subst z
+    exact fourSD
+  · intro z hz i
+    rfl
+
+-- The same data meet the additional common-treated-count orientation
+-- assumptions, with a positive SD for both matrices.
+example : groupSize (complete4 1) true = 2 ∧
+    (∀ b : Fin 4, groupSize (matchedBank4 b) true = 2) := by decide
+
+example : 0 < sampleSD
+    (centeredExposure (distance scores4) matchedBank4 (complete4 1)) := by
+  unfold sampleSD
+  apply Real.sqrt_pos.mpr
+  simp only [sampleVariance, centeredExposure, conditionalMean, exposureSum,
+    distance, scores4, matchedBank4, complete4, bit, pooledMean, Fin.sum_univ_succ]
+  norm_num
+
+-- T7: a genuine balanced eight-unit assignment and the exact support size.
+example : Nonempty (Balanced 8 4) := by
+  exact ⟨⟨![true,true,true,true,false,false,false,false], by decide⟩⟩
+
+example : ∀ z : Balanced 8 4, groupSize z.val false = 4 := by decide
+
+example : Fintype.card (Balanced 8 4) = 70 := by decide
+
+example : ∀ i j : Fin 8,
+    (![true,true,true,true,false,false,false,false] : Assignment 8) i = true →
+    (![true,true,true,true,false,false,false,false] : Assignment 8) j = false →
+    additiveGenerate (fun k : Fin 8 => (k.val : ℝ))
+      ![true,true,true,true,false,false,false,false] (-100) i <
+    additiveGenerate (fun k : Fin 8 => (k.val : ℝ))
+      ![true,true,true,true,false,false,false,false] (-100) j := by
+  intro i j
+  fin_cases i <;> fin_cases j <;> norm_num [additiveGenerate, bit]

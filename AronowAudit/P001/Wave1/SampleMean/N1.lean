@@ -1,9 +1,9 @@
 import AronowAudit.P001.Wave1.SampleMeanBlueprint
 
 /-!
-# Sample-mean moments and Chebyshev bound
+# Node SampleMean.N1 (proved by the blueprint author; one term)
 
-Combines the three theorems `iid_sample_mean_expectation_integrable`
+Combines the three proved source theorems `iid_sample_mean_expectation_integrable`
 (L¹ unbiasedness), `iid_sample_mean_finite_moments` (variance `V[X]/n` under L²) and
 `iid_sample_mean_chebyshev` (tail bound under L²). The printed positivity guard
 `0 < V[X]` of Theorem 3.2.5 is carried but not needed by the proof.

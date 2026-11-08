@@ -1,0 +1,61 @@
+import SAP.P029b.Challenge
+
+open scoped BigOperators Classical Topology ENNReal
+open SAP.P029b MeasureTheory ProbabilityTheory Filter Set
+
+#check integral_fintype
+#check integral_finset
+#check integral_indicator_one
+#check PMF.toMeasure_apply_finset
+#check PMF.toMeasure_apply_singleton
+#check Measure.infinitePi_map_eval
+#check iIndepFun_infinitePi
+#check MeasureTheory.ae_iff
+#check ae_iff_measure_eq
+#check ENNReal.tsum_const_eq_top_of_ne_zero
+#check ProbabilityTheory.measure_limsup_eq_one
+#check IdentDistrib.comp
+#check TendstoInMeasure.congr
+#check Filter.Eventually.exists
+#check ProbabilityTheory.strong_law_ae
+#check MeasurableSpace.comap_le_iff_le_map
+
+noncomputable section
+
+namespace Audit
+
+def pureUnit : PotentialUnit Unit := ⟨(), false, true, 0, 1⟩
+abbrev coin : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
+
+example : IsProbabilityMeasure coin := inferInstance
+
+example : mP coin {b | b = true} = 1/2 := by
+  norm_num [mP, coin, PMF.toMeasure_apply_singleton]
+
+example : IVAssumptions coin (fun _ => pureUnit) id := by
+  refine ⟨measurable_const, measurable_const, measurable_const,
+    measurable_const, measurable_const, measurable_id,
+    integrable_const _, integrable_const _, ?_, ?_, ?_, ?_, ?_⟩
+  · exact indepFun_const_right id ((), false, true, (0 : ℝ), (1 : ℝ))
+  · norm_num [mP, coin, PMF.toMeasure_apply_singleton]
+  · norm_num [mP, coin, PMF.toMeasure_apply_singleton]
+  · simp [PotentialUnit.defier, pureUnit]
+  · norm_num [mCE, mP, PotentialUnit.receipt, pureUnit, bit,
+      coin, integral_fintype, PMF.toMeasure_apply_singleton]
+
+example : 0 < (∑ i : Fin 2, bit (decide (i.val = 1))) ∧
+    (∑ i : Fin 2, bit (decide (i.val = 1))) < (2 : ℝ) ∧
+    SampleDefined (fun _ : Fin 2 => 1) (fun i => decide (i.val = 1))
+      (fun i => decide (i.val = 1)) := by
+  constructor
+  · simp only [Fin.sum_univ_two]
+    norm_num [bit]
+  constructor
+  · simp only [Fin.sum_univ_two]
+    norm_num [bit]
+  constructor
+  · intro z
+    cases z <;> norm_num [sampleArm, bit, Fin.sum_univ_two]
+  · norm_num [sampleArm, bit, Fin.sum_univ_two]
+
+end Audit

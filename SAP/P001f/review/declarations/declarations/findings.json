@@ -1,0 +1,200 @@
+[
+  {
+    "target_id": "P001-T100",
+    "theorem": "SAP.P001f.T100",
+    "fingerprint": "d432210312c2dd569bfb53eb97db3c6d43a63a1848b5c007bcc5c704b2e4e889",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instance (not Lean-compiled): \u03a9={0,1} with masses 3/4,1/4, D(\u03c9)=\u03c9, X=0, Y0=0, Y1=1, p=1/4. Use full discrete sigma algebras. Every function is measurable and integrable; D is binary with both masses positive; constant potentials imply CIA. \u0394=1, E[p]=P=1/4, W=1/4, ATT=1 and W/P=1. The finite-law arithmetic and CIA were independently checked with exact fractions in scratch/finite_checks.py. The P=1 alternative in the final iff is excluded by the premises, but ATT=0 supplies its other equality case. Scratch Lean was unavailable as explained in REPORT.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T101",
+    "theorem": "SAP.P001f.T101",
+    "fingerprint": "fc968fed0bb004470fd63639bdd6252c3afa63845592d76cad52d2c7226b2449",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instance: \u03a9=\u2115, U={1,2,3}, A={1,2}, B={2} satisfy both subset premises. Direct finite-set calculation gives difference/intersection {1}, union {1,2,3}; hence this is a nontrivial failure of the erroneous union identity, with its exact exceptional-case characterization. Independently checked in scratch/finite_checks.py; no analytic hypotheses. Not Lean-compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T102",
+    "theorem": "SAP.P001f.T102",
+    "fingerprint": "5277c0687a2ef669846f13d93e9ff7faeeb3c1b6db3517ae47a5ba370bb4b0fe",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical counterexample to the identified reading (not Lean-compiled): K=1, \u03a9=([-2,-1]\u222a[1,2])\u00d7[-1,1] with normalized product Lebesgue law, X the first coordinate, Y the second, interpreted as a one-coordinate vector. Marginal f=1/2 on the closed two-interval set and zero elsewhere; joint density q=1/4 on its product with [-1,1] and zero elsewhere. These densities are nonnegative, integrable, normalize to one, and range(X)={f>0} exactly including endpoints. Coordinates and Y are bounded measurable and E[X]=0. Independence and symmetric Y give the CEF zero. Both m0=0 and m1(x)=x(1-x\u00b2)\u00b2 for |x|<1, zero otherwise, are globally differentiable and zero on the entire X range. At \u00b11 the polynomial and its first derivative vanish, so the extension is C1. Thus both are genuine conditional means for the identical joint law, with derivatives at zero 0 and 1. The mean lies in the support gap; no null-set interior artifact or undefined integral. For the second conjunct, n=1 and mhat identically zero give positive sample size and differentiability, and the equality is reflexive. This witness tests distributional uniqueness, not the derivative of a fixed chosen extension.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T103",
+    "theorem": "SAP.P001f.T103",
+    "fingerprint": "a355dbc08e248117d153ed6f3b14eb469987e4083188c9931b6dab31be2e40dd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical counterexample (not Lean-compiled): n=1, y0=1>0. For every s>0 use \u03b8=(1,0,1,s,0,1,1), a valid mixture consisting of a proper normal density at mean 1 with positive scale s; unused component scales and rate remain positive. Its likelihood is 1/(s sqrt(2\u03c0)), unbounded as s decreases to zero. Every fixed valid parameter has finite likelihood, so none is a maximizer. The witness satisfies the canonical printed reading: positive sample size, ordinary positive observation, valid nonnegative normalized mixture weights, real locations, positive scales/rate, and the iid sampling context (one observation, or any ordinary continuous model containing y=1 in its support). This negates universal existence (A) without using any density junk value.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T104",
+    "theorem": "SAP.P001f.T104",
+    "fingerprint": "86e456e47db117fbf78ac6be4ed4e25ecf0ea1656982b8c7fd5558a5215394c5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical counterexample (not Lean-compiled): put s_k=2^(-(k+1)), p_k=1/(k+2), t_k=s_k p_k, c_k=s_k(1-p_k), k\u2208\u2115. Both sequences are strictly positive and summable by domination by the geometric s; their sums are positive and sum to one. They are joint masses for X=k,D=1/0, with both treatment arms positive. Both conditional-arm PMF-positive supports are all \u2115 (or its embedding in \u211d), and the propensity ratio is p_k. Since p_k tends to zero, no common \u03b5>0 works. Printed reading checked: the unhedged assertion (B) says failure of uniform two-sided positivity forces unequal supports. This witness has uniform positivity failure and equal supports, so directly contradicts B under ordinary countable probability, not merely a guessed support condition for hedged C. In the same mass domain the forward direction A holds algebraically, so the negated equivalence cannot be witnessed only by a failure of A.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T106",
+    "theorem": "SAP.P001f.T106",
+    "fingerprint": "4b630f7757557eb92e90204209873b83d6de6fa82643d6a5f43bfa17e7169b18",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical nondegenerate instance: two fair discrete atoms, X=0,1 and Y=1-X. All functions have finite moments and Var(X)=1/4>0; linearity and the affine rules apply for every real a,b,c, and the Chebyshev branch has positive variance. On the four-atom independent product used in scratch/finite_checks.py, exact computations again give E[X]=1/2 and Var(X)=1/4. Hence no inconsistent premise or zero-variance escape. Not Lean-compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T107",
+    "theorem": "SAP.P001f.T107",
+    "fingerprint": "506be82c2086e7e16b6cb89a3b146ff1b3a87996951cb2e57f50efe7e2217435",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instance: on the uniform four-atom space (X,Z)\u2208{\u22121,1}\u00b2 take Y=X+Z, m(x)=x, v(x)=1 and g(x)=0. All conditional-mean set-integral premises and moment hypotheses hold; Var(Y)=2=1+1, and prediction risk is 2=1+1 with a strictly positive remainder. Exact finite conditional means and decompositions were checked in scratch/finite_checks.py. The first-moment prediction scope is also substantive: choose independent X with P(X=k)=C/k\u00b3 (k\u22651, normalizing C>0) and a fair Rademacher Z; then Y=X+Z and m(x)=x are integrable but Y is not in L2, while v=1 and g(x)=x+a have finite squared residuals and risk 1+a\u00b2. All version premises remain genuine. Not Lean-compiled.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T108",
+    "theorem": "SAP.P001f.T108",
+    "fingerprint": "fc006fa798cc835b1faa6dafc03daa34cf2fd76342098e369705ac6dfbe4c698",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instance for genuine independence: n=2, \u03a9={0,1}\u00b2 with uniform product measure, X0,X1 its coordinate projections, j=0. Measurable jointly independent identical Bernoulli(1/2) variables have all moments finite and variance 1/4>0. Their mean has expectation 1/2 and variance 1/8; exact enumeration in scratch/finite_checks.py checks these and independence. The family itself lives on this original finite space and needs no infinite extension. For arbitrary n, the analogous finite product gives the same satisfiable hypotheses. Not Lean-compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T109",
+    "theorem": "SAP.P001f.T109",
+    "fingerprint": "5cd53cad5545db4748bd3b2654e408204126bcd3d33e75c1a9f950b820a9dc5e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical nondegenerate PDF instance: X uniform on [-1,1], Z an independent fair Rademacher, Y=X\u00b2+Z, on the product of the closed interval and two atoms. f=1/2 on [-1,1], zero elsewhere, is a legitimate density including endpoint version values, and the range equals this interval. The bounded variables have finite second moments, m(x)=x\u00b2 is a continuous genuine CEF. Degree-0 and degree-1 minimizers are the constant 1/3 (symmetry makes Cov(X,Y)=0), and p_J=x\u00b2 for every J\u22652 minimizes prediction risk. Its CEF approximation error is then zero, and its residual risk is 1. Thus the PDF branch is not vacuous; singleton laws also satisfy the literal full-interval PMF branch. The impossibility of nondegenerate real intervals of positive-mass atoms does not remove the nondegenerate PDF case. Not Lean-compiled.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T110",
+    "theorem": "SAP.P001f.T110",
+    "fingerprint": "6a484ea8dfbb1329d782381101948685cefe03c82a572a0507db28a3092cf4d6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instances: the positive sample [true,false,true] has n=3,k=2,a=2/3. On [0,1], L(2/3)-L(t)=(t-2/3)\u00b2(t+1/3), so equality occurs only at t=2/3. The exact rational factorization was checked in scratch/finite_checks.py. For n\u22651 the all-false and all-true samples give strictly decreasing (1-t)^n and increasing t^n, with maxima 0 and 1; 0^0=1 is the legitimate missing-factor convention. For any mixed sample the log likelihood is strictly concave on (0,1), has its stationary point k/n and vanishes at the endpoints. Thus all three printed regimes have real witnesses. Not Lean-compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T111",
+    "theorem": "SAP.P001f.T111",
+    "fingerprint": "62425a5b2947699ac05e25767a3926caa49d27178d1d68466f61586b9458b583",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instances (not Lean-compiled): for MCAR let Y and R be independent fair binary coordinates; all quantities are bounded, both R masses are positive, and the censored respondent conditional mean equals E[Y]. For substantive non-MCAR MAR, take X uniform on {0,1}, R conditional Bernoulli with p(0)=1/3,p(1)=2/3, and Y=X, embedding X as a length-one real vector. Then Y is deterministic given X (hence MAR), p>1/4, both R masses are 1/2, respondent m(x)=x is integrable and is the population CEF, and E[Y]=1/2 whereas E[Y|R=1]=2/3. The positive-mass support has the two atoms with the correct sum. Empirically, the supplied six units have response counts 3 and 1 in observed cells of sizes 4 and 2, yielding 3/4 and (2/3)(4/6)+1(2/6)=7/9. All finite probabilities, CIA and sample arithmetic were exactly checked in scratch/finite_checks.py.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T112",
+    "theorem": "SAP.P001f.T112",
+    "fingerprint": "88ffad5766dd4590876aaf0b3947e95eefa5b1f6dfca543fdbc9ba37ee22f8ff",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instance: X=(A,B) with independent fair binary A,B, p(X)=(1+A)/3, R conditional Bernoulli p(X), and Y=A+B. On the resulting eight-atom law every random variable is measurable, both response probabilities are 1/2, response is binary, p>1/4, and Y is deterministic given X so MAR holds. Score p(X) reveals A but leaves B unresolved; R is conditionally independent of B given A, so balance and retained MAR are substantive. Exact checks of both conclusion independences and E[R|p]=p appear in scratch/finite_checks.py. To see absence of an outcome moment restriction matters, one can replace Y by A+B+Z with an independent Cauchy Z: all eventwise independence assumptions and conclusions persist without integrability of Y. Not Lean-compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T113",
+    "theorem": "SAP.P001f.T113",
+    "fingerprint": "084880fe6dd6cec9445bd55785f0d4ab5d35afb9cb3db0fda9d45f16a6502cdc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instances satisfying each OR branch: use the four-atom MAR law X uniform {0,1}, p(0)=1/3,p(1)=2/3, Y=X, R conditional Bernoulli p, with X a length-one vector. The regression-correct branch takes m(x)=x and wrong q=1/2, with candidate overlap \u03b7=1/4. The propensity-correct branch takes q=p and wrong m=7. Both response values have probability 1/2, true overlap holds with \u03b5=1/4, Y and the complete score are bounded, functions are measurable, and CIA follows from Y being determined by X. Exact calculations give mean score=E[Y]=1/2 in both branches, checked in scratch/finite_checks.py. No nuisance-regression moment was assumed to construct a needed implication, and null-set zero division supplies no identity. Not Lean-compiled.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T114",
+    "theorem": "SAP.P001f.T114",
+    "fingerprint": "4409d3b2866da6d31d3e5811e18dd4db0bece262832fac42fb03b9936f7c801d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instance: two fair atoms with D=0,1, Y0=0,Y1=1, a=0,b=1. All functions are measurable bounded, both arms have positive mass, observed Y=D, and the displayed interval is [0,1] with width 1. For every c\u2208[0,1], retain Z0=0 on controls and Z1=1 on treated, set missing Z1=c on controls and missing Z0=1-c on treated. Both potentials remain in [0,1], the observed (Y,D) agrees pointwise with the original, and both individual effects equal c. Thus the universal sharpness witness exists on the same \u03a9 without adding a randomizer. Degenerate a=b=0 also works without division by width. Exact supplied-sample computations in scratch/finite_checks.py verify the four endpoint means 5/6,1/6,3/6,5/6 and ATE bounds -2/6,4/6. Not Lean-compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T96",
+    "theorem": "SAP.P001f.T96",
+    "fingerprint": "a48b45bd4e2cd349bfbcec56e24452846b0f26e1e52eda2ed6eb415c9e92a5f1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical realization: six individuals per cell z=-1,0,1 with treated counts 3,1,5, potentials Y0(z)=3,2,3 and Y1(z)=4,3,4; observed values are precisely the canonical sample and all cells have both arms. Let a population choose z uniformly and D|z Bernoulli with p(z)=1/3,1/2,2/3, these same deterministic potentials, and draw 18 iid units. The specified sample has positive probability, satisfies CIA and uniform overlap (\u03b5=1/4), and the propensity model is correctly specified. For the grouped sample, at (0,log 2) the intercept and slope scores are zero. The Hessian quadratic form is -\u03a3_j 6q_j(1-q_j)(h0+x_j h1)\u00b2<0 for nonzero h, so the stationary point is the unique global maximum. Exact individual enumeration in scratch/finite_checks.py gives IPW 59/36, post-stratification 1 and gap 23/36; no likelihood or reciprocal junk. Not Lean-compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T97",
+    "theorem": "SAP.P001f.T97",
+    "fingerprint": "a6f0c217ba03ad0d68834d883933f8cac04d86c217f2e2bacd75f7e9aee8fae6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical hypotheses instance: n=2, E=Fin 1, X constant and surjective, D=[0,1], q=1/2. Each cell has treated/control count 1, size 2, and every outcome vector Y is permitted. Both estimators equal Y1-Y0. With the same data and q=1/3 (also admissible), the indicator outcome for the treated unit gives IPW 3/2 versus plug-in 1, so equality for one arbitrary outcome cannot be substituted for the universal-outcome quantifier. The canonical six-unit example also has both arms in each of its two observed cells; scratch/finite_checks.py checks its 4/9 value and saturation equality by exact fractions. Not Lean-compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T98",
+    "theorem": "SAP.P001f.T98",
+    "fingerprint": "27a78efc13fb570fe325d6f3c59ed9ebbada50cb6bd64badec9c5070040445aa",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit mathematical instance: \u03a9={0,1}^\u2115 with the infinite fair Bernoulli product probability, D_i(\u03c9)=\u03c9_i and X_i=0 in a singleton measurable covariate space, p=1/2, \u03b5=1/4. The pair sequence is measurable, independent and identically distributed. Binarity and the common overlap inequalities hold for every i and every \u03c9, including null exceptional sequences. Conditional arm weights are 2D and 2(1-D), each with mean one given the constant X, every positive sample average has mean one by finite linearity, and both all-unit reciprocals are the constant 2>1. Thus none of the strong pointwise infinite-sequence hypotheses is inconsistent. Not Lean-compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T99",
+    "theorem": "SAP.P001f.T99",
+    "fingerprint": "743a5c31d00b73f4f4553f45798ebdc25ff369faf4ae9ec1579ad16f008716ba",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual two-atom law w=[3/4,1/4], D=[0,1], X=0,Y0=0,Y1=1 is a mathematical witness to every condition. Weights are nonnegative and normalized; potential pair is constant and satisfies conditional independence on the sole positive covariate cell; all expectations exist, p=1/4 satisfies both positivity chains, ATT event mass is 1/4>0, unnormalized mean is 1/4, ATT is 1 and normalization restores 1. Exact weights, CIA, probabilities and ratios were independently checked in scratch/finite_checks.py. Printed reading being refuted is unnormalized equality under CIA and the stated positivity, not normalized weighting. Not Lean-compiled.",
+    "confidence": 0.98
+  }
+]

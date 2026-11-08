@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P013-T6",
+    "theorem": "SAP.P013a.T6",
+    "fingerprint": "9dec31a35360a8c04dfd17371be91701e435a3f387e6248ecff17b9c69a74f01",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: the two-unit independent fair-coordinate population satisfies GenuineDependency and RowBound 1. Review.S is a nonempty ExperimentSequence and Review.S_directed proves Condition5CorrectedDirected, with one uniform bound m=1. Independently enumerated all 512 directed 3-by-3 Boolean matrices and all 64 ordered subset pairs per matrix (32,768 cases), checking corrected no-edge equivalence and both applicable count bounds; see scratch/finite-results.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T7",
+    "theorem": "SAP.P013a.T7",
+    "fingerprint": "e3bae79162e458a71b342029c998fea37827a0e47cbfa35b63bfabb3ad638e96",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The witness is the actual blockPopulation/blockDesign, with independent Bernoulli coordinates and one fixed outcome table across population sizes. scratch/Check.lean compiles block-index nonemptiness for every natural label, first/second-block outcome checks, positive true variance, all scaled-variance/CLT/conservativeness premises together and pointwise positive estimated variance. The global independence/CLT facts in these instances are reused from certified T7. Independent exact-rational enumeration of all assignments for N=1,...,10 verifies the finite identities, including b_8=4, tau_8=0, 8V_8=4, E[W_8]=6 and Var(W_8)=4. The endpoint ratios go to zero, yielding the stated distinct subsequential limits without any undefined statistic.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T8",
+    "theorem": "SAP.P013a.T8",
+    "fingerprint": "1926fe17c6908815c71cedd7658d120e0e0ffb2b574832e2609c0a1f5ebe6ab7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean constructs all antecedents simultaneously using the block estimator and its true variance V_n=4/(n+1), with Vhat_n chosen deterministically equal to V_n and c=s=4. Thus the optional finite-expectation branch is inhabited as well as the main branch. A second instance uses the actual expression-(11) block variance estimate, whose scaled expectation need not converge, while the main premises still hold. CLT/finite block facts are reused from certified T7; constant-expectation/variance calculations are proved directly from the finite-sum definitions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T9",
+    "theorem": "SAP.P013a.T9",
+    "fingerprint": "2308352c92c63ffd1fa41a32f676e1392ce99c5a4490f1f3caa529a7ac1035d0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean constructs Review.S by relabeling the independent-coordinate block sample space as Fin(card); it proves StandingPositivity, Condition3, Condition4, ComparisonBounded, Condition5Genuine, Condition6 and LowerTailCondition together. The constructions use certified T7 facts, T6 for the sparsity implication and T8 for its lower-tail estimate; the relabeling and probability comparisons are proved directly. A separate algebra instance has estimate=1,target=0,V=1,Vhat=4. A one-unit simulation instance has p0=1/2,total=2 and common-sign outcomes; the independent product expectation for R=1 is directly evaluated as 3/2. A signed two-unit instance has outcomes 2 and -1,total=1,kappa=3 and p0=1/2. Positive tolerance/replicate-threshold branches are inhabited, for example with b=1 and sufficiently large R, since log(1-p0)<0 and kappa is finite and positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T10",
+    "theorem": "SAP.P013a.T10",
+    "fingerprint": "678758ec8ac3a64b77b6054634802fe7b5a3cfe73e3842db50e4705f348efa7f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean supplies the exact displayed values as witnesses for each three-bin conjunction, so those rounding premises alone are satisfiable. It also checks ordinary real numerical separation. Independent rational interval arithmetic in scratch/finite-results.json gives disjoint estimate and endpoint-midpoint bins with gap exactly 1/1000 for each row. The complete conjunction with symmetry is intentionally impossible, as the canonical claim asserts; this is not a vacuous-hypothesis defect.",
+    "confidence": 0.999
+  }
+]

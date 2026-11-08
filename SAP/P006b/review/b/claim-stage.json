@@ -1,0 +1,86 @@
+[
+  {
+    "theorem": "SAP.P006b.T16",
+    "target_id": "P006-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The main conjunction covers corrected untreated positivity, the tilted conditional U law and selected mean, attained extrema and maximum-deviation bounds, the exact normalized TT identity, the full bias chain, and regret at most twice gamma; the other conjuncts cover pointwise pi<1 and the full-information identity. Attained extrema are explicitly part of the canonical definitions, not a newly hidden compactness assumption. Integrability/probability assumptions give ordinary expectations. The supplied optimizers force a nonempty feasible set and a bounded attained welfare supremum. scratch/Check.lean checks a genuine Standing model with n=1, constant public/private covariates, deterministic outcomes 0 and 1, singleton policy pi=1/2, untreated probability 1/2, baseline zero and maximum deviation zero; the remaining bound assumptions hold with gamma=0."
+  },
+  {
+    "theorem": "SAP.P006b.T17",
+    "target_id": "P006-T17",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It covers finite-type selection formulas (b)-(c) and the three-type counterexample with strictly positive masses and a positive complementary denominator whenever that formula is used. It defines the selected baseline by the ratio rather than establishing (a)'s equality to an actual conditional outcome mean for general policies, and does not state (d)'s marginal-versus-maximum heterogeneity inequality or implication between assumptions. The Challenge docstring discloses those omissions. Equal masses 1/3 on Fin 3 and means (0,1,3) are a nonvacuous compiled instance."
+  },
+  {
+    "theorem": "SAP.P006b.T18",
+    "target_id": "P006-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It gives the exact two-unit finite ATO expectation, certifies the exhibited reward and welfare maximizers, and states reward 3/4, regret 2 and printed value -1. It omits the samplewise bound/equality, general-policy reward polynomial and uniqueness, general-policy welfare formula, separate optimal and selected welfare values, and general nonnegativity of regret. These omissions are explicitly listed in its docstring. The finite fair-binary law and feasible policies (0,1),(1,0) are nonempty, normalized and bounded."
+  },
+  {
+    "theorem": "SAP.P006b.T19",
+    "target_id": "P006-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "It covers the effects, every-policy welfare formula, maximizing policy/value, selected welfare, corrected regret, positive discrepancy from the printed formula and divergence of both the expression and regret. The example's m>1/2 is exactly the inherited beta=2m>1 domain. This target takes the selected ATO policy as given; proving its response property separately is explicitly assigned to T29 in claims.json. p=1/2 and beta=4 satisfy the hypotheses and give regret 2."
+  },
+  {
+    "theorem": "SAP.P006b.T20",
+    "target_id": "P006-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The normalized four-state mass is exactly the claimed signed-outcome witness. Its Bernoulli probabilities equal sigma(0), sigma(-log 3), its signed means are 0 and -1/2, the printed values differ from those means and yield effect -1/4, and the positive-mean TO decisions disagree. Constant covariate and zero interaction coefficients realize the logistic model; no fitted-data assertion is required. The mass sum is independently checked in Lean."
+  },
+  {
+    "theorem": "SAP.P006b.T21",
+    "target_id": "P006-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The signed Bernoulli expectation uses outcomes +1 and -1, the predictor includes all printed main and interaction terms, and the theorem states all corrected mean/effect identities, strict logistic probability bounds and universal inequality with the printed mean. Finite sums are ordinary Bernoulli expectations; d=0 is a valid intercept-only special case rather than an empty-type shortcut. For instance d=1, all coefficients and x zero give probability 1/2 and signed mean 0."
+  },
+  {
+    "theorem": "SAP.P006b.T22",
+    "target_id": "P006-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "The definition uses the group count; the theorem gives group bounds, zero sum of deviations, preservation of the full sample average, the empirical gamma expression and the 2-versus-4 example. A positive n and nonempty queried group protect every substantive denominator; unused empty-group values do no work. Quantifying arbitrary lower/upper group bounds implies the finite min/max statement. The repeated-covariate sample m=(1,3) is checked in Lean."
+  },
+  {
+    "theorem": "SAP.P006b.T23",
+    "target_id": "P006-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "It states all masses, normalization, treatment-independent potential-outcome marginals, positive untreated and observed-untreated probabilities, equality of every observed-record mass, the four displayed record probabilities, differing population means and identical selected means. Omitting the constant covariate from the record loses no information. These exact finite laws refute identification under precisely the printed conditions. Normalization and the positive joint mass 1/4 are independently checked in Lean in both worlds."
+  },
+  {
+    "theorem": "SAP.P006b.T24",
+    "target_id": "P006-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "The arbitrary supplied probability law is the law within an arbitrary covariate stratum. Measurability, integrability, potential-outcome/treatment independence and both positivity assumptions state the intended setting. The three conclusions are representativeness implies identification, the q<1 mixture and equality criterion, and conditional observation independence implies representativeness. The intended additional condition (c) is presented openly as an implication premise. q<1 ensures the missing-arm denominator is nonzero. A constant-outcome model with everyone untreated and fair observation has q=1/2; its independence and positive event probabilities are checked in Lean."
+  },
+  {
+    "theorem": "SAP.P006b.T25",
+    "target_id": "P006-T25",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The family fixes a constant public covariate, deterministic outcomes, fair private type and zero estimator. It includes a genuine all-n finite TT expectation, full response set for eta=0, welfare/response-regret formulas, exact heterogeneity, near-tight existence for every positive alpha and epsilon, and an equal-parameter unique-response variant. It omits nonconstant-public-covariate/noisy-outcome/other-estimator family assertions, the specified minimum choices of beta and eta, and the general unequal-parameter perturbed regret formula. The docstring lists these restrictions. Positive instances include n=1, alpha=1, beta=1/4, eta=0 (or beta=eta=1/4 for the unique response); beta=eta=min(epsilon,alpha/2) proves the existential premises are feasible."
+  },
+  {
+    "theorem": "SAP.P006b.T26",
+    "target_id": "P006-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is a faithful refutation of the joint printed universal ATO/ATT best-response assertion, with all standing assumptions and even fixed-query unbiasedness. It negates the conjunction rather than asserting separate failures of every part, as the docstring expressly says. There is a non-artificial witness: n=1, fair binary covariate, deterministic Y0=0 and Y1=(1,2), estimator zero. The printed rule treats only type 1 and earns 1; treating both earns 3/2. At n=1 ATO=ATT=TT with this baseline, and these finite reward values and the one-unit identity are checked in Lean. All covariate types have positive mass."
+  },
+  {
+    "theorem": "SAP.P006b.T27",
+    "target_id": "P006-T27",
+    "my_reading_vs_claim": "whole",
+    "reason": "This faithfully refutes the conjunction of the printed universal alignment identity, optimizer equivalence, zero regret and unconstrained positive-rule assertion under only fixed-query unbiasedness. It does not overstate the negation as four separate refutations. A concrete n=1 witness uses fair X, Y0=0,Y1=1, treatment randomized from the chosen policy, and a policy-independent estimator hat_mu(omega,x)=2 if x=X(omega), -2 otherwise. Every fixed query has expectation zero, while hat_mu(omega,X)=2 always. Expected TT is -(a+b)/2 and welfare is (a+b)/2; (0,0) is reward-best and loses welfare 1 against (1,1). The finite fixed-query means, reward formula and reward optimality are checked in Lean. There is no independence assumption on the estimator in the printed claim."
+  },
+  {
+    "theorem": "SAP.P006b.T29",
+    "target_id": "P006-T29",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The unbounded-regret existential headline is fully witnessed, and the family covers every positive sample size, the exact empty-treatment factor, uniqueness for n>=2, the n=1 response set, all first-mode welfare values/regret and divergence. The family expected-reward and response assertions use only deterministic treated outcomes (0,1), whereas the canonical family allows any integrable conditional-outcome law with those means. This restriction is explicitly disclosed. For a threshold M>0, p=1/2,n=2,alpha=-2(M+1) yields regret M+1 with normalized finite covariate/treatment masses."
+  },
+  {
+    "theorem": "SAP.P006b.T30",
+    "target_id": "P006-T30",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It states the explicit fair-binary, zero-baseline, constant-effect pair with own sample sizes 1 and 2, attained best scores 1<2, and pointwise/reference-mean premises 1<=1. This witnesses failure of both ranking properties. The canonical general positive-part best-score identity and general sufficient sample-size condition are absent and are explicitly disclosed as omitted. The closed pair has genuine nonempty policy squares, normalized finite expectations and common baseline zero; it is not a cross-sample type mismatch."
+  }
+]

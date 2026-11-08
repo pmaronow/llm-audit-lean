@@ -8,9 +8,10 @@ import Mathlib.Order.Filter.ENNReal
 import Mathlib.Topology.Instances.EReal.Lemmas
 import Mathlib.Algebra.Polynomial.Roots
 
-/-! Finite-population randomization inference (P002).  All randomness is complete randomization.
+/-! Formalization of the fixed P002 targets.  All randomness is complete randomization.
 `Real` division is used only for ordinary finite quantities.  Absolute studentized
 statistics live in `ENNReal`, so nonzero/zero is infinity and zero/zero is zero.
+Unproved printed statements and unproved corrections are deliberately left as `sorry`.
 -/
 namespace AronowAudit.P002
 noncomputable section
@@ -118,7 +119,7 @@ def rawSigma2 {n} (P : Population n) (q : Fin n → ℝ) (S : Finset (Fin n)) : 
 (Supplement p. 23). A nonzero numerator over a zero standard deviation is infinity. -/
 def absStudent (t s2 : ℝ) : ℝ≥0∞ :=
   if s2 = 0 then (if t = 0 then 0 else ⊤) else ENNReal.ofReal (|t| / Real.sqrt s2)
-/-- |Delta| and |Delta*|, main (4)-(5); q is fixed for reassignments. -/
+/-- |Delta| and |Delta*|, main (4)-(5); q is frozen for reassignments. -/
 def rawAR {n} (P : Population n) (q : Fin n → ℝ) (S : Finset (Fin n)) : ℝ≥0∞ :=
   absStudent (rawTau P q S) (rawSigma2 P q S)
 /-- Smallest attainable value with cumulative probability ≥1-alpha (main p. 6, (6)).
@@ -190,7 +191,7 @@ def psi {n k} (P : CovPopulation n k) (a : Bool) (β : ℝ) :=
 -varphi(a,beta)", Supplement p. 32, (E.1), population regression residual. -/
 def residual {n k} (P : CovPopulation n k) (a : Bool) (β : ℝ) (i : Fin n) : ℝ :=
   w P.pop a β i - dotProduct (augmented P.x i) (psi P a β)
-/-- Fitted psi-hat in (8),(E.1), q may be the fixed observed outcome vector. -/
+/-- Fitted psi-hat in (8),(E.1), q may be the frozen observed outcome vector. -/
 def fitted {n k} (P : CovPopulation n k) (q : Fin n → ℝ)
     (S : Finset (Fin n)) (a : Bool) := ols P.x (if a then S else Sᶜ) q
 /-- Slope contribution x_i'gamma; the intercept is omitted, as in (9),(D.4). -/
@@ -501,8 +502,8 @@ theorem gram_quadratic {n k} (x : Fin n → Fin k → ℝ) (S : Finset (Fin n))
     _ = _ := by simpa only [pow_two] using H
 
 /-- Exact residual sum of squares decrease under an arm OLS projection.
-This is the finite projection identity (P002-E003) behind corrected
-(E.38)–(E.39). It uses actual fitted coefficients and inverse arm Gram, not an
+This is the finite lemma (14) in validator E003 and the corrected algebra behind
+(E.38)-(E.39). It uses actual fitted coefficients and inverse arm Gram, not an
 assumed variance-consistency conclusion. -/
 theorem residual_sum_squares_identity {n k} (x : Fin n → Fin k → ℝ)
     (S : Finset (Fin n)) (q : Fin n → ℝ) (c : Option (Fin k) → ℝ)
@@ -568,6 +569,12 @@ theorem ols_minimizer_fullrank {n k} (x : Fin n → Fin k → ℝ)
   have hcard : (0 : ℝ) < S.card := by exact_mod_cast Finset.card_pos.mpr hS
   exact (div_le_div_iff_of_pos_right hcard).mp Hle
 
+/-- Finite Neyman identity, Supplement p. 22, Lemma 2 (B.1)-(B.4).
+Variance is the actual uniform design variance, rather than a defined formula. -/
+theorem neyman_variance {n} (P : Population n) (h : ValidDesign P) (β : ℝ) :
+    designVariance P (tau P β) = S2 P β true / (P.n1 : ℝ) +
+      S2 P β false / controlSize P - Sdiff2 P β / (n : ℝ) := by
+  sorry
 /-- Exact number of complete-randomization assignments that contain a specified
 set R of units. This is the finite inclusion-count lemma underlying the
 expectations and covariances in (B.1), (C.17), and (C.30). -/
@@ -688,6 +695,33 @@ theorem tau_mean_zero {n} (P : Population n) (h : ValidDesign P)
     expectation P (tau P (late P)) = 0 := by
   rw [tau_expectation P h (late P), mean_w_equal_at_late P hm hc]
   ring
+/-- Randomization expectation and variance of tau*, Supplement pp. 27-28,
+(C.25)-(C.26). q is the observed adjusted outcome vector, held fixed. -/
+theorem randomization_moments {n} (P : Population n) (h : ValidDesign P)
+    (q : Fin n → ℝ) :
+    expectation P (rawTau P q) = 0 ∧
+    designVariance P (rawTau P q) = (fraction P)^2 * (1-fraction P)^2 *
+      popVar q * (1/(P.n1 : ℝ) + 1/controlSize P) := by
+  sorry
+/-- Exact sample mean variance, used in corrected (C.17) and the asymptotic proofs. -/
+theorem sample_mean_variance {n} (P : Population n) (h : ValidDesign P)
+    (q : Fin n → ℝ) :
+    expectation P (fun S => (groupMean S q - mean q)^2) =
+      controlSize P / ((P.n1 : ℝ) * (n : ℝ) * ((n : ℝ)-1)) *
+      ∑ i, (q i - mean q)^2 := by
+  sorry
+/-- Exact oracle variance formulas (D.5)-(D.6), Supplement pp. 31-32. -/
+theorem oracle_variances {n k} (P : CovPopulation n k) (h : ValidDesign P.pop)
+    (β : ℝ) (q : Fin n → ℝ) (hx : ∀ s, ∑ i, P.x i s = 0)
+    (hg : (gram P.x Finset.univ).det ≠ 0) :
+    designVariance P.pop (oracleTau P β) =
+      popVar (residual P true β) / (P.pop.n1 : ℝ) +
+      popVar (residual P false β) / controlSize P.pop -
+      popVar (fun i => residual P true β i - residual P false β i) / (n : ℝ) ∧
+    designVariance P.pop (oracleStar P q) =
+      popVar (fun i => q i - dotProduct (augmented P.x i) (ols P.x Finset.univ q)) *
+      (1/(P.pop.n1 : ℝ) + 1/controlSize P.pop) := by
+  sorry
 
 /-- Nonnegative covariance constants may be relaxed to delta-plus=max(delta,0);
 this is the corrected weighted-square step (C.4) and (E.10). -/
@@ -716,25 +750,47 @@ theorem corrected_variance_algebra (n0 n1 a b C δ : ℝ) (h0 : 0 < n0) (h1 : 0 
   rw [he]
   exact div_nonneg hn (by positivity)
 
+/-- T2(a): corrected Lemma 5, with max(delta,0), every model of the original Theta_n.
+The variance is the finite design variance of the statistic at the actual sample LATE. -/
+theorem corrected_lemma5 {n} (P : Population n) (δ r A : ℝ)
+    (hδ : δ < 1) (hr : 0 < r ∧ r ≤ 1/2) (hA : 0 < A) (hP : Theta P δ r A) :
+    (1-max δ 0) * (controlSize P/((n : ℝ)*(P.n1 : ℝ))*S2 P (late P) true +
+      (P.n1 : ℝ)/((n : ℝ)*controlSize P)*S2 P (late P) false) ≤
+      designVariance P (tau P (late P)) := by
+  sorry
+/-- T2(b): corrected (E.10), exact for each model and hence every subsequence.
+No model with negative delta is excluded. -/
+theorem corrected_E10 {n k} (P : CovPopulation n k) (δ e A B r : ℝ)
+    (hk : 0 < k) (hδ : δ < 1) (he : 0 < e) (hA : 0 < A) (hB : 0 < B)
+    (hr : 0 < r ∧ r ≤ 1/2) (hP : Xi P δ e A B r) :
+    (1-max δ 0) * (controlSize P.pop/((n : ℝ)*(P.pop.n1 : ℝ))*
+      popVar (residual P true (late P.pop)) +
+      (P.pop.n1 : ℝ)/((n : ℝ)*controlSize P.pop)*popVar (residual P false (late P.pop))) ≤
+      designVariance P.pop (oracleTau P (late P.pop)) := by
+  sorry
 /- T3(a): Lemma 5 exactly as printed, Supplement p. 23; false for negative delta. -/
-
+/- Historical false affirmative draft retired. The exact original declaration and its
+   adjacent prose are archived in confidence-followup/source-integration/retired-originals.json.
+   The full checked refutation is in P002_ConfidenceCompletion. -/
 /- T3(b): Lemma 16(1), (E.10) as printed. Its pointwise bound is false and
 therefore also false along the repeated-block subsequence of T1. -/
-
+/- Historical false affirmative draft retired. The exact original declaration and its
+   adjacent prose are archived in confidence-followup/source-integration/retired-originals.json.
+   The full checked refutation is in P002_ConfidenceCompletion. -/
 
 /-- T1's repeated four-unit block: three copies at n=12, then 3m copies at n=12m.
 The coordinates are (-1,-1),(-1,1),(1,-1),(1,1), all units compliers, y(1)=y(0).
-P002-E002; Supplement (C.3)-(C.8),(E.10). -/
+Validator P002-E002, artifact/derivation.md, and Supplement (C.3)-(C.8),(E.10). -/
 def negativeDeltaModel (m : ℕ) : CovPopulation (12*m) 1 where
   pop := {y := fun i _ => if i.val % 2 = 0 then -1 else 1,
           d := fun _ a => a, n1 := 2*m}
   x := fun i _ => if i.val % 4 < 2 then -1 else 1
-/-- All 66 equally likely treated pairs in the 12-unit model (P002-E002). -/
+/-- All 66 equally likely treated pairs in the validator's 12-unit model. -/
 theorem negative_delta_assignments : assignments (negativeDeltaModel 1).pop =
     ({{0,1}, {0,2}, {0,3}, {0,4}, {0,5}, {0,6}, {0,7}, {0,8}, {0,9}, {0,10}, {0,11}, {1,2}, {1,3}, {1,4}, {1,5}, {1,6}, {1,7}, {1,8}, {1,9}, {1,10}, {1,11}, {2,3}, {2,4}, {2,5}, {2,6}, {2,7}, {2,8}, {2,9}, {2,10}, {2,11}, {3,4}, {3,5}, {3,6}, {3,7}, {3,8}, {3,9}, {3,10}, {3,11}, {4,5}, {4,6}, {4,7}, {4,8}, {4,9}, {4,10}, {4,11}, {5,6}, {5,7}, {5,8}, {5,9}, {5,10}, {5,11}, {6,7}, {6,8}, {6,9}, {6,10}, {6,11}, {7,8}, {7,9}, {7,10}, {7,11}, {8,9}, {8,10}, {8,11}, {9,10}, {9,11}, {10,11}} : Finset (Finset (Fin 12))) := by
   decide
 /-- Population OLS coefficients in the negative-delta example are zero, exactly
-by the orthogonality calculation. -/
+as the validator's orthogonality calculation requires. -/
 theorem negative_delta_population_ols (a : Bool) : psi (negativeDeltaModel 1) a 0 = 0 := by
   have hg : gram (negativeDeltaModel 1).x Finset.univ = 1 := by
     ext s t
@@ -861,10 +917,27 @@ theorem negative_delta_counterexample :
   norm_num [S2, popVar, fraction, mean, w, binary,
     negativeDeltaModel, controlSize, Fin.sum_univ_succ]
 
+/-- T1(d): failure persists for every repeated-block model n=12m, with identical
+fixed constants, so it refutes the subsequence assertion of Lemma 16 as well. -/
+theorem negative_delta_sequence (m : ℕ) (hm : 1 ≤ m) :
+    let P := negativeDeltaModel m
+    Theta P.pop (-1/2) (1/6) 2 ∧ Xi P (-1/2) (1/2) 2 2 (1/6) ∧
+    late P.pop = 0 ∧
+    designVariance P.pop (tau P.pop 0) = 5/(36*(((12*m : ℕ) : ℝ)-1)) ∧
+    designVariance P.pop (oracleTau P 0) = 36/(5*((12*m : ℕ) : ℝ)-5) ∧
+    (1-(-1/2 : ℝ))*(controlSize P.pop/(((12*m : ℕ) : ℝ)*(P.pop.n1 : ℝ))*
+        S2 P.pop 0 true +
+      (P.pop.n1 : ℝ)/(((12*m : ℕ) : ℝ)*controlSize P.pop)*S2 P.pop 0 false) =
+      (13/12)*designVariance P.pop (tau P.pop 0) ∧
+    (1-(-1/2 : ℝ))*(controlSize P.pop/(((12*m : ℕ) : ℝ)*(P.pop.n1 : ℝ))*
+        popVar (residual P true 0) +
+      (P.pop.n1 : ℝ)/(((12*m : ℕ) : ℝ)*controlSize P.pop)*popVar (residual P false 0)) =
+      (13/12)*designVariance P.pop (oracleTau P 0) := by
+  sorry
 
 /-- T1(e): the particular negative-delta weighted-AMGM step reverses the
 inequality: (C.3)=12/11 while (C.4)=-36/55. This arithmetic is supplementary
-to the complete design-based counterexample and does not alone prove the variance comparison. -/
+to the complete design-based counterexample and is not counted as that proof. -/
 theorem negative_delta_AMGM_failure :
     (12/11 : ℝ)+12/11+2*(-1/2)*12/11=12/11 ∧
     (12/11 : ℝ)+12/11+(-1/2)*(10/2)*(12/11)+(-1/2)*(2/10)*(12/11)= -36/55 ∧
@@ -887,8 +960,35 @@ theorem square_centering {n} (S : Finset (Fin n)) (q : Fin n → ℝ) (c : ℝ)
   rw [he, he]
   ring
 
+/-- T11: both corrected centring identities and the exact expectation in (C.17),
+for every beta, every valid completely randomized population and every assignment. -/
+theorem corrected_C17 {n} (P : Population n) (hP : ValidDesign P) (β : ℝ)
+    (S : Finset (Fin n)) (hS : S ∈ assignments P) :
+    groupMean S (fun i => (observedW P β S i-armMean (observedW P β S) S true)^2) =
+      groupMean S (fun i => v P true β i ^ 2) -
+        (groupMean S (w P true β) - mean (fun i => P.y i (P.d i true)) +
+          β*mean (fun i => binary (P.d i true)))^2 ∧
+    expectation P (fun T => (groupMean T (w P true β) - mean (fun i => P.y i (P.d i true)) +
+        β*mean (fun i => binary (P.d i true)))^2) =
+      controlSize P/((P.n1 : ℝ)*(n : ℝ)*((n : ℝ)-1))*∑ i, v P true β i^2 := by
+  sorry
+/-- T11's asymptotic tail in corrected (C.17): the actual normalized squared
+sample-mean error is O(n0/(n1*n)) and tends to zero under the fixed balance bound.
+S1² is strictly positive, as assumed in this calculation on Supplement p. 23. -/
+theorem corrected_C17_rate (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
+    (P : ∀ n, Population (sizes n)) (δ r A : ℝ)
+    (hδ : δ < 1) (hr : 0 < r ∧ r ≤ 1/2) (hA : 0 < A)
+    (hP : ∀ n, Theta (P n) δ r A)
+    (hS : ∀ n, 0 < S2 (P n) (late (P n)) true) :
+    let f : ℕ → ℝ := fun n => expectation (P n) (fun S =>
+      (groupMean S (w (P n) true (late (P n))) -
+        mean (fun i => (P n).y i ((P n).d i true)) +
+        late (P n)*mean (fun i => binary ((P n).d i true)))^2 / S2 (P n) (late (P n)) true)
+    Asymptotics.IsBigO atTop f (fun n => controlSize (P n)/((P n).n1*(sizes n : ℝ))) ∧
+    Tendsto f atTop (nhds 0) := by
+  sorry
 
-/-- T10's four-unit all-complier constant-effect model, P002-E004, Supp. p. 26. -/
+/-- T10's four-unit all-complier constant-effect model, validator E004, Supp. p. 26. -/
 def centringModel : Population 4 where
   y := fun i a => (if i.val < 2 then -1 else 1) + (if a then 2 else 0)
   d := fun _ a => a
@@ -970,8 +1070,19 @@ theorem C31_counterexample :
       armMean, groupMean, binary, Fin.sum_univ_succ, Finset.sum_insert,
       Finset.filter_insert, Finset.filter_empty]
 
+/-- T13: corrected (C.31), exact for any adjusted observed vector and any assignment.
+The second bound uses the explicit constant r²(1-r)²/n of Assumption 4. -/
+theorem corrected_C31 {n} (P : Population n) (h : ValidDesign P)
+    (q : Fin n → ℝ) (S : Finset (Fin n)) (hS : S ∈ assignments P)
+    (r : ℝ) (hr : 0 < r ∧ r ≤ 1/2)
+    (hlo : r*(n : ℝ) ≤ (P.n1 : ℝ)) (hhi : (P.n1 : ℝ) ≤ (1-r)*(n : ℝ)) :
+    (fraction P)^2*(1-fraction P)^2/((n : ℝ)-1)*(armMean q S true-armMean q S false)^2 ≤
+      designVariance P (rawTau P q) ∧
+    r^2*(1-r)^2/(n : ℝ)*(armMean q S true-armMean q S false)^2 ≤
+      designVariance P (rawTau P q) := by
+  sorry
 
-/-- T8's centered alternating covariate example (n=2,k=1), P002-E010.
+/-- T8's centered alternating covariate example (n=2,k=1), validator E010.
 It satisfies Assumption 5(iii)-(v) with A=16, epsilon-tilde=2. -/
 def interceptExampleX (i : Fin 2) (_ : Fin 1) : ℝ := if i = 0 then 2 else -2
 /-- T8: the covariate Gram is 4, but the augmented intercept direction has
@@ -1140,7 +1251,7 @@ theorem corrected_gram_perturbation {ι : Type*} [Fintype ι]
   simp only [Matrix.sub_mulVec, dotProduct_sub] at hh
   nlinarith
 
-/-- T16's nonsingular four-row covariate array, P002-E007, Supplement (E.14). -/
+/-- T16's nonsingular four-row covariate array, validator E007, Supplement (E.14). -/
 def coordinateExample (i : Fin 4) (s : Fin 2) : ℝ :=
   if i.val = 0 then (if s.val = 0 then 1 else 0)
   else if i.val = 1 then (if s.val = 0 then -1 else 0)
@@ -1501,11 +1612,51 @@ def infCoverageTheta (n : ℕ) (δ r A α : ℝ) : ℝ≥0∞ :=
 def infCoverageXi (n k : ℕ) (δ e A B r α : ℝ) : ℝ≥0∞ :=
   ⨅ β : ℝ, ⨅ P : {P : CovPopulation n k // Xi P δ e A B r ∧ late P.pop = β},
     ENNReal.ofReal (adjustedCoverage P.val β α)
+/-- T5(a): corrected Theorem 1, liminf ≥1-alpha along nonempty parameter classes. -/
+theorem corrected_theorem1 (δ r A α : ℝ) (hδ : δ < 1)
+    (hr : 0 < r ∧ r ≤ 1/2) (hA : 0 < A) (hα : 0 < α ∧ α < 1) :
+    ENNReal.ofReal (1-α) ≤ Filter.liminf (fun n => infCoverageTheta n δ r A α)
+      (atTop ⊓ Filter.principal {n | ∃ P : Population n, Theta P δ r A}) := by
+  sorry
+/-- T5(b): corrected Theorem 2, liminf ≥1-alpha along nonempty adjusted classes. -/
+theorem corrected_theorem2 (k : ℕ) (δ e A B r α : ℝ) (hk : 0 < k) (hδ : δ < 1)
+    (he : 0 < e) (hA : 0 < A) (hB : 0 < B) (hr : 0 < r ∧ r ≤ 1/2)
+    (hα : 0 < α ∧ α < 1) :
+    ENNReal.ofReal (1-α) ≤ Filter.liminf (fun n => infCoverageXi n k δ e A B r α)
+      (atTop ⊓ Filter.principal {n | ∃ P : CovPopulation n k, Xi P δ e A B r}) := by
+  sorry
+/-- T5, corrected Remark 3 (main p. 8; validator E001 §5): a fixed
+admissible class containing a nondegenerate constant-additive-effect sequence
+has nominal coverage along that sequence and nominal worst-case liminf.
+Unlike the earlier squeeze lemma, nominal convergence is a conclusion. The
+sequence need not exhaust all admissible sizes. Degenerate classes are retained
+in the coverage lower bounds above and may have coverage one. -/
+theorem corrected_remark3_sharpness (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
+    (P : ∀ n, Population (sizes n)) (δ r A α : ℝ)
+    (hδ : δ < 1) (hr : 0 < r ∧ r ≤ 1/2) (hA : 0 < A)
+    (hα : 0 < α ∧ α < 1) (hP : ∀ n, Theta (P n) δ r A)
+    (hconstant : ∀ n, ∃ β, ∀ i, (P n).y i true=(P n).y i false+β)
+    (hnondegenerate : ∀ n, 0 < popVar (fun i => (P n).y i false)) :
+    Tendsto (fun n => ENNReal.ofReal (coverage (P n) (late (P n)) α))
+      atTop (nhds (ENNReal.ofReal (1-α))) ∧
+    Filter.liminf (fun N => infCoverageTheta N δ r A α)
+      (atTop ⊓ Filter.principal {N | ∃ Q : Population N, Theta Q δ r A}) =
+        ENNReal.ofReal (1-α) := by
+  sorry
 
 /- T29: main Theorem 1 as printed. It asserts existence of the limit and nominal
 sharpness for every admitted tuple of constants; T4 refutes that assertion. -/
+/- Historical false affirmative draft retired. The exact original declaration and its
+   adjacent prose are archived in confidence-followup/source-integration/retired-originals.json.
+   The full checked refutation is in P002_ConfidenceCompletion. -/
+/-- T30: main Theorem 2 as printed, including the asserted limit and equality. -/
+theorem printed_theorem2 (k : ℕ) (δ e A B r α : ℝ) (hk : 0 < k) (hδ : δ < 1)
+    (he : 0 < e) (hA : 0 < A) (hB : 0 < B) (hr : 0 < r ∧ r ≤ 1/2)
+    (hα : 0 < α ∧ α < 1) :
+    Tendsto (fun n => infCoverageXi n k δ e A B r α) atTop (nhds (ENNReal.ofReal (1-α))) := by
+  sorry
 
-/-- Moment-collapse algebra (P002-E001). This is a
+/-- Moment-collapse algebra from validator E001, artifact/check.lean. This is a
 supporting lemma, not by itself a counterexample to a coverage infimum. -/
 theorem collapse_moments (N M2 M4 : ℝ) (hN : 2 ≤ N)
     (hCS : M2^2 ≤ N*M4) (hbound : 16*(N-1)^2*M4 ≤ N*M2^2) : M2 = 0 := by
@@ -1565,7 +1716,7 @@ theorem half_moment_collapse {n} (q : Fin n → ℝ) (hn : 2 ≤ n)
   nlinarith [sq_nonneg (q i)]
 
 /-- Assumption 3(ii) at A=1/2 forces the two LATE-adjusted potential vectors
-to be the same constant, for every model in the entire class, P002-E001.
+to be the same constant, for every model in the entire class, validator E001 §2.
 This is a class-wide statement, using actual potential outcomes and the LATE. -/
 theorem theta_half_moment_constant {n} (P : Population n)
     (hP : Theta P 0 (1/4) (1/2)) :
@@ -1584,7 +1735,7 @@ theorem theta_half_moment_constant {n} (P : Population n)
   · linarith
 
 /-- Constant adjusted potential outcomes give the same observed vector on
-every assignment (P002-E001), including assignments outside the design. -/
+every assignment (validator E001 §2), including assignments outside the design. -/
 theorem observedW_constant {n} (P : Population n) (β c : ℝ)
     (hw : ∀ a i, w P a β i=c) (S : Finset (Fin n)) :
     observedW P β S=fun _ => c := by
@@ -1592,7 +1743,7 @@ theorem observedW_constant {n} (P : Population n) (β c : ℝ)
   change w P (decide (i ∈ S)) β i=c
   exact hw _ i
 
-/-- A constant response has tau-hat zero on every complete-randomization
+/-- A constant frozen response has tau-hat zero on every complete-randomization
 assignment; this uses n1 selected units and pi=n1/n, rather than assuming tau=0. -/
 theorem rawTau_constant {n} (P : Population n) (hP : ValidDesign P) (c : ℝ)
     (S : Finset (Fin n)) (hS : S ∈ assignments P) :
@@ -1606,7 +1757,7 @@ theorem rawTau_constant {n} (P : Population n) (hP : ValidDesign P) (c : ℝ)
   field_simp [hN]
   <;> ring
 
-/-- Diagnostic finite lemma for T15: the zero response has zero actual
+/-- Diagnostic finite lemma for T15: the zero frozen response has zero actual
 design variance, and its auxiliary variance-ratio error probability is one at
 kappa=1/2 with Lean's total real division. The paper only specifies 0/0 for
 studentized statistics; this records the unresolved zero-denominator issue
@@ -1625,7 +1776,7 @@ theorem zero_response_ratio_failure {n} (P : Population n) (hP : ValidDesign P) 
 
 /-- Every model of Theta_n(0,1/4,1/2), n≥2, has finite coverage one at its
 LATE. Only nonnegativity of the full randomization absolute cutoff is used;
-the design probability is the actual finite count (P002-E001). -/
+the design probability is the actual finite count (validator E001 §2). -/
 theorem theta_half_moment_coverage {n} (P : Population n)
     (hP : Theta P 0 (1/4) (1/2)) (α : ℝ) : coverage P (late P) α=1 := by
   obtain ⟨c,hc⟩ := theta_half_moment_constant P hP
@@ -1647,7 +1798,7 @@ theorem theta_half_moment_coverage {n} (P : Population n)
   rw [Finset.filter_eq_self.mpr htrue]
   exact div_self hcard
 
-/-- Constant-effect model in `Theta_n(0,1/4,1/2)` for every `n ≥ 2`, used in T4(b). -/
+/-- Nonempty constant-effect model in every Theta_n(0,1/4,1/2), used in T4(b). -/
 def degenerateModel (n : ℕ) (β : ℝ) : Population n where
   y := fun _ a => if a then β else 0
   d := fun _ a => a
@@ -1734,16 +1885,28 @@ theorem theorem1_sharpness_counterexample (α : ℝ) (hα : 0 < α ∧ α < 1) :
     have he := tendsto_nhds_unique ht hbad
     have hlt : ENNReal.ofReal (1-α) < 1 := ENNReal.ofReal_lt_one.mpr (by linarith [hα.1])
     exact (ne_of_lt hlt) he.symm
-/-- Covariate grid x_i=(2i-n-1)/n, with i=1,...,n (P002-E001, T4(c)). -/
+/-- Covariate grid x_i=(2i-n-1)/n, with i=1,...,n (validator E001, T4(c)). -/
 def gridX {n} (i : Fin n) (_ : Fin 1) : ℝ := (2*((i.val : ℝ)+1)-(n : ℝ)-1)/(n : ℝ)
-/-- All-complier constant-effect models with the centered grid covariates, P002-E001, T4. -/
+/-- All-complier constant-effect models with the centered grid covariates, validator E001 artifact/derivation.md, Section 3 (T4). -/
 def degenerateCovModel (n : ℕ) (β : ℝ) : CovPopulation n 1 :=
   ⟨degenerateModel n β, gridX⟩
+/-- T4(c): all models in Xi_n(1,0,1/4,4,1/2,1/4) have the uniform coverage
+lower bound max(0,1-1548/(n-1)), this class is nonempty for every beta, and its
+nested infimum tends to one rather than nominal coverage. -/
+theorem theorem2_sharpness_counterexample (α : ℝ) (hα : 0 < α ∧ α < 1) :
+    (∀ n, 2 ≤ n → ∀ β, Xi (degenerateCovModel n β) 0 (1/4) 4 (1/2) (1/4) ∧
+      late (degenerateCovModel n β).pop = β) ∧
+    (∀ n, 2 ≤ n → ∀ P : CovPopulation n 1, Xi P 0 (1/4) 4 (1/2) (1/4) →
+      max 0 (1-1548/((n : ℝ)-1)) ≤ adjustedCoverage P (late P.pop) α) ∧
+    Tendsto (fun n => infCoverageXi n 1 0 (1/4) 4 (1/2) (1/4) α) atTop (nhds 1) ∧
+    ¬Tendsto (fun n => infCoverageXi n 1 0 (1/4) 4 (1/2) (1/4) α) atTop
+      (nhds (ENNReal.ofReal (1-α))) := by
+  sorry
 
 /-- A sequence of completely randomized assignment vectors with their exact
-finite marginal laws. Every assignment-event preimage is required to be measurable.
-The Supplement specifies mutual independence across population sizes (p. 27);
-this definition imposes only the marginals and leaves the joint coupling unrestricted. -/
+finite marginal laws, Supplement pp. 23, 27. Every finite-space event is measurable.
+The paper specifies no independence between different population sizes; the
+joint coupling on this probability space is therefore unrestricted. -/
 def RandomizationSequence {Ω : Type*} [MeasurableSpace Ω] {sizes : ℕ → ℕ}
     (P : ∀ j, Population (sizes j)) (μ : Measure Ω)
     (Z : ∀ j, Ω → Finset (Fin (sizes j))) : Prop :=
@@ -1751,13 +1914,90 @@ def RandomizationSequence {Ω : Type*} [MeasurableSpace Ω] {sizes : ℕ → ℕ
     MeasurableSet {ω | E (Z j ω)} ∧
       μ {ω | E (Z j ω)} = ENNReal.ofReal (probability (P j) E)
 
+/-- T9's corrected asymptotically almost-sure display, Supplement p. 42.
+The randomization coefficient error is fitted psi-hat minus pooled psi-star;
+the same vanishing error works for both arms along every strict subsequence.
+The finite block identity above does not itself prove this probability limit. -/
+theorem corrected_E61_eigenvalue {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
+    [IsProbabilityMeasure μ] (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
+    (k : ℕ) (P : ∀ n, CovPopulation (sizes n) k)
+    (Z : ∀ n, Ω → Finset (Fin (sizes n))) (δ e A B r : ℝ)
+    (hk : 0 < k) (hδ : δ < 1) (he : 0 < e) (hA : 0 < A) (hB : 0 < B)
+    (hr : 0 < r ∧ r ≤ 1/2) (hP : ∀ n, Xi (P n) δ e A B r)
+    (hZ : RandomizationSequence (fun n => (P n).pop) μ Z)
+    (sub : ℕ → ℕ) (hsub : StrictMono sub) :
+    ∀ᵐ ω ∂μ, ∃ err : ℕ → ℝ, Tendsto err atTop (nhds 0) ∧
+      ∀ᶠ j in atTop, ∀ a : Bool,
+        let N := sub j
+        let S := Z N ω
+        let q := observedW (P N).pop (late (P N).pop) S
+        let b := fitted (P N) q S a-ols (P N).x Finset.univ q
+        (min 1 e+err j)*normSq b ≤
+          dotProduct b (gram (P N).x (if a then S else Sᶜ) *ᵥ b) := by
+  sorry
 /-- Standard normal absolute tail probability, Supplement p. 21, A.2. -/
 def normalTail (x : ℝ) : ℝ := (ProbabilityTheory.gaussianReal 0 1 {z : ℝ | x ≤ |z|}).toReal
 /-- z_{1-alpha/2}, normal quantile (Supplement p. 21). -/
 def normalCritical (α : ℝ) : ℝ :=
   sInf {z : ℝ | ENNReal.ofReal (1-α/2) ≤ ProbabilityTheory.gaussianReal 0 1 (Set.Iic z)}
+/-- T15: corrected Lemma 12 (Supplement p. 30), under the Supplement p. 23
+standing scope that both arm adjusted-outcome variances are strictly positive.
+The ratio is variance/variance; conditional probability tends to zero almost
+surely along every subsequence. Zero-variance coverage is a separate case. -/
+theorem corrected_lemma12 {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
+    [IsProbabilityMeasure μ] (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
+    (P : ∀ n, Population (sizes n))
+    (Z : ∀ n, Ω → Finset (Fin (sizes n))) (δ r A : ℝ)
+    (hδ : δ < 1) (hr : 0 < r ∧ r ≤ 1/2) (hA : 0 < A)
+    (hP : ∀ n, Theta (P n) δ r A)
+    (hpositive : ∀ n a, 0 < popVar (w (P n) a (late (P n))))
+    (hZ : RandomizationSequence P μ Z)
+    (sub : ℕ → ℕ) (hsub : StrictMono sub) :
+    ∀ᵐ ω ∂μ, ∀ κ : ℝ, 0 < κ → Tendsto (fun j =>
+      let N := sub j
+      let q := observedW (P N) (late (P N)) (Z N ω)
+      probability (P N) (fun S => |rawSigma2 (P N) q S /
+        designVariance (P N) (rawTau (P N) q) - 1| ≥ κ)) atTop (nhds 0) := by
+  sorry
+/-- T7: all four claims of corrected Lemma 20 (Supplement p. 42), under
+the positive arm residual-variance standing scope inherited from Supplement
+p. 23 for regression adjustment. (E.61) uses the oracle tilde variance;
+conditional limits are almost sure along every strict subsequence. -/
+theorem corrected_lemma20 {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
+    [IsProbabilityMeasure μ] (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
+    (k : ℕ) (P : ∀ n, CovPopulation (sizes n) k)
+    (Z : ∀ n, Ω → Finset (Fin (sizes n))) (δ e A B r : ℝ)
+    (hk : 0 < k) (hδ : δ < 1) (he : 0 < e) (hA : 0 < A) (hB : 0 < B)
+    (hr : 0 < r ∧ r ≤ 1/2) (hP : ∀ n, Xi (P n) δ e A B r)
+    (hpositive : ∀ n a, 0 < popVar (residual (P n) a (late (P n).pop)))
+    (hZ : RandomizationSequence (fun n => (P n).pop) μ Z)
+    (sub : ℕ → ℕ) (hsub : StrictMono sub) :
+    ∀ᵐ ω ∂μ,
+      (∀ κ : ℝ, 0 < κ → Tendsto (fun j =>
+        let N := sub j
+        let q := observedW (P N).pop (late (P N).pop) (Z N ω)
+        probability (P N).pop (fun S => |adjustedTau (P N) q S-oracleStar (P N) q S| ≥
+          κ*Real.sqrt (designVariance (P N).pop (oracleStar (P N) q)))) atTop (nhds 0)) ∧
+      (∀ x : ℝ, 0 < x → Tendsto (fun j =>
+        let N := sub j
+        let q := observedW (P N).pop (late (P N).pop) (Z N ω)
+        |probability (P N).pop (fun S => |oracleStar (P N) q S| ≥
+          x*Real.sqrt (designVariance (P N).pop (oracleStar (P N) q))) - normalTail x|)
+        atTop (nhds 0)) ∧
+      (∀ x : ℝ, 0 < x → Tendsto (fun j =>
+        let N := sub j
+        let q := observedW (P N).pop (late (P N).pop) (Z N ω)
+        |probability (P N).pop (fun S => |adjustedTau (P N) q S| ≥
+          x*Real.sqrt (designVariance (P N).pop (oracleStar (P N) q))) - normalTail x|)
+        atTop (nhds 0)) ∧
+      (∀ κ : ℝ, 0 < κ → Tendsto (fun j =>
+        let N := sub j
+        let q := observedW (P N).pop (late (P N).pop) (Z N ω)
+        probability (P N).pop (fun S => |adjustedSigma2 (P N) q S /
+          designVariance (P N).pop (oracleStar (P N) q) - 1| ≥ κ)) atTop (nhds 0)) := by
+  sorry
 
-/-- Even subsequence (P002-E003): eta=2^(-n^2), two nearly coincident
+/-- Validator E003's even subsequence: eta=2^(-n^2), two nearly coincident
 covariate blocks, all units compliers with identical potential outcomes. -/
 def nearSingularModel (m : ℕ) : CovPopulation (2*m) 1 :=
   let t : Fin (2*m) → ℝ := fun i => (2*(i.val % m : ℕ)-(m : ℝ)+1)/((m : ℝ)-1)
@@ -1771,17 +2011,79 @@ def oddNearModel (n : ℕ) : CovPopulation n 1 :=
   let x : Fin n → Fin 1 → ℝ := fun i _ => 2*(i.val : ℝ)/((n : ℝ)-1)-1
   {pop := {y := fun i _ => (1/10)*(x i 0^2-mean (fun l => x l 0^2)),
            d := fun _ a => a, n1 := n/2}, x := x}
+/-- T6: the explicitly specified admissible even subsequence has full-rank arms,
+feasible variance ≥8*2^(2n²-n), bounded variance estimator, and printed (E.61)
+error probability exactly one at kappa=1/2 for every original assignment.
+The odd extension is admissible with the same constants. -/
+theorem feasible_variance_counterexample :
+    (∀ m, 4 ≤ m →
+      let P := nearSingularModel m
+      Xi P 0 (1/4) 16 5 (1/3) ∧ late P.pop = 0 ∧
+      (∀ S ∈ assignments P.pop, (gram P.x S).det ≠ 0 ∧ (gram P.x Sᶜ).det ≠ 0) ∧
+      (∀ S ∈ assignments P.pop,
+        let q := observedW P.pop 0 S
+        designVariance P.pop (adjustedTau P q) ≥
+          8*(2 : ℝ)^(2*(2*m)^2)/(2 : ℝ)^(2*m) ∧
+        (∀ T ∈ assignments P.pop, 0 ≤ adjustedSigma2 P q T ∧
+          adjustedSigma2 P q T < 5/((2*m : ℕ) : ℝ)) ∧
+        probability P.pop (fun T => |adjustedSigma2 P q T /
+          designVariance P.pop (adjustedTau P q)-1| ≥ 1/2) = 1)) ∧
+    (∀ n, 9 ≤ n → Odd n → Xi (oddNearModel n) 0 (1/4) 16 5 (1/3)) ∧
+    Tendsto (fun j =>
+      let P := nearSingularModel (j+4)
+      probability P.pop (fun T => |adjustedSigma2 P (fun i => P.pop.y i false) T /
+        designVariance P.pop (adjustedTau P (fun i => P.pop.y i false))-1| ≥ 1/2))
+      atTop (nhds 1) := by
+  sorry
+/-- T14: the balanced ±1 sequence satisfies every hypothesis and the printed
+standard-deviation/variance error probability is one for every even n≥4.
+The ratio of variances has the corrected finite Markov bound 2/(n*kappa). -/
+theorem missing_square_counterexample :
+    (∀ m, 2 ≤ m →
+      let P := signModel m
+      Theta P 0 (1/2) 1 ∧ late P = 0 ∧
+      (∀ S ∈ assignments P,
+        let q := observedW P 0 S
+        designVariance P (rawTau P q) = 1/(4*(((2*m : ℕ) : ℝ)-1)) ∧
+        probability P (fun T => |Real.sqrt (rawSigma2 P q T) /
+          designVariance P (rawTau P q)-1| ≥ 1/2) = 1 ∧
+        (∀ κ : ℝ, 0 < κ → probability P (fun T => |rawSigma2 P q T /
+          designVariance P (rawTau P q)-1| ≥ κ) ≤ 2/(((2*m : ℕ) : ℝ)*κ)))) ∧
+    Tendsto (fun j =>
+      let P := signModel (j+2)
+      probability P (fun T => |Real.sqrt (rawSigma2 P (fun i => P.y i false) T) /
+        designVariance P (rawTau P (fun i => P.y i false))-1| ≥ 1/2)) atTop (nhds 1) := by
+  sorry
 
 /-- Corrected control remainder (E.29), with (1-Z_i) in the leading arm mean. -/
 def controlRemainder {n k} (P : CovPopulation n k) (S : Finset (Fin n)) : ℝ :=
   groupMean Sᶜ (fun i => dotProduct (xCirc P.x i)
     ((gram P.x Sᶜ)⁻¹ *ᵥ score P.x Sᶜ (residual P false (late P.pop)))) /
       Real.sqrt (designVariance P.pop (oracleTau P (late P.pop)))
+/-- T20(i): corrected control remainder is o_p(1), Supplement p. 37, (E.29),
+with the statement expressed directly through its finite design probabilities. -/
+theorem corrected_E29 (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
+    (k : ℕ) (P : ∀ n, CovPopulation (sizes n) k) (δ e A B r : ℝ)
+    (hk : 0 < k) (hδ : δ < 1) (he : 0 < e) (hA : 0 < A) (hB : 0 < B)
+    (hr : 0 < r ∧ r ≤ 1/2) (hP : ∀ n, Xi (P n) δ e A B r) :
+    ∀ κ : ℝ, 0 < κ → Tendsto (fun n => probability (P n).pop
+      (fun S => κ ≤ |controlRemainder (P n) S|)) atTop (nhds 0) := by
+  sorry
 /-- Uniform tail supremum over Xi and the printed nested beta index, corrected (E.36). -/
 def supAdjustedTail (n k : ℕ) (δ e A B r α κ : ℝ) : ℝ≥0∞ :=
   ⨆ β : ℝ, ⨆ P : {P : CovPopulation n k // Xi P δ e A B r ∧ late P.pop = β},
     ENNReal.ofReal (probability P.val.pop (fun S =>
       (normalCritical α-κ < 0 ∨ adjustedAR P.val (observedW P.val.pop β S) S > ENNReal.ofReal (normalCritical α-κ))))
+/-- T21: Theorem 7 with Xi_n in place of Theta_n. Both printed limits are
+asserted to exist; no limsup has been silently substituted for the inner limit. -/
+theorem corrected_theorem7 (k : ℕ) (δ e A B r α : ℝ)
+    (hk : 0 < k) (hδ : δ < 1) (he : 0 < e) (hA : 0 < A) (hB : 0 < B)
+    (hr : 0 < r ∧ r ≤ 1/2) (hα : 0 < α ∧ α < 1) :
+    ∃ L : ℝ → ℝ≥0∞, ∃ u : ℝ≥0∞,
+      (∀ κ : ℝ, 0 < κ → Tendsto (fun n => supAdjustedTail n k δ e A B r α κ)
+        atTop (nhds (L κ))) ∧
+      Tendsto L (nhdsWithin 0 (Set.Ioi 0)) (nhds u) ∧ u ≤ ENNReal.ofReal α := by
+  sorry
 
 /-- T25(a): under a constant additive receipt effect, the adjusted observed
 outcomes recover y_i(0) for every assignment. Main pp. 4-5, Section 3.1. -/
@@ -1886,6 +2188,16 @@ def instrumentGram {n k} (P : CovPopulation n k) (S : Finset (Fin n)) :
 Supplement p. 46, (I.3). -/
 def ivCoefficients {n k} (P : CovPopulation n k) (Y D : Fin n → ℝ) (S : Finset (Fin n)) :=
   (ivCross P D S)⁻¹ *ᵥ (fun s => mean fun i => instrumentRow P S i s*Y i)
+/-- T26(c): the IV coefficient on D equals the adjusted Wald estimator, under
+the printed invertibility and nonzero-denominator conditions. -/
+theorem adjusted_wald_equals_IV {n k} (P : CovPopulation n k) (Y D : Fin n → ℝ)
+    (S : Finset (Fin n)) (hP : ValidDesign P.pop) (hS : S ∈ assignments P.pop)
+    (hx : ∀ s, ∑ i, P.x i s = 0) (h1 : (gram P.x S).det ≠ 0)
+    (h0 : (gram P.x Sᶜ).det ≠ 0) (hcross : (ivCross P D S).det ≠ 0)
+    (hinst : (instrumentGram P S).det ≠ 0) (hd : adjustedTau P D S ≠ 0) :
+    adjustedTau P D S * ivCoefficients P Y D S (.inl 0) = adjustedTau P Y S ∧
+    ivCoefficients P Y D S (.inl 0) = adjustedWald P Y D S := by
+  sorry
 
 /-- Squared AR function, ratios of quadratics (15)-(16), main pp. 12-14;
 (F.1)-(F.2), Supplement p. 43. The numerator and denominator are the paper's
@@ -1927,8 +2239,23 @@ def openInterval (l u : EReal) : Set ℝ := {β | l < (β : EReal) ∧ (β : ERe
 main p. 14, Remark 7. -/
 def crossing {M} (g : Fin M → ℝ → ℝ) (β : ℝ) : Prop :=
   ∃ s t, g s ≠ g t ∧ g s β = g t β
-/-- Equivalent cardinal description of the quantile index (T27), with both
-strict and non-strict comparisons. -/
+/-- T27: Lemma 1, all four parts, including one-sided unbounded intervals.
+We state the equivalent general continuous-curve version; the AR polynomial
+assumption supplies continuity, and no conclusion about ranks is a hypothesis. -/
+theorem quantile_index_interval {M} (g : Fin M → ℝ → ℝ) (hM : 0 < M)
+    (α : ℝ) (hα : 0 < α ∧ α < 1) (hg : ∀ m, Continuous (g m))
+    (hn : ∀ m β, 0 ≤ g m β) (l u : EReal) (hlu : l < u)
+    (hc : ∀ β ∈ openInterval l u, ¬crossing g β) :
+    (∀ x ∈ openInterval l u, ∀ y ∈ openInterval l u, mcIndices g α x = mcIndices g α y) ∧
+    (∀ x ∈ openInterval l u, ∀ a b : ℝ, l=(a : EReal) → u=(b : EReal) →
+      mcIndices g α x ⊆ mcIndices g α a ∧ mcIndices g α x ⊆ mcIndices g α b) ∧
+    (∀ x ∈ openInterval l u, ∀ b : ℝ, l=⊥ → u=(b : EReal) →
+      mcIndices g α x ⊆ mcIndices g α b) ∧
+    (∀ x ∈ openInterval l u, ∀ a : ℝ, u=⊤ → l=(a : EReal) →
+      mcIndices g α x ⊆ mcIndices g α a) := by
+  sorry
+/-- Equivalent cardinal description of the quantile index, target T27's suggested
+finite rank characterization, with both strict and non-strict comparisons. -/
 theorem quantile_index_rank {M} (g : Fin M → ℝ → ℝ) (hM : 0 < M)
     (α β : ℝ) (hα : 0 < α ∧ α < 1) (hn : ∀ m, 0 ≤ g m β) (m : Fin M) :
     m ∈ mcIndices g α β ↔
@@ -2076,7 +2403,7 @@ def Algorithm2Step {M} (g : Fin M → ℝ → ℝ) (α : ℝ) (J : List ℝ)
          (if E=[] then (p.right.toReal : ℝ)+1
            else ((p.right.toReal : ℝ)+(E.head! : ℝ))/(2 : ℝ)))
 /-- Finite prefix of the Step 4 loop, including its initialization and terminal
-step. -/
+step. The theorem below separately asserts that a terminating finite run exists. -/
 def Algorithm2Run {M} (g : Fin M → ℝ → ℝ) (α : ℝ) (J : List ℝ)
     (pieces : List (RecordedPiece M)) : Prop :=
   IntersectionList g J ∧ J ≠ [] ∧ pieces ≠ [] ∧
@@ -2092,7 +2419,7 @@ def CurveRegularity {M} (g : Fin M → ℝ → ℝ) : Prop :=
   ∀ s t, g s ≠ g t → {β | g s β=g t β}.Finite
 
 /-- The cross term in the unadjusted variance polynomial, main pp. 12-13,
-coefficients e in (15)-(16). Both vectors are fixed under reassignment. -/
+coefficients e in (15)-(16). Both vectors are frozen under reassignment. -/
 def rawVarianceCross {n} (P : Population n) (Y D : Fin n → ℝ)
     (S : Finset (Fin n)) : ℝ :=
   (fraction P)^2*(1-fraction P)^2 *
@@ -2145,7 +2472,7 @@ theorem sum_affine_square {n} (S : Finset (Fin n)) (Y D : Fin n → ℝ)
     _ = _ := by
       simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum]
 
-/-- Exact affine dependence of the fixed-outcome tau statistic on beta,
+/-- Exact affine dependence of the frozen-outcome tau statistic on beta,
 main p. 12, coefficients in (15). -/
 theorem rawTau_linear {n} (P : Population n) (Y D : Fin n → ℝ)
     (S : Finset (Fin n)) (β : ℝ) :
@@ -2167,9 +2494,8 @@ theorem rawSigma2_affine {n} (P : Population n) (Y D : Fin n → ℝ)
   unfold rawVarianceCross
   ring
 
-/-- The data-generated coefficients recover both polynomials in (15)-(16) and
-their ratio using total real division, for every beta. When the variance denominator
-is positive, `raw_ar_bridge` identifies its square root with the absolute AR statistic. -/
+/-- The data-generated coefficients recover both polynomials and the actual
+squared unadjusted AR statistic (15)-(16), for every beta. -/
 theorem raw_coefficients_formula {n} (P : Population n) (Y D : Fin n → ℝ)
     (S : Finset (Fin n)) (β : ℝ) :
     let Q := rawCoefficients P Y D S
@@ -2229,10 +2555,8 @@ theorem adjustedSigma2_affine {n k} (P : CovPopulation n k) (Y D : Fin n → ℝ
   unfold adjustedVarianceCross
   ring
 
-/-- Under full-rank arm OLS, the data-generated adjusted coefficients recover
-both polynomials in (F.1)-(F.2) and their ratio using total real division. When the
-variance denominator is positive, `adjusted_ar_bridge` identifies its square root
-with the absolute adjusted AR statistic. -/
+/-- The data-generated adjusted coefficients recover both polynomials and
+the squared adjusted AR statistic (F.1)-(F.2), under full-rank arm OLS. -/
 theorem adjusted_coefficients_formula {n k} (P : CovPopulation n k) (Y D : Fin n → ℝ)
     (S : Finset (Fin n)) (h1 : (gram P.x S).det ≠ 0)
     (h0 : (gram P.x Sᶜ).det ≠ 0) (β : ℝ) :
@@ -2278,7 +2602,7 @@ theorem adjusted_ar_bridge {n k} (P : CovPopulation n k) (Y D : Fin n → ℝ)
   simp only [adjustedAR, absStudent, if_neg (ne_of_gt hp)]
 
 /-- (15)-(16) and (F.1)-(F.2) use the same observed Y,D for every simulated
-assignment. This function fixes the vectors at the observed assignment O;
+assignment. This function freezes the vectors at the observed assignment O;
 only the regression and assignment in T vary. -/
 def dataCoefficients {n k} (P : CovPopulation n k) (adjusted : Bool)
     (O T : Finset (Fin n)) : QuadraticAR :=
@@ -2301,12 +2625,56 @@ def DataGeneratedCoefficients {M} (Qf : QuadraticAR) (Qg : Fin M → QuadraticAR
       ∀ R, (R=O ∨ ∃ m, R=T m) → (gram P.x R).det ≠ 0 ∧ (gram P.x Rᶜ).det ≠ 0) ∧
     Qf=dataCoefficients P adjusted O O ∧ ∀ m, Qg m=dataCoefficients P adjusted O (T m)
 
+/-- Data-generated squared AR curves for Algorithms 1-4 (main pp. 12-17,
+Supplement pp. 43-45), with one common observed dataset. -/
+def DataGeneratedCurves {M} (f : ℝ → ℝ) (g : Fin M → ℝ → ℝ) : Prop :=
+  ∃ Qf Qg, DataGeneratedCoefficients Qf Qg ∧
+    f=arFunction Qf ∧ g=fun m => arFunction (Qg m)
+
+/-- T23: corrected (H.1) and Algorithm 1 on each closed gap. The selected
+curve equals the square of the absolute critical value, including at crossings. -/
+theorem corrected_H1 {M} (f : ℝ → ℝ) (g : Fin M → ℝ → ℝ) (α : ℝ)
+    (hM : 0 < M) (hα : 0 < α ∧ α < 1) (hg : CurveRegularity g)
+    (hf : ∀ β, 0 ≤ f β) (hdata : DataGeneratedCurves f g) (J : List ℝ) (pieces : List (RecordedPiece M))
+    (hJ : J ≠ []) (hRun : Algorithm1Run g α J pieces) :
+    ∀ p ∈ pieces,
+      (∀ β ∈ closedInterval p.left p.right,
+        p.index ∈ mcIndices g α β ∧ g p.index β=(mcCritical g α β)^2) ∧
+      pieceSet f g p = mcSet f g α ∩ closedInterval p.left p.right := by
+  sorry
+/-- T22: corrected Algorithm 2/4 indexing, termination, coverage of R, valid
+quantile indices on every recorded closed piece, and equality of the returned set.
+This also handles the last-crossing branch when there is no V_k. -/
+theorem corrected_algorithm2 {M} (f : ℝ → ℝ) (g : Fin M → ℝ → ℝ) (α : ℝ)
+    (hM : 0 < M) (hα : 0 < α ∧ α < 1) (hg : CurveRegularity g)
+    (hf : ∀ β, 0 ≤ f β) (hdata : DataGeneratedCurves f g) (J : List ℝ) (hJ : IntersectionList g J) (hne : J ≠ []) :
+    (∃ pieces, Algorithm2Run g α J pieces) ∧
+    ∀ pieces, Algorithm2Run g α J pieces →
+      pieces.length ≤ J.length+1 ∧
+      (pieces.map (fun p => p.right)).Pairwise (· < ·) ∧
+      (∀ p ∈ pieces, p.right=⊤ ∨ ∃ e : ℝ, p.right=(e : EReal) ∧ e ∈ J) ∧
+      (∀ β : ℝ, ∃ p ∈ pieces, β ∈ closedInterval p.left p.right) ∧
+      (∀ p ∈ pieces, ∀ β ∈ closedInterval p.left p.right, p.index ∈ mcIndices g α β) ∧
+      (∀ p ∈ pieces, pieceSet f g p=mcSet f g α ∩ closedInterval p.left p.right) ∧
+      returnedSet f g pieces=mcSet f g α := by
+  sorry
+/-- T28: Theorem 3 for Algorithms 1/3 and 2/4, with the no-intersection branch.
+The generic curve formulation applies equally to the unadjusted and adjusted
+ratios of quadratics; recorded pairs are indexed exactly as Step 4 records them. -/
+theorem algorithm_correctness {M} (f : ℝ → ℝ) (g : Fin M → ℝ → ℝ) (α : ℝ)
+    (hM : 0 < M) (hα : 0 < α ∧ α < 1) (hg : CurveRegularity g)
+    (hf : ∀ β, 0 ≤ f β) (hdata : DataGeneratedCurves f g) :
+    (∀ J pieces, Algorithm1Run g α J pieces → returnedSet f g pieces=mcSet f g α) ∧
+    (∀ J pieces, Algorithm2Run g α J pieces → returnedSet f g pieces=mcSet f g α) ∧
+    (∀ J, IntersectionList g J → J=[] → ∀ β m, m ∈ mcIndices g α β →
+      {x | f x ≤ g m x}=mcSet f g α) := by
+  sorry
 
 /-- Necessary algebraic coefficient condition from "a=tau_d^2, b=-2 tau_y
 tau_d, c=tau_y^2" (main pp. 12-13, (15)-(16)), with positive variance
 denominator as in Assumption 6/7. This predicate alone admits arbitrary such
 coefficients; DataGeneratedCoefficients additionally requires the common
-observed dataset and simulated assignments in the algorithm statements. -/
+observed dataset and simulated assignments in the repaired target statements. -/
 def PaperAR (Q : QuadraticAR) : Prop :=
   (∀ β, 0 < Q.d*β^2+Q.e*β+Q.f) ∧
   ∃ u v : ℝ, Q.a=v^2 ∧ Q.b= -2*u*v ∧ Q.c=u^2
@@ -2321,7 +2689,7 @@ theorem paperAR_regular (Q : QuadraticAR) (hQ : PaperAR Q) : ARRegular Q := by
   nlinarith [sq_nonneg (u-β*v)]
 
 /-- Four all-complier units, n1=2, y_i(1)=y_i(0)=(0,1,2,4), used only
-to demonstrate that the common-data AR hypotheses are satisfiable. -/
+to demonstrate that the repaired common-data AR hypotheses are satisfiable. -/
 def commonDataExample : CovPopulation 4 0 where
   pop := {y := fun i _ => if i=0 then 0 else if i=1 then 1 else if i=2 then 2 else 4,
           d := fun _ a => a, n1 := 2}
@@ -2330,7 +2698,7 @@ def commonDataExample : CovPopulation 4 0 where
 /-- Data-generated curves can satisfy Assumption 6 and have a genuine crossing.
 For the explicit four-unit dataset the observed assignment is {0,1}; the two
 simulations are {0,1} and {0,2}. Their AR functions meet at beta=-1. This is a
-satisfiable instance of the algorithm hypotheses; it does not prove correctness. -/
+nonvacuity certificate for the repaired algorithm objects, not their correctness. -/
 theorem data_ar_nonvacuous :
     ∃ (Qf : QuadraticAR) (Qg : Fin 2 → QuadraticAR),
       DataGeneratedCoefficients Qf Qg ∧ PaperAR Qf ∧
@@ -2404,8 +2772,8 @@ theorem arFunction_continuous (Q : QuadraticAR) (hQ : ARRegular Q) :
 
 /-- The ratio-of-quadratics family has continuous nonnegative curves and
 finitely many intersections of every distinct pair (main Remark 7, p. 14;
-Supplement p. 43). Distinctness makes the cross-multiplied polynomial nonzero,
-so its real root set is finite; no rank-constancy conclusion is assumed. -/
+Supplement p. 43). Distinctness excludes the zero cross-multiplied polynomial,
+whose real root set is finite; no rank-constancy conclusion is assumed. -/
 theorem arFamily_regular {M} (Q : Fin M → QuadraticAR)
     (hQ : ∀ m, ARRegular (Q m)) :
     CurveRegularity (fun m => arFunction (Q m)) := by
@@ -2443,7 +2811,261 @@ theorem arFamily_regular {M} (Q : Fin M → QuadraticAR)
     rw [heval]
     exact sub_eq_zero.mpr H
 
+/-- T27 in the paper's own squared-AR objects (15)-(16), under Assumption 6
+(or (F.1)-(F.2), Assumption 7): all four parts of Lemma 1, including infinite
+endpoints. Finite-crossing regularity is derived separately, not added as a hypothesis. -/
+theorem quantile_index_interval_AR {M} (Q : Fin M → QuadraticAR) (hM : 0 < M)
+    (α : ℝ) (hα : 0 < α ∧ α < 1) (hQ : ∀ m, PaperAR (Q m))
+    (hdata : ∃ Qf, DataGeneratedCoefficients Qf Q ∧ PaperAR Qf)
+    (l u : EReal) (hlu : l < u)
+    (hc : ∀ β ∈ openInterval l u, ¬crossing (fun m => arFunction (Q m)) β) :
+    let g := fun m => arFunction (Q m)
+    (∀ x ∈ openInterval l u, ∀ y ∈ openInterval l u, mcIndices g α x = mcIndices g α y) ∧
+    (∀ x ∈ openInterval l u, ∀ a b : ℝ, l=(a : EReal) → u=(b : EReal) →
+      mcIndices g α x ⊆ mcIndices g α a ∧ mcIndices g α x ⊆ mcIndices g α b) ∧
+    (∀ x ∈ openInterval l u, ∀ b : ℝ, l=⊥ → u=(b : EReal) →
+      mcIndices g α x ⊆ mcIndices g α b) ∧
+    (∀ x ∈ openInterval l u, ∀ a : ℝ, u=⊤ → l=(a : EReal) →
+      mcIndices g α x ⊆ mcIndices g α a) := by
+  have hreg := arFamily_regular Q (fun m => paperAR_regular (Q m) (hQ m))
+  exact quantile_index_interval (fun m => arFunction (Q m)) hM α hα
+    hreg.1 hreg.2.1 l u hlu hc
+
+/-- T23 in the paper's ratios of quadratics: corrected (H.1) for every recorded
+Algorithm 1/3 gap, with the absolute critical value squared, under Assumption 6/7. -/
+theorem corrected_H1_AR {M} (Qf : QuadraticAR) (Qg : Fin M → QuadraticAR) (α : ℝ)
+    (hM : 0 < M) (hα : 0 < α ∧ α < 1) (hf : PaperAR Qf)
+    (hg : ∀ m, PaperAR (Qg m)) (hdata : DataGeneratedCoefficients Qf Qg) (J : List ℝ) (pieces : List (RecordedPiece M))
+    (hJ : J ≠ []) (hRun : Algorithm1Run (fun m => arFunction (Qg m)) α J pieces) :
+    let f := arFunction Qf
+    let g := fun m => arFunction (Qg m)
+    ∀ p ∈ pieces,
+      (∀ β ∈ closedInterval p.left p.right,
+        p.index ∈ mcIndices g α β ∧ g p.index β=(mcCritical g α β)^2) ∧
+      pieceSet f g p = mcSet f g α ∩ closedInterval p.left p.right := by
+  have hreg := arFamily_regular Qg (fun m => paperAR_regular (Qg m) (hg m))
+  have hn (β : ℝ) : 0 ≤ arFunction Qf β :=
+    div_nonneg ((paperAR_regular Qf hf).2 β) (le_of_lt ((paperAR_regular Qf hf).1 β))
+  exact corrected_H1 (arFunction Qf) (fun m => arFunction (Qg m)) α
+    hM hα hreg hn ⟨Qf, Qg, hdata, rfl, rfl⟩ J pieces hJ hRun
+
+/-- T22 in (15)-(16) or (F.1)-(F.2), under Assumption 6/7: corrected Algorithm
+2/4 terminates, records the proper interval-index pairs, has valid indices on
+each closed piece, and returns exactly the Monte Carlo confidence set. -/
+theorem corrected_algorithm2_AR {M} (Qf : QuadraticAR) (Qg : Fin M → QuadraticAR)
+    (α : ℝ) (hM : 0 < M) (hα : 0 < α ∧ α < 1) (hf : PaperAR Qf)
+    (hg : ∀ m, PaperAR (Qg m)) (hdata : DataGeneratedCoefficients Qf Qg) (J : List ℝ)
+    (hJ : IntersectionList (fun m => arFunction (Qg m)) J) (hne : J ≠ []) :
+    let f := arFunction Qf
+    let g := fun m => arFunction (Qg m)
+    (∃ pieces, Algorithm2Run g α J pieces) ∧
+    ∀ pieces, Algorithm2Run g α J pieces →
+      pieces.length ≤ J.length+1 ∧
+      (pieces.map (fun p => p.right)).Pairwise (· < ·) ∧
+      (∀ p ∈ pieces, p.right=⊤ ∨ ∃ e : ℝ, p.right=(e : EReal) ∧ e ∈ J) ∧
+      (∀ β : ℝ, ∃ p ∈ pieces, β ∈ closedInterval p.left p.right) ∧
+      (∀ p ∈ pieces, ∀ β ∈ closedInterval p.left p.right, p.index ∈ mcIndices g α β) ∧
+      (∀ p ∈ pieces, pieceSet f g p=mcSet f g α ∩ closedInterval p.left p.right) ∧
+      returnedSet f g pieces=mcSet f g α := by
+  have hreg := arFamily_regular Qg (fun m => paperAR_regular (Qg m) (hg m))
+  have hn (β : ℝ) : 0 ≤ arFunction Qf β :=
+    div_nonneg ((paperAR_regular Qf hf).2 β) (le_of_lt ((paperAR_regular Qf hf).1 β))
+  exact corrected_algorithm2 (arFunction Qf) (fun m => arFunction (Qg m)) α
+    hM hα hreg hn ⟨Qf, Qg, hdata, rfl, rfl⟩ J hJ hne
+
+/-- T28: Theorem 3 for the actual squared-AR rational forms, Assumption 6/7,
+with Algorithms 1/3 and 2/4 and the no-intersection branch all retained. -/
+theorem algorithm_correctness_AR {M} (Qf : QuadraticAR) (Qg : Fin M → QuadraticAR)
+    (α : ℝ) (hM : 0 < M) (hα : 0 < α ∧ α < 1) (hf : PaperAR Qf)
+    (hg : ∀ m, PaperAR (Qg m)) (hdata : DataGeneratedCoefficients Qf Qg) :
+    let f := arFunction Qf
+    let g := fun m => arFunction (Qg m)
+    (∀ J pieces, Algorithm1Run g α J pieces → returnedSet f g pieces=mcSet f g α) ∧
+    (∀ J pieces, Algorithm2Run g α J pieces → returnedSet f g pieces=mcSet f g α) ∧
+    (∀ J, IntersectionList g J → J=[] → ∀ β m, m ∈ mcIndices g α β →
+      {x | f x ≤ g m x}=mcSet f g α) := by
+  have hreg := arFamily_regular Qg (fun m => paperAR_regular (Qg m) (hg m))
+  have hn (β : ℝ) : 0 ≤ arFunction Qf β :=
+    div_nonneg ((paperAR_regular Qf hf).2 β) (le_of_lt ((paperAR_regular Qf hf).1 β))
+  exact algorithm_correctness (arFunction Qf) (fun m => arFunction (Qg m)) α
+    hM hα hreg hn ⟨Qf, Qg, hdata, rfl, rfl⟩
 
 end
+
+#print axioms AronowAudit.P002.ols_minimizer_exists
+#print axioms AronowAudit.P002.groupMean_sub_smul
+#print axioms AronowAudit.P002.score_linear
+#print axioms AronowAudit.P002.ols_linear
+#print axioms AronowAudit.P002.adjustedWith_linear
+#print axioms AronowAudit.P002.corrected_I1_I2
+#print axioms AronowAudit.P002.corrected_adjusted_difference
+#print axioms AronowAudit.P002.score_residual
+#print axioms AronowAudit.P002.ols_error
+#print axioms AronowAudit.P002.corrected_E41_cross_term
+#print axioms AronowAudit.P002.neyman_variance
+#print axioms AronowAudit.P002.tau_mean_zero
+#print axioms AronowAudit.P002.randomization_moments
+#print axioms AronowAudit.P002.sample_mean_variance
+#print axioms AronowAudit.P002.oracle_variances
+#print axioms AronowAudit.P002.corrected_variance_algebra
+#print axioms AronowAudit.P002.corrected_lemma5
+#print axioms AronowAudit.P002.corrected_E10
+#print axioms AronowAudit.P002.negative_delta_counterexample
+#print axioms AronowAudit.P002.negative_delta_sequence
+#print axioms AronowAudit.P002.square_centering
+#print axioms AronowAudit.P002.corrected_C17
+#print axioms AronowAudit.P002.centring_counterexample
+#print axioms AronowAudit.P002.C31_counterexample
+#print axioms AronowAudit.P002.corrected_C31
+#print axioms AronowAudit.P002.intercept_eigenvalue_counterexample
+#print axioms AronowAudit.P002.corrected_augmented_gram
+#print axioms AronowAudit.P002.corrected_gram_perturbation
+#print axioms AronowAudit.P002.maximum_counterexample
+#print axioms AronowAudit.P002.corrected_E14
+#print axioms AronowAudit.P002.corrected_E21_E23
+#print axioms AronowAudit.P002.corrected_oracle_expansion
+#print axioms AronowAudit.P002.corrected_theorem1
+#print axioms AronowAudit.P002.corrected_theorem2
+#print axioms AronowAudit.P002.printed_theorem2
+#print axioms AronowAudit.P002.collapse_moments
+#print axioms AronowAudit.P002.fourth_moment_CS
+#print axioms AronowAudit.P002.half_moment_collapse
+#print axioms AronowAudit.P002.theorem1_sharpness_counterexample
+#print axioms AronowAudit.P002.theorem2_sharpness_counterexample
+#print axioms AronowAudit.P002.corrected_lemma12
+#print axioms AronowAudit.P002.corrected_lemma20
+#print axioms AronowAudit.P002.feasible_variance_counterexample
+#print axioms AronowAudit.P002.missing_square_counterexample
+#print axioms AronowAudit.P002.corrected_E29
+#print axioms AronowAudit.P002.corrected_theorem7
+#print axioms AronowAudit.P002.constant_effect_adjusted_outcomes
+#print axioms AronowAudit.P002.quantile_valid
+#print axioms AronowAudit.P002.constant_effect_coverage
+#print axioms AronowAudit.P002.adjusted_wald_in_set
+#print axioms AronowAudit.P002.adjusted_wald_equals_IV
+#print axioms AronowAudit.P002.quantile_index_interval
+#print axioms AronowAudit.P002.quantile_index_rank
+#print axioms AronowAudit.P002.corrected_H1
+#print axioms AronowAudit.P002.corrected_algorithm2
+#print axioms AronowAudit.P002.algorithm_correctness
+
+#print axioms AronowAudit.P002.le_maximum
+#print axioms AronowAudit.P002.maximum_le
+
+#print axioms AronowAudit.P002.mean_sub_smul
+
+#print axioms AronowAudit.P002.centring_assignments
+
+#print axioms AronowAudit.P002.negative_delta_assignments
+#print axioms AronowAudit.P002.negative_delta_population_ols
+
+#print axioms AronowAudit.P002.C31_assignments
+
+#print axioms AronowAudit.P002.observedW_treated
+
+#print axioms AronowAudit.P002.observedW_control
+
+#print axioms AronowAudit.P002.groupMean_congr
+
+#print axioms AronowAudit.P002.score_congr
+
+#print axioms AronowAudit.P002.dot_xCirc
+
+#print axioms AronowAudit.P002.score_dot
+
+#print axioms AronowAudit.P002.corrected_remark3_sharpness
+
+#print axioms AronowAudit.P002.corrected_min_eigenvalue
+
+#print axioms AronowAudit.P002.corrected_C17_rate
+
+#print axioms AronowAudit.P002.negative_delta_AMGM_failure
+
+#print axioms AronowAudit.P002.w_difference_compliers
+
+#print axioms AronowAudit.P002.sum_w_difference
+
+#print axioms AronowAudit.P002.mean_w_equal_at_late
+
+#print axioms AronowAudit.P002.ols_normal_equations
+
+#print axioms AronowAudit.P002.population_intercept_mean
+
+#print axioms AronowAudit.P002.groupMean_add_const
+
+#print axioms AronowAudit.P002.residual_sum_squares_identity
+
+#print axioms AronowAudit.P002.coordinate_population_ols
+
+#print axioms AronowAudit.P002.coordinate_example_admissible
+
+#print axioms AronowAudit.P002.corrected_E61_eigenvalue
+
+#print axioms AronowAudit.P002.theta_half_moment_constant
+#print axioms AronowAudit.P002.observedW_constant
+#print axioms AronowAudit.P002.rawTau_constant
+#print axioms AronowAudit.P002.theta_half_moment_coverage
+#print axioms AronowAudit.P002.degenerate_model_admissible
+
+#print axioms AronowAudit.P002.assignment_inclusion_count
+
+#print axioms AronowAudit.P002.corrected_E14_order
+
+#print axioms AronowAudit.P002.corrected_C17_identity
+#print axioms AronowAudit.P002.group_variance_second_moment
+
+#print axioms AronowAudit.P002.zero_response_ratio_failure
+
+#print axioms AronowAudit.P002.score_of_dot
+
+#print axioms AronowAudit.P002.gram_quadratic
+#print axioms AronowAudit.P002.ols_minimizer_fullrank
+
+#print axioms AronowAudit.P002.sum_complement_eq
+#print axioms AronowAudit.P002.rawTau_sum
+
+#print axioms AronowAudit.P002.paperAR_regular
+#print axioms AronowAudit.P002.arFunction_continuous
+#print axioms AronowAudit.P002.arFamily_regular
+#print axioms AronowAudit.P002.quantile_index_interval_AR
+#print axioms AronowAudit.P002.corrected_H1_AR
+#print axioms AronowAudit.P002.corrected_algorithm2_AR
+#print axioms AronowAudit.P002.algorithm_correctness_AR
+
+#print axioms AronowAudit.P002.sum_affine_square
+
+#print axioms AronowAudit.P002.rawTau_linear
+
+#print axioms AronowAudit.P002.rawSigma2_affine
+
+#print axioms AronowAudit.P002.raw_coefficients_formula
+
+#print axioms AronowAudit.P002.fitted_residual_linear
+
+#print axioms AronowAudit.P002.adjustedSigma2_affine
+
+#print axioms AronowAudit.P002.adjusted_coefficients_formula
+
+#print axioms AronowAudit.P002.assignment_marginal
+
+#print axioms AronowAudit.P002.expectation_sub
+
+#print axioms AronowAudit.P002.expectation_mul
+
+#print axioms AronowAudit.P002.expectation_div
+
+#print axioms AronowAudit.P002.expectation_sum
+
+#print axioms AronowAudit.P002.expectation_const
+
+#print axioms AronowAudit.P002.tau_expectation
+
+#print axioms AronowAudit.P002.leastRayleigh_lower
+
+#print axioms AronowAudit.P002.raw_ar_bridge
+
+#print axioms AronowAudit.P002.adjusted_ar_bridge
+
+#print axioms AronowAudit.P002.data_ar_nonvacuous
 
 end AronowAudit.P002

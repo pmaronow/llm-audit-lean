@@ -1,0 +1,196 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P036.arm_centered_sum",
+        "reason": "The existing least-squares minimizer theorem already incorporates this centered-sum identity."
+      },
+      {
+        "lean_name": "AronowAudit.P036.arm_square_decomposition",
+        "reason": "The existing least-squares minimizer theorem already incorporates this square decomposition."
+      },
+      {
+        "lean_name": "AronowAudit.P036.conditional_mean_of_model",
+        "reason": "The corrected model theorem already applies this general conditional-expectation helper."
+      },
+      {
+        "lean_name": "AronowAudit.P036.interest_is_subset",
+        "reason": "The outcome-subset helper is not an additional conclusion of the corrected regression claim."
+      },
+      {
+        "lean_name": "AronowAudit.P036.rss_decomposition",
+        "reason": "This decomposition is already used inside the credited least-squares minimizer theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P036.rss_partition",
+        "reason": "This partition is already used inside the credited least-squares minimizer theorem."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P036.corrected_model_conditional_mean",
+      "AronowAudit.P036.ols_unique_minimizer",
+      "AronowAudit.P036.peers_binary",
+      "AronowAudit.P036.sum_peers",
+      "AronowAudit.P036.table_any_coefficients",
+      "AronowAudit.P036.table_coefficient_rounding",
+      "AronowAudit.P036.table_interest_coefficients",
+      "AronowAudit.P036.unadjusted_conditional_means"
+    ],
+    "statement_definition": "SAP.P036.T1Statement",
+    "target_id": "P036-T1",
+    "theorem": "SAP.P036.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P036.armMean_congr",
+        "reason": "Arm-mean locality is already incorporated in the assembled observed-outcome moment proofs."
+      },
+      {
+        "lean_name": "AronowAudit.P036.armSS_formula",
+        "reason": "The binary-variance and design-variance results already incorporate this finite square expansion."
+      },
+      {
+        "lean_name": "AronowAudit.P036.assignments_card",
+        "reason": "The assembled randomization-moment proofs already incorporate this design-counting fact."
+      },
+      {
+        "lean_name": "AronowAudit.P036.assignments_nonempty",
+        "reason": "The assembled randomization-moment proofs already establish nonempty averaging support."
+      },
+      {
+        "lean_name": "AronowAudit.P036.designVariance_congr",
+        "reason": "Variance transport is already incorporated in the assembled randomization-variance identity."
+      },
+      {
+        "lean_name": "AronowAudit.P036.designVariance_second_moment",
+        "reason": "The assembled design-variance proof already incorporates this second-moment expansion."
+      },
+      {
+        "lean_name": "AronowAudit.P036.designVariance_sub_const",
+        "reason": "The assembled design-variance proof already incorporates translation invariance."
+      },
+      {
+        "lean_name": "AronowAudit.P036.design_complement",
+        "reason": "The assembled two-arm moment results already incorporate the complement-design identity."
+      },
+      {
+        "lean_name": "AronowAudit.P036.expected_peer_indicator",
+        "reason": "The assembled moment results already incorporate this single-inclusion expectation."
+      },
+      {
+        "lean_name": "AronowAudit.P036.expected_peer_pair",
+        "reason": "The assembled moment results already incorporate this pair-inclusion expectation."
+      },
+      {
+        "lean_name": "AronowAudit.P036.expected_sample_mean",
+        "reason": "Sample-mean unbiasedness is already incorporated in complete_randomization_moments."
+      },
+      {
+        "lean_name": "AronowAudit.P036.expected_sample_total",
+        "reason": "The assembled moment results already incorporate this sample-total first moment."
+      },
+      {
+        "lean_name": "AronowAudit.P036.expected_sample_total_sq",
+        "reason": "The assembled variance result already incorporates this sample-total second moment."
+      },
+      {
+        "lean_name": "AronowAudit.P036.expected_sample_variance",
+        "reason": "Both-arm sample-variance unbiasedness is already included in complete_randomization_moments."
+      },
+      {
+        "lean_name": "AronowAudit.P036.observed_arm_quantities",
+        "reason": "The assembled moment results already incorporate observed-outcome locality within each arm."
+      },
+      {
+        "lean_name": "AronowAudit.P036.pair_inclusion_count",
+        "reason": "The assembled moment proofs already incorporate this pair-counting fact."
+      },
+      {
+        "lean_name": "AronowAudit.P036.populationVariance_nonneg",
+        "reason": "The exact HC2 conservativeness theorem already incorporates population-variance nonnegativity."
+      },
+      {
+        "lean_name": "AronowAudit.P036.populationVariance_zero_iff_constant",
+        "reason": "The exact HC2 conservativeness theorem already includes the constant-effect equality criterion."
+      },
+      {
+        "lean_name": "AronowAudit.P036.randomization_unbiased_effect",
+        "reason": "This conclusion is included directly in complete_randomization_moments."
+      },
+      {
+        "lean_name": "AronowAudit.P036.randomization_unbiased_variances",
+        "reason": "Both conclusions are included directly in complete_randomization_moments."
+      },
+      {
+        "lean_name": "AronowAudit.P036.randomization_variance_identity",
+        "reason": "This conclusion is included directly in complete_randomization_moments."
+      },
+      {
+        "lean_name": "AronowAudit.P036.residual_by_arm",
+        "reason": "The existing HC2 sandwich and Neyman-identity proofs already incorporate this residual formula."
+      },
+      {
+        "lean_name": "AronowAudit.P036.sampleVariance_congr",
+        "reason": "Variance locality is already incorporated in the assembled observed-outcome moment proofs."
+      },
+      {
+        "lean_name": "AronowAudit.P036.sample_total_variance",
+        "reason": "The assembled randomization-variance theorem already incorporates the sample-total variance."
+      },
+      {
+        "lean_name": "AronowAudit.P036.single_inclusion_count",
+        "reason": "The assembled moment proofs already incorporate this single-counting fact."
+      },
+      {
+        "lean_name": "AronowAudit.P036.sum_linear_combination_sq",
+        "reason": "The assembled design-variance proof already incorporates this finite square expansion."
+      },
+      {
+        "lean_name": "AronowAudit.P036.sum_peers_mul",
+        "reason": "The existing matrix OLS coefficient theorem already incorporates this regressor-total identity."
+      },
+      {
+        "lean_name": "AronowAudit.P036.weighted_pair_sum",
+        "reason": "The assembled second-moment proof already incorporates this weighted pair-sum identity."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P036.binary_sample_variance",
+      "AronowAudit.P036.complete_randomization_moments",
+      "AronowAudit.P036.corrected_hc2_conservativeness",
+      "AronowAudit.P036.expected_hc2_variance",
+      "AronowAudit.P036.gram_entries",
+      "AronowAudit.P036.gram_inverse",
+      "AronowAudit.P036.hc2_arm_formula",
+      "AronowAudit.P036.hc2_eq_neyman",
+      "AronowAudit.P036.leverage_by_arm",
+      "AronowAudit.P036.matrix_ols_coefficients",
+      "AronowAudit.P036.table_any_hc2",
+      "AronowAudit.P036.table_from_binary_counts",
+      "AronowAudit.P036.table_hc2_se_rounding",
+      "AronowAudit.P036.table_interest_hc2"
+    ],
+    "statement_definition": "SAP.P036.T2Statement",
+    "target_id": "P036-T2",
+    "theorem": "SAP.P036.T2"
+  }
+]

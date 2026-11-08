@@ -1,0 +1,17 @@
+All five declarations are faithful, with severity `none`. No source changes are needed.
+
+| Declaration | Record decision | Review |
+| --- | --- | --- |
+| `SAP.P003b.T7` | whole | Includes both probability bounds, arbitrary labeled populations, fixed-data conditioning, the full midpoint/zero-query budget, fresh conditional batch laws, one-test and endpoint error bounds, and all four deterministic comparisons. |
+| `SAP.P003b.T32` | whole | Includes both exact endpoints and the total test count, together with the actual oracle equivalence, initial segment, exceptional zero-query cost, separate endpoint budgets, and standalone budget inequality. |
+| `SAP.P003b.T34` | whole | Matches both coverage/inclusion assertions, their distinct conditions, level shifts, constants, and joint probability law. A canonical count representative covers arbitrary fixed labeled populations by permutation invariance of complete randomization. |
+| `SAP.P003b.T6` | whole | States the canonical counterexamples to intermediate proof assertions, including their complete finite data and probability comparisons. It does not claim to refute the final interval guarantees. |
+| `SAP.P003b.T35` | refuted | A valid refutation of the canonical assertion for literal Algorithm 5.3: its first-feasible-line schedule gives coverage 1/2 instead of at least 3/4 in the stated two-unit example. |
+
+The T35 distinction is material. The canonical statement and its definitions specify the printed algorithm; only its audit-history `note` recommends the full-j correction. Under the task's rules that note adds no assumption. The witness satisfies the actual randomization and independent replication conditions. It refutes the literal assertion, including the asserted exhaustive testing of possible vectors. It does not refute the corrected full-j algorithm. The docstring explicitly identifies the literal algorithm, so its description and `refuted` label are accurate. The printed reading and every witness condition are checked in [scratch/RefutationChecks.md](scratch/RefutationChecks.md).
+
+All 172 distinct dependency declarations listed across the closures were read, including generated auxiliaries inspected with Lean. The definitions are concrete finite enumerations and algorithms. Positive treatment/control sizes, positive K, guarded conditional probabilities, and legal reuse bounds prevent the relevant zero-denominator, empty-extremum, modular-wraparound and out-of-bounds conventions from supplying any result. No substantive undisclosed assumption or conclusion-shaped premise was found.
+
+[reading.md](reading.md) was saved before opening the claims; [claim-stage.json](claim-stage.json) was saved before opening the record. No claim-stage conclusion was revised after seeing the record. T35 was classified there as a different assertion because it negates the headline guarantee; the record's `refuted` decision is exactly the appropriate disposition for that genuine counterexample.
+
+Validation: [scratch/Check.lean](scratch/Check.lean), [scratch/InformativeBound.lean](scratch/InformativeBound.lean), and [scratch/T35Check.lean](scratch/T35Check.lean) compile using `sap-lean`, without invoking the Challenge theorem stubs. They provide simultaneous nonvacuity instances for all hypotheses, an informative positive T7 probability bound, positive T6 witness probabilities, and T35 inclusion/exclusion for arbitrary Monte Carlo samples. [findings.json](findings.json) contains exactly the five requested entries and copies their fingerprints from `closure.json`.

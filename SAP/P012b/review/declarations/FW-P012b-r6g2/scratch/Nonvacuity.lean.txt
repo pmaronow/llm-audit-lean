@@ -1,0 +1,70 @@
+import SAP.P012b.Challenge
+
+open SAP.P012b Finset
+set_option maxRecDepth 100000
+set_option maxHeartbeats 2000000
+
+-- Direct finite checks, independent of the five audited theorem constants.
+example : Admissible starHistory := by decide
+example : Admissible chainHistory := by decide
+example : Admissible reorderedHistory := by decide
+example : Compatible starHistory historyState := by decide
+example : Compatible chainHistory historyState := by decide
+example : Compatible reorderedHistory historyState := by decide
+example : PreferentialDefined starHistory historyState := by decide
+example : PreferentialDefined chainHistory historyState := by decide
+example : PreferentialDefined reorderedHistory historyState := by decide
+
+-- A concrete execution of the literal printed delete-unsampled branch.
+example : Admissible wholeProposalData := by decide
+example : Compatible wholeProposalData wholeProposalStart := by decide
+example : Proposal wholeProposalData false wholeProposalStart wholeProposalBad := by
+  apply Or.inl
+  apply GraphProposal.deleteUnobserved (i := 1) (j := u 3 0) (v := u 4 0)
+    (P := addVertex (removeEdge wholeProposalStart (s 1) (u 3 0)) (u 4 0) false)
+  · decide
+  · decide
+  · decide
+  · decide
+  · decide
+  · decide
+  · exact Replacement.fresh (u 4 0) (by decide) false
+example : ¬ Compatible wholeProposalData wholeProposalBad := by decide
+
+-- Both the zero-spare and positive-spare cases of the identification claim.
+def auditTight : Data := {domainA with trait := fun i => i == 2}
+example : Admissible auditTight ∧
+    0 < sampledTraitDegree auditTight false ∧
+    0 < sampledTraitDegree auditTight true ∧
+    auditTight.seeds.card < auditTight.sampled.card ∧
+    (∀ i ∈ auditTight.sampled, auditTight.degree i = recruitmentDegree auditTight i) ∧
+    Compatible auditTight (dyad false true) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · decide
+  · decide
+  · decide
+  · decide
+  · norm_num [auditTight, domainA, recruitmentDegree, recruitmentEdges, nonseeds, s] <;> decide
+  · decide
+example : Admissible oneLeafData ∧
+    0 < sampledTraitDegree oneLeafData false ∧
+    0 < sampledTraitDegree oneLeafData true ∧
+    oneLeafData.seeds.card < oneLeafData.sampled.card ∧
+    2 ∈ oneLeafData.sampled ∧
+    recruitmentDegree oneLeafData 2 < oneLeafData.degree 2 ∧
+    Compatible oneLeafData (oneLeafState false) ∧
+    Compatible oneLeafData (oneLeafState true) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> decide
+
+-- A real instance of the quantified recruitment ordering and compatible states.
+example : StrictMonoOn (id : ℕ → ℕ) (↑figureData.sampled : Set ℕ) :=
+  strictMono_id.strictMonoOn _
+example : wholeFigureData id = figureData := by rfl
+example : Admissible figureData := by decide
+example : 0 < sampledTraitDegree figureData false ∧
+    0 < sampledTraitDegree figureData true ∧
+    (nonseeds figureData).card = 4 := by decide
+example : Compatible figureData (leafCompletion figureData true) := by decide
+example : Compatible figureData (leafCompletion figureData false) := by decide
+example : Compatible (wholeComplementData figureData)
+    (wholeComplementState (leafCompletion figureData true)) := by decide

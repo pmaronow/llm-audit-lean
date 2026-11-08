@@ -2,14 +2,14 @@ import Mathlib.Tactic
 
 namespace AronowAudit.P018.PaperDomains
 
-/-- Universal significance-ratio implications for T24(iv), without positivity of se. -/
+/-- Exact universal closure of the retired literal T24(iv) draft. -/
 def PrintedSignificanceRounding : Prop := ∀ b se : ℝ,
     (|b| ≤ 23/2000 → 15/2000 ≤ se → |b|/se ≤ 23/15 ∧ (23/15 : ℝ) < 41/25) ∧
     (21/2000 ≤ |b| → se ≤ 5/2000 →
       21/5 ≤ |b|/se ∧ (41/25 : ℝ) < 21/5)
 
-/-- The significance-ratio implication without denominator positivity is false.
-The table's standard errors are positive. -/
+/-- The literal correction omitted the positivity of the denominator.
+This refutes the audit's unrestricted draft, not the table's positive SEs. -/
 theorem printed_significance_rounding_refuted : ¬ PrintedSignificanceRounding := by
   intro h
   have hh := (h (21/2000) 0).2 (by norm_num) (by norm_num)
@@ -30,5 +30,8 @@ theorem significance_on_rounding_intervals (b dyadic hc : ℝ)
     (le_div_iff₀ hh).mpr ?_, by norm_num⟩
   · linarith [hb.2,hdyadic.1]
   · linarith [hb.1,hhc.2]
+
+#print axioms printed_significance_rounding_refuted
+#print axioms significance_on_rounding_intervals
 
 end AronowAudit.P018.PaperDomains

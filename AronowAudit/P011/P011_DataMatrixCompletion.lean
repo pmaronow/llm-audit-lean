@@ -193,6 +193,10 @@ lemma data_dependent_expansion_failure_completed :
       field_simp <;> ring
     simp only [Set.mem_setOf_eq,he]
     rfl
+#print axioms rank_one_norm
+#print axioms finite_data
+#print axioms average_CP
+#print axioms data_dependent_expansion_failure_completed
 end
 end AronowAudit.P011.DataMatrixCompletion
 
@@ -209,5 +213,6 @@ theorem data_dependent_expansion_failure :
     InProbability signFamily
       (fun k y => Matrix.trace (dataMatrix y - 1)/(k+1 : ℝ)) (fun _ => -1) := by
   exact DataMatrixCompletion.data_dependent_expansion_failure_completed
+#print axioms data_dependent_expansion_failure
 end
 end AronowAudit.P011

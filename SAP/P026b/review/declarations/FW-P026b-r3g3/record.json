@@ -1,0 +1,40 @@
+[
+ {
+  "target_id": "P026-T23",
+  "decision": "whole",
+  "theorem": "SAP.P026b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.generalized_affine_T23",
+   "AronowAudit.P026.PaperScope.ht_affine_T23",
+   "AronowAudit.P026.PaperScope.ht_affine_invariant_iff_T23",
+   "AronowAudit.P026.ht_location_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.PaperScope.htTotal_affine_T23",
+    "reason": "The total-affine helper is already assembled into the selected ATE affine formula and balance characterization."
+   }
+  ]
+ },
+ {
+  "target_id": "P026-T24",
+  "decision": "whole",
+  "theorem": "SAP.P026b.T24",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.generalized_residual_T24",
+   "AronowAudit.P026.PaperScope.ht_arm_variance_T24",
+   "AronowAudit.P026.PaperScope.ht_cluster_covariance_T24",
+   "AronowAudit.P026.PaperScope.ht_covariance_full_T24",
+   "AronowAudit.P026.PaperScope.ht_covariance_split_T24",
+   "AronowAudit.P026.PaperScope.unit_generalized_fixed_variance_T24"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.PaperScope.generalized_fixed_variance_T24",
+    "reason": "The original-unit fixed-residual variance row supplies equation [26]; this cluster-level fixed-residual variant adds no required clause."
+   }
+  ]
+ }
+]

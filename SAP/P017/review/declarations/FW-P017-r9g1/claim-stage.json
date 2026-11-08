@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P017.T1",
+    "target_id": "P017-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical clauses (a)-(f) are present in Defs/Part3.lean:16-57: the specified independent uniform/Rademacher/Bernoulli population, potential outcomes and observed IPW statistic, population and estimator moments, nondegenerate normal limit, unrestricted full-data-weight obstruction, and both disjoint positive-probability endpoint events with their observed empirical laws. The printed reading is representation of the actual clipped estimate by an admissible full-data weight for every observed empirical realization. Its conditions are satisfied: finite integrable heterogeneous effects; IID draws from exactly G; an estimator determined by the observed empirical pairs with the required CLT; and the original clipping radius. The witness refutes that printed assertion on positive-probability events, not a dependent-sampling or nonmeasurable interpretation. No hidden extra premise or junk value supplies the obstruction."
+  },
+  {
+    "theorem": "SAP.P017.T2",
+    "target_id": "P017-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/WholeW1.lean:49-78 states the complete atom-or-two-sided-mass iff, all interior/endpoint/exterior support consequences, and both prescribed explicit weights. The boundedness, pointwise nonnegativity, integrability and strictly positive weight integral, unit normalization, target numerator, straddling conditional means, and mixing coefficient in (0,1) are all asserted. General full-data weights are quantified in Representable; they are not restricted to functions of tau. Positive-mass guards eliminate every potential zero denominator. Measurability and integrability are precisely the canonical random-variable and admissibility requirements."
+  },
+  {
+    "theorem": "SAP.P017.T3",
+    "target_id": "P017-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/WholeW1.lean:87-124 covers corrected clauses (a)-(c): exact representation iff the original clipped target is interior or an endpoint with mass, support containment, identity and the complete finite-radius bound chain on the strictly inside event, infinite-radius identity case with both support bounds infinite, the binding-endpoint-atom sufficient condition, the almost surely finite-range sufficient condition, and convergence of both inside and representation probabilities under positive-variance root-n normality. Quantification over real estimate values expresses all empirical realizations because this target depends on the empirical law only through that real estimate. No finite-radius, finite-support, independence, or moment-growth assumption is imposed globally."
+  },
+  {
+    "theorem": "SAP.P017.T4",
+    "target_id": "P017-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part3.lean:105-150 quantifies over every positive finite d<c and every real estimate, giving representation without any estimator regularity assumption. It proves existence of such d, explicitly gives c.toReal/2 in the finite case, and treats the infinite case. It includes all three finite companions: the contraction bound, exact equality region and arbitrary positive-threshold probability bound, and the support condition using d. For every larger radius it exhibits an estimate fixed by the larger clip but changed by the repaired clip, supplying the stated obstruction to substituting c. The corrected support attainability fact and original-radius binding-atom sufficient condition are also included. The only measurability premises express the usual conditions."
+  },
+  {
+    "theorem": "SAP.P017.T5",
+    "target_id": "P017-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part4.lean:16-38 contains the canonical shifted-normal witness at mu=0 with IID pairs from N(0,1) times the independent symmetric effect law. It checks the effect support/radius, positive-variance root-n normality and exact Gaussian-plus-remainder decomposition; gives every finite piecewise formula and zero criterion; distinguishes probability-one nonzero intermediate error from the strictly smaller Gaussian tail; and supplies the central-event error, probability bound, nD_n -> -1, failure of o_p(1/n), and zero actual clipping error on that central event. The printed reading concerns tilde-theta minus the clip of hat-theta, not the clip of tilde-theta. All of its conditions are met: measurable integrable heterogeneous population, IID observations containing X, a statistic of their empirical law, exact Gaussian tilde-theta, and u_n=1/n=o_p(n^(-1/2)). The rate is positive for n>=1; a positive extension at zero has exactly the same LittleOp property. Thus the example refutes the printed intermediate-error assertion itself and does not refute Proposition 3's actual-error conclusion."
+  }
+]

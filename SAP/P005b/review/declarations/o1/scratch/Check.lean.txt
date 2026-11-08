@@ -1,0 +1,57 @@
+import SAP.P005b.Challenge
+open SAP.P005b Finset
+
+/-! T15: hypotheses satisfiable, and the coefficient definitions evaluate as expected. -/
+example : ∃ t c : ℕ, 2 ≤ t ∧ 2 ≤ c ∧ (design (t+c) t).Nonempty :=
+  ⟨2, 2, le_refl _, le_refl _, ⟨{0, 1}, by decide⟩⟩
+
+example : controlCoefficient 2 3 = 1/3 := by
+  norm_num [controlCoefficient, NTTC]
+example : treatedCoefficient 2 3 = -1/3 := by
+  norm_num [treatedCoefficient, NTTT]
+example : controlCoefficient 3 2 = 1/3 ∧ treatedCoefficient 3 2 = -1/3 := by
+  norm_num [controlCoefficient, treatedCoefficient, NTTC, NTTT]
+
+/-! T16: nondegenerate centred data, n = 3, m = 1, a = b = c = (2,-1,-1) with Σ abc = 6 ≠ 0. -/
+example : let a : Fin 3 → ℝ := ![2, -1, -1]
+    (3 ≤ 3 ∧ 0 < 1 ∧ 1 < 3) ∧ ∑ i, a i = 0 ∧ ∑ i, a i * a i * a i ≠ 0 := by
+  simp [Fin.sum_univ_three]; norm_num
+
+/-! A genuinely standardized population: n = 2, d = 1, x = (1, -1). -/
+def P2 : Population 2 1 := ⟨![![1], ![-1]], ![3, 0], ![1, 5]⟩
+
+theorem P2_std : standardized P2 := by
+  constructor
+  · funext k; fin_cases k
+    simp [xMean, mean, P2, Fin.sum_univ_two]
+  · ext k l; fin_cases k; fin_cases l
+    simp [gram, popMean, mean, P2, Fin.sum_univ_two]
+
+/-! T17 finite parts and T18: hypotheses jointly satisfiable with d = 1. -/
+example : 2 ≤ 2 ∧ 0 < 1 ∧ 1 < 2 ∧ standardized P2 ∧ gram P2 = 1 ∧
+    ({0} : Finset (Fin 2)) ∈ design 2 1 :=
+  ⟨le_refl _, Nat.one_pos, by norm_num, P2_std, P2_std.2, by decide⟩
+
+/-! T17 asymptotic parts: a sequence satisfying wholeW1Standing (d = 0, m = n/2). -/
+def Pz (n : ℕ) : Population n 0 := ⟨fun _ k => k.elim0, fun _ => 0, fun _ => 0⟩
+
+example : wholeW1Standing (fun _ => 0) (fun n => n / 2) Pz := by
+  refine ⟨?_, ⟨0, le_refl _, ?_⟩, ?_, ⟨1/4, 3/4, by norm_num, by norm_num, by norm_num, ?_⟩⟩
+  · intro n hn; refine ⟨Nat.zero_le _, ?_, ?_⟩ <;> simp only [] <;> omega
+  · intro n hn; refine ⟨?_, ?_, fun k => k.elim0⟩ <;> simp [popMean, mean, Pz]
+  · refine Filter.Eventually.of_forall (fun n => ⟨?_, ?_⟩)
+    · funext k; exact k.elim0
+    · ext k; exact k.elim0
+  · intro n hn
+    have hn0 : (0:ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+    have h1 : 4 * (n/2) ≥ n + 1 := by omega
+    have h2 : 4 * (n/2) ≤ 3 * n - 1 := by omega
+    constructor
+    · rw [pT, lt_div_iff₀ hn0]
+      have : ((4 * (n/2) : ℕ) : ℝ) ≥ ((n + 1 : ℕ) : ℝ) := by exact_mod_cast h1
+      push_cast at this; linarith
+    · rw [pT, div_lt_iff₀ hn0]
+      have : ((4 * (n/2) : ℕ) : ℝ) ≤ ((3 * n - 1 : ℕ) : ℝ) := by exact_mod_cast h2
+      have h3 : ((3 * n - 1 : ℕ) : ℝ) = 3 * n - 1 := by
+        rw [Nat.cast_sub (by omega)]; push_cast; ring
+      rw [h3] at this; push_cast at this; linarith

@@ -50,5 +50,7 @@ theorem sharp_bounds_variance_and_all_couplings :
               (if B = BoundSide.H then u else 1 - u))) := by
   exact SharpBounds.assemble RandomizationVariance.n1_proof RandomizationVariance.n2_proof RandomizationVariance.n3_proof RandomizationVariance.n4_proof SharpBounds.n1_proof SharpBounds.n2_proof SharpBounds.n3_proof SharpBounds.n4_proof SharpBounds.n5_proof SharpBounds.n6_proof SharpBounds.n7_proof SharpBounds.n8_proof SharpBounds.n9_proof SharpBounds.n10_proof SharpBounds.n11_proof SharpBounds.n12_proof
 
+example : AronowAudit.P022.Wave1.SharpBounds.Target := sharp_bounds_variance_and_all_couplings
+
 end
 end AronowAudit.P022.Wave1

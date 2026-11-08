@@ -67,5 +67,8 @@ theorem printed_ipw_bound_and_literal_coverage_refuted :
     pw1_proof pw2_proof pw3_proof pw4_proof pw5_proof pw6_proof
     pw7_proof pw8_proof pw9_proof pw10_proof pw11_proof
 
+example : AronowAudit.P004.Wave1.IpwBoundCoverage.Target :=
+  printed_ipw_bound_and_literal_coverage_refuted
+
 end
 end AronowAudit.P004.Wave1

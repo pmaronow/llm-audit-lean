@@ -1,0 +1,653 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Uses the deterministic mixture after affected status has been integrated out; omits a joint random-variable model and its conditional-observable-mean identification. The counterexample concerns the mechanism description and contains no numerical power guarantee.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.binomial_baseline_exact",
+      "AronowAudit.P019.ceiling_counterexample"
+    ],
+    "target_id": "P019-T1",
+    "theorem": "SAP.P019a.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Drops the assertion of about 80 percent power with 800 affirmative respondents and 20 percent affected. Uses the integrated deterministic mixture rather than constructing the joint population and identifying its observable conditional means.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.ceiling_corrected",
+      "AronowAudit.P019.ceiling_response_increments"
+    ],
+    "target_id": "P019-T2",
+    "theorem": "SAP.P019a.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.finite_product_counterexample_proof",
+      "AronowAudit.P019.conditional_count_counterexample",
+      "AronowAudit.P019.lemma_two_counterexample",
+      "AronowAudit.P019.omitted_binomial_mass",
+      "AronowAudit.P019.realized_count_counterexample",
+      "SAP.P019a.WH.W1.T3_whole",
+      "SAP.P019a.WH.W1.T3_assembly",
+      "SAP.P019a.WH.W1.restrictedT3",
+      "SAP.P019a.WH.W1.t3_population",
+      "SAP.P019a.WH.W1.t3_singleton",
+      "SAP.P019a.WH.W1.T3_L1_proof",
+      "SAP.P019a.WH.W1.T3_L2_proof",
+      "AronowAudit.P019.estimator_product_identity",
+      "AronowAudit.P019.conditional_variance_shift"
+    ],
+    "statement_definition": "SAP.P019a.T3WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P019.regularity_probabilities",
+      "AronowAudit.P019.probability_complement",
+      "AronowAudit.P019.empty_cell_probability"
+    ],
+    "target_id": "P019-T3",
+    "theorem": "SAP.P019a.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.conditional_sample_factorization",
+        "reason": "Not invoked separately: the retained conditional moments are supplied by the composite cell and conditional-mean declarations."
+      },
+      {
+        "lean_name": "AronowAudit.P019.covariance_taylor_coefficient",
+        "reason": "The complete covariance-order declaration already supplies the actual rate and limit coefficient."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.corrected_cell_lemmas_proof",
+      "AronowAudit.P019.Wave1.corrected_conditional_means_proof",
+      "AronowAudit.P019.Wave1.corrected_covariance_order_proof",
+      "AronowAudit.P019.Wave1.corrected_product_variance_proof",
+      "AronowAudit.P019.empty_cell_probability",
+      "AronowAudit.P019.treatment_count_correction",
+      "SAP.P019a.WH.W1.T4_whole",
+      "SAP.P019a.WH.W1.T4_assembly",
+      "SAP.P019a.WH.W1.restrictedT4",
+      "SAP.P019a.WH.W1.t4_extras",
+      "SAP.P019a.WH.W1.T4_L1_proof",
+      "SAP.P019a.WH.W1.T4_L2_proof",
+      "SAP.P019a.WH.W1.T4_L3_proof",
+      "SAP.P019a.WH.W1.T4_L4_proof",
+      "SAP.P019a.WH.W1.T4_L5_proof",
+      "SAP.P019a.WH.W1.T4_L6_proof"
+    ],
+    "statement_definition": "SAP.P019a.T4WholeStatement",
+    "target_id": "P019-T4",
+    "theorem": "SAP.P019a.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.distribution_sign_counterexample",
+      "SAP.P019a.WH.W1.T5_whole",
+      "SAP.P019a.WH.W1.T5_assembly",
+      "SAP.P019a.WH.W1.restrictedT5",
+      "SAP.P019a.WH.W1.t5_data",
+      "SAP.P019a.WH.W1.t5_cdf"
+    ],
+    "statement_definition": "SAP.P019a.T5WholeStatement",
+    "target_id": "P019-T5",
+    "theorem": "SAP.P019a.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.placebo_distribution_corrected"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P019.cell_probability"
+    ],
+    "target_id": "P019-T6",
+    "theorem": "SAP.P019a.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.diagnosis_counterexample",
+      "SAP.P019a.WH.W1.T7_whole",
+      "SAP.P019a.WH.W1.T7_assembly",
+      "SAP.P019a.WH.W1.restrictedT7",
+      "SAP.P019a.WH.W1.t7_sixteen",
+      "SAP.P019a.WH.W1.t7_eight"
+    ],
+    "statement_definition": "SAP.P019a.T7WholeStatement",
+    "target_id": "P019-T7",
+    "theorem": "SAP.P019a.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.beta_baseline_decomposition",
+      "AronowAudit.P019.beta_departure_diagnosis",
+      "AronowAudit.P019.placebo_one_identity"
+    ],
+    "target_id": "P019-T8",
+    "theorem": "SAP.P019a.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.Wave1.sequential_own_independence_proof",
+        "reason": "Not invoked separately: the finite composite declaration includes whole-triple independence in its standing assumptions."
+      },
+      {
+        "lean_name": "AronowAudit.P019.Wave1.sequential_standing_proof",
+        "reason": "Not invoked separately: the finite composite declaration already proves the standing assumptions for every list."
+      },
+      {
+        "lean_name": "AronowAudit.P019.sequential_influence_centered",
+        "reason": "Not invoked separately: the finite composite declaration already includes centered influence functions."
+      },
+      {
+        "lean_name": "AronowAudit.P019.sequential_influence_matrix",
+        "reason": "Not invoked separately: the finite composite declaration already includes the entire influence matrix."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.fisher_reference_counterexample_proof",
+      "AronowAudit.P019.Wave1.fisher_sequential_finite_proof",
+      "SAP.P019a.WH.W1.T9_whole",
+      "SAP.P019a.WH.W1.T9_assembly",
+      "SAP.P019a.WH.W1.restrictedT9",
+      "SAP.P019a.WH.W1.t9_linearization",
+      "SAP.P019a.WH.W1.t9_fisher_law",
+      "SAP.P019a.WH.W1.t9_variance_formula",
+      "SAP.P019a.WH.W1.t9_chi_moments",
+      "SAP.P019a.WH.W1.T9_L1_proof",
+      "SAP.P019a.WH.W1.T9_L2_proof",
+      "SAP.P019a.WH.W1.T9_L3_proof",
+      "SAP.P019a.WH.W1.T9_L4_proof",
+      "SAP.P019a.WH.W1.T9_L5_proof",
+      "SAP.P019a.WH.W1.T9_L6_proof",
+      "SAP.P019a.WH.W1.T9_L7_proof",
+      "AronowAudit.P019.placebo_influence_residual"
+    ],
+    "statement_definition": "SAP.P019a.T9WholeStatement",
+    "target_id": "P019-T9",
+    "theorem": "SAP.P019a.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Omits the reported statistic 12.143, p-value 0.276 and empirical nonrejection. Uses zero completions for empty cells and unavailable variances, and statistic zero when the variance estimate is nonpositive.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.Wave1.normal_pvalue_uniform_proof",
+        "reason": "Auxiliary transform result; the corrected Fisher declaration already supplies the required joint uniform limit."
+      },
+      {
+        "lean_name": "AronowAudit.P019.Wave1.uniform_fisher_identity_proof",
+        "reason": "Auxiliary Fisher-law identity; the corrected Fisher declaration already supplies the chi-square limit."
+      },
+      {
+        "lean_name": "AronowAudit.P019.placebo_influence_residual",
+        "reason": "Auxiliary influence identity; the corrected Fisher declaration already supplies the conditional and unconditional cross-moment conclusions."
+      },
+      {
+        "lean_name": "AronowAudit.P019.ratio_residual_identity",
+        "reason": "Auxiliary ratio identity; the corrected Fisher declaration already supplies the statistic and Fisher limits."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.fisher_corrected_proof"
+    ],
+    "target_id": "P019-T10",
+    "theorem": "SAP.P019a.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.combined_asymptotic_inference_proof",
+      "AronowAudit.P019.list_arm_expansion",
+      "AronowAudit.P019.monotone_yes_mean",
+      "AronowAudit.P019.placebo_one_identity",
+      "SAP.P019a.WH.W2.T11_whole",
+      "SAP.P019a.WH.W2.T11_assembly",
+      "SAP.P019a.WH.W2.finite_prob_normalize",
+      "SAP.P019a.WH.W2.finite_ce_normalize",
+      "SAP.P019a.WH.W2.normal_quantile_valid",
+      "SAP.P019a.WH.W2.finite_domain_completions",
+      "SAP.P019a.WH.W2.finite_domain_eventual",
+      "SAP.P019a.WH.W2.finite_domain_coverage",
+      "SAP.P019a.WH.W2.T11_L1_proof",
+      "SAP.P019a.WH.W2.T11_L2_proof",
+      "AronowAudit.P019.Wave1.npu_quantile_cdf",
+      "AronowAudit.P019.Wave1.npu_strictMono",
+      "AronowAudit.P019.regularity_probabilities",
+      "AronowAudit.P019.Wave1.t19_ybar_ae",
+      "AronowAudit.P019.Wave1.t19_gamma_ae",
+      "AronowAudit.P019.Wave1.t19_cell_ae",
+      "AronowAudit.P019.Wave1.t19_indicator_transfer"
+    ],
+    "statement_definition": "SAP.P019a.T11WholeStatement",
+    "target_id": "P019-T11",
+    "theorem": "SAP.P019a.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.placebo_one_identity",
+      "SAP.P019b.WH.W1.T12_whole",
+      "SAP.P019b.WH.W1.T12_assembly",
+      "SAP.P019b.WH.W1.T12_L1_proof",
+      "SAP.P019b.WH.W1.T12_L2_proof",
+      "SAP.P019b.WH.W1.T12_L3_proof",
+      "SAP.P019b.WH.W1.T12_L4_proof",
+      "AronowAudit.P019.Wave1.proposition_three_proof",
+      "AronowAudit.P019.Wave1.t19_measure_apply",
+      "AronowAudit.P019.Wave1.t19_integral"
+    ],
+    "statement_definition": "SAP.P019b.T12WholeStatement",
+    "target_id": "P019-T12",
+    "theorem": "SAP.P019b.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.cnn_nonidentification_counterexample",
+      "SAP.P019b.WH.W1.T13_whole",
+      "SAP.P019b.WH.W1.T13_assembly"
+    ],
+    "statement_definition": "SAP.P019b.T13WholeStatement",
+    "target_id": "P019-T13",
+    "theorem": "SAP.P019b.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains every displayed population conclusion (i)–(v) only for finite underlying probability spaces with arbitrary real atom masses and pointwise truthful identities Y = Q and X = R or Q. Does not state the extension to arbitrary measurable underlying spaces with almost-sure truthful identities.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.cnn_interpretation"
+    ],
+    "target_id": "P019-T14",
+    "theorem": "SAP.P019b.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.planning_tail_argument",
+        "reason": "The corrected two-sided-power row already uses the threshold bound and equality case; the Solution invokes its resulting tail theorem directly."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.two_sided_power_corrected_proof",
+      "AronowAudit.P019.pooled_variance_difference"
+    ],
+    "target_id": "P019-T15",
+    "theorem": "SAP.P019b.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "States only the population contrast of the printed ceiling rule for a Binomial(4,2/5) baseline and an independently mixed affected share in [0,1]. Omits the liar and false-confessor response rules, every rejection-probability assertion (including the approximately 80% and 30% examples), and the finite-sample power curves and their asserted dependence on sample size or violation share.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.unchanged_response_increment",
+        "reason": "This subject-level identity does not establish rejection power and is outside the retained ceiling population contrast."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.ceiling_as_printed"
+    ],
+    "target_id": "P019-T16",
+    "theorem": "SAP.P019b.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P019.prevalence_identity",
+      "AronowAudit.P019.combined_excess",
+      "AronowAudit.P019.false_confessions_strict",
+      "SAP.P019b.WH.W1.T17_whole",
+      "SAP.P019b.WH.W1.T17_assembly",
+      "SAP.P019b.WH.W1.T12_L1_proof",
+      "SAP.P019b.WH.W1.T12_L2_proof",
+      "SAP.P019b.WH.W1.T12_L3_proof",
+      "AronowAudit.P019.regularity_probabilities",
+      "AronowAudit.P019.mean_sub",
+      "AronowAudit.P019.Wave1.t19_measure_apply",
+      "AronowAudit.P019.Wave1.t19_integral"
+    ],
+    "statement_definition": "SAP.P019b.T17WholeStatement",
+    "target_id": "P019-T17",
+    "theorem": "SAP.P019b.T17"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Restricted to iid draws on a finite underlying probability space with arbitrary real atom masses; the theorem does not state the extension to arbitrary measurable underlying spaces with bounded list counts.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.combined_influence_moments",
+        "reason": "The proved variance-limit row already incorporates these supporting population influence moments."
+      },
+      {
+        "lean_name": "AronowAudit.P019.combined_influence_variance",
+        "reason": "The proved variance-limit row already identifies the influence variance with equation (3)."
+      },
+      {
+        "lean_name": "AronowAudit.P019.direct_sample_moments",
+        "reason": "The actual-variance limit is supplied directly by the aggregate row; this auxiliary sample calculation is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P019.estimator_error_decomposition",
+        "reason": "The aggregate variance-limit proof already supplies the required estimator remainder argument."
+      },
+      {
+        "lean_name": "AronowAudit.P019.estimator_product_identity",
+        "reason": "The aggregate variance-limit proof already supplies the required estimator algebra."
+      },
+      {
+        "lean_name": "AronowAudit.P019.nonconfessor_population_contrast",
+        "reason": "The selected aggregate result already incorporates the identified nonconfessor contrast."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.proposition_one_variance_limit_proof"
+    ],
+    "target_id": "P019-T18",
+    "theorem": "SAP.P019b.T18"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Restricted to iid draws on a finite underlying probability space with arbitrary real atom masses; arbitrary measurable underlying spaces with bounded list counts are omitted. Retains positivity, root-n tightness, the Gaussian limit, scaled plug-in consistency, and Wald coverage for every fixed completion.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.nonconfessor_population_contrast",
+        "reason": "The selected aggregate result already incorporates the identified nonconfessor contrast."
+      },
+      {
+        "lean_name": "AronowAudit.P019.plugin_identity",
+        "reason": "The aggregate inference theorem already proves consistency of the stated sample plug-in variance."
+      },
+      {
+        "lean_name": "AronowAudit.P019.population_variance_term",
+        "reason": "The aggregate inference theorem already incorporates this supporting population algebra."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.combined_asymptotic_inference_proof",
+      "AronowAudit.P019.asymptotic_variance_positive"
+    ],
+    "target_id": "P019-T19",
+    "theorem": "SAP.P019b.T19"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Restricted to iid draws on a finite underlying probability space with arbitrary real atom masses; the two variance limits and strict comparison are not stated for arbitrary measurable underlying spaces with bounded list counts.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.nonconfessor_population_contrast",
+        "reason": "The selected aggregate result already incorporates the identified nonconfessor contrast."
+      },
+      {
+        "lean_name": "AronowAudit.P019.population_efficiency_gap",
+        "reason": "The aggregate efficiency row already exports the strict comparison and both actual variance limits."
+      },
+      {
+        "lean_name": "AronowAudit.P019.variance_gap_strict",
+        "reason": "The aggregate efficiency row already incorporates the strict positive-gap argument."
+      },
+      {
+        "lean_name": "AronowAudit.P019.weighted_square_identity",
+        "reason": "The aggregate efficiency row already incorporates this square-completion algebra."
+      },
+      {
+        "lean_name": "AronowAudit.P019.weighted_square_minimum",
+        "reason": "The aggregate efficiency row already incorporates the weighted minimization."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.proposition_two_efficiency_proof"
+    ],
+    "target_id": "P019-T20",
+    "theorem": "SAP.P019b.T20"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.Wave1.normal_pvalue_uniform_proof",
+        "reason": "The aggregate placebo inference theorem already exports every interior p-value CDF limit."
+      },
+      {
+        "lean_name": "AronowAudit.P019.placebo_influence_moments",
+        "reason": "The aggregate placebo-I theorem already supplies the full inferential conclusion using its supporting moments."
+      },
+      {
+        "lean_name": "AronowAudit.P019.placebo_influence_residual",
+        "reason": "The aggregate placebo-I theorem already supplies the full inferential conclusion using the response residual calculation."
+      },
+      {
+        "lean_name": "AronowAudit.P019.ratio_residual_identity",
+        "reason": "The aggregate placebo-I theorem already includes the completed ratio-statistic argument."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.Wave1.proposition_three_proof",
+      "SAP.P019b.WH.W1.T21_whole",
+      "SAP.P019b.WH.W1.T21_assembly",
+      "SAP.P019b.WH.W1.T12_L1_proof",
+      "SAP.P019b.WH.W1.T12_L2_proof",
+      "SAP.P019b.WH.W1.T12_L3_proof",
+      "SAP.P019b.WH.W1.T12_L4_proof",
+      "SAP.P019b.WH.W1.T12_assembly",
+      "AronowAudit.P019.placebo_one_identity",
+      "AronowAudit.P019.placebo_distribution_corrected",
+      "AronowAudit.P019.Wave1.t19_measure_apply",
+      "AronowAudit.P019.Wave1.t19_integral"
+    ],
+    "statement_definition": "SAP.P019b.T21WholeStatement",
+    "target_id": "P019-T21",
+    "theorem": "SAP.P019b.T21"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the Proposition 4 null identity and inference bundle only for finite underlying probability spaces with arbitrary real atom masses and fixed sample completions. Omits the extension to arbitrary measurable spaces, the general randomized causal-effect interpretation, and the positive delayed-treatment design implication. The additional finite protocol permits assignment disclosure before the direct answer and delays only physical list display; it establishes failure of independence for that distinct display-only reading and does not refute the printed design assertion.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P019.Wave1.normal_pvalue_uniform_proof",
+        "reason": "The aggregate placebo inference theorem already exports every interior p-value CDF limit."
+      },
+      {
+        "lean_name": "AronowAudit.P019.binary_null_characterization",
+        "reason": "The auxiliary converse for Y-Z independence is not a clause of the retained Proposition 4 inference assertion."
+      },
+      {
+        "lean_name": "AronowAudit.P019.direct_influence_moments",
+        "reason": "The aggregate placebo-II theorem already proves the inferential bundle; this row alone contains only single-subject influence moments."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P019.placebo_two_identity",
+      "AronowAudit.P019.Wave1.proposition_four_proof",
+      "SAP.P019b.WH.W1.T22_whole",
+      "SAP.P019b.WH.W1.T22_assembly"
+    ],
+    "statement_definition": "SAP.P019b.T22WholeStatement",
+    "target_id": "P019-T22",
+    "theorem": "SAP.P019b.T22"
+  }
+]

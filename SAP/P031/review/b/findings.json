@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P031-T1",
+    "theorem": "SAP.P031.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take I=Fin 4, s={0,1}, Y=(0,2,5,9), realizable by y1=y0=Y. Admissibility was compiled in scratch/Check.lean without importing Challenge. Independent exact arithmetic gives HC2=Neyman=5 and nonzero residuals.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T2",
+    "theorem": "SAP.P031.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "I=Fin 4 and M=2 satisfy all three numerical hypotheses; the six-assignment space is nonempty, checked in Lean. For heterogeneous nonconstant potential outcomes, scratch/exact_checks.py checks actual randomization variance, expected HC2 and the nonnegative gap over 15 populations and 426 assignments. The gap is V(y1-y0)/(N-1), so the inequality is not assumed as a hypothesis.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T3",
+    "theorem": "SAP.P031.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "I=Fin 4, s={0,1}, Y=(0,2,5,9) is admissible with OLS=5 and CE=10/3. The ratio is exactly (N-2)/(N-1)=2/3. Exact checks also include unbalanced assignments and heterogeneous potential outcomes, so constant original treatment effects are not doing the work.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T4",
+    "theorem": "SAP.P031.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled Fin 4 assignment s={0,1} is admissible and balanced. At Y=(0,2,5,9), (3/2)CE=OLS=Neyman=HC2=5, with CE=10/3. None of these equalities is a hypothesis.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T5",
+    "theorem": "SAP.P031.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A concrete mathematical witness exists: let N=n+4, M=2, y0=0 and y1_i=Phi^{-1}((i+1/2)/N) for i=0,...,N-1. The finite y1 vectors are distinct symmetric Gaussian quantiles, with mean zero and population variance tending to 1. Sampling two without replacement converges to two independent standard normals; the treatment-mean estimator therefore has variance tending to 1/2 and its true-variance standardization converges to N(0,1). All control residuals vanish and HR=HC2/2 with HC2>0 on every legal assignment, so the relative-error bad event at epsilon=1/4 has probability 1. This is an analytic nonvacuity argument, not a compiled asymptotic proof.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P031-T6",
+    "theorem": "SAP.P031.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use footnotePopulation 2 for underestimation: N*trueVariance tends to v=49/3, while N*OLS and N*CE converge in probability to a=28/3. Its centered estimate is (7/3) times the treated sign mean, whose hypergeometric standardized limit is normal. Coverage tends to 2*Phi(z*sqrt(4/7))-1, strictly below 2*Phi(z)-1 for every z>0. Use footnotePopulation (1/2) for overestimation: v=25/12<a=13/3. Both have N=4(n+2), M=n+2, hence grow and are always unbalanced; these design and growth facts were compiled. The shared CE limit follows from CE=(N-2)/(N-1)*OLS. The only dropped canonical clause is the contrasting Neyman/HC2 coverage assurance, accurately identified in both record and docstring.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P031-T7",
+    "theorem": "SAP.P031.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is the explicit admissible Fin 4 counterexample, not a conditional theorem. Lean verifies admissibility and the nonempty assignment space. Exact rational arithmetic checks the means, intercept 7, estimate -6, imputed vectors (6,8,5,9) and (0,2,-1,3), common imputed variance 5/2 and original covariance 23/2. It establishes the canonical counterexample and directly refutes the quoted original-covariance equality.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T8",
+    "theorem": "SAP.P031.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled Fin 4 assignment with Y=(0,2,5,9) has residual sum S=10, imputed variance S/N=5/2, OLS=5 and CE=10/3. Every substantive link is checked by exact arithmetic on this and 1,170 legal assignments of balanced and unbalanced populations. In general the imputed-control mean equals the control mean and its centered values are the regression residuals, explaining the entire chain without any hypothesis asserting its conclusion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T9",
+    "theorem": "SAP.P031.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled balanced Fin 4 assignment and Y=(0,2,5,9) give S=10, treated and control residual sums 2 and 8, arm sample variances 2 and 8, and the full chain (3/2)*(10/3)=5=(10/2)*(4/4)=2/2+8/2=Neyman=HC2. Balanced instances are also included in the independent exact checks.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T10",
+    "theorem": "SAP.P031.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All three explicit families have legal growing populations starting at N=8,M=2, checked in Lean. Independent exact enumeration of 28 assignments at N=8 and 220 at N=12 for each a=1,2,1/2 verifies the fixed moments, finite variance and OLS formulas, and shift invariance. The scaled true-variance limits are 16/3,49/3,25/12; scaled OLS limits are 16/3,28/3,13/3, giving positive-denominator ratios 1,4/7,52/25. E[r^2]=3/(N-1) implies r^2 tends to zero in probability. Every omitted statement clause is accurately listed in record and docstring: the intermediate shifts in (a), exact row formulas and E[r^2] in (b), and finite enumeration values in (c). No CE limit belongs to this target.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P031-T11",
+    "theorem": "SAP.P031.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take P=footnotePopulation 1: N grows, M/N=1/4, both population variances and their covariance equal 1, outcomes are uniformly bounded by 3, and the true scaled variance limit is 16/3>0. Thus even the boundedness and positive-denominator branches are applicable. The treated sign mean r has E[r^2]=3/(N-1), and the control mean is -r/3; the two arm sample variances therefore converge to 1. The predicted scaled-OLS limit is 16/3 and ratio limit is 1. The finite randomization variance and expected-OLS identities giving the deterministic limits were independently checked over all 15 general test populations. The condition on centered arm sample variances is explicitly disclosed and is exactly sufficient for the OLS probability limit.",
+    "confidence": 0.97
+  }
+]

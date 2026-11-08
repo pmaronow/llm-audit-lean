@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P005a.T6",
+    "target_id": "P005-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part6.lean:36-49 states all five canonical equalities: both centered third moments, both negative nu3 expectations, and the corrected control-minus-treatment difference. The quantifiers and n>=3, 0<m<n, mean-zero-covariate hypotheses match. The finite design is uniform sampling without replacement; the coefficients and leverage covariance are the stated real quantities, with no zero denominator under these hypotheses. A nonzero one-dimensional six-unit centered instance is compiled in scratch/Check.lean; exact enumeration also checks all five nonempty allocations."
+  },
+  {
+    "theorem": "SAP.P005a.T7",
+    "target_id": "P005-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/WholeW2.lean:127-153 together with Part6.lean:52-70 states the canonical spike sequence and every assertion (i)-(vi), including its grid formulas, positive within-arm variances under every assignment, common moment/allocation bounds, leverage tending to one, ordinary log(1)=0, fitted-line and residual calculations, probability-one even-size tails, failure of the specified stochastic order, and both attained exact minima. The rate sqrt(kappa/n) is exactly sqrt(kappa*d/n) because d=1. This proves the canonical counterexample; it does not refute that canonical counterexample. The printed expansion it disproves has all its conditions satisfied. Independent rational enumeration at n=6,8,10,12 confirms the genuine witness and the two stated minima."
+  },
+  {
+    "theorem": "SAP.P005a.T9",
+    "target_id": "P005-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/WholeW2.lean:157-180 includes the actual interacted remainder expansion under the canonical uniform moment/allocation conditions, eventual standardization, every-assignment invertibility on the tail, and kappa*log(2d)->0. Part6.lean:73-86 contains all logarithmic comparisons, limit equivalence, and implications in canonical (a)-(c); mixedLogEquivalence also correctly handles an intermittent dimension-one subsequence. Eventual hypotheses and an arbitrary admissible starting size preserve the entire asymptotic claim and impose no substantive additional restriction. All relevant probabilities and square roots are genuine on the tail. A normalized distinct linear grid supplies a full analytic nonvacuity instance with kappa=3(n-1)/(n(n+1)); scratch checks verify finite cases and compile a nonzero logarithmic input."
+  },
+  {
+    "theorem": "SAP.P005a.T10",
+    "target_id": "P005-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/WholeW2.lean:192-215 and Part6.lean:89-99 include exactly the canonical six-unit population and clauses (i)-(iv): standardized covariates, injectivity and positive variances under all fifteen assignments, moment/allocation bounds, leverage and population covariance, printed and corrected expectations, assignmentwise and expected differences, and the rational scaling identities. The formal inverse-free expression is the printed expression after the legitimate inverse cancellation; no generalized-inverse convention is used in the witness. The finite assertion being contradicted is the printed estimator's unbiasedness and agreement with the estimator derived above it, not a separate asymptotic claim. This proves the canonical counterexample. Standardization/moments compile, and independent exact enumeration reproduces 4913/1200, 20/3, and -1029/400."
+  },
+  {
+    "theorem": "SAP.P005a.T11",
+    "target_id": "P005-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part7.lean:14-55 and WholeW2.lean:241-263 contain canonical (a), (b), and (c), including inverse cancellation, both finite expectation formulas, both corrected weights, the unsimplified coefficient identity, coefficient uniqueness, printed-weight bias, and both arm remainder orders under Assumptions 1-3 alone. The generic y and singleton extensions and leverage bounds are valid additional statements; uniqueness refers to the coefficient bracket, not to unbiasedness when the population covariance vanishes. Every finite denominator is protected, and the asymptotic statement quantifies over all admissible starting sizes without imposing invertibility on its inverse-free formula. Concrete finite hypotheses and coefficients compile, exact enumeration checks every arm size, and the normalized-grid argument establishes full sequence nonvacuity."
+  }
+]

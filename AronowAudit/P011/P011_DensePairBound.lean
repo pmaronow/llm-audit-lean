@@ -106,5 +106,8 @@ theorem graph_pair_sum_le (hG : ∀ ⦃i j⦄, G i j → G j i) (D : ℝ) (hD : 
   have hh := weighted_pair_sum_le (fun p : ι × ι => A p.1 p.2) W (D^2) hW hrows hcols
   simpa only [W, Fintype.sum_prod_type, mul_assoc] using hh
 
+#check @graph_pair_sum_le
+#print axioms weighted_pair_sum_le
+#print axioms graph_pair_sum_le
 end
 end AronowAudit.P011.DensePairBound

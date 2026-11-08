@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -232,5 +231,47 @@ theorem bounded_degree_dependency_clt
       c hc hvc_tail hcard_pos_tail hcard_tail s
   exact (tendsto_add_atTop_iff_nat N).1 htail
 
+/-- Eventual-bound variant of `bounded_degree_dependency_clt`: only the tail of a triangular array
+affects the limiting CDF, so the uniform summand bound need only hold after a finite prefix. -/
+theorem bounded_degree_dependency_clt_eventually_bounded
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)] (μ : ∀ n, Measure (Ω n))
+    [∀ n, IsProbabilityMeasure (μ n)]
+    {ι : ℕ → Type*} [∀ n, Fintype (ι n)]
+    (X : ∀ n, ι n → Ω n → ℝ) (Dep : ∀ n, DepGraph (X n) (μ n))
+    (Dmax : ℕ) (hdeg : ∀ n i, ((Dep n).nbhd i).card ≤ Dmax)
+    (M : ℝ) (hM : 0 ≤ M) (hbound : ∀ᶠ n in atTop, ∀ i ω, |X n i ω| ≤ M)
+    (hmean : ∀ n i, ∫ ω, X n i ω ∂(μ n) = 0)
+    (v : ℕ → ℝ) (hv : ∀ n, ∫ ω, (depSum (X n) ω) ^ 2 ∂(μ n) = v n)
+    (c : ℝ) (hc : 0 < c)
+    (hvc : ∀ᶠ n in atTop, c * (Fintype.card (ι n) : ℝ) ≤ v n)
+    (hcard : Tendsto (fun n => Fintype.card (ι n)) atTop atTop)
+    (s : ℝ) :
+    Tendsto (fun n =>
+        ((μ n).map (fun ω => depSum (X n) ω / Real.sqrt (v n))).real (Set.Iic s))
+      atTop (𝓝 ((gaussianReal 0 1).real (Set.Iic s))) := by
+  classical
+  rcases eventually_atTop.1 hbound with ⟨Nb, hNb⟩
+  have hbound_tail : ∀ n i ω, |X (n + Nb) i ω| ≤ M := by
+    intro n i ω
+    exact hNb (n + Nb) (by omega) i ω
+  have hvc_tail : ∀ᶠ n in atTop,
+      c * (Fintype.card (ι (n + Nb)) : ℝ) ≤ v (n + Nb) := by
+    rcases eventually_atTop.1 hvc with ⟨Nv, hNv⟩
+    exact eventually_atTop.2 ⟨Nv, fun n hn => hNv (n + Nb) (by omega)⟩
+  have hcard_tail : Tendsto (fun n => Fintype.card (ι (n + Nb))) atTop atTop :=
+    hcard.comp (tendsto_add_atTop_nat Nb)
+  have htail :=
+    bounded_degree_dependency_clt
+      (μ := fun n => μ (n + Nb))
+      (X := fun n => X (n + Nb))
+      (Dep := fun n => Dep (n + Nb))
+      Dmax
+      (fun n i => hdeg (n + Nb) i)
+      M hM hbound_tail
+      (fun n i => hmean (n + Nb) i)
+      (fun n => v (n + Nb))
+      (fun n => hv (n + Nb))
+      c hc hvc_tail hcard_tail s
+  exact (tendsto_add_atTop_iff_nat Nb).1 htail
 
 end Causalean.Mathlib.Probability.SteinMethod

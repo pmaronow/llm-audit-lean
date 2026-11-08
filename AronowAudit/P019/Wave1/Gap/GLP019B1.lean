@@ -179,6 +179,21 @@ lemma fc_psi_contrast (S : Study Ω) (hs : S.standing) (ω : Ω)
   cases hy : S.Y ω <;> cases hz : S.Z ω <;>
     simp [bitVal, Study.cell, hy, hz, m, div_eq_mul_inv, mul_inv_rev] <;> ring
 
+lemma fc_psi_moments (S : Study Ω) (hs : S.standing) :
+    S.law.mean S.betaPsi = 0 ∧ S.law.variance S.betaPsi = fc_variance S := by
+  have h := contrast_influence_moments S.law (fun t => (S.V t : ℝ))
+    (S.cell true true) (S.cell false true)
+    (hs.2.2.2.1 true true).1.ne' (hs.2.2.2.1 false true).1.ne'
+    (by intro ω ht hf; exact Bool.false_ne_true (hf.1.symm.trans ht.1))
+  have he := mean_congr_support S.law _ _ (fc_psi_contrast S hs)
+  have he2 := mean_congr_support S.law (fun t => (S.betaPsi t)^2)
+    (fun t => (S.law.contrastInfluence (fun t => (S.V t : ℝ))
+      (S.cell true true) (S.cell false true) t)^2)
+    (by intro t ht; rw [fc_psi_contrast S hs t ht])
+  exact ⟨he.trans h.1, by
+    unfold FiniteLaw.variance
+    rw [he, he2]
+    exact h.2⟩
 
 def fc_influence (S : Study Ω) : Ω → ℝ :=
   S.law.contrastInfluence (fun t => (S.V t : ℝ)) (S.cell true true) (S.cell false true)
@@ -404,7 +419,7 @@ lemma fc_joint_clt (P : FiniteLaw Ω) (S : Fin 5 → Study Ω)
         Real.sqrt ((S j).betaVarianceHat s 0)), a⟫)).comp (t19_sample_measurable n)).aemeasurable)
 
 /-- Bounded continuous test functions transfer the common-product limit back
-to the finite weighted-sum predicate defining weak convergence. -/
+to precisely the finite weighted-sum predicate in the held statement. -/
 lemma fc_weakLimit {E A : Type*} [MeasurableSpace E] [TopologicalSpace E]
     [OpensMeasurableSpace E] [MeasurableSpace A] (P : FiniteLaw Ω)
     (T : (n : ℕ) → (Fin n → Ω) → E) (μ : Measure A) [IsProbabilityMeasure μ]
@@ -576,6 +591,8 @@ theorem fisher_corrected_proof (P : FiniteLaw Ω) (S : Fin 5 → Study Ω)
         Real.sqrt ((S j).betaVarianceHat s 0)))) _ _ _ hf
       (fc_fisher_law.comp fc_gaussian_pi_law)
     simpa only [fc_pvalue_point] using hw
+
+example : type_of% @AronowAudit.P019.fisher_corrected := fisher_corrected_proof
 
 end
 end AronowAudit.P019.Wave1

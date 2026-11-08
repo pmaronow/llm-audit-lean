@@ -1,0 +1,275 @@
+import SAP.P011a.Challenge
+
+open MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators Topology Classical Matrix NNReal ENNReal
+set_option linter.style.haveILetI false
+set_option linter.unnecessarySimpa false
+
+namespace Audit
+open SAP.P011a
+noncomputable section
+
+-- This certificate already asserts an explicit nonvacuity model; here we check
+-- that its fields instantiate the actual hypotheses of the reviewed targets.
+theorem signFacts : SignWitnessFacts := by
+  rcases (show T7WholeStatement from SAP.P011a.T7) with ⟨_, _, _, _, h, _⟩
+  exact h
+
+theorem signWhole : WholeScaling signFamily 1 1 1 2 := by
+  rcases signFacts.1 with ⟨_, h1, h2, h3, h4, hdep, hb, hd, hv, ht⟩
+  exact ⟨h1, h2, h3, h4, hdep, hb, hd, hv, ht⟩
+
+theorem signRow : RowScaling signFamily 1 1 1 2 := by
+  rcases signFacts.1 with ⟨_, h1, h2, h3, h4, hdep, hb, hd, hv, ht⟩
+  exact ⟨h1, h2, h3, h4, hdep, hb, hd, hv, ht⟩
+
+theorem zeroCapsUnique {n : ℕ} (A : Graph n)
+    (hA : Compatible (emptyGraph n) (fun _ => 0) A) : A = emptyGraph n := by
+  apply Subtype.ext
+  funext i j
+  have hi : degree A i = 0 := Nat.eq_zero_of_le_zero (hA.2 i)
+  have hz := (Finset.sum_eq_zero_iff.mp hi) j (Finset.mem_univ j)
+  change (if A.val i j then 1 else 0 : ℕ) = 0 at hz
+  by_cases hij : A.val i j = true
+  · simp [hij] at hz
+  · exact Bool.eq_false_of_not_eq_true hij
+
+theorem zeroCapsMax {n : ℕ} (f : Graph n → ℝ) :
+    Maximizes (emptyGraph n) (fun _ => 0) f (emptyGraph n) := by
+  constructor
+  · constructor
+    · simp [emptyGraph]
+    · simp [degree, emptyGraph]
+  · intro A hA
+    rw [zeroCapsUnique A hA]
+
+-- Thus samplewise maximizer assumptions are simultaneously satisfiable for
+-- arbitrary objectives, including V1, Vplus, and the residual objectives.
+example : ∃ F : Family, WholeScaling F 1 1 1 2 ∧ Valid F ∧
+    (∀ k, (F.model k).R = emptyGraph (F.size k)) ∧
+    ∃ A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k),
+      ∀ k y, Maximizes (F.model k).R (F.model k).d
+        (fun B => V1 B (weighted (F.model k) y)) (A k y) := by
+  refine ⟨signFamily, signWhole, signFacts.2.1, ?_, ?_⟩
+  · intro k; rfl
+  · refine ⟨fun k _ => emptyGraph (k+1), ?_⟩
+    intro k y
+    exact zeroCapsMax _
+
+-- General finite attainment, without assuming that the given graph is optimal.
+example {n : ℕ} (R G : Graph n) (d : Fin n → ℕ)
+    (hv : Compatible R d G) (f : Graph n → ℝ) :
+    ∃ A, Maximizes R d f A := by
+  classical
+  let S : Finset (Graph n) := Finset.univ.filter (Compatible R d)
+  have hS : S.Nonempty := ⟨G, by simp [S, hv]⟩
+  obtain ⟨A, hA, hm⟩ := Finset.exists_max_image S f hS
+  refine ⟨A, (Finset.mem_filter.mp hA).2, ?_⟩
+  intro B hB
+  exact hm B (by simp [S, hB])
+
+theorem signMean (k : ℕ) (i : Fin (k+1)) :
+    expectation (signFamily.model k) (fun y => y i) = 0 := by
+  have hm : MixtureMoments := (show T10WholeStatement from SAP.P011a.T10).2.1
+  have h := (hm 0 1 (fun _ => false) (k+1) (by omega)).1 i
+  simpa [fixedMeanModel, signFamily, signModel] using h.1
+
+theorem signBound (k : ℕ) :
+    ∀ᵐ y ∂(signFamily.model k).law, ∀ i, |y i| ≤ (1 : ℝ) := by
+  have hb := signWhole.bounded k
+  have hbeta := (signFacts.2.2 k).2
+  rw [hbeta] at hb
+  simpa [weighted, signFamily, signModel] using hb
+
+theorem signBias (k : ℕ) : meanBias (signFamily.model k) = 0 := by
+  have hb := (signFacts.2.2 k).2
+  have hmu (i : Fin (k+1)) :
+      expectation (signFamily.model k) (fun y => weighted (signFamily.model k) y i) = 0 := by
+    simpa [weighted, signFamily, signModel] using signMean k i
+  have hdelta : delta (signFamily.model k) = 0 := by
+    funext i
+    change expectation (signFamily.model k) (fun y => weighted (signFamily.model k) y i) -
+      SAP.P011a.beta (signFamily.model k) = 0
+    rw [hmu i, hb]
+    norm_num
+  simp [meanBias, hdelta, quadratic]
+
+-- Each condition in the four alternatives of T8 has an actual instance.
+example : CorrectedClass signFamily
+    (fun k y => V1plus (signFamily.model k).d (signFamily.model k).G
+      (weighted (signFamily.model k) y)) :=
+  Or.inl ⟨signFacts.2.1, Or.inl rfl⟩
+
+example : CorrectedClass signFamily
+    (fun k y => VPositive (signFamily.model k).G (weighted (signFamily.model k) y)) :=
+  Or.inr (Or.inl rfl)
+
+example : CorrectedClass signFamily
+    (fun k y => V1 (emptyGraph (signFamily.size k)) (weighted (signFamily.model k) y)) := by
+  refine Or.inr (Or.inr (Or.inl ⟨signFacts.2.1, ?_, ?_⟩))
+  · intro k; rfl
+  · refine ⟨fun k _ => emptyGraph (signFamily.size k), ?_, rfl⟩
+    intro k y
+    exact zeroCapsMax _
+
+example : CorrectedClass signFamily
+    (fun k y => V1 (signFamily.model k).G (weighted (signFamily.model k) y)) := by
+  refine Or.inr (Or.inr (Or.inr ⟨signFacts.2.1, ?_, Or.inl rfl⟩))
+  simp [signBias]
+
+-- Full supplied caps are compatible with this same independent-sign law;
+-- changing the metadata does not impose dependence between the signs.
+def fullCapSignFamily : Family where
+  size := signFamily.size
+  positive := signFamily.positive
+  grows := signFamily.grows
+  model := fun k => {signFamily.model k with d := fun _ => k}
+
+example : WholeScaling fullCapSignFamily 1 1 1 2 ∧ Valid fullCapSignFamily := by
+  constructor
+  · exact ⟨signWhole.c1_pos, signWhole.c2_pos, signWhole.c3_pos, signWhole.c4_pos,
+      signWhole.dependency, signWhole.bounded, signWhole.degrees,
+      signWhole.variance_limit, signWhole.coefficients⟩
+  · intro k
+    constructor
+    · simp [fullCapSignFamily, signFamily, signModel, emptyGraph]
+    · intro i
+      simp [fullCapSignFamily, signFamily, signModel, degree, emptyGraph]
+
+theorem signIntegrable (k : ℕ) (i : Fin (k+1)) :
+    Integrable (fun y => y i) (signFamily.model k).law := by
+  haveI : IsProbabilityMeasure (signFamily.model k).law := (signFamily.model k).probability
+  apply Integrable.of_bound (μ := (signFamily.model k).law)
+    (measurable_pi_apply i).aestronglyMeasurable 1
+  filter_upwards [signBound k] with y hy
+  exact hy i
+
+theorem tightZero (F : Family) : Tight F (fun _ _ => 0) := by
+  intro ε hε
+  refine ⟨1, by norm_num, 0, ?_⟩
+  intro k hk
+  simpa [probability, show ¬ (1 : ℝ) < 0 by norm_num] using
+    (le_of_lt hε : (0 : ℝ) ≤ ε)
+
+theorem zeroConverges (F : Family) :
+    InProbability F (fun _ _ => 0) (fun _ => 0) := by
+  intro ε hε
+  simpa [probability, not_lt_of_ge (le_of_lt hε)] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+
+def D : ∀ k, Matrix (Fin (signFamily.size k)) (Fin 1) ℝ := fun _ _ _ => 1
+def gamma : Fin 1 → ℝ := 0
+def gammaHat : ∀ k, (Fin (signFamily.size k) → ℝ) → (Fin 1 → ℝ) := fun _ _ => 0
+
+theorem correctMean : ∀ k, MeanModel (signFamily.model k) (D k) gamma := by
+  intro k
+  constructor
+  · exact signIntegrable k
+  · intro i
+    simpa [D, gamma] using signMean k i
+
+theorem designBound : ∃ B : ℝ, ∀ k i, l2 (D k i) ≤ B := by
+  refine ⟨1, ?_⟩
+  intro k i
+  simp [l2, D]
+
+theorem rootRate : Tight signFamily
+    (fun k y => Real.sqrt (signFamily.size k : ℝ)*l2 (gammaHat k y-gamma)) := by
+  simpa [gammaHat, gamma, l2] using tightZero signFamily
+
+theorem residualBound : ∃ B : ℝ, ∀ k,
+    ∀ᵐ y ∂(signFamily.model k).law, ∀ i,
+      |trueResidual (signFamily.model k) (D k) gamma y i| ≤ B := by
+  refine ⟨1, ?_⟩
+  intro k
+  simpa [trueResidual, D, gamma, Matrix.mulVec, dotProduct, signFamily, signModel]
+    using signBound k
+
+theorem predictionRate : InProbability signFamily
+    (fun k y => l2 (fittedResidual (signFamily.model k) (D k) (gammaHat k) y-
+      trueResidual (signFamily.model k) (D k) gamma y) /
+      Real.sqrt (signFamily.size k : ℝ)) (fun _ => 0) := by
+  simpa [fittedResidual, trueResidual, gammaHat, gamma, l2] using zeroConverges signFamily
+
+-- Nontrivial misspecification: the true raw mean is zero, but the fitted
+-- deterministic intercept is one. Residuals are bounded by two and prediction
+-- error relative to this wrong deterministic model is identically zero.
+example : (∃ B : ℝ, ∀ k, ∀ᵐ y ∂(signFamily.model k).law, ∀ i,
+      |trueResidual (signFamily.model k) (D k) (fun _ => 1) y i| ≤ B) ∧
+    InProbability signFamily
+      (fun k y => l2 (fittedResidual (signFamily.model k) (D k) (fun _ _ => 1) y-
+        trueResidual (signFamily.model k) (D k) (fun _ => 1) y) /
+        Real.sqrt (signFamily.size k : ℝ)) (fun _ => 0) := by
+  constructor
+  · refine ⟨2, ?_⟩
+    intro k
+    filter_upwards [signBound k] with y hy
+    intro i
+    have hi := hy i
+    simp only [trueResidual, D, Matrix.mulVec, dotProduct, Fin.sum_univ_one,
+      signFamily, signModel, one_mul]
+    apply (abs_sub (y i) 1).trans
+    have habs : |(1 : ℝ)| = 1 := by norm_num
+    rw [habs]
+    linarith
+  · simpa [fittedResidual, trueResidual, l2] using zeroConverges signFamily
+
+-- A nonzero dimensional correctly specified mean model, exact coefficients,
+-- bounded residuals, prediction rate, valid constraints, and genuine maximizers.
+example : RowScaling signFamily 1 1 1 2 ∧
+    (∀ k, AEMeasurable (gammaHat k) (signFamily.model k).law) ∧
+    (∀ k, MeanModel (signFamily.model k) (D k) gamma) ∧
+    (∃ B : ℝ, ∀ k i, l2 (D k i) ≤ B) ∧
+    Tight signFamily (fun k y => Real.sqrt (signFamily.size k : ℝ)*l2 (gammaHat k y-gamma)) ∧
+    Valid signFamily ∧
+    (∀ k y, Maximizes (signFamily.model k).R (signFamily.model k).d
+      (fun B => VResidual B (fittedResidual (signFamily.model k) (D k) (gammaHat k) y))
+      (emptyGraph (signFamily.size k))) := by
+  refine ⟨signRow, ?_, correctMean, designBound, rootRate, signFacts.2.1, ?_⟩
+  · intro k; exact aemeasurable_const
+  · intro k y; exact zeroCapsMax _
+
+-- Concrete finite hypotheses and polynomial identities independent of the
+-- Challenge certificates. These also exercise zero caps and a real edge.
+example : Compatible (emptyGraph 4) (fun _ => 2) cycleGraph := by
+  constructor
+  · simp [emptyGraph]
+  · intro i; fin_cases i <;> decide
+
+example : quadratic (oracleMatrix cycleGraph) (![0,1,-1,0] : Fin 4 → ℝ) = 0 := by
+  norm_num [quadratic, oracleMatrix, adjacency, cycleGraph, Fin.sum_univ_succ,
+    Matrix.add_apply, Matrix.one_apply]
+
+example : (unstableDesign 1)ᵀ * unstableDesign 1 =
+    Matrix.diagonal (![4,2] : Fin 2 → ℝ) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [unstableDesign, unstableW, localIndex, Matrix.mul_apply, Matrix.transpose_apply,
+      Matrix.diagonal, Fin.sum_univ_succ]
+
+-- Each individual consistency/conservativeness premise in the impossibility
+-- statement is achievable. It is their joint demand with the same statistic
+-- and different positive targets that is impossible.
+theorem constantConverges (F : Family) (c : ℝ) :
+    InProbability F (fun _ _ => c) (fun _ => c) := by
+  intro ε hε
+  simpa [probability, not_lt_of_ge (le_of_lt hε)] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+
+example (a b : ℝ) : ∀ s, InProbability (fixedMeanFamily a b s)
+    (fun _ _ => b^2) (fun _ => b^2) := by
+  intro s
+  exact constantConverges _ _
+
+example (a b : ℝ) : ∀ ε : ℝ, 0 < ε →
+    Tendsto (fun k => probability (mixtureModel a b (k+1))
+      {y | a^2+b^2-(a^2+b^2) > ε}) atTop (𝓝 0) := by
+  intro ε hε
+  simpa [probability, not_lt_of_ge (le_of_lt hε)] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+
+example : ∃ a b : ℝ, 0 < a ∧ 0 < b ∧ b^2 < a^2+b^2 := by
+  exact ⟨1, 1, by norm_num⟩
+
+end
+end Audit

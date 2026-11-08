@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P019b.T22",
+  "target_id": "P019-T22",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P019b/Defs/WholeW1.lean:341 (with lines 342-344 and 366-370): the counterexample records Y after an assignment-dependent disclosure, not before presentation of treatment in the printed causal/design reading. Its trace discloses Z at time 0, records Y=R xor Z at time 1, and delays only the separately tagged physical list display until time 2. The condition at line 370 excludes only the presentList constructor; it does not establish that the direct answer precedes all assignment-dependent treatment exposure. The genuine delta=1/2 therefore refutes the display-only reading with advance disclosure, rather than the printed delayed-treatment design assertion.",
+   "SAP/P019b/Challenge/Part1.lean:80 and SAP/P019b/Defs/WholeW1.lean:347 (also Challenge/Part1.lean:85-86, Defs/WholeW1.lean:352-353, and record.json:4): The printed claim is false and the claimed refutation of the final design implication overstate what the protocol establishes. The record labels the item refuted with no restriction (record.json:6). Under the required distinction between the printed causal/design assertion and a display-only reading permitting early disclosure, that label is unjustified. The universal causal-effect interpretation and the positive delayed-treatment design implication are not stated elsewhere in T22WholeStatement (Defs/WholeW1.lean:356; Defs/Part5.lean:47)."
+  ]
+ }
+]

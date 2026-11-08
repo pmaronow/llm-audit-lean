@@ -1,0 +1,260 @@
+import SAP.P022.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+open SAP.P022 Filter MeasureTheory
+open scoped BigOperators Topology ENNReal NNReal
+noncomputable section
+
+-- Concrete data for the two finite statements; neither margin is constant.
+example : ∃ (d : Design) (y1 y0 : Fin d.N → ℝ),
+    d.N = 4 := by
+  refine ⟨fourUnitDesign, (fun i => i.val), (fun i => (i.val : ℝ)^2), ?_⟩
+  rfl
+
+example : ∃ (d : Design) (y1 y0 : Fin d.N → ℝ) (π : Assignment d),
+    d.m + d.k = d.N := by
+  refine ⟨fourUnitDesign, (fun i => i.val), (fun i => (i.val : ℝ)^2),
+    Equiv.refl _, ?_⟩
+  rfl
+
+-- Exact averaging formula and limit for an arbitrary four-periodic real list.
+lemma periodic_sum (f : ℕ → ℝ) (n : ℕ) :
+    (∑ i ∈ Finset.range n, f (i % 4)) =
+      (n / 4 : ℕ) * (f 0 + f 1 + f 2 + f 3) +
+        ∑ i ∈ Finset.range (n % 4), f i := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [Finset.sum_range_succ, ih]
+    have hd : (n + 1) / 4 = n / 4 + (n % 4 + 1) / 4 := by omega
+    have hm : (n + 1) % 4 = (n % 4 + 1) % 4 := by omega
+    have hr : n % 4 = 0 ∨ n % 4 = 1 ∨ n % 4 = 2 ∨ n % 4 = 3 := by omega
+    rcases hr with h | h | h | h <;>
+      simp [hd, hm, h, Finset.sum_range_succ] <;> ring
+
+lemma periodic_mean (f : ℕ → ℝ) :
+    Tendsto (fun n : ℕ => (∑ i ∈ Finset.range n, f (i % 4)) / (n : ℝ))
+      atTop (𝓝 ((f 0 + f 1 + f 2 + f 3) / 4)) := by
+  let A := f 0 + f 1 + f 2 + f 3
+  let R := fun n : ℕ => ∑ i ∈ Finset.range (n % 4), f i
+  let M := |f 0| + |f 1| + |f 2| + |f 3|
+  have hr : ∀ n, |R n| ≤ M := by
+    intro n
+    have h : n % 4 = 0 ∨ n % 4 = 1 ∨ n % 4 = 2 ∨ n % 4 = 3 := by omega
+    rcases h with h | h | h | h <;>
+      simp only [R, h, Finset.sum_range_succ, Finset.sum_range_zero, zero_add]
+    · dsimp [M]; simp only [abs_zero]; positivity
+    · dsimp [M]; linarith [abs_nonneg (f 1), abs_nonneg (f 2), abs_nonneg (f 3)]
+    · dsimp [M]; linarith [abs_add_le (f 0) (f 1), abs_nonneg (f 2), abs_nonneg (f 3)]
+    · dsimp [M]; linarith [abs_add_le (f 0 + f 1) (f 2),
+        abs_add_le (f 0) (f 1), abs_nonneg (f 3)]
+  have hR : Tendsto (fun n : ℕ => R n / (n : ℝ)) atTop (𝓝 0) :=
+    tendsto_bdd_div_atTop_nhds_zero
+      (Eventually.of_forall (fun n => (abs_le.mp (hr n)).1))
+      (Eventually.of_forall (fun n => (abs_le.mp (hr n)).2))
+      tendsto_natCast_atTop_atTop
+  have hmod := tendsto_mod_div_atTop_nhds_zero_nat (by norm_num : 0 < 4)
+  have hlim := ((((tendsto_const_nhds : Tendsto (fun _ : ℕ => (1:ℝ)) atTop
+    (𝓝 1)).sub hmod).div_const 4).mul_const A).add hR
+  have hlim' : Tendsto (fun n : ℕ =>
+      ((1 - (n % 4 : ℕ) / (n : ℝ)) / 4) * A + R n / (n : ℝ)) atTop
+      (𝓝 (A / 4)) := by simpa [div_eq_mul_inv, mul_comm] using hlim
+  apply hlim'.congr'
+  filter_upwards [eventually_ne_atTop (0 : ℕ)] with n hn
+  have hn' : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hn
+  have hdiv : (4 : ℝ) * (n / 4 : ℕ) + (n % 4 : ℕ) = (n : ℝ) := by
+    exact_mod_cast Nat.div_add_mod n 4
+  rw [periodic_sum]
+  dsimp [A, R] at *
+  field_simp [hn']
+  linear_combination -(f 0 + f 1 + f 2 + f 3) * hdiv
+
+lemma half_allocation : Tendsto (fun q : ℕ =>
+    (((q + 4) / 2 : ℕ) : ℝ) / (q + 4 : ℕ)) atTop (𝓝 (1 / 2 : ℝ)) := by
+  have hm := (tendsto_mod_div_atTop_nhds_zero_nat (by norm_num : 0 < 2)).comp
+    (tendsto_add_atTop_nat 4)
+  have hh : Tendsto (fun q : ℕ =>
+      (1 - ((q + 4) % 2 : ℕ) / ((q + 4 : ℕ) : ℝ)) / 2) atTop
+      (𝓝 (1 / 2 : ℝ)) := by
+    simpa using ((tendsto_const_nhds : Tendsto (fun _ : ℕ => (1:ℝ)) atTop
+      (𝓝 1)).sub hm).div_const 2
+  apply hh.congr'
+  apply Eventually.of_forall
+  intro q
+  have hpos : ((q + 4 : ℕ) : ℝ) ≠ 0 := by positivity
+  have hdiv : (2 : ℝ) * ((q + 4) / 2 : ℕ) + ((q + 4) % 2 : ℕ) =
+      ((q + 4 : ℕ) : ℝ) := by exact_mod_cast Nat.div_add_mod (q + 4) 2
+  field_simp [hpos]
+  nlinarith
+
+lemma corner_integral (f : ℝ × ℝ → ℝ) :
+    (∫ p, f p ∂(cornerLaw : Measure (ℝ × ℝ))) =
+      (f (0,0) + f (0,1) + f (1,0) + f (1,1)) / 4 := by
+  have hi : ∀ p : ℝ × ℝ, Integrable f ((1/4 : ℝ≥0∞) • Measure.dirac p) :=
+    fun p => (integrable_dirac (by simp)).smul_measure (by norm_num)
+  change (∫ p, f p ∂((1/4 : ℝ≥0∞) • Measure.dirac (0,0) +
+    (1/4 : ℝ≥0∞) • Measure.dirac (0,1) +
+    (1/4 : ℝ≥0∞) • Measure.dirac (1,0) +
+    (1/4 : ℝ≥0∞) • Measure.dirac (1,1))) = _
+  rw [integral_add_measure ((hi _ |>.add_measure (hi _)).add_measure (hi _)) (hi _),
+    integral_add_measure ((hi _).add_measure (hi _)) (hi _),
+    integral_add_measure (hi _) (hi _)]
+  norm_num [integral_smul_measure]
+  ring
+
+lemma corner_pair (i : ℕ) :
+    (cornerWitness.y1 i, cornerWitness.y0 i) =
+      (cornerWitness.y1 (i % 4), cornerWitness.y0 (i % 4)) := by
+  simp [cornerWitness, Nat.mod_mod_of_dvd, (by decide : 2 ∣ 4)]
+
+lemma mean_range (v : ℕ → ℝ) (n : ℕ) :
+    finiteMean (fun i : Fin n => v i.val) =
+      (∑ i ∈ Finset.range n, v i) / (n : ℝ) := by
+  unfold finiteMean
+  rw [Fintype.expect_eq_sum_div_card, Fintype.card_fin]
+  congr 1
+  exact Fin.sum_univ_eq_sum_range v n
+
+lemma corner_average (f : ℝ × ℝ → ℝ) :
+    Tendsto (fun q => finiteMean (fun i : Fin (cornerWitness.design q).N =>
+      f (cornerWitness.y1 i.val, cornerWitness.y0 i.val))) atTop
+      (𝓝 ((f (0,0) + f (0,1) + f (1,0) + f (1,1)) / 4)) := by
+  have h := (periodic_mean (fun i => f (cornerWitness.y1 i, cornerWitness.y0 i))).comp
+    (tendsto_add_atTop_nat 4)
+  change Tendsto (fun q => finiteMean (fun i : Fin (q+4) =>
+    f (cornerWitness.y1 i.val, cornerWitness.y0 i.val))) atTop _
+  have hmean : (fun q => finiteMean (fun i : Fin (q+4) =>
+      f (cornerWitness.y1 i.val, cornerWitness.y0 i.val))) =
+      (fun q => (∑ i ∈ Finset.range (q+4),
+        f (cornerWitness.y1 i, cornerWitness.y0 i)) / (q+4 : ℕ)) := by
+    funext q
+    exact mean_range (fun i => f (cornerWitness.y1 i, cornerWitness.y0 i)) (q+4)
+  rw [hmean]
+  have hv : (fun i => f (cornerWitness.y1 (i % 4), cornerWitness.y0 (i % 4))) =
+      (fun i => f (cornerWitness.y1 i, cornerWitness.y0 i)) := by
+    funext i
+    exact congrArg f (corner_pair i).symm
+  rw [hv] at h
+  simpa [Function.comp_def, cornerWitness, reciprocalWitness] using h
+
+lemma corner_cdf (t : Bool) (x : ℝ) : lawCDF cornerLaw t x =
+    ((if (if t then (0:ℝ) else 0) ≤ x then 1 else 0) +
+     (if (if t then (0:ℝ) else 1) ≤ x then 1 else 0) +
+     (if (if t then (1:ℝ) else 0) ≤ x then 1 else 0) +
+     (if (if t then (1:ℝ) else 1) ≤ x then 1 else 0)) / 4 := by
+  cases t <;>
+    simp [lawCDF, cornerLaw, Measure.add_apply, Measure.smul_apply,
+      Measure.dirac_apply', Set.indicator, ENNReal.toReal_add, ENNReal.toReal_mul] <;>
+    split_ifs <;> norm_num [ENNReal.toReal_add, ENNReal.toReal_inv]
+
+lemma corner_conditions : Conditions123 cornerWitness cornerLaw 1 (1/2) := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num, ?_, ?_, ?_, ?_⟩
+  · simpa [cornerWitness, reciprocalWitness] using half_allocation
+  · have heq : (fun q =>
+        (((cornerWitness.design q).m : ℝ) + (cornerWitness.design q).k) /
+          (cornerWitness.design q).N) = fun _ => (1 : ℝ) := by
+      funext q
+      have hk : (q + 4) / 2 ≤ q + 4 := Nat.div_le_self _ _
+      simp [cornerWitness, reciprocalWitness, Nat.cast_sub hk]
+      positivity
+    rw [heq]
+    exact tendsto_const_nhds
+  · intro f
+    rw [corner_integral]
+    exact corner_average f
+  · intro t x _
+    rw [corner_cdf]
+    have hc := corner_average (fun p => if (if t then p.1 else p.2) ≤ x then (1:ℝ) else 0)
+    cases t <;> simpa [empiricalCDF, rowOutcomes] using hc
+
+lemma corner_bounded : ∀ i, |cornerWitness.y1 i| ≤ 1 ∧ |cornerWitness.y0 i| ≤ 1 := by
+  intro i
+  simp [cornerWitness]
+  split_ifs <;> norm_num
+
+lemma corner_third : BoundedThirdMoments cornerWitness := by
+  refine ⟨1, ?_⟩
+  intro q t
+  haveI : Nonempty (Fin (cornerWitness.design q).N) := ⟨⟨0, by
+    have := (cornerWitness.design q).population_min
+    omega⟩⟩
+  apply Finset.expect_le Finset.univ_nonempty
+  intro i _
+  cases t <;> simp only [Bool.false_eq_true, if_false, if_true]
+  all_goals simp only [cornerWitness]; split_ifs <;> norm_num
+
+lemma corner_nonsingular : NonsingularLaw cornerLaw := by
+  intro a b c hab hline
+  have h := hline
+  change (∀ᵐ p ∂((1/4 : ℝ≥0∞) • Measure.dirac (0,0) +
+    (1/4 : ℝ≥0∞) • Measure.dirac (0,1) +
+    (1/4 : ℝ≥0∞) • Measure.dirac (1,0) +
+    (1/4 : ℝ≥0∞) • Measure.dirac (1,1)), a*p.1 + b*p.2 = c) at h
+  simp only [ae_add_measure_iff, Measure.ae_ennreal_smul_measure_iff
+    (by norm_num : (1/4 : ℝ≥0∞) ≠ 0), ae_dirac_eq, Filter.eventually_pure] at h
+  rcases h with ⟨⟨⟨h00, h01⟩, h10⟩, h11⟩
+  simp only [Prod.fst, Prod.snd, mul_zero, mul_one, zero_add, add_zero] at h00 h01 h10
+  rcases hab with ha | hb
+  · exact ha (by linarith)
+  · exact hb (by linarith)
+
+lemma corner_ui : UniformSquareIntegrability cornerWitness := by
+  intro t
+  have hsq : ∀ i, ((if t then cornerWitness.y1 else cornerWitness.y0) i)^2 ≤ 1 := by
+    intro i
+    cases t <;> simp only [cornerWitness, Bool.false_eq_true, ite_false, ite_true]
+    all_goals split_ifs <;> norm_num
+  have hzero : ∀ β : ℝ, 1 < β → ∀ q,
+      finiteMean (fun i : Fin (cornerWitness.design q).N =>
+        let y := (if t then cornerWitness.y1 else cornerWitness.y0) i.val
+        if β ≤ y^2 then y^2 else 0) = 0 := by
+    intro β hβ q
+    have heq : (fun i : Fin (cornerWitness.design q).N =>
+        let y := (if t then cornerWitness.y1 else cornerWitness.y0) i.val
+        if β ≤ y^2 then y^2 else 0) = fun _ => (0:ℝ) := by
+      funext i
+      exact if_neg (by have := hsq i.val; linarith)
+    rw [heq]
+    simp [finiteMean]
+  constructor
+  · apply (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0:ℝ)) atTop (𝓝 0)).congr'
+    filter_upwards [eventually_gt_atTop (1:ℝ)] with β hβ
+    simp [hzero β hβ]
+  · intro β
+    refine ⟨1, ?_⟩
+    rintro _ ⟨q, rfl⟩
+    haveI : Nonempty (Fin (cornerWitness.design q).N) := ⟨⟨0, by
+      have := (cornerWitness.design q).population_min
+      omega⟩⟩
+    apply Finset.expect_le Finset.univ_nonempty
+    intro i _
+    change (if β ≤ ((if t then cornerWitness.y1 else cornerWitness.y0) i.val)^2
+      then ((if t then cornerWitness.y1 else cornerWitness.y0) i.val)^2 else 0) ≤ 1
+    by_cases ht : β ≤ ((if t then cornerWitness.y1 else cornerWitness.y0) i.val)^2
+    · rw [if_pos ht]
+      exact hsq i.val
+    · rw [if_neg ht]
+      norm_num
+
+-- T15: every condition, including the bounded-supremum part of condition 4.
+example : ∃ S H θ ρ, Conditions123 S H θ ρ ∧ UniformSquareIntegrability S :=
+  ⟨cornerWitness, cornerLaw, 1, 1/2, corner_conditions, corner_ui⟩
+
+-- T16: one admissible common parameter tuple and an admissible positive split.
+example : ∃ S H θ ρ C : _, Conditions123 S H θ ρ ∧ 0 ≤ C ∧
+    (∀ i, |S.y1 i| ≤ C ∧ |S.y0 i| ≤ C) ∧
+    (0 : ℝ) < 1 ∧ (1 + 1 + 1 : ℝ) = 3 := by
+  refine ⟨cornerWitness, cornerLaw, 1, 1/2, (1:ℝ), corner_conditions,
+    by norm_num, corner_bounded, by norm_num, by norm_num⟩
+
+-- T17: simultaneous satisfaction of every corollary hypothesis.
+example : ∃ S H θ ρ, Conditions123 S H θ ρ ∧
+    BoundedThirdMoments S ∧ NonsingularLaw H :=
+  ⟨cornerWitness, cornerLaw, 1, 1/2, corner_conditions, corner_third, corner_nonsingular⟩
+
+-- These checks use no audited theorem as a premise.
+#print axioms corner_conditions
+#print axioms corner_ui
+#print axioms corner_third
+#print axioms corner_nonsingular

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P020-T6",
+    "theorem": "SAP.P020.T6",
+    "fingerprint": "cedf7cf449ce3a9f06ffcd48fac79cb1f329f0e608c16e423d7ff545de49f33c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:12 (individual realization), :22 (all three assignments), :32 (positive population data and size variance 2/3), :40 (OLS slopes), and :110 (independent proof of the entire T6Statement by finite-sum arithmetic). M=3, mt=1, sizes=(1,2,3), y0=(0,0,0), y1=(0,0,3); estimator mean=1/8, ATE=1/2 and bias=-3/8. Every witness denominator is nonzero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T7",
+    "theorem": "SAP.P020.T7",
+    "fingerprint": "c8c88ca3cfeb17d38fe50dc69e729240347e78e85a4142767c1cb1b341ad0236",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:47 using subscriptPopulation, admissible assignment {0}, b0=2, b1=3, k=1 and transformed coefficient 5. Both sizes are positive, 0<1<2, the original estimate is 4/3, and the transformed estimate is 4. The hypotheses impose no condition on the real affine parameters.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T8",
+    "theorem": "SAP.P020.T8",
+    "fingerprint": "6df9399c1db3dd9633d477807176314716280dadded048f212007ba8709b9733",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:59 with M=3>0, v=(0,1,4), w=(2,-1,3), size=(1,2,3) and k=2. All vectors vary; the check verifies mean preservation, the variance expansion and the final covariance expansion directly from finite sums. These supply data satisfying every hypothesis.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T9",
+    "theorem": "SAP.P020.T9",
+    "fingerprint": "3290e46a6e7c65a4fdb00a95ee7f9be8fe2bab86a355aa19ec91799d5a789775",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:77 (both admissible assignments), :81 and :91 (numerical witnesses), and :100 (independent proof of the entire T9Statement). The control-subscript instance has sizes=(1,2), y0=(0,0), y1=(1,2), realized by individual control outcomes all zero and treatment outcomes all one. The bracket instance y0=y1=(0,2) is realized by nullIndividuals at :120. Both have M=2 and mt=mc=1; the discrepancies are 2/3 versus -2/3 and covariance 1 versus bracket values -1 and 1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T10",
+    "theorem": "SAP.P020.T10",
+    "fingerprint": "ee61c029bbb284a15f1a4dc2d951af9a6d6f3a566765ac594ff73cc2f3b147bf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:120 constructs individual potential outcomes for bracketPopulation with the individual sharp null and both aggregation certificates. The example at :132 checks the sharp null, assignment {0}, positive observed total variance 1 and observed variance formula 16/9. The example at :143 independently computes actual HT design variance as 16/9. Thus the sharp-null hypotheses allow a nonzero variance instance with unequal cluster sizes.",
+    "confidence": 0.99
+  }
+]

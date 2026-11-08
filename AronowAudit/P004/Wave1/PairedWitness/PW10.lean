@@ -2,7 +2,7 @@ import AronowAudit.P004.Wave1.PairedWitness.PW9
 import AronowAudit.P004.P004_VarianceComponentsCompletion
 
 /-! Conditional residual moments for the literal unsigned printed formula.  In
-particular, the second factor below retains `pairFit N i b`, as in the printed formula. -/
+particular, the second factor below retains `pairFit N i b`, as in the blueprint. -/
 
 namespace AronowAudit.P004.Wave1.PairedWitness
 

@@ -25,7 +25,7 @@ lemma t4_alpha_comp {Ω A B C D : Type*} [Fintype Ω]
   exact event_abs_le_alpha P X Y (f ⁻¹' S) (g ⁻¹' T)
 
 /-- An indicator paired with a bounded function has covariance at most 2N alpha.
-The bound follows from a finite signed-fiber argument. -/
+The finite signed-fiber argument is reused from the proved internal-bias module. -/
 lemma t4_indicator_bounded {Ω A B : Type*} [Fintype Ω] [Fintype B]
     (P : Law Ω) (X : Ω → A) (Y : Ω → B) (S : Set A)
     (g : B → ℝ) (N : ℝ) (hN : 0 ≤ N) (hg : ∀ y, |g y| ≤ N) :
@@ -656,7 +656,7 @@ theorem t4_vber_variance {n : ℕ} (hn : 0 < n) (E : Experiment n) (k q s : ℝ)
     _ ≤ 2 * (k^8*dAvg E/(n:ℝ) + k^8*dAvg E/(n:ℝ)) := by linarith [hb true, hb false]
     _ = _ := by ring
 
-/-- T4: variance bounds for weighted outcomes, treatment counts, and squared outcomes. -/
+/-- The exact frozen T4 conjunction. Every mixing input is discharged above. -/
 theorem corrected_variance_chains_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
     (k q s : ℝ) (hReg : Regular E k q s) :
     (∀ b, var E.design (muHat E b) ≤ k^2/(n:ℝ)^2 *
@@ -691,6 +691,8 @@ theorem corrected_variance_chains_proof {n : ℕ} (hn : 0 < n) (E : Experiment n
     exact ⟨fun b => ⟨t4_square_weighted E k q s hReg b,
       t4_covariance_cancellation E hBER b 2, t4_square_variance hn E k q s hReg hq hBER b⟩,
       t4_vber_variance hn E k q s hReg hq hBER⟩
+
+example : type_of% @AronowAudit.P009.corrected_variance_chains := corrected_variance_chains_proof
 
 end
 end AronowAudit.P009.Wave1

@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P007-T1",
+    "theorem": "SAP.P007.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use 947 rows whose observed set is columns 0 through 404 and 7633 rows whose observed set is columns 0 through 405. There are 8580 rows, 1205 available columns and 3482533 observed cells. This attains the numerator bound 9560288484630. The uniform four-column sample space has choose(1205,4)>0 elements. All counts and 1206 supporting-line inequalities were checked exactly in scratch/check_arithmetic.py.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T2",
+    "theorem": "SAP.P007.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Append 19 entirely missing columns to the balanced 8580-by-1205 mask described for T1. Its retained missing count is 6856367, original missing count 7019387 and observed count 3482533. The original average 7019387/10501920 satisfies the logged-decimal tolerance, as checked both in Lean and exact rational arithmetic. The three supplied retained estimates yield exactly the compared losses; no conclusion for every k>6 is asserted.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T3",
+    "theorem": "SAP.P007.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The point mass at (missing,observed) has q=0, survivals (1,0,0), an always-observed second cell and deletion probability one. The point mass at (missing,missing) satisfies the observation bound for every 0<=q<1. Both are actual normalized one-row laws; exact enumeration verifies the weights, and scratch/Check.lean constructs the first normalized null-prefix model without sorry.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T4",
+    "theorem": "SAP.P007.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Witness B is the point mass at (missing,observed), now with q=1/2. Witness C consists of two independent rows, each equally likely to be (missing,observed,observed) or (observed,missing,observed). Exact enumeration gives normalized weights, the required row independence, survivals (1,1/2,0,0) for each C row, and deletion probability one. In B every v in [0,1], including v=1>q, satisfies 0=v*0; no conditional-probability convention supplies the counterexample.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T5",
+    "theorem": "SAP.P007.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=h=2, independent cells with observation probability q=1/2 give each of the 16 arrays weight 1/16 and meet all hypotheses with positive prefixes. For any positive n,h, the normalized all-missing point law satisfies the hypotheses for every 0<=q<1, including zero. The general point-law construction and observation-bound proof compile in scratch/Check.lean without sorry.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T6",
+    "theorem": "SAP.P007.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=h=2 and independent cells with q=1/2: p_all=(3/4)^2=9/16 and 1-n*q^h=1/2. The all-missing point law supplies the zero endpoint. For the group-count clause, at n=2 the group index type Fin 2 has two elements and the variable type Fin 2 x Fin 2 has four, partitioned into two-element fibers of the first projection.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T7",
+    "theorem": "SAP.P007.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Each equal or unequal model is constructed by the displayed product cell weights. All observation chances are in [0,1], so weights are nonnegative and their total is product_ij(a_ij+(1-a_ij))=1; factoring by rows gives mutual independence. Equal-model survival is q^h and unequal-model survival is 3/4^h. The two large equal-model crossings, all small-model fractions, and the unequal-model Bernoulli estimate above 99/100 were independently checked using exact rationals and directed rational intervals in scratch/arithmetic-results.json.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T8",
+    "theorem": "SAP.P007.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=1,q=3/4,a=1/2 the inverse lies strictly between 2 and 3, with B(2)=7/16 and B(3)=37/64. Equal-cell product laws normalize and attain B(k) for every positive n,k and admissible q. The unequal one-row, two-cell law with observation chances 3/4 and 1/4 has B(2)=7/16<=1/2 but actual deletion probability 13/16. Both n=10000 worked rounding intervals and their crossings were independently verified with rational enclosures.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T9",
+    "theorem": "SAP.P007.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four independent cells have observation chances 3/4,1/2 in each row. Exact enumeration checks all 16 array weights, normalization, atomic row factorization and positive-prefix observation ratios. Each row survives with probability 3/8; expected deleted fraction is 5/8, actual all-deletion probability 25/64, and the two lower-bound quantities are 7/16 and 49/256. The first-column marginal forces any observation bound to be at least 3/4.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T10",
+    "theorem": "SAP.P007.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=k=2,q=3/4, independent equal-observation cells give expected deleted fraction 7/16 and all-deletion bound 49/256, so the interior strict distinction is nondegenerate. At q=0 the all-missing law attains expected fraction one, and both numerical bounds equal one for every positive n,k. In particular n=2,k=1,q=0 demonstrates why the final 'only n=1' assertion needs the declared qualification. The expectation statements themselves impose no row independence.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T11",
+    "theorem": "SAP.P007.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take two independent one-cell rows with observation probabilities 1/4 and 1/2. Their joint weights are 1/8,1/8,3/8,3/8 in the order (observed,observed), (observed,missing), (missing,observed), (missing,missing). Exact enumeration verifies normalization, the observation bound q=1/2, unequal row laws and p_all=3/8>=1/4. The general product clause assumes independence alone.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T12",
+    "theorem": "SAP.P007.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The balanced observed array from T1 with 19 entirely missing columns appended has original count 7019387 and original average in [0.6675,0.6685), so both specialized antecedents hold. The arbitrary-size clause is inhabited, for example by n=K=d=1 with both cells missing. All specialized fractions and the percentage-point difference 66168127/126548136 were independently checked exactly. Positive n,K ensure every average denominator is nonzero.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T13",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an omitted printed empirical assertion, rather than an asserted Lean implication requiring a satisfiable antecedent. claims.json explicitly marks it no_lean=true and permits not_applicable when the available formal content is already in T1,T2,T12. The named empirical array is absent. Those three targets retain the available universal conditional refutations; their count hypotheses have the explicit balanced-mask instance described above. The omission does not represent the false printed assertions as proved.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T14",
+    "theorem": "SAP.P007.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=k=2,q=1/2, give each of the 16 Boolean arrays weight 1/16. The rows are mutually independent, survivals are (1,1/2,1/4), and p_all=9/16=(1-q^k)^n. For q=0 use the all-missing point law. General normalized point-law satisfiability is compiled in scratch/Check.lean. Finite joint weights represent the joint law of any finite collection of binary indicators, so this representation adds no probability-space restriction.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T15",
+    "theorem": "SAP.P007.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use two independent rows and two singleton variable groups, each indicator observed independently with probability 1/2. This normalized 16-state model attains p_all=9/16. Groups may also be expanded to any positive sizes by repeating each indicator within its group, preserving row completeness and all assumptions. The canonical claim explicitly permits the common binary-indicator formulation without modelling the variable expansion.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T16",
+    "theorem": "SAP.P007.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs k(n)=n*n+1 and the all-missing point law at every n, with one fixed q=1/2. It proves positivity, mutual row independence, the observation bound and superlog k, and compiles without sorry. The superlog proof bounds k(n)/log n below by n for n>=2. At n=0 the empty-row array type is a singleton and carries its normalized point law; extending any positive-index family to that index imposes no further restriction.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T17",
+    "theorem": "SAP.P007.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same compiled model as T16, interpreted as g(n)=n*n+1 singleton groups, satisfies the full conjunction of hypotheses with fixed q=1/2. Larger nonempty groups can repeat each group's Boolean indicator without altering any probability. The finite initial logarithm conventions and n=0 law do not affect the limit, and the canonical claim permits this common group-indicator formulation.",
+    "confidence": "high"
+  }
+]

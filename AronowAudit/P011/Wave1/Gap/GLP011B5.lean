@@ -4,6 +4,7 @@ import AronowAudit.P011.P011_SampleCompletion
 /-!
 P011-T16: OLS mean and shift identities, and the root-n rate obtained from
 bounded raw responses and a uniformly coercive normalized Gram matrix.
+All statistical inputs below are proved completion results.
 -/
 namespace AronowAudit.P011.Wave1
 
@@ -351,7 +352,7 @@ lemma olsr_residual_oracle (F : Family) (c1 c2 c3 c4 : ℝ)
     (fun k => ols (D k)) (fun k => olsr_measurable (D k)) hm ⟨2*c1, hz⟩ herr
 
 
-/-- P011-T16: OLS mean, shift and rate properties. -/
+/-- The exact frozen P011-T16 contract, proved from the original premises. -/
 theorem ols_repair_proof (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1 c2 c3 c4)
     (p : ℕ) (j : Fin p) (D : ∀ k, Matrix (Fin (F.size k)) (Fin p) ℝ) (b : Fin p → ℝ)
     (hrank : ∀ k, ((D k)ᵀ*D k).det ≠ 0)
@@ -414,6 +415,8 @@ theorem ols_repair_proof (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1 c2 c
     intro A hv hm
     exact rps_maximum_conservative F
       (fun k y => fittedResidual (F.model k) (D k) (ols (D k)) y) A hv hm ho
+
+example : type_of% @AronowAudit.P011.ols_repair := ols_repair_proof
 
 end
 end AronowAudit.P011.Wave1

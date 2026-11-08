@@ -1,0 +1,162 @@
+[
+  {
+    "target_id": "P045-T17",
+    "theorem": "SAP.P045b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=1, Delta=Bool, fair probability 1/2 on both assignments, D(z,0)=z(0), k=true,l=false,y(0,d)=1. Both marginals are 1/2. The empty-k assignment has probability 1/2, HT total 0 and Hajek none; the unconditional total mean is 1 and its nonempty-cell conditional mean is 2. Positive marginals and a positive-mass empty cell are checked in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T18",
+    "theorem": "SAP.P045b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=4,i=2 in zero-based indexing,z=(true,false,true,false) deletes to (true,false,false); both Boolean choices of the deleted coordinate produce that deletion. The full reindexing is invertible by inserting the separated bit. The N=1 endpoint is also meaningful: the remaining tuple has length zero, while the own coordinate still distinguishes both assignments. Exact finite checks cover 642 deletion instances for N=1 through 6.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T19",
+    "theorem": "SAP.P045b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=3,K=2,psi=2/3,z=(true,true,false). All hypotheses are checked in scratch/Check.lean. The treated units each have one treated peer and the control has two; the discrepancy from psi(n-1) for a treated unit is 1/3. Independent enumeration checks 1482 peer-count instances.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T20",
+    "theorem": "SAP.P045b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On vertices 0,...,8, S={1,6} has distance 5 between centres and covers every other vertex within 2 hops. Exact enumeration of all 512 subsets finds precisely the thirteen listed corrected nets and no subset satisfying the within-three-and-cover conjunction. The canonical assertion itself concerns the specified upper-bound reading, which the docstring identifies.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T21",
+    "theorem": "SAP.P045b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The nine-vertex path with epsilon=3 and the ordered greedy list [1,6] is a nonempty terminal run, with separated centre set {1,6}. On a disconnected two-vertex graph and epsilon=3, [0,1] is another terminal run; the cross-component distance is infinity. The explicit epsilon>=1 assumption ensures the covering radius is the intended integer epsilon-1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T22",
+    "theorem": "SAP.P045b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every N=n+1>=1 the probability space has 2^N assignments of mass 2^(-N). At N=1, T is a fair sign of variance 1, the variance estimate is 1/4 or 9/4 with equal probabilities, its mean is 5/4, and its mean SE is 1. Every relative error exceeds 1/2. The full sequence has absolute error <=5/(4N) and hence absolute consistency. Exact finite moments and errors were checked for N=1,...,8.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T23",
+    "theorem": "SAP.P045b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The T22 sequence has strictly positive V_N=1/N, nonnegative variance estimates, V_N->0 and exact mean-SE agreement, so all hypotheses of the general implication are jointly satisfiable. Alternatively, take T_n=sign/(n+1) on a fair Boolean space and the deterministic estimate 1/(n+1)^2. For the nonvanishing example use T_n=sign and the estimates 1/4,9/4 at every n. For the mean-square inequalities take M=2,s=(1/2,3/2),sd=1. The six printed ratios were checked by exact rational arithmetic; scratch/Check.lean verifies the positive-variance fair-bit moments.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T24",
+    "theorem": "SAP.P045b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take G=2, n_g=3 and every baseline equal to 1. Complete randomization at 2/3 and 1/3 is feasible, and B=1>0. The four marginal cells are 2,5/4,3/2,1; the five effects are 3/4,1/2,1/4,1,7/12. Both the ratio/order and nonzero-baseline clauses are active. The arbitrary-schedule decomposition follows by cancellation with no model premise.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T25",
+    "theorem": "SAP.P045b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Valid refutation of the canonical conjunction. Take one group of two units, p=1/2, treated arm b=true, and y_i(z) equal to the other unit's treatment bit. The arm exists with probability 3/4, so its conditional mean is well-defined and equals 1/3; the average marginal outcome is 1/2. This directly falsifies the canonical group-unbiasedness assertion. No assertion that every hierarchical/effect clause fails is needed or inferred.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T26",
+    "theorem": "SAP.P045b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Valid refutation for the canonical computed direct-variance functional. Use G=6,C=3,n_g=3,m_g=2 for every group, b_g(i)=i and a_g(i)=i+1 for i=0,1,2. The causal effect is globally constant 1. Every observed arm is nonempty, but each control arm is a singleton and its within-arm term is explicitly dropped. Exact enumeration over 540 effective outcomes gives mean point estimate 1, true variance 1/2, and expected computed variance 1/3. Thus equality under additivity and general conservativeness both fail in this instance. No conclusion about the correctness of the printed numerical output values or formulas with all arm sizes >=2 is asserted.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P045-T27",
+    "theorem": "SAP.P045b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Valid refutation of the function contract explicitly asserted in the canonical statement. On the two-vertex graph with its single edge, assign vertex 0 to treatment and vertex 1 to control. At vertex 0, closed-neighborhood treated count is 1<2, so the returned indicator is true, while the all-control predicate is false. This is compiled in scratch/Check.lean. The refuted assertion is the documented indicator contract, not the chapter's all-versus-none estimand or a claim about Table 16.3's provenance.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P045-T29",
+    "theorem": "SAP.P045b.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Valid refutation of the sampler contract explicitly asserted in the canonical statement. On path 0-1-2-3 with p=1/2, the complete terminal law is {1}:1/4, {2}:1/4, {0,3}:1/3, {0,1}:1/12, {0,2}:1/12. It sums to 1, while the net event has probability 5/6. Following first centre 0, repetitions of 0 have successive factor 1/4 and eventual choices 1,2,3 each have conditional probability 1/3, so the infinite retries form a convergent geometric sum. This is independent of any default value for a divergent tsum. It does not refute the printed simulation table.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P045-T30",
+    "theorem": "SAP.P045b.T30",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use N=1, a fair assignment design, D(z,0)=z(0), k=true,l=false and y(0,true)=2,y(0,false)=1. Both marginals are 1/2. The HT total is 4 or 0 and has expectation 2; the contrast is 4 or -2 and has expectation 1, its true effect. scratch/Check.lean compiles the relevant probability-design and positivity hypotheses. The additional case k=l is harmless and gives zero contrast.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T31",
+    "theorem": "SAP.P045b.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Nc=1, m(true)=true,m(false)=false and y(z,v)=bit(z)+2*bit(v) give theta=3, gamma(true)=gamma(false)=2 and eta(true)=eta(false)=1. For the conditional clause instead take m constantly false: each individual contagion difference is zero for both z. These instances exercise both decompositions and the unchanged-mediator conclusion with a positive population size.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T32",
+    "theorem": "SAP.P045b.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take E=Fin 4, labels the identity, f the fixed three-clique four-exposure map, and w,q the specified 65-row smoothed counts (q may be filled by the same formula for the unused labels). All relevant marginals are positive and every realized assignment has both compared exposures. Exact independent enumeration checks all 66 assignments, all 4356 independent table/observation pairs, all 4290 included pairs, and every fixed table: every stated count and moment matches. The two gaps are -953130413/23499020160 and -20161943/522324075. Canonical rational embedding preserves these strict inequalities for the real estimator, which is also explicitly present in the statement.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T33",
+    "theorem": "SAP.P045b.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=1,Omega=Bool,P=1/2,f(omega,0)=omega, a=true,b=false,y(0,a)=1,y(0,b)=2. The marginals are 1/2 and the cross diagonal joint is 0. E HT=-1, Var HT=9, E Vhat=10 and zeroSurplus=1, so both positivity and a nonzero structural-zero surplus occur. The probability law and positive marginals compile in scratch/Check.lean. Exact expansion additionally checks the identity and unbiasedness on 96 finite designs with signed outcomes and structural zeros.",
+    "confidence": 0.99
+  }
+]

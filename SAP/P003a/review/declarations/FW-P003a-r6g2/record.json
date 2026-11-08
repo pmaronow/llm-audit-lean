@@ -1,0 +1,103 @@
+[
+ {
+  "target_id": "P003-T5",
+  "decision": "whole",
+  "theorem": "SAP.P003a.T5",
+  "restriction": null,
+  "statement_definition": "SAP.P003a.T5WholeStatement",
+  "rows_used": [
+   "AronowAudit.P003.corrected_search",
+   "AronowAudit.P003.noisy_search_budget",
+   "SAP.P003a.WH.W2.T5_whole",
+   "SAP.P003a.WH.W2.T5_assembly",
+   "SAP.P003a.WH.W2.T5_L1_proof",
+   "SAP.P003a.WH.W2.T5_L2_proof",
+   "SAP.P003a.WH.W2.T5_L3_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P003.sentinel_queries_le_pow",
+    "reason": "Auxiliary row is not invoked separately; the selected result establishes the packaged statement."
+   },
+   {
+    "lean_name": "AronowAudit.P003.sentinel_search_invariants",
+    "reason": "Auxiliary row is not invoked separately; the selected result establishes the packaged statement."
+   },
+   {
+    "lean_name": "AronowAudit.P003.sentinel_threshold_return",
+    "reason": "Auxiliary row is not invoked separately; the selected result establishes the packaged statement."
+   }
+  ]
+ },
+ {
+  "target_id": "P003-T11",
+  "decision": "whole",
+  "theorem": "SAP.P003a.T11",
+  "restriction": null,
+  "statement_definition": "SAP.P003a.T11WholeStatement",
+  "rows_used": [
+   "AronowAudit.P003.real_threshold_counterexample",
+   "AronowAudit.P003.zero_population_tail",
+   "SAP.P003a.WH.W2.T11_whole",
+   "SAP.P003a.WH.W2.T11_assembly",
+   "SAP.P003a.WH.W2.T11_L1_proof"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P003-T12",
+  "decision": "whole",
+  "theorem": "SAP.P003a.T12",
+  "restriction": null,
+  "statement_definition": "SAP.P003a.T12WholeStatement",
+  "rows_used": [
+   "AronowAudit.P003.finite_tail_support_repair",
+   "SAP.P003a.WH.W2.T12_whole",
+   "SAP.P003a.WH.W2.T12_assembly",
+   "SAP.P003a.WH.W2.T12_L1_proof",
+   "SAP.P003a.WH.W2.T12_L2_proof",
+   "AronowAudit.P003.finite_tail_repair",
+   "AronowAudit.P003.accepted_of_possible",
+   "AronowAudit.P003.corrected_sate",
+   "AronowAudit.P003.observed_population_possible",
+   "AronowAudit.P003.Wave1.couplingB2_observed",
+   "AronowAudit.P003.Wave1.neyman_estimator_eq",
+   "AronowAudit.P003.Wave1.neyman_event_pushforward",
+   "AronowAudit.P003.Wave1.neyman_observed_arms",
+   "AronowAudit.P003.Wave1.neyman_table_total",
+   "AronowAudit.P003.Wave1.neyman_tail_iff",
+   "AronowAudit.P003.Wave1.neyman_treated_mem",
+   "AronowAudit.P003.binomial_eq_choose"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P003-T13",
+  "decision": "whole",
+  "theorem": "SAP.P003a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.corrected_sate",
+   "AronowAudit.P003.printed_sate_witnesses"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P003-T14",
+  "decision": "whole",
+  "theorem": "SAP.P003a.T14",
+  "restriction": null,
+  "statement_definition": "SAP.P003a.T14WholeStatement",
+  "rows_used": [
+   "AronowAudit.P003.corrected_lattice_rescaling",
+   "AronowAudit.P003.corrected_sd_definition",
+   "AronowAudit.P003.fair_mass_sd",
+   "SAP.P003a.WH.W2.T14_whole",
+   "SAP.P003a.WH.W2.T14_assembly",
+   "SAP.P003a.WH.W2.T14_L1_proof",
+   "SAP.P003a.WH.W2.T14_L2_proof"
+  ],
+  "rows_not_used": [],
+  "scope_note": "The general source-law clause explicitly states lattice symmetry at twice-center c2 and lattice SD through g(j)=f(j/k). Both added equivalences are proved by reflexivity in the existing assembly."
+ }
+]

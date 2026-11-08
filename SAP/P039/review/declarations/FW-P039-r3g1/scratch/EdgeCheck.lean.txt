@@ -1,0 +1,64 @@
+import SAP.P039.Defs.WholeW1
+open SAP.P039 MeasureTheory ProbabilityTheory
+open scoped BigOperators Matrix NNReal
+set_option autoImplicit false
+
+-- A family with n=m+4, k=2, including residual degrees of freedom 1 and 2.
+def edgeZ (m : ℕ) : Matrix (Fin (m+4)) (Fin 2) ℝ :=
+  fun i j => ![1, if i.val = 0 then 1 else if i.val = 1 then -1 else 0] j
+
+def edgeX (m : ℕ) : Fin (m+4) → ℝ :=
+  fun i => if i.val = 2 then 1 else if i.val = 3 then -1 else 0
+
+lemma edge_structure (m : ℕ) :
+    FullColumnRank (edgeZ m) ∧ (∃ c, edgeZ m *ᵥ c = fun _ => 1) ∧
+    (¬ ∃ c, edgeZ m *ᵥ c = edgeX m) ∧ 2+1 < m+4 := by
+  refine ⟨?_, ?_, ?_, by omega⟩
+  · intro a b hab
+    have h0 := congrFun hab ⟨0, by omega⟩
+    have h1 := congrFun hab ⟨1, by omega⟩
+    norm_num [edgeZ, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h0 h1
+    funext j
+    fin_cases j <;> dsimp <;> linarith
+  · refine ⟨![1,0], ?_⟩
+    funext i
+    simp [edgeZ, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+  · rintro ⟨c, hc⟩
+    have h2 := congrFun hc ⟨2, by omega⟩
+    have h3 := congrFun hc ⟨3, by omega⟩
+    norm_num [edgeZ, edgeX, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h2 h3
+    linarith
+
+example : (4:ℕ)-2-1 = 1 ∧ (5:ℕ)-2-1 = 2 := by decide
+
+example (m : ℕ) :
+    let μ := Measure.pi (fun _ : Fin (m+4) => gaussianReal 0 ((1 : ℝ≥0)^2))
+    IsProbabilityMeasure μ ∧ (0 : ℝ≥0) < 1 ∧
+    FullColumnRank (edgeZ m) ∧ (∃ c, edgeZ m *ᵥ c = fun _ => 1) ∧
+    (¬ ∃ c, edgeZ m *ᵥ c = edgeX m) ∧ 2+1 < m+4 ∧
+    Measurable (fun e : Fin (m+4) → ℝ => e) ∧ μ.map (fun e => e) = μ := by
+  dsimp only
+  rcases edge_structure m with ⟨hr, hi, hx, hn⟩
+  exact ⟨inferInstance, by norm_num, hr, hi, hx, hn, measurable_id, by simp⟩
+
+-- The extra conditional Gaussian conclusions are also reached on these edge cases.
+example :
+    (controlProjection (edgeZ 0) *ᵥ
+      (edgeX 0 - ((∑ i, edgeX 0 i) / (4 : ℝ)) • (fun _ => 1))) = 0 ∧
+    (controlProjection (edgeZ 1) *ᵥ
+      (edgeX 1 - ((∑ i, edgeX 1 i) / (5 : ℝ)) • (fun _ => 1))) = 0 := by
+  have sum4 : (∑ i, edgeX 0 i) = 0 := by
+    norm_num [edgeX, Fin.sum_univ_succ]
+  have sum5 : (∑ i, edgeX 1 i) = 0 := by
+    norm_num [edgeX, Fin.sum_univ_succ]
+  have z4 : (edgeZ 0)ᵀ *ᵥ edgeX 0 = 0 := by
+    ext j
+    fin_cases j <;> norm_num [edgeZ, edgeX, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+  have z5 : (edgeZ 1)ᵀ *ᵥ edgeX 1 = 0 := by
+    ext j
+    fin_cases j <;> norm_num [edgeZ, edgeX, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+  constructor
+  · simp only [sum4, zero_div, zero_smul, sub_zero, controlProjection,
+      ← Matrix.mulVec_mulVec, z4, Matrix.mulVec_zero]
+  · simp only [sum5, zero_div, zero_smul, sub_zero, controlProjection,
+      ← Matrix.mulVec_mulVec, z5, Matrix.mulVec_zero]

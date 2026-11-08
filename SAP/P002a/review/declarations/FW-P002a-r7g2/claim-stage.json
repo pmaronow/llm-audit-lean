@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P002a.T6",
+    "target_id": "P002-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical target is the explicit counterexample to E.61 with feasible reassignment variance in the denominator. The statement supplies the same fixed constants, paired near-singular even family, odd extension, complete Xi membership, common population regression and residual bounds, full-rank sample arms, rare-block slopes and statistics, positive feasible variance and its lower bounds, estimator and ratio upper bounds, and conditional error probability one for every original assignment along the even subsequence, with limit one and nonconvergence to zero. The other three printed limits are context, as the Challenge docstring accurately states. All quantities are genuine finite-design quantities. The printed-reading conditions and independent exact-rational witness checks are recorded in scratch/RefutationAudit.md and scratch/witness_checks.py. No witness violates a design or independence condition."
+  },
+  {
+    "theorem": "SAP.P002a.T7",
+    "target_id": "P002-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every clause of the corrected 2026-11-04 canonical statement is present: positive fixed covariate dimension and admissible fixed constants, deterministic strictly increasing sizes, Xi membership, strictly positive population OLS residual variances separately in both arms at each size without a uniform lower bound, exact measurable complete-randomization marginals with arbitrary coupling, a deterministic increasing subsequence chosen before the almost-sure assertion, all four limits on one probability-one event simultaneously over every positive threshold, the pooled-coefficient oracle and its reassignment variance in every required scale/denominator, fixed least-squares completion, and quotient zero at denominator zero. The residual positivity qualification belongs to the canonical statement, not an extra restriction inferred from its audit history. The independent four-cell family in scratch/Checks.lean compiles with all hypotheses jointly, including an explicit infinite-product probability law and exact marginals."
+  },
+  {
+    "theorem": "SAP.P002a.T8",
+    "target_id": "P002-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical assertion is the counterexample to transferring the covariate eigenvalue lower bound unchanged to the augmented Gram, rather than a counterexample to the complete asymptotic coefficient-error display. For every positive even size the theorem supplies exactly the alternating covariates (with one-based paper indexing), centering, fourth moment 16, covariate Gram [4] and eigenvalue 4 >= 2, augmented Gram diag(1,4) and eigenvalue 1, and the unit intercept direction of quadratic value 1 < 2. Both Rayleigh infima are over genuine nonempty bounded-below sets. The Challenge docstring explicitly gives the correct implication-only scope. An independent finite matrix/vector instance compiles in scratch/FiniteChecks.lean."
+  },
+  {
+    "theorem": "SAP.P002a.T9",
+    "target_id": "P002-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem includes the entire exact finite block-diagonal Gram statement, the equality of the smallest augmented eigenvalue with min(1,lambda_min(C)), its min(1,e) bound and the quadratic bound for every augmented vector. The sequence assertion gives the corrected coefficient-error inequality almost surely along each fixed increasing subsequence, eventually for both arms with one real error tending to zero. Its coefficient vectors, arm Grams, Xi assumptions and quantifier order agree with the canonical setting. Exact measurable uniform marginals suffice; the statement covers the paper's independent coupling as well. Positive dimension excludes an empty covariate unit sphere and is the paper's natural-number dimension convention. scratch/Checks.lean compiles both a finite spectral-hypothesis instance and an entire increasing Xi sequence with its probability space."
+  },
+  {
+    "theorem": "SAP.P002a.T10",
+    "target_id": "P002-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem states the canonical four-unit all-complier, constant-effect counterexample, Theta(0,1/2,1) membership and LATE 2, admissibility of treatment set {0,1}, within-treated second moment 0 versus printed right side -24, printed squared-bracket expectation 49/3 versus asserted finite value 1/3, plus all the listed corrected finite values. The additionally explicit scaled variance S1 squared = 1/12 > 0 validates the normalized first equality of C.17: the unnormalized inequality remains an inequality after division by that same nonzero constant. Means, residuals and the uniform six-assignment expectation match the supplied definitions. The reading and all printed-reading conditions are in reading.md and scratch/RefutationAudit.md; independent exact-rational enumeration checks every numerical value."
+  }
+]

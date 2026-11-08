@@ -1,0 +1,10 @@
+import SAP.P016a.Challenge
+open SAP.P016a
+set_option pp.funBinderTypes true
+#check @SAP.P016a.T1
+#print SAP.P016a.T6Statement
+#print SAP.P016a.similarity
+#print SAP.P016a.ks
+#print axioms SAP.P016a.T1
+-- sanity: ks of non-data points
+example : (1:ℝ)/0 = 0 := by simp

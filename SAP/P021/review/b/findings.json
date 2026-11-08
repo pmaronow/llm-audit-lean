@@ -1,0 +1,22 @@
+[
+  {
+    "target_id": "P021-T1",
+    "theorem": "SAP.P021.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs B=1, K=1 and F=dirac(Y=1,D=1,S=1), and proves that F is a probability measure satisfying Ignorability and KnownSampling with c=1 and f(k)=degreeValue(k); its mean is 1. It also checks c=-1 and f(k)=-degreeValue(k), confirming that separate positive signs are not assumed. Independently, scratch/exact_check.py checks the joint masses 1/8 at (0,1,1), 3/8 at (0,1,0), 3/8 at (1,3,1), and 1/8 at (1,3,0), with B=1, K=3, c=1/4, f=(1,0,3). The positive population and observed degree supports are both {1,3}; the missing degree 2 has f=0 and is excluded from all conditional sums. The sample fraction and mean are both 1/2, and the inverse-profile numerator and denominator are 1/4 and 1/2. All supported conditional denominators are positive; the inverse-profile denominator is nonzero. The full statement follows by finite total expectation, Bayes' rule, and cancellation of nonzero scalars.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P021-T2",
+    "theorem": "SAP.P021.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean uses the same B=K=1 law, Omega=Unit with its Dirac probability measure, N_r=1, and every population consisting of the sampled state (1,1,1). It verifies positive population sizes, measurable coordinates, nonempty samples, both empirical convergence premises, c=a=1 sampling and ignorability, and VH=E[Y]=1. The exact nontrivial law in scratch/exact_check.py also gives admissible populations: use an eight-unit block with multiplicities 1,3,3,1 at its four states, repeated r+1 times. The empirical law is then constant, the sample size is 4(r+1), and VH=1/2; on the supported degrees its sampling probability is degree/4. Taking these populations constant on any probability space also satisfies the random premises. The disclosed restriction is substantive: identical Y=D=1 units sampled together iff a uniform omega is at least 1/(r+2) satisfy the canonical convergence assumptions but have empty-sample probability 1/(r+2) at every stage and are excluded. The restriction is accurately and completely stated in record.json and Challenge/Part1.lean:16-19. Both convergence conclusions are retained. With b=c*a>0, the empirical numerator and denominator converge to b*E[Y] and b, proving the stated ratio convergence.",
+    "confidence": "high"
+  }
+]

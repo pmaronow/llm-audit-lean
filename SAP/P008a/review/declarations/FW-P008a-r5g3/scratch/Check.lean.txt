@@ -1,0 +1,95 @@
+import SAP.P008a.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open scoped BigOperators
+open SAP.P008a
+
+-- T11: all five rounding hypotheses have simultaneous, non-boundary witnesses.
+example : ∃ a b c e f : ℝ,
+    |a - 1491 / 1000| ≤ 1 / 2000 ∧
+    |b - 1550 / 1000| ≤ 1 / 2000 ∧
+    |c - 1550 / 1000| ≤ 1 / 2000 ∧
+    |e - 1691 / 1000| ≤ 1 / 2000 ∧
+    |f - 1714 / 1000| ≤ 1 / 2000 ∧
+    a + b + c + e + f = 1999 / 250 := by
+  refine ⟨1491 / 1000, 1550 / 1000, 1550 / 1000, 1691 / 1000, 1714 / 1000, ?_⟩
+  norm_num
+
+-- The same hypotheses do not force a sum that rounds to 8.00.
+example : ∃ a b c e f : ℝ,
+    |a - 1491 / 1000| ≤ 1 / 2000 ∧
+    |b - 1550 / 1000| ≤ 1 / 2000 ∧
+    |c - 1550 / 1000| ≤ 1 / 2000 ∧
+    |e - 1691 / 1000| ≤ 1 / 2000 ∧
+    |f - 1714 / 1000| ≤ 1 / 2000 ∧
+    a + b + c + e + f = 15987 / 2000 ∧
+    1 / 200 < |a + b + c + e + f - 8| := by
+  refine ⟨2981 / 2000, 3099 / 2000, 3099 / 2000, 3381 / 2000, 3427 / 2000, ?_⟩
+  norm_num
+
+-- T12: the empty filter is real grid arithmetic, not assumed emptiness.
+lemma printed_filter_empty :
+    (Finset.univ.filter (fun k : Fin 5 => inUgandaRange (printedGrid k))) = ∅ := by
+  apply Finset.eq_empty_iff_forall_notMem.mpr
+  intro k hk
+  have h : ¬ inUgandaRange (printedGrid k) := by
+    fin_cases k <;> norm_num [printedGrid, inUgandaRange]
+  exact h (Finset.mem_filter.mp hk).2
+
+-- The array has three samples and genuinely nonzero, varying grid entries.
+def nonzeroArray (z : Fin 3) (j : Fin 5) : ℝ := z.val + j.val + 1
+
+example : ∀ z j, 0 < nonzeroArray z j := by
+  intro z j
+  dsimp [nonzeroArray]
+  positivity
+
+example : ∀ z : Fin 3,
+    ∑ j ∈ Finset.univ.filter (fun j => inUgandaRange (printedGrid j)),
+      nonzeroArray z j = 0 := by
+  intro z
+  rw [printed_filter_empty]
+  simp
+
+-- Both reported percentile positions are within the declared domain.
+example : (0 : ℝ) ≤ 1 / 40 ∧ (1 / 40 : ℝ) ≤ 1 ∧
+    (0 : ℝ) ≤ 39 / 40 ∧ (39 / 40 : ℝ) ≤ 1 := by norm_num
+
+example (q : ℝ) :
+    quantile7 (fun z : Fin 3 =>
+      ∑ j ∈ Finset.univ.filter (fun j => inUgandaRange (printedGrid j)),
+        nonzeroArray z j) q = 0 := by
+  simp [printed_filter_empty, quantile7]
+
+-- T13: four actual selected indices, with no endpoint lost to rounding.
+lemma corrected_filter_four :
+    (Finset.univ.filter (fun k : Fin 41 => inUgandaRange (correctedGrid k))) =
+      {2, 3, 4, 5} := by
+  ext k
+  fin_cases k <;> norm_num [correctedGrid, inUgandaRange]
+
+example : (Finset.univ.filter
+    (fun k : Fin 41 => inUgandaRange (correctedGrid k))).card = 4 := by
+  rw [corrected_filter_four]
+  decide
+
+example : ∑ k ∈ Finset.univ.filter
+    (fun k : Fin 41 => inUgandaRange (correctedGrid k)),
+      111 * correctedGrid k = 7 := by
+  rw [corrected_filter_four]
+  norm_num [correctedGrid]
+
+-- T14: every hypothesis, both means, and the product discrepancy on two nodes.
+example : ∃ (N : ℕ) (μ₁ μ₀ τ : Fin N → ℝ),
+    0 < N ∧ (∀ i, τ i = μ₁ i - μ₀ i) ∧
+    ((N : ℝ)⁻¹ * ∑ i, τ i) = 4 ∧
+    ((N : ℝ)⁻¹ * ∑ i, (μ₁ i - μ₀ i)) = 4 ∧
+    (((N : ℝ)⁻¹ * ∑ i, τ i) *
+      ((N : ℝ)⁻¹ * ∑ i, (μ₁ i - μ₀ i))) = 16 ∧ (16 : ℝ) ≠ 4 := by
+  refine ⟨2, ![3, 7], ![0, 2], ![3, 5], ?_, ?_, ?_⟩
+  · norm_num
+  · intro i
+    fin_cases i <;> norm_num
+  · norm_num [Fin.sum_univ_two]

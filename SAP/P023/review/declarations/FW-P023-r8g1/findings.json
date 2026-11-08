@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P023-T1",
+    "theorem": "SAP.P023.T1",
+    "fingerprint": "f9d762dd7bcb11bee34f8b57cd9e1d004132ab83516b6b1f5eb8e4d5d7afa9b6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean without using any Challenge theorem: linear_twoParty, linear_condition1, linear_fullRank, linear_counts, the exact model, all bin labels, and strict outcome bounds. The concrete design has rank 3 and both close counts equal 1. scratch/exact_audit.py independently reconstructed the OLS and coarsened weights and reproduced both coefficients and their nonzero change using exact rational arithmetic. This unconditional witness is genuine; empty nuisance bins only leave irrelevant intercepts undetermined.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T2",
+    "theorem": "SAP.P023.T2",
+    "fingerprint": "2a5b6ddbeee0a7831b1a9500da5cdd3fbda630258d630765fd81aacd60fdc705",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean without using any Challenge theorem: degree7_twoParty, degree7_condition1, degree7_fullRank, degree7_counts, the exact degree-seven model, all bin labels, and strict outcome bounds. The concrete design has rank 9 and both close counts equal 1. scratch/exact_audit.py independently inverted the rational Gram matrix, checked every nonzero weight, and reproduced the original/perturbed OLS and coarsened coefficients and nonzero change.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T3",
+    "theorem": "SAP.P023.T3",
+    "fingerprint": "dc629d5483ecd64e85e45c64e355b31af4d33cc95836d2dd2c359f6c0d897b82",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: the six-point degree-one design simultaneously satisfies the two-party, full-rank, strict-interior, positive-count, close-agreement and coarsened-normal-equation guards; zero outcomes and zero bin intercepts give an actual coarsened solution. A probability measure dirac(0) with Y_i identically linearY_i satisfies all mean, integrability, square-integrability and uncorrelated-error guards. Nonzero-variance examples also exist by adding independent centered bounded noise to these fixed means. The design has four distinct distant margins, exceeding 2J=2. For the shared-consistency implication, A_N=B_N=β is a measurable nonvacuous instance. The exact uniform-law projection moments, normalizations and distant squared-mass shares were recomputed in scratch/exact_audit.py. Random-margin conditional identities follow by applying the fixed-design identity to regular conditional laws, under the stipulated standard Borel and moment conditions.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P023-T4",
+    "theorem": "SAP.P023.T4",
+    "fingerprint": "2e8f0d9be441dcfbdda4ceac70de8d386c892781b53d0b6e6c0de73ddbff0ff0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with a=1/20 and η=1/10000 satisfying every family parameter guard. Compiled scratch/ProbabilityChecks.lean: directly proved uniformMargins and noiseLaw have total mass 1, proved the measurable witness pushforward is a probability, and constructed a genuine countable IID sample using Measure.infinitePi and coordinate projections. The positive bandwidth k_N=(N+1)^(-1/2) satisfies k_N→0 and Nk_N→∞, so the sampling hypotheses are jointly satisfiable. Bounded margins, mean and independent bounded noise ensure all required moments and regression losses exist; every finite-degree regressor Gram matrix is positive definite because polynomials cannot equal a step on two intervals. Exact rational integration in scratch/exact_audit.py reproduced both population coefficients, both residual variances, and the 1/12000000 risk bound.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P023-T5",
+    "theorem": "SAP.P023.T5",
+    "fingerprint": "cb22b3089e7567257a7291c94bc5b756a477f8530121bcb565c95b82dc062cba",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with d=1/1000, including positivity of the coefficient-ratio denominator, a nonzero mean value h(1001/2000)=1/2000, h(0)=0, and the strictly positive background density at 0. Each triangular bump has integral 1 and support inside [-1,1], so the mixture density has total mass q+(1-q)=1 and lower bound q/2>0 for every allowed d. Product with the centered two-point noise supplies an actual conditional-mean law; boundedness ensures every required moment and regression loss exists. The piecewise-linear mean has matching endpoint values and slopes in {0,1,-1}, so all regularity guards hold. scratch/exact_audit.py independently integrated the density and mean at d=1/1000,1/4,1/2, reproducing the moments, exact numerical coefficient, positive denominator, and squared-error bound. The displayed rational family tends to -1 as d→0 while d/2→0, establishing the genuine law-uniform obstruction.",
+    "confidence": 0.98
+  }
+]

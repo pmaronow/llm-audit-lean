@@ -1,0 +1,39 @@
+15 targets reviewed: **4 correct_whole, 11 correct_restricted**. There are **0 restriction_inaccurate, 0 not_faithful, 0 vacuous, 0 false, 0 omission_ok, and 0 omission_questionable** verdicts. Severity counts: **15 none, 0 minor, 0 major**.
+
+No item requires a correction. Every architect decision is accepted. No target is omitted, and no claim-stage classification changed after reading the record.
+
+The blind mathematical reading was saved in [reading.md](reading.md) before opening `claims.json`. The independent comparison was then saved in [claim-stage.json](claim-stage.json) before opening `record.json`. [findings.json](findings.json) gives the final per-target verdicts, nonvacuity evidence and confidence. The scope judgments use the canonical assertions, rather than treating every suggested finite proof ingredient as an additional required conclusion.
+
+| Target | Verdict | Retained scope and accepted disclosure |
+| --- | --- | --- |
+| P004-T1 | correct_restricted | Guarded actual-MLE failure of the printed linearization; three arithmetic square sums. The docstring explicitly avoids identifying the entered arrays as actual variances and lists the omitted identities, moments and limit laws. |
+| P004-T2 | correct_whole | Corrected expansion, exact fits and representation, unbiasedness, variance, oracle bounds, normal limit and both interval results, with interior truth and the corrected homophily condition. |
+| P004-T3 | correct_restricted | Actual constrained MLE and actual fitted-estimator variance ratio tending to 8/25, with admissibility and positivity guards. The changed counting-measure realization and omitted finite certificates and coverage assertions are disclosed. |
+| P004-T4 | correct_restricted | Both weighting identities and the oracle variance bound/expectation identity. All of clause (c) is expressly omitted. |
+| P004-T5 | correct_restricted | Actual binary Euclidean-area Case B, including all-assignment table identity and positive whole-region effect. Cases A/C and grid refinement are expressly omitted. |
+| P004-T6 | correct_restricted | Actual integral aggregation, range and equal-mass formulas, and positive-scale p-value invariance. The two negative assertions and empirical conclusions are expressly omitted. |
+| P004-T7 | correct_restricted | Full twenty-node reversal and guarded repeated-star upper coverage bound below 95%. The exact equality and separate spectral, moment and limit certificates are omitted as stated. The probability is a joint validity-and-coverage event. |
+| P004-T8 | correct_restricted | Finite capped-PD ordering/inclusion and asymptotic coverage for supplied critical values. Universal Student-quantile comparison is omitted. Empty-arm draws satisfy the displayed implication, as expressly disclosed. |
+| P004-T9 | correct_restricted | Actual boundary MLE, uniform 3/32 remainder-tail bound and failure of the score expansion. Separate numerical, calculus, moment and half-normal certificates are omitted as stated. |
+| P004-T10 | correct_whole | Compact-membership consistency and root-N rate, with both corrected score remainders under interior truth. |
+| P004-T11 | correct_whole | Corrected unbiasedness, printed expectation, exact equality criterion and constant-outcome counterexample. |
+| P004-T12 | correct_restricted | Eight-node sharp-null signed-comparison witness and exact excess rejection size. The universal negative-observation rule, signed size and seventeen-node witness are omitted as stated. |
+| P004-T13 | correct_whole | Plus-one finite-sample level, both raw-rule bounds and exact correction-size identity, with ties allowed. |
+| P004-T14 | correct_restricted | Actual atomic two-node Witness 2, with positive-mass circles and disk/donut discrepancy. Witnesses 1/3 and separately listed node effects/mass vectors are omitted as stated. |
+| P004-T15 | correct_restricted | General point-effect integral, positive-shell finite decomposition, common weights and actual annulus radial-measure density. Missing only-if/non-identifiability/uniform-comparison assertions and the positive-label convention are disclosed. |
+
+All eleven record restriction texts match their Challenge docstrings after normalizing line wrapping, including line breaks inside hyphenated words. Their substance also matches the expanded propositions. Unused helper-row names in the record do not supply extra conclusions to a Challenge statement and were not counted as doing so.
+
+The audit checked the totalized Mathlib conventions explicitly. Spatial averages have measurable regions, positive finite mass and integrable outcomes where required. The finite information inverse has an explicit nonsingularity guard, and the asymptotic Gram and overlap assumptions make the information matrices eventually nonsingular. T7's Student quantile is relevant only on the event with positive trace parameters. The normal quantile levels lie strictly between one half and one. The displayed natural-number subtractions in T12 stay within their nonnegative ranges. The finite-shell formulas divide only by positive supported masses. The asymptotic lower and upper bounds use explicit eventual inequalities, avoiding an unbounded real `limsup` or `liminf` convention. No hypothesis asserting its own desired conclusion was found.
+
+Nonvacuity includes a positive-dimensional, interior-truth logistic model and an unbounded sequence of genuinely nondegenerate spatial designs. For the latter, take point nodes `(10i,0)`, counting measure, fixed alternating outcomes `(-1)^i`, fair treatment and radius/range zero. All radius-zero masses equal one; neighborhood sizes are bounded; homophily is zero; and `N * V_N = 4 * (1 - bar_y_N^2) >= 3` for `N >= 2`. This supplies the nondegenerate asymptotic premises of T2 and T8. Actual compact-set likelihood maximizers, interior truth and overlap are independently constructed in Lean. Finite witnesses also have positive assignment weights and positive averaging masses; the theorem index sets are not empty.
+
+The following scratch files compiled successfully with `/home/ubuntu/sap/tools/sap-lean`, importing only `SAP.P004a.Defs`:
+
+- [scratch/Check.lean](scratch/Check.lean): nonsingular finite design with both arms nonempty, positive common shell weights, normalized nontrivial assignment law, and the actual one-node HT expectations/variance.
+- [scratch/LogisticNonvacuity.lean](scratch/LogisticNonvacuity.lean): existence of actual MLEs in a positive-dimensional compact model, with interior truth, Gram lower bound and overlap.
+- [scratch/MeasureNonvacuity.lean](scratch/MeasureNonvacuity.lean): every integral-aggregation hypothesis simultaneously, with two distinct positive-mass bins.
+
+[scratch/check_finite.py](scratch/check_finite.py) also passed independent exact rational/integer calculations. These reproduce all finite T2 identities on an unequal-probability five-node interference design; both T4 weighting identities; T1's arrays and nonvanishing leading-difference block moments; T3's actual N=32 values; Case B's area weighting; the twenty-node matrix reversal; T12's exact size `0.05549969550171698 > 1/20`; T13 examples with and without ties; and the two-node shell effects. It checks the T9 negative-tail lower bound for `N=1,...,300` and finite capped-PD ordering on all thirty nonempty five-node star assignments. Exact outputs are saved in [scratch/finite-checks.json](scratch/finite-checks.json).
+
+These scratch checks support the mathematical statement audit; they do not purport to prove every quantified asymptotic assertion. Those assertions were also assessed through their actual dependence, boundedness, nondegeneracy and estimator definitions. No Solution or Comparator source was read, no `lake` command was run, and no more than two Lean processes ran concurrently.

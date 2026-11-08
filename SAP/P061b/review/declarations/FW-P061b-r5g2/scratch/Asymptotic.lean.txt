@@ -1,0 +1,93 @@
+import SAP.P061b.Defs
+
+open SAP.P061b Filter
+open scoped BigOperators Classical Topology
+
+namespace AsymptoticReview
+
+noncomputable def coin : AtomicDesign (Fin 2) where
+  p := fun _ => 1 / 2
+  nonneg := fun _ => by norm_num
+  summable := Summable.of_finite
+  total := by norm_num [tsum_fintype, Fin.sum_univ_two]
+
+-- In every positive population, just unit zero has random exposure.
+def exposure (n : ℕ) (i : Fin n) (z : Fin 2) : ℝ :=
+  if i.val = 0 then (z.val : ℝ) else 1
+
+def outcome (n : ℕ) (_i : Fin n) (_z : Fin 2) : ℝ := 1
+noncomputable def dep (n : ℕ) : ℝ := if n = 0 then 0 else 1 / 4
+def bound (_n : ℕ) : ℝ := 2
+
+lemma margins (n : ℕ) (i : Fin n) :
+    exposureProbability coin (exposure n) i 1 = if i.val = 0 then 1 / 2 else 1 := by
+  by_cases hi : i.val = 0 <;>
+    norm_num [exposureProbability, eventProbability, coin, exposure, hi,
+      tsum_fintype, Fin.sum_univ_two]
+
+lemma covariance_entries (n : ℕ) (i j : Fin n) :
+    |jointExposureProbability coin (exposure n) i j 1 1 -
+      exposureProbability coin (exposure n) i 1 *
+      exposureProbability coin (exposure n) j 1| =
+      if i.val = 0 ∧ j.val = 0 then 1 / 4 else 0 := by
+  rw [margins, margins]
+  by_cases hi : i.val = 0 <;> by_cases hj : j.val = 0 <;>
+    norm_num [jointExposureProbability, eventProbability, coin, exposure, hi, hj,
+      tsum_fintype, Fin.sum_univ_two]
+
+lemma dependence_sum (n : ℕ) :
+    ∑ i, ∑ j, |jointExposureProbability coin (exposure n) i j 1 1 -
+      exposureProbability coin (exposure n) i 1 *
+      exposureProbability coin (exposure n) j 1| = dep n := by
+  simp_rw [covariance_entries]
+  cases n with
+  | zero => simp [dep]
+  | succ n => simp [Fin.sum_univ_succ, dep]
+
+lemma bounded (n : ℕ) (i : Fin n) :
+    eventProbability coin (fun z =>
+      |(if exposure n i z = 1 then outcome n i z else 0) /
+        exposureProbability coin (exposure n) i 1| > bound n) = 0 := by
+  rw [margins]
+  by_cases hi : i.val = 0 <;>
+    norm_num [eventProbability, coin, exposure, outcome, bound, hi,
+      tsum_fintype, Fin.sum_univ_two]
+
+lemma square_sizes_grow :
+    Tendsto (fun n : ℕ => ((n + 1 : ℕ) : ℝ)^2) atTop atTop := by
+  have hn : Tendsto (fun n : ℕ => ((n + 1 : ℕ) : ℝ)) atTop atTop :=
+    tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1)
+  exact (tendsto_pow_atTop (by decide : 2 ≠ 0)).comp hn
+
+-- These are every hypothesis of T21 simultaneously, including both limits.
+example :
+    (∀ n, 0 ≤ dep n) ∧ (∀ n, 0 ≤ bound n) ∧
+    (∀ n i, 0 < exposureProbability coin (exposure n) i 1) ∧
+    (∀ n, SupportStable coin (exposure n) (outcome n)) ∧
+    (∀ n i, eventProbability coin (fun z =>
+      |(if exposure n i z = 1 then outcome n i z else 0) /
+        exposureProbability coin (exposure n) i 1| > bound n) = 0) ∧
+    (∀ n, ∑ i, ∑ j, |jointExposureProbability coin (exposure n) i j 1 1 -
+      exposureProbability coin (exposure n) i 1 *
+      exposureProbability coin (exposure n) j 1| = dep n) ∧
+    Tendsto (fun n => dep (n + 1) / ((n + 1 : ℕ) : ℝ)^2) atTop (𝓝 0) ∧
+    Tendsto (fun n => dep (n + 1) * bound (n + 1)^2 /
+      ((n + 1 : ℕ) : ℝ)^2) atTop (𝓝 0) := by
+  refine ⟨?_, ?_, ?_, ?_, bounded, dependence_sum, ?_, ?_⟩
+  · intro n
+    unfold dep
+    split_ifs <;> norm_num
+  · intro n
+    norm_num [bound]
+  · intro n i
+    rw [margins]
+    split_ifs <;> norm_num
+  · intro n i z w _ _ _
+    rfl
+  · simpa [dep] using
+      ((tendsto_const_nhds : Tendsto (fun _ : ℕ => (1 / 4 : ℝ)) atTop (𝓝 (1 / 4))).div_atTop
+        square_sizes_grow)
+  · convert ((tendsto_const_nhds : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (𝓝 1)).div_atTop
+        square_sizes_grow) using 1 <;> norm_num [dep, bound]
+
+end AsymptoticReview

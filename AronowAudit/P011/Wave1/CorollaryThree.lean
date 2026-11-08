@@ -22,7 +22,7 @@ open scoped BigOperators Topology
 
 noncomputable section
 
-/-- Refutation of printed Corollary 3 (P011-T33). -/
+/-- Refutation of the frozen printed contract, assembled from its blueprint nodes. -/
 theorem printed_corollary_three_refuted :
   ¬ ∀ (F : Family) (c1 c2 c3 c4 : ℝ), Scaling F c1 c2 c3 c4 → Valid F →
       ∀ (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k)),
@@ -42,6 +42,9 @@ theorem printed_corollary_three_refuted :
     AronowAudit.P011.Wave1.PropositionOne.n10_proof
     AronowAudit.P011.Wave1.CorollaryOne.n1_proof
     AronowAudit.P011.Wave1.CorollaryThree.n1_proof
+
+example : AronowAudit.P011.Wave1.CorollaryThree.Target :=
+  printed_corollary_three_refuted
 
 end
 

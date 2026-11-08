@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P010.T11",
+    "target_id": "P010-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statement gives the entire canonical eight-observation/two-cell counterexample: the saturated logistic fit is attained and uniquely maximizes the specified likelihood, positivity and true propensities hold, printed-odds normalization gives 27/28 instead of 1/4, and reciprocal odds recover both original cells. The docstring correctly limits the counterexample to the exact-distribution-matching reading. The printed-reading conditions and witness checks are recorded in claim-checks.md; arithmetic and the logistic fit were independently compiled in scratch/Nonvacuity.lean."
+  },
+  {
+    "theorem": "SAP.P010.T12",
+    "target_id": "P010-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "All clauses of the corrected density/pmf claim are explicit: both Bayes identities, reversed study coding, automatic corrected-weight integrability and normalizer, transport and arbitrary positive scaling, finite positive square-ratio normalizer with its exact normalized density and equality criterion, and infinite printed weighted mass with impossibility of finite nonnegative normalization. The true propensity and shared-support density assumptions exactly match definitions_needed. Independent finite and infinite normalizer examples compile in scratch/Nonvacuity.lean and scratch/InfiniteMass.lean."
+  },
+  {
+    "theorem": "SAP.P010.T13",
+    "target_id": "P010-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "The concrete normal common-check population is precisely the canonical witness. It satisfies SUTVA, per-arm (indeed joint-vector) ignorability, fair positive arm masses, 4/5 passing and always-passing probabilities, continuity/full real support and finite Gaussian moments. The ratio is 1/4, the target mean is zero, and the actual printed lower 3/4-tail mean is strictly negative; the theorem explicitly negates that upper-bound inequality. The positive corrected endpoint is also given. The printed reading and each witness condition are checked in claim-checks.md."
+  },
+  {
+    "theorem": "SAP.P010.T14",
+    "target_id": "P010-T14",
+    "my_reading_vs_claim": "broader",
+    "reason": "All three clauses of the canonical corrected potential bound are present: optimization over every probability coupling at a prescribed discarded mass including threshold attainment, monotonicity in that mass, the union bound p_U0<=r, and the corrected conditional upper-tail bound when r<1. Probability, positive always-passer mass, conditional atomlessness and finite conditional first moment match the corrected statement. The theorem additionally holds without the standing random-assignment and observed-passing assumptions, because it concerns potential variables only; this is a valid strengthening, with no added restriction or lost conclusion. An explicit one-arm Gaussian population satisfying every formal hypothesis compiles in scratch/OneArm.lean."
+  },
+  {
+    "theorem": "SAP.P010.T15",
+    "target_id": "P010-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statement contains the potential/observed passer-law equality, equality of every passing probability, equality of potential and observed trimming shares with the focal-arm denominator, tail-mean equality on the finite branch, equality of the two always-passer conditioning events in the claimed means, and the corrected observable upper bound including observed passing in its conditioning. The formal tail-mean equality is stated for r<1, precisely the domain where these atomless conditional tail means exist under the author's existence convention; r>=1 has zero tail mass. Its hypotheses are the standing assumptions and the canonical continuity/finite-mean conditions. Every formal hypothesis is simultaneously realized by the independently compiled Gaussian example in scratch/OneArm.lean."
+  }
+]

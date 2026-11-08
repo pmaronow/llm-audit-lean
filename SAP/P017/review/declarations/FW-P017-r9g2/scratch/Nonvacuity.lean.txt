@@ -1,0 +1,149 @@
+import SAP.P017.Defs
+import SAP.P017.Defs.WholeW3
+
+set_option backward.isDefEq.respectTransparency.types false
+
+open MeasureTheory ProbabilityTheory Filter Set
+open scoped Topology ENNReal NNReal BigOperators
+
+noncomputable section
+
+-- These checks import only definitions and Mathlib, never the Challenge stubs.
+namespace P017Review
+
+def pairLaw : Measure ℝ := SAP.P017.fairPair (-1) 1
+
+instance pair_probability : IsProbabilityMeasure pairLaw := by
+  constructor
+  norm_num [pairLaw, SAP.P017.fairPair, Measure.add_apply, Measure.smul_apply]
+  exact ENNReal.inv_two_add_inv_two
+
+lemma pair_integrable : Integrable (fun x : ℝ => x) pairLaw := by
+  simp [pairLaw, SAP.P017.fairPair, integrable_add_measure, integrable_smul_measure,
+    integrable_dirac]
+
+lemma pair_mean : SAP.P017.populationMean pairLaw (fun x : ℝ => x) = 0 := by
+  have ha : Integrable (fun x : ℝ => x)
+      ((1 / 2 : ℝ≥0∞) • Measure.dirac (-1)) := by simp [integrable_smul_measure, integrable_dirac]
+  have hb : Integrable (fun x : ℝ => x)
+      ((1 / 2 : ℝ≥0∞) • Measure.dirac 1) := by simp [integrable_smul_measure, integrable_dirac]
+  unfold SAP.P017.populationMean pairLaw SAP.P017.fairPair
+  rw [integral_add_measure ha hb]
+  simp [integral_smul_measure]
+
+lemma pair_support : SAP.P017.effectSupport pairLaw (fun x : ℝ => x) = {-1, 1} := by
+  unfold SAP.P017.effectSupport
+  change (pairLaw.map id).support = {-1, 1}
+  rw [Measure.map_id]
+  apply Subset.antisymm
+  · apply Measure.support_subset_of_isClosed
+      (show IsClosed ({-1, 1} : Set ℝ) by
+        simpa using (Finset.isClosed ({-1, 1} : Finset ℝ)))
+    change ∀ᵐ x ∂pairLaw, x ∈ ({-1, 1} : Set ℝ)
+    simp [pairLaw, SAP.P017.fairPair, ae_add_measure_iff, Measure.ae_ennreal_smul_measure_iff]
+  · intro x hx
+    rw [Measure.mem_support_iff_forall]
+    intro U hU
+    have hxU := mem_of_mem_nhds hU
+    rcases hx with (rfl | rfl)
+    · simp only [pairLaw, SAP.P017.fairPair, Measure.add_apply, Measure.smul_apply, smul_eq_mul]
+      rw [Measure.dirac_apply_of_mem hxU, mul_one]
+      have hp : (0 : ℝ≥0∞) < 1 / 2 := by
+        simp only [one_div]
+        exact ENNReal.inv_pos.mpr (by norm_num)
+      exact lt_of_lt_of_le hp (le_add_right le_rfl)
+    · simp only [pairLaw, SAP.P017.fairPair, Measure.add_apply, Measure.smul_apply, smul_eq_mul]
+      rw [Measure.dirac_apply_of_mem hxU, mul_one]
+      have hp : (0 : ℝ≥0∞) < 1 / 2 := by
+        simp only [one_div]
+        exact ENNReal.inv_pos.mpr (by norm_num)
+      exact lt_of_lt_of_le hp (le_add_left le_rfl)
+
+lemma pair_radius : SAP.P017.effectRadius pairLaw (fun x : ℝ => x) = 1 := by
+  have hm : (-1 : EReal) ≤ 1 := by
+    simpa using EReal.coe_le_coe (show (-1 : ℝ) ≤ 1 by norm_num)
+  unfold SAP.P017.effectRadius
+  rw [pair_mean, pair_support]
+  norm_num [SAP.P017.supportSup, SAP.P017.supportInf, min_eq_left hm, max_eq_right hm]
+  simpa using EReal.real_coe_toENNReal (1 : ℝ)
+
+lemma scaled_gaussian_root : SAP.P017.RootNNormal (gaussianReal 0 1)
+    (fun n z => z / SAP.P017.sqrtN n) 0 := by
+  refine ⟨1, by norm_num, ?_⟩
+  apply tendstoInDistribution_of_ae_tendsto (fun _ => by fun_prop) measurable_id.aemeasurable
+  filter_upwards [] with z
+  have heq : (fun n => SAP.P017.sqrtN n * (z / SAP.P017.sqrtN n - 0)) =ᶠ[atTop]
+      (fun _ => z) := by
+    filter_upwards [eventually_ge_atTop (1 : ℕ)] with n hn
+    have hn' : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+    have hs : SAP.P017.sqrtN n ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hn')
+    simp only [sub_zero]
+    field_simp
+  exact tendsto_const_nhds.congr' heq.symm
+
+-- All common hypotheses of T7, including its nondegenerate normal limit.
+example : Measurable (fun x : ℝ => x) ∧
+    Integrable (fun x : ℝ => x) pairLaw ∧
+    0 < SAP.P017.effectRadius pairLaw (fun x : ℝ => x) ∧
+    (∀ n, 1 ≤ n → Measurable (fun z : ℝ => z / SAP.P017.sqrtN n)) ∧
+    SAP.P017.RootNNormal (gaussianReal 0 1) (fun n z => z / SAP.P017.sqrtN n)
+      (SAP.P017.populationMean pairLaw (fun x : ℝ => x)) := by
+  refine ⟨measurable_id, pair_integrable, ?_, ?_, ?_⟩
+  · rw [pair_radius]
+    norm_num
+  · intro n hn
+    fun_prop
+  · rw [pair_mean]
+    exact scaled_gaussian_root
+
+-- The support-contained branch of T10 with a genuinely heterogeneous effect law.
+example : Measurable (fun x : ℝ => x) ∧
+    Integrable (fun x : ℝ => x) pairLaw ∧
+    max (SAP.P017.supportSup (SAP.P017.effectSupport pairLaw (fun x : ℝ => x)) -
+      (SAP.P017.populationMean pairLaw (fun x : ℝ => x) : EReal))
+      ((SAP.P017.populationMean pairLaw (fun x : ℝ => x) : EReal) -
+        SAP.P017.supportInf (SAP.P017.effectSupport pairLaw (fun x : ℝ => x))) ≤
+      (SAP.P017.effectRadius pairLaw (fun x : ℝ => x) : EReal) := by
+  refine ⟨measurable_id, pair_integrable, ?_⟩
+  rw [pair_radius, pair_mean, pair_support]
+  have hm : (-1 : EReal) ≤ 1 := by
+    simpa using EReal.coe_le_coe (show (-1 : ℝ) ≤ 1 by norm_num)
+  norm_num [SAP.P017.supportSup, SAP.P017.supportInf, min_eq_left hm, max_eq_right hm]
+
+example : ∀ n : ℕ, Measurable (fun z : ℝ => z / SAP.P017.sqrtN n) := by
+  intro n
+  fun_prop
+
+-- Exact positive-variance Gaussian decomposition with zero remainder.
+example : SAP.P017.NormalRemainder (gaussianReal 0 1)
+    (fun n z => z / SAP.P017.sqrtN n) (fun _ z => z) (fun _ _ => 0) 0 1 := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro n hn
+    exact ⟨measurable_id, Measure.map_id⟩
+  · intro n hn
+    simp
+  · intro n hn
+    have hn' : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+    have hs : SAP.P017.sqrtN n ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hn')
+    filter_upwards [] with z
+    simp only [sub_zero, add_zero]
+    field_simp
+
+example : SAP.P017.SmallRemainderMS (gaussianReal 0 1)
+    (fun _ (_ : ℝ) => 0) := by
+  simpa [SAP.P017.SmallRemainderMS] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+
+-- A central realization of the exact T6 model (with effects in the support).
+def centralSample : ℕ → ℝ × ℝ := fun _ => (0, 1)
+
+example : SAP.P017.normalMean 25 centralSample = 0 := by
+  norm_num [SAP.P017.normalMean, SAP.P017.sampleMean, centralSample]
+
+example : SAP.P017.shiftedNormalMean 25 centralSample = 1 / 25 ∧
+    SAP.P017.clipReal 0 1 (SAP.P017.shiftedNormalMean 25 centralSample) = 1 / 25 ∧
+    SAP.P017.shiftedDifference 25 centralSample ^ 2 = 1 / 625 := by
+  norm_num [SAP.P017.shiftedNormalMean, SAP.P017.normalMean,
+    SAP.P017.sampleMean, SAP.P017.shiftedDifference, SAP.P017.clipReal, centralSample]
+
+end P017Review

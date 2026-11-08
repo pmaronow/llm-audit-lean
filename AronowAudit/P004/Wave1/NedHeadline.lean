@@ -38,5 +38,7 @@ theorem ned_headline_under_uniform_spacing
   exact NedHeadline.assemble NedHeadline.h2_proof NedHeadline.h3_proof NedHeadline.h4_proof
     dl3_proof dl4_proof dl5_proof P p d hp hd hb hWD hNED hmetric hspacing
 
+example : AronowAudit.P004.Wave1.NedHeadline.Target.{u} := ned_headline_under_uniform_spacing
+
 end
 end AronowAudit.P004.Wave1

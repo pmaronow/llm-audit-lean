@@ -1,0 +1,25 @@
+import SAP.P004c.Defs
+
+open scoped Classical
+open Filter SAP.P004c
+
+-- The literal printed s^2 bound cannot hold at radius zero when balls include their centre.
+example {Space : ℕ → Type*} [∀ N, MetricSpace (Space N)]
+    [∀ N, MeasurableSpace (Space N)] (P : PopulationSequence Space)
+    (hmetric : MetricNodeDistances P) :
+    ¬ ∃ Cb : ℝ, ∀ s : ℝ, 0 ≤ s → ∀ᶠ N in atTop, ∀ i,
+      ((ball (nodeSeparation (P N)) i s).card : ℝ) ≤ Cb*s^2 := by
+  rintro ⟨Cb, h⟩
+  have hzero := h 0 (by norm_num)
+  rw [Filter.eventually_atTop] at hzero
+  obtain ⟨M, hM⟩ := hzero
+  let i : Fin (M+1) := ⟨0, by omega⟩
+  have hdist : nodeSeparation (P (M+1)) i i = 0 :=
+    ((hmetric (M+1)).2.1 i i).mpr rfl
+  have hmem : i ∈ ball (nodeSeparation (P (M+1))) i 0 := by
+    simp [ball, hdist]
+  have hpos : (0:ℝ) < (ball (nodeSeparation (P (M+1))) i 0).card := by
+    exact_mod_cast Finset.card_pos.mpr ⟨i, hmem⟩
+  have hb := hM (M+1) (by omega) i
+  norm_num at hb
+  simp [hb] at hpos

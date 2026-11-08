@@ -63,6 +63,16 @@ theorem marked_joint_survival_tail {d s : ℝ} (hd : 0 < d) (hs : 0 < s) (a : �
       congr 1
       ring
 
+/-- One triangle of the mixed gap moment. -/
+theorem marked_joint_survival_triangle {d s : ℝ}
+    (hd : 0 < d) (hs : 0 < s) (hs2 : s < 2) :
+    (∫ a : ℝ in Ioi 0, ∫ b : ℝ in Ioi a, markedJointSurvival d s a b) =
+      1/(d^2*s^2*(2-s)) := by
+  simp only [marked_joint_survival_tail hd hs, integral_div]
+  rw [marked_exp_tail (mul_pos (mul_pos hd hs) (sub_pos.mpr hs2))]
+  simp only [mul_zero, Real.exp_zero]
+  field_simp
+  <;> ring
 
 theorem marked_joint_survival_inner {d s : ℝ}
     (hd : 0 < d) (hs : 0 < s) (hs1 : s < 1) {a : ℝ} (ha : 0 ≤ a) :
@@ -143,5 +153,70 @@ theorem marked_joint_survival_integral {d s : ℝ}
         (show (2-s : ℝ) ≠ 0 by linarith)]
       <;> ring
 
+/-- The common-cell intersection uses the diagonal survival, not a product of marginals. -/
+theorem marked_joint_survival_diagonal {d s : ℝ}
+    (hd : 0 < d) (hs : 0 < s) (hs2 : s < 2) :
+    (∫ a : ℝ in Ioi 0, markedJointSurvival d s a a) =
+      1/(d*s*(2-s)) := by
+  have heq : (fun a => markedJointSurvival d s a a) =
+      fun a => Real.exp (-(d*s*(2-s))*a) := by
+    funext a
+    simp only [markedJointSurvival, min_self]
+    congr 1
+    ring
+  rw [heq, marked_exp_tail (mul_pos (mul_pos hd hs) (sub_pos.mpr hs2))]
+  simp only [mul_zero, Real.exp_zero]
+
+/-- Combining the same-side mixed gap integral and the independent opposite sides
+gives the mixed lengths of the two half-gap cells. -/
+theorem marked_cell_length_cross_integral {d s : ℝ}
+    (hd : 0 < d) (hs : 0 < s) (hs1 : s < 1) :
+    ((∫ a : ℝ in Ioi 0, ∫ b : ℝ in Ioi 0, markedJointSurvival d s a b) +
+      (1/(d*s))^2)/2 = (4-s)/(2*d^2*s^2*(2-s)) := by
+  rw [marked_joint_survival_integral hd hs hs1]
+  field_simp [hd.ne',hs.ne',(show (2-s : ℝ) ≠ 0 by linarith)]
+  <;> ring
+
+/-- Replica gap lengths are correlated even though their retention marks are independent. -/
+theorem marked_joint_survival_covariance {d s : ℝ}
+    (hd : 0 < d) (hs : 0 < s) (hs1 : s < 1) :
+    (∫ a : ℝ in Ioi 0, ∫ b : ℝ in Ioi 0, markedJointSurvival d s a b) -
+      (1/(d*s))^2 = s/(d^2*s^2*(2-s)) := by
+  rw [marked_joint_survival_integral hd hs hs1]
+  field_simp [hd.ne',hs.ne',(show (2-s : ℝ) ≠ 0 by linarith)]
+  <;> ring
+
+/-- The actual intersection length of two cells with left and right half-gap endpoints. -/
+theorem marked_cell_intersection_length (L₁ R₁ L₂ R₂ : ℝ)
+    (hL₁ : 0 ≤ L₁) (hR₁ : 0 ≤ R₁) (hL₂ : 0 ≤ L₂) (hR₂ : 0 ≤ R₂) :
+    volume.real (Icc (-L₁/2) (R₁/2) ∩ Icc (-L₂/2) (R₂/2)) =
+      (min L₁ L₂+min R₁ R₂)/2 := by
+  have hl : max (-L₁/2) (-L₂/2) = -(min L₁ L₂)/2 := by
+    rcases le_total L₁ L₂ with h | h
+    · rw [min_eq_left h,max_eq_left (by linarith)]
+    · rw [min_eq_right h,max_eq_right (by linarith)]
+  have hr : min (R₁/2) (R₂/2) = (min R₁ R₂)/2 := by
+    rcases le_total R₁ R₂ with h | h
+    · rw [min_eq_left h,min_eq_left (by linarith)]
+    · rw [min_eq_right h,min_eq_right (by linarith)]
+  have hnonneg : 0 ≤ min (R₁/2) (R₂/2) - max (-L₁/2) (-L₂/2) := by
+    rw [hl,hr]
+    have := le_min hL₁ hL₂
+    have := le_min hR₁ hR₂
+    linarith
+  rw [Measure.real,Icc_inter_Icc,Real.volume_Icc,ENNReal.toReal_ofReal hnonneg,hl,hr]
+  ring
+
+/-- Include the separate central retention probabilities in the compound cross moment. -/
+theorem marked_cross_constant_integral {d s : ℝ} (m : ℝ)
+    (hd : 0 < d) (hs : 0 < s) (hs1 : s < 1) :
+    1+2*m/d+s^2*(m*(∫ a : ℝ in Ioi 0, markedJointSurvival d s a a)+
+      m^2*((∫ a : ℝ in Ioi 0, ∫ b : ℝ in Ioi 0,
+        markedJointSurvival d s a b)+(1/(d*s))^2)/2) =
+      1+2*(m/d)+s*(m/d)/(2-s)+(m/d)^2*(4-s)/(2*(2-s)) := by
+  rw [marked_joint_survival_diagonal hd hs (by linarith),
+    marked_joint_survival_integral hd hs hs1]
+  field_simp [hd.ne',hs.ne',(show (2-s : ℝ) ≠ 0 by linarith)]
+  <;> ring
 
 end AronowAudit.P001.TailA

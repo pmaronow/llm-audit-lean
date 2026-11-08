@@ -1,0 +1,105 @@
+[
+ {
+  "target_id": "P008-T20",
+  "decision": "restricted",
+  "theorem": "SAP.P008b.T20",
+  "restriction": "Requires nonempty raster boundaries and nonempty continuous frontiers; omits the corrected sentence about how the reported smoothed curve was fitted.",
+  "rows_used": [
+   "AronowAudit.P008.block_boundary_is_eight_neighbour",
+   "AronowAudit.P008.raster_zero_summaries",
+   "AronowAudit.P008.zero_distance_is_boundary",
+   "AronowAudit.P008.boundary_counterexample",
+   "AronowAudit.P008.polygon_raster_counterexample"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P008-T21",
+  "decision": "restricted",
+  "theorem": "SAP.P008b.T21",
+  "restriction": "Retains only the numerical comparison; omits identification of the actual assignment law and its quantiles, the significance inference, and the empirical spillover conclusions.",
+  "rows_used": [
+   "AronowAudit.P008.uganda_printed_comparison"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.sharp_null_cumulative_test_valid",
+    "reason": "wrong_credit: calibrates an inclusive absolute-tail test, not the printed percentile inference."
+   }
+  ]
+ },
+ {
+  "target_id": "P008-T22",
+  "decision": "refuted",
+  "theorem": "SAP.P008b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.printed_toy_rule_rejects",
+   "SAP.P008b.WH.W1.T22_whole",
+   "SAP.P008b.WH.W1.T22_assembly",
+   "AronowAudit.P008.spatial_percentile_counterexample",
+   "AronowAudit.P008.contrast_is_hajek",
+   "AronowAudit.P008.six_support",
+   "AronowAudit.P008.sixAssignment",
+   "AronowAudit.P008.validatorRectangleModel",
+   "AronowAudit.P008.validatorRectangleStatistic",
+   "AronowAudit.P008.percentileExample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.printed_percentile_calibration_refuted",
+    "reason": "wrong_credit: refutes a larger domain of numerical arrays without a spatial-statistic witness."
+   }
+  ],
+  "statement_definition": "SAP.P008b.T22WholeStatement"
+ },
+ {
+  "target_id": "P008-T23",
+  "decision": "restricted",
+  "theorem": "SAP.P008b.T23",
+  "restriction": "Retains only the cutoff instruction's covariance identity; omits the reported interval table, its coverage interpretation, the assertion that cutoff 0.4 captures toy interference dependence unlike zero, and the empirical interval-width comparison.",
+  "rows_used": [
+   "AronowAudit.P008.dependence_cutoff_identity"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.Wave1.toy_cutoff_equals_zero",
+    "reason": "wrong_credit: concerns reconstructed geometry and equal quadratic forms, not the printed dependence-accounting intervals."
+   }
+  ]
+ },
+ {
+  "target_id": "P008-T25",
+  "decision": "whole",
+  "theorem": "SAP.P008b.T25",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.amr_integral_identity",
+   "AronowAudit.P008.circle_effect_identity",
+   "AronowAudit.P008.circle_marginal_identity",
+   "AronowAudit.P008.toy_eight_assignment_mean",
+   "SAP.P008b.WH.W1.T25_whole",
+   "SAP.P008b.WH.W1.T25_assembly",
+   "AronowAudit.P008.weighted_integrable"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.circle_measurable",
+    "reason": "A helper not needed separately for the exported integral identities."
+   },
+   {
+    "lean_name": "AronowAudit.P008.expect_const",
+    "reason": "Already incorporated in the selected integral and eight-assignment identities."
+   },
+   {
+    "lean_name": "AronowAudit.P008.expect_sub",
+    "reason": "The exported identities directly supply the target; subtraction of toy means is logical equality transport."
+   },
+   {
+    "lean_name": "AronowAudit.P008.weighted_integrable",
+    "reason": "Already incorporated in the exported circle integral identities."
+   }
+  ],
+  "statement_definition": "SAP.P008b.T25WholeStatement"
+ }
+]

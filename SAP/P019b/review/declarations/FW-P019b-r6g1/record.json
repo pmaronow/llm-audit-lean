@@ -1,0 +1,76 @@
+[
+ {
+  "target_id": "P019-T12",
+  "decision": "whole",
+  "theorem": "SAP.P019b.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.placebo_one_identity",
+   "SAP.P019b.WH.W1.T12_whole",
+   "SAP.P019b.WH.W1.T12_assembly",
+   "SAP.P019b.WH.W1.T12_L1_proof",
+   "SAP.P019b.WH.W1.T12_L2_proof",
+   "SAP.P019b.WH.W1.T12_L3_proof",
+   "SAP.P019b.WH.W1.T12_L4_proof",
+   "AronowAudit.P019.Wave1.proposition_three_proof",
+   "AronowAudit.P019.Wave1.t19_measure_apply",
+   "AronowAudit.P019.Wave1.t19_integral"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P019b.T12WholeStatement"
+ },
+ {
+  "target_id": "P019-T13",
+  "decision": "whole",
+  "theorem": "SAP.P019b.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.cnn_nonidentification_counterexample",
+   "SAP.P019b.WH.W1.T13_whole",
+   "SAP.P019b.WH.W1.T13_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P019b.T13WholeStatement"
+ },
+ {
+  "target_id": "P019-T14",
+  "decision": "restricted",
+  "theorem": "SAP.P019b.T14",
+  "restriction": "Retains every displayed population conclusion (i)–(v) only for finite underlying probability spaces with arbitrary real atom masses and pointwise truthful identities Y = Q and X = R or Q. Does not state the extension to arbitrary measurable underlying spaces with almost-sure truthful identities.",
+  "rows_used": [
+   "AronowAudit.P019.cnn_interpretation"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P019-T15",
+  "decision": "whole",
+  "theorem": "SAP.P019b.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.Wave1.two_sided_power_corrected_proof",
+   "AronowAudit.P019.pooled_variance_difference"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.planning_tail_argument",
+    "reason": "The corrected two-sided-power row already uses the threshold bound and equality case; the Solution invokes its resulting tail theorem directly."
+   }
+  ]
+ },
+ {
+  "target_id": "P019-T16",
+  "decision": "restricted",
+  "theorem": "SAP.P019b.T16",
+  "restriction": "States only the population contrast of the printed ceiling rule for a Binomial(4,2/5) baseline and an independently mixed affected share in [0,1]. Omits the liar and false-confessor response rules, every rejection-probability assertion (including the approximately 80% and 30% examples), and the finite-sample power curves and their asserted dependence on sample size or violation share.",
+  "rows_used": [
+   "AronowAudit.P019.ceiling_as_printed"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.unchanged_response_increment",
+    "reason": "This subject-level identity does not establish rejection power and is outside the retained ceiling population contrast."
+   }
+  ]
+ }
+]

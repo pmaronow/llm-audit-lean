@@ -1,0 +1,129 @@
+import SAP.P029b.Challenge
+
+open SAP.P029b MeasureTheory ProbabilityTheory Filter Set
+open scoped BigOperators Topology ENNReal
+noncomputable section
+
+def fair : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
+instance : IsProbabilityMeasure fair := by unfold fair; infer_instance
+
+lemma fair_true : mP fair {b | b = true} = 1/2 := by
+  norm_num [mP, fair, PMF.toMeasure_apply_fintype, PMF.uniformOfFintype_apply,
+    Set.indicator]
+
+def ac : PotentialUnit Unit := ⟨(), false, true, 0, 1⟩
+
+lemma constant_complier_iv {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : Ω → Bool)
+    (hZ : Measurable Z) (hp : mP μ {ω | Z ω = true} = 1/2) :
+    IVAssumptions μ (fun _ => ac) Z := by
+  have ht : MeasurableSet {ω | Z ω = true} := hZ (measurableSet_singleton true)
+  have hf : MeasurableSet {ω | Z ω = false} := hZ (measurableSet_singleton false)
+  have hIt : (∫ ω in {ω | Z ω = true}, bit (Z ω) ∂μ) = mP μ {ω | Z ω = true} := by
+    calc
+      _ = ∫ _ in {ω | Z ω = true}, (1 : ℝ) ∂μ := by
+        apply setIntegral_congr_fun ht
+        intro ω hω
+        simp only [Set.mem_setOf_eq] at hω
+        simp [bit, hω]
+      _ = _ := by simp [mP, measureReal_def]
+  have hIf : (∫ ω in {ω | Z ω = false}, bit (Z ω) ∂μ) = 0 := by
+    calc
+      _ = ∫ _ in {ω | Z ω = false}, (0 : ℝ) ∂μ := by
+        apply setIntegral_congr_fun hf
+        intro ω hω
+        simp only [Set.mem_setOf_eq] at hω
+        simp [bit, hω]
+      _ = _ := by simp
+  refine ⟨measurable_const, measurable_const, measurable_const,
+    measurable_const, measurable_const, hZ, integrable_const _, integrable_const _,
+    indepFun_const_right _ _, ?_, ?_, ?_, ?_⟩
+  · rw [hp]; norm_num
+  · rw [hp]; norm_num
+  · simp [ac, PotentialUnit.defier]
+  · simpa [ac, PotentialUnit.receipt, mCE, hIt, hIf, hp]
+
+example : IVAssumptions fair (fun _ => ac) id :=
+  constant_complier_iv fair id measurable_id fair_true
+
+example : ReceiptConditionsW1 fair (fun _ => ac) id := by
+  refine ⟨measurable_const, measurable_const, measurable_const, measurable_id,
+    ?_, indepFun_const_right _ _, ?_, ?_⟩
+  · simp [ac, PotentialUnit.defier]
+  · change 0 < mP fair {b | b = true}
+    rw [fair_true]; norm_num
+  · change mP fair {b | b = true} < 1
+    rw [fair_true]; norm_num
+
+example : ScoreVersions fair (fun _ => ac) (fun _ => 1) (fun _ => 1) ∧
+    (∀ᵐ _ ∂fair, (0 : ℝ) < 1) ∧ Integrable (fun _ : Bool => (1 : ℝ)) fair ∧
+    (∀ z, Integrable (fun _ : Bool => (1 : ℝ) * ac.outcome z) fair) ∧
+    (∫ _ : Bool, (1 : ℝ) ∂fair) ≠ 0 := by
+  have hm : covariateSigma (fun _ : Bool => ac) ≤ (inferInstance : MeasurableSpace Bool) :=
+    measurable_const.comap_le
+  constructor
+  · refine ⟨measurable_const, measurable_const, ?_, ?_⟩
+    · have hc : ac.complier := ⟨rfl, rfl⟩
+      simp only [hc, ite_true]
+      rw [condExp_const hm]
+    · have hc : ac.complier := ⟨rfl, rfl⟩
+      have ht : ac.tau = 1 := by norm_num [ac, PotentialUnit.tau]
+      simp only [hc, ite_true, ht, one_mul]
+      rw [condExp_const hm]
+  · refine ⟨ae_of_all _ (fun _ => by norm_num), integrable_const _, ?_, ?_⟩
+    · intro z; exact Integrable.of_finite
+    · change (∫ _ : Bool, (1 : ℝ) ∂(PMF.uniformOfFintype Bool).toMeasure) ≠ 0
+      rw [PMF.integral_eq_sum]
+      norm_num [PMF.uniformOfFintype_apply]
+
+def coins : Measure (ℕ → Bool) := Measure.infinitePi (fun _ => fair)
+instance : IsProbabilityMeasure coins := by unfold coins; infer_instance
+
+-- T16(iv): genuinely independent assignments, one finite covariate profile,
+-- all compliers, nonzero outcomes and exact estimated scores.
+example : FiniteSampleConditionsW1 coins (fun _ _ => ac)
+    (fun i ω => ω i) (fun _ _ _ => 1) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i
+    apply constant_complier_iv coins (fun ω => ω i) (measurable_pi_apply i)
+    have hm : Measure.map (fun ω : ℕ → Bool => ω i) coins = fair :=
+      (measurePreserving_eval_infinitePi (fun _ : ℕ => fair) i).map_eq
+    change (coins ((fun ω : ℕ → Bool => ω i) ⁻¹' {true})).toReal = 1/2
+    rw [← Measure.map_apply (measurable_pi_apply i) (measurableSet_singleton true), hm]
+    exact fair_true
+  · exact iIndepFun_infinitePi (X := fun _ : ℕ =>
+      fun b : Bool => (((), false, true, (0 : ℝ), (1 : ℝ)), b))
+      (fun _ => by fun_prop)
+  · intro i
+    have h := (measurePreserving_eval_infinitePi (fun _ : ℕ => fair) i).hasLaw
+    have h0 := (measurePreserving_eval_infinitePi (fun _ : ℕ => fair) 0).hasLaw
+    exact (h.identDistrib h0).comp
+      (u := fun b : Bool => (((), false, true, (0 : ℝ), (1 : ℝ)), b)) (by fun_prop)
+  · intro n i; exact measurable_const
+  · intro n; exact ae_of_all _ (fun _ => by intro i; norm_num)
+  · refine ⟨1/2, by norm_num, ?_⟩
+    intro x _
+    cases x
+    norm_num [scoreAt, mP, ac, PotentialUnit.complier]
+  · intro ε hε
+    have hnot : ¬ε ≤ 0 := not_le_of_gt hε
+    simpa [uniformScoreError, scoreAt, mP, ac, PotentialUnit.complier, hnot]
+      using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0))
+
+-- At alpha=1, the constant cutoff is a legitimate type-7 quantile for
+-- every sample size, including size one.
+example : (0 : ℝ) < 1 ∧ (∀ n : ℕ, Measurable (fun _ : (ℕ → Bool) => (1 : ℝ))) ∧
+    (∀ n, ∀ᵐ _ ∂coins, Type7Quantile (fun _ : Fin (n+1) => (1 : ℝ))
+      (((n+1 : ℕ) : ℝ)^(-(1 : ℝ))) 1) := by
+  refine ⟨by norm_num, fun _ => measurable_const, ?_⟩
+  intro n
+  apply ae_of_all
+  intro ω
+  refine ⟨Equiv.refl _, monotone_const, ⟨0, ?_, ?_, ?_⟩⟩
+  · simp only [Fin.val_zero, Nat.cast_zero]
+    positivity
+  · simp only [Real.rpow_neg_one, Nat.cast_add, Nat.cast_one, Fin.val_zero,
+      Nat.cast_zero, zero_add]
+    rw [mul_inv_lt_iff₀ (by positivity)]
+    linarith
+  · simp

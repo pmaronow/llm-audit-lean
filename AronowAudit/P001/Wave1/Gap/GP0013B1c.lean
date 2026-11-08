@@ -10,6 +10,9 @@ Its leading term and lower-degree orthogonality imply the Legendre equation.
 The energy k(k+1)p²+(x-x²)(p')² decreases up to 1/2 and increases thereafter;
 integration by parts gives both endpoint squares as 2k+1. This proves the
 sharp row bound without an additional analytic Legendre hypothesis.
+
+Record 10 is reused through GP0013B1b. Records 6 and 7 are omitted; see the
+run report for the missing empirical-process and outer-delta dependencies.
 -/
 
 namespace AronowAudit.P001.Wave1
@@ -580,7 +583,9 @@ private lemma GP0013B1c_general_gram_deviation_le_half {K : ℕ} (hK : 0 < K)
   · rintro r ⟨v, hv, rfl⟩
     exact hunit v hv
 
-/-- The sharp fixed-n estimate follows from the same elementary moment calculation. -/
+/-- The sharp fixed-n estimate is proved here from the same elementary moment
+calculation.  This is a helper for record 14, not an application of its held
+general-polynomial counterpart. -/
 private lemma GP0013B1c_general_gram_finite_probability_bound {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] {K : ℕ} (hK : 0 < K)
     (X : ℕ → Ω → ℝ) (hiid : IID μ X) (p : Fin K → Polynomial ℝ)
@@ -650,6 +655,8 @@ theorem uniform_polynomial_gram_bound_proof {Ω : Type*} [MeasurableSpace Ω] (�
     exact hr (X 0 ω) hω
   convert GP0013B1c_general_gram_finite_probability_bound μ hK X hiid p horth
     ((K : ℝ)^2) hrow n hn using 1 <;> ring
+
+example : type_of% @AronowAudit.P001.uniform_polynomial_gram_bound := uniform_polynomial_gram_bound_proof
 
 private lemma GP0013B1c_general_gram_good_probability_lower {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] {K : ℕ}
@@ -804,6 +811,8 @@ theorem uniform_cubic_gram_rate_stability_proof {Ω : Type*} [MeasurableSpace Ω
   convert hrate using 1
   funext n
   ring
+
+example : type_of% @AronowAudit.P001.uniform_cubic_gram_rate_stability := uniform_cubic_gram_rate_stability_proof
 
 end
 end AronowAudit.P001.Wave1

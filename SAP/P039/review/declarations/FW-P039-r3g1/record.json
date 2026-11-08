@@ -1,0 +1,172 @@
+[
+ {
+  "target_id": "P039-T1",
+  "decision": "whole",
+  "theorem": "SAP.P039.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P039.income_counterexample_half",
+   "AronowAudit.P039.income_counterexample_nine_tenths",
+   "AronowAudit.P039.income_ignores_quarter_one",
+   "AronowAudit.P039.missing_quarter_denominator",
+   "AronowAudit.P039.missing_quarter_numerator"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P039.T1Statement",
+  "bridge": "SAP.P039.Bridge.T1_correspondence",
+  "supporting_declarations": [
+   "AronowAudit.P039.income_denominators_positive"
+  ]
+ },
+ {
+  "target_id": "P039-T2",
+  "decision": "whole",
+  "theorem": "SAP.P039.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P039.income_denominators_positive",
+   "AronowAudit.P039.income_endpoint_values",
+   "AronowAudit.P039.income_growth_difference",
+   "AronowAudit.P039.income_growth_equality_iff"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P039.T2Statement",
+  "bridge": "SAP.P039.Bridge.T2_correspondence",
+  "supporting_declarations": [
+   "AronowAudit.P039.income_ignores_quarter_one",
+   "AronowAudit.P039.missing_quarter_numerator",
+   "AronowAudit.P039.missing_quarter_denominator"
+  ]
+ },
+ {
+  "target_id": "P039-T3",
+  "decision": "whole",
+  "theorem": "SAP.P039.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P039.correlated_regressor_residual_ratio",
+   "AronowAudit.P039.full_correlated_witness_fit",
+   "AronowAudit.P039.full_orthogonal_witness_fit",
+   "AronowAudit.P039.regression_five_percent_counterexample",
+   "AronowAudit.P039.regression_procedure_counterexample",
+   "AronowAudit.P039.residual_correlated_witness_fit",
+   "AronowAudit.P039.residual_gaussian_reference_counterexample",
+   "AronowAudit.P039.residual_orthogonal_witness_fit",
+   "AronowAudit.P039.residual_test_five_percent_disagreement",
+   "AronowAudit.P039.witness_baseline",
+   "AronowAudit.P039.witness_residual_projection",
+   "AronowAudit.GaussianCompletion.gaussian_squares_eq_gamma",
+   "AronowAudit.GaussianCompletion.integral_gamma_eq_setIntegral",
+   "AronowAudit.P039.GaussianCompletion.erase_zero_sum",
+   "AronowAudit.P039.GaussianCompletion.standard_pair_squares",
+   "SAP.P039.Bridge.T3_correspondence",
+   "SAP.P039.WH.W1.T3_L1_proof",
+   "SAP.P039.WH.W1.T3_L2_proof",
+   "SAP.P039.WH.W1.T3_L3_proof",
+   "SAP.P039.WH.W1.T3_L4_proof",
+   "SAP.P039.WH.W1.T3_L5_proof",
+   "SAP.P039.WH.W1.T3_assembly",
+   "SAP.P039.WH.W1.T3_whole",
+   "SAP.P039.WH.W1.witness_tail_comparisons",
+   "SAP.P039.WH.W1.witness_tail_decimals"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P039.gram_certificate_full_rank",
+    "reason": "Auxiliary Gram-certificate lemma is already used inside the exported concrete fits; no separate helper assertion is included."
+   },
+   {
+    "lean_name": "AronowAudit.P039.normal_equation_expansion",
+    "reason": "Auxiliary SSE expansion is already used inside the exported least-squares fits."
+   },
+   {
+    "lean_name": "AronowAudit.P039.normal_equation_unique",
+    "reason": "Auxiliary normal-equation uniqueness is already included in each concrete witness fit."
+   },
+   {
+    "lean_name": "AronowAudit.P039.squaredLength_nonnegative",
+    "reason": "Auxiliary nonnegativity is used inside the existing fit proofs and is not a claim component."
+   },
+   {
+    "lean_name": "AronowAudit.P039.squaredLength_zero_iff",
+    "reason": "Auxiliary zero-criterion lemma is used inside existing uniqueness proofs."
+   }
+  ],
+  "statement_definition": "SAP.P039.T3WholeStatement",
+  "bridge": "SAP.P039.Bridge.T3_correspondence",
+  "supporting_declarations": [
+   "MeasureTheory.integral_undef"
+  ]
+ },
+ {
+  "target_id": "P039-T4",
+  "decision": "whole",
+  "theorem": "SAP.P039.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P039.PaperDomains.corrected_residual_covariance_assessment",
+   "AronowAudit.P039.corrected_residual_regression",
+   "AronowAudit.P039.CovarianceCompletion.measurable_olsT",
+   "AronowAudit.P039.CovarianceCompletion.orthogonal_t_scale",
+   "AronowAudit.P039.CovarianceCompletion.residual_rank",
+   "AronowAudit.P039.FiniteCompletion.fullDesign_snoc",
+   "AronowAudit.P039.FiniteCompletion.residual_positive",
+   "AronowAudit.P039.GaussianCompletion.erase_zero_sum",
+   "AronowAudit.P039.GaussianCompletion.gaussian_coisometry",
+   "AronowAudit.P039.GaussianCompletion.matrixCLM_coisometry",
+   "AronowAudit.P039.GaussianCompletion.normalize_gaussian",
+   "AronowAudit.P039.RegressionCompletion.fullDesign_full_rank",
+   "AronowAudit.P039.RegressionCompletion.full_fit",
+   "AronowAudit.P039.RegressionCompletion.residual_quadratic",
+   "AronowAudit.P039.RegressionCompletion.symmetric_dot",
+   "AronowAudit.P039.StudentCompletion.scaled_ratioLaw_ne",
+   "AronowAudit.P039.ols_projection_identities",
+   "SAP.P039.Bridge.T4_correspondence",
+   "SAP.P039.WH.W1.T4_L1_proof",
+   "SAP.P039.WH.W1.T4_L2_proof",
+   "SAP.P039.WH.W1.T4_L3_proof",
+   "SAP.P039.WH.W1.T4_assembly",
+   "SAP.P039.WH.W1.T4_whole",
+   "SAP.P039.WH.W1.residual_sse_bound",
+   "SAP.P039.WH.W1.scaled_student_ne"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P039.full_rank_gram_unit",
+    "reason": "Auxiliary Gram invertibility is already incorporated in corrected_residual_regression."
+   },
+   {
+    "lean_name": "AronowAudit.P039.full_rank_ols_unique",
+    "reason": "The needed uniqueness is already part of corrected_residual_regression."
+   },
+   {
+    "lean_name": "AronowAudit.P039.ols_projection_identities",
+    "reason": "The projection identities are already part of corrected_residual_regression."
+   },
+   {
+    "lean_name": "AronowAudit.P039.residual_attenuation_algebra",
+    "reason": "Its attenuation and SSE conclusions are already included in corrected_residual_regression."
+   },
+   {
+    "lean_name": "AronowAudit.P039.residual_t_squared_algebra",
+    "reason": "Its guarded squared-t conclusions are already included in corrected_residual_regression."
+   }
+  ],
+  "statement_definition": "SAP.P039.T4WholeStatement",
+  "bridge": "SAP.P039.Bridge.T4_correspondence"
+ },
+ {
+  "target_id": "P039-T5",
+  "decision": "whole",
+  "theorem": "SAP.P039.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P039.literal_largest_value_counterexample",
+   "AronowAudit.P039.signed_extremism_maxima",
+   "AronowAudit.P039.voter_centered_1980_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P039.T5Statement",
+  "bridge": "SAP.P039.Bridge.T5_correspondence"
+ }
+]

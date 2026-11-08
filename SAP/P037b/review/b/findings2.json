@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P037-T16",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem or quantified hypotheses. The target quotes empirical table entries and a procedural description. A mathematical result about a stipulated weight law would certify a separate interpretation; it would not establish these empirical entries or what was actually run. The omission is justified without treating the note as an additional Dirichlet-law clause.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T17",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem or quantified hypotheses. The canonical assertion is a reported empirical treatment-effect estimate. Arithmetic with the printed pairs of numbers alone would not certify that estimate; the standing assumptions also report its official correction. Leaving this empirical target uncertified is justified.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T18",
+    "theorem": "SAP.P037b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A substantive instance is n=2, k=1, X=(1,1)^T, y=(0,2)^T; use independent balanced Rademacher coordinates for v and for u, beta=0, sigma-squared=1. Then A=(1/2,1/2), H_ii=1/2, residuals=(-1,1), HC0(y)=1/2, true homoskedastic coefficient variance=1/2, and expected HC0=1/4. All first/product moments are integrable. For the separate row lemma take a=(1), h=(1/2). scratch/RefereeCheck.lean compiles a one-dimensional full-rank instance and a genuine probability measure with integrable mean-zero, unit-second-moment multipliers.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T23",
+    "theorem": "SAP.P037b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No premises. The six positive integer group sizes replicate to 56 schools with 28 in each arm. The exact Gram left-inverse certificate proves nonsingularity, all residuals are +/-1/10, and exact rational checks confirm the HC0 and centered-fit certificates and all named quadratic forms. The control residual mean is zero and its sample variance is 7/675 on these actual data.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T24",
+    "theorem": "SAP.P037b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take p=0, n=4, T=(0,0,1,1), C=(0,0,0,1), y=(0,2,1,2). The rows are (1,0,0),(1,0,0),(1,1,0),(1,1,1), so rank is three; the fit is (1,0,1) and residuals are (-1,1,0,0). Every real centering c gives an invertible column transformation. The independent quadratic-form clause has nonzero instances such as V=I, l0=d=(1).",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T19",
+    "theorem": "SAP.P037b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No premises on the finite certificate: all six assignments exist, kept treated counts are 2 and kept control counts are 1 or 2. Thus every group mean is defined and all block weights are at least 2/3. For B>=1 the ratio denominator is positive. Independent uniform block assignments give the stated probability limit by a bounded-iid Chebyshev bound; B=0 does not affect that limit. Nonempty subsets of the four schools exist.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T20",
+    "theorem": "SAP.P037b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Omega=Fin 5 with each mass 1/5, I=Unit, K=Fin 5, D(z,())=z, a(())=true and y((),d)=d.val+1. All five exposure probabilities are 1/5 and the kept count is one. Let A(z,()) be z=0 to realize varying conditional inclusion factors. For the same-side condition use Y(z,())=1/10. The positive normalized design and its first-four positive probabilities are compiled in scratch/RefereeCheck.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T21",
+    "theorem": "SAP.P037b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both designs enumerate 924 real six-of-twelve seed sets; the histograms are (0,1,461,462,0) and (0,84,126,252,462). A supported 10000-list is 5000 false flags with any valid seed set, 5 true flags with {6,7,8,9,10,11}, 2495 with {1,6,7,8,9,10}, and 2500 with {0,6,7,8,9,10}. Add three other size-12 seed blocks with no focal peers to obtain the paper-form 48-eligible design.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T22",
+    "theorem": "SAP.P037b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Omega=Fin 5, uniform mass 1/5, I=Unit, D(z,())=z, J=5 and draws(j)=j. The four audited exact and empirical probabilities are all 1/5. With seed always false and the three availability/school masks always true, the analysis population contains the unit. For the independent 10000-draw scalar clause choose E={0}: all-hit and no-hit lists both have positive product mass. For a nontrivial exclusion bound choose seed(z,()) iff z=4. The underlying probability design is compiled in scratch/RefereeCheck.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T29",
+    "theorem": "SAP.P037b.T29",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four-block space has 2*252^4 assignments of positive mass and contains both school flags. Its exposure probabilities are 1/2,1/127008,31751/127008,1/4, all positive. Exact enumeration of the first two blocks gives counts 1,31751,31752. The no-hit probability is about 0.92428435817; its strict 9/10 and 19/20 bounds were also checked by exact integer comparisons. scratch/RefereeCheck.lean compiles a member of this assignment space.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P037-T30",
+    "theorem": "SAP.P037b.T30",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Uniform Fin 5, E={0}, J=5 gives p=1/5 and strictly positive sampling variance. The blocked formula has four genuine ten-student blocks with five seeds each and nonzero choose(10,5)=252 denominators. Its four peer-count specializations are valid subset sizes; the zero example is combinatorial impossibility, not division by zero. A constant control-flag list in the rare design misses the other three genuinely positive exposure categories and supplies the false-negative witness.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T31",
+    "theorem": "SAP.P037b.T31",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The eight-school uniform supports have 70 and 36 actual assignments; exact enumeration confirms the four second moments and their zero means. Taking either uniform law for p and its actual school indicators for S satisfies every half-marginal hypothesis in the general formula, with n=8,m=4 and either displayed nonzero outcome vector. A blocked assignment is also compiled in scratch/RefereeCheck.lean. The 56-school support counts and pair fraction were checked exactly using binomial coefficients.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T32",
+    "theorem": "SAP.P037b.T32",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the first clause take B=1,n=4,m=2: the blocked support has six assignments, each mass 1/6, and the unblocked denominators are positive. For the mixture take Omega=Bool with p(false)=p(true)=1/2, S the identity, U=Bool with uniform q and any f (for example f(s,u)=s). Both half-marginal and normalization hypotheses hold with nonempty types; no conclusion is assumed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T25",
+    "theorem": "SAP.P037b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicitly defined ten- and twenty-vertex graphs exist, have the stated zero diagonals and indegrees, and their computed quantiles have no equality ties. All 20 three-of-six seed choices in W2 are genuine supported selections. Exact enumeration yields (4,6,10) and (1,3,16), so all four exposure probabilities in both readings are positive and every displayed inverse weight is meaningful.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T26",
+    "theorem": "SAP.P037b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the loop-free graph on two vertices with edge 1->0 and vertex 1 a seed; arbitrary referent indicators are permitted. For simultaneous strict scalar probability comparisons take a one-point Omega of mass one and c=r=0,b=q=1: the old label is 0 and the new label is 2. Thus both strictness antecedents and all subset-count bounds are jointly satisfiable. Zero graphs give additional non-strict instances.",
+    "confidence": 0.98
+  }
+]

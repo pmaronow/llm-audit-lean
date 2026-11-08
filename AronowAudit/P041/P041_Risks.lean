@@ -7,8 +7,8 @@ namespace AronowAudit.P041
 /-!
 P041-E001 / P041-N006: exact arithmetic behind the percentages in the abstract
 (printed p. 1/8) and the citation paragraph (pp. 4/8-5/8).
-The counts are inputs from the deposited data, not counts printed in the
-article. No theorem here certifies the underlying data.
+The counts are inputs recounted by the validators from the deposited data, not
+counts printed in the article. No theorem here certifies the underlying data.
 -/
 
 /-- "x% more likely ... than" (abstract, p. 1/8; citation paragraph, p. 5/8),
@@ -48,9 +48,9 @@ theorem risk_percentages_counterexample :
     roundsWhole (symmetricDifference 62 32) 64 := by
   norm_num [relativeIncrease, symmetricDifference, roundsWhole]
 
-/-- Target P041-T3(iv): for a > b > 0, the symmetric difference understates
-the directional relative increase by 100(a-b)^2/(b(a+b)), a strictly positive
-quantity. -/
+/-- Target P041-T3(iv), validator derivation Step 4: for a > b > 0,
+the symmetric difference understates the directional relative increase by
+100(a-b)^2/(b(a+b)), a strictly positive quantity. -/
 theorem symmetric_understates_relative (a b : ℝ) (hb : 0 < b) (hab : b < a) :
     relativeIncrease a b - symmetricDifference a b =
       100 * (a-b)^2 / (b*(a+b)) ∧
@@ -113,9 +113,17 @@ theorem printed_percentages_arithmetic_and_direction :
   norm_num [symmetricDifference, roundsWhole]
 
 /- Target P041-T12(P2), as printed: "36% more likely ... 29% more likely"
-(abstract, p. 1/8) and "64% more likely" (pp. 4/8-5/8). These percentages are
-false under the directional reading, as risk_percentages_counterexample proves. -/
-
+(abstract, p. 1/8) and "64% more likely" (pp. 4/8-5/8). This statement is
+FALSE under the target's directional reading, as risk_percentages_counterexample
+proves. It is retained as a drafted statement, with no claim of proof. -/
+/- The false assertion `printed_directional_percentages` is retired.
+Its original closed contract is archived in the confidence-all campaign,
+and its checked refutation is recorded in the completion ledger. -/
 
 end AronowAudit.P041
 
+#print axioms AronowAudit.P041.risk_percentages_counterexample
+#print axioms AronowAudit.P041.symmetric_understates_relative
+#print axioms AronowAudit.P041.risk_measure_gaps
+#print axioms AronowAudit.P041.corrected_risk_percentages
+#print axioms AronowAudit.P041.printed_percentages_arithmetic_and_direction

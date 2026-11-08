@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P026-T23",
+    "theorem": "SAP.P026b.T23",
+    "fingerprint": "0eec4f8aaa8949d4b02e52a4f0b994606bee2c7c307088f55abc36f46a1260e8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with /home/ubuntu/sap/tools/sap-lean (exit 0). Audit.oneLaw constructs a UnitExperiment (Fin 1) with real weights 2/3 on false and 1/3 on true, proving nonnegativity, normalization, and both positive marginals. For x=z=0, b0=1, b1=-1 and the positive-weight assignment true, the original HT contrast is 0 and its transformed contrast is 3. The file separately verifies every conjunct of T23Statement's actual rational singleAsymmetric witness, including its probability law, positive marginals, supported assignment, both estimate values, and inequality. Thus the rational witness also has an independently checked realization over the reals.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T24",
+    "theorem": "SAP.P026b.T24",
+    "fingerprint": "bd2ca14b8c6ae6e5110cd05fa603cbbcaf2376b89a4b7a2fa30d114ad0a48fa5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with /home/ubuntu/sap/tools/sap-lean (exit 0). Audit.twoLaw constructs a UnitExperiment (Fin 2) giving probability 1/3 to FF, FT and TT and zero to TF, with both marginal probabilities positive for each unit. Audit.clusters constructs a surjective partition of Fin 3 into the unequal clusters {0} and {1,2}, using this law. The file proves positive disagreement for every distinct cluster pair, while the directed joint Pr(T0=true,T1=false) is zero and the reverse joint is 1/3. For unit outcomes x=(2,3,4), z=(1,-1,5), it verifies actual cluster totals (2,7), (1,4) and independently evaluates the true, split, and off-diagonal cross-covariances to -159/4. For the unit clause with x=(2,3), z=(3,4), fixed predictions r=(1,-2), it verifies that the actual generalized variance and the displayed residual variance formula both equal 373/8. These examples satisfy every hypothesis without independence or directed cross-support.",
+    "confidence": 0.99
+  }
+]

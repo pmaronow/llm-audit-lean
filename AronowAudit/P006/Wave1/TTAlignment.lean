@@ -13,7 +13,7 @@ open AronowAudit.P006 MeasureTheory ProbabilityTheory
 open scoped BigOperators ENNReal NNReal
 noncomputable section
 
-/-- P006-T27: refutation of the printed TT alignment assertion. -/
+/-- Wave 1 completion of TTAlignment; the statement is written out in full. -/
 theorem printed_TT_alignment_refuted :
   ¬ ∀ {Ω C : Type} [MeasurableSpace Ω] [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n),
       Standing E → ∀ (PiSet : Set (C → ℝ)), (∀ π ∈ PiSet, Admissible π) →
@@ -25,6 +25,12 @@ theorem printed_TT_alignment_refuted :
   TTAlignment.assemble
     BinaryExperiment.n1_proof BinaryExperiment.n2_proof BinaryExperiment.n3_proof BinaryExperiment.n4_proof BinaryExperiment.n5_proof TTAlignment.n1_proof TTAlignment.n2_proof
 
+example : TTAlignment.Target := printed_TT_alignment_refuted
+
+/-- The explicit finite witness used by the universal refutation. -/
+theorem printed_TT_alignment_witness : TTAlignment.Witness :=
+  TTAlignment.assemble_witness
+    BinaryExperiment.n1_proof BinaryExperiment.n2_proof BinaryExperiment.n3_proof BinaryExperiment.n4_proof BinaryExperiment.n5_proof TTAlignment.n1_proof TTAlignment.n2_proof
 
 end
 end AronowAudit.P006.Wave1

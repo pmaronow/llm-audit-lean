@@ -256,7 +256,7 @@ lemma glp0032b7_design_median (z : ℝ) (hz : 0 < z) (m : ℕ) (v : ℚ)
       Rat.cast_natCast, Rat.cast_zero, Rat.cast_one, Rat.cast_ofNat] using
       (Rat.cast_le (K := ℝ)).mpr hmass.2
 
-/-- P003-T8: sharp finite-run bound, HC0, and both design medians. -/
+/-- P003-T8, record 13: sharp finite-run bound, HC0, and both design medians. -/
 theorem wald_median_and_hc0_proof (z : ℝ)
     (hz : 1.95996398454005 < z ∧ z < 1.95996398454006) :
     (∀ runs : List (Fin 26), runs ≠ [] →
@@ -285,5 +285,7 @@ theorem wald_median_and_hc0_proof (z : ℝ)
   · constructor
     · exact glp0032b7_width_lower z _ _ hz (by norm_num) (by norm_num) (by norm_num)
     · exact glp0032b7_width_upper z _ _ hz (by norm_num) (by norm_num) (by norm_num)
+
+example : type_of% @AronowAudit.P003.wald_median_and_hc0 := wald_median_and_hc0_proof
 
 end AronowAudit.P003.Wave1

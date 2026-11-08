@@ -1,0 +1,54 @@
+import SAP.P013a.Challenge
+open SAP.P013a Finset
+
+set_option pp.universes true in
+#check @SAP.P013a.T13
+
+-- T11: all hypotheses (including |U| ≤ 10n+5) jointly satisfiable
+example : ∃ (U nb : Finset ℕ) (i n : ℕ), i ∈ U ∧ nb ⊆ U ∧ i ∉ nb ∧ nb.card = 39 ∧
+    1 ≤ n ∧ n ≤ U.card - 39 ∧ U.card ≤ 10*n+5 := by
+  refine ⟨range 400, Icc 1 39, 0, 40, by simp, ?_, by simp, by simp, by norm_num, by simp, by simp⟩
+  intro x hx; simp at hx ⊢; omega
+
+-- small instance: |U| = 50, n = 5 also satisfies |U| ≤ 10 n + 5
+example : ∃ (U nb : Finset ℕ) (i n : ℕ), i ∈ U ∧ nb ⊆ U ∧ i ∉ nb ∧ nb.card = 39 ∧
+    1 ≤ n ∧ n ≤ U.card - 39 ∧ U.card ≤ 10*n+5 := by
+  refine ⟨range 50, Icc 1 39, 0, 5, by simp, ?_, by simp, by simp, by norm_num, by simp, by simp⟩
+  intro x hx; simp at hx ⊢; omega
+
+-- the closed forms at |U| = 50, n = 5: p = C(10,4)/C(50,5) ≤ 27/40000
+example : ((Nat.choose 10 4 : ℝ) / Nat.choose 50 5) ≤ 27/40000 := by
+  simp [Nat.choose_eq_factorial_div_factorial, Nat.factorial]; norm_num
+
+-- T13/T14: Positivity satisfiable at both exposures of sharedPopulation 1
+example : Positivity (sharedPopulation 1) 0 ∧ Positivity (sharedPopulation 1) 1 := by
+  constructor <;> intro i <;>
+    simp [SAP.P013a.pi, expectation, indicator, sharedPopulation, sharedDesign, Fin.sum_univ_two] <;> norm_num
+
+-- T14 (a): all joint probabilities positive (N = 1)
+example : ∀ i j, 0 < jointPi (sharedPopulation 1) i j 0 0 := by
+  intro i j
+  simp [jointPi, expectation, indicator, sharedPopulation, sharedDesign, Fin.sum_univ_two]
+
+-- T14 (b),(c): a population with a missing pair and positivity at d = 0
+def antiPop : Population sharedDesign 2 2 where
+  exposure z i := if i = 0 then z else (if z = 0 then 1 else 0)
+  outcome i _ := if i = 0 then 1 else -3
+
+example : Positivity antiPop 0 ∧ jointPi antiPop 0 1 0 0 = 0 ∧ missingA antiPop 0 = -6 := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro i; fin_cases i <;>
+      simp [SAP.P013a.pi, expectation, indicator, antiPop, sharedDesign, Fin.sum_univ_two] <;> norm_num
+  · simp [jointPi, expectation, indicator, antiPop, sharedDesign, Fin.sum_univ_two]
+  · simp [missingA, jointPi, expectation, indicator, antiPop, sharedDesign, Fin.sum_univ_two]
+    norm_num
+
+-- T14 general part: a design with positive marginals (certainty unit)
+def unitDesign : WholeSamplingDesign Unit Unit where
+  weight _ := 1
+  nonneg _ := by norm_num
+  total := by simp
+  selected _ _ := true
+
+example : ∀ i, 0 < samplingPi unitDesign i := by
+  intro i; simp [samplingPi, samplingExpect, samplingIndicator, unitDesign]

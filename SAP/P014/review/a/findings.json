@@ -1,0 +1,102 @@
+[
+  {
+    "target_id": "P014-T2",
+    "theorem": "SAP.P014.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, S={0,1}, m=1, supported assignments (0,1) and (1,0), each of mass 1/2; y can be any real schedule. Both assignment-law hypotheses and positive arms are jointly witnessed by Lean examples in scratch/Check.lean, importing only SAP.P014.Defs. The omitted score-law application is an accurately disclosed restriction, not an unsatisfiable premise.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T8",
+    "theorem": "SAP.P014.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, S={0,1}, f(0,1)=1, f(1,1)=2, f(0,0)=f(1,0)=0. The window denominator is 2 and both sides are 3/2. Thus neither an empty window nor zero division is involved.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T3",
+    "theorem": "SAP.P014.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the conditional/full-uniform and noninterference parts, use N=2, S={0,1}, m=1 and the two opposite assignments of mass 1/2; choose y(i,z)=z_i for the noninterference part. These hypotheses are Lean-checked in scratch/Check.lean. For fixed outside treatments take N=3, S={0,1}, b=1 and the two score vectors (-1,1,-2),(1,-1,-2), each of probability 1/2: v=(-1,1), c_2=0 and the induced A consists of (0,1,0),(1,0,0), each of mass 1/2, so the outside set is nonempty. The necessity premise for every schedule is satisfied by any uniform support; a nonsingleton conditional support is obtained from the three one-treated assignments on three local subjects, with i=0,a=0. The exact counting check covers all 10 pairs 2<=n<=5, 0<m<n.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T7",
+    "theorem": "SAP.P014.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For a nonempty window use the two equiprobable distinct score permutations (-1,1),(1,-1) with b=1, m=1; the corrected score-law hypotheses are Lean-checked in scratch/Check.lean. Distinct-subject equality has probability zero, while every diagonal equality has probability one. The empty-window case is deliberately characterized in the conclusion and is not used as a premise to prove the nonempty claims. The three nonempty concrete designs are independently checked for distinct local scores in every row.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T4",
+    "theorem": "SAP.P014.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The unconditional scores1/y1 design is the explicit refutation. Every corrected-distinct-subject printed clause and every intended local permutation holds; each local own arm has positive probability and both estimator denominators are positive on all rows. Exact recomputation gives E[d]=0 and the printed target -1/18, so the refutation concerns the claimed unbiasedness itself.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T1",
+    "theorem": "SAP.P014.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional six-row witness from scores1 with row probabilities 1/6, N=4, b=2, S={0,1,2}. Its four assignment masses are 1/6,1/6,1/3,1/3; every local subject has treated probability 1/3 and control probability 2/3; each realized local arm count is 1 or 2. scratch/check_exact.py independently verifies all individual averages, targets and bias using exact fractions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T9",
+    "theorem": "SAP.P014.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional scores9/y9 witness with six equally likely score rows and the same four positive assignment masses as T1. The window has size 3, each local propensity is 1/3 and both realized estimator arms are nonempty. Independent exact enumeration gives printed target -1/9, weighted target and estimator expectation -1/12, cited-sign direct-effect average 1/12 and bias 1/36.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T5",
+    "theorem": "SAP.P014.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional six distinct scores5 vectors, each of mass 1/6, with S={0,1,2}, b=2 and no distinct-subject ties. The induced three assignments have masses 1/6,1/6,2/3, all local treated and control probabilities are positive, and treated/control counts are 1 and 2 on every row. Exact rational enumeration gives the noninterfering target 1/3 and estimator expectation 1/6.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T10",
+    "theorem": "SAP.P014.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general part use the two-assignment N=2 law of scratch/Check.lean, S={0,1} and y(i,z)=z_i: each treated/control probability is 1/2, corrected target and estimator expectation are 1, and the control-minus-treatment direct-effect average is -1. All estimator count hypotheses hold with m=1. The failure part is the explicit positive-arm T9 witness, whose own-control printed average is 1/3 versus conditional average 1/4 and whose target differs under both signs; these values are independently recomputed in scratch/check_exact.py.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T6",
+    "theorem": "SAP.P014.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs the uniform probability measure on the two permutations of S={0,1}, with v=(-1,1), b=1, m=1, and proves CorrectedLocalConditions together with every general antecedent, including measurability and injectivity. A nonempty-outside extension takes N=3 and outside score -2 deterministically, satisfying the g premise with g outside identically -2. The stated independent-outside example has 12 full vectors with positive masses 1/18 and 1/9; scratch/check_exact.py verifies normalization, the six local arrangement probabilities and independence.",
+    "confidence": "high"
+  }
+]

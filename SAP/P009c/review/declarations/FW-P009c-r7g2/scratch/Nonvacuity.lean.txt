@@ -1,0 +1,646 @@
+import SAP.P009c.Defs
+
+open scoped BigOperators Topology
+open Filter SAP.P009c
+noncomputable section
+
+namespace Audit
+
+attribute [local instance] Classical.propDecidable
+
+def fairLaw (n : ℕ) : Law (Assignment n) where
+  mass _ := (Fintype.card (Assignment n) : ℝ)⁻¹
+  nonneg _ := inv_nonneg.mpr (Nat.cast_nonneg _)
+  total := by simp [Finset.sum_const]
+
+lemma fair_marginal (n : ℕ) (i : Fin n) (b : Bool) :
+    prob (fairLaw n) (fun z => z i = b) = 1/2 := by
+  classical
+  let flip : Assignment n ≃ Assignment n :=
+    Equiv.piCongrRight fun j => if j = i then Equiv.boolNot else Equiv.refl Bool
+  have hf (z : Assignment n) : flip z i = !(z i) := by simp [flip]
+  have hsum : (∑ z : Assignment n, if z i = b then (1 : ℝ) else 0) =
+      ∑ z : Assignment n, if z i ≠ b then (1 : ℝ) else 0 := by
+    convert flip.sum_comp (fun z => if z i ≠ b then (1 : ℝ) else 0) using 1
+    apply Finset.sum_congr rfl
+    intro z _
+    rw [hf]
+    cases hz : z i <;> cases b <;> simp
+  have htot : (∑ z : Assignment n, if z i = b then (1 : ℝ) else 0) +
+      (∑ z : Assignment n, if z i ≠ b then (1 : ℝ) else 0) =
+      (Fintype.card (Assignment n) : ℝ) := by
+    rw [← Finset.sum_add_distrib]
+    calc
+      _ = ∑ _z : Assignment n, (1 : ℝ) := by
+        apply Finset.sum_congr rfl
+        intro z _
+        by_cases h : z i = b <;> simp [h]
+      _ = _ := by simp
+  unfold prob mean fairLaw
+  simp only
+  rw [← Finset.mul_sum]
+  have hc : (Fintype.card (Assignment n) : ℝ) ≠ 0 := by
+    exact_mod_cast Fintype.card_ne_zero
+  rw [← hsum] at htot
+  have hh : (∑ z : Assignment n, if z i = b then (1 : ℝ) else 0) =
+      (Fintype.card (Assignment n) : ℝ)/2 := by linarith only [htot]
+  calc
+    _ = (Fintype.card (Assignment n) : ℝ)⁻¹ *
+        (∑ z : Assignment n, if z i = b then (1 : ℝ) else 0) := by
+      congr 1
+      apply Finset.sum_congr rfl
+      intro z _
+      by_cases h : z i = b <;> simp [h]
+    _ = _ := by rw [hh]; field_simp
+
+def fairZero (n : ℕ) : Experiment n := ⟨fairLaw n, fun _ _ => 0⟩
+
+lemma fairZero_marginal (n : ℕ) (i : Fin n) (b : Bool) :
+    marginal (fairZero n) i b = 1/2 := fair_marginal n i b
+
+lemma fairZero_regular (n : ℕ) : Regular (fairZero n) 2 2 1 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro i; rw [fairZero_marginal]; norm_num
+  · intro i; norm_num [mean, fairZero, Real.rpow_two]
+  · intro i b; norm_num [mean, potential, fairZero]
+
+lemma fairZero_bernoulli (n : ℕ) : Bernoulli (fairZero n) := by
+  refine ⟨?_, ?_⟩
+  · intro i; rw [fairZero_marginal]; norm_num
+  · intro z
+    simp_rw [fairZero_marginal]
+    have h (i : Fin n) : (if z i = true then (1 : ℝ)/2 else 1-1/2) = 1/2 := by
+      split <;> norm_num
+    simp_rw [h]
+    simp [fairZero, fairLaw, Assignment]
+
+lemma zero_interferes {n : ℕ} (E : Experiment n) (hy : ∀ i z, E.outcome i z = 0)
+    (i j : Fin n) : Interferes E i j ↔ i = j := by
+  simp [Interferes, hy]
+
+lemma zero_dependent {n : ℕ} (E : Experiment n) (hy : ∀ i z, E.outcome i z = 0)
+    (i j : Fin n) : Dependent E i j ↔ i = j := by
+  simp_rw [Dependent, zero_interferes E hy]
+  exact ⟨fun ⟨_, h, h'⟩ => h.symm.trans h', fun h => ⟨i, rfl, h⟩⟩
+
+lemma zero_dAvg {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (hy : ∀ i z, E.outcome i z = 0) : dAvg E = 1 := by
+  simp_rw [dAvg, degree, d, zero_dependent E hy]
+  simp [ne_of_gt hn]
+
+def fairStudy : Study where
+  N t := t+2
+  positive t := by omega
+  grows := tendsto_add_atTop_nat 2
+  experiment t := fairZero (t+2)
+
+lemma fairStudy_dAvg (t : ℕ) : dAvg (fairStudy.experiment t) = 1 :=
+  zero_dAvg (by dsimp [fairStudy]; omega) _ (fun _ _ => rfl)
+
+lemma fairStudy_restricted : Restricted fairStudy := by
+  simp_rw [Restricted, fairStudy_dAvg, size]
+  exact tendsto_one_div_atTop_nhds_zero_nat.comp (tendsto_add_atTop_nat 2)
+
+lemma zero_extension (S : Study) : HajekExtension S (fun t z => hajek (S.experiment t) z) := by
+  intro t z hz
+  simp [hajek, hz, size]
+
+example : RegularSequence fairStudy 2 2 1 ∧
+    (∀ t, Bernoulli (fairStudy.experiment t)) ∧ Restricted fairStudy ∧
+    HajekExtension fairStudy (fun t z => hajek (fairStudy.experiment t) z) := by
+  exact ⟨fun t => fairZero_regular _, fun t => fairZero_bernoulli _,
+    fairStudy_restricted, zero_extension _⟩
+
+example : BigO (fun t => dAvg (fairStudy.experiment t)) (fun _ => 1) := by
+  refine ⟨1, by norm_num, Filter.Eventually.of_forall ?_⟩
+  intro t; simp [fairStudy_dAvg]
+
+example : ¬ EventuallySupportedArms fairStudy := by
+  intro h
+  obtain ⟨t0, ht⟩ := Filter.eventually_atTop.mp h
+  have hs := ht t0 le_rfl (fun _ => false)
+  have hp : 0 < (fairStudy.experiment t0).design.mass (fun _ => false) := by
+    exact inv_pos.mpr (by exact_mod_cast Fintype.card_pos)
+  have ha := (hs hp).1
+  exact ha (by simp [nHat])
+
+end Audit
+
+namespace Audit
+attribute [local instance] Classical.propDecidable
+
+def pairIndex (m : ℕ) : Fin 2 × Fin m ≃ Fin (2*m) := finProdFinEquiv
+
+def pairPartner (m : ℕ) : Fin (2*m) ≃ Fin (2*m) :=
+  (pairIndex m).symm.trans
+    ((Equiv.prodCongr (Equiv.swap (0 : Fin 2) 1) (Equiv.refl (Fin m))).trans (pairIndex m))
+
+lemma pairPartner_index (m : ℕ) (a : Fin 2) (j : Fin m) :
+    pairPartner m (pairIndex m (a,j)) = pairIndex m (Equiv.swap 0 1 a,j) := by
+  simp [pairPartner]
+
+def pairs (m : ℕ) : Pairing (2*m) where
+  partner := pairPartner m
+  involution i := by
+    obtain ⟨⟨a,j⟩, rfl⟩ := (pairIndex m).surjective i
+    simp [pairPartner_index]
+  no_fixed i := by
+    obtain ⟨⟨a,j⟩, rfl⟩ := (pairIndex m).surjective i
+    rw [pairPartner_index]
+    intro h
+    have ha := congrArg Prod.fst ((pairIndex m).injective h)
+    fin_cases a <;> simp at ha
+
+def pairValid (m : ℕ) (z : Assignment (2*m)) : Prop :=
+  ∀ i, z i ≠ z ((pairs m).partner i)
+
+def encodePairs (m : ℕ) (b : Assignment m) : Assignment (2*m) :=
+  fun i => if ((pairIndex m).symm i).1 = 0 then b ((pairIndex m).symm i).2
+    else !(b ((pairIndex m).symm i).2)
+
+lemma encodePairs_index (m : ℕ) (b : Assignment m) (a : Fin 2) (j : Fin m) :
+    encodePairs m b (pairIndex m (a,j)) = if a = 0 then b j else !(b j) := by
+  simp [encodePairs]
+
+lemma encodePairs_valid (m : ℕ) (b : Assignment m) : pairValid m (encodePairs m b) := by
+  intro i
+  obtain ⟨⟨a,j⟩, rfl⟩ := (pairIndex m).surjective i
+  change encodePairs m b (pairIndex m (a,j)) ≠
+    encodePairs m b (pairPartner m (pairIndex m (a,j)))
+  rw [pairPartner_index]
+  fin_cases a <;> simp [encodePairs_index]
+
+def pairCube (m : ℕ) : Assignment m ≃ {z // pairValid m z} where
+  toFun b := ⟨encodePairs m b, encodePairs_valid m b⟩
+  invFun z j := z.val (pairIndex m (0,j))
+  left_inv b := by funext j; simp [encodePairs_index]
+  right_inv z := by
+    apply Subtype.ext
+    funext i
+    obtain ⟨⟨a,j⟩, rfl⟩ := (pairIndex m).surjective i
+    dsimp only
+    rw [encodePairs_index]
+    have hv := z.property (pairIndex m (0,j))
+    change z.val (pairIndex m (0,j)) ≠ z.val (pairPartner m (pairIndex m (0,j))) at hv
+    rw [pairPartner_index] at hv
+    simp only [Equiv.swap_apply_left] at hv
+    fin_cases a
+    · simp
+    · cases h0 : z.val (pairIndex m (0,j)) <;>
+        cases h1 : z.val (pairIndex m (1,j)) <;> simp_all
+
+end Audit
+
+namespace Audit
+attribute [local instance] Classical.propDecidable
+
+def supportLaw (n : ℕ) (P : Assignment n → Prop) (hp : ∃ z, P z) :
+    Law (Assignment n) where
+  mass z := if P z then (Fintype.card {z // P z} : ℝ)⁻¹ else 0
+  nonneg z := by split <;> positivity
+  total := by
+    classical
+    let _ : Nonempty {z // P z} := ⟨⟨hp.choose, hp.choose_spec⟩⟩
+    simp [← Finset.sum_filter, ← Fintype.card_subtype, Fintype.card_ne_zero]
+
+def complement (n : ℕ) : Assignment n ≃ Assignment n :=
+  Equiv.piCongrRight fun _ => Equiv.boolNot
+
+lemma complement_apply {n : ℕ} (z : Assignment n) (i : Fin n) :
+    complement n z i = !(z i) := rfl
+
+lemma symmetric_marginal {n : ℕ} (P : Law (Assignment n))
+    (hsym : ∀ z, P.mass (complement n z) = P.mass z) (i : Fin n) (b : Bool) :
+    prob P (fun z => z i = b) = 1/2 := by
+  classical
+  have heq : prob P (fun z => z i = b) = prob P (fun z => z i ≠ b) := by
+    unfold prob mean
+    symm
+    refine (Fintype.sum_equiv (complement n) _ _ ?_)
+    intro z
+    dsimp only
+    have hb : Bool.not (z i) = b ↔ z i ≠ b := by cases z i <;> cases b <;> decide
+    simp only [hsym, complement_apply, hb]
+    by_cases h : z i ≠ b <;> simp [h]
+  have htot : prob P (fun z => z i = b) + prob P (fun z => z i ≠ b) = 1 := by
+    unfold prob mean
+    rw [← Finset.sum_add_distrib]
+    calc
+      _ = ∑ z, P.mass z := by
+        apply Finset.sum_congr rfl
+        intro z _
+        by_cases h : z i = b <;> simp [h]
+      _ = 1 := P.total
+  linarith
+
+def trueSet {n : ℕ} (z : Assignment n) : Finset (Fin n) :=
+  Finset.univ.filter (fun i => z i = true)
+
+def cubeFinset (n : ℕ) : Assignment n ≃ Finset (Fin n) where
+  toFun := trueSet
+  invFun s i := decide (i ∈ s)
+  left_inv z := by
+    funext i
+    simp [trueSet]
+  right_inv s := by
+    ext i
+    simp [trueSet]
+
+def trueCount {n : ℕ} (z : Assignment n) : ℕ :=
+  ∑ i, if z i then 1 else 0
+
+lemma count_eq_card {n : ℕ} (z : Assignment n) : trueCount z = (trueSet z).card := by
+  unfold trueSet trueCount
+  rw [Finset.card_filter]
+
+lemma count_complement {n : ℕ} (z : Assignment n) :
+    trueCount (complement n z) + trueCount z = n := by
+  unfold trueCount
+  rw [← Finset.sum_add_distrib]
+  calc
+    _ = ∑ _i : Fin n, (1 : ℕ) := by
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [complement_apply]
+      cases hz : z i <;> simp
+    _ = n := by simp
+
+lemma count_fiber_card (n m : ℕ) :
+    Fintype.card {z : Assignment n // trueCount z = m} = n.choose m := by
+  let e := (cubeFinset n).subtypeEquiv (p := fun z => trueCount z = m)
+    (q := fun s => s.card = m) (fun z => by rw [count_eq_card]; rfl)
+  rw [Fintype.card_congr e, Fintype.card_finset_len, Fintype.card_fin]
+
+abbrev standardFiber (n m : ℕ) : Fintype {z : Assignment n // trueCount z = m} := inferInstance
+
+lemma count_fiber_card_any (n m : ℕ)
+    (inst : Fintype {z : Assignment n // trueCount z = m}) :
+    @Fintype.card {z : Assignment n // trueCount z = m} inst = n.choose m := by
+  have hinst : inst = standardFiber n m :=
+    Subsingleton.elim _ _
+  rw [hinst]
+  exact count_fiber_card n m
+
+lemma balanced_exists (m : ℕ) : ∃ z : Assignment (2*m), trueCount z = m := by
+  have hpos : 0 < Fintype.card {z : Assignment (2*m) // trueCount z = m} := by
+    rw [count_fiber_card]
+    exact Nat.choose_pos (by omega)
+  obtain ⟨z⟩ := Fintype.card_pos_iff.mp hpos
+  exact ⟨z.val, z.property⟩
+
+def completeZero (m : ℕ) : Experiment (2*m) :=
+  ⟨supportLaw (2*m) (fun z => trueCount z = m) (balanced_exists m), fun _ _ => 0⟩
+
+lemma completeZero_marginal (m : ℕ) (i : Fin (2*m)) (b : Bool) :
+    marginal (completeZero m) i b = 1/2 := by
+  apply symmetric_marginal
+  intro z
+  have hc := count_complement z
+  have heq : trueCount (complement (2*m) z) = m ↔ trueCount z = m := by omega
+  simp [completeZero, supportLaw, heq]
+
+lemma completeZero_regular (m : ℕ) : Regular (completeZero m) 2 2 1 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro i; rw [completeZero_marginal]; norm_num
+  · intro i; norm_num [mean, completeZero, Real.rpow_two]
+  · intro i b; norm_num [mean, potential, completeZero]
+
+lemma completeZero_complete (m : ℕ) (hm : 0 < m) : Complete (completeZero m) m := by
+  refine ⟨hm, by omega, ?_⟩
+  intro z
+  simp only [completeZero, supportLaw, one_div]
+  split_ifs <;> try rfl
+  · congr 2
+    exact count_fiber_card_any (2*m) m _
+  · rename_i h h'
+    exact False.elim (h' h)
+  · rename_i h h'
+    exact False.elim (h h')
+
+def completeStudy : Study where
+  N t := 2*(t+1)
+  positive t := by omega
+  grows := by
+    apply Filter.tendsto_atTop_mono (f := fun t : ℕ => t) (fun t => by omega)
+    exact tendsto_id
+  experiment t := completeZero (t+1)
+
+lemma completeStudy_complete : CompleteSequence completeStudy := by
+  refine ⟨1/2, by norm_num, by norm_num, ?_⟩
+  intro t
+  have hfloor : ⌊(1/2 : ℝ) * size completeStudy t⌋₊ = t+1 := by
+    have heq : (1/2 : ℝ) * size completeStudy t = ((t+1 : ℕ) : ℝ) := by
+      dsimp [size, completeStudy]
+      push_cast
+      ring
+    rw [heq, Nat.floor_natCast]
+  rw [hfloor]
+  exact completeZero_complete (t+1) (by omega)
+
+lemma completeStudy_restricted : Restricted completeStudy := by
+  have hd (t : ℕ) : dAvg (completeStudy.experiment t) = 1 :=
+    zero_dAvg (completeStudy.positive t) _ (fun _ _ => rfl)
+  simp_rw [Restricted, hd, size]
+  exact tendsto_one_div_atTop_nhds_zero_nat.comp completeStudy.grows
+
+lemma zero_C1 {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (hy : ∀ i z, E.outcome i z = 0) : C1 E = 1 := by
+  simp_rw [C1, outgoing, I, zero_interferes E hy]
+  simp [ne_of_gt hn]
+
+example : RegularSequence completeStudy 2 2 1 ∧ CompleteSequence completeStudy ∧
+    Restricted completeStudy ∧
+    LittleO (fun t => C1 (completeStudy.experiment t))
+      (fun t => Real.sqrt (size completeStudy t)) := by
+  refine ⟨fun t => completeZero_regular _, completeStudy_complete,
+    completeStudy_restricted, ?_⟩
+  have hc (t : ℕ) : C1 (completeStudy.experiment t) = 1 :=
+    zero_C1 (completeStudy.positive t) _ (fun _ _ => rfl)
+  simp_rw [LittleO, hc]
+  simpa only [one_div, Function.comp_def, size] using tendsto_inv_atTop_zero.comp
+    (Real.tendsto_sqrt_atTop.comp
+      (tendsto_natCast_atTop_atTop.comp completeStudy.grows :
+        Tendsto (size completeStudy) atTop atTop))
+
+end Audit
+
+namespace Audit
+attribute [local instance] Classical.propDecidable
+
+lemma paired_exists (m : ℕ) : ∃ z, pairValid m z :=
+  ⟨encodePairs m (fun _ => false), encodePairs_valid _ _⟩
+
+def pairedZero (m : ℕ) : Experiment (2*m) :=
+  ⟨supportLaw (2*m) (pairValid m) (paired_exists m), fun _ _ => 0⟩
+
+lemma pair_fiber_card (m : ℕ) : Fintype.card {z // pairValid m z} = 2^m := by
+  rw [← Fintype.card_congr (pairCube m)]
+  simp [Assignment]
+
+lemma pairedZero_paired (m : ℕ) : Paired (pairedZero m) (pairs m) := by
+  refine ⟨⟨m, by omega⟩, ?_⟩
+  intro z
+  simp only [pairedZero, supportLaw, pair_fiber_card]
+  simp [pairValid, one_div]
+
+lemma pairedZero_marginal (m : ℕ) (i : Fin (2*m)) (b : Bool) :
+    marginal (pairedZero m) i b = 1/2 := by
+  apply symmetric_marginal
+  intro z
+  have hv : pairValid m (complement (2*m) z) ↔ pairValid m z := by
+    simp [pairValid, complement_apply]
+  simp [pairedZero, supportLaw, hv]
+
+lemma pairedZero_regular (m : ℕ) : Regular (pairedZero m) 2 2 1 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro i; rw [pairedZero_marginal]; norm_num
+  · intro i; norm_num [mean, pairedZero, Real.rpow_two]
+  · intro i b; norm_num [mean, potential, pairedZero]
+
+lemma zero_e {n : ℕ} (E : Experiment n) (hy : ∀ i z, E.outcome i z = 0)
+    (ρ : Pairing n) (i j : Fin n) : e E ρ i j = if ρ.partner i = j then 1 else 0 := by
+  simp_rw [e, zero_dependent E hy, zero_interferes E hy]
+  by_cases hp : ρ.partner i = j
+  · have hij : i ≠ j := by
+      intro h; apply ρ.no_fixed i; exact hp.trans h.symm
+    simp [hp, hij]
+  · simp [hp]
+
+lemma zero_eAvg {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (hy : ∀ i z, E.outcome i z = 0) (ρ : Pairing n) : eAvg E ρ = 1 := by
+  simp_rw [eAvg, zero_e E hy]
+  simp [ne_of_gt hn]
+
+lemma zero_rSum {n : ℕ} (E : Experiment n) (hy : ∀ i z, E.outcome i z = 0)
+    (ρ : Pairing n) : rSum E ρ = 0 := by
+  simp_rw [rSum, I, zero_interferes E hy]
+  simp [ρ.no_fixed]
+
+def pairedStudy : Study where
+  N t := 2*(t+1)
+  positive t := by omega
+  grows := completeStudy.grows
+  experiment t := pairedZero (t+1)
+
+example : RegularSequence pairedStudy 2 2 1 ∧
+    (∀ t, Paired (pairedStudy.experiment t) (pairs (t+1))) ∧ Restricted pairedStudy ∧
+    LittleO (fun t => eAvg (pairedStudy.experiment t) (pairs (t+1))) (size pairedStudy) ∧
+    LittleO (fun t => rSum (pairedStudy.experiment t) (pairs (t+1))) (size pairedStudy) := by
+  refine ⟨fun t => pairedZero_regular _, fun t => pairedZero_paired _, ?_, ?_, ?_⟩
+  · have hd (t : ℕ) : dAvg (pairedStudy.experiment t) = 1 :=
+      zero_dAvg (pairedStudy.positive t) _ (fun _ _ => rfl)
+    simp_rw [Restricted, hd, size]
+    exact tendsto_one_div_atTop_nhds_zero_nat.comp pairedStudy.grows
+  · have he (t : ℕ) : eAvg (pairedStudy.experiment t) (pairs (t+1)) = 1 :=
+      zero_eAvg (pairedStudy.positive t) _ (fun _ _ => rfl) _
+    simp_rw [LittleO, he, size]
+    exact tendsto_one_div_atTop_nhds_zero_nat.comp pairedStudy.grows
+  · have hr (t : ℕ) : rSum (pairedStudy.experiment t) (pairs (t+1)) = 0 :=
+      zero_rSum _ (fun _ _ => rfl) _
+    simpa only [LittleO, hr, zero_div] using
+      (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
+
+end Audit
+
+namespace Audit
+attribute [local instance] Classical.propDecidable
+
+def broadcast (n : ℕ) : Experiment (n+2) :=
+  ⟨fairLaw (n+2), fun _ z => if z 0 then 1 else 0⟩
+
+lemma broadcast_influence (n : ℕ) (j : Fin (n+2)) : Interferes (broadcast n) 0 j := by
+  right
+  refine ⟨(fun _ => false), Function.update (fun _ => false) 0 true, ?_, ?_⟩
+  · intro l hl; simp [hl]
+  · simp [broadcast]
+
+lemma broadcast_dAvg (n : ℕ) : dAvg (broadcast n) = n+2 := by
+  have hd (i j : Fin (n+2)) : Dependent (broadcast n) i j :=
+    ⟨0, broadcast_influence _ _, broadcast_influence _ _⟩
+  simp [dAvg, degree, d, hd]
+  have hn : (n : ℝ)+2 ≠ 0 := by positivity
+  field_simp [hn]
+
+def denseStudy : Study where
+  N t := t+2
+  positive t := by omega
+  grows := tendsto_add_atTop_nat 2
+  experiment := broadcast
+
+example : (0 : ℝ) < 2 ∧
+    (∀ t i, (2 : ℝ)⁻¹ ≤ marginal (denseStudy.experiment t) i true ∧
+      marginal (denseStudy.experiment t) i true ≤ 1-(2 : ℝ)⁻¹) ∧
+    ¬ Restricted denseStudy := by
+  refine ⟨by norm_num, ?_, ?_⟩
+  · intro t i
+    have hm : marginal (denseStudy.experiment t) i true = 1/2 := fair_marginal _ _ _
+    rw [hm]; norm_num
+  · intro hr
+    have hd (t : ℕ) : dAvg (denseStudy.experiment t) / size denseStudy t = 1 := by
+      dsimp [denseStudy, size]
+      rw [broadcast_dAvg]
+      have ht : (t : ℝ) + 2 ≠ 0 := by positivity
+      simp [ht]
+    simp_rw [Restricted, hd] at hr
+    have hh : (1 : ℝ) = 0 := tendsto_nhds_unique tendsto_const_nhds hr
+    norm_num at hh
+
+end Audit
+
+namespace Audit
+attribute [local instance] Classical.propDecidable
+
+def bad (n : ℕ) : Experiment (n+2) :=
+  ⟨fairLaw (n+2), fun i z =>
+    (if z 0 then (1 : ℝ) else 0) * (if z i then 1/2 else -1/2)⟩
+
+lemma bad_marginal (n : ℕ) (i : Fin (n+2)) (b : Bool) : marginal (bad n) i b = 1/2 :=
+  fair_marginal _ _ _
+
+lemma bad_influence (n : ℕ) (j : Fin (n+2)) : Interferes (bad n) 0 j := by
+  by_cases hj : j = 0
+  · exact Or.inl hj.symm
+  · right
+    refine ⟨(fun _ => false), Function.update (fun _ => false) 0 true, ?_, ?_⟩
+    · intro l hl; simp [hl]
+    · norm_num [bad, Function.update, hj]
+
+lemma bad_dAvg (n : ℕ) : dAvg (bad n) = n+2 := by
+  have hd (i j : Fin (n+2)) : Dependent (bad n) i j :=
+    ⟨0, bad_influence _ _, bad_influence _ _⟩
+  simp [dAvg, degree, d, hd]
+  have hn : (n : ℝ)+2 ≠ 0 := by positivity
+  field_simp [hn]
+
+lemma bad_ht (n : ℕ) (z : Assignment (n+2)) :
+    ht (bad n) z = if z 0 then 1 else 0 := by
+  unfold ht muHat
+  rw [← sub_div, ← Finset.sum_sub_distrib]
+  have hrow (i : Fin (n+2)) :
+      (if z i = true then (bad n).outcome i z else 0) / marginal (bad n) i true -
+      (if z i = false then (bad n).outcome i z else 0) / marginal (bad n) i false =
+      if z 0 then (1 : ℝ) else 0 := by
+    simp_rw [bad_marginal]
+    cases h0 : z 0 <;> cases hi : z i <;> norm_num [bad, h0, hi]
+  simp_rw [hrow]
+  have hn : (n+2 : ℝ) ≠ 0 := by positivity
+  cases z 0 <;> simp [Nat.cast_add, hn]
+
+lemma bad_effect (n : ℕ) (i : Fin (n+2)) (z : Assignment (n+2)) :
+    effect (bad n) i z = if i = 0 then 1/2 else if z 0 then 1 else 0 := by
+  by_cases hi : i = 0
+  · subst i
+    norm_num [effect, potential, bad]
+  · cases h0 : z 0 <;> norm_num [effect, potential, bad, Function.update, hi, Ne.symm hi, h0]
+
+lemma bad_mean_effect (n : ℕ) (i : Fin (n+2)) : mean (bad n).design (effect (bad n) i) = 1/2 := by
+  change mean (bad n).design (fun z => effect (bad n) i z) = 1/2
+  simp_rw [bad_effect]
+  by_cases hi : i = 0
+  · simp [hi, mean, ← Finset.sum_mul, (bad n).design.total]
+  · simp only [hi, ↓reduceIte]
+    calc
+      _ = prob (fairLaw (n+2)) (fun z => z 0 = true) := by
+        unfold prob mean
+        apply Finset.sum_congr rfl
+        intro z _
+        by_cases hz : z 0 = true <;> simp [bad, hz]
+      _ = 1/2 := fair_marginal _ _ _
+
+lemma bad_eate (n : ℕ) : eate (bad n) = 1/2 := by
+  have heq : eate (bad n) = (∑ i, mean (bad n).design (effect (bad n) i)) / (n+2) := by
+    unfold eate ateAt mean
+    simp only [Finset.sum_div, Finset.mul_sum, ← mul_div_assoc, Nat.cast_add, Nat.cast_ofNat]
+    rw [Finset.sum_comm]
+  rw [heq]
+  simp_rw [bad_mean_effect]
+  have hn : (n+2 : ℝ) ≠ 0 := by positivity
+  simp [Nat.cast_add, hn]
+
+lemma bad_error (n : ℕ) (z : Assignment (n+2)) :
+    |ht (bad n) z - eate (bad n)| = 1/2 := by
+  rw [bad_ht, bad_eate]
+  cases hz : z 0 <;> norm_num
+
+end Audit
+
+namespace Audit
+attribute [local instance] Classical.propDecidable
+
+lemma mean_constant {Ω : Type} [Fintype Ω] (P : Law Ω) (c : ℝ) :
+    mean P (fun _ => c) = c := by
+  unfold mean
+  rw [← Finset.sum_mul, P.total, one_mul]
+
+lemma bad_abs (n : ℕ) (i : Fin (n+2)) (z : Assignment (n+2)) :
+    |(bad n).outcome i z| ≤ 2 := by
+  cases h0 : z 0 <;> cases hi : z i <;> norm_num [bad, h0, hi]
+
+lemma bad_regular (n : ℕ) : Regular (bad n) 2 2 1 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro i; rw [bad_marginal]; norm_num
+  · intro i
+    calc
+      _ ≤ mean (bad n).design (fun _ => (4 : ℝ)) := by
+        apply Finset.sum_le_sum
+        intro z _
+        apply mul_le_mul_of_nonneg_left _ ((bad n).design.nonneg z)
+        cases h0 : z 0 <;> cases hi : z i <;> norm_num [bad, h0, hi, Real.rpow_two]
+      _ = Real.rpow 2 2 := by rw [mean_constant]; norm_num [Real.rpow_two]
+  · intro i b
+    calc
+      _ ≤ mean (bad n).design (fun _ => (2 : ℝ)) := by
+        apply Finset.sum_le_sum
+        intro z _
+        apply mul_le_mul_of_nonneg_left _ ((bad n).design.nonneg z)
+        dsimp only
+        simpa [potential] using bad_abs n i (Function.update z i b)
+      _ = Real.rpow 2 1 := by rw [mean_constant]; norm_num
+
+def badStudy : Study where
+  N t := t+2
+  positive t := by omega
+  grows := tendsto_add_atTop_nat 2
+  experiment := bad
+
+lemma bad_not_consistent :
+    ¬ InProbability badStudy (fun t z => ht (badStudy.experiment t) z - eate (badStudy.experiment t)) := by
+  intro h
+  have hp (t : ℕ) : prob (badStudy.experiment t).design
+      (fun z => (1/4 : ℝ) < |ht (badStudy.experiment t) z - eate (badStudy.experiment t)|) = 1 := by
+    have ht (z : Assignment (badStudy.N t)) :
+        (1/4 : ℝ) < |ht (badStudy.experiment t) z - eate (badStudy.experiment t)| := by
+      change (1/4 : ℝ) < |SAP.P009c.ht (bad t) z - eate (bad t)|
+      have he : |SAP.P009c.ht (bad t) (z : Assignment (t+2)) - eate (bad t)| = 1/2 :=
+        bad_error t z
+      linarith
+    unfold prob mean
+    calc
+      _ = ∑ z, (badStudy.experiment t).design.mass z := by
+        apply Finset.sum_congr rfl
+        intro z _
+        simp only [if_pos (ht z), mul_one]
+      _ = 1 := (badStudy.experiment t).design.total
+  have hlim := h (1/4) (by norm_num)
+  simp_rw [hp] at hlim
+  have hh : (1 : ℝ) = 0 := tendsto_nhds_unique tendsto_const_nhds hlim
+  norm_num at hh
+
+example : RegularSequence badStudy 2 2 1 ∧
+    (∀ t, dAvg (denseStudy.experiment t) / size denseStudy t = 1) ∧
+    (∀ t, dAvg (badStudy.experiment t) / size badStudy t = 1) ∧
+    ¬ InProbability badStudy
+      (fun t z => ht (badStudy.experiment t) z - eate (badStudy.experiment t)) := by
+  refine ⟨fun t => bad_regular _, ?_, ?_, bad_not_consistent⟩
+  · intro t
+    dsimp [denseStudy, size]
+    rw [broadcast_dAvg]
+    have ht : (t : ℝ)+2 ≠ 0 := by positivity
+    simp [ht]
+  · intro t
+    dsimp [badStudy, size]
+    rw [bad_dAvg]
+    have ht : (t : ℝ)+2 ≠ 0 := by positivity
+    simp [ht]
+
+end Audit

@@ -749,5 +749,7 @@ theorem star_counterexample_proof :
   · intro upper
     simpa only [star_mu, ite_apply] using star_true_error_limit upper
 
+example : type_of% @AronowAudit.P011.star_counterexample := star_counterexample_proof
+
 end
 end AronowAudit.P011.Wave1

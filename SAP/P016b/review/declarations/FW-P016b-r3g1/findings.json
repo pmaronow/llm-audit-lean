@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P016-T12",
+    "theorem": "SAP.P016b.T12",
+    "fingerprint": "deac64df993f6508693d5331d5febda71f11023b1ea3171a2eeeef876e9f7ba0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using only Defs. The uniform Fin 6 law has strictly positive normalized weights. For z=TTFF, y=(0,1,2,3), y_prime=(2,3,2,3), both groups are nonempty, every directional outcome inequality holds, and both KS statistics strictly decrease. The six-design assignments also have two units in each group.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T13",
+    "theorem": "SAP.P016b.T13",
+    "fingerprint": "e95016acdb44a3606741237fdc7b189ffb1719c298b4a9a70592022bff642eda",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ExchangeableNonvacuity.lean: for every B the normalized uniform sum of Dirac laws on all coordinate permutations of (0,1,...,B) is simultaneously a probability law, exchangeable, and almost surely injective. The .05 integer-cutoff premises for B=1000,c=25 and B=10000,c=250 compile. Compiled scratch/Nonvacuity.lean constructs first-eight-treated and last-eight-treated assignments with exactly eight units per group and distinct complementary assignments. Uniform counting on all functions Fin(B+1) -> Balanced 16 8 is the nonempty independent product of the design law, with the observed draw included as coordinate 0; fixed y_i=2^i defines no-effect outcomes under all assignments.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T14",
+    "theorem": "SAP.P016b.T14",
+    "fingerprint": "144f238db6323b20db45ed6a51140836ff88edc7261271425875cd0e9f5ca17a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ExchangeableNonvacuity.lean supplies exchangeable probability laws for every B, hence also B=1000 and 10000. Compiled scratch/Nonvacuity.lean supplies both a normalized strictly positive uniform Fin 6 law for the exact-tail clause and a normalized Fin 2 law of weights (1,0) permitted by the iid clause. Probability measures ensure finite event masses; coordinate permutation maps and comparison events are Borel measurable. The product identity uses all draws, so no independence premise is lost.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T15",
+    "theorem": "SAP.P016b.T15",
+    "fingerprint": "5a6868dcdc39b016907af2e1849c475f3cebb7391a322c45cbae95809e61542a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Independently compiled an example proving the entire T15Statement from Defs in scratch/Nonvacuity.lean, including both adjusted vectors and their treated ECDFs, both sample ECDF values, the universal diagonal characterization, and exclusion of (1/2,2). No Challenge import or theorem stub is used. The no-effect setting is realized by taking Y_i=(9,11,10,12)_i as the fixed outcome under every assignment.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T16",
+    "theorem": "SAP.P016b.T16",
+    "fingerprint": "96f963a3022b771b2dfc32a1354787e15878d3731c0c4c584dee79a82ffabf55",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with Y=(9,10), z=(false,true), treated i=1, t=0, t_prime=1, a=1, a_prime=2. Both groups are nonempty, the treated response and both multipliers are nonzero, the two parameter differences are nonzero, both treated comparisons are unequal, and both control ECDF identities hold. A positive sample (1,3) verifies the ECDF count and the separate parameter indices are witnessed by (1/2,2), with exclusion from the diagonal.",
+    "confidence": "high"
+  }
+]

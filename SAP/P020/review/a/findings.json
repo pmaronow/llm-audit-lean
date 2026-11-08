@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P020-T1",
+    "theorem": "SAP.P020.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed explicit instance: M=3,t=1,n=(1,2,4),y0=(0,1,1),y1=(0,0,0). The individual realization is stated in the theorem. scratch/Check.lean independently proves assignment admissibility, size variance 14/9, and bias -1/315 using only Defs. Exact enumeration verifies the assignment values, MSEs 131/33075, 3/686 and 1/98, and probability-one error at epsilon=1/25. Positive integer replications have N=7h and the same estimator values.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T2",
+    "theorem": "SAP.P020.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the simultaneous limit premises use the singleton law on Unit, T_h=1, U_h=d_h=0, b=1 for every h. scratch/Check.lean proves its bias is 1, comparator MSE is 0, and both required limits hold. The positive-epsilon premise allows epsilon=1. The replicated three-cluster example supplies the counterexample without vanishing comparator MSE. Its cluster and both arm sizes grow strictly with h.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T3",
+    "theorem": "SAP.P020.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "An admissible design has M=N=2,t=1 and two singleton clusters. Take base=(0,0),size=(1,1); each contrast is logistic(-1/2)-logistic(0)<0. N>0 and size>=1 hold. The docstring accurately omits the separately displayed scalar N=1 illustration; the universal theorem itself still permits N=1 and has no hidden N>=2 premise. That scalar illustration cannot itself be an admissible two-arm cluster design.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T4",
+    "theorem": "SAP.P020.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both average-sign antecedents occur in admissible designs: M=2,t=1 with sizes (1,1) gives positive contrast 3991/10000; sizes (445,445) give negative contrast -1/2000. Bases may be zero in both. All relevant averages have N>0. The change of units is an algebraic identity and is stated conditionally, without asserting that the authors used that scale or reproduced 0.007.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T5",
+    "theorem": "SAP.P020.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the efficiency population and khat(s)=armMeanSize(P,true,s). Its values are (1,2,4); its covariance with the treated mean size is 14/9 and with the control mean size is -7/9. Thus the allowed coefficient can be random and correlated with both arms; the premises do not force unbiasedness. The restriction accurately discloses omission of the intermediate equation-(29) expectation-of-sums/product-of-means chain while retaining both total means and the corrected ATE expectation and bias.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T6",
+    "theorem": "SAP.P020.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed explicit instance: M=3,t=1,n=(1,2,3),y0=(0,0,0),y1=(0,0,3). scratch/Check.lean proves positive size variance. Independent exact enumeration gives OLS slopes (0,0,3/2), fitted contrasts (0,0,3/8), mean 1/8, ATE 1/2, bias -3/8 and covariances 1/2,-1/4. The slope denominator is 2/3, not zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T7",
+    "theorem": "SAP.P020.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the efficiency population, admissible assignment {0}, b0=3,b1=-2,k=1/3, and either arm. This has positive arm sizes and a nontrivial affine transformation. Independent enumeration checks these transformations. For any allowed population, scratch/Check.lean constructs individual potential outcomes realizing all its totals; the use of totals therefore adds no existence assumption or restriction on individual outcomes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T8",
+    "theorem": "SAP.P020.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example M=3,v=(0,1,1),w=(0,0,3),size=(1,2,4),k=1 gives nonconstant arrays and positive size variance. The theorem works for arbitrary real arrays with M>0, including every paper population with M>=2. All seven covariance lines use the M-cluster average. The exact audit checks the centered moment identities on 126 populations, including unequal and equal sizes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T9",
+    "theorem": "SAP.P020.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both witnesses have M=2,t=c=1,n=(1,2),N=3 and admissible assignment {0}. The first has y0=(0,0),y1=(1,2), producing correct/printed values 2/3 and -2/3. The second has y0=y1=(0,2), covariance 1 and printed bracket expression (-1,1) at the two clusters. Independent rational enumeration confirms the values; these are exactly the printed-line specializations.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T10",
+    "theorem": "SAP.P020.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs sharpP and sharpI with M=2,t=1,n=(1,2), both individual outcome arrays equal to (0) in the first cluster and (1,1) in the second. It proves aggregation, IndividualSharpNull, and cluster-total variance 1. Thus the sharp-null domain includes nonzero actual HT variance (16/9), and all null-formula denominators are positive even with one cluster per arm.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T11",
+    "theorem": "SAP.P020.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The singleton law on Unit with u=3,v=2 satisfies the ratio premises; scratch/Check.lean proves v>0 on its support. The efficiency population supplies a nontrivial design instance with varying arm sizes and nonzero bias -1/315. Every supported arm total of positive cluster sizes is positive, so the ratio identity is applied to genuine ratios and positive expected denominators.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T12",
+    "theorem": "SAP.P020.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use subscriptPopulation, s={0}, b0=b1=1. The arm mean sizes are 1 and 2, H_P=2/3, and the transformed HT contrast is 0, so the non-invariance conclusion is attained. scratch/Check.lean independently verifies the nonzero-shift and unequal-arm-mean-size premises together. Its general individual realization also verifies that arbitrary population totals have the required individual interpretation.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T13",
+    "theorem": "SAP.P020.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use efficiencyPopulation with any fixed k. For the covariate clause take A=1, X_0j=n_j^2=(1,4,16), ks=0 and ka_0=1. This gives a nonempty, nonconstant covariate family and a nonzero adjustment, rather than relying on A=0. Covariate totals can be realized by placing each total on the first individual of its positive-size cluster. Both arms have genuine nonempty assignment supports.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T14",
+    "theorem": "SAP.P020.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "efficiencyPopulation has size variance 14/9>0, arm optima 2/7 and 0, common optimum 2/21 and variance curvature 9/14>0. The positive size variance is independently proved in scratch/Check.lean. Negating the outcomes supplies a negative common optimum; zero outcomes supply optimum zero. The docstring accurately discloses the positive-variance coefficient domain and omitted original-outcome expansion, derivatives/first-order equations and Appendix C rearrangements; the unconditional moment formula remains valid for equal sizes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T15",
+    "theorem": "SAP.P020.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs fourP with M=4,t=c=2,n=(1,2,3,4),y0=(0,0,2,2),y1=(0,1,4,5), proving both two-cluster arm premises. It also constructs a two-block assignment with this population in each block. The per-block conservativeness premise is inhabited, for example by a constant oracle estimator Vhat_b(s)=V(H_b), whose expectation equals the constant by normalization. Independent enumeration checks combined-estimator expectations and two-block variance additivity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T16",
+    "theorem": "SAP.P020.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean proves both distinct cases are inhabited: constantEffectP uses M=3,t=1,n=(1,2,4),y0=(0,1,1),y1=(2,3,3), so the cluster-total effect is 2 with unequal arm counts; fourP has balanced counts t=c=2 and heterogeneous total effects (0,1,2,3), and Lean proves those effects are not constant. The inequality is only in expectation, exactly as the claim requires.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T17",
+    "theorem": "SAP.P020.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use fourP for independent copies with nonconstant per-copy sums. The copy laws are uniform on full nonempty products, and h+1>=1. For the persistent-bias clauses use efficiencyPopulation: scratch/Check.lean proves its bias is -1/315; its positive within-cluster replications have N_h=7h and probability-one error at epsilon=1/25. The docstring accurately omits explicit strict-growth certificates for total/realized arm counts and a joint coupling across indices, while retaining all four weak laws, pooled convergence, replication identities and the explicit growing-size inconsistency witness.",
+    "confidence": 0.98
+  }
+]

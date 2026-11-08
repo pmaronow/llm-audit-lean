@@ -27,8 +27,8 @@ Full column rank is explicitly required in results using this map. -/
 noncomputable def schoolOLSMap {n k : ℕ} (X : Matrix (Fin n) (Fin k) ℝ) :=
   (X.transpose * X)⁻¹ * X.transpose
 
-/-- T18: H=XA, e=y-XAy.
-X comprises the nonaliased school-regression columns. -/
+/-- T18, validator N006 materials-adj decision, covariance derivation:
+H=XA, e=y-XAy. X comprises the nonaliased school-regression columns. -/
 noncomputable def schoolHat {n k : ℕ} (X : Matrix (Fin n) (Fin k) ℝ) :=
   X * schoolOLSMap X
 
@@ -44,6 +44,10 @@ noncomputable def schoolHC0 {n k : ℕ}
   schoolOLSMap X * Matrix.diagonal (fun i => (schoolResidual X y i)^2) *
     (schoolOLSMap X).transpose
 
+/-- Main p. 568 normal Wald reference, interpreted as a two-sided test:
+2(1-Φ(|b|/s)), with Φ the actual standard Gaussian cdf. -/
+noncomputable def schoolNormalPValue (b s : ℝ) : ℝ :=
+  2 * (1 - ProbabilityTheory.cdf (ProbabilityTheory.gaussianReal 0 1) (|b|/s))
 
 /-- Conditional moments with X,y fixed: componentwise integrals over a
 probability law of bootstrap multipliers or model errors; continuous laws,
@@ -58,7 +62,7 @@ noncomputable def inferenceCov {Ω : Type*} [MeasurableSpace Ω] {k : ℕ}
   fun j l => ∫ ω, (v ω j - inferenceMean μ v j) *
     (v ω l - inferenceMean μ v l) ∂μ
 
-/-! Finite linear-moment and symmetric-projection algebra for inference. -/
+/-! Finite linear-moment and symmetric-projection algebra for the original inference claims. -/
 namespace InferenceCompletion
 open MeasureTheory
 open scoped BigOperators
@@ -411,7 +415,7 @@ theorem school_leverage_facts {n k : ℕ} (X : Matrix (Fin n) (Fin k) ℝ)
     (∑ i, schoolHat X i i)/(n:ℝ) = (k:ℝ)/n := by
   exact InferenceCompletion.leverage_completed X hX hn
 
-/-- T18(d): under an independent homoskedastic benchmark,
+/-- T18(d): under the validator's independent homoskedastic benchmark,
 the expected HC0 shortfall is σ² A diag(h) A', a positive semidefinite matrix.
 Zero error means and σ²I second moments suffice; this is not an assumption
 of the paper's randomization interpretation. -/
@@ -483,6 +487,12 @@ noncomputable def predictionVariance {k : ℕ}
     (V : Matrix (Fin k) (Fin k) ℝ) (l : Fin k → ℝ) : ℝ :=
   dotProduct l (V.mulVec l)
 
+/-- T24(b): approximate pointwise normal interval, m±1.96 sqrt(lVl').
+This defines the reported interval and asserts no exact 95% coverage. -/
+noncomputable def predictionBand {k : ℕ} (b : Fin k → ℝ)
+    (V : Matrix (Fin k) (Fin k) ℝ) (l : Fin k → ℝ) : ℝ × ℝ :=
+  (dotProduct l b - (49/25)*Real.sqrt (predictionVariance V l),
+   dotProduct l b + (49/25)*Real.sqrt (predictionVariance V l))
 
 /-- T24(c): a predicted treatment mean has control-level variance plus
 contrast variance plus twice the covariance; equality with contrast variance
@@ -508,9 +518,9 @@ theorem prediction_mean_contrast_variance {k : ℕ}
     ring
   exact ⟨h, by rw [h]; constructor <;> intro he <;> linarith⟩
 
-/-- T23: six groups of identical rows, with multiplicities 14,14,7,7,7,7.
-This count representation is exactly 56 observations, not six unweighted
-observations. It contains no empirical respondent records. -/
+/-- T23: the validator's six groups of identical rows, with multiplicities
+14,14,7,7,7,7. This count representation is exactly 56 observations, not
+six unweighted observations. It contains no empirical respondent records. -/
 def bandMultiplicity : Fin 6 → ℝ := ![14,14,7,7,7,7]
 def bandTreatment : Fin 6 → ℝ := ![0,0,1,1,1,1]
 noncomputable def bandComposition : Fin 6 → ℝ := ![0,0,0,0,1/5,1/5]
@@ -772,6 +782,13 @@ theorem band_centered_refit_certificate :
       bandMultiplicity,bandTreatment,bandComposition,bandOutcome,
       Matrix.mul_apply,Matrix.vecMul,dotProduct,Fin.sum_univ_succ]
 
+/-- T24(e): code's control band uses the sample variance of residuals
+of control schools divided by 56. This quantity generally differs from
+the robust covariance of the averaged prediction row (T23). -/
+noncomputable def residualControlBandVariance {n : ℕ}
+    (controls : Finset (Fin n)) (e : Fin n → ℝ) : ℝ :=
+  let mean := (∑ i ∈ controls, e i)/(controls.card:ℝ)
+  ((∑ i ∈ controls, (e i-mean)^2)/((controls.card:ℝ)-1))/56
 
 /-- T24(a): the averaged prediction rows l0=(1,0,0,zbar) and
 l1(c)=(1,1,c,zbar), with coefficients ordered (alpha,tau,beta,eta).
@@ -792,3 +809,13 @@ theorem interaction_prediction_rows {p : ℕ} (zbar : Fin p → ℝ)
 
 end AronowAudit.P037
 
+#print axioms AronowAudit.P037.wild_bootstrap_is_hc0
+#print axioms AronowAudit.P037.school_leverage_facts
+#print axioms AronowAudit.P037.hc0_homoskedastic_shortfall
+#print axioms AronowAudit.P037.hc0_row_bias_factor
+#print axioms AronowAudit.P037.prediction_mean_contrast_variance
+#print axioms AronowAudit.P037.band_ols_hc0_certificate
+#print axioms AronowAudit.P037.band_counterexample_values
+#print axioms AronowAudit.P037.centered_refit_is_contrast
+#print axioms AronowAudit.P037.band_centered_refit_certificate
+#print axioms AronowAudit.P037.interaction_prediction_rows

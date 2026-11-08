@@ -57,25 +57,38 @@ import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
 import Mathlib.Analysis.InnerProductSpace.GramMatrix
 
+-- self-audit-palomar repair (2026-11-03): this module relies on auto-bound implicit names, as compiled in the
+-- original audit workspace (Lean defaults). The published lakefile sets autoImplicit = false, under which it fails.
+set_option autoImplicit true
+set_option relaxedAutoImplicit true
+
 open MeasureTheory ProbabilityTheory Filter
 
 /-!
-Adapted from StatLean/Stat-Lean (Apache-2.0).
-See NOTICE at the repository root.
+Proof source extraction for GLP0011B3, copied from StatLean/Stat-Lean
+commit e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2 (Apache-2.0).
+Source modules are named before their copied proof text. The changes are:
+merge modules in dependency order, replace their project imports by prior
+sections, and isolate all declarations in a record-specific namespace.
+The upstream Apache-2.0 license is retained at
+`AronowAudit/External/StatLean/LICENSE`.
 -/
 
-/-! Adapted from StatLean module `AsymptoticStatistics.Core.Hilbert`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/Core/Hilbert.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source0
 
 
 /-!
-# The mean-zero Hilbert subspace
+# Hilbert geometry wrappers
 
-`L2ZeroMean P` is the kernel of the integral functional on `Lp ℝ 2 P`,
-represented by the inner product against the constant function `1`.
+This file packages the vdV §25.2 Hilbert-space background (orthogonal projection,
+Riesz representation, orthogonal decomposition) under the names the rest of the
+library uses, and introduces the central object `L2ZeroMean P`: the closed
+submodule of mean-zero functions in `Lp ℝ 2 P`.
 
-Reference: van der Vaart, *Asymptotic Statistics*, §25.2.
+Headline declarations: `L2ZeroMean`, `orthogonal_decomp`,
+`mem_of_orthogonal_complement_zero`, `riesz_repr_exists_unique`.
 -/
 
 open MeasureTheory
@@ -94,8 +107,7 @@ noncomputable def oneL2 (P : Measure Ω) [IsFiniteMeasure P] : Lp ℝ 2 P :=
 
 /-- The integral functional `f ↦ ∫ f ∂P` as a continuous linear functional on
 `Lp ℝ 2 P`, realised as the inner product against the constant `1`. The
-identity `integralL2 P f = ∫ f ∂P` is proved in
-`CandidateIF.integralL2_toLp_eq_integral`. -/
+identification `integralL2 P f = ∫ f ∂P` is left for downstream lemmas. -/
 noncomputable def integralL2 (P : Measure Ω) [IsFiniteMeasure P] :
     Lp ℝ 2 P →L[ℝ] ℝ :=
   innerSL ℝ (oneL2 P)
@@ -106,17 +118,72 @@ noncomputable def L2ZeroMean (P : Measure Ω) [IsFiniteMeasure P] :
     Submodule ℝ (Lp ℝ 2 P) :=
   LinearMap.ker (integralL2 P).toLinearMap
 
+lemma L2ZeroMean_isClosed (P : Measure Ω) [IsFiniteMeasure P] :
+    IsClosed (L2ZeroMean P : Set (Lp ℝ 2 P)) :=
+  (integralL2 P).isClosed_ker
 
-
+/-! ## Wrappers around Mathlib's Hilbert geometry -/
 
 section Hilbert
 
 variable {𝕜 : Type*} [RCLike 𝕜]
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
 
+/-- Specification of the orthogonal projection onto a submodule with an
+orthogonal projection: the projection lies in `K`, and the residual is
+orthogonal to `K`. -/
+theorem orthogonalProjection_spec
+    (K : Submodule 𝕜 E) [K.HasOrthogonalProjection] (x : E) :
+    K.starProjection x ∈ K ∧ x - K.starProjection x ∈ Kᗮ :=
+  ⟨K.starProjection_apply_mem x, K.sub_starProjection_mem_orthogonal x⟩
+
+/-- Orthogonal decomposition: a submodule with an orthogonal projection
+together with its orthogonal complement spans the whole space, and they are
+disjoint. -/
+theorem orthogonal_decomp
+    (K : Submodule 𝕜 E) [K.HasOrthogonalProjection] :
+    K ⊔ Kᗮ = ⊤ ∧ K ⊓ Kᗮ = ⊥ :=
+  ⟨K.sup_orthogonal_of_hasOrthogonalProjection,
+    K.inf_orthogonal_eq_bot⟩
 
 variable [CompleteSpace E]
 
+/-- Membership in a closed submodule via orthogonality to the orthogonal complement.
+
+For a closed submodule `K` in a complete inner product space, `Kᗮᗮ = K`, so
+`x ∈ K` iff `x` is orthogonal to every element of `Kᗮ`. -/
+theorem mem_of_orthogonal_complement_zero
+    (K : Submodule 𝕜 E) (hK : IsClosed (K : Set E)) (x : E) :
+    x ∈ K ↔ ∀ y ∈ Kᗮ, ⟪y, x⟫_𝕜 = 0 := by
+  have hKK : Kᗮᗮ = K := by
+    rw [K.orthogonal_orthogonal_eq_closure, hK.submodule_topologicalClosure_eq]
+  conv_lhs => rw [← hKK]
+  exact Submodule.mem_orthogonal (K := Kᗮ) x
+
+/-- Fréchet–Riesz representation: every continuous linear functional on a Hilbert
+space is uniquely the inner product against some vector. -/
+theorem riesz_repr_exists_unique (φ : E →L[𝕜] 𝕜) :
+    ∃! v : E, ∀ x, φ x = ⟪v, x⟫_𝕜 := by
+  refine ⟨(InnerProductSpace.toDual 𝕜 E).symm φ, ?_, ?_⟩
+  · intro x
+    have hsym : (InnerProductSpace.toDual 𝕜 E)
+        ((InnerProductSpace.toDual 𝕜 E).symm φ) = φ :=
+      LinearIsometryEquiv.apply_symm_apply _ _
+    calc
+      φ x = (InnerProductSpace.toDual 𝕜 E)
+              ((InnerProductSpace.toDual 𝕜 E).symm φ) x := by rw [hsym]
+      _ = ⟪(InnerProductSpace.toDual 𝕜 E).symm φ, x⟫_𝕜 := rfl
+  · intro v hv
+    apply (InnerProductSpace.toDual 𝕜 E).injective
+    ext x
+    have hsym : (InnerProductSpace.toDual 𝕜 E)
+        ((InnerProductSpace.toDual 𝕜 E).symm φ) = φ :=
+      LinearIsometryEquiv.apply_symm_apply _ _
+    calc
+      (InnerProductSpace.toDual 𝕜 E) v x = ⟪v, x⟫_𝕜 := rfl
+      _ = φ x := (hv x).symm
+      _ = (InnerProductSpace.toDual 𝕜 E)
+            ((InnerProductSpace.toDual 𝕜 E).symm φ) x := by rw [hsym]
 
 end Hilbert
 
@@ -125,7 +192,7 @@ end AsymptoticStatistics.Core.Hilbert
 end GLP0011B3Source0
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.Core.CandidateIF`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/Core/CandidateIF.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source1
 
@@ -133,15 +200,17 @@ section GLP0011B3Source1
 /-!
 # Candidate influence function (a.e. mean-zero L² representative)
 
-This section packages the mean-zero L² data used by candidate influence
-functions. A centered, square-integrable representative belongs to
-`L²₀(P)`, the closed subspace of `L²(P)` orthogonal to the constants.
-These properties alone do not identify the influence function of a
-particular estimator or parameter; that requires a first-order relation
-to the estimator or model.
+An *influence function* for an estimator of a parameter on a model with
+distribution $P$ on the observation space $\Omega$ is, in the working
+definition of semiparametric efficiency theory, a real-valued function
+$\tilde\psi : \Omega \to \mathbb{R}$ that is square-integrable and
+centered, i.e. $\tilde\psi \in L^2(P)$ with $\int \tilde\psi \, dP = 0$.
+Such a function therefore lives in the mean-zero subspace
+$L^2_0(P) = \{ g \in L^2(P) : \int g \, dP = 0 \}$, the closed subspace
+of $L^2(P)$ orthogonal to the constants.
 
 This file packages that data model-agnostically. A *candidate influence
-function* bundles a raw a.e. strongly measurable representative $\Omega \to \mathbb{R}$
+function* bundles a raw measurable representative $\Omega \to \mathbb{R}$
 together with square-integrability under $P$ and the mean-zero
 constraint, into a single object that lifts cleanly into $L^2_0(P)$.
 Concrete examples specify the influence function pointwise as a raw
@@ -149,17 +218,20 @@ function on the observation space; comparing two such formulas as
 *almost-everywhere* equalities is much easier than comparing them as
 elements of the quotient $L^2(P)$. The `CandidateIF.toL2ZeroMean`
 constructor turns a candidate into an element of the target Hilbert
-space $L^2_0(P)$.
+space $L^2_0(P)$, and `CandidateIF.toL2ZeroMean_eq_of_aeEq` says two
+candidates that agree almost everywhere land at the same $L^2_0(P)$
+element.
 
 **Reference.** A. W. van der Vaart, *Asymptotic Statistics*, Cambridge
 Series in Statistical and Probabilistic Mathematics, Cambridge
 University Press, 1998. Chapter 25 (Semiparametric Models), §25.3
-(Efficient Influence Functions). The structure here packages the necessary
-mean-zero and finite-second-moment conditions; it does not assert the
-first-order relation for a particular estimator or parameter.
+(Efficient Influence Functions): an influence function is an a.e.
+defined real function on $\Omega$ with mean zero and finite second
+moment, i.e. an element of $L^2_0(P)$. The structure here formalizes
+this working definition rather than a single numbered theorem.
 
-**Bundle and lift.** The bundle has exactly three fields:
-`raw` (the raw a.e. strongly measurable representative — without it the object is not
+**Proof formalization notes.** The bundle has exactly three fields:
+`raw` (the raw measurable representative — without it the object is not
 a candidate function); `memLp2` (square-integrability under $P$, which
 bundles `AEStronglyMeasurable` via `MemLp.aestronglyMeasurable`, so a
 separate measurability field is unnecessary and is intentionally
@@ -170,8 +242,23 @@ $L^2_0(P) = \ker(\text{integralL2}\,P)$ is discharged by
 `integralL2_toLp_eq_integral` (which identifies the abstract functional
 on an L² lift with the ordinary integral, via `L2.inner_def` and the
 real inner-product reduction `⟪a,b⟫_ℝ = b * a`) composed with the
-`mean_zero` field.
+`mean_zero` field. The a.e.-equality interface
+`toL2ZeroMean_eq_of_aeEq` reduces equality of $L^2_0(P)$ elements to
+equality of underlying `Lp` elements via `MemLp.toLp_congr`.
 
+**Bibliographic comments.** The notion of an influence function
+originates in robust statistics: F. R. Hampel, "The Influence Curve and
+Its Role in Robust Estimation," *Journal of the American Statistical
+Association* 69 (1974), 383–393, introduced the *influence curve*. Its
+reinterpretation as the mean-zero, square-integrable element of $L^2(P)$
+representing the first-order behavior of an asymptotically linear
+estimator — the form used here and in §25.3 — is folklore of the
+semiparametric efficiency literature (cf. J. Pfanzagl, *Contributions to
+a General Asymptotic Statistical Theory*, Springer, 1982; P. J. Bickel,
+C. A. J. Klaassen, Y. Ritov, J. A. Wellner, *Efficient and Adaptive
+Estimation for Semiparametric Models*, Johns Hopkins University Press,
+1993). There is no single seminal source for the "$\tilde\psi \in
+L^2_0(P)$" packaging; it is folklore.
 -/
 
 open MeasureTheory
@@ -188,14 +275,15 @@ function packaged with the data needed to lift it into `L2ZeroMean P`.
 
 Fields, in order:
 
-- `raw` — the raw pointwise representative, a.e. strongly measurable by `memLp2`.
+- `raw` — the raw measurable representative; without it, the object
+  is not a candidate function.
 - `memLp2` — square-integrability under `P`. Bundles
   `AEStronglyMeasurable` via `MemLp.aestronglyMeasurable`, so a separate
   measurability field is unnecessary and is intentionally absent.
 - `mean_zero` — mean-zero, required to land in `L2ZeroMean P`
   (the kernel of `integralL2 P`).
 
-Reference: vdV §25.3 (background on influence functions). -/
+Reference: vdV §25.3 (definition of influence function). -/
 structure CandidateIF (P : Measure Ω) [IsFiniteMeasure P] where
   /-- The raw pointwise representative `Ω → ℝ` of the candidate influence function. -/
   raw : Ω → ℝ
@@ -249,6 +337,20 @@ with the raw representative `φ.raw`. -/
     ((φ.toL2ZeroMean : Lp ℝ 2 P) : Ω → ℝ) =ᵐ[P] φ.raw :=
   MemLp.coeFn_toLp φ.memLp2
 
+/-- Two candidates whose raw representatives agree almost everywhere
+land at the same element of `L2ZeroMean P`.
+
+This is the practical interface for concrete examples: the user
+supplies a raw formula `φraw`, proves `φraw =ᵐ[P] canonicalFormula`,
+and this lemma collapses the comparison to a one-line rewrite at the
+L²₀ level. -/
+theorem toL2ZeroMean_eq_of_aeEq
+    {φ ψ : CandidateIF P} (h : φ.raw =ᵐ[P] ψ.raw) :
+    φ.toL2ZeroMean = ψ.toL2ZeroMean := by
+  apply Subtype.ext
+  -- reduce equality of L²₀ elements to equality of underlying Lp elements
+  change φ.memLp2.toLp φ.raw = ψ.memLp2.toLp ψ.raw
+  exact MemLp.toLp_congr φ.memLp2 ψ.memLp2 h
 
 end CandidateIF
 
@@ -257,7 +359,7 @@ end AsymptoticStatistics.Core
 end GLP0011B3Source1
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.LpSeminorm`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/LpSeminorm.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source2
 
@@ -268,15 +370,34 @@ Authors: StatLean contributors
 -/
 
 /-!
-# The L² seminorm
+# The `L^p` seminorm without a measurability guard
 
-For an a.e. strongly measurable function, `eLpNorm f 2 μ` agrees with the
-integral seminorm `eLpNorm' f 2 μ`.
+`MeasureTheory.eLpNorm f p μ` is `∞` when `f` is not a.e. strongly measurable. This file
+defines `eLpNorm₀`, which is given by the same formula for every function: `0` at `p = 0`,
+the essential supremum at `p = ∞`, and the integral seminorm `eLpNorm'` otherwise. It only
+needs an `ENorm` on the target. The two seminorms agree on a.e. strongly measurable functions
+(`eLpNorm₀_eq_eLpNorm`).
 -/
 
 namespace MeasureTheory
 open scoped ENNReal
 
+/-- The `L^p` seminorm of an arbitrary function, without the a.e. strong measurability
+guard of `eLpNorm`. -/
+noncomputable def eLpNorm₀ {α E : Type*} [MeasurableSpace α] [ENorm E]
+    (f : α → E) (p : ℝ≥0∞) (μ : Measure α := by volume_tac) : ℝ≥0∞ :=
+  if p = 0 then 0 else if p = ∞ then eLpNormEssSup f μ else eLpNorm' f p.toReal μ
+
+/-- At exponent two, `eLpNorm₀` is the integral seminorm `eLpNorm'`. -/
+theorem eLpNorm₀_two {α E : Type*} [MeasurableSpace α] [ENorm E]
+    (f : α → E) (μ : Measure α) : eLpNorm₀ f 2 μ = eLpNorm' f 2 μ := by
+  norm_num [eLpNorm₀]
+
+/-- `eLpNorm₀` agrees with `eLpNorm` on a.e. strongly measurable functions. -/
+theorem eLpNorm₀_eq_eLpNorm {α E : Type*} [MeasurableSpace α] [ENorm E]
+    [TopologicalSpace E] {f : α → E} {p : ℝ≥0∞} {μ : Measure α}
+    (hf : AEStronglyMeasurable f μ) : eLpNorm₀ f p μ = eLpNorm f p μ := by
+  simp only [eLpNorm₀, eLpNorm, hf, ite_true]
 
 variable {α ε : Type*} [MeasurableSpace α] [ENorm ε] [TopologicalSpace ε]
   {μ : Measure α} {f : α → ε}
@@ -287,13 +408,19 @@ theorem eLpNorm_two_eq_eLpNorm' (hf : AEStronglyMeasurable f μ) :
   simpa only [ENNReal.toReal_ofNat] using
     eLpNorm_eq_eLpNorm' (p := 2) (by norm_num) (by norm_num) hf
 
+/-- The integral seminorm `eLpNorm' f 2` is bounded by `eLpNorm f 2` for every function. -/
+theorem eLpNorm'_two_le_eLpNorm : eLpNorm' f 2 μ ≤ eLpNorm f 2 μ := by
+  by_cases hf : AEStronglyMeasurable f μ
+  · rw [eLpNorm_two_eq_eLpNorm' hf]
+  · rw [eLpNorm_of_not_aestronglyMeasurable hf]
+    exact le_top
 
 end MeasureTheory
 
 end GLP0011B3Source2
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.RnDerivSqrt`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/RnDerivSqrt.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source3
 
@@ -301,11 +428,14 @@ section GLP0011B3Source3
 /-!
 Square-root density helpers for absolutely continuous measures.
 
-When `ν` is finite, `ν ≪ μ`, and `μ` is σ-finite, the Radon–Nikodym
-derivative `p := ν.rnDeriv μ` is `μ`-a.e. finite, and `√p ∈ L²(μ)` with
+When `ν ≪ μ` with `μ` σ-finite, the Radon–Nikodym derivative
+`p := ν.rnDeriv μ` is `μ`-a.e. finite, and `√p ∈ L²(μ)` with
 `‖√p‖²_{L²(μ)} = ν(univ)`. The bridge between `L²(μ)`-membership of
 `g · √p` and `L²(ν)`-membership of `g`, plus the integral identity
-`∫ g dν = ∫ g · p dμ`, relate the two L² spaces.
+`∫ g dν = ∫ g · p dμ`, is what `Core/QMDPath.score_in_L2ZeroMean` needs
+to lift its bare-function score to `↥(L2ZeroMean P)`.
+
+These theorem-agnostic lemmas belong to the `ForMathlib` layer.
 -/
 
 open MeasureTheory Filter Topology
@@ -344,6 +474,7 @@ theorem aestronglyMeasurable_sqrt_rnDeriv_mul_iff {ν ξ : Measure Ω} [SigmaFin
     · rw [hω hd]
 
 
+
 /-- Pointwise identity: `√(x.toReal)² = x.toReal` since `x.toReal ≥ 0`. -/
 private lemma sqrt_rnDeriv_sq_eq (ν μ : Measure Ω) :
     (fun ω => Real.sqrt ((ν.rnDeriv μ ω).toReal) ^ 2)
@@ -375,7 +506,7 @@ lemma memLp_two_of_memLp_two_mul_sqrt_rnDeriv
     {g : Ω → ℝ} (hg_meas : AEStronglyMeasurable g P)
     (h : MemLp (fun ω => g ω * Real.sqrt (P.rnDeriv μ ω).toReal) 2 μ) :
     MemLp g 2 P := by
-  -- Prove `Integrable (g²) P`, then use `memLp_two_iff_integrable_sq`.
+  -- We aim for `Integrable (g²) P`, then use `memLp_two_iff_integrable_sq`.
   rw [memLp_two_iff_integrable_sq hg_meas]
   -- `P = μ.withDensity (P.rnDeriv μ)` since `P ≪ μ` and both σ-finite.
   have hP : P = μ.withDensity (P.rnDeriv μ) :=
@@ -405,13 +536,23 @@ lemma integral_eq_integral_mul_rnDeriv_of_ac
   refine integral_congr_ae (Filter.Eventually.of_forall (fun ω => ?_))
   simp [smul_eq_mul, mul_comm]
 
+/-- Set-form of `integral_eq_integral_mul_rnDeriv_of_ac`: `∫_G g dP = ∫_G g·(dP/dμ) dμ`
+for any measurable `G`. Obtained by applying the `univ`-form to `Set.indicator G g`. -/
+lemma setIntegral_eq_setIntegral_mul_rnDeriv_of_ac
+    {P μ : Measure Ω} [IsFiniteMeasure P] [SigmaFinite μ] (h_ac : P ≪ μ)
+    (g : Ω → ℝ) {G : Set Ω} (hG : MeasurableSet G) :
+    ∫ ω in G, g ω ∂P = ∫ ω in G, g ω * (P.rnDeriv μ ω).toReal ∂μ := by
+  rw [← integral_indicator hG,
+      integral_eq_integral_mul_rnDeriv_of_ac h_ac (G.indicator g),
+      ← integral_indicator hG]
+  simp only [Set.indicator_mul_left]
 
 end AsymptoticStatistics.ForMathlib.RnDerivSqrt
 
 end GLP0011B3Source3
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.L2`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/L2.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source4
 
@@ -419,10 +560,15 @@ section GLP0011B3Source4
 /-!
 Asymptotic Statistics — pure L² / integral utility lemmas.
 
+Theorem-agnostic real-analysis facts reused across the formalisation. These
+live in `ForMathlib/` because they depend only on Mathlib and are candidates
+for eventual upstreaming.
+
 ## Contents
 
 * `integral_sq_nonneg`                   — `0 ≤ ∫ f² dμ`.
 * `sq_add_le_two_mul_sq`                 — pointwise `(a + b)² ≤ 2a² + 2b²`.
+* `sq_sub_le_two_mul_sq`                 — pointwise `(a − b)² ≤ 2a² + 2b²`.
 * `abs_integral_mul_le_sqrt_integral_sq` — Cauchy–Schwarz on real integrals.
 * `integrable_mul_of_memLp_two`          — `L² × L² → L¹` for real functions.
 -/
@@ -449,6 +595,10 @@ lemma sq_add_le_two_mul_sq (a b : ℝ) :
     (a + b) ^ 2 ≤ 2 * a ^ 2 + 2 * b ^ 2 := by
   nlinarith [sq_nonneg (a - b)]
 
+/-- Pointwise inequality: `(a - b)² ≤ 2 a² + 2 b²`.  Symmetric. -/
+lemma sq_sub_le_two_mul_sq (a b : ℝ) :
+    (a - b) ^ 2 ≤ 2 * a ^ 2 + 2 * b ^ 2 := by
+  nlinarith [sq_nonneg (a + b)]
 
 /-! ## Cauchy–Schwarz and Hölder specialisations -/
 
@@ -516,8 +666,7 @@ lemma integrable_mul_of_memLp_two
 
 /-- **L² norm-square convergence from L²-difference convergence.**
 
-If `g ∈ L²(μ)`, `f_n − g ∈ L²(μ)` eventually, and `∫(f_n − g)² dμ → 0`,
-then `∫f_n² dμ → ∫g² dμ`.
+If `g ∈ L²(μ)` and `∫(f_n − g)² dμ → 0`, then `∫f_n² dμ → ∫g² dμ`.
 
 Proof. `f_n² = (f_n − g)² + 2(f_n − g)·g + g²` pointwise. Integrate:
 `∫f_n² = ∫(f_n − g)² + 2∫(f_n − g)·g + ∫g²`. The first → 0 by hypothesis;
@@ -609,6 +758,50 @@ lemma tendsto_integral_sq_of_tendsto_integral_diff_sq
   simp only [zero_add, mul_zero] at h_combined
   exact h_combined.congr' (h_int_eq.mono (fun n hn => hn.symm))
 
+/-- **Converse of `.toReal²/t² → 0` ⇒ `ℝ≥0∞`-quotient → 0**.
+If each `F t` is eventually in `L²(μ)` near `0` and
+`(eLpNorm (F t) 2 μ).toReal² / t² → 0`, then the `ℝ≥0∞`-quotient
+`eLpNorm (F t) 2 μ / ENNReal.ofReal |t| → 0`. This is the converse direction of
+`Core/QMDPath.QMDPath.qmd_limit_toReal_sq`, used to repackage the coarsened QMD
+residual bound into the `ℝ≥0∞`-form `qmd_limit` field. -/
+theorem tendsto_eLpNorm_div_ofReal_of_toReal_sq
+    {μ : Measure 𝓧} {F : ℝ → 𝓧 → ℝ}
+    (h_mem : ∀ᶠ t in 𝓝[≠] (0 : ℝ), MemLp (F t) 2 μ)
+    (h_sq : Tendsto (fun t => (eLpNorm (F t) 2 μ).toReal ^ 2 / t ^ 2)
+      (𝓝[≠] 0) (𝓝 0)) :
+    Tendsto (fun t => eLpNorm (F t) 2 μ / ENNReal.ofReal |t|)
+      (𝓝[≠] 0) (𝓝 (0 : ℝ≥0∞)) := by
+  -- Step 1: the ℝ-valued quotient `(eLpNorm).toReal / |t| → 0`.
+  -- From `h_sq`, `((eLpNorm).toReal / |t|)² → 0` (since `t² = |t|²`); take
+  -- `Real.sqrt` (continuous) and use `√(x²) = x` for the nonneg quotient.
+  have h_q : Tendsto (fun t => (eLpNorm (F t) 2 μ).toReal / |t|)
+      (𝓝[≠] 0) (𝓝 (0 : ℝ)) := by
+    have h_sq' : Tendsto (fun t => ((eLpNorm (F t) 2 μ).toReal / |t|) ^ 2)
+        (𝓝[≠] 0) (𝓝 0) := by
+      have h_eq : (fun t => (eLpNorm (F t) 2 μ).toReal ^ 2 / t ^ 2)
+          = (fun t => ((eLpNorm (F t) 2 μ).toReal / |t|) ^ 2) := by
+        funext t; rw [div_pow, sq_abs]
+      rwa [h_eq] at h_sq
+    have hcont := (Real.continuous_sqrt.tendsto (0 : ℝ)).comp h_sq'
+    rw [Real.sqrt_zero] at hcont
+    refine hcont.congr (fun t => ?_)
+    exact Real.sqrt_sq (div_nonneg ENNReal.toReal_nonneg (abs_nonneg t))
+  -- Step 2: push through `ENNReal.ofReal` (continuous at `0`).
+  have h_ofReal :
+      Tendsto (fun t => ENNReal.ofReal ((eLpNorm (F t) 2 μ).toReal / |t|))
+        (𝓝[≠] 0) (𝓝 (0 : ℝ≥0∞)) := by
+    have := (ENNReal.continuous_ofReal.tendsto (0 : ℝ)).comp h_q
+    rwa [ENNReal.ofReal_zero] at this
+  -- Step 3: eventual equality with the `ℝ≥0∞`-quotient (finiteness + `|t|>0`).
+  have h_eq_ev :
+      (fun t => ENNReal.ofReal ((eLpNorm (F t) 2 μ).toReal / |t|))
+        =ᶠ[𝓝[≠] (0 : ℝ)] (fun t => eLpNorm (F t) 2 μ / ENNReal.ofReal |t|) := by
+    have h_self_ne : {x : ℝ | x ≠ 0} ∈ 𝓝[≠] (0 : ℝ) := self_mem_nhdsWithin
+    filter_upwards [h_mem, h_self_ne] with t ht_mem ht_ne
+    have habs : 0 < |t| := abs_pos.mpr ht_ne
+    rw [ENNReal.ofReal_div_of_pos habs,
+      ENNReal.ofReal_toReal ht_mem.eLpNorm_ne_top]
+  exact h_ofReal.congr' h_eq_ev
 
 end L2Utils
 end AsymptoticStatistics
@@ -616,14 +809,30 @@ end AsymptoticStatistics
 end GLP0011B3Source4
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.QMDAnalytic`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/QMDAnalytic.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source5
 
 
 /-!
-The identity `sqrt_integral_sq_eq_eLpNorm_toReal` relates the real-valued
-`√(∫ f² dμ)` to the L² seminorm of a square-integrable function.
+Analytic engines for the dominated QMD limit (vdV §25.3, lem:25.14).
+
+Given a curve `t ↦ Q_t : ℝ → Measure Ω` of probability measures dominated
+by a fixed σ-finite `μ` and a measurable `g : Ω → ℝ`, the QMD limit
+`‖√p_t − √p_0 − (t/2) g √p_0‖_{L²(μ)} / |t| → 0` (in `ℝ≥0∞`) as
+`t → 0` (along `𝓝[≠] 0`) implies:
+
+* **Stage 1** (`memLp_two_score_mul_sqrt_of_qmd`):
+  `g · √p_0 ∈ L²(μ)`. Triangle inequality on the QMD remainder plus
+  the unit-norm bound `‖√p_t‖_{L²(μ)} = 1` for probability measures.
+
+* **Stage 2** (`integral_score_eq_zero_of_qmd`):
+  `∫ g d(curve 0) = 0`. Cauchy–Schwarz on the *linear* part of QMD
+  (no second-order Hellinger expansion needed) plus the affinity
+  bound `∫ √p_t √p_0 dμ ≤ 1`, giving a two-sided sign argument.
+
+Together these are the analytic content of the consistency lemma
+`Core/QMDPath.score_in_L2ZeroMean`.
 -/
 
 open MeasureTheory Filter Topology
@@ -633,6 +842,51 @@ namespace AsymptoticStatistics.ForMathlib.QMDAnalytic
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 
+/-- The QMD remainder
+`r_t(ω) = √p_t(ω) − √p_0(ω) − (t/2) g(ω) √p_0(ω)`, written in the
+exact pointwise form used by `Core/QMDPath.QMDPath.qmd_limit`. -/
+noncomputable def qmdRem (curve : ℝ → Measure Ω) (μ : Measure Ω)
+    (g : Ω → ℝ) (t : ℝ) : Ω → ℝ := fun ω =>
+  Real.sqrt ((curve t).rnDeriv μ ω).toReal
+    - Real.sqrt ((curve 0).rnDeriv μ ω).toReal
+    - (t / 2) * g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal
+
+/-- The `ℝ≥0∞`-form QMD limit: `‖r_t‖_{L²(μ)} / |t| → 0` (in `ℝ≥0∞`)
+as `t → 0` along `𝓝[≠] 0`. We give it a name to avoid repeating the
+nine-line spelling at every call site. -/
+def IsQMDLimit (curve : ℝ → Measure Ω) (μ : Measure Ω) (g : Ω → ℝ) : Prop :=
+  Tendsto (fun t : ℝ => eLpNorm' (qmdRem curve μ g t) 2 μ / ENNReal.ofReal |t|)
+    (𝓝[≠] 0) (𝓝 (0 : ℝ≥0∞))
+
+/-- For an a.e. strongly measurable score, the QMD limit can be stated with `eLpNorm`. -/
+lemma isQMDLimit_iff_eLpNorm {curve : ℝ → Measure Ω} {μ : Measure Ω} {g : Ω → ℝ}
+    (hg : AEStronglyMeasurable g μ) :
+    IsQMDLimit curve μ g ↔
+      Tendsto (fun t : ℝ => eLpNorm (qmdRem curve μ g t) 2 μ / ENNReal.ofReal |t|)
+        (𝓝[≠] 0) (𝓝 (0 : ℝ≥0∞)) := by
+  unfold IsQMDLimit
+  apply tendsto_congr
+  intro t
+  have hp := ((Measure.measurable_rnDeriv (curve 0) μ).ennreal_toReal.sqrt).aestronglyMeasurable
+      (μ := μ)
+  have ht := ((Measure.measurable_rnDeriv (curve t) μ).ennreal_toReal.sqrt).aestronglyMeasurable
+      (μ := μ)
+  have hr : AEStronglyMeasurable (qmdRem curve μ g t) μ := by
+    simpa only [qmdRem, Pi.sub_apply, Pi.mul_apply] using!
+      (ht.sub hp).sub ((hg.const_mul (t / 2)).mul hp)
+  rw [eLpNorm_two_eq_eLpNorm' hr]
+
+
+/-- Probability constraint ⇒ `‖√p_t‖_{L²(μ)} = 1` (more precisely the
+squared `L²` norm equals 1). Companion to
+`RnDerivSqrt.integral_sqrt_rnDeriv_sq` for probability measures. -/
+private lemma integral_sqrt_rnDeriv_sq_eq_one
+    {μ : Measure Ω} [SigmaFinite μ] {ν : Measure Ω}
+    [IsProbabilityMeasure ν] (h_ac : ν ≪ μ) :
+    ∫ ω, Real.sqrt ((ν.rnDeriv μ ω).toReal) ^ 2 ∂μ = 1 := by
+  rw [AsymptoticStatistics.ForMathlib.RnDerivSqrt.integral_sqrt_rnDeriv_sq h_ac,
+      measure_univ]
+  rfl
 
 /-- Bridge between the L²(μ) `eLpNorm` and the real-valued
 `√(∫ f² dμ)` for `MemLp f 2 μ`. -/
@@ -654,19 +908,409 @@ lemma sqrt_integral_sq_eq_eLpNorm_toReal {μ : Measure Ω}
       Real.sqrt_eq_rpow]
   norm_num
 
+/-- Cross-term Cauchy–Schwarz: `|∫ r_t · √p_0 dμ| / |t| → 0` along `𝓝[≠] 0`
+in `ℝ`. We pair the QMD limit (in `ℝ≥0∞`-form, after `toReal` conversion)
+with `(eLpNorm √p_0 2 μ).toReal = 1` for the bound
+`|∫ r_t · √p_0 dμ| ≤ (eLpNorm r_t 2 μ).toReal`. -/
+private lemma integral_qmdRem_mul_sqrt_p0_isLittleO
+    {μ : Measure Ω} [SigmaFinite μ] {curve : ℝ → Measure Ω}
+    (h_prob : ∀ t, IsProbabilityMeasure (curve t))
+    (h_ac : ∀ t, curve t ≪ μ)
+    {g : Ω → ℝ} (hg_meas : Measurable g)
+    (_h_g_sqrt : MemLp
+      (fun ω => g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal) 2 μ)
+    (h_qmd : IsQMDLimit curve μ g) :
+    Tendsto
+      (fun t : ℝ =>
+        |∫ ω, qmdRem curve μ g t ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ|
+          / |t|)
+      (𝓝[≠] 0) (𝓝 0) := by
+  have h_qmd := (isQMDLimit_iff_eLpNorm hg_meas.aestronglyMeasurable).1 h_qmd
+  have : IsProbabilityMeasure (curve 0) := h_prob 0
+  -- L²(μ)-membership of `√p_0`, with squared L²-norm = 1.
+  have hp0_memLp : MemLp (fun ω => Real.sqrt ((curve 0).rnDeriv μ ω).toReal) 2 μ :=
+    AsymptoticStatistics.ForMathlib.RnDerivSqrt.memLp_sqrt_rnDeriv (h_ac 0)
+  have hp0_int_sq : ∫ ω, Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2 ∂μ = 1 :=
+    integral_sqrt_rnDeriv_sq_eq_one (h_ac 0)
+  -- Convert the ENNReal QMD limit to ℝ.
+  have h_qmd_real : Tendsto
+      (fun t : ℝ => (eLpNorm (qmdRem curve μ g t) 2 μ).toReal / |t|)
+      (𝓝[≠] 0) (𝓝 0) := by
+    have h_cts : ContinuousAt ENNReal.toReal (0 : ℝ≥0∞) :=
+      ENNReal.continuousAt_toReal (by simp)
+    have h_to_real : Tendsto
+        (fun t : ℝ =>
+          (eLpNorm (qmdRem curve μ g t) 2 μ / ENNReal.ofReal |t|).toReal)
+        (𝓝[≠] 0) (𝓝 (0 : ℝ≥0∞).toReal) := h_cts.tendsto.comp h_qmd
+    simp only [ENNReal.toReal_zero] at h_to_real
+    -- Rewrite the inner expression using `ENNReal.toReal_div` +
+    -- `ENNReal.toReal_ofReal` (with `|t| ≥ 0`).
+    have h_eq : (fun t : ℝ =>
+        (eLpNorm (qmdRem curve μ g t) 2 μ / ENNReal.ofReal |t|).toReal)
+          = fun t : ℝ => (eLpNorm (qmdRem curve μ g t) 2 μ).toReal / |t| := by
+      funext t
+      rw [ENNReal.toReal_div, ENNReal.toReal_ofReal (abs_nonneg _)]
+    rwa [h_eq] at h_to_real
+  -- Eventually `MemLp r_t 2 μ` (when `eLpNorm r_t 2 μ < ⊤`).
+  have h_evt_memLp : ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+      MemLp (qmdRem curve μ g t) 2 μ := by
+    have h_lt_one : ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+        eLpNorm (qmdRem curve μ g t) 2 μ / ENNReal.ofReal |t| < 1 :=
+      h_qmd.eventually (Iio_mem_nhds (by norm_num : (0 : ℝ≥0∞) < 1))
+    have h_ne : ∀ᶠ t in 𝓝[≠] (0 : ℝ), t ≠ 0 :=
+      eventually_nhdsWithin_of_forall (fun _ ht => ht)
+    filter_upwards [h_lt_one, h_ne] with t htlt htne
+    have habs : (0 : ℝ) < |t| := abs_pos.mpr htne
+    have hofreal_ne_zero : ENNReal.ofReal |t| ≠ 0 :=
+      (ENNReal.ofReal_pos.mpr habs).ne'
+    have hofreal_ne_top : ENNReal.ofReal |t| ≠ ⊤ := ENNReal.ofReal_ne_top
+    have h_eLp_lt :
+        eLpNorm (qmdRem curve μ g t) 2 μ < ENNReal.ofReal |t| := by
+      calc eLpNorm (qmdRem curve μ g t) 2 μ
+          = eLpNorm (qmdRem curve μ g t) 2 μ / ENNReal.ofReal |t|
+              * ENNReal.ofReal |t| := by
+            rw [ENNReal.div_mul_cancel hofreal_ne_zero hofreal_ne_top]
+        _ < 1 * ENNReal.ofReal |t| :=
+            ENNReal.mul_lt_mul_left hofreal_ne_zero hofreal_ne_top htlt
+        _ = ENNReal.ofReal |t| := one_mul _
+    have hr_meas : Measurable (qmdRem curve μ g t) := by
+      unfold qmdRem
+      exact ((((Measure.measurable_rnDeriv (curve t) μ).ennreal_toReal.sqrt).sub
+        ((Measure.measurable_rnDeriv (curve 0) μ).ennreal_toReal.sqrt))).sub
+        ((measurable_const.mul hg_meas).mul
+          (Measure.measurable_rnDeriv (curve 0) μ).ennreal_toReal.sqrt)
+    exact lt_trans h_eLp_lt ENNReal.ofReal_lt_top
+  -- The pointwise bound `|∫ r_t · √p_0| ≤ (eLpNorm r_t).toReal`.
+  have h_bound : ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+      |∫ ω, qmdRem curve μ g t ω
+            * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ|
+        ≤ (eLpNorm (qmdRem curve μ g t) 2 μ).toReal := by
+    filter_upwards [h_evt_memLp] with t hr_memLp
+    have h_cs := AsymptoticStatistics.L2Utils.abs_integral_mul_le_sqrt_integral_sq
+      μ hr_memLp hp0_memLp
+    rw [hp0_int_sq, Real.sqrt_one, mul_one] at h_cs
+    -- `h_cs : |∫ r_t · √p_0 dμ| ≤ √(∫ r_t² dμ)`. Convert √∫r_t² to (eLpNorm).toReal.
+    have h_sqrt_eq : Real.sqrt (∫ ω, qmdRem curve μ g t ω ^ 2 ∂μ)
+                    = (eLpNorm (qmdRem curve μ g t) 2 μ).toReal :=
+      sqrt_integral_sq_eq_eLpNorm_toReal hr_memLp
+    linarith [h_sqrt_eq]
+  -- Squeeze: `0 ≤ |∫ r_t · √p_0| / |t| ≤ (eLpNorm r_t).toReal / |t|`,
+  -- and the upper bound tends to 0.
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_qmd_real ?_ ?_
+  · filter_upwards with t
+    exact div_nonneg (abs_nonneg _) (abs_nonneg _)
+  · filter_upwards [h_bound] with t hb
+    -- `|t| ≥ 0`, and we use that division preserves order.
+    by_cases ht : |t| = 0
+    · simp [ht]
+    · have h_pos : (0 : ℝ) < |t| := lt_of_le_of_ne (abs_nonneg _) (Ne.symm ht)
+      exact (div_le_div_iff_of_pos_right h_pos).mpr hb
 
+/-- Hellinger-affinity bound: `∫ √p_t √p_0 dμ ≤ 1` (Cauchy–Schwarz with
+both `√p_t` and `√p_0` of unit `L²(μ)`-norm). -/
+private lemma integral_sqrt_pt_sqrt_p0_le_one
+    {μ : Measure Ω} [SigmaFinite μ] {curve : ℝ → Measure Ω}
+    (h_prob : ∀ t, IsProbabilityMeasure (curve t))
+    (h_ac : ∀ t, curve t ≪ μ) (t : ℝ) :
+    ∫ ω, Real.sqrt ((curve t).rnDeriv μ ω).toReal
+        * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ ≤ 1 := by
+  have : IsProbabilityMeasure (curve t) := h_prob t
+  have : IsProbabilityMeasure (curve 0) := h_prob 0
+  have hpt : MemLp (fun ω => Real.sqrt ((curve t).rnDeriv μ ω).toReal) 2 μ :=
+    AsymptoticStatistics.ForMathlib.RnDerivSqrt.memLp_sqrt_rnDeriv (h_ac t)
+  have hp0 : MemLp (fun ω => Real.sqrt ((curve 0).rnDeriv μ ω).toReal) 2 μ :=
+    AsymptoticStatistics.ForMathlib.RnDerivSqrt.memLp_sqrt_rnDeriv (h_ac 0)
+  have h_cs :=
+    AsymptoticStatistics.L2Utils.abs_integral_mul_le_sqrt_integral_sq μ hpt hp0
+  rw [integral_sqrt_rnDeriv_sq_eq_one (h_ac t),
+      integral_sqrt_rnDeriv_sq_eq_one (h_ac 0), Real.sqrt_one, mul_one] at h_cs
+  -- `h_cs : |∫ √p_t · √p_0 dμ| ≤ 1`. Drop the absolute value since the
+  -- integrand is non-negative.
+  have h_nn : 0 ≤ ∫ ω, Real.sqrt ((curve t).rnDeriv μ ω).toReal
+                * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ :=
+    MeasureTheory.integral_nonneg fun _ =>
+      mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+  calc ∫ ω, Real.sqrt ((curve t).rnDeriv μ ω).toReal
+          * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ
+      = |∫ ω, Real.sqrt ((curve t).rnDeriv μ ω).toReal
+            * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| :=
+        (abs_of_nonneg h_nn).symm
+    _ ≤ 1 := h_cs
 
+/-! ### Stage-1 engine -/
 
+/-- **Stage 1** (vdV §25.3, lem:25.14, square-integrability part).
+The `ℝ≥0∞`-form QMD limit forces `g · √p_0 ∈ L²(μ)`. We pick a *single*
+small `t ≠ 0` from the QMD limit with `‖r_t‖_{L²(μ)} < |t|` (in `ℝ≥0∞`),
+then read off `(t/2) (g · √p_0) = (√p_t − √p_0) − r_t`, which has each
+summand in `L²(μ)`. Dividing by the nonzero scalar `t/2` gives the
+result. -/
+lemma memLp_two_score_mul_sqrt_of_qmd
+    {μ : Measure Ω} [SigmaFinite μ] {curve : ℝ → Measure Ω}
+    (h_prob : ∀ t, IsProbabilityMeasure (curve t))
+    (h_ac : ∀ t, curve t ≪ μ)
+    {g : Ω → ℝ} (hg_meas : Measurable g)
+    (h_qmd : IsQMDLimit curve μ g) :
+    MemLp (fun ω => g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal) 2 μ := by
+  have h_qmd := (isQMDLimit_iff_eLpNorm hg_meas.aestronglyMeasurable).1 h_qmd
+  set f : Ω → ℝ := fun ω => g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal
+    with hf_def
+  -- Measurability ingredients (reused throughout).
+  have h_pt_meas : ∀ t, Measurable
+      (fun ω => Real.sqrt ((curve t).rnDeriv μ ω).toReal) := fun t =>
+    (Measure.measurable_rnDeriv (curve t) μ).ennreal_toReal.sqrt
+  have hf_meas : Measurable f := hg_meas.mul (h_pt_meas 0)
+  -- L²(μ) memberships of `√p_0` and (after picking t) `√p_t`.
+  have : IsProbabilityMeasure (curve 0) := h_prob 0
+  have hp0_memLp : MemLp (fun ω => Real.sqrt ((curve 0).rnDeriv μ ω).toReal) 2 μ :=
+    AsymptoticStatistics.ForMathlib.RnDerivSqrt.memLp_sqrt_rnDeriv (h_ac 0)
+  -- Step 1: extract a specific `t ≠ 0` with `eLpNorm r_t 2 μ < ENNReal.ofReal |t|`.
+  obtain ⟨t, ht_ne, ht_lt⟩ : ∃ t : ℝ, t ≠ 0 ∧
+      eLpNorm (qmdRem curve μ g t) 2 μ < ENNReal.ofReal |t| := by
+    have h_lt_one : ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+        eLpNorm (qmdRem curve μ g t) 2 μ / ENNReal.ofReal |t| < 1 :=
+      h_qmd.eventually (Iio_mem_nhds (by norm_num : (0 : ℝ≥0∞) < 1))
+    have h_ne : ∀ᶠ t in 𝓝[≠] (0 : ℝ), t ≠ 0 :=
+      eventually_nhdsWithin_of_forall (fun _ ht => ht)
+    have h_combined : ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+        t ≠ 0 ∧ eLpNorm (qmdRem curve μ g t) 2 μ < ENNReal.ofReal |t| := by
+      filter_upwards [h_lt_one, h_ne] with t htlt htne
+      refine ⟨htne, ?_⟩
+      have habs : (0 : ℝ) < |t| := abs_pos.mpr htne
+      have hofreal_ne_zero : ENNReal.ofReal |t| ≠ 0 :=
+        (ENNReal.ofReal_pos.mpr habs).ne'
+      have hofreal_ne_top : ENNReal.ofReal |t| ≠ ⊤ := ENNReal.ofReal_ne_top
+      calc eLpNorm (qmdRem curve μ g t) 2 μ
+          = eLpNorm (qmdRem curve μ g t) 2 μ / ENNReal.ofReal |t|
+              * ENNReal.ofReal |t| := by
+            rw [ENNReal.div_mul_cancel hofreal_ne_zero hofreal_ne_top]
+        _ < 1 * ENNReal.ofReal |t| :=
+            ENNReal.mul_lt_mul_left hofreal_ne_zero hofreal_ne_top htlt
+        _ = ENNReal.ofReal |t| := one_mul _
+    obtain ⟨t, ht⟩ := h_combined.exists
+    exact ⟨t, ht.1, ht.2⟩
+  -- Set up the `t`-dependent `L²(μ)` ingredients.
+  have : IsProbabilityMeasure (curve t) := h_prob t
+  have hpt_memLp : MemLp (fun ω => Real.sqrt ((curve t).rnDeriv μ ω).toReal) 2 μ :=
+    AsymptoticStatistics.ForMathlib.RnDerivSqrt.memLp_sqrt_rnDeriv (h_ac t)
+  -- The QMD remainder is measurable.
+  have hr_meas : Measurable (qmdRem curve μ g t) := by
+    unfold qmdRem
+    exact ((h_pt_meas t).sub (h_pt_meas 0)).sub
+      (((measurable_const.mul hg_meas).mul (h_pt_meas 0)))
+  -- And in L²(μ), since its eLpNorm is finite.
+  have hr_memLp : MemLp (qmdRem curve μ g t) 2 μ :=
+    lt_trans ht_lt ENNReal.ofReal_lt_top
+  -- Pointwise: `(t/2) • f = (√p_t - √p_0) - r_t`.
+  have h_tf_eq :
+      (fun ω => (t / 2) * f ω)
+        = fun ω =>
+          (Real.sqrt ((curve t).rnDeriv μ ω).toReal
+              - Real.sqrt ((curve 0).rnDeriv μ ω).toReal)
+            - qmdRem curve μ g t ω := by
+    funext ω
+    simp only [qmdRem, hf_def]
+    ring
+  -- The RHS is in L²(μ).
+  have h_tf_memLp : MemLp (fun ω => (t / 2) * f ω) 2 μ := by
+    rw [h_tf_eq]
+    exact (hpt_memLp.sub hp0_memLp).sub hr_memLp
+  -- Divide by `t/2 ≠ 0` to recover MemLp f.
+  have ht2_ne : (t / 2) ≠ 0 := by
+    intro h; apply ht_ne; linarith
+  have h_inv_eq : (fun ω => (2 / t) * ((t / 2) * f ω)) = f := by
+    funext ω
+    have : (2 / t) * (t / 2) = 1 := by field_simp
+    calc (2 / t) * ((t / 2) * f ω)
+        = ((2 / t) * (t / 2)) * f ω := by ring
+      _ = 1 * f ω := by rw [this]
+      _ = f ω := one_mul _
+  have h_f_memLp_pre : MemLp (fun ω => (2 / t) * ((t / 2) * f ω)) 2 μ :=
+    h_tf_memLp.const_mul (2 / t)
+  rwa [h_inv_eq] at h_f_memLp_pre
 
+/-! ### Stage-2 engine -/
 
-
+/-- **Stage 2** (vdV §25.3, lem:25.14, mean-zero part).
+Same hypotheses as Stage 1 plus its conclusion (`g · √p_0 ∈ L²(μ)`)
+imply `∫ g d(curve 0) = 0`. Proof via Cauchy–Schwarz on the linear
+part of QMD plus the affinity bound and a two-sided sign argument as
+`t → 0±`. -/
+lemma integral_score_eq_zero_of_qmd
+    {μ : Measure Ω} [SigmaFinite μ] {curve : ℝ → Measure Ω}
+    (h_prob : ∀ t, IsProbabilityMeasure (curve t))
+    (h_ac : ∀ t, curve t ≪ μ)
+    {g : Ω → ℝ} (hg_meas : Measurable g)
+    (h_g_sqrt : MemLp (fun ω => g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal) 2 μ)
+    (h_qmd : IsQMDLimit curve μ g) :
+    ∫ ω, g ω ∂(curve 0) = 0 := by
+  have : IsProbabilityMeasure (curve 0) := h_prob 0
+  set I : ℝ := ∫ ω, g ω ∂(curve 0) with hI_def
+  -- Common L²(μ) ingredients.
+  have hp0_memLp : MemLp (fun ω => Real.sqrt ((curve 0).rnDeriv μ ω).toReal) 2 μ :=
+    AsymptoticStatistics.ForMathlib.RnDerivSqrt.memLp_sqrt_rnDeriv (h_ac 0)
+  have hp0_int_sq : ∫ ω, Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2 ∂μ = 1 :=
+    integral_sqrt_rnDeriv_sq_eq_one (h_ac 0)
+  -- Pointwise: `(√p_0)² = p_0.toReal`.
+  have hp0_sq_pt : ∀ ω, Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2
+                        = ((curve 0).rnDeriv μ ω).toReal := fun _ =>
+    Real.sq_sqrt ENNReal.toReal_nonneg
+  -- ∫g · ((curve 0).rnDeriv μ).toReal dμ = I  (S4 bridge).
+  have h_I_eq : ∫ ω, g ω * ((curve 0).rnDeriv μ ω).toReal ∂μ = I :=
+    (AsymptoticStatistics.ForMathlib.RnDerivSqrt.integral_eq_integral_mul_rnDeriv_of_ac
+      (h_ac 0) g).symm
+  -- Algebraic identity for any `t : ℝ`:
+  --   ∫ r_t · √p_0 dμ = ∫ √p_t · √p_0 dμ − 1 − (t/2) · I.
+  have h_id : ∀ t : ℝ,
+      ∫ ω, qmdRem curve μ g t ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ
+        = (∫ ω, Real.sqrt ((curve t).rnDeriv μ ω).toReal
+              * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ)
+          - 1 - (t / 2) * I := by
+    intro t
+    have : IsProbabilityMeasure (curve t) := h_prob t
+    have hpt_memLp : MemLp (fun ω => Real.sqrt ((curve t).rnDeriv μ ω).toReal) 2 μ :=
+      AsymptoticStatistics.ForMathlib.RnDerivSqrt.memLp_sqrt_rnDeriv (h_ac t)
+    -- Integrability ingredients.
+    have h_pt_p0_int :
+        Integrable (fun ω => Real.sqrt ((curve t).rnDeriv μ ω).toReal
+            * Real.sqrt ((curve 0).rnDeriv μ ω).toReal) μ :=
+      AsymptoticStatistics.L2Utils.integrable_mul_of_memLp_two μ hpt_memLp hp0_memLp
+    have h_p0_sq_int :
+        Integrable (fun ω => Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2) μ :=
+      hp0_memLp.integrable_sq
+    -- `g · (√p_0)² = (g · √p_0) · √p_0` is in L¹(μ) by Hölder L²×L²→L¹.
+    have h_g_p0_sq_int :
+        Integrable (fun ω => g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2) μ := by
+      have h_via :
+          (fun ω => g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2)
+            = fun ω =>
+              (g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal)
+                * Real.sqrt ((curve 0).rnDeriv μ ω).toReal := by
+        funext ω; ring
+      rw [h_via]
+      exact AsymptoticStatistics.L2Utils.integrable_mul_of_memLp_two μ h_g_sqrt hp0_memLp
+    -- Pointwise rewrite the integrand to a *single* outer subtraction:
+    -- `r_t · √p_0 = (√p_t · √p_0) - ((√p_0)² + (t/2) · g · (√p_0)²)`.
+    have h_pw : (fun ω => qmdRem curve μ g t ω
+                  * Real.sqrt ((curve 0).rnDeriv μ ω).toReal)
+        = (fun ω =>
+            Real.sqrt ((curve t).rnDeriv μ ω).toReal
+              * Real.sqrt ((curve 0).rnDeriv μ ω).toReal
+            - (Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2
+              + (t / 2) *
+                (g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2))) := by
+      funext ω; simp only [qmdRem]; ring
+    -- Apply linearity in two steps: outer `integral_sub`, then `integral_add`,
+    -- then `integral_const_mul`.
+    have h_g_p0_sq_eq_I :
+        ∫ ω, g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2 ∂μ = I := by
+      have h_eq_pt : (fun ω => g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2)
+                    = (fun ω => g ω * ((curve 0).rnDeriv μ ω).toReal) := by
+        funext ω; rw [hp0_sq_pt]
+      rw [h_eq_pt, h_I_eq]
+    -- Type-ascribe the combined integrability hypothesis pointwise.
+    have h_combined_int :
+        Integrable (fun ω => Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2
+            + (t / 2) * (g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ^ 2)) μ :=
+      h_p0_sq_int.add (h_g_p0_sq_int.const_mul (t / 2))
+    rw [h_pw, integral_sub h_pt_p0_int h_combined_int,
+        integral_add h_p0_sq_int (h_g_p0_sq_int.const_mul (t / 2)),
+        integral_const_mul, hp0_int_sq, h_g_p0_sq_eq_I]
+    ring
+  -- Master inequality: `(t/2) · I ≤ |∫ r_t · √p_0 dμ|` for all `t`.
+  have h_bound : ∀ t : ℝ, (t / 2) * I
+      ≤ |∫ ω, qmdRem curve μ g t ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| := by
+    intro t
+    have h_aff := integral_sqrt_pt_sqrt_p0_le_one h_prob h_ac t
+    have h_neg_C_le :
+        -(∫ ω, qmdRem curve μ g t ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ)
+        ≤ |∫ ω, qmdRem curve μ g t ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| :=
+      neg_le_abs _
+    linarith [h_id t]
+  -- Cross-term tendsto and its scaled version.
+  have h_cross := integral_qmdRem_mul_sqrt_p0_isLittleO
+    h_prob h_ac hg_meas h_g_sqrt h_qmd
+  have h_cross2 : Tendsto
+      (fun t : ℝ =>
+        2 * (|∫ ω, qmdRem curve μ g t ω
+                  * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / |t|))
+      (𝓝[≠] 0) (𝓝 0) := by
+    have := h_cross.const_mul 2
+    simpa using this
+  -- Step `I ≤ 0` (use `t > 0`).
+  have h_I_le_zero : I ≤ 0 := by
+    have h_cross_pos : Tendsto
+        (fun t : ℝ =>
+          2 * (|∫ ω, qmdRem curve μ g t ω
+                    * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / |t|))
+        (𝓝[>] (0 : ℝ)) (𝓝 0) :=
+      h_cross2.mono_left (nhdsWithin_mono _ (fun _ h => h.ne'))
+    have h_evt : ∀ᶠ t in 𝓝[>] (0 : ℝ),
+        I ≤ 2 * (|∫ ω, qmdRem curve μ g t ω
+                    * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / |t|) := by
+      filter_upwards [self_mem_nhdsWithin] with t ht
+      have htpos : 0 < t := ht
+      have h_t2_pos : 0 < t / 2 := by linarith
+      have h_abs_t : |t| = t := abs_of_pos htpos
+      have hb := h_bound t
+      -- (t/2) · I ≤ |C(t)|. Divide by t/2 > 0:
+      have h_div : I ≤
+          |∫ ω, qmdRem curve μ g t ω
+                * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / (t / 2) := by
+        rw [le_div_iff₀ h_t2_pos]; linarith
+      -- 2|C|/|t| = 2|C|/t = |C|/(t/2):
+      have h_two_eq :
+          2 * (|∫ ω, qmdRem curve μ g t ω
+                    * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / |t|)
+            = |∫ ω, qmdRem curve μ g t ω
+                    * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / (t / 2) := by
+        rw [h_abs_t]; ring
+      rw [h_two_eq]; exact h_div
+    exact ge_of_tendsto h_cross_pos h_evt
+  -- Step `0 ≤ I` (use `t < 0`).
+  have h_I_ge_zero : 0 ≤ I := by
+    have h_cross_neg : Tendsto
+        (fun t : ℝ =>
+          -(2 * (|∫ ω, qmdRem curve μ g t ω
+                      * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / |t|)))
+        (𝓝[<] (0 : ℝ)) (𝓝 0) := by
+      have h_left : Tendsto
+          (fun t : ℝ =>
+            2 * (|∫ ω, qmdRem curve μ g t ω
+                      * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / |t|))
+          (𝓝[<] (0 : ℝ)) (𝓝 0) :=
+        h_cross2.mono_left (nhdsWithin_mono _ (fun _ h => h.ne))
+      simpa using h_left.neg
+    have h_evt : ∀ᶠ t in 𝓝[<] (0 : ℝ),
+        -(2 * (|∫ ω, qmdRem curve μ g t ω
+                    * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / |t|)) ≤ I := by
+      filter_upwards [self_mem_nhdsWithin] with t ht
+      have htneg : t < 0 := ht
+      have h_t2_neg : t / 2 < 0 := by linarith
+      have h_abs_t : |t| = -t := abs_of_neg htneg
+      have hb := h_bound t
+      -- (t/2) · I ≤ |C|. Divide by t/2 < 0 flips:
+      have h_div : |∫ ω, qmdRem curve μ g t ω
+                  * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / (t / 2) ≤ I := by
+        rw [div_le_iff_of_neg h_t2_neg]; linarith
+      -- -2|C|/|t| = -2|C|/(-t) = 2|C|/t = |C|/(t/2):
+      have ht_ne : t ≠ 0 := ne_of_lt htneg
+      have h_neg_two_eq :
+          -(2 * (|∫ ω, qmdRem curve μ g t ω
+                      * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / |t|))
+            = |∫ ω, qmdRem curve μ g t ω
+                    * Real.sqrt ((curve 0).rnDeriv μ ω).toReal ∂μ| / (t / 2) := by
+        rw [h_abs_t]; field_simp
+      rw [h_neg_two_eq]; exact h_div
+    exact le_of_tendsto h_cross_neg h_evt
+  linarith
 
 end AsymptoticStatistics.ForMathlib.QMDAnalytic
 
 end GLP0011B3Source5
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.Core.QMDPath`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/Core/QMDPath.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source6
 
@@ -687,7 +1331,10 @@ $$
 $$
 The score $g$ then lies in $L^2_0(P)$: it has mean zero, $\int g \,\mathrm{d}P = 0$,
 and is square-integrable, $\int g^2 \,\mathrm{d}P < \infty$ (the analytic
-content of vdV Lemma 25.14).
+content of vdV Lemma 25.14). The companion lemma `score_in_L2ZeroMean`
+proves the converse direction for users carrying a bare measurable score:
+any measurable $g$ satisfying the QMD limit above agrees $P$-almost
+everywhere with an element of $L^2_0(P)$.
 
 **Reference.** A. W. van der Vaart, *Asymptotic Statistics*, Cambridge
 Series in Statistical and Probabilistic Mathematics, Cambridge University
@@ -695,29 +1342,51 @@ Press, 1998. Chapter 25 (Semiparametric Models), §25.3, Eq (25.13) (the QMD
 condition via square-root densities) and Lemma 25.14 (the score has mean
 zero and is square-integrable).
 
-**Dominated paths.**
-The *dominated specialisation* uses a fixed dominating measure
+**Proof formalization notes.**
+We formalize the *dominated specialisation*: a fixed dominating measure
 `μ`, densities `pₜ := dQₜ/dμ`, and the QMD condition stated as L²(μ)
 convergence of `√pₜ - √p₀ - (t/2) g √p₀` to zero faster than `t`. vdV
 §25.3 explicitly authorizes taking the model dominated "for simplicity";
 the canonical nondominated form of Eq (25.13) uses formal `dP^{1/2}`
-symbols. The structure `QMDPath` uses densities with respect to a fixed dominator.
+symbols, which Mathlib's RN-derivative + `eLpNorm` machinery cannot carry,
+so the nondominated form is deferred.
 
 The score field is typed `↥(L2ZeroMean P)`, so "mean zero +
 square-integrable" (the analytic content of vdV Lemma 25.14) is enforced by
-the Lean type system. The QMD limit is stated in `ℝ≥0∞`-quotient form `eLpNorm … / ofReal |t| → 0`
+the Lean type system. The standalone `score_in_L2ZeroMean` lemma ships
+separately as a consistency result for users with bare-function scores; its
+proof outline (square-integrability via triangle inequality on the QMD
+remainder plus `‖√pₜ‖²_{L²(μ)} = 1`; mean zero via Cauchy–Schwarz against
+`√p₀` and the affinity bound `∫√pₜ√p₀ ≤ 1`) lives in that lemma's
+docstring, with the two analytic engines in `ForMathlib/QMDAnalytic.lean`.
+The QMD limit is stated in `ℝ≥0∞`-quotient form `eLpNorm … / ofReal |t| → 0`
 rather than the classical `.toReal²/t² → 0` form: the latter would be
 vacuously satisfied whenever the residual leaves `L²(μ)` (since
 `(⊤ : ℝ≥0∞).toReal = 0`), whereas the `ℝ≥0∞` form genuinely forces
-finiteness of the residual L²-norm near `t = 0`.
+finiteness of the residual L²-norm near `t = 0`. The classical form and a
+`MemLp` witness are recovered as corollaries `QMDPath.qmd_limit_toReal_sq`
+and `QMDPath.residual_memLp_eventually`.
 
+Headline declarations: `QMDPath`, `score_in_L2ZeroMean`.
+
+**Bibliographic comments.** Differentiability in quadratic mean originates
+with L. Le Cam, "On the assumptions used to prove asymptotic normality of
+maximum likelihood estimates", *Annals of Mathematical Statistics* 41(3)
+(1970), 802–828. Le Cam introduced the square-root-density (DQM) condition
+precisely to replace the classical pointwise-differentiability and
+domination hypotheses of Cramér with a single quadratic-mean condition,
+under which asymptotic normality of the MLE still holds. van der Vaart's
+Chapter 25 develops this for the more general semiparametric setting of
+differentiable submodels (paths) and their score functions; the mean-zero
+property of the score (Lemma 25.14) is a direct consequence of the DQM
+expansion that Le Cam established for the parametric case.
 -/
 
 open MeasureTheory Filter Topology
 open scoped InnerProductSpace ENNReal
 
-
-
+-- The structure name `QMDPath` matches the namespace; this is intentional —
+-- the file is about exactly that one structure plus its consistency lemma.
 set_option linter.dupNamespace false
 
 namespace AsymptoticStatistics.Core.QMDPath
@@ -729,8 +1398,8 @@ variable {Ω : Type*} [MeasurableSpace Ω]
 /-- A *dominated quadratic-mean-differentiable path* at the probability
 measure `P`: a curve `t ↦ curve t : ℝ → Measure Ω` through `P` (at
 `t = 0`) that is dominated by a fixed measure `dominating`, with score
-function `score : ↥(L2ZeroMean P)`. Writing `p₀ = dP/d(dominating)`,
-its square-root-density derivative in `L²(dominating)` is `score * √p₀ / 2`.
+function `score : ↥(L2ZeroMean P)` whose half is the L²(dominating)
+derivative of the square-root density.
 
 Reference: vdV §25.3, `eq:25.13`. This structure is the dominated
 specialisation authorized by vdV's "for simplicity" footnote. The canonical
@@ -745,8 +1414,8 @@ structure QMDPath (P : Measure Ω) [IsProbabilityMeasure P] where
   curve_isProbability : ∀ t, IsProbabilityMeasure (curve t)
   /-- A fixed dominating measure `μ` (vdV §25.3 footnote authorizes the
   dominated specialisation "for simplicity"). The canonical book form of
-  eq 25.13 uses formal `dP^{1/2}` symbols and is *nondominated*;
-  this structure specialises to the dominated case because Mathlib's RN-derivative +
+  eq 25.13 uses formal `dP^{1/2}` symbols and is *nondominated*; we
+  specialise to the dominated case because Mathlib's RN-derivative +
   `eLpNorm` machinery operates on densities, not on
   square-roots-of-measures. -/
   dominating : Measure Ω
@@ -773,7 +1442,11 @@ structure QMDPath (P : Measure Ω) [IsProbabilityMeasure P] where
   outside `L²(dominating)` (since `(⊤ : ℝ≥0∞).toReal = 0`). The
   `ℝ≥0∞`-quotient form genuinely forces `eLpNorm residual 2 dominating < ⊤`
   for `t` in a punctured neighbourhood of `0`: otherwise the quotient
-  evaluates to `⊤` and cannot tend to `0`. -/
+  evaluates to `⊤` and cannot tend to `0`. This matches the form used in
+  the standalone `score_in_L2ZeroMean` consistency lemma (below) and in
+  `ForMathlib.QMDAnalytic.IsQMDLimit`. The `MemLp` witness and the
+  classical `.toReal²/t² → 0` formulation are recovered as corollaries
+  `QMDPath.residual_memLp_eventually` and `QMDPath.qmd_limit_toReal_sq`. -/
   qmd_limit :
     Tendsto
       (fun t : ℝ =>
@@ -798,14 +1471,303 @@ namespace QMDPath
 
 variable {P : Measure Ω} [IsProbabilityMeasure P]
 
+/-- Corollary of the `ℝ≥0∞`-form `qmd_limit`: the QMD residual integrand
+is in `L²(γ.dominating)` for `t` in a punctured neighbourhood of `0`.
+
+`MemLp` follows from `qmd_limit` by the standard "if `eLpNorm / ofReal |t|
+→ 0` then eventually `eLpNorm < ofReal |t|` which is `< ⊤`" pattern
+(mirrors the `QMDAnalytic.IsQMDLimit ⇒ MemLp` chain in
+`ForMathlib/QMDAnalytic.lean`). -/
+theorem residual_memLp_eventually (γ : QMDPath P) :
+    ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+      MemLp (fun ω : Ω =>
+        Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+          - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+          - (t / 2) * (γ.score : Ω → ℝ) ω
+              * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+        2 γ.dominating := by
+  -- The residual is AEStronglyMeasurable from the rnDeriv square root and
+  -- the score-coercion measurability.
+  have h_score_sm :
+      AEStronglyMeasurable (((γ.score : Lp ℝ 2 P) : Ω → ℝ)) γ.dominating := by
+    -- Score coercion is StronglyMeasurable on its own measure space; the
+    -- target measure here is γ.dominating, which the score is not typed
+    -- against. Use plain measurability of the underlying Lp representative,
+    -- which is StronglyMeasurable on *any* MeasurableSpace structure.
+    exact (Lp.stronglyMeasurable (γ.score : Lp ℝ 2 P)).aestronglyMeasurable
+  have h_res_aesm : ∀ t : ℝ,
+      AEStronglyMeasurable (fun ω : Ω =>
+        Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+          - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+          - (t / 2) * (γ.score : Ω → ℝ) ω
+              * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+        γ.dominating := fun t => by
+    have h_meas_t : AEStronglyMeasurable
+        (fun ω => Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal)
+        γ.dominating :=
+      ((Measure.measurable_rnDeriv _ _).ennreal_toReal.sqrt).aestronglyMeasurable
+    have h_meas_0 : AEStronglyMeasurable
+        (fun ω => Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+        γ.dominating :=
+      ((Measure.measurable_rnDeriv _ _).ennreal_toReal.sqrt).aestronglyMeasurable
+    exact (h_meas_t.sub h_meas_0).sub
+      (((aestronglyMeasurable_const).mul h_score_sm).mul h_meas_0)
+  -- From the ℝ≥0∞ QMD limit (tends to 0), eventually the quotient is < 1.
+  have h_qmd := γ.qmd_limit
+  have h_lt_one : ∀ᶠ t : ℝ in 𝓝[≠] 0,
+      eLpNorm (fun ω : Ω =>
+        Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+          - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+          - (t / 2) * (γ.score : Ω → ℝ) ω
+              * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+        2 γ.dominating / ENNReal.ofReal |t| < 1 := by
+    have h_iso : Set.Iio (1 : ℝ≥0∞) ∈ 𝓝 (0 : ℝ≥0∞) :=
+      Iio_mem_nhds (by norm_num)
+    exact h_qmd h_iso
+  -- The `𝓝[≠]` filter already excludes `t = 0`, so `|t| > 0` and
+  -- `ofReal |t| > 0`. Multiply both sides to get `eLpNorm < ofReal |t| < ⊤`.
+  have h_self_ne : {x : ℝ | x ≠ 0} ∈ 𝓝[≠] (0 : ℝ) := self_mem_nhdsWithin
+  filter_upwards [h_lt_one, h_self_ne] with t ht_lt ht_ne
+  set RES : Ω → ℝ := fun ω =>
+    Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+      - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+      - (t / 2) * (γ.score : Ω → ℝ) ω
+          * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+  have habs : 0 < |t| := abs_pos.mpr ht_ne
+  have hofreal_pos : 0 < ENNReal.ofReal |t| := ENNReal.ofReal_pos.mpr habs
+  have hofreal_ne_zero : ENNReal.ofReal |t| ≠ 0 := hofreal_pos.ne'
+  have hofreal_ne_top : ENNReal.ofReal |t| ≠ ⊤ := ENNReal.ofReal_ne_top
+  have h_eLp_lt : eLpNorm RES 2 γ.dominating < ENNReal.ofReal |t| := by
+    calc eLpNorm RES 2 γ.dominating
+        = eLpNorm RES 2 γ.dominating / ENNReal.ofReal |t|
+            * ENNReal.ofReal |t| := by
+          rw [ENNReal.div_mul_cancel hofreal_ne_zero hofreal_ne_top]
+      _ < 1 * ENNReal.ofReal |t| :=
+          ENNReal.mul_lt_mul_left hofreal_ne_zero hofreal_ne_top ht_lt
+      _ = ENNReal.ofReal |t| := one_mul _
+  exact lt_trans h_eLp_lt ENNReal.ofReal_lt_top
+
+/-- Corollary of the `ℝ≥0∞`-form `qmd_limit`: the classical
+`.toReal² / t² → 0` formulation. Used by downstream consumers that need
+the ratio in `ℝ` rather than `ℝ≥0∞`. -/
+theorem qmd_limit_toReal_sq (γ : QMDPath P) :
+    Tendsto
+      (fun t : ℝ =>
+        (eLpNorm (fun ω : Ω =>
+          Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+            - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+            - (t / 2) * (γ.score : Ω → ℝ) ω
+                * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+          2 γ.dominating).toReal ^ 2 / t ^ 2)
+      (𝓝[≠] 0) (𝓝 0) := by
+  -- Strategy: square the ℝ-valued quotient `(eLpNorm).toReal / |t|` and
+  -- use `t² = |t|²` to identify it with `(eLpNorm).toReal² / t²`.
+  -- The `(eLpNorm).toReal / |t|` quotient tends to 0 via toReal of the
+  -- ℝ≥0∞ quotient (modulo eventual-finiteness handled by
+  -- `residual_memLp_eventually`).
+  have h_qmd := γ.qmd_limit
+  -- Step 1: `Tendsto ((·).toReal ∘ ...)` from continuous_toReal.
+  have h_toReal :
+      Tendsto (fun t : ℝ =>
+          (eLpNorm (fun ω : Ω =>
+            Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+              - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+              - (t / 2) * (γ.score : Ω → ℝ) ω
+                  * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+            2 γ.dominating / ENNReal.ofReal |t|).toReal)
+        (𝓝[≠] 0) (𝓝 (0 : ℝ)) := by
+    have h_cont : ContinuousAt ENNReal.toReal (0 : ℝ≥0∞) :=
+      ENNReal.continuousAt_toReal (by norm_num)
+    exact (h_cont.tendsto.comp h_qmd)
+  -- Step 2: rewrite `(eLpNorm / ofReal|t|).toReal = (eLpNorm).toReal / |t|`
+  -- eventually (i.e., for `t ≠ 0`, where finiteness holds via
+  -- `residual_memLp_eventually`).
+  have h_self_ne : {x : ℝ | x ≠ 0} ∈ 𝓝[≠] (0 : ℝ) := self_mem_nhdsWithin
+  have h_mem := residual_memLp_eventually γ
+  have h_ratio_eq :
+      ∀ᶠ t : ℝ in 𝓝[≠] (0 : ℝ),
+        (eLpNorm (fun ω : Ω =>
+            Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+              - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+              - (t / 2) * (γ.score : Ω → ℝ) ω
+                  * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+            2 γ.dominating / ENNReal.ofReal |t|).toReal
+          = (eLpNorm (fun ω : Ω =>
+            Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+              - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+              - (t / 2) * (γ.score : Ω → ℝ) ω
+                  * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+            2 γ.dominating).toReal / |t| := by
+    filter_upwards [h_self_ne, h_mem] with t ht_ne ht_mem
+    have habs : 0 < |t| := abs_pos.mpr ht_ne
+    have hofreal_pos : 0 < ENNReal.ofReal |t| := ENNReal.ofReal_pos.mpr habs
+    have h_eLp_ne_top : eLpNorm _ 2 γ.dominating ≠ ⊤ := ht_mem.ne
+    rw [ENNReal.toReal_div, ENNReal.toReal_ofReal habs.le]
+  have h_toReal' :
+      Tendsto (fun t : ℝ =>
+          (eLpNorm (fun ω : Ω =>
+            Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+              - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+              - (t / 2) * (γ.score : Ω → ℝ) ω
+                  * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+            2 γ.dominating).toReal / |t|)
+        (𝓝[≠] 0) (𝓝 (0 : ℝ)) :=
+    h_toReal.congr' h_ratio_eq
+  -- Step 3: square the tendsto (continuity of `· ^ 2` at 0).
+  have h_sq :
+      Tendsto (fun t : ℝ =>
+          ((eLpNorm (fun ω : Ω =>
+            Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+              - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+              - (t / 2) * (γ.score : Ω → ℝ) ω
+                  * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+            2 γ.dominating).toReal / |t|) ^ 2)
+        (𝓝[≠] 0) (𝓝 (0 : ℝ)) := by
+    have : Tendsto (fun x : ℝ => x ^ 2) (𝓝 (0 : ℝ)) (𝓝 0) := by
+      simpa using (continuous_pow 2).tendsto (0 : ℝ)
+    exact this.comp h_toReal'
+  -- Step 4: rewrite `(a/|t|)² = a² / t²` since `|t|² = t²`.
+  have h_eq :
+      (fun t : ℝ =>
+        ((eLpNorm (fun ω : Ω =>
+          Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+            - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+            - (t / 2) * (γ.score : Ω → ℝ) ω
+                * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+          2 γ.dominating).toReal / |t|) ^ 2)
+        = fun t : ℝ =>
+          (eLpNorm (fun ω : Ω =>
+            Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+              - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+              - (t / 2) * (γ.score : Ω → ℝ) ω
+                  * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+            2 γ.dominating).toReal ^ 2 / t ^ 2 := by
+    funext t
+    rw [div_pow, sq_abs]
+  rw [← h_eq]
+  exact h_sq
 
 end QMDPath
 
+/-- Analytic part of vdV lem:25.14 (consistency form). If a measurable
+function `g : Ω → ℝ` satisfies the bare QMD limit on the square-root
+density expansion, then `g` agrees `P`-a.e. with an element of
+`↥(L2ZeroMean P)` — i.e., `g` has mean zero and is square-integrable
+under `P`.
+
+Reference: vdV §25.3, lem:25.14 (analytic part).
+
+This lemma's hypothesis and the structure's `qmd_limit` field use the same
+`ℝ≥0∞`-form `eLpNorm … / ENNReal.ofReal |t| → 0`, which genuinely forces
+square-integrability of `g · √p₀` for small `t`.
+
+We additionally assume `∀ t, IsProbabilityMeasure (curve t)` (the
+`curve_isProbability` field of `QMDPath`); without it, `(curve t)(univ)`
+need not equal `1` and the L²(μ)-norm bound on `√(curve t).rnDeriv μ`
+fails.
+
+Proof outline:
+1. Square-integrability. Triangle inequality on the QMD remainder,
+   together with `‖√(curve t).rnDeriv μ‖_{L²(μ)}² = (curve t)(univ) = 1`,
+   bounds `‖(t/2) g √p₀‖_{L²(μ)}` for some specific small `t`, hence
+   `g · √p₀ ∈ L²(μ)`. By `withDensity_rnDeriv_eq` + the
+   integrable-with-density bridge, `g ∈ L²(P)`.
+2. Mean zero. Cauchy–Schwarz against `√p₀` gives
+   `|∫ rₜ · √p₀ dμ| ≤ ‖rₜ‖_{L²(μ)} · 1 = o(t)`, where
+   `rₜ := √pₜ − √p₀ − (t/2) g √p₀`. Rearranging,
+   `∫√pₜ√p₀ dμ − 1 − (t/2)∫g dP = o(t)`. Combined with the affinity
+   bound `∫√pₜ√p₀ dμ ≤ 1` (Cauchy–Schwarz), `(t/2)∫g dP ≤ o(t)`;
+   two-sided (`t ↘ 0` and `t ↗ 0`) forces `∫ g dP = 0`.
+3. Package into `CandidateIF P` and apply `CandidateIF.toL2ZeroMean`.
+
+The two analytic engines live in `ForMathlib/QMDAnalytic.lean`; their
+density helpers in `ForMathlib/RnDerivSqrt.lean`. -/
+theorem score_in_L2ZeroMean
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {μ : Measure Ω} [SigmaFinite μ] (curve : ℝ → Measure Ω)
+    (h_prob : ∀ t, IsProbabilityMeasure (curve t))
+    (h_zero : curve 0 = P) (h_ac : ∀ t, curve t ≪ μ)
+    (g : Ω → ℝ) (hg_meas : Measurable g)
+    (h_qmd :
+      Tendsto
+        (fun t : ℝ =>
+          eLpNorm (fun ω : Ω =>
+            Real.sqrt ((curve t).rnDeriv μ ω).toReal
+              - Real.sqrt ((curve 0).rnDeriv μ ω).toReal
+              - (t / 2) * g ω
+                  * Real.sqrt ((curve 0).rnDeriv μ ω).toReal)
+            2 μ / ENNReal.ofReal |t|)
+        (𝓝[≠] 0) (𝓝 (0 : ℝ≥0∞))) :
+    ∃ g' : ↥(L2ZeroMean P), g =ᵐ[P] (g' : Ω → ℝ) := by
+  -- The `h_qmd` hypothesis matches `IsQMDLimit curve μ g` definitionally
+  -- (the inline lambda equals `qmdRem curve μ g t` by definition).
+  have h_qmd' :
+      AsymptoticStatistics.ForMathlib.QMDAnalytic.IsQMDLimit curve μ g := by
+    apply (AsymptoticStatistics.ForMathlib.QMDAnalytic.isQMDLimit_iff_eLpNorm
+      hg_meas.aestronglyMeasurable).2
+    simpa only [AsymptoticStatistics.ForMathlib.QMDAnalytic.qmdRem] using! h_qmd
+  -- Stage-1 engine: `g · √p_0 ∈ L²(μ)`.
+  have h_g_sqrt :
+      MemLp (fun ω => g ω * Real.sqrt ((curve 0).rnDeriv μ ω).toReal) 2 μ :=
+    AsymptoticStatistics.ForMathlib.QMDAnalytic.memLp_two_score_mul_sqrt_of_qmd
+      h_prob h_ac hg_meas h_qmd'
+  -- `P ≪ μ`, since `curve 0 = P` and `curve 0 ≪ μ`.
+  have hP_ac : P ≪ μ := by rw [← h_zero]; exact h_ac 0
+  -- Square-integrability under `P` (RnDerivSqrt bridge), with the
+  -- pointwise rewrite `(curve 0).rnDeriv μ = P.rnDeriv μ` from `h_zero`.
+  have h_g_memLp_P : MemLp g 2 P := by
+    apply AsymptoticStatistics.ForMathlib.RnDerivSqrt.memLp_two_of_memLp_two_mul_sqrt_rnDeriv
+      hP_ac hg_meas.aestronglyMeasurable
+    -- Rewrite `P.rnDeriv μ` as `(curve 0).rnDeriv μ` using `h_zero`.
+    rw [← h_zero]; exact h_g_sqrt
+  -- Stage-2 engine: `∫ g d(curve 0) = 0`.
+  have h_mean_zero_curve0 : ∫ ω, g ω ∂(curve 0) = 0 :=
+    AsymptoticStatistics.ForMathlib.QMDAnalytic.integral_score_eq_zero_of_qmd
+      h_prob h_ac hg_meas h_g_sqrt h_qmd'
+  -- Translate to `∫ g dP = 0`.
+  have h_mean_zero_P : ∫ ω, g ω ∂P = 0 := by
+    rw [← h_zero]; exact h_mean_zero_curve0
+  -- Package into `CandidateIF P` and lift.
+  refine ⟨(AsymptoticStatistics.Core.CandidateIF.mk g h_g_memLp_P
+            h_mean_zero_P).toL2ZeroMean, ?_⟩
+  -- The L² lift of `g` agrees `P`-a.e. with `g`.
+  exact (AsymptoticStatistics.Core.CandidateIF.coeFn_toL2ZeroMean
+          (P := P) ⟨g, h_g_memLp_P, h_mean_zero_P⟩).symm
 
 namespace QMDPath
 
 variable {P : Measure Ω} [IsProbabilityMeasure P]
 
+/-- The n-fold product likelihood ratio for the perturbation parameter
+`t = (√n)⁻¹`, evaluated against the dominating measure. Used to factor
+product integrals.
+
+Formalizes the integrand `∏ⱼ (dQ_{tₙ}/dμ)(Xⱼ)` from vdV §25.6 (LAN
+expansion) at the QMD-induced perturbation `tₙ := (√n)⁻¹`. The product
+is taken over `Fin n`; downstream LAN results establish the required
+positivity and logarithmic expansion. -/
+noncomputable def lr_n (γ : QMDPath P) (n : ℕ) :
+    (Fin n → Ω) → ℝ≥0∞ :=
+  fun X => ∏ j : Fin n, (γ.curve ((Real.sqrt n)⁻¹)).rnDeriv γ.dominating (X j)
+
+/-- Definitional unfolding of `QMDPath.lr_n` to its product form. -/
+lemma lr_n_eq (γ : QMDPath P) (n : ℕ) (X : Fin n → Ω) :
+    γ.lr_n n X
+      = ∏ j : Fin n,
+          (γ.curve ((Real.sqrt n)⁻¹)).rnDeriv γ.dominating (X j) := rfl
+
+/-- `QMDPath.lr_n` is a measurable function on the product space, with
+respect to the product σ-algebra on `Fin n → Ω`. Used downstream to
+discharge the measurability side-conditions of `lintegral_map`,
+`Measure.pi`-Fubini, and the LAN expansion.
+
+Proof: pointwise product of `(γ.curve _).rnDeriv γ.dominating` composed
+with each coordinate projection, each measurable by
+`Measure.measurable_rnDeriv` and `measurable_pi_apply`. -/
+lemma measurable_lr_n (γ : QMDPath P) (n : ℕ) : Measurable (γ.lr_n n) := by
+  unfold lr_n
+  exact Finset.measurable_prod _ (fun i _ =>
+    (Measure.measurable_rnDeriv _ _).comp (measurable_pi_apply i))
 
 end QMDPath
 
@@ -814,7 +1776,7 @@ end AsymptoticStatistics.Core.QMDPath
 end GLP0011B3Source6
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.PairwiseQMDAnalytic`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/PairwiseQMDAnalytic.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source7
 
@@ -921,6 +1883,46 @@ private lemma eLpNorm_sqrt_rnDeriv_mul_eq
       fun hmeas => hh ((RnDerivSqrt.aestronglyMeasurable_sqrt_rnDeriv_mul_iff hνξ h).1 hmeas)
     rw [eLpNorm_of_not_aestronglyMeasurable hw, eLpNorm_of_not_aestronglyMeasurable hh]
 
+/-- Pairwise square-root residual norms do not depend on the chosen common
+dominator.
+
+Proof idea: rewrite both RN derivatives through `μ`, split where the
+canonical density vanishes, and apply the with-density `eLpNorm` identity.
+
+Joint witness: `P=Q=μ` and `g=0`. -/
+theorem eLpNorm_residualAgainst_change_dominator
+    (P Q μ : Measure Ω) [IsProbabilityMeasure P] [IsProbabilityMeasure Q]
+    [SigmaFinite μ] (hP : P ≪ μ) (hQ : Q ≪ μ)
+    (g : Ω → ℝ) (t : ℝ) :
+    eLpNorm (residualAgainst P Q (canonicalDominator P Q) g t)
+        2 (canonicalDominator P Q) =
+      eLpNorm (residualAgainst P Q μ g t) 2 μ := by
+  let ν := canonicalDominator P Q
+  let : IsFiniteMeasure ν := by
+    dsimp [ν, canonicalDominator]
+    infer_instance
+  have hνμ : ν ≪ μ := Measure.AbsolutelyContinuous.add_left hP hQ
+  have hPν : P ≪ ν :=
+    Measure.absolutelyContinuous_of_le (Measure.le_add_right le_rfl)
+  have hQν : Q ≪ ν :=
+    Measure.absolutelyContinuous_of_le (Measure.le_add_left le_rfl)
+  have hfac : residualAgainst P Q μ g t =ᵐ[μ] fun ω =>
+      Real.sqrt (ν.rnDeriv μ ω).toReal * residualAgainst P Q ν g t ω := by
+    have hPchain := Measure.rnDeriv_mul_rnDeriv hPν (κ := μ)
+    have hQchain := Measure.rnDeriv_mul_rnDeriv hQν (κ := μ)
+    filter_upwards [hPchain, hQchain] with ω hPω hQω
+    have hsP : Real.sqrt (P.rnDeriv μ ω).toReal =
+        Real.sqrt (P.rnDeriv ν ω).toReal * Real.sqrt (ν.rnDeriv μ ω).toReal := by
+      rw [← hPω, Pi.mul_apply, ENNReal.toReal_mul,
+        Real.sqrt_mul ENNReal.toReal_nonneg]
+    have hsQ : Real.sqrt (Q.rnDeriv μ ω).toReal =
+        Real.sqrt (Q.rnDeriv ν ω).toReal * Real.sqrt (ν.rnDeriv μ ω).toReal := by
+      rw [← hQω, Pi.mul_apply, ENNReal.toReal_mul,
+        Real.sqrt_mul ENNReal.toReal_nonneg]
+    simp only [residualAgainst, hsP, hsQ]
+    ring
+  rw [eLpNorm_congr_ae hfac]
+  exact (eLpNorm_sqrt_rnDeriv_mul_eq hνμ _).symm
 
 /-- A right-QMD remainder already forces square-integrability of the score. -/
 private lemma memLp_score_of_rightQMD
@@ -1239,7 +2241,7 @@ end AsymptoticStatistics.ForMathlib.PairwiseQMDAnalytic
 end GLP0011B3Source7
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.Core.NondominatedQMDPath`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/Core/NondominatedQMDPath.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source8
 
@@ -1278,6 +2280,9 @@ structure NondominatedQMDPath (P : Measure Ω) [IsProbabilityMeasure P] where
   /-- Constitutive (vdV §25.3 eq.25.13): right pairwise QMD at zero. -/
   qmd_limit : IsRightQMD P curve (score : Ω → ℝ)
 
+/-- The canonical pairwise QMD path, with no fixed common dominator. -/
+abbrev PairwiseQMDPath {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) [IsProbabilityMeasure P] := NondominatedQMDPath P
 
 /-- Package bare one-sided QMD data after the analytic score theorem.
 
@@ -1323,6 +2328,40 @@ theorem exists_nondominatedQMDPath_of_bare_qmd
 
 namespace QMDPath
 
+/-- A common-dominator, two-sided `QMDPath` determines a one-sided
+nondominated path. The converse requires additional left-QMD and
+common-domination hypotheses. -/
+noncomputable def toNondominatedQMDPath
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P) :
+    NondominatedQMDPath P where
+  curve := γ.curve
+  curve_at_zero := γ.curve_at_zero
+  curve_isProbability := fun t _ => γ.curve_isProbability t
+  score := γ.score
+  qmd_limit := by
+    apply (isRightQMD_iff_eLpNorm γ.curve (fun t _ => γ.curve_isProbability t)
+      (Lp.aestronglyMeasurable γ.score.val)).2
+    have hfilter : nhdsWithin (0 : ℝ) (Set.Ioi 0) ≤ 𝓝[≠] (0 : ℝ) := by
+      apply nhdsWithin_mono
+      intro t ht
+      simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using ht.ne'
+    have hlegacy := γ.qmd_limit.mono_left hfilter
+    apply hlegacy.congr'
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    have : IsProbabilityMeasure (γ.curve t) := γ.curve_isProbability t
+    let : IsProbabilityMeasure (γ.curve 0) := γ.curve_isProbability 0
+    have hnorm := eLpNorm_residualAgainst_change_dominator
+      (γ.curve 0) (γ.curve t) γ.dominating
+      (γ.curve_absContinuous 0) (γ.curve_absContinuous t)
+      (γ.score : Ω → ℝ) t
+    change eLpNorm (residualAgainst (γ.curve 0) (γ.curve t)
+      γ.dominating (γ.score : Ω → ℝ) t) 2 γ.dominating /
+        ENNReal.ofReal |t| =
+      eLpNorm (residualAgainst P (γ.curve t)
+        (canonicalDominator P (γ.curve t)) (γ.score : Ω → ℝ) t)
+          2 (canonicalDominator P (γ.curve t)) / ENNReal.ofReal t
+    rw [← hnorm, γ.curve_at_zero, abs_of_pos ht]
 
 end QMDPath
 end AsymptoticStatistics.Core.NondominatedQMDPath
@@ -1330,7 +2369,7 @@ end AsymptoticStatistics.Core.NondominatedQMDPath
 end GLP0011B3Source8
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.Contiguity`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/Contiguity.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source9
 
@@ -1343,11 +2382,10 @@ general probability-theoretic results.
 
 Main declarations:
 * `WeakConverges` — test-function-based weak convergence of measures.
-* `Contiguous` — contiguity along a filter.
-* `uniform_integrability_exp_L_of_integral_tendsto_one` — uniform integrability
-  under asymptotic normalization, using vdV Example 6.5.
-* `weak_limit_under_Q_of_lecam_third_of_integral_comparison` — Le Cam's third
-  lemma under asymptotic integral comparison (vdV Theorem 6.6).
+* `Contiguous`, `MutuallyContiguous` — the two notions.
+* `contiguous_of_asymptotically_log_normal` — vdV Example 6.5, direction `Q ⊲ P`.
+* `mutuallyContiguous_of_asymptotically_log_normal` — mutual-contiguity version.
+* `weak_limit_under_Q_of_lecam_third` — Le Cam's third lemma (vdV Theorem 6.6).
 -/
 
 set_option linter.style.longFile 3800
@@ -1427,6 +2465,100 @@ lemma WeakConverges.snd_eq
     MeasureTheory.Measure.isFiniteMeasure_map π Prod.snd
   WeakConverges.unique (hπ.map continuous_snd measurable_snd) hν
 
+/-- **Weak-conv composition with a Feller Markov kernel** (vdV §8.5, Le Cam
+representation, kernel form).
+
+If a sequence of probability measures `μ_n` on `α` weakly converges to `ν` on
+`α`, and `κ : Kernel α β` is a Markov kernel that is *Feller continuous* (i.e.
+the map `a ↦ (κ a : ProbabilityMeasure β)` is continuous from the topology of
+`α` to the weak topology on `ProbabilityMeasure β`), then the measure-kernel
+binds `μ_n.bind κ` weakly converge to `ν.bind κ` on `β`.
+
+The Markov typeclass `hκ_Markov` keeps `bind` of a probability measure a probability
+measure. The bundled `ProbabilityMeasure`-valued map `κPM` (with agreement `hκPM`)
+lets the Feller continuity hypothesis live on the bundled subtype without per-call
+coercion gymnastics. Feller continuity `hκ_feller` is the canonical formulation as
+continuity into the weak topology of `ProbabilityMeasure`. -/
+lemma WeakConverges.bind_kernel
+    {α β : Type*}
+    [MeasurableSpace α] [TopologicalSpace α] [BorelSpace α]
+    [MeasurableSpace β] [TopologicalSpace β] [PseudoMetricSpace β]
+    [OpensMeasurableSpace β] [HasOuterApproxClosed β]
+    {μ_n : ℕ → Measure α} {ν : Measure α}
+    [∀ n, IsProbabilityMeasure (μ_n n)] [IsProbabilityMeasure ν]
+    (hμν : WeakConverges μ_n ν)
+    (κ : ProbabilityTheory.Kernel α β) [ProbabilityTheory.IsMarkovKernel κ]
+    (κPM : α → ProbabilityMeasure β)
+    (hκPM : ∀ a, (κPM a : Measure β) = κ a)
+    (hκ_feller : Continuous κPM) :
+    WeakConverges (fun n => (μ_n n).bind κ) (ν.bind κ) := by
+  intro f
+  -- Define g(a) := ∫ x, f x ∂(κ a). We will show that g is bounded continuous and
+  -- ∫ f d(ρ.bind κ) = ∫ g dρ for any probability ρ. Then weak convergence of μ_n → ν
+  -- applied to g gives the result.
+  -- Continuity of g via Feller hypothesis: by
+  -- `ProbabilityMeasure.continuous_iff_forall_continuous_integral`, `Continuous κPM`
+  -- gives `Continuous (fun a => ∫ x, f x ∂(κPM a : Measure β))`, and `hκPM` rewrites
+  -- the underlying measure to `κ a`.
+  have hg_cont : Continuous (fun a : α => ∫ x, f x ∂(κ a)) := by
+    have := (ProbabilityMeasure.continuous_iff_forall_continuous_integral.mp hκ_feller) f
+    -- `this : Continuous (fun a => ∫ x, f x ∂((κPM a) : Measure β))`
+    -- Rewrite the integrand using `hκPM`.
+    have heq : (fun a : α => ∫ x, f x ∂((κPM a : ProbabilityMeasure β) : Measure β))
+        = (fun a : α => ∫ x, f x ∂(κ a)) := by
+      funext a; rw [hκPM a]
+    rw [heq] at this
+    exact this
+  -- Pointwise bound: |g a| ≤ ‖f‖ since κ a is a probability measure.
+  have hg_bound : ∀ a : α, ‖∫ x, f x ∂(κ a)‖ ≤ ‖f‖ := by
+    intro a
+    have hμ : IsProbabilityMeasure (κ a) := inferInstance
+    have h := MeasureTheory.norm_integral_le_of_norm_le_const
+      (μ := κ a) (f := fun x => f x) (C := ‖f‖)
+      (Filter.Eventually.of_forall (fun x => BoundedContinuousFunction.norm_coe_le_norm f x))
+    simpa [measureReal_def, measure_univ] using h
+  -- Build the bounded continuous function g : α →ᵇ ℝ.
+  let g : α →ᵇ ℝ :=
+    BoundedContinuousFunction.mkOfBound ⟨_, hg_cont⟩ (2 * ‖f‖) (fun x y => by
+      have hx := hg_bound x
+      have hy := hg_bound y
+      have : |(∫ z, f z ∂(κ x)) - (∫ z, f z ∂(κ y))| ≤
+          |∫ z, f z ∂(κ x)| + |∫ z, f z ∂(κ y)| := abs_sub _ _
+      have h1 : |∫ z, f z ∂(κ x)| ≤ ‖f‖ := by simpa [Real.norm_eq_abs] using hx
+      have h2 : |∫ z, f z ∂(κ y)| ≤ ‖f‖ := by simpa [Real.norm_eq_abs] using hy
+      have := this.trans (add_le_add h1 h2)
+      simpa [Real.dist_eq, two_mul] using this)
+  -- Rewrite the integrals against `ρ.bind κ` as integrals of `g` against `ρ`.
+  -- Step: ρ.bind κ = (ρ ⊗ₘ κ).snd = (ρ ⊗ₘ κ).map Prod.snd, then `integral_map`
+  -- + `Measure.integral_compProd` reduces it to ∫ a, ∫ b, f b ∂(κ a) ∂ρ = ∫ a, g a ∂ρ.
+  have h_rewrite : ∀ ρ : Measure α, [IsProbabilityMeasure ρ] →
+      ∫ y, f y ∂(ρ.bind κ) = ∫ a, g a ∂ρ := by
+    intro ρ _
+    -- `ρ.bind κ = (ρ ⊗ₘ κ).snd`
+    rw [show ρ.bind (κ : α → Measure β) = (ρ.compProd κ).snd from
+      (MeasureTheory.Measure.snd_compProd ρ κ).symm]
+    -- `(ρ ⊗ₘ κ).snd = (ρ ⊗ₘ κ).map Prod.snd`
+    rw [MeasureTheory.Measure.snd]
+    -- `∫ y, f y d(ρ ⊗ₘ κ).map snd = ∫ z, f z.2 d(ρ ⊗ₘ κ)`
+    rw [MeasureTheory.integral_map measurable_snd.aemeasurable
+      f.continuous.aestronglyMeasurable]
+    -- The bounded integrand is integrable against the product probability measure.
+    have hfmeas : Measurable (fun z : α × β => f z.2) := by
+      exact f.continuous.measurable.comp measurable_snd
+    have hinteg : Integrable (fun z : α × β => f z.2) (ρ.compProd κ) := by
+      refine ⟨hfmeas.aestronglyMeasurable, ?_⟩
+      -- Bounded by ‖f‖ on a finite (probability) measure.
+      exact MeasureTheory.HasFiniteIntegral.of_bounded
+        (C := ‖f‖)
+        (Filter.Eventually.of_forall
+          (fun z => BoundedContinuousFunction.norm_coe_le_norm f z.2))
+    rw [MeasureTheory.Measure.integral_compProd hinteg]
+    -- The iterated integral is `∫ a, g a ∂ρ` by definition of `g`.
+    rfl
+  -- Apply weak convergence to g.
+  have htendsto : Tendsto (fun n => ∫ a, g a ∂(μ_n n)) atTop (𝓝 (∫ a, g a ∂ν)) := hμν g
+  simp_rw [h_rewrite] at *
+  exact htendsto
 
 /-- **Commuting `withDensity` past `Measure.map`**:
 `(μ.map φ).withDensity h = (μ.withDensity (h ∘ φ)).map φ`, for measurable `φ` and `h`.
@@ -1446,6 +2578,121 @@ lemma Measure.withDensity_map_eq_map_withDensity
       MeasureTheory.setLIntegral_map hA hh hφ]
   rfl
 
+/-- **Reparametrization of a measure-kernel bind**:
+`(μ.map f).bind κ = μ.bind (κ.comap f hf)`.
+
+Pushing forward `μ` by `f` and then averaging `κ` over it is the same as composing
+`κ ∘ f` (via `Kernel.comap`) and averaging over the original `μ`. The identity is a
+direct consequence of `Measure.bind_apply` + `lintegral_map` + `Kernel.comap_apply'`. -/
+lemma Measure.bind_map_eq_bind_comap
+    {α β γ : Type*} {mα : MeasurableSpace α} {mβ : MeasurableSpace β}
+    {mγ : MeasurableSpace γ}
+    (μ : MeasureTheory.Measure α) (f : α → β) (hf : Measurable f)
+    (κ : ProbabilityTheory.Kernel β γ) :
+    (μ.map f).bind κ = μ.bind (κ.comap f hf) := by
+  refine MeasureTheory.Measure.ext (fun s hs => ?_)
+  rw [MeasureTheory.Measure.bind_apply hs κ.aemeasurable,
+      MeasureTheory.Measure.bind_apply hs (κ.comap f hf).aemeasurable,
+      MeasureTheory.lintegral_map (κ.measurable_coe hs) hf]
+  simp_rw [ProbabilityTheory.Kernel.comap_apply' κ hf]
+
+/-- **Tilted-marginal bind through conditional distribution**.
+
+For a joint law `π` on `α × β` with first marginal analyzed conditionally on the
+second, let `ν := π.map snd` and `κ := condDistrib fst snd π` (so `κ y` is the
+conditional law of the first coordinate given `snd = y`). Then reweighting `ν` by
+a density `f : β → ℝ≥0∞` and binding with `κ` equals marginalising the joint tilt:
+
+`(ν.withDensity f).bind κ = (π.withDensity (fun p ↦ f p.2)).map fst`.
+
+This is the measure-theoretic core of vdV §7.10 Step 7 — pushing a density through
+the second marginal of a joint law factors through the tilted joint + marginalisation.
+It sees use whenever a tilted Gaussian-shift law is re-expressed through a conditional
+distribution kernel. -/
+theorem Measure.withDensity_bind_condDistrib
+    {α β : Type*} [MeasurableSpace α] [StandardBorelSpace α] [Nonempty α]
+    [MeasurableSpace β]
+    (π : MeasureTheory.Measure (α × β)) [MeasureTheory.IsFiniteMeasure π]
+    (f : β → ℝ≥0∞) (hf : Measurable f) :
+    ((π.map Prod.snd).withDensity f).bind
+        (ProbabilityTheory.condDistrib Prod.fst Prod.snd π) =
+      (π.withDensity (fun p => f p.2)).map Prod.fst := by
+  set κ := ProbabilityTheory.condDistrib (Prod.fst : α × β → α) Prod.snd π with hκ_def
+  set ν := π.map Prod.snd with hν_def
+  refine MeasureTheory.Measure.ext (fun s hs => ?_)
+  -- Measurability utilities.
+  have h_κs_meas : Measurable (fun y => κ y s) := κ.measurable_coe hs
+  have h_fκs_meas : Measurable (fun y : β => f y * κ y s) := hf.mul h_κs_meas
+  -- Compute LHS as a `π`-integral.
+  -- `bind_apply` + `lintegral_withDensity_eq_lintegral_mul` gives
+  -- `∫⁻ y, f y * κ y s ∂ν`, then `lintegral_map` pulls back to `π`.
+  have h_lhs :
+      (((ν.withDensity f).bind κ)) s =
+        ∫⁻ p : α × β, f p.2 * κ p.2 s ∂π := by
+    rw [MeasureTheory.Measure.bind_apply hs κ.aemeasurable,
+        MeasureTheory.lintegral_withDensity_eq_lintegral_mul _ hf h_κs_meas,
+        hν_def]
+    -- The integrand `(f * (κ · s)) y` is definitionally `f y * κ y s`; force the
+    -- β-reduction via `change` so `lintegral_map` can match the measurable integrand.
+    change ∫⁻ (y : β), f y * κ y s ∂(π.map Prod.snd) =
+      ∫⁻ (p : α × β), f p.2 * κ p.2 s ∂π
+    rw [MeasureTheory.lintegral_map h_fκs_meas measurable_snd]
+  -- Compute RHS as a `π`-integral (order: `f p.2 * indicator`, matches compProd output).
+  have h_rhs :
+      ((π.withDensity (fun p : α × β => f p.2)).map Prod.fst) s =
+        ∫⁻ p : α × β, f p.2 * s.indicator (1 : α → ℝ≥0∞) p.1 ∂π := by
+    rw [MeasureTheory.Measure.map_apply measurable_fst hs,
+        MeasureTheory.withDensity_apply _ (measurable_fst hs),
+        ← MeasureTheory.lintegral_indicator (measurable_fst hs)]
+    apply MeasureTheory.lintegral_congr
+    intro p
+    by_cases h_in : p.1 ∈ s
+    · rw [Set.indicator_of_mem (show p ∈ Prod.fst ⁻¹' s from h_in),
+          Set.indicator_of_mem h_in]
+      simp
+    · rw [Set.indicator_of_notMem (show p ∉ Prod.fst ⁻¹' s from h_in),
+          Set.indicator_of_notMem h_in]
+      simp
+  -- Bridge via `compProd`: key identity `(π.map snd).compProd κ = π.map swap`.
+  have h_compProd :
+      ν.compProd κ = π.map (fun p : α × β => (p.2, p.1)) := by
+    rw [hν_def, hκ_def]
+    exact ProbabilityTheory.compProd_map_condDistrib measurable_snd.aemeasurable
+        measurable_fst.aemeasurable
+  -- Build the common value `∫⁻ q : β × α, f q.1 * s.indicator 1 q.2 ∂(ν.compProd κ)`.
+  have h_bridge :
+      ∫⁻ p : α × β, f p.2 * κ p.2 s ∂π =
+        ∫⁻ p : α × β, f p.2 * s.indicator (1 : α → ℝ≥0∞) p.1 ∂π := by
+    -- Define `g : β × α → ℝ≥0∞` to be `fun q ↦ f q.1 * s.indicator 1 q.2`.
+    set g : β × α → ℝ≥0∞ := fun q => f q.1 * s.indicator (1 : α → ℝ≥0∞) q.2 with hg_def
+    have hg_meas : Measurable g := by
+      refine Measurable.mul (hf.comp measurable_fst) ?_
+      exact ((measurable_one.indicator hs).comp measurable_snd)
+    -- LHS, expressed as a compProd integral.
+    have h_L :
+        ∫⁻ p : α × β, f p.2 * κ p.2 s ∂π =
+          ∫⁻ q : β × α, g q ∂(ν.compProd κ) := by
+      rw [MeasureTheory.Measure.lintegral_compProd hg_meas]
+      -- RHS: ∫⁻ y, ∫⁻ x, g (y, x) dκ y ∂ν = ∫⁻ y, ∫⁻ x, f y * s.indicator 1 x dκ y ∂ν
+      have h1 : (fun y : β =>
+          ∫⁻ x : α, g (y, x) ∂κ y) = fun y => f y * κ y s := by
+        funext y
+        simp only [hg_def]
+        rw [MeasureTheory.lintegral_const_mul _ ((measurable_one.indicator hs))]
+        rw [MeasureTheory.lintegral_indicator_one hs]
+      rw [h1]
+      -- Pulling back along the second projection gives the desired integral over `π`.
+      rw [hν_def, MeasureTheory.lintegral_map h_fκs_meas measurable_snd]
+    -- RHS, via the compProd → π.map swap substitution. After map-pullback the
+    -- integrand evaluates to `g (p.2, p.1) = f p.2 * s.indicator 1 p.1`, matching RHS.
+    have h_R :
+        ∫⁻ p : α × β, f p.2 * s.indicator (1 : α → ℝ≥0∞) p.1 ∂π =
+          ∫⁻ q : β × α, g q ∂(ν.compProd κ) := by
+      rw [h_compProd,
+          MeasureTheory.lintegral_map hg_meas
+            (measurable_snd.prodMk measurable_fst)]
+    rw [h_L, ← h_R]
+  rw [h_lhs, h_rhs, h_bridge]
 
 namespace Contiguity
 
@@ -1463,6 +2710,8 @@ def Contiguous (l : Filter ι) (P Q : ∀ i, Measure (Ω i)) : Prop :=
 def MutuallyContiguous (l : Filter ι) (P Q : ∀ i, Measure (Ω i)) : Prop :=
   Contiguous l P Q ∧ Contiguous l Q P
 
+lemma Contiguous.refl (l : Filter ι) (P : ∀ i, Measure (Ω i)) :
+    Contiguous l P P := fun _ _ h => h
 
 lemma Contiguous.trans {l : Filter ι} {P Q R : ∀ i, Measure (Ω i)}
     (h₁ : Contiguous l P Q) (h₂ : Contiguous l Q R) :
@@ -1472,16 +2721,81 @@ lemma MutuallyContiguous.symm {l : Filter ι} {P Q : ∀ i, Measure (Ω i)}
     (h : MutuallyContiguous l P Q) : MutuallyContiguous l Q P :=
   ⟨h.2, h.1⟩
 
+/-! ## Subsequences -/
 
+/-- Transport a set along an equality between indices of a dependent family. -/
+private def transportSet (α : ℕ → Type*) {a b : ℕ} (h : a = b)
+    (s : Set (α a)) : Set (α b) :=
+  h ▸ s
 
+private lemma measurableSet_transportSet
+    {α : ℕ → Type*} [∀ n, MeasurableSpace (α n)]
+    {a b : ℕ} (h : a = b) {s : Set (α a)} (hs : MeasurableSet s) :
+    MeasurableSet (transportSet α h s) := by
+  subst h
+  exact hs
+
+private lemma transportSet_comp
+    {α : ℕ → Type*} {ψ : ℕ → ℕ} (hψ : Function.Injective ψ)
+    {k n : ℕ} (h : ψ k = ψ n) (A : ∀ m, Set (α (ψ m))) :
+    transportSet α h (A k) = A n := by
+  have hkn : k = n := hψ h
+  subst hkn
+  rfl
+
+/-- Contiguity is preserved by restriction to a strictly monotone subsequence,
+including when the sample space depends on the index. -/
+theorem Contiguous.comp_subseq
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    {P Q : ∀ n, Measure (Ω n)}
+    (hPQ : Contiguous (ι := ℕ) (Ω := Ω) atTop P Q) {φ : ℕ → ℕ}
+    (hφ : StrictMono φ) :
+    Contiguous (ι := ℕ) (Ω := fun n => Ω (φ n)) atTop
+      (fun n => P (φ n)) (fun n => Q (φ n)) := by
+  classical
+  intro A hA_meas hA_tendsto
+  obtain ⟨B, hB_def⟩ : ∃ B : ∀ m, Set (Ω m), ∀ m, B m =
+      if h : ∃ n, φ n = m then transportSet Ω h.choose_spec (A h.choose) else ∅ :=
+    ⟨_, fun _ => rfl⟩
+  have hB_at : ∀ n, B (φ n) = A n := by
+    intro n
+    have hex : ∃ k, φ k = φ n := ⟨n, rfl⟩
+    rw [hB_def, dite_eq_left hex, transportSet_comp hφ.injective]
+  have hB_meas : ∀ m, MeasurableSet (B m) := by
+    intro m
+    rw [hB_def]
+    by_cases h : ∃ n, φ n = m
+    · rw [dite_eq_left h]
+      exact measurableSet_transportSet _ (hA_meas _)
+    · rw [dite_eq_right h]
+      exact MeasurableSet.empty
+  have hB_empty : ∀ m, (¬ ∃ n, φ n = m) → B m = ∅ := by
+    intro m h
+    rw [hB_def, dite_eq_right h]
+  have hP_tendsto : Tendsto (fun m => (P m) (B m)) atTop (𝓝 0) := by
+    rw [ENNReal.tendsto_nhds_zero]
+    intro ε hε
+    rw [ENNReal.tendsto_nhds_zero] at hA_tendsto
+    obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp (hA_tendsto ε hε)
+    refine Filter.eventually_atTop.mpr ⟨φ N, fun m hm => ?_⟩
+    by_cases h : ∃ n, φ n = m
+    · obtain ⟨n, rfl⟩ := h
+      rw [hB_at n]
+      exact hN n (hφ.le_iff_le.mp hm)
+    · rw [hB_empty m h]
+      simp
+  have hQB := hPQ B hB_meas hP_tendsto
+  have hcomp := hQB.comp hφ.tendsto_atTop
+  simpa [Function.comp_def, hB_at] using hcomp
 
 /-! ## Le Cam's first lemma — asymptotic log normality criterion
 
 vdV Example 6.5. If the log-likelihood ratio `log dQ_n/dP_n` is asymptotically normal
 under `P_n` with mean `-σ²/2` and variance `σ²`, then `P_n ⊲⊳ Q_n`.
 
-The Gaussian exponential normalization and truncation estimates below
-are ingredients in the uniform-integrability argument for this criterion.
+The direction `Q ⊲ P` is proved via a uniform-integrability argument; the
+mutual-contiguity version follows by applying the same machinery to `(-log dQ/dP)`
+under `Q`.
 -/
 
 section LeCamFirst
@@ -1556,6 +2870,44 @@ private lemma tendsto_integral_truncExp_gaussianReal (v : NNReal) :
   rw [integral_exp_gaussianReal_neg_half_var] at h_tendsto
   exact h_tendsto
 
+/-- Under `P_n`, `exp(L n)` is integrable, because `(P n).withDensity (exp ∘ L n)` is a
+probability measure. -/
+private lemma exp_L_integrable
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    (P Q : ∀ n, Measure (Ω n)) [∀ n, IsProbabilityMeasure (Q n)]
+    (L : ∀ n, Ω n → ℝ) (hL_meas : ∀ n, Measurable (L n))
+    (hL_is_log_ratio : ∀ n,
+        Q n = (P n).withDensity (fun ω => ENNReal.ofReal (Real.exp (L n ω))))
+    (n : ℕ) :
+    Integrable (fun ω => Real.exp (L n ω)) (P n) := by
+  -- `∫⁻ ofReal (exp L) dP = Q n (univ) = 1 < ∞`, so `exp L` is integrable.
+  refine ⟨(Real.continuous_exp.measurable.comp (hL_meas n)).aestronglyMeasurable, ?_⟩
+  have h_univ : Q n Set.univ = 1 := measure_univ
+  rw [hL_is_log_ratio n, MeasureTheory.withDensity_apply _ MeasurableSet.univ] at h_univ
+  simp only [Measure.restrict_univ] at h_univ
+  rw [MeasureTheory.hasFiniteIntegral_iff_ofReal]
+  · rw [h_univ]; exact ENNReal.one_lt_top
+  · exact Filter.Eventually.of_forall (fun ω => (Real.exp_pos _).le)
+
+/-- The Bochner integral `∫ exp(L n) dP_n = 1`. -/
+private lemma integral_exp_L_eq_one
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    (P Q : ∀ n, Measure (Ω n)) [∀ n, IsProbabilityMeasure (Q n)]
+    (L : ∀ n, Ω n → ℝ) (hL_meas : ∀ n, Measurable (L n))
+    (hL_is_log_ratio : ∀ n,
+        Q n = (P n).withDensity (fun ω => ENNReal.ofReal (Real.exp (L n ω))))
+    (n : ℕ) :
+    ∫ ω, Real.exp (L n ω) ∂(P n) = 1 := by
+  have h_lintegral : ∫⁻ ω, ENNReal.ofReal (Real.exp (L n ω)) ∂(P n) = 1 := by
+    have h_univ : Q n Set.univ = 1 := measure_univ
+    rw [hL_is_log_ratio n, MeasureTheory.withDensity_apply _ MeasurableSet.univ] at h_univ
+    simpa using h_univ
+  have h_integral_eq := MeasureTheory.integral_eq_lintegral_of_nonneg_ae
+    (μ := P n) (f := fun ω => Real.exp (L n ω))
+    (Filter.Eventually.of_forall (fun ω => (Real.exp_pos _).le))
+    (Real.continuous_exp.measurable.comp (hL_meas n)).aestronglyMeasurable
+  rw [h_integral_eq, h_lintegral]
+  simp
 
 /-- **For fixed `M ≥ 0`, weak convergence transfers to integrals of the truncated
 exponential**: `∫ min(exp(L n), M) dP_n → ∫ min(exp, M) dN(-v/2, v)` as `n → ∞`.
@@ -1587,35 +2939,1086 @@ private lemma tendsto_integral_truncExp_L
   simp only [h_map_n] at h_bcf
   simpa using h_bcf
 
+/-- **Uniform-integrability bound on `exp(L n)` under `P_n`**: for every `ε > 0` there
+exist a truncation level `M` and an index `N₀` such that `∫ (exp(L n) - M)⁺ dP_n ≤ ε`
+for all `n ≥ N₀`, where `(·)⁺ x = max 0 x`.
+
+Proof idea: by `tendsto_integral_truncExp_gaussianReal` pick a natural `M` so that
+`∫ min(exp, M) dN > 1 - ε/2`; by `tendsto_integral_truncExp_L` pick `N₀` so that for
+`n ≥ N₀`, `∫ min(exp(L n), M) dP_n > 1 - ε`; and use `∫ exp(L n) dP_n = 1` to rearrange.
+
+Thus log-normal weak convergence implies the uniform-integrability estimate
+used in Le Cam's third lemma. -/
+lemma uniform_integrability_exp_L
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    (P Q : ∀ n, Measure (Ω n))
+    [∀ n, IsProbabilityMeasure (P n)] [∀ n, IsProbabilityMeasure (Q n)]
+    (L : ∀ n, Ω n → ℝ) (hL_meas : ∀ n, Measurable (L n))
+    (hL_is_log_ratio : ∀ n,
+        Q n = (P n).withDensity (fun ω => ENNReal.ofReal (Real.exp (L n ω))))
+    (v : NNReal)
+    (h_weak :
+      WeakConverges (fun n => (P n).map (L n))
+        (ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v)) :
+    ∀ ε : ℝ, 0 < ε →
+      ∃ M : ℝ, 0 ≤ M ∧ ∃ N₀ : ℕ, ∀ n, N₀ ≤ n →
+        ∫ ω, Real.exp (L n ω) - min (Real.exp (L n ω)) M ∂(P n) ≤ ε := by
+  intro ε hε
+  -- Step 1: pick a natural M₀ with `∫ min(exp, M₀) dN ≥ 1 - ε/2`.
+  have h_gaussian := tendsto_integral_truncExp_gaussianReal v
+  have h_ev :
+      ∀ᶠ M : ℕ in atTop,
+        1 - ε / 2 ≤
+          ∫ x, min (Real.exp x) (M : ℝ)
+            ∂(ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v) := by
+    have h_mem : Set.Ici (1 - ε / 2) ∈ 𝓝 (1 : ℝ) :=
+      Ici_mem_nhds (by linarith)
+    exact h_gaussian h_mem
+  obtain ⟨M₀, hM₀⟩ := h_ev.exists
+  set M : ℝ := (M₀ : ℝ) with hM_def
+  have hM_nonneg : 0 ≤ M := Nat.cast_nonneg _
+  refine ⟨M, hM_nonneg, ?_⟩
+  -- Step 2: for fixed M, get `∫ min(exp(L n), M) dP_n → ∫ min(exp, M) dN`.
+  have h_trunc_tendsto :=
+    tendsto_integral_truncExp_L P L hL_meas v h_weak M hM_nonneg
+  -- Step 3: pick N₀ so that for n ≥ N₀, `∫ min(exp(L n), M) dP_n > 1 - ε`.
+  have h_target :
+      ∀ᶠ n : ℕ in atTop,
+        1 - ε ≤ ∫ ω, min (Real.exp (L n ω)) M ∂(P n) := by
+    have h_mem : Set.Ioi (1 - ε) ∈ 𝓝 (∫ x, min (Real.exp x) M
+        ∂(ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v)) := by
+      apply Ioi_mem_nhds
+      linarith [hM₀]
+    filter_upwards [h_trunc_tendsto h_mem] with n hn
+    exact le_of_lt (Set.mem_Ioi.mp hn)
+  obtain ⟨N₀, hN₀⟩ := Filter.eventually_atTop.mp h_target
+  refine ⟨N₀, ?_⟩
+  intro n hn
+  -- Step 4: rearrange using `∫ exp(L n) = 1`.
+  have h_exp_int := exp_L_integrable P Q L hL_meas hL_is_log_ratio n
+  have h_trunc_int : Integrable (fun ω => min (Real.exp (L n ω)) M) (P n) := by
+    refine h_exp_int.mono' ?_ ?_
+    · exact ((Real.continuous_exp.measurable.comp
+        (hL_meas n)).min measurable_const).aestronglyMeasurable
+    · refine Filter.Eventually.of_forall (fun ω => ?_)
+      rw [Real.norm_eq_abs, abs_of_nonneg]
+      · exact min_le_left _ _
+      · exact le_min (Real.exp_pos _).le hM_nonneg
+  have h_diff_eq :
+      ∫ ω, Real.exp (L n ω) - min (Real.exp (L n ω)) M ∂(P n)
+        = 1 - ∫ ω, min (Real.exp (L n ω)) M ∂(P n) := by
+    rw [MeasureTheory.integral_sub h_exp_int h_trunc_int,
+      integral_exp_L_eq_one P Q L hL_meas hL_is_log_ratio]
+  rw [h_diff_eq]
+  linarith [hN₀ n hn]
+
+/-- **Contiguity from asymptotic log-normality** (vdV Example 6.5, direction `Q ⊲ P`).
+
+If `L n = log dQ_n/dP_n` is asymptotically `N(-σ²/2, σ²)` under `P n`, then for any
+sequence of measurable events `A n` with `P_n(A_n) → 0`, we also have `Q_n(A_n) → 0`. -/
+theorem contiguous_of_asymptotically_log_normal
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    (P Q : ∀ n, Measure (Ω n))
+    [∀ n, IsProbabilityMeasure (P n)] [∀ n, IsProbabilityMeasure (Q n)]
+    (L : ∀ n, Ω n → ℝ) (hL_meas : ∀ n, Measurable (L n))
+    (hL_is_log_ratio : ∀ n,
+        Q n = (P n).withDensity (fun ω => ENNReal.ofReal (Real.exp (L n ω))))
+    (v : NNReal)
+    (h_weak :
+      WeakConverges (fun n => (P n).map (L n))
+        (ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v)) :
+    Contiguous (ι := ℕ) (Ω := Ω) atTop P Q := by
+  intro A hA_meas hA_tendsto
+  -- Step 0: reduce to real-valued convergence via `.toReal`.
+  -- `Q_n`, `P_n` are prob measures so `(Q n)(A n), (P n)(A n) < ⊤` always.
+  have h_Q_lt_top : ∀ n, (Q n) (A n) ≠ ⊤ := fun n => (measure_lt_top (Q n) _).ne
+  have h_P_lt_top : ∀ n, (P n) (A n) ≠ ⊤ := fun n => (measure_lt_top (P n) _).ne
+  have hA_real : Tendsto (fun n => ((P n) (A n)).toReal) atTop (𝓝 0) := by
+    have := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hA_tendsto
+    simpa using! this
+  suffices h : Tendsto (fun n => ((Q n) (A n)).toReal) atTop (𝓝 0) by
+    have h_of_real :
+        Tendsto (fun n => ENNReal.ofReal ((Q n) (A n)).toReal) atTop (𝓝 0) := by
+      have h_comp := (ENNReal.continuous_ofReal.tendsto 0).comp h
+      simp only [ENNReal.ofReal_zero] at h_comp
+      exact h_comp
+    have h_eq : (fun n => ENNReal.ofReal ((Q n) (A n)).toReal) = fun n => (Q n) (A n) := by
+      funext n; rw [ENNReal.ofReal_toReal (h_Q_lt_top n)]
+    rw [h_eq] at h_of_real
+    exact h_of_real
+  -- It remains to prove convergence of the real-valued measures.
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- UI: get M and N₁ with `∫ (exp(L n) - min(exp(L n), M)) dP_n ≤ ε/2` for `n ≥ N₁`.
+  obtain ⟨M, hM_nonneg, N₁, hN₁⟩ :=
+    uniform_integrability_exp_L P Q L hL_meas hL_is_log_ratio v h_weak (ε / 2) (by linarith)
+  have hM1_pos : 0 < M + 1 := by linarith
+  -- Pick `N₂` so for `n ≥ N₂`, `((P n) (A n)).toReal < ε / (2·(M+1))`.
+  rw [Metric.tendsto_nhds] at hA_real
+  have h_threshold : 0 < ε / (2 * (M + 1)) := by positivity
+  have hA_ev := hA_real (ε / (2 * (M + 1))) h_threshold
+  rw [Filter.eventually_atTop] at hA_ev
+  obtain ⟨N₂, hN₂⟩ := hA_ev
+  rw [Filter.eventually_atTop]
+  refine ⟨max N₁ N₂, fun n hn => ?_⟩
+  have hn₁ : N₁ ≤ n := le_of_max_le_left hn
+  have hn₂ : N₂ ≤ n := le_of_max_le_right hn
+  -- Unfold `dist (·) 0` for the nonneg real `((Q n)(A n)).toReal`.
+  have hQ_nonneg : 0 ≤ ((Q n) (A n)).toReal := ENNReal.toReal_nonneg
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg hQ_nonneg]
+  -- Express `((Q n) (A n)).toReal` as a set Bochner integral of `exp(L n)`.
+  have h_Q_eq : ((Q n) (A n)).toReal = ∫ ω in A n, Real.exp (L n ω) ∂(P n) := by
+    rw [hL_is_log_ratio n, MeasureTheory.withDensity_apply _ (hA_meas n)]
+    exact (MeasureTheory.integral_eq_lintegral_of_nonneg_ae
+      (Filter.Eventually.of_forall (fun _ => (Real.exp_pos _).le))
+      (Real.continuous_exp.measurable.comp (hL_meas n)).aestronglyMeasurable).symm
+  -- Integrability of `exp(L n)` and its truncation / residue.
+  have h_exp_int := exp_L_integrable P Q L hL_meas hL_is_log_ratio n
+  have h_min_meas : Measurable (fun ω => min (Real.exp (L n ω)) M) :=
+    (Real.continuous_exp.measurable.comp (hL_meas n)).min measurable_const
+  have h_min_int : Integrable (fun ω => min (Real.exp (L n ω)) M) (P n) := by
+    refine h_exp_int.mono' h_min_meas.aestronglyMeasurable ?_
+    refine Filter.Eventually.of_forall (fun ω => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (le_min (Real.exp_pos _).le hM_nonneg)]
+    exact min_le_left _ _
+  have h_diff_int : Integrable
+      (fun ω => Real.exp (L n ω) - min (Real.exp (L n ω)) M) (P n) :=
+    h_exp_int.sub h_min_int
+  have h_diff_nonneg :
+      0 ≤ᵐ[P n] fun ω => Real.exp (L n ω) - min (Real.exp (L n ω)) M :=
+    Filter.Eventually.of_forall
+      (fun ω => sub_nonneg.mpr (min_le_left _ _))
+  -- Decompose the set integral.
+  have h_int_decomp :
+      ∫ ω in A n, Real.exp (L n ω) ∂(P n)
+        = ∫ ω in A n, min (Real.exp (L n ω)) M ∂(P n)
+          + ∫ ω in A n, Real.exp (L n ω) - min (Real.exp (L n ω)) M ∂(P n) := by
+    rw [← MeasureTheory.integral_add h_min_int.restrict h_diff_int.restrict]
+    refine MeasureTheory.integral_congr_ae ?_
+    refine Filter.Eventually.of_forall (fun ω => ?_)
+    ring
+  -- Bound Term 1: `∫ in A n, min(exp, M) ≤ M · P_n(A_n).real`.
+  have h_T1_bound :
+      ∫ ω in A n, min (Real.exp (L n ω)) M ∂(P n) ≤ M * ((P n) (A n)).toReal := by
+    calc ∫ ω in A n, min (Real.exp (L n ω)) M ∂(P n)
+        ≤ ∫ _ in A n, M ∂(P n) := by
+          refine MeasureTheory.setIntegral_mono_on h_min_int.restrict
+            (integrable_const M).restrict (hA_meas n) (fun ω _ => ?_)
+          exact min_le_right _ _
+      _ = ((P n) (A n)).toReal * M := by
+          rw [MeasureTheory.setIntegral_const]
+          rfl
+      _ = M * ((P n) (A n)).toReal := by ring
+  -- Bound Term 2: restrict ≤ full, then UI.
+  have h_T2_bound :
+      ∫ ω in A n, Real.exp (L n ω) - min (Real.exp (L n ω)) M ∂(P n) ≤ ε / 2 :=
+    le_trans (MeasureTheory.setIntegral_le_integral h_diff_int h_diff_nonneg) (hN₁ n hn₁)
+  -- Convert hN₂ from dist form to a direct inequality.
+  have hP_A_real_lt : ((P n) (A n)).toReal < ε / (2 * (M + 1)) := by
+    have := hN₂ n hn₂
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg ENNReal.toReal_nonneg] at this
+    exact this
+  -- Assemble: `((Q n)(A n)).toReal ≤ M · P_n(A_n).real + ε/2`, then show this is `< ε`.
+  have h_total_le :
+      ((Q n) (A n)).toReal ≤ M * ((P n) (A n)).toReal + ε / 2 := by
+    calc ((Q n) (A n)).toReal
+        = ∫ ω in A n, Real.exp (L n ω) ∂(P n) := h_Q_eq
+      _ = ∫ ω in A n, min (Real.exp (L n ω)) M ∂(P n)
+            + ∫ ω in A n, Real.exp (L n ω) - min (Real.exp (L n ω)) M ∂(P n) :=
+            h_int_decomp
+      _ ≤ M * ((P n) (A n)).toReal + ε / 2 := by
+            linarith [h_T1_bound, h_T2_bound]
+  -- The final strict bound follows by separating the cases `M = 0` and `M > 0`.
+  rcases eq_or_lt_of_le hM_nonneg with hM_eq | hM_pos
+  · -- `M = 0`: LHS = ε/2 < ε.
+    have : M * ((P n) (A n)).toReal = 0 := by rw [← hM_eq]; ring
+    linarith
+  · -- `M > 0`: use strict `hP_A_real_lt` and the `M/(M+1) ≤ 1` bound.
+    have h_strict_T1 : M * ((P n) (A n)).toReal < M * (ε / (2 * (M + 1))) :=
+      mul_lt_mul_of_pos_left hP_A_real_lt hM_pos
+    have h_factor_le_half : M * (ε / (2 * (M + 1))) ≤ ε / 2 := by
+      have h_ratio : M / (M + 1) ≤ 1 := (div_le_one hM1_pos).mpr (by linarith)
+      have hε2_nonneg : 0 ≤ ε / 2 := by linarith
+      calc M * (ε / (2 * (M + 1)))
+          = (M / (M + 1)) * (ε / 2) := by field_simp
+        _ ≤ 1 * (ε / 2) := mul_le_mul_of_nonneg_right h_ratio hε2_nonneg
+        _ = ε / 2 := one_mul _
+    linarith
 
 end LeCamFirst
 
 section ReverseDirection
 
+/-- **Inverse-density identity**: if `Q = P.withDensity (ofReal ∘ exp ∘ L)` with
+`exp ∘ L > 0` pointwise, then `P = Q.withDensity (ofReal ∘ exp ∘ (-L))`.
 
+Follows from `MeasureTheory.withDensity_inv_same` applied to `f = ofReal ∘ exp ∘ L`,
+using that `exp > 0` (so `f` is nonzero a.e.) and `ofReal r < ⊤` (so `f ≠ ⊤` a.e.),
+plus `(ofReal (exp x))⁻¹ = ofReal (exp (-x))`. -/
+private lemma P_eq_Q_withDensity_neg
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    (P Q : ∀ n, Measure (Ω n))
+    (L : ∀ n, Ω n → ℝ) (hL_meas : ∀ n, Measurable (L n))
+    (hL_is_log_ratio : ∀ n,
+        Q n = (P n).withDensity (fun ω => ENNReal.ofReal (Real.exp (L n ω))))
+    (n : ℕ) :
+    P n = (Q n).withDensity (fun ω => ENNReal.ofReal (Real.exp (-L n ω))) := by
+  have hf_meas : Measurable (fun ω => ENNReal.ofReal (Real.exp (L n ω))) :=
+    (Real.continuous_exp.measurable.comp (hL_meas n)).ennreal_ofReal
+  have hf_ne_zero : ∀ᵐ ω ∂(P n), ENNReal.ofReal (Real.exp (L n ω)) ≠ 0 := by
+    refine Filter.Eventually.of_forall (fun ω => ?_)
+    rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+    exact Real.exp_pos _
+  have hf_ne_top : ∀ᵐ ω ∂(P n), ENNReal.ofReal (Real.exp (L n ω)) ≠ ⊤ :=
+    Filter.Eventually.of_forall (fun _ => ENNReal.ofReal_ne_top)
+  have h_inv := MeasureTheory.withDensity_inv_same hf_meas hf_ne_zero hf_ne_top
+  -- `h_inv : ((P n).withDensity f).withDensity (fun ω => (f ω)⁻¹) = P n`
+  rw [← hL_is_log_ratio n] at h_inv
+  rw [← h_inv]
+  congr 1
+  funext ω
+  rw [← ENNReal.ofReal_inv_of_pos (Real.exp_pos _), Real.exp_neg]
 
+/-! ### Gaussian shift identity
 
+The algebraic backbone of the reverse direction. Tilting `N(-v/2, v)` by `exp` yields
+`N(v/2, v)`; reflecting `N(v/2, v)` through 0 yields `N(-v/2, v)` back. The net effect
+is the integral identity `∫ f(-x) · exp(x) dN(-v/2, v) = ∫ f(y) dN(-v/2, v)`.
+-/
+
+/-- **Gaussian PDF multiplicative shift by `exp`**.
+
+`gaussianPDFReal (-v/2) v x · exp(x) = gaussianPDFReal (v/2) v x`.
+
+This is the pointwise algebraic identity underlying the measure identity
+`N(-v/2, v).withDensity (exp) = N(v/2, v)`. Proved by expanding both sides to the
+common form `(2πv)^{-1/2} · exp(-x²/(2v) + x/2 - v/8)` via `Real.exp_add` + field algebra. -/
+private lemma gaussianPDFReal_neg_half_mul_exp_eq (v : NNReal) (x : ℝ) :
+    ProbabilityTheory.gaussianPDFReal (-(v : ℝ) / 2) v x * Real.exp x
+      = ProbabilityTheory.gaussianPDFReal ((v : ℝ) / 2) v x := by
+  by_cases hv : v = 0
+  · subst hv
+    simp [ProbabilityTheory.gaussianPDFReal_zero_var]
+  have hv_pos : (0 : ℝ) < (v : ℝ) := by
+    refine lt_of_le_of_ne v.coe_nonneg (Ne.symm ?_)
+    intro h
+    exact hv (NNReal.coe_injective h)
+  have h2v_ne : (2 : ℝ) * (v : ℝ) ≠ 0 := by positivity
+  simp only [ProbabilityTheory.gaussianPDFReal]
+  rw [mul_assoc, ← Real.exp_add]
+  congr 1
+  congr 1
+  field_simp
+  ring
+
+/-- **Gaussian tilting by `exp`**:
+`(N(-v/2, v)).withDensity (x ↦ ofReal (exp x)) = N(v/2, v)`.
+
+For `v = 0`, both sides reduce to `dirac 0` (using `dirac_withDensity` + `exp 0 = 1`).
+For `v > 0`, unfold `gaussianReal` to `volume.withDensity (gaussianPDF …)`, combine the
+two `withDensity` layers via `withDensity_mul`, and close by the pointwise PDF identity. -/
+private lemma gaussianReal_neg_half_withDensity_exp (v : NNReal) :
+    (ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v).withDensity
+        (fun x => ENNReal.ofReal (Real.exp x)) =
+      ProbabilityTheory.gaussianReal ((v : ℝ) / 2) v := by
+  by_cases hv : v = 0
+  · subst hv
+    simp only [NNReal.coe_zero, neg_zero, zero_div, ProbabilityTheory.gaussianReal_zero_var,
+      MeasureTheory.dirac_withDensity, Real.exp_zero, ENNReal.ofReal_one, one_smul]
+  rw [ProbabilityTheory.gaussianReal_of_var_ne_zero _ hv,
+      ProbabilityTheory.gaussianReal_of_var_ne_zero _ hv]
+  rw [← MeasureTheory.withDensity_mul _
+      (ProbabilityTheory.measurable_gaussianPDF _ _)
+      Real.continuous_exp.measurable.ennreal_ofReal]
+  congr 1
+  ext x
+  simp only [Pi.mul_apply, ProbabilityTheory.gaussianPDF]
+  rw [← ENNReal.ofReal_mul (ProbabilityTheory.gaussianPDFReal_nonneg _ _ _)]
+  congr 1
+  exact gaussianPDFReal_neg_half_mul_exp_eq v x
+
+/-- **Gaussian shift integral identity**:
+`∫ f(-x) · exp(x) dN(-v/2, v) = ∫ f dN(-v/2, v)` for bounded continuous `f`.
+
+Chain: tilt `N(-v/2, v)` by `exp` → `N(v/2, v)` (via `gaussianReal_neg_half_withDensity_exp`);
+reflect `N(v/2, v)` through 0 → `N(-v/2, v)` (via `gaussianReal_map_neg`). -/
+private lemma integral_gaussianReal_neg_half_shift (v : NNReal) (f : ℝ →ᵇ ℝ) :
+    ∫ x, f (-x) * Real.exp x ∂(ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v)
+      = ∫ x, f x ∂(ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v) := by
+  set ν_neg := ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v with hν_neg
+  set ν_pos := ProbabilityTheory.gaussianReal ((v : ℝ) / 2) v with hν_pos
+  have hexp_meas : Measurable (fun x : ℝ => ENNReal.ofReal (Real.exp x)) :=
+    Real.continuous_exp.measurable.ennreal_ofReal
+  have hexp_lt_top : ∀ᵐ x ∂ν_neg, ENNReal.ofReal (Real.exp x) < ∞ :=
+    Filter.Eventually.of_forall (fun _ => ENNReal.ofReal_lt_top)
+  calc ∫ x, f (-x) * Real.exp x ∂ν_neg
+      = ∫ x, (ENNReal.ofReal (Real.exp x)).toReal • f (-x) ∂ν_neg := by
+        refine integral_congr_ae ?_
+        refine Filter.Eventually.of_forall (fun x => ?_)
+        change f (-x) * Real.exp x = (ENNReal.ofReal (Real.exp x)).toReal • f (-x)
+        rw [ENNReal.toReal_ofReal (Real.exp_pos _).le, smul_eq_mul, mul_comm]
+    _ = ∫ x, f (-x) ∂(ν_neg.withDensity (fun x => ENNReal.ofReal (Real.exp x))) :=
+        (integral_withDensity_eq_integral_toReal_smul hexp_meas hexp_lt_top
+          (fun x => f (-x))).symm
+    _ = ∫ x, f (-x) ∂ν_pos := by
+        rw [hν_neg, hν_pos, gaussianReal_neg_half_withDensity_exp]
+    _ = ∫ y, f y ∂(ν_pos.map (fun x => -x)) :=
+        (MeasureTheory.integral_map measurable_neg.aemeasurable
+          f.continuous.aestronglyMeasurable).symm
+    _ = ∫ y, f y ∂(ProbabilityTheory.gaussianReal (-((v : ℝ) / 2)) v) := by
+        rw [hν_pos, ProbabilityTheory.gaussianReal_map_neg]
+    _ = ∫ x, f x ∂ν_neg := by
+        rw [hν_neg, neg_div]
+
+/-- **Change of measure helper**: `∫ f ∂(Q.map (-L)) = ∫ f(-x)·exp x ∂(P.map L)`,
+using `Q = P.withDensity (exp ∘ L)` plus `integral_map` on both ends. -/
+private lemma integral_f_neg_Q_eq_f_neg_exp_P
+    {Ω : Type*} [MeasurableSpace Ω]
+    (P Q : Measure Ω)
+    (L : Ω → ℝ) (hL_meas : Measurable L)
+    (hL_is_log_ratio :
+        Q = P.withDensity (fun ω => ENNReal.ofReal (Real.exp (L ω))))
+    (f : ℝ →ᵇ ℝ) :
+    ∫ x, f x ∂(Q.map (fun ω => -L ω))
+      = ∫ x, f (-x) * Real.exp x ∂(P.map L) := by
+  have h_exp_meas : Measurable (fun ω => ENNReal.ofReal (Real.exp (L ω))) :=
+    (Real.continuous_exp.measurable.comp hL_meas).ennreal_ofReal
+  have h_exp_lt_top : ∀ᵐ ω ∂P, ENNReal.ofReal (Real.exp (L ω)) < ∞ :=
+    Filter.Eventually.of_forall (fun _ => ENNReal.ofReal_lt_top)
+  have h_integrand_meas :
+      AEStronglyMeasurable (fun x : ℝ => f (-x) * Real.exp x) (P.map L) :=
+    ((f.continuous.comp continuous_neg).mul Real.continuous_exp).aestronglyMeasurable
+  calc ∫ x, f x ∂(Q.map (fun ω => -L ω))
+      = ∫ ω, f (-L ω) ∂Q :=
+        MeasureTheory.integral_map hL_meas.neg.aemeasurable
+          f.continuous.aestronglyMeasurable
+    _ = ∫ ω, f (-L ω)
+          ∂(P.withDensity (fun ω => ENNReal.ofReal (Real.exp (L ω)))) := by
+        rw [← hL_is_log_ratio]
+    _ = ∫ ω, (ENNReal.ofReal (Real.exp (L ω))).toReal • f (-L ω) ∂P :=
+        integral_withDensity_eq_integral_toReal_smul h_exp_meas h_exp_lt_top
+          (fun ω => f (-L ω))
+    _ = ∫ ω, f (-L ω) * Real.exp (L ω) ∂P := by
+        refine integral_congr_ae (Filter.Eventually.of_forall (fun ω => ?_))
+        change (ENNReal.ofReal (Real.exp (L ω))).toReal • f (-L ω)
+          = f (-L ω) * Real.exp (L ω)
+        rw [ENNReal.toReal_ofReal (Real.exp_pos _).le, smul_eq_mul, mul_comm]
+    _ = ∫ x, f (-x) * Real.exp x ∂(P.map L) :=
+        (MeasureTheory.integral_map hL_meas.aemeasurable h_integrand_meas).symm
+
+/-- **Tilted weak convergence**: under the tilted measure `Q n = P n.withDensity (exp ∘ L n)`,
+the law of `-L n` weakly converges to `N(-v/2, v)`.
+
+**Strategy** (the analytical content, broken into steps):
+
+1. `integral_f_neg_Q_eq_f_neg_exp_P` rewrites `∫ f d((Q n).map (-L n))` as
+   `∫ f(-x)·exp x d((P n).map L n)` (change of measure + `integral_map`).
+2. `integral_gaussianReal_neg_half_shift` rewrites the target
+   `∫ f dN(-v/2, v)` as `∫ f(-x)·exp x dN(-v/2, v)` — the Gaussian shift identity
+   (derived from the PDF identity `gaussianPDFReal_neg_half_mul_exp_eq` +
+   `gaussianReal_neg_half_withDensity_exp` + `gaussianReal_map_neg`).
+3. Convergence of `∫ f(-x)·exp x dν_n → ∫ f(-x)·exp x dν` for `ν_n := (P n).map L n`
+   follows from the truncation+UI argument: let
+   `g_M(x) := f(-x) · min(exp x, M)` (bounded continuous),
+   then
+   - `|∫ f(-x)·exp x dν_n - ∫ g_M dν_n| ≤ ‖f‖ · ∫ (exp x - min(exp x, M)) dν_n`
+     = `‖f‖ · ∫ (exp(L n) - min(exp(L n), M)) dP_n`, ≤ `ε/(3C)` by `uniform_integrability_exp_L`;
+   - `|∫ g_M dν_n - ∫ g_M dν| < ε/3` by weak convergence of `ν_n ⇝ ν` applied to `g_M`;
+   - `|∫ g_M dν - ∫ f(-x)·exp x dν| ≤ ‖f‖ · (1 - ∫ min(exp x, M) dν)`,
+     ≤ `ε/(3C)` by `tendsto_integral_truncExp_gaussianReal` + choice of `M`.
+
+   Triangle inequality closes with total `< ε`. -/
+private lemma weakConverges_Q_neg_L_gaussianReal_neg_half
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    (P Q : ∀ n, Measure (Ω n))
+    [∀ n, IsProbabilityMeasure (P n)] [∀ n, IsProbabilityMeasure (Q n)]
+    (L : ∀ n, Ω n → ℝ) (hL_meas : ∀ n, Measurable (L n))
+    (hL_is_log_ratio : ∀ n,
+        Q n = (P n).withDensity (fun ω => ENNReal.ofReal (Real.exp (L n ω))))
+    (v : NNReal)
+    (h_weak :
+      WeakConverges (fun n => (P n).map (L n))
+        (ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v)) :
+    WeakConverges (fun n => (Q n).map (fun ω => -L n ω))
+      (ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v) := by
+  intro f
+  set ν := ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v with hν_def
+  -- Rewrite target via Gaussian shift identity, each LHS term via change-of-measure.
+  rw [← integral_gaussianReal_neg_half_shift v f]
+  have h_rewrite : ∀ n, ∫ x, f x ∂((Q n).map (fun ω => -L n ω))
+      = ∫ x, f (-x) * Real.exp x ∂((P n).map (L n)) := fun n =>
+    integral_f_neg_Q_eq_f_neg_exp_P (P n) (Q n) (L n) (hL_meas n) (hL_is_log_ratio n) f
+  simp_rw [h_rewrite]
+  -- Continuity + norm bounds used throughout.
+  have hfneg_cont : Continuous (fun x : ℝ => f (-x)) := f.continuous.comp continuous_neg
+  have hfneg_bound : ∀ x : ℝ, ‖f (-x)‖ ≤ ‖f‖ := fun x => f.norm_coe_le_norm _
+  have h_exp_nonneg : ∀ x : ℝ, 0 ≤ Real.exp x := fun x => (Real.exp_pos _).le
+  -- Gaussian side: `∫ exp dν = 1`, `exp` integrable, and `tendsto ∫ min(exp, M) → 1` as M → ∞.
+  have h_exp_int_ν : Integrable (fun x : ℝ => Real.exp x) ν := by
+    rw [hν_def]
+    have := ProbabilityTheory.integrable_exp_mul_gaussianReal (μ := -(v : ℝ) / 2) (v := v) 1
+    simpa using this
+  have h_exp_int_ν_eq_one : ∫ x, Real.exp x ∂ν = 1 := by
+    rw [hν_def]; exact integral_exp_gaussianReal_neg_half_var v
+  -- Helper: residue bound for `|∫ f(-x) · exp x ∂μ - ∫ f(-x) · min(exp, M) ∂μ|`,
+  -- `≤ ‖f‖ · ∫ (exp - min) dμ`, for any `μ` on ℝ with `exp` integrable under `μ`.
+  have h_residue :
+      ∀ (μ : Measure ℝ) (M : ℝ), 0 ≤ M →
+        Integrable (fun x : ℝ => Real.exp x) μ →
+        |∫ x, f (-x) * Real.exp x ∂μ - ∫ x, f (-x) * min (Real.exp x) M ∂μ|
+          ≤ ‖f‖ * ∫ x, (Real.exp x - min (Real.exp x) M) ∂μ := by
+    intro μ M hM h_exp_int
+    have h_min_nn : ∀ x, 0 ≤ min (Real.exp x) M := fun x =>
+      le_min (h_exp_nonneg x) hM
+    have h_min_le : ∀ x, min (Real.exp x) M ≤ Real.exp x := fun x => min_le_left _ _
+    have h_min_meas : Measurable (fun x : ℝ => min (Real.exp x) M) :=
+      Real.continuous_exp.measurable.min measurable_const
+    have h_min_int : Integrable (fun x : ℝ => min (Real.exp x) M) μ := by
+      refine h_exp_int.mono' h_min_meas.aestronglyMeasurable
+        (Filter.Eventually.of_forall (fun x => ?_))
+      simp only [Real.norm_eq_abs, abs_of_nonneg (h_min_nn x)]
+      exact h_min_le x
+    have h_fneg_bound_ae : ∀ᵐ x ∂μ, ‖f (-x)‖ ≤ ‖f‖ :=
+      Filter.Eventually.of_forall hfneg_bound
+    have h_fneg_ae : AEStronglyMeasurable (fun x : ℝ => f (-x)) μ :=
+      hfneg_cont.aestronglyMeasurable
+    have h_fexp_int : Integrable (fun x : ℝ => f (-x) * Real.exp x) μ :=
+      h_exp_int.bdd_mul h_fneg_ae h_fneg_bound_ae
+    have h_fmin_int : Integrable (fun x : ℝ => f (-x) * min (Real.exp x) M) μ :=
+      h_min_int.bdd_mul h_fneg_ae h_fneg_bound_ae
+    rw [← integral_sub h_fexp_int h_fmin_int]
+    have h_diff_eq : (fun x : ℝ => f (-x) * Real.exp x - f (-x) * min (Real.exp x) M)
+        = fun x => f (-x) * (Real.exp x - min (Real.exp x) M) := by
+      funext x; ring
+    rw [h_diff_eq]
+    have h_diff_int : Integrable
+        (fun x : ℝ => f (-x) * (Real.exp x - min (Real.exp x) M)) μ := by
+      have : (fun x : ℝ => f (-x) * (Real.exp x - min (Real.exp x) M))
+          = fun x => f (-x) * Real.exp x - f (-x) * min (Real.exp x) M := by
+        funext x; ring
+      rw [this]; exact h_fexp_int.sub h_fmin_int
+    calc |∫ x, f (-x) * (Real.exp x - min (Real.exp x) M) ∂μ|
+        ≤ ∫ x, |f (-x) * (Real.exp x - min (Real.exp x) M)| ∂μ :=
+          abs_integral_le_integral_abs
+      _ = ∫ x, |f (-x)| * (Real.exp x - min (Real.exp x) M) ∂μ := by
+          refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
+          change |f (-x) * (Real.exp x - min (Real.exp x) M)|
+            = |f (-x)| * (Real.exp x - min (Real.exp x) M)
+          rw [abs_mul, abs_of_nonneg (sub_nonneg.mpr (h_min_le x))]
+      _ ≤ ∫ x, ‖f‖ * (Real.exp x - min (Real.exp x) M) ∂μ := by
+          refine integral_mono_of_nonneg
+            (Filter.Eventually.of_forall
+              (fun x => mul_nonneg (abs_nonneg _) (sub_nonneg.mpr (h_min_le x))))
+            ((h_exp_int.sub h_min_int).const_mul ‖f‖)
+            (Filter.Eventually.of_forall (fun x => ?_))
+          refine mul_le_mul_of_nonneg_right ?_ (sub_nonneg.mpr (h_min_le x))
+          rw [← Real.norm_eq_abs]; exact hfneg_bound x
+      _ = ‖f‖ * ∫ x, (Real.exp x - min (Real.exp x) M) ∂μ := integral_const_mul _ _
+  -- Setup for ε argument.
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  set C : ℝ := ‖f‖ + 1 with hC_def
+  have hC_pos : 0 < C := by positivity
+  have hnorm_le_C : ‖f‖ ≤ C := by simp [hC_def]
+  have hthresh_pos : 0 < ε / (3 * C) := by positivity
+  -- (A) UI on sequence side.
+  obtain ⟨M_UI, hM_UI_nonneg, N_UI, hN_UI⟩ :=
+    uniform_integrability_exp_L P Q L hL_meas hL_is_log_ratio v h_weak
+      (ε / (3 * C)) hthresh_pos
+  -- (B) Pick M_target : ℕ so that `∫ min(exp, M_target) dν > 1 - ε/(3C)`.
+  have h_ev_gauss : ∀ᶠ M : ℕ in atTop,
+      (1 : ℝ) - ε / (3 * C) < ∫ x, min (Real.exp x) (M : ℝ) ∂ν := by
+    have h_mem : Set.Ioi ((1 : ℝ) - ε / (3 * C)) ∈ 𝓝 (1 : ℝ) :=
+      Ioi_mem_nhds (by linarith)
+    exact tendsto_integral_truncExp_gaussianReal v h_mem
+  obtain ⟨M_target, hM_target⟩ := h_ev_gauss.exists
+  -- Take `M := max M_UI (M_target : ℝ) ≥ 0`.
+  set M : ℝ := max M_UI (M_target : ℝ) with hM_def
+  have hM_nonneg : 0 ≤ M := le_max_of_le_left hM_UI_nonneg
+  have hM_ge_UI : M_UI ≤ M := le_max_left _ _
+  have hM_ge_target : (M_target : ℝ) ≤ M := le_max_right _ _
+  -- BCF `g_M(x) := f(-x) · min(exp x, M)`.
+  let g_M : ℝ →ᵇ ℝ := BoundedContinuousFunction.ofNormedAddCommGroup
+    (fun x => f (-x) * min (Real.exp x) M)
+    (hfneg_cont.mul (Real.continuous_exp.min continuous_const))
+    (‖f‖ * M)
+    (fun x => by
+      rw [Real.norm_eq_abs, abs_mul]
+      have h2 : 0 ≤ min (Real.exp x) M := le_min (h_exp_nonneg x) hM_nonneg
+      rw [abs_of_nonneg h2]
+      refine mul_le_mul ?_ (min_le_right _ _) h2 (norm_nonneg _)
+      rw [← Real.norm_eq_abs]; exact hfneg_bound x)
+  have hg_M_apply : ∀ x, g_M x = f (-x) * min (Real.exp x) M := fun _ => rfl
+  -- (D) Weak convergence at `g_M`.
+  have h_weak_gM := h_weak g_M
+  rw [Metric.tendsto_nhds] at h_weak_gM
+  have hε3_pos : (0 : ℝ) < ε / 3 := by linarith
+  obtain ⟨N_weak, hN_weak⟩ :=
+    Filter.eventually_atTop.mp (h_weak_gM (ε / 3) hε3_pos)
+  rw [Filter.eventually_atTop]
+  refine ⟨max N_UI N_weak, fun n hn => ?_⟩
+  have hn_UI : N_UI ≤ n := le_of_max_le_left hn
+  have hn_weak : N_weak ≤ n := le_of_max_le_right hn
+  -- Sequence-side residue bound needs `exp` integrable under `(P n).map L n`.
+  have h_exp_int_Pn : Integrable (fun ω => Real.exp (L n ω)) (P n) :=
+    exp_L_integrable P Q L hL_meas hL_is_log_ratio n
+  have h_exp_int_map_n : Integrable (fun x : ℝ => Real.exp x) ((P n).map (L n)) := by
+    rw [MeasureTheory.integrable_map_measure Real.continuous_exp.aestronglyMeasurable
+        (hL_meas n).aemeasurable]
+    exact h_exp_int_Pn
+  -- UI bound at enlarged M: monotonicity of `min(exp, ·)` in M.
+  have h_min_mono_M : ∀ ω, min (Real.exp (L n ω)) M_UI ≤ min (Real.exp (L n ω)) M :=
+    fun ω => min_le_min_left _ hM_ge_UI
+  have h_int_trunc_UI : Integrable
+      (fun ω => Real.exp (L n ω) - min (Real.exp (L n ω)) M_UI) (P n) := by
+    refine h_exp_int_Pn.sub ?_
+    refine h_exp_int_Pn.mono'
+      ((Real.continuous_exp.measurable.comp (hL_meas n)).min
+        measurable_const).aestronglyMeasurable
+      (Filter.Eventually.of_forall (fun ω => ?_))
+    simp only [Real.norm_eq_abs, abs_of_nonneg (le_min (h_exp_nonneg _) hM_UI_nonneg)]
+    exact min_le_left _ _
+  have h_int_trunc_M : Integrable
+      (fun ω => Real.exp (L n ω) - min (Real.exp (L n ω)) M) (P n) := by
+    refine h_exp_int_Pn.sub ?_
+    refine h_exp_int_Pn.mono'
+      ((Real.continuous_exp.measurable.comp (hL_meas n)).min
+        measurable_const).aestronglyMeasurable
+      (Filter.Eventually.of_forall (fun ω => ?_))
+    simp only [Real.norm_eq_abs, abs_of_nonneg (le_min (h_exp_nonneg _) hM_nonneg)]
+    exact min_le_left _ _
+  have h_UI_bound_Pn :
+      ∫ ω, (Real.exp (L n ω) - min (Real.exp (L n ω)) M) ∂(P n) ≤ ε / (3 * C) :=
+    calc ∫ ω, Real.exp (L n ω) - min (Real.exp (L n ω)) M ∂(P n)
+        ≤ ∫ ω, Real.exp (L n ω) - min (Real.exp (L n ω)) M_UI ∂(P n) :=
+          integral_mono_of_nonneg
+            (Filter.Eventually.of_forall
+              (fun ω => sub_nonneg.mpr (min_le_left _ _)))
+            h_int_trunc_UI
+            (Filter.Eventually.of_forall
+              (fun ω => by linarith [h_min_mono_M ω]))
+      _ ≤ ε / (3 * C) := hN_UI n hn_UI
+  have h_UI_bound_map_n :
+      ∫ x, (Real.exp x - min (Real.exp x) M) ∂((P n).map (L n))
+        ≤ ε / (3 * C) := by
+    rw [MeasureTheory.integral_map (hL_meas n).aemeasurable]
+    · exact h_UI_bound_Pn
+    · exact (Real.continuous_exp.sub
+        (Real.continuous_exp.min continuous_const)).aestronglyMeasurable
+  -- Target-side residue bound: `∫ (exp - min(exp, M)) dν ≤ ε/(3C)`.
+  have h_trunc_int_ν : Integrable (fun x : ℝ => min (Real.exp x) M) ν := by
+    refine h_exp_int_ν.mono'
+      (Real.continuous_exp.min continuous_const).aestronglyMeasurable
+      (Filter.Eventually.of_forall (fun x => ?_))
+    simp only [Real.norm_eq_abs, abs_of_nonneg (le_min (h_exp_nonneg _) hM_nonneg)]
+    exact min_le_left _ _
+  have h_target_trunc_M_lb :
+      (1 : ℝ) - ε / (3 * C) ≤ ∫ x, min (Real.exp x) M ∂ν := by
+    have h_mono :
+        ∫ x, min (Real.exp x) (M_target : ℝ) ∂ν ≤ ∫ x, min (Real.exp x) M ∂ν := by
+      have h_trunc_target_int : Integrable (fun x : ℝ => min (Real.exp x) (M_target : ℝ)) ν := by
+        refine h_exp_int_ν.mono'
+          (Real.continuous_exp.min continuous_const).aestronglyMeasurable
+          (Filter.Eventually.of_forall (fun x => ?_))
+        simp only [Real.norm_eq_abs, abs_of_nonneg (le_min (h_exp_nonneg _) (Nat.cast_nonneg _))]
+        exact min_le_left _ _
+      exact integral_mono_of_nonneg
+        (Filter.Eventually.of_forall
+          (fun x => le_min (h_exp_nonneg _) (Nat.cast_nonneg _)))
+        h_trunc_int_ν
+        (Filter.Eventually.of_forall (fun x => min_le_min_left _ hM_ge_target))
+    linarith [hM_target]
+  have h_target_bound_ν :
+      ∫ x, (Real.exp x - min (Real.exp x) M) ∂ν ≤ ε / (3 * C) := by
+    rw [integral_sub h_exp_int_ν h_trunc_int_ν, h_exp_int_ν_eq_one]
+    linarith [h_target_trunc_M_lb]
+  -- Apply residue bound on both sides.
+  have h_res_map_n := h_residue ((P n).map (L n)) M hM_nonneg h_exp_int_map_n
+  have h_res_ν := h_residue ν M hM_nonneg h_exp_int_ν
+  -- Build the three pieces of the triangle inequality.
+  rw [Real.dist_eq]
+  have h_weak_bound : |∫ x, g_M x ∂((P n).map (L n)) - ∫ x, g_M x ∂ν| < ε / 3 := by
+    have := hN_weak n hn_weak
+    rwa [Real.dist_eq] at this
+  have h_res_nonneg : 0 ≤ ‖f‖ := norm_nonneg _
+  have h_seq_piece : |∫ x, f (-x) * Real.exp x ∂((P n).map (L n))
+        - ∫ x, g_M x ∂((P n).map (L n))| ≤ ε / 3 := by
+    have h_gM_eq : ∫ x, g_M x ∂((P n).map (L n))
+        = ∫ x, f (-x) * min (Real.exp x) M ∂((P n).map (L n)) :=
+      integral_congr_ae (Filter.Eventually.of_forall (fun x => hg_M_apply x))
+    rw [h_gM_eq]
+    calc |∫ x, f (-x) * Real.exp x ∂((P n).map (L n))
+            - ∫ x, f (-x) * min (Real.exp x) M ∂((P n).map (L n))|
+        ≤ ‖f‖ * ∫ x, (Real.exp x - min (Real.exp x) M) ∂((P n).map (L n)) := h_res_map_n
+      _ ≤ ‖f‖ * (ε / (3 * C)) :=
+          mul_le_mul_of_nonneg_left h_UI_bound_map_n h_res_nonneg
+      _ ≤ C * (ε / (3 * C)) :=
+          mul_le_mul_of_nonneg_right hnorm_le_C (by positivity)
+      _ = ε / 3 := by field_simp
+  have h_target_piece : |∫ x, g_M x ∂ν - ∫ x, f (-x) * Real.exp x ∂ν| ≤ ε / 3 := by
+    have h_gM_eq : ∫ x, g_M x ∂ν = ∫ x, f (-x) * min (Real.exp x) M ∂ν :=
+      integral_congr_ae (Filter.Eventually.of_forall (fun x => hg_M_apply x))
+    rw [h_gM_eq, abs_sub_comm]
+    calc |∫ x, f (-x) * Real.exp x ∂ν - ∫ x, f (-x) * min (Real.exp x) M ∂ν|
+        ≤ ‖f‖ * ∫ x, (Real.exp x - min (Real.exp x) M) ∂ν := h_res_ν
+      _ ≤ ‖f‖ * (ε / (3 * C)) :=
+          mul_le_mul_of_nonneg_left h_target_bound_ν h_res_nonneg
+      _ ≤ C * (ε / (3 * C)) :=
+          mul_le_mul_of_nonneg_right hnorm_le_C (by positivity)
+      _ = ε / 3 := by field_simp
+  -- Triangle inequality: split A - E = (A - B) + (B - D) + (D - E).
+  set A := ∫ x, f (-x) * Real.exp x ∂((P n).map (L n))
+  set B := ∫ x, g_M x ∂((P n).map (L n))
+  set D := ∫ x, g_M x ∂ν
+  set E := ∫ x, f (-x) * Real.exp x ∂ν
+  have h_split : A - E = (A - B) + (B - D) + (D - E) := by ring
+  rw [h_split]
+  calc |(A - B) + (B - D) + (D - E)|
+      ≤ |(A - B) + (B - D)| + |D - E| := abs_add_le _ _
+    _ ≤ |A - B| + |B - D| + |D - E| := by linarith [abs_add_le (A - B) (B - D)]
+    _ < ε / 3 + ε / 3 + ε / 3 := by linarith [h_seq_piece, h_weak_bound, h_target_piece]
+    _ = ε := by ring
 
 end ReverseDirection
 
+/-- **Le Cam's first lemma** (vdV Example 6.5, mutual-contiguity form).
 
+If the log-likelihood ratio `L n = log dQ_n/dP_n` is asymptotically `N(-σ²/2, σ²)` under
+`P n`, then `P n ⊲⊳ Q n`.
 
+The reverse direction `P ⊲ Q` is obtained by applying the forward direction with `P` and
+`Q` swapped and `L` negated:
+* the inverse-density identity `P = Q.withDensity (exp ∘ (-L))` (from
+  `P_eq_Q_withDensity_neg`);
+* the tilted weak convergence `(Q n).map (-L n) → N(-v/2, v)` (from
+  `weakConverges_Q_neg_L_gaussianReal_neg_half`). -/
+theorem mutuallyContiguous_of_asymptotically_log_normal
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    (P Q : ∀ n, Measure (Ω n))
+    [∀ n, IsProbabilityMeasure (P n)] [∀ n, IsProbabilityMeasure (Q n)]
+    (L : ∀ n, Ω n → ℝ) (hL_meas : ∀ n, Measurable (L n))
+    (hL_is_log_ratio : ∀ n,
+        Q n = (P n).withDensity (fun ω => ENNReal.ofReal (Real.exp (L n ω))))
+    (v : NNReal)
+    (h_weak :
+      WeakConverges (fun n => (P n).map (L n))
+        (ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v)) :
+    MutuallyContiguous (ι := ℕ) (Ω := Ω) atTop P Q := by
+  refine ⟨contiguous_of_asymptotically_log_normal P Q L hL_meas hL_is_log_ratio v h_weak, ?_⟩
+  -- Reverse direction: apply the forward direction with `P` ↔ `Q` and `L ↦ -L`.
+  have h_inv : ∀ n, P n = (Q n).withDensity (fun ω => ENNReal.ofReal (Real.exp (-L n ω))) :=
+    P_eq_Q_withDensity_neg P Q L hL_meas hL_is_log_ratio
+  have h_weak_neg :
+      WeakConverges (fun n => (Q n).map (fun ω => -L n ω))
+        (ProbabilityTheory.gaussianReal (-(v : ℝ) / 2) v) :=
+    weakConverges_Q_neg_L_gaussianReal_neg_half P Q L hL_meas hL_is_log_ratio v h_weak
+  exact contiguous_of_asymptotically_log_normal Q P (fun n ω => -L n ω)
+    (fun n => (hL_meas n).neg) h_inv v h_weak_neg
 
+/-! ## Le Cam's third lemma -/
+
+/-- **Le Cam's third lemma** (vdV Theorem 6.6).
+
+`P_n ⊲⊳ Q_n`, together with joint weak convergence of `(X_n, L_n)` under `P_n` to the
+law `π` on `E × ℝ` (the law of `(X, V)`), yields that `X_n` converges weakly under `Q_n`
+to the tilted marginal `Measure.map Prod.fst (π.withDensity (exp ∘ Prod.snd))`.
+
+This formulation takes the sequence-side UI (`h_UI`) and the target-side integrability
+(`h_exp_int_π` + `h_exp_int_π_eq_one`) as explicit hypotheses, rather than deriving them
+from `hcont`. In the log-normal log-likelihood setting (the main application, Step 5 of
+Theorem 7.10), `h_UI` is discharged via `uniform_integrability_exp_L`, and the target-side
+facts follow from weak convergence + sequence-side integral normalization. -/
+theorem weak_limit_under_Q_of_lecam_third
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    {E : Type*} [MeasurableSpace E] [TopologicalSpace E] [OpensMeasurableSpace E]
+    (P Q : ∀ n, Measure (Ω n))
+    [∀ n, IsProbabilityMeasure (P n)] [∀ n, IsProbabilityMeasure (Q n)]
+    (X : ∀ n, Ω n → E) (L : ∀ n, Ω n → ℝ)
+    (hX_meas : ∀ n, Measurable (X n)) (hL_meas : ∀ n, Measurable (L n))
+    (hL_is_log_ratio : ∀ n,
+        Q n = (P n).withDensity (fun ω => ENNReal.ofReal (Real.exp (L n ω))))
+    (π : Measure (E × ℝ)) [IsProbabilityMeasure π]
+    (h_joint_weak :
+      WeakConverges (fun n => (P n).map (fun ω => (X n ω, L n ω))) π)
+    (h_UI : ∀ ε : ℝ, 0 < ε →
+      ∃ M : ℝ, 0 ≤ M ∧ ∃ N₀ : ℕ, ∀ n, N₀ ≤ n →
+        ∫ ω, Real.exp (L n ω) - min (Real.exp (L n ω)) M ∂(P n) ≤ ε)
+    (h_exp_int_π : Integrable (fun p : E × ℝ => Real.exp p.2) π)
+    (h_exp_int_π_eq_one : ∫ p, Real.exp p.2 ∂π = 1) :
+    WeakConverges (fun n => (Q n).map (X n))
+      ((π.withDensity (fun p => ENNReal.ofReal (Real.exp p.2))).map Prod.fst) := by
+  intro f
+  -- Rewrite RHS (target integral over tilted marginal) as ∫ f(p.1)·exp(p.2) dπ.
+  have h_target_rewrite : ∫ x, f x ∂((π.withDensity
+        (fun p : E × ℝ => ENNReal.ofReal (Real.exp p.2))).map Prod.fst)
+      = ∫ p, f p.1 * Real.exp p.2 ∂π := by
+    have h_exp_meas_snd : Measurable (fun p : E × ℝ => ENNReal.ofReal (Real.exp p.2)) :=
+      (Real.continuous_exp.measurable.comp measurable_snd).ennreal_ofReal
+    have h_exp_lt_top : ∀ᵐ p ∂π, ENNReal.ofReal (Real.exp p.2) < ∞ :=
+      Filter.Eventually.of_forall (fun _ => ENNReal.ofReal_lt_top)
+    rw [MeasureTheory.integral_map measurable_fst.aemeasurable
+        f.continuous.aestronglyMeasurable]
+    rw [integral_withDensity_eq_integral_toReal_smul h_exp_meas_snd h_exp_lt_top
+        (fun p => f p.1)]
+    refine integral_congr_ae (Filter.Eventually.of_forall (fun p => ?_))
+    change (ENNReal.ofReal (Real.exp p.2)).toReal • f p.1 = f p.1 * Real.exp p.2
+    rw [ENNReal.toReal_ofReal (Real.exp_pos _).le, smul_eq_mul, mul_comm]
+  rw [h_target_rewrite]
+  -- Rewrite each LHS term: ∫ f d((Q n).map X_n) = ∫ p, f(p.1)·exp(p.2) d((P n).map (X_n, L_n)).
+  have h_seq_rewrite : ∀ n, ∫ x, f x ∂((Q n).map (X n))
+      = ∫ p, f p.1 * Real.exp p.2 ∂((P n).map (fun ω => (X n ω, L n ω))) := by
+    intro n
+    have h_exp_meas_Ln : Measurable (fun ω => ENNReal.ofReal (Real.exp (L n ω))) :=
+      (Real.continuous_exp.measurable.comp (hL_meas n)).ennreal_ofReal
+    have h_exp_lt_top : ∀ᵐ ω ∂(P n), ENNReal.ofReal (Real.exp (L n ω)) < ∞ :=
+      Filter.Eventually.of_forall (fun _ => ENNReal.ofReal_lt_top)
+    have h_joint_meas : Measurable (fun ω => (X n ω, L n ω)) :=
+      (hX_meas n).prodMk (hL_meas n)
+    have h_integrand_meas :
+        AEStronglyMeasurable (fun p : E × ℝ => f p.1 * Real.exp p.2)
+          ((P n).map (fun ω => (X n ω, L n ω))) :=
+      ((f.continuous.comp continuous_fst).mul
+        (Real.continuous_exp.comp continuous_snd)).aestronglyMeasurable
+    calc ∫ x, f x ∂((Q n).map (X n))
+        = ∫ ω, f (X n ω) ∂(Q n) :=
+          MeasureTheory.integral_map (hX_meas n).aemeasurable
+            f.continuous.aestronglyMeasurable
+      _ = ∫ ω, f (X n ω)
+            ∂((P n).withDensity (fun ω => ENNReal.ofReal (Real.exp (L n ω)))) := by
+          rw [← hL_is_log_ratio n]
+      _ = ∫ ω, (ENNReal.ofReal (Real.exp (L n ω))).toReal • f (X n ω) ∂(P n) :=
+          integral_withDensity_eq_integral_toReal_smul h_exp_meas_Ln h_exp_lt_top
+            (fun ω => f (X n ω))
+      _ = ∫ ω, f (X n ω) * Real.exp (L n ω) ∂(P n) := by
+          refine integral_congr_ae (Filter.Eventually.of_forall (fun ω => ?_))
+          change (ENNReal.ofReal (Real.exp (L n ω))).toReal • f (X n ω)
+            = f (X n ω) * Real.exp (L n ω)
+          rw [ENNReal.toReal_ofReal (Real.exp_pos _).le, smul_eq_mul, mul_comm]
+      _ = ∫ p, f p.1 * Real.exp p.2
+            ∂((P n).map (fun ω => (X n ω, L n ω))) :=
+          (MeasureTheory.integral_map h_joint_meas.aemeasurable h_integrand_meas).symm
+  simp_rw [h_seq_rewrite]
+  -- Residue bound on both sides via BCF truncation + triangle inequality.
+  have hfbound : ∀ p : E × ℝ, |f p.1| ≤ ‖f‖ := fun p => f.norm_coe_le_norm _
+  have h_exp_nonneg : ∀ x : ℝ, 0 ≤ Real.exp x := fun x => (Real.exp_pos _).le
+  -- Generic helper: |∫ f(p.1)·exp(p.2) dμ - ∫ f(p.1)·min(exp(p.2), M) dμ|
+  --  ≤ ‖f‖ · ∫ (exp p.2 - min(exp p.2, M)) dμ, for any measure μ on E × ℝ with `exp p.2`
+  -- integrable.
+  have h_residue_EℝR :
+      ∀ (μ : Measure (E × ℝ)) (M : ℝ), 0 ≤ M →
+        Integrable (fun p : E × ℝ => Real.exp p.2) μ →
+        |∫ p, f p.1 * Real.exp p.2 ∂μ - ∫ p, f p.1 * min (Real.exp p.2) M ∂μ|
+          ≤ ‖f‖ * ∫ p, (Real.exp p.2 - min (Real.exp p.2) M) ∂μ := by
+    intro μ M hM h_exp_int
+    have h_min_nn : ∀ p : E × ℝ, 0 ≤ min (Real.exp p.2) M := fun p =>
+      le_min (h_exp_nonneg _) hM
+    have h_min_le : ∀ p : E × ℝ, min (Real.exp p.2) M ≤ Real.exp p.2 :=
+      fun p => min_le_left _ _
+    have h_min_meas : Measurable (fun p : E × ℝ => min (Real.exp p.2) M) :=
+      (Real.continuous_exp.measurable.comp measurable_snd).min measurable_const
+    have h_min_int : Integrable (fun p : E × ℝ => min (Real.exp p.2) M) μ := by
+      refine h_exp_int.mono' h_min_meas.aestronglyMeasurable
+        (Filter.Eventually.of_forall (fun p => ?_))
+      simp only [Real.norm_eq_abs, abs_of_nonneg (h_min_nn p)]
+      exact h_min_le p
+    have hf_ae :
+        AEStronglyMeasurable (fun p : E × ℝ => f p.1) μ :=
+      (f.continuous.comp continuous_fst).aestronglyMeasurable
+    have hf_bound_ae : ∀ᵐ p ∂μ, ‖f p.1‖ ≤ ‖f‖ :=
+      Filter.Eventually.of_forall (fun p => f.norm_coe_le_norm _)
+    have h_fexp_int : Integrable (fun p : E × ℝ => f p.1 * Real.exp p.2) μ :=
+      h_exp_int.bdd_mul hf_ae hf_bound_ae
+    have h_fmin_int :
+        Integrable (fun p : E × ℝ => f p.1 * min (Real.exp p.2) M) μ :=
+      h_min_int.bdd_mul hf_ae hf_bound_ae
+    rw [← integral_sub h_fexp_int h_fmin_int]
+    have h_diff_eq :
+        (fun p : E × ℝ => f p.1 * Real.exp p.2 - f p.1 * min (Real.exp p.2) M)
+          = fun p => f p.1 * (Real.exp p.2 - min (Real.exp p.2) M) := by
+      funext p; ring
+    rw [h_diff_eq]
+    calc |∫ p, f p.1 * (Real.exp p.2 - min (Real.exp p.2) M) ∂μ|
+        ≤ ∫ p, |f p.1 * (Real.exp p.2 - min (Real.exp p.2) M)| ∂μ :=
+          abs_integral_le_integral_abs
+      _ = ∫ p, |f p.1| * (Real.exp p.2 - min (Real.exp p.2) M) ∂μ := by
+          refine integral_congr_ae (Filter.Eventually.of_forall (fun p => ?_))
+          change |f p.1 * (Real.exp p.2 - min (Real.exp p.2) M)|
+            = |f p.1| * (Real.exp p.2 - min (Real.exp p.2) M)
+          rw [abs_mul, abs_of_nonneg (sub_nonneg.mpr (h_min_le p))]
+      _ ≤ ∫ p, ‖f‖ * (Real.exp p.2 - min (Real.exp p.2) M) ∂μ := by
+          refine integral_mono_of_nonneg
+            (Filter.Eventually.of_forall
+              (fun p => mul_nonneg (abs_nonneg _) (sub_nonneg.mpr (h_min_le p))))
+            ((h_exp_int.sub h_min_int).const_mul ‖f‖)
+            (Filter.Eventually.of_forall (fun p => ?_))
+          refine mul_le_mul_of_nonneg_right ?_ (sub_nonneg.mpr (h_min_le p))
+          exact hfbound p
+      _ = ‖f‖ * ∫ p, (Real.exp p.2 - min (Real.exp p.2) M) ∂μ :=
+          integral_const_mul _ _
+  -- Target-side tendsto: as M → ∞, ∫ min(exp p.2, M) dπ → ∫ exp p.2 dπ = 1 (DCT under π).
+  have h_target_tendsto : Tendsto
+      (fun M : ℕ => ∫ p, min (Real.exp p.2) (M : ℝ) ∂π) atTop (𝓝 1) := by
+    have h_lim : ∀ᵐ p ∂π,
+        Tendsto (fun M : ℕ => min (Real.exp p.2) (M : ℝ)) atTop (𝓝 (Real.exp p.2)) := by
+      refine Filter.Eventually.of_forall (fun p => ?_)
+      apply tendsto_const_nhds.congr'
+      filter_upwards [eventually_ge_atTop ⌈Real.exp p.2⌉₊] with M hM
+      have : Real.exp p.2 ≤ (M : ℝ) :=
+        (Nat.le_ceil _).trans (by exact_mod_cast hM)
+      exact (min_eq_left this).symm
+    have h_dom : ∀ M : ℕ, ∀ᵐ p ∂π,
+        ‖min (Real.exp p.2) (M : ℝ)‖ ≤ Real.exp p.2 := by
+      intro M
+      refine Filter.Eventually.of_forall (fun p => ?_)
+      rw [Real.norm_eq_abs, abs_of_nonneg (le_min (h_exp_nonneg _) (Nat.cast_nonneg _))]
+      exact min_le_left _ _
+    have h_meas : ∀ M : ℕ,
+        AEStronglyMeasurable (fun p : E × ℝ => min (Real.exp p.2) (M : ℝ)) π :=
+      fun M => ((Real.continuous_exp.comp continuous_snd).min
+        continuous_const).aestronglyMeasurable
+    have h_conv := MeasureTheory.tendsto_integral_of_dominated_convergence
+      (F := fun (M : ℕ) (p : E × ℝ) => min (Real.exp p.2) (M : ℝ))
+      (f := fun p : E × ℝ => Real.exp p.2) (bound := fun p : E × ℝ => Real.exp p.2)
+      h_meas h_exp_int_π h_dom h_lim
+    rw [h_exp_int_π_eq_one] at h_conv
+    exact h_conv
+  -- Start ε argument.
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  set C : ℝ := ‖f‖ + 1 with hC_def
+  have hC_pos : 0 < C := by positivity
+  have hnorm_le_C : ‖f‖ ≤ C := by simp [hC_def]
+  have hthresh_pos : 0 < ε / (3 * C) := by positivity
+  -- UI threshold on sequence side.
+  obtain ⟨M_UI, hM_UI_nonneg, N_UI, hN_UI⟩ :=
+    h_UI (ε / (3 * C)) hthresh_pos
+  -- Target-side pick M_target so `1 - ε/(3C) < ∫ min(exp, M_target) dπ`.
+  have h_ev_target : ∀ᶠ M : ℕ in atTop,
+      (1 : ℝ) - ε / (3 * C) < ∫ p, min (Real.exp p.2) (M : ℝ) ∂π := by
+    have h_mem : Set.Ioi ((1 : ℝ) - ε / (3 * C)) ∈ 𝓝 (1 : ℝ) :=
+      Ioi_mem_nhds (by linarith)
+    exact h_target_tendsto h_mem
+  obtain ⟨M_target, hM_target⟩ := h_ev_target.exists
+  -- Take M := max M_UI (M_target : ℝ).
+  set M : ℝ := max M_UI (M_target : ℝ) with hM_def
+  have hM_nonneg : 0 ≤ M := le_max_of_le_left hM_UI_nonneg
+  have hM_ge_UI : M_UI ≤ M := le_max_left _ _
+  have hM_ge_target : (M_target : ℝ) ≤ M := le_max_right _ _
+  -- BCF `g_M(p) := f(p.1) · min(exp(p.2), M)`, norm ≤ ‖f‖ · M.
+  let g_M : E × ℝ →ᵇ ℝ := BoundedContinuousFunction.ofNormedAddCommGroup
+    (fun p => f p.1 * min (Real.exp p.2) M)
+    ((f.continuous.comp continuous_fst).mul
+      ((Real.continuous_exp.comp continuous_snd).min continuous_const))
+    (‖f‖ * M)
+    (fun p => by
+      rw [Real.norm_eq_abs, abs_mul]
+      have h2 : 0 ≤ min (Real.exp p.2) M :=
+        le_min (h_exp_nonneg _) hM_nonneg
+      rw [abs_of_nonneg h2]
+      refine mul_le_mul ?_ (min_le_right _ _) h2 (norm_nonneg _)
+      exact hfbound p)
+  have hg_M_apply : ∀ p, g_M p = f p.1 * min (Real.exp p.2) M := fun _ => rfl
+  -- Weak convergence at g_M.
+  have h_weak_gM := h_joint_weak g_M
+  rw [Metric.tendsto_nhds] at h_weak_gM
+  have hε3_pos : (0 : ℝ) < ε / 3 := by linarith
+  obtain ⟨N_weak, hN_weak⟩ :=
+    Filter.eventually_atTop.mp (h_weak_gM (ε / 3) hε3_pos)
+  rw [Filter.eventually_atTop]
+  refine ⟨max N_UI N_weak, fun n hn => ?_⟩
+  have hn_UI : N_UI ≤ n := le_of_max_le_left hn
+  have hn_weak : N_weak ≤ n := le_of_max_le_right hn
+  -- Sequence-side: `exp` integrable under `(P n).map (X_n, L_n)`.
+  have h_exp_int_Pn : Integrable (fun ω => Real.exp (L n ω)) (P n) :=
+    exp_L_integrable P Q L hL_meas hL_is_log_ratio n
+  have h_joint_meas : Measurable (fun ω => (X n ω, L n ω)) :=
+    (hX_meas n).prodMk (hL_meas n)
+  have h_exp_int_map_n :
+      Integrable (fun p : E × ℝ => Real.exp p.2)
+        ((P n).map (fun ω => (X n ω, L n ω))) :=
+    (MeasureTheory.integrable_map_measure
+      (Real.continuous_exp.comp continuous_snd).aestronglyMeasurable
+      h_joint_meas.aemeasurable).mpr h_exp_int_Pn
+  -- UI bound at enlarged M: monotonicity of min(exp, ·) in M.
+  have h_min_mono_M : ∀ ω,
+      min (Real.exp (L n ω)) M_UI ≤ min (Real.exp (L n ω)) M :=
+    fun ω => min_le_min_left _ hM_ge_UI
+  have h_int_trunc_UI : Integrable
+      (fun ω => Real.exp (L n ω) - min (Real.exp (L n ω)) M_UI) (P n) := by
+    refine h_exp_int_Pn.sub ?_
+    refine h_exp_int_Pn.mono'
+      ((Real.continuous_exp.measurable.comp (hL_meas n)).min
+        measurable_const).aestronglyMeasurable
+      (Filter.Eventually.of_forall (fun ω => ?_))
+    simp only [Real.norm_eq_abs,
+      abs_of_nonneg (le_min (h_exp_nonneg _) hM_UI_nonneg)]
+    exact min_le_left _ _
+  have h_UI_bound_Pn :
+      ∫ ω, (Real.exp (L n ω) - min (Real.exp (L n ω)) M) ∂(P n) ≤ ε / (3 * C) :=
+    calc ∫ ω, Real.exp (L n ω) - min (Real.exp (L n ω)) M ∂(P n)
+        ≤ ∫ ω, Real.exp (L n ω) - min (Real.exp (L n ω)) M_UI ∂(P n) :=
+          integral_mono_of_nonneg
+            (Filter.Eventually.of_forall
+              (fun ω => sub_nonneg.mpr (min_le_left _ _)))
+            h_int_trunc_UI
+            (Filter.Eventually.of_forall
+              (fun ω => by linarith [h_min_mono_M ω]))
+      _ ≤ ε / (3 * C) := hN_UI n hn_UI
+  have h_UI_bound_map_n :
+      ∫ p, (Real.exp p.2 - min (Real.exp p.2) M)
+          ∂((P n).map (fun ω => (X n ω, L n ω)))
+        ≤ ε / (3 * C) := by
+    rw [MeasureTheory.integral_map h_joint_meas.aemeasurable]
+    · exact h_UI_bound_Pn
+    · exact ((Real.continuous_exp.comp continuous_snd).sub
+        ((Real.continuous_exp.comp continuous_snd).min
+          continuous_const)).aestronglyMeasurable
+  -- Target-side residue bound:
+  have h_trunc_int_π : Integrable (fun p : E × ℝ => min (Real.exp p.2) M) π := by
+    refine h_exp_int_π.mono'
+      ((Real.continuous_exp.comp continuous_snd).min
+        continuous_const).aestronglyMeasurable
+      (Filter.Eventually.of_forall (fun p => ?_))
+    simp only [Real.norm_eq_abs, abs_of_nonneg (le_min (h_exp_nonneg _) hM_nonneg)]
+    exact min_le_left _ _
+  have h_target_trunc_M_lb :
+      (1 : ℝ) - ε / (3 * C) ≤ ∫ p, min (Real.exp p.2) M ∂π := by
+    have h_mono :
+        ∫ p, min (Real.exp p.2) (M_target : ℝ) ∂π
+          ≤ ∫ p, min (Real.exp p.2) M ∂π := by
+      refine integral_mono_of_nonneg
+        (Filter.Eventually.of_forall
+          (fun p => le_min (h_exp_nonneg _) (Nat.cast_nonneg _)))
+        h_trunc_int_π
+        (Filter.Eventually.of_forall (fun p => min_le_min_left _ hM_ge_target))
+    linarith [hM_target]
+  have h_target_bound_π :
+      ∫ p, (Real.exp p.2 - min (Real.exp p.2) M) ∂π ≤ ε / (3 * C) := by
+    rw [integral_sub h_exp_int_π h_trunc_int_π, h_exp_int_π_eq_one]
+    linarith [h_target_trunc_M_lb]
+  -- Apply residue bound on both sides.
+  have h_res_map_n := h_residue_EℝR ((P n).map (fun ω => (X n ω, L n ω))) M hM_nonneg
+    h_exp_int_map_n
+  have h_res_π := h_residue_EℝR π M hM_nonneg h_exp_int_π
+  -- Triangle inequality.
+  rw [Real.dist_eq]
+  have h_weak_bound :
+      |∫ p, g_M p ∂((P n).map (fun ω => (X n ω, L n ω))) - ∫ p, g_M p ∂π| < ε / 3 := by
+    have := hN_weak n hn_weak
+    rwa [Real.dist_eq] at this
+  have h_res_nonneg : 0 ≤ ‖f‖ := norm_nonneg _
+  have h_seq_piece :
+      |∫ p, f p.1 * Real.exp p.2 ∂((P n).map (fun ω => (X n ω, L n ω)))
+        - ∫ p, g_M p ∂((P n).map (fun ω => (X n ω, L n ω)))| ≤ ε / 3 := by
+    have h_gM_eq :
+        ∫ p, g_M p ∂((P n).map (fun ω => (X n ω, L n ω)))
+          = ∫ p, f p.1 * min (Real.exp p.2) M
+              ∂((P n).map (fun ω => (X n ω, L n ω))) :=
+      integral_congr_ae (Filter.Eventually.of_forall (fun p => hg_M_apply p))
+    rw [h_gM_eq]
+    calc |∫ p, f p.1 * Real.exp p.2 ∂((P n).map (fun ω => (X n ω, L n ω)))
+            - ∫ p, f p.1 * min (Real.exp p.2) M
+                ∂((P n).map (fun ω => (X n ω, L n ω)))|
+        ≤ ‖f‖ * ∫ p, (Real.exp p.2 - min (Real.exp p.2) M)
+              ∂((P n).map (fun ω => (X n ω, L n ω))) := h_res_map_n
+      _ ≤ ‖f‖ * (ε / (3 * C)) :=
+          mul_le_mul_of_nonneg_left h_UI_bound_map_n h_res_nonneg
+      _ ≤ C * (ε / (3 * C)) :=
+          mul_le_mul_of_nonneg_right hnorm_le_C (by positivity)
+      _ = ε / 3 := by field_simp
+  have h_target_piece :
+      |∫ p, g_M p ∂π - ∫ p, f p.1 * Real.exp p.2 ∂π| ≤ ε / 3 := by
+    have h_gM_eq :
+        ∫ p, g_M p ∂π = ∫ p, f p.1 * min (Real.exp p.2) M ∂π :=
+      integral_congr_ae (Filter.Eventually.of_forall (fun p => hg_M_apply p))
+    rw [h_gM_eq, abs_sub_comm]
+    calc |∫ p, f p.1 * Real.exp p.2 ∂π - ∫ p, f p.1 * min (Real.exp p.2) M ∂π|
+        ≤ ‖f‖ * ∫ p, (Real.exp p.2 - min (Real.exp p.2) M) ∂π := h_res_π
+      _ ≤ ‖f‖ * (ε / (3 * C)) :=
+          mul_le_mul_of_nonneg_left h_target_bound_π h_res_nonneg
+      _ ≤ C * (ε / (3 * C)) :=
+          mul_le_mul_of_nonneg_right hnorm_le_C (by positivity)
+      _ = ε / 3 := by field_simp
+  set A := ∫ p, f p.1 * Real.exp p.2 ∂((P n).map (fun ω => (X n ω, L n ω)))
+  set B := ∫ p, g_M p ∂((P n).map (fun ω => (X n ω, L n ω)))
+  set D := ∫ p, g_M p ∂π
+  set E' := ∫ p, f p.1 * Real.exp p.2 ∂π
+  have h_split : A - E' = (A - B) + (B - D) + (D - E') := by ring
+  rw [h_split]
+  calc |(A - B) + (B - D) + (D - E')|
+      ≤ |(A - B) + (B - D)| + |D - E'| := abs_add_le _ _
+    _ ≤ |A - B| + |B - D| + |D - E'| := by linarith [abs_add_le (A - B) (B - D)]
+    _ < ε / 3 + ε / 3 + ε / 3 := by linarith [h_seq_piece, h_weak_bound, h_target_piece]
+    _ = ε := by ring
+
+/-- ENNReal-density form of Le Cam's third lemma (vdV Example 6.7).
+
+For an almost everywhere positive finite density `ρ_n : Ω → ℝ≥0∞`, set
+`L_n := log (ρ_n).toReal` and apply the exponential-density form of the
+theorem. The joint weak-convergence hypothesis is stated directly for
+`(X n ω, Real.log (ρ n ω).toReal)`. -/
+theorem weak_limit_under_Q_of_lecam_third_ennreal
+    {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
+    {E : Type*} [MeasurableSpace E] [TopologicalSpace E] [OpensMeasurableSpace E]
+    (P Q : ∀ n, Measure (Ω n))
+    [∀ n, IsProbabilityMeasure (P n)] [∀ n, IsProbabilityMeasure (Q n)]
+    (X : ∀ n, Ω n → E) (ρ : ∀ n, Ω n → ℝ≥0∞)
+    (hX_meas : ∀ n, Measurable (X n)) (hρ_meas : ∀ n, Measurable (ρ n))
+    (hQ_density : ∀ n, Q n = (P n).withDensity (ρ n))
+    (hρ_AE_pos : ∀ n, ∀ᵐ ω ∂(P n), 0 < ρ n ω ∧ ρ n ω < ⊤)
+    (π : Measure (E × ℝ)) [IsProbabilityMeasure π]
+    (h_joint_weak :
+      WeakConverges
+        (fun n => (P n).map
+          (fun ω => (X n ω, Real.log (ρ n ω).toReal))) π)
+    (h_UI : ∀ ε : ℝ, 0 < ε →
+      ∃ M : ℝ, 0 ≤ M ∧ ∃ N₀ : ℕ, ∀ n, N₀ ≤ n →
+        ∫ ω, Real.exp (Real.log (ρ n ω).toReal)
+              - min (Real.exp (Real.log (ρ n ω).toReal)) M ∂(P n) ≤ ε)
+    (h_exp_int_π : Integrable (fun p : E × ℝ => Real.exp p.2) π)
+    (h_exp_int_π_eq_one : ∫ p, Real.exp p.2 ∂π = 1) :
+    WeakConverges (fun n => (Q n).map (X n))
+      ((π.withDensity (fun p => ENNReal.ofReal (Real.exp p.2))).map Prod.fst) := by
+  set L_n : ∀ n, Ω n → ℝ := fun n ω => Real.log (ρ n ω).toReal with hL_n_def
+  have hL_n_meas : ∀ n, Measurable (L_n n) := fun n =>
+    ((hρ_meas n).ennreal_toReal).log
+  have hρ_eq_exp : ∀ n, ρ n =ᵐ[P n]
+      fun ω => ENNReal.ofReal (Real.exp (L_n n ω)) := by
+    intro n
+    filter_upwards [hρ_AE_pos n] with ω hω
+    obtain ⟨hpos, hfin⟩ := hω
+    have h_toReal_pos : (0 : ℝ) < (ρ n ω).toReal :=
+      ENNReal.toReal_pos hpos.ne' hfin.ne
+    rw [hL_n_def]
+    rw [Real.exp_log h_toReal_pos]
+    exact (ENNReal.ofReal_toReal hfin.ne).symm
+  have hQ_via_exp : ∀ n,
+      Q n = (P n).withDensity
+              (fun ω => ENNReal.ofReal (Real.exp (L_n n ω))) := by
+    intro n
+    rw [hQ_density]
+    exact MeasureTheory.withDensity_congr_ae (hρ_eq_exp n)
+  exact weak_limit_under_Q_of_lecam_third
+    (Ω := Ω) (E := E) (P := P) (Q := Q) (X := X) (L := L_n)
+    hX_meas hL_n_meas hQ_via_exp π h_joint_weak h_UI
+    h_exp_int_π h_exp_int_π_eq_one
 
 /-! ## Le Cam variants under asymptotic density comparison
 
-The results below use asymptotic normalization and an integral-comparison
-bound with vanishing slack in place of an exact density identity. Such a
-bound permits a vanishing singular component without common support.
--/
+The two lemmas below are asymptotic-footing reformulations of `uniform_integrability_exp_L`
+and `weak_limit_under_Q_of_lecam_third`. They replace the **exact** change-of-measure
+hypothesis `hL_is_log_ratio` (`Q n = (P n).withDensity (exp ∘ L n)`, which forces absolute
+continuity hence common support) by asymptotic data: an integral-comparison bound with
+vanishing slack and a mass hypothesis `∫ exp(L n) dP_n → 1`. Their conclusions agree
+with the exact-density formulations. -/
 
 /-- **Uniform-integrability of `exp(L n)` from `∫ exp(L n) dP_n → 1`.**
 
-The hypotheses include integrability of `exp(L n)`, asymptotic normalization
-`∫ exp(L n) dP_n → 1`, and weak convergence of the laws of `L n` to
-`gaussianReal (-(v : ℝ) / 2) v`.
+The exact identity `hL_is_log_ratio` is replaced by integrability of
+`exp(L n)` and the asymptotic normalization `∫ exp(L n) dP_n → 1`.
 
-In the Gaussian truncation argument, the exact term `1 − ∫min` becomes
+The proof follows the Gaussian truncation argument of
+`uniform_integrability_exp_L`. The exact term `1 − ∫min` becomes
 `(∫ exp(L n) dP_n) − ∫min = (1 + δₙ) − ∫min`. Split ε across the `δₙ` slack and the
 truncation gap; `δₙ = o(1)` is absorbable but must be carried explicitly (UI only needs
 `≤ ε` eventually). -/
@@ -1624,9 +4027,9 @@ lemma uniform_integrability_exp_L_of_integral_tendsto_one
     (P Q : ∀ n, Measure (Ω n))
     [∀ n, IsProbabilityMeasure (P n)] [∀ n, IsProbabilityMeasure (Q n)]
     (L : ∀ n, Ω n → ℝ) (hL_meas : ∀ n, Measurable (L n))
-    -- Integrability makes the exponentially tilted measure finite.
+    -- measure `P_n.withDensity (exp(L n))` is a finite sub-probability measure (mass ≤ 1).
     (h_exp_int : ∀ n, Integrable (fun ω => Real.exp (L n ω)) (P n))
-    -- The exponentially tilted masses converge to one.
+    -- asymptotic singular-mass control (not common support).
     (h_mass : Tendsto (fun n => ∫ ω, Real.exp (L n ω) ∂(P n)) atTop (𝓝 1))
     (v : NNReal)
     (h_weak :
@@ -2074,7 +4477,7 @@ theorem weak_limit_under_Q_of_lecam_third_of_integral_comparison
 
 /-! ## Le Cam's first lemma — full four-way equivalence (vdV Lemma 6.4)
 
-The four equivalent characterizations of contiguity are from van der Vaart
+We package the four equivalent characterizations of contiguity from van der Vaart
 Lemma 6.4. The notion `Contiguous atTop P Q` (`Q ⊲ P`) is the book's statement (i)
 in event form; its statistic form is statement (iv). Statements (ii) and (iii)
 concern the weak limit points of the likelihood ratios `dPₙ/dQₙ` (under `Qₙ`) and
@@ -2095,8 +4498,8 @@ every sequence of measurable real-valued statistics `T n : Ω n → ℝ` that co
 in `P`-probability (`∀ ε > 0, (P n) {|T n| ≥ ε} → 0`), it also converges to `0` in
 `Q`-probability.
 
-Book reduction: events `Aₙ = {|Tₙ| ≥ ε}` (event form ⟹ statistic form), and
-statistics `Tₙ = 1_{Aₙ}` (statistic form ⟹ event form). Pure measure theory. -/
+Book reduction: events `Aₙ = {|Tₙ| ≥ ε}` (statistic ⟹ event), and statistics
+`Tₙ = 1_{Aₙ}` (event ⟹ statistic). Pure measure theory. -/
 theorem contiguous_iff_tendsto_zero_statistics
     {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
     (P Q : ∀ n, Measure (Ω n)) :
@@ -2161,7 +4564,8 @@ Book: `gₙ(c) = Qₙ(dPₙ/dQₙ < c) − U(< c)`; portmanteau `liminf gₙ(c) 
 set `{· < c}`; a slowly decreasing `εₙ ↓ 0`; contiguity kills `Qₙ(dPₙ/dQₙ < εₙ) → 0`.
 
 The hypothesis `hac : ∀ k, P (φ k) ≪ Q (φ k)` makes the real-valued density
-`(dPₙ/dQₙ).toReal` a density capturing all of `Pₙ`.
+`(dPₙ/dQₙ).toReal` honest (it captures all of `Pₙ`): without it the claim is false (take
+`Pₙ ⊥ Qₙ`, then `dPₙ/dQₙ = 0` `Qₙ`-a.e. so `U = δ₀`, yet contiguity `Q ⊲ P` can hold).
 This is van der Vaart's implicit likelihood-ratio convention. -/
 theorem contiguous_imp_limit_pos
     {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
@@ -2924,7 +5328,7 @@ the integrand on the right understood as `0` at `w = 0` (which it is, since the 
 vanishes there). This is the engine for both the `V`-side (`R = P, S = Q`) and the
 `U`-side (`R = Q, S = P`) change-of-variables in the book proof.
 
-The function `g` is bounded and continuous, as expressed by the bounded-continuous bundle. -/
+We require `g` to be honest-bounded and continuous via the bounded-continuous bundle. -/
 private lemma cov_ratio_integral {α : Type*} [MeasurableSpace α]
     (R S : Measure α) [IsProbabilityMeasure R] [IsProbabilityMeasure S]
     (g : ℝ →ᵇ ℝ) :
@@ -3289,7 +5693,7 @@ theorem limit_pos_imp_mean_one
       g.continuous.aestronglyMeasurable]
     -- bridge with `R = Q, S = P`: `= ∫ v·g((2-v)/v) ∂(μ(ρj).map ((Q.rnDeriv μ).toReal))`.
     rw [cov_ratio_integral (Q (φ (ρ j))) (P (φ (ρ j))) g]
-    -- Identify the lemma's mixture with `μ (ρ j)` (sum is commutative).
+    -- Identify the lemma's mixture with our `μ (ρ j)` (sum is commutative).
     rw [show (((2 : ℝ≥0)⁻¹ : ℝ≥0∞) • Q (φ (ρ j)) + ((2 : ℝ≥0)⁻¹ : ℝ≥0∞) • P (φ (ρ j)))
         = μ (ρ j) from by rw [hμ_def]; exact add_comm _ _]
     -- Push the law `μ.map K` back to `μ` (`K = (Q.rnDeriv μ).toReal`).
@@ -3648,7 +6052,7 @@ theorem limit_pos_imp_mean_one
   -- `∫ (2 - w) ∂LW_lim = 2 - 1 = 1` (probability + Fact C).
   have hF_eval : ∫ w, (2 - w) ∂LW_lim = 1 := by
     rw [integral_sub (integrable_const _) (by
-      -- `id` is integrable because the measure is supported on `[0,2]`.
+      -- `id` integrable (shown above inside hF_int's proof; reprove quickly).
       have h_compl : ∀ᵐ w ∂LW_lim, w ∉ {x : ℝ | x < 0 ∨ 2 < x} := by
         rw [ae_iff]; simpa only [not_not] using! hLW_lim_supp
       refine (integrable_const (2 : ℝ)).mono' measurable_id.aestronglyMeasurable ?_
@@ -3664,9 +6068,12 @@ theorem limit_pos_imp_mean_one
 points of `dPₙ/dQₙ` give mass `0` to `0`], (iii) [limit points of `dQₙ/dPₙ` have mean
 `1`].
 
-The hypotheses `hac_PQ : ∀ n, P n ≪ Q n` and `hac_QP : ∀ n, Q n ≪ P n`
-ensure that the likelihood ratios capture the full measures, following
-van der Vaart's likelihood-ratio convention. -/
+Mutual absolute continuity `hac_PQ : ∀ n, P n ≪ Q n` and `hac_QP : ∀ n, Q n ≪ P n` makes
+the two likelihood ratios honest (van der Vaart's convention); it is genuinely needed for
+directions (i) ⟹ (ii) and (iii) ⟹ (i) (see those lemmas for the singular counterexample).
+
+Mutual absolute continuity is essential for the directions (i) ⟹ (ii) and
+(iii) ⟹ (i); the corresponding lemmas record singular counterexamples. -/
 theorem leCam_first_tfae
     {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
     (P Q : ∀ n, Measure (Ω n))
@@ -3706,7 +6113,7 @@ end AsymptoticStatistics
 end GLP0011B3Source9
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.PiWithDensity`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/PiWithDensity.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source10
 
@@ -3721,13 +6128,14 @@ of individually-tilted measures:
   = Measure.pi (fun i => (μ i).withDensity (f i))
 ```
 
-For the multivariate Girsanov argument in van der Vaart's Theorem 7.10,
+Middle brick in the multivariate Girsanov chain used by Theorem 7.10 `hTilt`: given
 the 1D Girsanov identity `(gaussianReal 0 1).withDensity (exp-shift) = gaussianReal a 1`
-and `map_pi_eq_stdGaussian` combine with this theorem to give the finite-product identity.
+and `map_pi_eq_stdGaussian`, this theorem promotes it from 1D to finite products.
 
 The proof goes through an ENNReal version of
-`MeasureTheory.integral_fintype_prod_eq_prod`. The ENNReal analogue follows
-by induction on `Fin n` using `measurePreserving_piFinSuccAbove` + `lintegral_prod_mul`, then lift to a
+`MeasureTheory.integral_fintype_prod_eq_prod`, which Mathlib (at `v4.29.1`) only has
+for the Bochner integral. We derive the ENNReal analogue by induction on `Fin n`
+using `measurePreserving_piFinSuccAbove` + `lintegral_prod_mul`, then lift to a
 general `Fintype` via `measurePreserving_piCongrLeft`, and finally apply
 `Measure.pi_eq` on rectangles.
 -/
@@ -3824,7 +6232,7 @@ rectangle indicator factors as a product of indicators; `lintegral_fintype_prod_
 then splits the integral into `∏ i, ∫⁻ (s i).indicator (f i)`, each of which is
 `(μ i).withDensity (f i) (s i)` by `withDensity_apply`.
 
-Second step of the multivariate Girsanov chain (van der Vaart's Theorem 7.10); combines with
+Second step of the multivariate Girsanov chain (Theorem 7.10 `hTilt`); combines with
 `gaussianReal_withDensity_exp_shift` and `map_pi_eq_stdGaussian` to give the standard
 multivariate Gaussian Girsanov identity on `EuclideanSpace ℝ (Fin k)`. -/
 theorem pi_withDensity_prod {E : ι → Type*}
@@ -3868,7 +6276,7 @@ end MeasureTheory
 end GLP0011B3Source10
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.HellingerProduct`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/HellingerProduct.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source11
 
@@ -3895,6 +6303,10 @@ are related by
 ```
 ‖√∏p.toReal - √∏q.toReal‖²_{L²(μ^n)} ≤ n · ‖√p.toReal - √q.toReal‖²_{L²(μ)}
 ```
+
+This is the central tensorisation step for the LAN-locality argument of same-score
+`QMDPath`s (see `LowerBounds/RegularEstimatorNarrow.lean`,
+`hellinger_locality_for_qmdpath_same_score`).
 
 ## Mathematical content
 
@@ -3959,9 +6371,16 @@ factors as a power:
 (when both `p, q` are finite-valued so `.toReal` commutes with products).
 
 The cleanest framing uses `ℝ≥0∞`-valued integrals of `√(p · q)` via
-`ENNReal.toReal` and a finiteness side-condition. The unwrapped form is stated
+`ENNReal.toReal` and a finiteness side-condition. We state the unwrapped form
 on the `lintegral` side (with the ENNReal product) and a `.toReal` wrapper. -/
 
+omit [MeasurableSpace Ω] in
+/-- Product affinity factorisation: `∏ⱼ (p(X j) * q(X j)) = (∏ⱼ p(X j)) * (∏ⱼ q(X j))`
+pointwise. This is `Finset.prod_mul_distrib` packaged for the affinity. -/
+lemma prod_mul_prod_eq
+    {n : ℕ} (p q : Ω → ℝ≥0∞) (X : Fin n → Ω) :
+    (∏ j, p (X j)) * (∏ j, q (X j)) = ∏ j, p (X j) * q (X j) := by
+  rw [← Finset.prod_mul_distrib]
 
 /-- For iid product measures, the lintegral of `∏ⱼ f(X j)` factors as `(∫ f dμ)^n`,
 when `f` is the same function at each coordinate.
@@ -3978,16 +6397,17 @@ lemma lintegral_prod_iid_eq_pow
     (f := fun _ : Fin n => f) (fun _ => hf)
   rw [h_fact, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
 
-/-! ## Hellinger affinity and the iid product inequality
+/-! ## Affinity-route bricks for the iid product Hellinger inequality
 
-The tensorisation inequality is
+We establish the tensorisation inequality
 `(eLpNorm (√(∏p) − √(∏q)) 2 (ξ^n)).toReal ≤ √n · (eLpNorm (√p − √q) 2 ξ).toReal`
-proved via the **Hellinger affinity** `A := ∫ √p · √q dξ ∈ [0, 1]`, with the canonical
+via the **Hellinger affinity** `A := ∫ √p · √q dξ ∈ [0, 1]`, with the canonical
 chain
   per-sample residual sq = `2 − 2A`,
   product residual sq    = `2 − 2 Aⁿ`,
   Bernoulli `1 − Aⁿ ≤ n(1 − A)`,
 take sqrt.
+All bricks live as named lemmas; final assembly = the headline theorem at the end.
 -/
 
 open AsymptoticStatistics.ForMathlib.RnDerivSqrt
@@ -4279,7 +6699,7 @@ lemma integral_product_residual_sq_eq
     integral_prod_sqrt_mul_prod_sqrt_eq_pow (μ := μ) (ν := ν) (ξ := ξ)
   -- Assemble: ∫ ((F − G)²) = 2 − 2 (∫ FG)^n.
   -- Strategy: expand (F − G)² = F² + G² − 2 FG pointwise, then integrate by linearity.
-  -- Use `integral_finsetSum` to handle the sum cleanly (treating it as a 3-term sum).
+  -- We use `integral_finsetSum` to handle the sum cleanly (treating it as a 3-term sum).
   set F : (Fin n → Ω) → ℝ := fun X => (∏ j, f (X j)) ^ 2 with hF_def
   set G : (Fin n → Ω) → ℝ := fun X => (∏ j, g (X j)) ^ 2 with hG_def
   set H : (Fin n → Ω) → ℝ := fun X => (∏ j, f (X j)) * ∏ j, g (X j) with hH_def
@@ -4512,23 +6932,61 @@ end AsymptoticStatistics.ForMathlib.HellingerProduct
 end GLP0011B3Source11
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.L2Asymptotics`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/L2Asymptotics.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source12
 
 
+/-! # L² cross terms in asymptotic expansions -/
 
 open MeasureTheory Filter Topology Asymptotics
 
 namespace AsymptoticStatistics.L2Utils
 
+/-- An `L²`-small family paired with an `L²`-bounded family has an
+`L¹` cross term of smaller order.  The nonnegativity clause is exactly what
+allows square roots of the common scale to be recombined. -/
+lemma integral_mul_isLittleO_of_sq
+    {α 𝒳 : Type*} [MeasurableSpace 𝒳]
+    (l : Filter α) (P : Measure 𝒳)
+    (a b : α → 𝒳 → ℝ) (v : α → ℝ)
+    (ha_mem : ∀ᶠ t in l, MemLp (a t) 2 P)
+    (hb_mem : ∀ t, MemLp (b t) 2 P)
+    (hv : ∀ᶠ t in l, 0 ≤ v t)
+    (haO : (fun t => ∫ x, a t x ^ 2 ∂P) =o[l] v)
+    (hbO : (fun t => ∫ x, b t x ^ 2 ∂P) =O[l] v) :
+    (fun t => ∫ x, a t x * b t x ∂P) =o[l] v := by
+  have haS := haO.sqrt hv
+  have hbS := hbO.sqrt hv
+  have hprod :
+      (fun t => Real.sqrt (∫ x, a t x ^ 2 ∂P) *
+        Real.sqrt (∫ x, b t x ^ 2 ∂P)) =o[l]
+        (fun t => Real.sqrt (v t) * Real.sqrt (v t)) :=
+    haS.mul_isBigO hbS
+  have hprod' :
+      (fun t => Real.sqrt (∫ x, a t x ^ 2 ∂P) *
+        Real.sqrt (∫ x, b t x ^ 2 ∂P)) =o[l] v := by
+    apply hprod.congr' (EventuallyEq.rfl) ?_
+    filter_upwards [hv] with t ht
+    exact Real.mul_self_sqrt ht
+  have hbound :
+      (fun t => ∫ x, a t x * b t x ∂P) =O[l]
+        (fun t => Real.sqrt (∫ x, a t x ^ 2 ∂P) *
+          Real.sqrt (∫ x, b t x ^ 2 ∂P)) := by
+    rw [Asymptotics.isBigO_iff]
+    refine ⟨1, ?_⟩
+    filter_upwards [ha_mem] with t hat
+    rw [one_mul, Real.norm_eq_abs, Real.norm_eq_abs,
+      abs_of_nonneg (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))]
+    exact abs_integral_mul_le_sqrt_integral_sq P hat (hb_mem t)
+  exact hbound.trans_isLittleO hprod'
 
 end AsymptoticStatistics.L2Utils
 
 end GLP0011B3Source12
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.L2Tail`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/L2Tail.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source13
 
@@ -4815,7 +7273,8 @@ lemma l2_abs_tail_isLittleO
   simpa only [B] using hW_tail
 
 /-- The complete five-part L² tail package used by the integrated logarithmic
-Taylor remainder. -/
+Taylor remainder.  Every clause is explicit so downstream users do not hide
+analytic debt behind a provider predicate. -/
 lemma l2_tail_controls_of_approx
     (l : Filter α) (P : Measure 𝒳) [IsFiniteMeasure P]
     (W q z : α → 𝒳 → ℝ) (s : α → ℝ) (g : 𝒳 → ℝ)
@@ -4852,7 +7311,7 @@ end AsymptoticStatistics.L2Utils
 end GLP0011B3Source13
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.Core.NondominatedQMDProductComparison`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/Core/NondominatedQMDProductComparison.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source14
 
@@ -5494,6 +7953,189 @@ theorem integrable_acProductLikelihood_and_integral
         (fun ω => ((γ.curve t).rnDeriv P ω).toReal)
         (ι := Fin n) (μ := P))
 
+/-- Bounded expectations under the full local product law are asymptotically
+equal to baseline expectations weighted by the actual RN product likelihood.
+
+The proof expands `(singularPart+acPart)^n`, bounds all terms with a singular
+coordinate, and identifies the all-AC term by the product AC identity at the
+nonnegative parameter supplied by `ha`; no MGF, uniform-integrability,
+absolute-continuity, or normalization assumption is used. -/
+theorem product_integral_comparison
+    (γ : NondominatedQMDPath P) (a C : ℝ) (ha : 0 ≤ a)
+    (f : ∀ n : ℕ, (Fin n → Ω) → ℝ)
+    (hf_meas : ∀ n, Measurable (f n))
+    (hf_bound : ∀ n X, |f n X| ≤ C) :
+    ∃ error : ℕ → ℝ, Tendsto error atTop (nhds 0) ∧ ∀ n,
+      |(∫ X, f n X ∂(Measure.pi (fun _ : Fin n =>
+            γ.curve (a * (Real.sqrt n)⁻¹))))
+        - ∫ X, f n X *
+            (γ.acProductLikelihood (a * (Real.sqrt n)⁻¹) n X).toReal
+            ∂(Measure.pi (fun _ : Fin n => P))| ≤ error n := by
+  classical
+  have hC : 0 ≤ C := by
+    exact (abs_nonneg (f 0 (fun i => Fin.elim0 i))).trans
+      (hf_bound 0 (fun i => Fin.elim0 i))
+  let u : ℕ → ℝ := fun n => a * (Real.sqrt n)⁻¹
+  let error : ℕ → ℝ := fun n =>
+    C * ((n : ℝ≥0∞) * γ.singularMass (u n)).toReal
+  refine ⟨error, ?_, ?_⟩
+  · have hs := γ.singular_mass_localScale_tendsto a ha
+    have hsreal := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hs
+    convert! hsreal.const_mul C using 1
+    all_goals simp only [ENNReal.toReal_zero, mul_zero]
+  intro n
+  have hut : 0 ≤ u n :=
+    mul_nonneg ha (inv_nonneg.mpr (Real.sqrt_nonneg _))
+  let : IsProbabilityMeasure (γ.curve (u n)) :=
+    γ.curve_isProbability (u n) hut
+  let Q : Measure Ω := γ.curve (u n)
+  let A : Measure Ω := γ.acPart (u n)
+  let ν : Measure (Fin n → Ω) := Measure.pi (fun _ : Fin n => Q)
+  let ρ : Measure (Fin n → Ω) := Measure.pi (fun _ : Fin n => A)
+  let Pn : Measure (Fin n → Ω) := Measure.pi (fun _ : Fin n => P)
+  let L : (Fin n → Ω) → ℝ≥0∞ := γ.acProductLikelihood (u n) n
+  have hAQ : A ≤ Q := by
+    simpa only [A, Q, acPart] using
+      Measure.withDensity_rnDeriv_le (γ.curve (u n)) P
+  let : IsFiniteMeasure A := isFiniteMeasure_of_le Q hAQ
+  have hAac : A ≪ Q := hAQ.absolutelyContinuous
+  have hρν : ρ ≤ ν := by
+    let D : (Fin n → Ω) → ℝ≥0∞ :=
+      fun X => ∏ i : Fin n, A.rnDeriv Q (X i)
+    have hcoord : ∀ i : Fin n, A.rnDeriv Q ≤ᵐ[Q] 1 :=
+      fun _ => Measure.rnDeriv_le_one_of_le hAQ
+    have hall : (fun X : Fin n → Ω => fun i => A.rnDeriv Q (X i))
+        ≤ᵐ[ν] (fun _ => fun _ : Fin n => (1 : ℝ≥0∞)) := by
+      simpa only [ν] using! Measure.ae_le_pi hcoord
+    have hDle : D ≤ᵐ[ν] 1 := by
+      filter_upwards [hall] with X hX
+      dsimp only [D]
+      exact Finset.prod_le_one₀ (fun _ _ => zero_le)
+        (fun i _ => hX i)
+    have htilt : ν.withDensity D = ρ := by
+      have hcoordtilt : Q.withDensity (A.rnDeriv Q) = A :=
+        Measure.withDensity_rnDeriv_eq A Q hAac
+      calc
+        ν.withDensity D =
+            Measure.pi (fun _ : Fin n => Q.withDensity (A.rnDeriv Q)) := by
+          simpa only [ν, D] using
+            MeasureTheory.pi_withDensity_prod
+              (fun _ : Fin n => Measure.measurable_rnDeriv A Q)
+        _ = ρ := by simp only [hcoordtilt, ρ]
+    rw [← htilt]
+    simpa using withDensity_mono hDle
+  let R : Measure (Fin n → Ω) := ν - ρ
+  have hRρ : R + ρ = ν := by
+    exact Measure.sub_add_cancel_of_le hρν
+  have hνprob : IsProbabilityMeasure ν := by
+    dsimp only [ν, Q]
+    infer_instance
+  let : IsProbabilityMeasure ν := hνprob
+  have hfν : Integrable (f n) ν := by
+    refine Integrable.of_bound (hf_meas n).aestronglyMeasurable C ?_
+    exact Filter.Eventually.of_forall fun X => by
+      simpa only [Real.norm_eq_abs] using hf_bound n X
+  have hfρ : Integrable (f n) ρ := hfν.mono_measure hρν
+  have hRν : R ≤ ν := Measure.sub_le
+  have hfR : Integrable (f n) R := hfν.mono_measure hRν
+  have hfull : ∫ X, f n X ∂ν =
+      (∫ X, f n X ∂R) + ∫ X, f n X ∂ρ := by
+    rw [← hRρ, integral_add_measure hfR hfρ]
+  have hρbase : ρ = Pn.withDensity L := by
+    simpa only [ρ, Pn, L, A, u] using
+      γ.pi_acPart_eq_withDensity_acProductLikelihood (u n) hut n
+  have hLmeas : Measurable L := by
+    dsimp only [L, acProductLikelihood]
+    exact Finset.measurable_prod _ fun i _ =>
+      (Measure.measurable_rnDeriv (γ.curve (u n)) P).comp
+        (measurable_pi_apply i)
+  have hLfin : ∀ᵐ X ∂Pn, L X < ⊤ := by
+    have hcoordfin : ∀ i : Fin n,
+        (fun _ : Ω => True) ≤ᵐ[P]
+          (fun ω => (γ.curve (u n)).rnDeriv P ω ≠ ⊤) := by
+      intro i
+      filter_upwards [Measure.rnDeriv_ne_top (γ.curve (u n)) P] with ω hω
+      exact fun _ => hω
+    have hall : (fun X : Fin n → Ω => fun _ : Fin n => True)
+        ≤ᵐ[Pn] (fun X i => (γ.curve (u n)).rnDeriv P (X i) ≠ ⊤) := by
+      simpa only [Pn] using Measure.ae_le_pi hcoordfin
+    filter_upwards [hall] with X hX
+    exact lt_top_iff_ne_top.mpr (by
+      dsimp only [L, acProductLikelihood]
+      exact ENNReal.prod_ne_top fun i _ => hX i trivial)
+  have hweighted : ∫ X, f n X * (L X).toReal ∂Pn =
+      ∫ X, f n X ∂ρ := by
+    rw [hρbase,
+      integral_withDensity_eq_integral_toReal_smul hLmeas hLfin (f n)]
+    apply integral_congr_ae
+    filter_upwards with X
+    simp only [smul_eq_mul, mul_comm]
+  have hdiff :
+      (∫ X, f n X ∂ν) - ∫ X, f n X * (L X).toReal ∂Pn =
+        ∫ X, f n X ∂R := by
+    rw [hweighted, hfull]
+    ring
+  have hboundR : |∫ X, f n X ∂R| ≤ C * R.real Set.univ := by
+    have hb := MeasureTheory.norm_integral_le_of_norm_le_const
+      (μ := R) (f := f n) (C := C)
+      (Filter.Eventually.of_forall fun X => by
+        simpa only [Real.norm_eq_abs] using hf_bound n X)
+    simpa only [Real.norm_eq_abs] using hb
+  have hsfin : γ.singularMass (u n) ≠ ⊤ :=
+    ne_top_of_le_ne_top (measure_ne_top (γ.curve (u n)) _)
+      (Measure.singularPart_le (γ.curve (u n)) P Set.univ)
+  have hsing_le_one : (γ.singularMass (u n)).toReal ≤ 1 := by
+    rw [← ENNReal.toReal_one]
+    apply (ENNReal.toReal_le_toReal hsfin ENNReal.one_ne_top).2
+    calc
+      γ.singularMass (u n) ≤ γ.curve (u n) Set.univ :=
+        Measure.singularPart_le (γ.curve (u n)) P Set.univ
+      _ = 1 := measure_univ
+  have hA_mass : (A Set.univ).toReal =
+      1 - (γ.singularMass (u n)).toReal := by
+    have hdec := γ.curve_eq_singularPart_add_acPart (u n) hut
+    have happ := congrArg (fun M : Measure Ω => M Set.univ) hdec
+    have hAfin : A Set.univ ≠ ⊤ := measure_ne_top _ _
+    have happ' : (1 : ℝ≥0∞) =
+        γ.singularMass (u n) + A Set.univ := by
+      simpa only [Measure.add_apply, measure_univ, singularMass, singularPart,
+        acPart, A] using happ
+    have hreal := congrArg ENNReal.toReal happ'
+    rw [ENNReal.toReal_one, ENNReal.toReal_add hsfin hAfin] at hreal
+    linarith
+  have hρ_mass : ρ.real Set.univ =
+      (1 - (γ.singularMass (u n)).toReal) ^ n := by
+    simp only [ρ, measureReal_def, Measure.pi_univ, Finset.prod_const,
+      ENNReal.toReal_pow, hA_mass]
+    rw [Finset.card_univ, Fintype.card_fin]
+  have hR_mass : R.real Set.univ =
+      1 - (1 - (γ.singularMass (u n)).toReal) ^ n := by
+    change ((ν - ρ) Set.univ).toReal =
+      1 - (1 - (γ.singularMass (u n)).toReal) ^ n
+    rw [Measure.sub_apply MeasurableSet.univ hρν,
+      ENNReal.toReal_sub_of_le (hρν Set.univ) (measure_ne_top ν Set.univ)]
+    have hρ_mass' : (ρ Set.univ).toReal =
+        (1 - (γ.singularMass (u n)).toReal) ^ n := by
+      simpa only [measureReal_def] using hρ_mass
+    rw [measure_univ, ENNReal.toReal_one, hρ_mass']
+  have hmissing : R.real Set.univ ≤
+      (n : ℝ) * (γ.singularMass (u n)).toReal := by
+    rw [hR_mass]
+    have hsnonneg : 0 ≤ (γ.singularMass (u n)).toReal :=
+      ENNReal.toReal_nonneg
+    simpa only [sub_sub_cancel] using
+      (one_sub_pow_le_nsmul_one_sub
+        (x := 1 - (γ.singularMass (u n)).toReal)
+        (by linarith [hsing_le_one]) (by linarith [hsnonneg]) n)
+  rw [show (a * (Real.sqrt n)⁻¹) = u n from rfl]
+  change |(∫ X, f n X ∂ν) - ∫ X, f n X * (L X).toReal ∂Pn| ≤ error n
+  rw [hdiff]
+  calc
+    |∫ X, f n X ∂R| ≤ C * R.real Set.univ := hboundR
+    _ ≤ C * ((n : ℝ) * (γ.singularMass (u n)).toReal) :=
+      mul_le_mul_of_nonneg_left hmissing hC
+    _ = error n := by
+      simp only [error, ENNReal.toReal_mul, ENNReal.toReal_natCast]
 
 end NondominatedQMDPath
 end AsymptoticStatistics.Core.NondominatedQMDPath
@@ -5501,7 +8143,7 @@ end AsymptoticStatistics.Core.NondominatedQMDPath
 end GLP0011B3Source14
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.IIdJointLaw`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/IIdJointLaw.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source15
 
@@ -5509,14 +8151,20 @@ section GLP0011B3Source15
 /-!
 # iid joint-law bridge
 
-Finite iid product measures are the pushforwards of the infinite product
-under coordinate truncation:
+Bridge between the "abstract iid" setup (`Ω := ℕ → 𝓧` with `Measure.infinitePiNat`) used
+by `LANExpansion.LAN_expansion_iii` and the concrete `productMeasure` on `Fin n → 𝓧` used
+by the `AsymptoticRepresentation` pipeline.
+
+Core identity:
 ```
 Measure.pi (fun _ : Fin n => ν)
-  = (Measure.infinitePi (fun _ : ℕ => ν)).map (fun ω i => ω i.val)
+  = (Measure.infinitePiNat (fun _ : ℕ => ν)).map (fun ω i => ω i.val)
 ```
-for a probability measure `ν`. The associated equality of event probabilities
-transports convergence in probability from the infinite product to finite samples.
+whenever `ν` is a probability measure.
+
+Combined with `TendstoInMeasure.map`-transport, this lets us pull the LAN residual
+`→_P 0` conclusion (in abstract `infinitePiNat` form) down to its `productMeasure`-form
+consumed by `AsymptoticRepresentation.slutsky_bridge_of_lanResidual`.
 -/
 
 open MeasureTheory Filter Topology
@@ -5524,6 +8172,43 @@ open scoped ENNReal
 
 namespace AsymptoticStatistics
 
+theorem map_fin_restrict_eq_pi_of_iid
+    {Ω Ξ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ξ]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (X : ℕ → Ξ → Ω)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hX_iindep : ProbabilityTheory.iIndepFun X μ)
+    (hX_idem : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P) (n : ℕ) :
+    μ.map (fun ξ : Ξ => fun i : Fin n => X i.val ξ) =
+      Measure.pi (fun _ : Fin n => P) := by
+  have h_indep : ProbabilityTheory.iIndepFun (fun i : Fin n => X i.val) μ :=
+    hX_iindep.precomp Fin.val_injective
+  rw [(ProbabilityTheory.iIndepFun_iff_map_fun_eq_pi_map
+    (fun i : Fin n => (hX_meas i.val).aemeasurable)).mp h_indep]
+  congr with i
+  rw [(hX_idem i.val).map_eq, hX_law]
+
+theorem map_ghost_fin_restrict_eq_pi_prod_of_iid
+    {Ω Ξ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ξ]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (X : ℕ → Ξ → Ω)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hX_iindep : ProbabilityTheory.iIndepFun X μ)
+    (hX_idem : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P) (n : ℕ) :
+    (μ.prod μ).map (fun z : Ξ × Ξ =>
+        ((fun i : Fin n => X i.val z.1), (fun i : Fin n => X i.val z.2))) =
+      (Measure.pi (fun _ : Fin n => P)).prod
+        (Measure.pi (fun _ : Fin n => P)) := by
+  let Y : Ξ → (Fin n → Ω) := fun ξ i => X i.val ξ
+  have hY_meas : Measurable Y := Measurable.of_eval fun i => hX_meas i.val
+  have hY_law : μ.map Y = Measure.pi (fun _ : Fin n => P) :=
+    map_fin_restrict_eq_pi_of_iid P μ X hX_meas hX_iindep hX_idem hX_law n
+  rw [← hY_law, Measure.map_prod_map μ μ hY_meas hY_meas]
+  rfl
 
 /-- `Fin n` and the Finset-range coercion `↥(Finset.range n)` are canonically
 equivalent (both are `{k : ℕ // k < n}` up to `Finset.mem_range`). Packaged
@@ -5540,11 +8225,63 @@ def rangeEquivFin (n : ℕ) : ↥(Finset.range n) ≃ Fin n where
 @[simp] lemma rangeEquivFin_symm_apply_val (n : ℕ) (i : Fin n) :
     ((rangeEquivFin n).symm i).val = i.val := rfl
 
+/-- **iid product = finite restriction of the Kolmogorov extension**.
+
+The `n`-fold product of a probability measure `ν` equals the pushforward of the
+Kolmogorov extension `Measure.infinitePiNat (const ν)` under the `Fin n`-restriction
+`ω ↦ fun i : Fin n => ω i.val`.
+
+Proof: both sides agree on rectangles. The rectangle value on the RHS is computed
+by unwinding the preimage under `Fin n`-restriction into a cylinder on `Finset.range n`,
+then applying `Measure.infinitePiNat_map_restrict` + reindexing `↥(Finset.range n) ≃
+Fin n` via `MeasureTheory.measurePreserving_piCongrLeft`. -/
+theorem pi_const_eq_infinitePiNat_map
+    {𝓧 : Type*} [MeasurableSpace 𝓧]
+    (ν : Measure 𝓧) [IsProbabilityMeasure ν] (n : ℕ) :
+    Measure.pi (fun _ : Fin n => ν)
+      = (Measure.infinitePiNat (fun _ : ℕ => ν)).map
+          (fun ω : ℕ → 𝓧 => fun i : Fin n => ω i.val) := by
+  classical
+  -- The map `ω ↦ fun i : Fin n => ω i.val` factors as
+  -- `Finset.range n`-restrict composed with pi-reindexing along `rangeEquivFin n`.
+  set φ : (ℕ → 𝓧) → (Fin n → 𝓧) := fun ω i => ω i.val with hφ_def
+  set ψ : (↥(Finset.range n) → 𝓧) → (Fin n → 𝓧) := fun f i =>
+    f ((rangeEquivFin n).symm i) with hψ_def
+  have hψ_meas : Measurable ψ := by
+    refine Measurable.of_eval (fun i => ?_)
+    exact measurable_pi_apply _
+  have h_factor : φ = ψ ∘ (Finset.range n).restrict := by
+    funext ω i; rfl
+  have h_restrict_meas :
+      Measurable ((Finset.range n).restrict : (ℕ → 𝓧) → (↥(Finset.range n) → 𝓧)) := by
+    refine Measurable.of_eval (fun _ => ?_)
+    exact measurable_pi_apply _
+  -- `ψ` is a measurable isomorphism — `MeasurableEquiv.piCongrLeft` along `rangeEquivFin n`.
+  -- Use `Measure.pi_map_piCongrLeft` (or measurePreserving) to transport via it.
+  have h_step1 : (Measure.infinitePiNat (fun _ : ℕ => ν)).map
+        (fun ω : ℕ → 𝓧 => fun i : Fin n => ω i.val)
+      = ((Measure.infinitePiNat (fun _ : ℕ => ν)).map (Finset.range n).restrict).map ψ := by
+    rw [show (fun ω : ℕ → 𝓧 => fun i : Fin n => ω i.val)
+          = ψ ∘ (Finset.range n).restrict from h_factor,
+      ← Measure.map_map hψ_meas h_restrict_meas]
+  rw [h_step1, Measure.infinitePiNat_map_restrict]
+  -- Identify the resulting reindexing map with `piCongrLeft`.
+  -- `ψ = piCongrLeft (·↦𝓧) (rangeEquivFin n)` — reindexing from `↥(Finset.range n)` to
+  -- `Fin n`; this map preserves the product measure.
+  have h_ψ_eq : ψ = MeasurableEquiv.piCongrLeft (fun _ : Fin n => 𝓧)
+      (rangeEquivFin n) := by
+    funext f i
+    rw [hψ_def, MeasurableEquiv.coe_piCongrLeft, Equiv.piCongrLeft_apply]
+  rw [h_ψ_eq]
+  have mp := MeasureTheory.measurePreserving_piCongrLeft
+    (fun _ : Fin n => ν) (rangeEquivFin n)
+  exact mp.map_eq.symm
 
 /-- **iid product = finite restriction of the Kolmogorov extension (`infinitePi` version)**.
 
-This form matches `ProbabilityTheory.iIndepFun_infinitePi`, which is stated
-for the general indexed product `Measure.infinitePi`.
+Parallel to `pi_const_eq_infinitePiNat_map`, using `Measure.infinitePi` (the general
+`ι`-indexed product) instead of `Measure.infinitePiNat`. This form is the natural
+match for `ProbabilityTheory.iIndepFun_infinitePi`, which is stated for `infinitePi`.
 -/
 theorem pi_const_eq_infinitePi_map
     {𝓧 : Type*} [MeasurableSpace 𝓧]
@@ -5580,6 +8317,30 @@ theorem pi_const_eq_infinitePi_map
     (fun _ : Fin n => ν) (rangeEquivFin n)
   exact mp.map_eq.symm
 
+/-- **`TendstoInMeasure` transports under measure pushforward**.
+
+If the composed sequence `fun ω => g_n (φ ω)` converges to `0` in measure under `P`
+and `g_n` is measurable for each `n`, then `g_n` converges to `0` in measure under
+the pushforward `P.map φ`. Elementary change-of-variables argument using
+`Measure.map_apply`. -/
+theorem tendstoInMeasure_of_tendstoInMeasure_comp
+    {Ω Ω' : Type*} {mΩ : MeasurableSpace Ω} {mΩ' : MeasurableSpace Ω'}
+    {P : Measure Ω} (φ : Ω → Ω') (hφ : Measurable φ)
+    {E : Type*} [PseudoEMetricSpace E] [Zero E] [MeasurableSpace E]
+    [OpensMeasurableSpace E] [SecondCountableTopology E]
+    {g_n : ℕ → Ω' → E}
+    (hg_meas : ∀ n, Measurable (g_n n))
+    (h : TendstoInMeasure P (fun n ω => g_n n (φ ω)) atTop (fun _ => (0 : E))) :
+    TendstoInMeasure (P.map φ) g_n atTop (fun _ => (0 : E)) := by
+  intro ε hε
+  have h_pull : ∀ n, (P.map φ) {x | ε ≤ edist (g_n n x) 0}
+      = P {ω | ε ≤ edist (g_n n (φ ω)) 0} := by
+    intro n
+    rw [Measure.map_apply hφ]
+    · rfl
+    · exact measurableSet_le measurable_const ((hg_meas n).edist measurable_const)
+  simp_rw [h_pull]
+  exact h ε hε
 
 /-- **Pinf → Pⁿ measure-on-set bridge for varying truncation**.
 
@@ -5602,25 +8363,42 @@ lemma pi_meas_eq_infinitePi_meas_of_truncate
   · refine Measurable.of_eval (fun _ => ?_)
     exact measurable_pi_apply _
 
+/-- Real-valued (i.e. ENNReal-`toReal`) variant of the measure-on-set bridge. -/
+lemma pi_real_eq_infinitePi_real_of_truncate
+    {𝓧 : Type*} [MeasurableSpace 𝓧]
+    (ν : Measure 𝓧) [IsProbabilityMeasure ν] (n : ℕ)
+    {s : Set (Fin n → 𝓧)} (hs : MeasurableSet s) :
+    (Measure.pi (fun _ : Fin n => ν)).real s
+      = (Measure.infinitePi (fun _ : ℕ => ν)).real
+          {ω | (fun i : Fin n => ω i.val) ∈ s} := by
+  change ((Measure.pi (fun _ : Fin n => ν)) s).toReal
+       = ((Measure.infinitePi (fun _ : ℕ => ν))
+            {ω | (fun i : Fin n => ω i.val) ∈ s}).toReal
+  rw [pi_meas_eq_infinitePi_meas_of_truncate ν n hs]
 
 end AsymptoticStatistics
 
 end GLP0011B3Source15
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.Prohorov`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/Prohorov.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source16
 
 
 /-!
-# Tightness and subsequence extraction
+# Prohorov-type tightness and subsequence extraction on probability measures
 
-The tightness argument in van der Vaart's representation theorem (Theorem 7.10,
-§7.3, "Convergence to a Normal Experiment") combines joint tightness from
-marginal tightness with extraction of a weakly convergent subsequence.
-The corresponding lemmas here are `tight_prod_of_tight_marginals_local`
-and `extract_weak_subseq_local`.
+Two Prohorov-flavoured results used in van der Vaart's representation theorem
+(Theorem 7.10, §7.3 "Convergence to a Normal Experiment") — "marginal tight ⇒ joint
+tight, then pick a weak-convergent subsequence":
+
+* `tight_prod_of_tight_marginals` — tight marginals ⇒ tight joint;
+* `extract_weak_subseq` — in a Polish space, a tight sequence of probability measures
+  admits a weakly convergent subsequence (via Mathlib's
+  `isCompact_closure_of_isTightMeasureSet` + metrizability of `ProbabilityMeasure`).
+
+Plus the convenience rewriting `isTightMeasureSet_range_iff_singleton_tight`.
 -/
 
 open MeasureTheory Filter Topology
@@ -5629,6 +8407,137 @@ open scoped ENNReal
 namespace AsymptoticStatistics
 namespace Prohorov
 
+/-- **Marginals tight ⇒ joint tight** (on a product of two spaces).
+
+Given a set `S` of probability measures on `X × Y` whose first-marginal and
+second-marginal projections are each tight, `S` itself is tight. Standard argument:
+cover each marginal by a compact up to `ε/2`; the product of those compacts covers
+the joint up to `ε` (the complement is the union of two "strips", each controlled by
+its marginal). -/
+theorem tight_prod_of_tight_marginals
+    {X Y : Type*} [MeasurableSpace X] [MeasurableSpace Y]
+    [TopologicalSpace X] [TopologicalSpace Y]
+    [T2Space X] [T2Space Y] [OpensMeasurableSpace X] [OpensMeasurableSpace Y]
+    (S : Set (Measure (X × Y)))
+    (hX : IsTightMeasureSet ((fun μ : Measure (X × Y) => μ.map Prod.fst) '' S))
+    (hY : IsTightMeasureSet ((fun μ : Measure (X × Y) => μ.map Prod.snd) '' S)) :
+    IsTightMeasureSet S := by
+  rw [isTightMeasureSet_iff_exists_isCompact_measure_compl_le] at hX hY ⊢
+  intro ε hε
+  have hε2 : (0 : ℝ≥0∞) < ε / 2 := by
+    rw [ENNReal.div_pos_iff]
+    exact ⟨hε.ne', by norm_num⟩
+  obtain ⟨K_X, hK_X_compact, hK_X⟩ := hX (ε / 2) hε2
+  obtain ⟨K_Y, hK_Y_compact, hK_Y⟩ := hY (ε / 2) hε2
+  refine ⟨K_X ×ˢ K_Y, hK_X_compact.prod hK_Y_compact, ?_⟩
+  intro μ hμ
+  -- `(K_X ×ˢ K_Y)ᶜ = (K_X)ᶜ ×ˢ univ ∪ univ ×ˢ (K_Y)ᶜ`, each bounded by a marginal.
+  rw [Set.compl_prod_eq_union]
+  calc μ ((K_X)ᶜ ×ˢ Set.univ ∪ Set.univ ×ˢ (K_Y)ᶜ)
+      ≤ μ ((K_X)ᶜ ×ˢ Set.univ) + μ (Set.univ ×ˢ (K_Y)ᶜ) := measure_union_le _ _
+    _ = (μ.map Prod.fst) (K_X)ᶜ + (μ.map Prod.snd) (K_Y)ᶜ := by
+        rw [Set.prod_univ, Set.univ_prod,
+            Measure.map_apply measurable_fst hK_X_compact.measurableSet.compl,
+            Measure.map_apply measurable_snd hK_Y_compact.measurableSet.compl]
+    _ ≤ ε / 2 + ε / 2 :=
+        add_le_add (hK_X _ ⟨μ, hμ, rfl⟩) (hK_Y _ ⟨μ, hμ, rfl⟩)
+    _ = ε := ENNReal.add_halves _
+
+/-- **Weak convergence implies tightness of the range** (Prohorov converse, sequence form).
+
+If a sequence of probability measures `μ n` on a Polish space converges weakly to a
+probability measure `ν`, then the set `{μ n | n ∈ ℕ}` is tight.
+
+Proof: lift to `ProbabilityMeasure`, get `Tendsto` in the weak topology, observe that
+`insert Pν (Set.range P)` is compact (convergent sequence + limit), take the closure
+(closed subset of compact = compact), and apply Mathlib's
+`isTightMeasureSet_of_isCompact_closure`. -/
+theorem weakConverges_range_tight
+    {E : Type*} [MeasurableSpace E] [PseudoMetricSpace E] [BorelSpace E]
+    [CompleteSpace E] [SecondCountableTopology E]
+    (μ : ℕ → Measure E) [∀ n, IsProbabilityMeasure (μ n)]
+    (ν : Measure E) [IsProbabilityMeasure ν]
+    (h_weak : WeakConverges μ ν) :
+    IsTightMeasureSet (Set.range μ) := by
+  let P : ℕ → ProbabilityMeasure E := fun n => ⟨μ n, inferInstance⟩
+  let Pν : ProbabilityMeasure E := ⟨ν, inferInstance⟩
+  have h_tendsto : Tendsto P atTop (𝓝 Pν) :=
+    ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mpr h_weak
+  have h_insert_compact : IsCompact (insert Pν (Set.range P)) :=
+    h_tendsto.isCompact_insert_range
+  have h_insert_closed : IsClosed (insert Pν (Set.range P)) := h_insert_compact.isClosed
+  have h_closure_compact : IsCompact (closure (insert Pν (Set.range P))) := by
+    rw [h_insert_closed.closure_eq]; exact h_insert_compact
+  have h_tight_insert :=
+    MeasureTheory.isTightMeasureSet_of_isCompact_closure h_closure_compact
+  refine h_tight_insert.subset ?_
+  rintro ρ ⟨n, rfl⟩
+  exact ⟨P n, Set.mem_insert_of_mem _ ⟨n, rfl⟩, rfl⟩
+
+/-- **Prohorov: tight ⇒ sequentially compact for weak convergence** (Polish case).
+
+If the range `{μ n | n : ℕ}` is a tight set of probability measures on a Polish space
+`E`, there exists a strictly monotone subsequence extractor `φ` and a probability measure
+`μ_lim` such that `μ (φ k)` converges weakly to `μ_lim`.
+
+Proof: lift `μ n` to `ProbabilityMeasure E`; the range is tight, so its closure is
+compact (Mathlib `isCompact_closure_of_isTightMeasureSet`). `ProbabilityMeasure E` is
+metrizable for Polish `E`, hence first-countable, so the compact closure is sequentially
+compact; extract a subsequence converging in the weak topology. Translate back to our
+test-function-based `WeakConverges` via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`. -/
+theorem extract_weak_subseq
+    {E : Type*} [MeasurableSpace E] [TopologicalSpace E] [PolishSpace E] [BorelSpace E]
+    (μ : ℕ → Measure E) [∀ n, IsProbabilityMeasure (μ n)]
+    (h_tight : IsTightMeasureSet (Set.range μ)) :
+    ∃ (φ : ℕ → ℕ) (_ : StrictMono φ) (μ_lim : Measure E) (_ : IsProbabilityMeasure μ_lim),
+      WeakConverges (fun k => μ (φ k)) μ_lim := by
+  -- Lift to `ProbabilityMeasure E`.
+  set P : ℕ → ProbabilityMeasure E := fun n => ⟨μ n, inferInstance⟩ with hP_def
+  -- The set `{(P n : Measure E) | n : ℕ}` is tight — equal to `Set.range μ` by construction.
+  have h_tight_P :
+      IsTightMeasureSet {(↑(ν : ProbabilityMeasure E) : Measure E) | ν ∈ Set.range P} := by
+    have : {(↑(ν : ProbabilityMeasure E) : Measure E) | ν ∈ Set.range P} = Set.range μ := by
+      ext ρ
+      constructor
+      · rintro ⟨ν, ⟨n, rfl⟩, rfl⟩
+        exact ⟨n, rfl⟩
+      · rintro ⟨n, rfl⟩
+        exact ⟨P n, ⟨n, rfl⟩, rfl⟩
+    rw [this]
+    exact h_tight
+  -- Its closure is compact (Prokhorov).
+  have h_compact : IsCompact (closure (Set.range P)) :=
+    isCompact_closure_of_isTightMeasureSet h_tight_P
+  -- P takes values in `closure (Set.range P)`.
+  have h_P_in : ∀ n, P n ∈ closure (Set.range P) :=
+    fun n => subset_closure ⟨n, rfl⟩
+  -- Compact + first-countable (metrizable since E is Polish) ⇒ sequentially compact.
+  have h_seqcompact : IsSeqCompact (closure (Set.range P)) := h_compact.isSeqCompact
+  obtain ⟨P_lim, _hP_lim_in, φ, hφ_mono, hφ_conv⟩ := h_seqcompact h_P_in
+  -- Repackage into our `WeakConverges` predicate.
+  refine ⟨φ, hφ_mono, (P_lim : Measure E), inferInstance, ?_⟩
+  intro f
+  have h_int :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp hφ_conv) f
+  exact h_int
+
+/-- A single sequence of probability measures is tight iff its range (as a set) is
+tight. Convenience wrapper matching the hypothesis shape used by `extract_weak_subseq`. -/
+theorem isTightMeasureSet_range_iff_singleton_tight
+    {E : Type*} [MeasurableSpace E] [TopologicalSpace E]
+    (μ : ℕ → Measure E) :
+    IsTightMeasureSet (Set.range μ) ↔ ∀ ε : ℝ≥0∞, 0 < ε →
+      ∃ K, IsCompact K ∧ ∀ n, (μ n) Kᶜ ≤ ε := by
+  rw [isTightMeasureSet_iff_exists_isCompact_measure_compl_le]
+  constructor
+  · intro h ε hε
+    obtain ⟨K, hK_compact, hK⟩ := h ε hε
+    exact ⟨K, hK_compact, fun n => hK (μ n) ⟨n, rfl⟩⟩
+  · intro h ε hε
+    obtain ⟨K, hK_compact, hK⟩ := h ε hε
+    refine ⟨K, hK_compact, ?_⟩
+    rintro _ ⟨n, rfl⟩
+    exact hK n
 
 end Prohorov
 end AsymptoticStatistics
@@ -5636,18 +8545,33 @@ end AsymptoticStatistics
 end GLP0011B3Source16
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.InProbability`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/InProbability.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source17
 
 
 /-!
-# Convergence in probability with varying base measures
+# Convergence and boundedness in probability (varying base)
 
-Statistics `X k : Ω k → G` can live on different probability spaces `(Ω k, P k)`.
-Their laws can be compared through pushforwards `(P k).map (X k)`.
-The theorem `WeakConverges.slutsky_of_tendstoInMeasure_dist` uses this form of
-convergence in probability.
+Two "in probability" notions at the project's *varying-base* level — a sequence of
+statistics `X k : Ω k → G` living on per-index probability spaces `(Ω k, P k)`, laws
+compared via pushforwards `(P k).map (X k)`. Mathlib's `MeasureTheory.TendstoInMeasure`
+fixes a single base measure on a single space; the delta method (and the classical
+Z- and M-estimator normality theorems) need the varying-base form used throughout this
+project (cf. `WeakConverges`, `slutsky_of_tendstoInMeasure_dist`).
+
+* `TendstoInProbZero P Z` — `Z k → 0` in `P k`-probability (`→ₚ 0`). Same shape as the
+  `hDist` hypothesis of `WeakConverges.slutsky_of_tendstoInMeasure_dist`.
+* `IsBoundedInProb P X` — the family `{X k}` is uniformly tight, i.e. bounded in
+  probability, `O_P(1)`.
+
+Main lemmas:
+
+* `isBoundedInProb_of_weakConverges` — a weakly convergent sequence of pushforward laws
+  is `O_P(1)` (Prokhorov: `weakConverges_range_tight` + compact ⟹ bounded).
+* `tendstoInProbZero_of_isBoundedInProb_smul` — if `sqn k • Z k = O_P(1)` and
+  `sqn k → ∞`, then `Z k →ₚ 0` (the `o_P · O_P` collapse used to get consistency of an
+  estimator from the weak limit of its rescaling).
 -/
 
 open MeasureTheory Filter Topology Set
@@ -5656,13 +8580,261 @@ namespace AsymptoticStatistics
 
 variable {Ω : ℕ → Type*} [∀ k, MeasurableSpace (Ω k)]
 
+/-- **Convergence to one in inner probability.** A sequence of arbitrary events `S n`
+has inner probability tending to one if it contains measurable events `E n` whose
+probabilities tend to one. This formulation does not require the target events themselves
+to be measurable. -/
+def TendstoInnerProbOne {Ξ : Type*} [MeasurableSpace Ξ]
+    (μ : Measure Ξ) (S : ℕ → Set Ξ) : Prop :=
+  ∃ E : ℕ → Set Ξ, (∀ n, MeasurableSet (E n)) ∧ (∀ n, E n ⊆ S n) ∧
+    Tendsto (fun n => μ.real (E n)) atTop (𝓝 1)
+
+/-- Inner probability tending to one implies the corresponding outer-measure statement. -/
+theorem TendstoInnerProbOne.tendsto_measureReal {Ξ : Type*} [MeasurableSpace Ξ]
+    {μ : Measure Ξ} [IsProbabilityMeasure μ] {S : ℕ → Set Ξ}
+    (h : TendstoInnerProbOne μ S) :
+    Tendsto (fun n => μ.real (S n)) atTop (𝓝 1) := by
+  obtain ⟨E, _, hES, hE⟩ := h
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' hE tendsto_const_nhds
+    (Eventually.of_forall fun n => measureReal_mono (hES n))
+    (Eventually.of_forall fun _ => measureReal_le_one)
+
+/-- **Convergence in probability to `0`, varying base.** For statistics `Z k : Ω k → G`
+on per-index measure spaces, `Z k → 0` in `P k`-probability: the `P k`-mass of
+`{ω | ε ≤ ‖Z k ω‖}` tends to `0` for every `ε > 0`. Matches the `hDist` shape of
+`WeakConverges.slutsky_of_tendstoInMeasure_dist`. -/
+def TendstoInProbZero {G : Type*} [NormedAddCommGroup G]
+    (P : ∀ k, Measure (Ω k)) (Z : ∀ k, Ω k → G) : Prop :=
+  ∀ ε : ℝ, 0 < ε → Tendsto (fun k => (P k).real {ω | ε ≤ ‖Z k ω‖}) atTop (𝓝 0)
+
+/-- **Bounded in probability (`O_P(1)`), varying base.** The family `{X k}` is uniformly
+tight: for every `ε > 0` there is a threshold `M` such that the `P k`-mass of
+`{ω | M < ‖X k ω‖}` is `≤ ε` for *all* `k`. -/
+def IsBoundedInProb {G : Type*} [NormedAddCommGroup G]
+    (P : ∀ k, Measure (Ω k)) (X : ∀ k, Ω k → G) : Prop :=
+  ∀ ε : ℝ, 0 < ε → ∃ M : ℝ, ∀ k, (P k).real {ω | M < ‖X k ω‖} ≤ ε
+
+/-- **Convergence in probability implies boundedness in probability.**
+
+The measurability hypothesis supplies tightness for the finitely many indices
+preceding the eventual `o_P(1)` tail bound. -/
+theorem TendstoInProbZero.isBoundedInProb
+    {G : Type*} [NormedAddCommGroup G]
+    [MeasurableSpace G] [BorelSpace G]
+    {P : ∀ k, Measure (Ω k)} [∀ k, IsProbabilityMeasure (P k)]
+    {Z : ∀ k, Ω k → G}
+    -- Convergence to zero in probability.
+    (h : TendstoInProbZero P Z)
+    -- required to obtain finite-prefix tightness of the pushforward laws.
+    (hZ_meas : ∀ k, Measurable (Z k)) :
+    IsBoundedInProb P Z := by
+  intro ε hε
+  have hev : ∀ᶠ k in atTop, (P k).real {ω | (1 : ℝ) ≤ ‖Z k ω‖} < ε :=
+    (h 1 zero_lt_one).eventually (Iio_mem_nhds hε)
+  obtain ⟨N, hN⟩ := eventually_atTop.mp hev
+  have hindiv : ∀ k : ℕ, ∃ M : ℝ, (P k).real {ω | M < ‖Z k ω‖} ≤ ε := by
+    intro k
+    set s : ℕ → Set (Ω k) := fun M => {ω | (M : ℝ) < ‖Z k ω‖} with hs_def
+    have hmeas : ∀ M, MeasurableSet (s M) :=
+      fun M => measurableSet_lt measurable_const (hZ_meas k).norm
+    have hanti : Antitone s := by
+      intro a b hab ω hω
+      change (b : ℝ) < ‖Z k ω‖ at hω
+      change (a : ℝ) < ‖Z k ω‖
+      exact lt_of_le_of_lt (by exact_mod_cast hab) hω
+    have hiInter : (⋂ M, s M) = ∅ := by
+      ext ω
+      simp only [hs_def, Set.mem_iInter, Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false,
+        not_forall, not_lt]
+      obtain ⟨M, hM⟩ := exists_nat_gt ‖Z k ω‖
+      exact ⟨M, hM.le⟩
+    have htends : Tendsto (fun M => (P k) (s M)) atTop (nhds ((P k) (⋂ M, s M))) :=
+      tendsto_measure_iInter_atTop (fun M => (hmeas M).nullMeasurableSet) hanti
+        ⟨0, measure_ne_top (P k) _⟩
+    rw [hiInter, measure_empty] at htends
+    have hs_eventually : ∀ᶠ M in atTop, (P k) (s M) < ENNReal.ofReal ε :=
+      htends.eventually (Iio_mem_nhds (ENNReal.ofReal_pos.mpr hε))
+    obtain ⟨M, hM⟩ := hs_eventually.exists
+    refine ⟨(M : ℝ), ?_⟩
+    rw [measureReal_def]
+    calc
+      ((P k) (s M)).toReal ≤ (ENNReal.ofReal ε).toReal :=
+        ENNReal.toReal_mono ENNReal.ofReal_ne_top hM.le
+      _ = ε := ENNReal.toReal_ofReal hε.le
+  have hprefix : ∀ K : ℕ, ∃ M : ℝ, (1 : ℝ) ≤ M ∧
+      ∀ k, k < K → (P k).real {ω | M < ‖Z k ω‖} ≤ ε := by
+    intro K
+    induction K with
+    | zero => exact ⟨1, le_rfl, fun k hk => absurd hk (Nat.not_lt_zero k)⟩
+    | succ K ih =>
+      obtain ⟨M, hM1, hM⟩ := ih
+      obtain ⟨MK, hMK⟩ := hindiv K
+      refine ⟨max M MK, hM1.trans (le_max_left _ _), fun k hk => ?_⟩
+      rcases Nat.lt_succ_iff_lt_or_eq.mp hk with hlt | rfl
+      · exact (measureReal_mono (fun ω hω =>
+          lt_of_le_of_lt (le_max_left M MK) hω)).trans (hM k hlt)
+      · exact (measureReal_mono (fun ω hω =>
+          lt_of_le_of_lt (le_max_right M MK) hω)).trans hMK
+  obtain ⟨M, hM1, hM⟩ := hprefix N
+  refine ⟨M, fun k => ?_⟩
+  rcases lt_or_ge k N with hk | hk
+  · exact hM k hk
+  · exact (measureReal_mono (fun ω hω =>
+      hM1.trans (le_of_lt hω))).trans (le_of_lt (hN k hk))
+
+/-- **A weakly convergent sequence of pushforward laws is `O_P(1)`.**
+
+If `(P k).map (X k) ⇝ ν` with `ν` a probability measure on a Polish space `E`, then the
+family `{X k}` is bounded in probability. Route: `Prohorov.weakConverges_range_tight`
+gives uniform tightness of the laws; a compact tightness witness `K` is bounded, so
+`{‖·‖ > M} ⊆ Kᶜ` for `M` large, and `map_apply` transports the bound back to
+`(P k).real {ω | M < ‖X k ω‖}`. -/
+theorem isBoundedInProb_of_weakConverges
+    {E : Type*} [NormedAddCommGroup E]
+    [MeasurableSpace E] [BorelSpace E] [SecondCountableTopology E] [CompleteSpace E]
+    {P : ∀ k, Measure (Ω k)} [∀ k, IsProbabilityMeasure (P k)]
+    {X : ∀ k, Ω k → E} (hX_meas : ∀ k, Measurable (X k))
+    {ν : Measure E} [IsProbabilityMeasure ν]
+    (h_wc : WeakConverges (fun k => (P k).map (X k)) ν) :
+    IsBoundedInProb P X := by
+  have : ∀ k, IsProbabilityMeasure ((P k).map (X k)) :=
+    fun k => (by infer_instance)
+  have htight : IsTightMeasureSet (Set.range (fun k => (P k).map (X k))) :=
+    Prohorov.weakConverges_range_tight _ ν h_wc
+  intro ε hε
+  obtain ⟨K, hK_compact, hK⟩ :=
+    (Prohorov.isTightMeasureSet_range_iff_singleton_tight _).mp htight
+      (ENNReal.ofReal ε) (by positivity)
+  obtain ⟨r, hr⟩ :=
+    (Metric.isBounded_iff_subset_closedBall (0 : E)).mp hK_compact.isBounded
+  refine ⟨max r 0, fun k => ?_⟩
+  have hS_meas : MeasurableSet {x : E | max r 0 < ‖x‖} :=
+    measurableSet_lt measurable_const continuous_norm.measurable
+  have hSKc : {x : E | max r 0 < ‖x‖} ⊆ Kᶜ := by
+    intro x hx hxK
+    have hxball : x ∈ Metric.closedBall (0 : E) (max r 0) :=
+      (hr.trans (Metric.closedBall_subset_closedBall (le_max_left r 0))) hxK
+    simp only [Metric.mem_closedBall, dist_zero_right] at hxball
+    exact absurd hxball (not_le.mpr hx)
+  have key : (P k) {ω | max r 0 < ‖X k ω‖}
+      = ((P k).map (X k)) {x : E | max r 0 < ‖x‖} :=
+    (Measure.map_apply (hX_meas k) hS_meas).symm
+  have hmass : ((P k).map (X k)) {x : E | max r 0 < ‖x‖} ≤ ENNReal.ofReal ε :=
+    le_trans (measure_mono hSKc) (hK k)
+  rw [measureReal_def, key]
+  calc (((P k).map (X k)) {x : E | max r 0 < ‖x‖}).toReal
+      ≤ (ENNReal.ofReal ε).toReal := ENNReal.toReal_mono ENNReal.ofReal_ne_top hmass
+    _ = ε := ENNReal.toReal_ofReal hε.le
+
+/-- **`o_P · O_P` collapse ⇒ consistency.** If `sqn k • Z k` is bounded in probability and
+the deterministic scale `sqn k → ∞`, then `Z k → 0` in probability. Used to derive
+`T k → θ₀` from the weak limit of `sqn k • (T k − θ₀)`. -/
+theorem tendstoInProbZero_of_isBoundedInProb_smul
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {P : ∀ k, Measure (Ω k)} [∀ k, IsProbabilityMeasure (P k)]
+    {Z : ∀ k, Ω k → E} {sqn : ℕ → ℝ}
+    (h_sqn : Tendsto sqn atTop atTop)
+    (h_OP : IsBoundedInProb P (fun k ω => sqn k • Z k ω)) :
+    TendstoInProbZero P Z := by
+  intro ε hε
+  refine Metric.tendsto_atTop.mpr fun η hη => ?_
+  obtain ⟨M, hM⟩ := h_OP (η / 2) (by positivity)
+  have hev : ∀ᶠ k in atTop, M < |sqn k| * ε :=
+    ((tendsto_abs_atTop_atTop.comp h_sqn).atTop_mul_const hε).eventually_gt_atTop M
+  obtain ⟨N, hN⟩ := eventually_atTop.mp hev
+  refine ⟨N, fun k hk => ?_⟩
+  have hsub : {ω | ε ≤ ‖Z k ω‖} ⊆ {ω | M < ‖sqn k • Z k ω‖} := by
+    intro ω hω
+    have h2 : |sqn k| * ε ≤ |sqn k| * ‖Z k ω‖ := mul_le_mul_of_nonneg_left hω (abs_nonneg _)
+    have h3 : ‖sqn k • Z k ω‖ = |sqn k| * ‖Z k ω‖ := by
+      rw [norm_smul, Real.norm_eq_abs]
+    rw [Set.mem_ofPred_eq, h3]
+    linarith [hN k hk]
+  have hle : (P k).real {ω | ε ≤ ‖Z k ω‖} ≤ η / 2 :=
+    le_trans (measureReal_mono hsub) (hM k)
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg measureReal_nonneg]
+  linarith
+
+/-- **Continuous-linear-map preservation of `→ₚ 0`.** If `Z n → 0` in `μ`-probability and
+`f` is a continuous linear map, then `f (Z n) → 0` in `μ`-probability. The `ε`-exceedance of
+`‖f (Z n)‖` is contained in the `ε/(‖f‖+1)`-exceedance of `‖Z n‖` via `‖f z‖ ≤ ‖f‖·‖z‖`.
+Reusable glue over a single base measure `μ` (the fixed-base specialization of the
+varying-base `TendstoInProbZero`). -/
+theorem tendstoInProbZero_clm {Ξ : Type*} [MeasurableSpace Ξ]
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (μ : Measure Ξ) [IsProbabilityMeasure μ] {Z : ℕ → Ξ → E} (f : E →L[ℝ] F)
+    (h : TendstoInProbZero (fun _ : ℕ => μ) Z) :
+    TendstoInProbZero (fun _ : ℕ => μ) (fun n ξ => f (Z n ξ)) := by
+  intro ε hε
+  have hden : (0 : ℝ) < ‖f‖ + 1 := by positivity
+  set δ : ℝ := ε / (‖f‖ + 1) with hδ_def
+  have hδ_pos : 0 < δ := div_pos hε hden
+  have hsub : ∀ n, {ξ | ε ≤ ‖f (Z n ξ)‖} ⊆ {ξ | δ ≤ ‖Z n ξ‖} := by
+    intro n ξ hξ
+    simp only [Set.mem_ofPred_eq] at hξ ⊢
+    have hbound : ‖f (Z n ξ)‖ ≤ ‖f‖ * ‖Z n ξ‖ := f.le_opNorm _
+    rw [hδ_def, div_le_iff₀ hden]
+    nlinarith [hbound, hξ, norm_nonneg (Z n ξ)]
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds (h δ hδ_pos)
+    (Eventually.of_forall fun n => measureReal_nonneg)
+    (Eventually.of_forall fun n => measureReal_mono (hsub n))
+
+/-- **`O_P(1) · o_P(1) = o_P(1)` (random scalar coefficient).** If the scalar family
+`A k` is bounded in probability (`O_P(1)`) and the family `Z k → 0` in probability, then
+the product `A k • Z k → 0` in probability. Route: for `ε, η > 0` pick `M` with
+`(P k){|A| > M} ≤ η/2` uniformly (from `hA`); then
+`{ε ≤ ‖A • Z‖} = {ε ≤ |A|·‖Z‖} ⊆ {M < |A|} ∪ {ε ≤ M·‖Z‖} = {M < |A|} ∪ {ε/M ≤ ‖Z‖}`,
+and the second event's mass → 0 by `hZ`. The `[IsProbabilityMeasure]` instance supplies
+the finiteness for `measureReal_mono`/`measureReal_union_le`. Used to turn the vdV Taylor
+remainder `ψ̈ · ‖θ̂ − θ₀‖²` (an `O_P(1)` empirical average times an `o_P(1)` distance) into
+an `o_P(1)` term. -/
+theorem tendstoInProbZero_of_isBoundedInProb_mul {G : Type*} [NormedAddCommGroup G]
+    [NormedSpace ℝ G] {P : ∀ k, Measure (Ω k)} [∀ k, IsProbabilityMeasure (P k)]
+    {A : ∀ k, Ω k → ℝ} {Z : ∀ k, Ω k → G}
+    (hA : IsBoundedInProb P A) (hZ : TendstoInProbZero P Z) :
+    TendstoInProbZero P (fun k ω => A k ω • Z k ω) := by
+  intro ε hε
+  refine Metric.tendsto_atTop.mpr fun η hη => ?_
+  -- Uniform threshold `M` for the `O_P(1)` family `A`, at level `η / 2`.
+  obtain ⟨M, hM⟩ := hA (η / 2) (by positivity)
+  -- Replace `M` by `M' := max M 1 > 0` so that `ε / M'` is a legitimate level for `hZ`.
+  set M' : ℝ := max M 1 with hM'_def
+  have hM'_pos : (0 : ℝ) < M' := lt_of_lt_of_le zero_lt_one (le_max_right M 1)
+  have hMM' : M ≤ M' := le_max_left M 1
+  have hlev_pos : (0 : ℝ) < ε / M' := div_pos hε hM'_pos
+  -- `hZ` at level `ε / M'` eventually puts mass `< η / 2` on the exceedance set.
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp (hZ (ε / M') hlev_pos) (η / 2) (by positivity)
+  refine ⟨N, fun k hk => ?_⟩
+  -- Off `{M < ‖A‖}` we have `‖A • Z‖ = ‖A‖ ‖Z‖ ≤ M' ‖Z‖`, so `ε ≤ ‖A • Z‖` forces
+  -- `ε / M' ≤ ‖Z‖`.
+  have hsub : {ω | ε ≤ ‖A k ω • Z k ω‖}
+      ⊆ {ω | M < ‖A k ω‖} ∪ {ω | ε / M' ≤ ‖Z k ω‖} := by
+    intro ω hω
+    by_cases hbig : M < ‖A k ω‖
+    · exact Or.inl hbig
+    · refine Or.inr ?_
+      simp only [Set.mem_ofPred_eq, norm_smul] at hω ⊢
+      have h1 : ‖A k ω‖ ≤ M' := (not_lt.mp hbig).trans hMM'
+      have h2 : ‖A k ω‖ * ‖Z k ω‖ ≤ M' * ‖Z k ω‖ :=
+        mul_le_mul_of_nonneg_right h1 (norm_nonneg _)
+      rw [div_le_iff₀ hM'_pos]
+      nlinarith [hω, h2]
+  have hsplit : (P k).real {ω | ε ≤ ‖A k ω • Z k ω‖}
+      ≤ (P k).real {ω | M < ‖A k ω‖} + (P k).real {ω | ε / M' ≤ ‖Z k ω‖} :=
+    (measureReal_mono hsub).trans (measureReal_union_le _ _)
+  have hZ_small : (P k).real {ω | ε / M' ≤ ‖Z k ω‖} < η / 2 := by
+    have := hN k hk
+    rwa [Real.dist_eq, sub_zero, abs_of_nonneg measureReal_nonneg] at this
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg measureReal_nonneg]
+  linarith [hM k]
 
 end AsymptoticStatistics
 
 end GLP0011B3Source17
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.EmpiricalAverage`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/EmpiricalAverage.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source18
 
@@ -5671,8 +8843,9 @@ section GLP0011B3Source18
 # Empirical averages of finite samples
 
 The empirical average of a real-valued function over a sample indexed by `Fin n`,
-with the zero-sample and zero-function identities. This definition is independent
-of measure theory.
+with its elementary additive and scalar-multiplication identities. This definition
+is independent of measure theory and is shared by the probability and empirical-
+process layers.
 -/
 
 namespace AsymptoticStatistics.EmpiricalProcess
@@ -5698,13 +8871,22 @@ noncomputable def empiricalAvg (f : Ω → ℝ) (n : ℕ) (X : Fin n → Ω) : �
     empiricalAvg (fun _ => (0 : ℝ)) n X = 0 := by
   simp [empiricalAvg]
 
+lemma empiricalAvg_add (f g : Ω → ℝ) (n : ℕ) (X : Fin n → Ω) :
+    empiricalAvg (fun x => f x + g x) n X = empiricalAvg f n X + empiricalAvg g n X := by
+  unfold empiricalAvg
+  rw [Finset.sum_add_distrib, mul_add]
+
+lemma empiricalAvg_smul (c : ℝ) (f : Ω → ℝ) (n : ℕ) (X : Fin n → Ω) :
+    empiricalAvg (fun x => c * f x) n X = c * empiricalAvg f n X := by
+  unfold empiricalAvg
+  rw [← Finset.mul_sum, ← mul_assoc, mul_comm (n : ℝ)⁻¹ c, mul_assoc]
 
 end AsymptoticStatistics.EmpiricalProcess
 
 end GLP0011B3Source18
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.IidWLLN`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/IidWLLN.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source19
 
@@ -5724,6 +8906,9 @@ finite measures). The a.s. statement lives on the Kolmogorov extension
 `Measure.pi (fun _ : Fin n => P)` over `Fin n → Ω` via the truncation identity
 `pi_meas_eq_infinitePi_meas_of_truncate`.
 
+This file is theorem-agnostic (ForMathlib layer): the lemma is a reusable
+probability brick with no dependence on the statistical-asymptotics machinery,
+and is consumed by the one-step and Z-estimator discharge layers.
 -/
 
 open MeasureTheory Filter Topology
@@ -5795,7 +8980,7 @@ lemma iid_lln_in_prob_l1
       map_eq := by rw [hY_map i, hY_map 0] }
   -- Mean of `Y 0`: `∫ Y 0 ∂μ_inf = ∫ f' ∂P = ∫ f ∂P`.
   -- Use `integral_map` (pure aemeasurable hypotheses) — `MeasurePreserving.integral_comp`
-  -- requires a `MeasurableEmbedding`, which is unavailable for `eval 0`.
+  -- requires a `MeasurableEmbedding`, which we don't have for `eval 0`.
   have h_mean : ∫ ω, Y 0 ω ∂μ_inf = ∫ ω, f ω ∂P := by
     have h_int : ∫ ω, f' ω ∂P = ∫ ω, Y 0 ω ∂μ_inf := by
       have hP_eq : P = Measure.map (Function.eval 0 : (ℕ → Ω) → Ω) μ_inf :=
@@ -5813,7 +8998,7 @@ lemma iid_lln_in_prob_l1
         atTop (𝓝 (∫ ω, Y 0 ω ∂μ_inf)) :=
     ProbabilityTheory.strong_law_ae_real Y hY0_int h_pair h_ident
   -- Bridge `(∑ range n, Y i ω) / n` to `(n : ℝ)⁻¹ * ∑ i : Fin n, f (ω i)`.
-  -- (a) Rewrite the `Finset.range` sum as a `Fin n` sum, (b) convert
+  -- We need to (a) rewrite the `Finset.range` sum as a `Fin n` sum, (b) convert
   -- `/n` to `(n : ℝ)⁻¹ * _`, and (c) replace `f' (ω i)` by `f (ω i)` a.e.
   -- Step (c): `f' (ω i) = f (ω i)` for all `i`, μ_inf-a.e.
   -- Uses `MeasurePreserving.quasiMeasurePreserving` + `QuasiMeasurePreserving.ae_eq`
@@ -5874,7 +9059,7 @@ lemma iid_lln_in_prob_l1
   intro ε hε
   have h_inf := h_norm ε hε
   -- For each n, bridge `μ_inf`-set-measure with `Measure.pi (Fin n → P)`-set-measure.
-  -- Pass through the `f'`-version of the set (where `f'` is measurable, so the
+  -- We pass through the `f'`-version of the set (where `f'` is measurable, so the
   -- set is measurable), using the coordinatewise a.e. equality `f = f'`.
   have h_set_eq : ∀ n : ℕ,
       (Measure.pi (fun _ : Fin n => P))
@@ -5914,7 +9099,7 @@ lemma iid_lln_in_prob_l1
       AsymptoticStatistics.pi_meas_eq_infinitePi_meas_of_truncate (ν := P) n hms_f'
     -- Step 3: replace `f'` by `f` inside the `μ_inf`-set (a.e. on μ_inf).
     -- Note: after `hbridge_f'` rewrites, the LHS is in
-    -- `{ω | (fun i : Fin n => ω i.val) ∈ {X | ε ≤ |…f' (X i)…|}}` form;
+    -- `{ω | (fun i : Fin n => ω i.val) ∈ {X | ε ≤ |…f' (X i)…|}}` form. We
     -- match that explicit form below.
     have h_inf_set_eq :
         μ_inf {ω : ℕ → Ω |
@@ -5927,7 +9112,7 @@ lemma iid_lln_in_prob_l1
       filter_upwards [h_ae_eq] with ω hω
       have h_sum_eq : (∑ i : Fin n, f' (ω i.val)) = (∑ i : Fin n, f (ω i)) :=
         Finset.sum_congr rfl fun i _ => (hω i.val).symm
-      -- Rewrite the two tail predicates using the a.e. equality of the empirical sums.
+      -- Goal: `ω ∈ {ω | (fun i => ω i.val) ∈ {X | p_f' X}} = ω ∈ {ω | ‖…f (ω i)…‖ ≤ ε}`.
       change (ε ≤ |(n : ℝ)⁻¹ * (∑ i : Fin n, f' (ω i.val)) - ∫ ω, f ω ∂P|) =
              (ε ≤ ‖(n : ℝ)⁻¹ * (∑ i : Fin n, f (ω i)) - ∫ ω, f ω ∂P‖)
       rw [Real.norm_eq_abs, h_sum_eq]
@@ -5935,13 +9120,99 @@ lemma iid_lln_in_prob_l1
   simp_rw [h_set_eq]
   exact h_inf
 
+open AsymptoticStatistics.EmpiricalProcess in
+/-- **C (single-base iid WLLN in probability).** For an `L¹(P)` function `g` and the
+single-base i.i.d. quadruple `X : ℕ → Ξ → Ω` with `μ.map (X 0) = P`, the empirical
+average `ℙₙ g = (1/n)∑_{i<n} g(Xᵢ)` converges to `∫ g ∂P` in `μ`-probability:
+
+    `empiricalAvg g n (fun i : Fin n => X i.val ξ) − ∫ g ∂P →ₚ 0`.
+
+This is the single-base (varying-base `TendstoInProbZero`) sibling of the `Measure.pi`
+form `iid_lln_in_prob_l1`; the classical Z-estimator layer consumes this form (it matches
+the `(Ξ, μ, X)` sample encoding of the headline theorems). The proof applies
+`ProbabilityTheory.strong_law_ae` to the iid `ℝ`-sequence `g ∘ Xᵢ` on `(Ξ, μ)`
+(mean `∫ g ∂P` via `μ.map (X 0) = P`) gives a.s. convergence of the prefix averages;
+`MeasureTheory.tendstoInMeasure_of_tendsto_ae` upgrades a.s. → in-measure on the finite
+measure `μ`; unfold `empiricalAvg` to the `Fin n` prefix average. This direct
+argument does not require transport through `Measure.pi`. -/
+theorem iid_lln_in_prob_seq {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
+    [IsProbabilityMeasure P] (g : Ω → ℝ) (hg_meas : Measurable g) (hg_int : Integrable g P)
+    {Ξ : Type*} [MeasurableSpace Ξ] (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (X : ℕ → Ξ → Ω) (hX_meas : ∀ i, Measurable (X i))
+    (hX_indep : ProbabilityTheory.iIndepFun X μ)
+    (hX_id : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P) :
+    TendstoInProbZero (fun _ : ℕ => μ)
+      (fun n ξ => empiricalAvg g n (fun i : Fin n => X i.val ξ) - ∫ x, g x ∂P) := by
+  classical
+  -- The i.i.d. real sequence `Y i ξ = g (X i ξ)` on the single base `(Ξ, μ)`.
+  set Y : ℕ → Ξ → ℝ := fun i ξ => g (X i ξ) with hY_def
+  have hY_meas : ∀ i, Measurable (Y i) := fun i => hg_meas.comp (hX_meas i)
+  -- (i) Independence: post-compose the i.i.d. family `X` with the measurable `g`.
+  have hY_indep : ProbabilityTheory.iIndepFun Y μ := by
+    simpa [Y, Function.comp_def] using
+      hX_indep.comp (fun _ : ℕ => g) (fun _ => hg_meas)
+  have hY_pair :
+      Pairwise ((fun U V : Ξ → ℝ => ProbabilityTheory.IndepFun U V μ) on Y) :=
+    fun i j hij => hY_indep.indepFun hij
+  -- (ii) Identical distribution: `IdentDistrib.comp` along `g`.
+  have hY_ident : ∀ i, ProbabilityTheory.IdentDistrib (Y i) (Y 0) μ μ := fun i =>
+    (hX_id i).comp hg_meas
+  -- (iii) Integrability of `Y 0 = g ∘ X 0`, transported along `μ.map (X 0) = P`.
+  have hY0_int : Integrable (Y 0) μ := by
+    have hiff := MeasureTheory.integrable_map_measure
+      (μ := μ) (f := X 0) (g := g) (by rw [hX_law]; exact hg_meas.aestronglyMeasurable)
+      (hX_meas 0).aemeasurable
+    rw [hX_law] at hiff
+    exact hiff.mp hg_int
+  -- (iv) Mean of `Y 0` is `∫ g ∂P`, again via `μ.map (X 0) = P`.
+  have hY0_mean : ∫ ξ, Y 0 ξ ∂μ = ∫ x, g x ∂P := by
+    rw [← hX_law]
+    exact (MeasureTheory.integral_map (hX_meas 0).aemeasurable
+      hg_meas.aestronglyMeasurable).symm
+  -- Etemadi's strong law on `(Ξ, μ)`: prefix averages converge a.s. to `∫ g ∂P`.
+  have h_slln : ∀ᵐ ξ ∂μ,
+      Tendsto (fun n : ℕ => (∑ i ∈ Finset.range n, Y i ξ) / n) atTop
+        (𝓝 (∫ ξ, Y 0 ξ ∂μ)) :=
+    ProbabilityTheory.strong_law_ae_real Y hY0_int hY_pair hY_ident
+  -- Index bridge: `empiricalAvg` over `Fin n` = the `Finset.range n` prefix average.
+  set F : ℕ → Ξ → ℝ := fun n ξ => empiricalAvg g n (fun i : Fin n => X i.val ξ) with hF_def
+  have hF_eq : ∀ (n : ℕ) (ξ : Ξ), F n ξ = (∑ i ∈ Finset.range n, Y i ξ) / n := by
+    intro n ξ
+    rw [hF_def]
+    simp only [empiricalAvg]
+    rw [← Fin.sum_univ_eq_sum_range (fun i => Y i ξ) n]
+    ring
+  have hF_fun : ∀ n : ℕ, F n = fun ξ => (∑ i ∈ Finset.range n, Y i ξ) / n :=
+    fun n => funext (fun ξ => hF_eq n ξ)
+  have h_target_ae : ∀ᵐ ξ ∂μ, Tendsto (fun n : ℕ => F n ξ) atTop (𝓝 (∫ x, g x ∂P)) := by
+    filter_upwards [h_slln] with ξ hξ
+    rw [hY0_mean] at hξ
+    have hseq : (fun n : ℕ => F n ξ) = fun n : ℕ => (∑ i ∈ Finset.range n, Y i ξ) / n :=
+      funext (fun n => hF_eq n ξ)
+    rw [hseq]
+    exact hξ
+  have hF_meas : ∀ n : ℕ, AEStronglyMeasurable (F n) μ := by
+    intro n
+    rw [hF_fun n]
+    exact ((Finset.measurable_sum _ fun i _ => hY_meas i).div_const _).aestronglyMeasurable
+  -- a.s. ⇒ in measure (μ is a probability measure, hence finite).
+  have h_in_meas : MeasureTheory.TendstoInMeasure μ F atTop (fun _ => ∫ x, g x ∂P) :=
+    MeasureTheory.tendstoInMeasure_of_tendsto_ae hF_meas h_target_ae
+  have h_norm := (MeasureTheory.tendstoInMeasure_iff_norm (μ := μ) (l := atTop)
+      (f := F) (g := fun _ => ∫ x, g x ∂P)).mp h_in_meas
+  -- Finally convert the `ℝ≥0∞`-valued statement to the `Measure.real` form.
+  intro ε hε
+  have h_ennreal := h_norm ε hε
+  have h_toReal := (ENNReal.tendsto_toReal (by simp)).comp h_ennreal
+  simpa [Function.comp_def, measureReal_def] using h_toReal
 
 end AsymptoticStatistics
 
 end GLP0011B3Source19
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ParametricFamily.Defs`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ParametricFamily/Defs.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source20
 
@@ -5952,10 +9223,12 @@ section GLP0011B3Source20
 A *parametric statistical model* is a family of probability densities
 $\{p_\theta : \theta \in \Theta\}$ on a sample space $\mathcal X$, each taken with
 respect to a common dominating $\sigma$-finite measure $\mu$. This file fixes the
-density function with per-parameter measurability and pointwise nonnegativity.
+basic objects of such a model and the analytic structure used throughout the
+local-asymptotic-normality development.
 
-A parametric family packages a family $\theta \mapsto p_\theta$ of pointwise
-nonnegative functions, each measurable on $\mathcal X$. A family is a *probability-density
+We package a parametric family as the data of a measurable, non-negative map
+$\theta \mapsto p_\theta$, where $p_\theta : \mathcal X \to \mathbb R$ is the density
+of the $\theta$-th member with respect to $\mu$. A family is a *probability-density
 family* (relative to $\mu$) when, for every $\theta$, the density is $\mu$-integrable
 and normalised, $\int_{\mathcal X} p_\theta \, d\mu = 1$.
 
@@ -5968,12 +9241,40 @@ roots is what turns the (nonlinear) statistical model into a curve in the Hilber
 $L^2(\mu)$, and is the foundation for differentiability in quadratic mean and the
 Hellinger geometry of vdV Chapter 7.
 
+This file contains no theorem with a numbered book counterpart; it sets up the
+definitions (`ParametricFamily`, `IsPDFOf`, `sqrtDensity`) and their elementary
+measurability / positivity / $L^2$ lemmas.
+
 **Reference.** A. W. van der Vaart, *Asymptotic Statistics*, Cambridge Series in
 Statistical and Probabilistic Mathematics, Cambridge University Press, 1998,
 Chapter 7 (Local Asymptotic Normality), §7.2 (Expanding the Likelihood) —
 the parametric-model setup and the square-root-density / $L^2(\mu)$ representation
 underlying the differentiability-in-quadratic-mean definition.
 
+**Proof formalization notes.**
+* We bundle the joint measurability and non-negativity of $\theta \mapsto p_\theta$
+  into the `ParametricFamily` structure so downstream lemmas reuse them without
+  reproving.
+* `IsPDFOf` collects the two universal regularity conditions that otherwise recur as
+  separate hypotheses in LAN-style statements — per-$\theta$ normalisation
+  ($\int p_\theta \, d\mu = 1$) and per-$\theta$ $\mu$-integrability.
+* We deliberately do **not** bundle $\mu$-a.e. strict positivity of $p_\theta$ here.
+  vdV's Theorem 7.10 (and the LAN expansion it rests on) needs only the weaker
+  condition that the perturbed densities $p_{\theta_0 + t u}$ are strictly positive on
+  the support of $p_{\theta_0}$, i.e. $\nu$-a.e. with $\nu = \mu.\mathrm{withDensity}\,
+  p_{\theta_0}$. Consumers requiring positivity should take it as a separate
+  hypothesis in $\nu$-form rather than baking it into the structure.
+* The membership $s_\theta \in L^2(\mu)$ is obtained from $\mu$-integrability of
+  $p_\theta$ via `memLp_two_iff_integrable_sq`, using $s_\theta^2 = p_\theta$.
+
+**Bibliographic comments.** The square-root / Hilbert-space representation of a
+parametric model — and the resulting Hellinger and $L^2$ geometry — is classical
+statistical folklore with no single seminal origin. Its modern asymptotic use
+traces through L. Le Cam's work on differentiability in quadratic mean and contiguity
+(L. Le Cam, *Asymptotic Methods in Statistical Decision Theory*, Springer, 1986) and
+the earlier C. R. Rao / J. Hájek tradition on regular parametric families; the
+synthesis followed here is van der Vaart (1998), Chapter 7. No original
+research paper is attributed for these definitional objects.
 -/
 
 open MeasureTheory
@@ -5982,7 +9283,8 @@ namespace AsymptoticStatistics
 
 /-- A parametric family of (μ-)densities indexed by a parameter `θ : Θ`.
 
-The structure bundles per-parameter measurability and pointwise nonnegativity. -/
+We package the joint measurability/non-negativity assumptions into the structure so that
+downstream lemmas can use them without reproving. -/
 structure ParametricFamily
     (𝓧 : Type*) [MeasurableSpace 𝓧] (Θ : Type*) where
   /-- Density `p_θ(x)`. -/
@@ -5995,7 +9297,7 @@ the dominating measure `μ`. Bundles the two universal regularity conditions tha
 typically appear as separate hypotheses in LAN-style theorems — normalisation and
 integrability, each for every parameter `θ`.
 
-The structure does **not** bundle ae-strict-positivity of `p_θ`: vdV's
+We deliberately do **not** bundle ae-strict-positivity of `p_θ` here: vdV's
 Theorem 7.10 (and the LAN expansion it rests on) only needs the weaker condition
 that the perturbation densities `p_{θ₀ + t·u}` are strictly positive on the support
 of `p_{θ₀}` (i.e. ν-a.e. where ν = μ.withDensity p_{θ₀}). Consumers requiring that
@@ -6013,12 +9315,33 @@ namespace ParametricFamily
 variable {𝓧 : Type*} [MeasurableSpace 𝓧]
 variable {Θ : Type*}
 
-
+/-! ## Square-root density -/
 
 /-- The square root density `√p_θ`. -/
 noncomputable def sqrtDensity (M : ParametricFamily 𝓧 Θ) (θ : Θ) (x : 𝓧) : ℝ :=
   Real.sqrt (M.density θ x)
 
+lemma sqrtDensity_meas (M : ParametricFamily 𝓧 Θ) (θ : Θ) :
+    Measurable (M.sqrtDensity θ) :=
+  (M.density_meas θ).sqrt
+
+lemma sqrtDensity_nonneg (M : ParametricFamily 𝓧 Θ) (θ : Θ) (x : 𝓧) :
+    0 ≤ M.sqrtDensity θ x :=
+  Real.sqrt_nonneg _
+
+lemma sqrtDensity_sq (M : ParametricFamily 𝓧 Θ) (θ : Θ) (x : 𝓧) :
+    M.sqrtDensity θ x ^ 2 = M.density θ x := by
+  unfold sqrtDensity
+  exact Real.sq_sqrt (M.density_nonneg θ x)
+
+/-- If a density `p_θ` is integrable, then its square root belongs to `L²(μ)`. -/
+lemma sqrtDensity_memLp_two
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧) (θ : Θ)
+    (hint : Integrable (M.density θ) μ) :
+    MemLp (M.sqrtDensity θ) 2 μ := by
+  refine (MeasureTheory.memLp_two_iff_integrable_sq
+      ((M.sqrtDensity_meas θ).aestronglyMeasurable)).2 ?_
+  simpa [M.sqrtDensity_sq] using hint
 
 end ParametricFamily
 end AsymptoticStatistics
@@ -6026,7 +9349,7 @@ end AsymptoticStatistics
 end GLP0011B3Source20
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.DQM.Defs`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/DQM/Defs.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source21
 
@@ -6047,17 +9370,38 @@ it is exactly the requirement that the root density map $h \mapsto \sqrt{p_{\the
 be Fréchet-differentiable in $L^2(\mu)$ at $h = 0$, with derivative
 $\tfrac12 \langle \cdot, \ell\rangle \sqrt{p_\theta}$.
 
+**Added hypothesis (deviation from the book).** Our formalisation states the
+condition as a *conjunction* of an $L^2$-membership clause and the little-$o$
+rate, rather than as the single integral condition printed in the book. This is
+not a strengthening: see the proof formalization notes below for why the
+membership clause is implicit in van der Vaart's Lebesgue-integral reading and
+must be made explicit once the Bochner integral is used.
+
 **Reference.** A. W. van der Vaart, *Asymptotic Statistics*, Cambridge Series in
 Statistical and Probabilistic Mathematics, Cambridge University Press, 1998,
 Chapter 7 (Local Asymptotic Normality), §7.2 (Differentiable in Quadratic Mean),
-Eq. (7.1).
+Eq. (7.1). Consequences and discharges of DQM auxiliary hypotheses live in
+`DQM/Properties.lean`.
 
-A Bochner-integral formulation must state eventual L²-membership of the residual
-explicitly. A non-integrable function has Bochner integral zero by convention,
-so the real-valued integral rate alone would hold vacuously for a residual
-outside L². In the nonnegative Lebesgue-integral formulation, finiteness
-already expresses square-integrability.
+**Proof formalization notes.** In van der Vaart's definition the displayed
+integral is the Lebesgue integral of a non-negative function, where finiteness of
+the integral is *equivalent* to $L^2(\mu)$-membership of the residual. When
+formalising with Lean's Bochner integral, that equivalence breaks: a
+non-integrable non-negative function has Bochner integral $0$ by convention, so
+the $o(\|h\|^2)$ rate condition would be *trivially* satisfied for pathological
+models whose residual is never in $L^2(\mu)$. We therefore record the implicit
+"residual is eventually in $L^2(\mu)$" content of the book's definition as a
+separate conjunct (`mem`), so that the formal definition is *equivalent* to the
+book's informal one — no stronger, no weaker.
 
+**Bibliographic comments.** Differentiability in quadratic mean originates with
+L. Le Cam, "On the assumptions used to prove asymptotic normality of maximum
+likelihood estimates," *The Annals of Mathematical Statistics* 41 (1970), no. 3,
+802–828. Le Cam introduced this $L^2$/Hellinger differentiability of the root
+density as the minimal regularity replacing the classical pointwise
+smoothness-and-domination conditions, and used it to establish local asymptotic
+normality and the asymptotic normality of maximum likelihood estimators without
+the cumbersome third-derivative hypotheses of the Cramér–Wald approach.
 -/
 
 open MeasureTheory Asymptotics Filter Topology
@@ -6072,7 +9416,7 @@ variable {μ : Measure 𝓧}
 /-- Differentiability in quadratic mean (DQM).
 
 The model `M` is **DQM at `θ`** with score `ℓ : 𝓧 → Θ` w.r.t. the dominating measure `μ`
-if the squared L²(μ) norm of the Hellinger residual is `o(‖h‖²)` as `h → 0`:
+if the L²(μ) Hellinger residual is `o(‖h‖²)` as `h → 0`:
 `∫ (√p_{θ+h} − √p_θ − ½⟨h, ℓ(x)⟩√p_θ)² dμ(x) = o(‖h‖²)`.
 
 This is the central regularity condition of LAN (Local Asymptotic Normality);
@@ -6084,9 +9428,10 @@ is *the same as* `MemLp 2 μ`-membership of the residual.  When formalising with
 Lean's Bochner integral `∫`, that equivalence breaks: a non-integrable
 non-negative function has Bochner integral `0` by convention, so the
 `o(‖h‖²)` rate condition is *trivially* satisfied for pathological models in
-which the residual is never in `L²(μ)`. The eventual `L²(μ)`-membership of the
-residual is therefore stated as a separate conjunct (`mem`), making the
-integrability requirement explicit. -/
+which the residual is never in `L²(μ)`.  We therefore record the implicit
+"residual is eventually in `L²(μ)`" content of vdV's definition as a separate
+conjunct (`mem`), so that our formal definition is *equivalent* to vdV's
+informal one — no stronger, no weaker. -/
 structure DifferentiableQuadraticMean
     (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧) (θ : Θ)
     (ℓ : 𝓧 → Θ) : Prop where
@@ -6095,7 +9440,7 @@ structure DifferentiableQuadraticMean
   mem : ∀ᶠ h in 𝓝 (0 : Θ),
     MemLp (fun x => M.sqrtDensity (θ + h) x - M.sqrtDensity θ x
                     - (1/2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ x) 2 μ
-  /-- The squared L²(μ) norm of the Hellinger residual is `o(‖h‖²)` as `h → 0`. -/
+  /-- The L²(μ) norm of the Hellinger residual is `o(‖h‖²)` as `h → 0`. -/
   isLittleO :
     (fun h : Θ =>
       ∫ x, (M.sqrtDensity (θ + h) x
@@ -6108,11 +9453,51 @@ end AsymptoticStatistics
 end GLP0011B3Source21
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ParametricFamily.FisherInformation`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ParametricFamily/FisherInformation.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source22
 
 
+/-!
+# Fisher information (bilinear form)
+
+For a parametric family $\{P_\theta\}$ with score function
+$\dot\ell_\theta : \mathcal X \to \Theta$, the **Fisher information**
+at $\theta$ is the symmetric bilinear form on the parameter space
+$$ I_\theta(u, v) \;=\; P_\theta\bigl(\langle u,
+\dot\ell_\theta\rangle\,\langle v, \dot\ell_\theta\rangle\bigr)
+   \;=\; \int \langle u, \dot\ell_\theta(x)\rangle\,\langle
+   v, \dot\ell_\theta(x)\rangle \, p_\theta(x)\,d\mu(x). $$
+In a finite-dimensional basis this is the matrix
+$I_\theta = P_\theta\,\dot\ell_\theta\,\dot\ell_\theta^{\mathsf T}$,
+i.e. the expected outer product of the score under $P_\theta$.
+
+This file fixes only the **bilinear-form definition**. Here the score $\ell$ is taken as an explicit
+argument $\ell : \mathcal X \to \Theta$ (any candidate score), and the family density $p_\theta$
+enters through `M.density θ` integrated against the dominating measure $\mu$; no
+positive-definiteness or regularity (square-integrability of the score) is asserted at this level.
+
+**Reference.** A. W. van der Vaart, *Asymptotic Statistics*, Cambridge Series in Statistical and
+Probabilistic Mathematics, Cambridge University Press, 1998. Chapter 7 (Local Asymptotic Normality),
+§7.2, definition of the Fisher information matrix
+$I_\theta = P_\theta\,\dot\ell_\theta\,\dot\ell_\theta^{\mathsf T}$
+(score function $\dot\ell_\theta$ introduced in §5.5).
+
+**Proof formalization notes.** This file is a *definition*, not a theorem: `fisherInformation`
+packages the bilinear form $(u, v) \mapsto P_\theta(\langle u, \ell\rangle\,\langle v, \ell\rangle)$
+as a function `Θ → Θ → ℝ`. The integral is over the dominating measure $\mu$ weighted by
+`M.density θ`, matching $P_\theta$. In a finite-dimensional basis this
+reproduces the textbook matrix $P_\theta\,\ell_\theta\,\ell_\theta^{\mathsf T}$.
+
+**Bibliographic comments.** The Fisher information originates with R. A. Fisher, "On the
+mathematical foundations of theoretical statistics," *Philosophical Transactions of the Royal
+Society of London, Series A*, vol. 222, pp. 309–368, 1922, where the "intrinsic accuracy" / amount
+of information of a statistic is introduced (§§3–11), and is developed further in R. A. Fisher,
+"Theory of statistical estimation," *Proceedings of the Cambridge Philosophical Society*, vol. 22,
+pp. 700–725, 1925. The modern multivariate form as the expected outer product of the score,
+$I_\theta = E_\theta[\dot\ell_\theta\dot\ell_\theta^{\mathsf T}]$,
+formalized here is standard (van der Vaart §7.2).
+-/
 
 open MeasureTheory
 open scoped RealInnerProductSpace
@@ -6122,18 +9507,87 @@ namespace AsymptoticStatistics
 variable {𝓧 : Type*} [MeasurableSpace 𝓧]
 variable {Θ : Type*} [NormedAddCommGroup Θ] [InnerProductSpace ℝ Θ]
 
+/-- Fisher information as a bilinear form on the parameter space.
+
+`fisherInformation M μ θ ℓ` sends `(u, v) ↦ ∫ ⟨u, ℓ x⟩ ⟨v, ℓ x⟩ dμ(x) · p_θ(x)`,
+or equivalently `P_θ (⟨u, ℓ⟩ ⟨v, ℓ⟩)`.
+
+In a finite-dimensional basis this is exactly the matrix `P_θ ℓ_θ ℓ_θᵀ`. -/
+noncomputable def fisherInformation
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧) (θ : Θ) (ℓ : 𝓧 → Θ) :
+    Θ → Θ → ℝ :=
+  fun u v => ∫ x, (⟪u, ℓ x⟫ * ⟪v, ℓ x⟫) * M.density θ x ∂μ
 
 end AsymptoticStatistics
 
 end GLP0011B3Source22
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ParametricFamily.Score`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ParametricFamily/Score.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source23
 
 
-/-! # Measurable score-function bundle -/
+/-!
+# Zero mean of the score function
+
+Let $(P_\theta : \theta \in \Theta)$ be a statistical model with densities
+$p_\theta$ with respect to a dominating measure $\mu$. Suppose the model is
+*differentiable in quadratic mean* at $\theta_0$ with score function
+$\ell_{\theta_0} : \mathcal X \to \Theta$; that is, the map
+$\theta \mapsto \sqrt{p_\theta}$ admits an $L^2(\mu)$ derivative
+$\tfrac12\,\langle \cdot, \ell_{\theta_0}\rangle\,\sqrt{p_{\theta_0}}$ at
+$\theta_0$. Then the score has **zero mean** under $P_{\theta_0}$: for every
+direction $u \in \Theta$,
+$$\int \langle u, \ell_{\theta_0}(x)\rangle\, p_{\theta_0}(x)\, d\mu(x) = 0,$$
+equivalently $P_{\theta_0}\,\ell_{\theta_0} = 0$.
+
+The headline declaration is `score_mean_zero`, assembled from the supporting
+lemmas `diff_sq_identity`, `inner_product_continuity`, `dqm_to_rescaled_l2`, and
+`sqrt_sum_convergence_of_rescaled`.
+
+**Reference.** A. W. van der Vaart, *Asymptotic Statistics*, Cambridge Series in
+Statistical and Probabilistic Mathematics, Cambridge University Press, 1998,
+Chapter 7 (Local Asymptotic Normality), §7.2 (Expanding the Likelihood),
+Theorem 7.2, differentiability-in-quadratic-mean condition Eq (7.1). Van der
+Vaart's Theorem 7.2 states that DQM at $\theta$ implies both
+$P_\theta\,\ell_\theta = 0$ and existence of the Fisher information
+$I_\theta = P_\theta\,\ell_\theta\ell_\theta^\top$; this file formalizes the
+zero-mean half.
+
+**Proof formalization notes.** The argument follows van der Vaart's proof of
+Theorem 7.2. It uses the inner-product identity in $L^2(\mu)$
+$$\big\langle \sqrt{n}\,(\sqrt{p_n} - \sqrt{p}),\ \sqrt{p_n} + \sqrt{p}\big\rangle_{L^2(\mu)}
+  = \sqrt{n}\int (p_n - p)\, d\mu = 0,$$
+which vanishes because both densities integrate to $1$ (`diff_sq_identity`).
+Taking the limit along a perturbation $\theta_0 + t\cdot u$ as $t \to 0$ and using
+the DQM-induced $L^2$ convergence (`dqm_to_rescaled_l2`,
+`sqrt_sum_convergence_of_rescaled`) together with continuity of the $L^2$ inner
+product (`inner_product_continuity`) gives
+$\langle \tfrac12\,\langle u, \ell\rangle\,\sqrt{p},\ 2\sqrt{p}\rangle
+  = \int \langle u, \ell\rangle\, p\, d\mu$,
+so the limit equals $0$ and the score has zero mean. The Lean statement carries a
+few hypotheses that van der Vaart treats as automatic consequences of DQM but that
+are supplied here as explicit regularity inputs: finiteness of the Fisher
+information along the chosen direction (`h_Fisher`), local $L^2$-membership of the
+DQM residual near $t = 0$ (`h_fminus_memLp`), and that each perturbed density
+integrates to $1$ and is integrable (`h_one_perturb`, `hint_perturb`).
+
+**Bibliographic comments.** The zero-mean identity for the score is classical
+folklore in mathematical statistics, tracing to R. A. Fisher's foundational work
+on maximum likelihood estimation and information (R. A. Fisher, "On the
+mathematical foundations of theoretical statistics," *Philosophical Transactions
+of the Royal Society A* **222** (1922), 309–368; "Theory of statistical
+estimation," *Proceedings of the Cambridge Philosophical Society* **22** (1925),
+700–725). It has no single seminal source as an isolated proposition. The
+specific derivation formalized here — obtaining $P_\theta\,\ell_\theta = 0$ from
+differentiability in quadratic mean *without* assuming pointwise differentiability
+— is due to the Le Cam–Hájek school of asymptotic decision theory (L. Le Cam,
+*Asymptotic Methods in Statistical Decision Theory*, Springer, 1986; J. Hájek,
+"Local asymptotic minimax and admissibility in estimation," *Proc. Sixth Berkeley
+Symp. on Math. Statist. and Prob.*, vol. 1, 1972, 175–194) and is presented in
+textbook form as van der Vaart's Theorem 7.2.
+-/
 
 open MeasureTheory Asymptotics Filter Topology
 open scoped RealInnerProductSpace
@@ -6163,18 +9617,751 @@ variable {𝓧 : Type*} [MeasurableSpace 𝓧]
 variable {Θ : Type*} [NormedAddCommGroup Θ] [InnerProductSpace ℝ Θ]
   [MeasurableSpace Θ] [OpensMeasurableSpace Θ] [SecondCountableTopology Θ]
 
+/-! ## Analytical consequences of DQM
 
+These are the analytical consequences of DQM that the score-mean argument uses,
+stated as named predicates.
+-/
 
+/-- "Rescaled L² convergence": with `h_t := t • h` for `t → 0`, `t⁻¹ (√p_{θ+h_t} − √p_θ)`
+converges in L²(μ) to `½ ⟨h, ℓ⟩ √p_θ`. This is the standard restatement of DQM. -/
+def RescaledL2Convergence
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧) (θ₀ : Θ) (ℓ : 𝓧 → Θ) (h : Θ) : Prop :=
+  Filter.Tendsto
+    (fun t : ℝ =>
+      ∫ x, (t⁻¹ * (M.sqrtDensity (θ₀ + t • h) x - M.sqrtDensity θ₀ x)
+            - (1/2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+    (𝓝[≠] 0) (𝓝 0)
 
+/-- "Sum convergence": `√p_{θ+t·h} + √p_θ → 2 √p_θ` in L²(μ) as `t → 0` (on the
+punctured neighbourhood to match `RescaledL2Convergence`). -/
+def SqrtSumConvergence
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧) (θ₀ : Θ) (h : Θ) : Prop :=
+  Filter.Tendsto
+    (fun t : ℝ => ∫ x, (M.sqrtDensity (θ₀ + t • h) x - M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+    (𝓝[≠] (0 : ℝ)) (𝓝 0)
 
+/-! ## Lemma 1 — Difference-of-squares identity (the key cancellation)
 
+For any `θ, θ' ∈ Θ`, if both densities integrate to 1, then
+`∫ (√p_{θ'} − √p_θ)(√p_{θ'} + √p_θ) dμ = 0`.
 
+This is `(a-b)(a+b) = a²-b² = p_{θ'} - p_θ`, integrated. -/
+omit [NormedAddCommGroup Θ] [InnerProductSpace ℝ Θ] [MeasurableSpace Θ]
+  [OpensMeasurableSpace Θ] [SecondCountableTopology Θ] in
+lemma diff_sq_identity
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧) (θ θ' : Θ)
+    (h_one : ∫ x, M.density θ x ∂μ = 1) (h_one' : ∫ x, M.density θ' x ∂μ = 1)
+    (hint : Integrable (M.density θ) μ) (hint' : Integrable (M.density θ') μ) :
+    ∫ x, (M.sqrtDensity θ' x - M.sqrtDensity θ x) *
+         (M.sqrtDensity θ' x + M.sqrtDensity θ x) ∂μ = 0 := by
+  -- Pointwise rewrite: (√p' - √p)(√p' + √p) = (√p')² - (√p)² = p' - p.
+  have hpt : ∀ x,
+      (M.sqrtDensity θ' x - M.sqrtDensity θ x) *
+        (M.sqrtDensity θ' x + M.sqrtDensity θ x)
+      = M.density θ' x - M.density θ x := by
+    intro x
+    have h1 := M.sqrtDensity_sq θ' x
+    have h2 := M.sqrtDensity_sq θ x
+    -- (a - b) * (a + b) = a^2 - b^2
+    have hring : (M.sqrtDensity θ' x - M.sqrtDensity θ x) *
+                  (M.sqrtDensity θ' x + M.sqrtDensity θ x)
+                = M.sqrtDensity θ' x ^ 2 - M.sqrtDensity θ x ^ 2 := by ring
+    rw [hring, h1, h2]
+  -- Transport the pointwise identity into the integral.
+  calc ∫ x, (M.sqrtDensity θ' x - M.sqrtDensity θ x) *
+             (M.sqrtDensity θ' x + M.sqrtDensity θ x) ∂μ
+      = ∫ x, (M.density θ' x - M.density θ x) ∂μ := by
+        apply MeasureTheory.integral_congr_ae
+        exact Filter.Eventually.of_forall hpt
+    _ = (∫ x, M.density θ' x ∂μ) - (∫ x, M.density θ x ∂μ) :=
+        MeasureTheory.integral_sub hint' hint
+    _ = 1 - 1 := by rw [h_one', h_one]
+    _ = 0 := by ring
 
+/-! ## Lemma 2 — Inner-product continuity for L²(μ)
 
+For sequences `f_t, g_t : 𝓧 → ℝ` with
+* `∫ (f_t − f)² dμ → 0`
+* `∫ (g_t − g)² dμ → 0`
 
+and with `f, g, f_t, g_t ∈ L²(μ)`, the integral `∫ f_t·g_t dμ → ∫ f·g dμ`.
 
+Proof structure:
+1. Algebraic identity  `f_t·g_t − f·g = (f_t − f)·g_t + f·(g_t − g)`.
+2. Cauchy–Schwarz on each summand:
+   `|∫ (f_t − f)·g_t dμ| ≤ √(∫ (f_t−f)² dμ) · √(∫ g_t² dμ)`,
+   `|∫ f·(g_t − g) dμ| ≤ √(∫ f² dμ) · √(∫ (g_t−g)² dμ)`.
+3. `√(∫ g_t² dμ) ≤ √(∫ (g_t − g)² dμ) + √(∫ g² dμ)` — L² triangle inequality,
+   showing the first factor stays bounded.
+4. First factor of first term → 0, second factor bounded ⇒ term → 0.
+   First factor of second term bounded (constant), second factor → 0 ⇒ term → 0.
+5. Sum of two tendsto-zero sequences → 0, which means `|∫ f_t·g_t − ∫ f·g| → 0`.
+-/
+omit [NormedAddCommGroup Θ] [InnerProductSpace ℝ Θ] [MeasurableSpace Θ]
+  [OpensMeasurableSpace Θ] [SecondCountableTopology Θ] in
+lemma inner_product_continuity
+    {l : Filter ℝ}
+    (μ : Measure 𝓧) (f g : 𝓧 → ℝ) (f_seq g_seq : ℝ → 𝓧 → ℝ)
+    (hf_mem : MemLp f 2 μ) (hg_mem : MemLp g 2 μ)
+    (hf_seq_mem : ∀ᶠ t in l, MemLp (f_seq t) 2 μ)
+    (hg_seq_mem : ∀ᶠ t in l, MemLp (g_seq t) 2 μ)
+    (hfminus_mem : ∀ᶠ t in l, MemLp (fun x => f_seq t x - f x) 2 μ)
+    (hgminus_mem : ∀ᶠ t in l, MemLp (fun x => g_seq t x - g x) 2 μ)
+    (hf : Filter.Tendsto (fun t => ∫ x, (f_seq t x - f x) ^ 2 ∂μ) l (𝓝 0))
+    (hg : Filter.Tendsto (fun t => ∫ x, (g_seq t x - g x) ^ 2 ∂μ) l (𝓝 0)) :
+    Filter.Tendsto
+      (fun t => ∫ x, f_seq t x * g_seq t x ∂μ)
+      l
+      (𝓝 (∫ x, f x * g x ∂μ)) := by
+  -- We show `|∫ f_t·g_t dμ - ∫ f·g dμ| → 0` via the metric formulation.
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- Constants from the fixed `f` and `g`:
+  set Sf : ℝ := Real.sqrt (∫ x, (f x) ^ 2 ∂μ) with hSf_def
+  set Sg : ℝ := Real.sqrt (∫ x, (g x) ^ 2 ∂μ) with hSg_def
+  have hSf_nn : 0 ≤ Sf := Real.sqrt_nonneg _
+  have hSg_nn : 0 ≤ Sg := Real.sqrt_nonneg _
+  -- `√(∫(f_t-f)²) → 0` and `√(∫(g_t-g)²) → 0` as `t → 0`.
+  have hf_sqrt : Filter.Tendsto
+      (fun t => Real.sqrt (∫ x, (f_seq t x - f x) ^ 2 ∂μ)) l (𝓝 0) := by
+    have := (Real.continuous_sqrt.tendsto 0).comp hf
+    simpa using! this
+  have hg_sqrt : Filter.Tendsto
+      (fun t => Real.sqrt (∫ x, (g_seq t x - g x) ^ 2 ∂μ)) l (𝓝 0) := by
+    have := (Real.continuous_sqrt.tendsto 0).comp hg
+    simpa using! this
+  -- Choose `δ > 0` small enough that `δ · (Sg + 1 + Sf) + δ < ε`.
+  -- A safe choice: `δ = ε / (Sg + Sf + 3)` (then bound below). For simplicity
+  -- we pick `δ = min 1 (ε / (Sg + Sf + 2))` so that `δ ≤ 1` *and* the linear
+  -- combination is `< ε`.
+  set K : ℝ := Sg + Sf + 2 with hK_def
+  have hK_pos : 0 < K := by positivity
+  -- Take `δ ≤ ε/(3K)` so the final combined bound is `δ·2K ≤ (2/3)·ε < ε`.
+  set δ : ℝ := min 1 (ε / (3 * K)) with hδ_def
+  have h3K_pos : 0 < 3 * K := by positivity
+  have hδ_pos : 0 < δ := lt_min one_pos (div_pos hε h3K_pos)
+  have hδ_le_one : δ ≤ 1 := min_le_left _ _
+  have hδ_le : δ ≤ ε / (3 * K) := min_le_right _ _
+  -- Eventually `√(∫(f_t-f)²) < δ` and `√(∫(g_t-g)²) < δ`.
+  have h_sqrtf_small : ∀ᶠ t in l,
+      Real.sqrt (∫ x, (f_seq t x - f x) ^ 2 ∂μ) < δ := by
+    have := (Metric.tendsto_nhds.mp hf_sqrt) δ hδ_pos
+    filter_upwards [this] with t ht
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg (Real.sqrt_nonneg _)] at ht
+    exact ht
+  have h_sqrtg_small : ∀ᶠ t in l,
+      Real.sqrt (∫ x, (g_seq t x - g x) ^ 2 ∂μ) < δ := by
+    have := (Metric.tendsto_nhds.mp hg_sqrt) δ hδ_pos
+    filter_upwards [this] with t ht
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg (Real.sqrt_nonneg _)] at ht
+    exact ht
+  filter_upwards [h_sqrtf_small, h_sqrtg_small, hf_seq_mem, hg_seq_mem, hfminus_mem, hgminus_mem]
+    with t hSff hSgg hf_seq_mem_t hg_seq_mem_t hfminus_mem_t hgminus_mem_t
+  -- Algebraic split (pointwise): `f_t·g_t − f·g = (f_t − f)·g + f_t·(g_t − g)`.
+  have h_split : ∀ x, f_seq t x * g_seq t x - f x * g x
+      = (f_seq t x - f x) * g x + f_seq t x * (g_seq t x - g x) := by
+    intro x; ring
+  -- Integrate the split.
+  have h_fg_int : Integrable (fun x => f x * g x) μ :=
+    L2Utils.integrable_mul_of_memLp_two μ hf_mem hg_mem
+  have h_fseq_gseq_int : Integrable (fun x => f_seq t x * g_seq t x) μ :=
+    L2Utils.integrable_mul_of_memLp_two μ hf_seq_mem_t hg_seq_mem_t
+  have h_fminus_g_int : Integrable (fun x => (f_seq t x - f x) * g x) μ :=
+    L2Utils.integrable_mul_of_memLp_two μ hfminus_mem_t hg_mem
+  have h_fseq_gminus_int : Integrable (fun x => f_seq t x * (g_seq t x - g x)) μ :=
+    L2Utils.integrable_mul_of_memLp_two μ hf_seq_mem_t hgminus_mem_t
+  have h_int_split :
+      ∫ x, f_seq t x * g_seq t x ∂μ - ∫ x, f x * g x ∂μ
+      = (∫ x, (f_seq t x - f x) * g x ∂μ) + (∫ x, f_seq t x * (g_seq t x - g x) ∂μ) := by
+    rw [← MeasureTheory.integral_sub h_fseq_gseq_int h_fg_int]
+    rw [← MeasureTheory.integral_add h_fminus_g_int h_fseq_gminus_int]
+    apply MeasureTheory.integral_congr_ae
+    exact Filter.Eventually.of_forall h_split
+  -- Cauchy–Schwarz on each summand.
+  have h_cs1 :
+      |∫ x, (f_seq t x - f x) * g x ∂μ|
+        ≤ Real.sqrt (∫ x, (f_seq t x - f x) ^ 2 ∂μ) * Sg := by
+    rw [hSg_def]
+    exact L2Utils.abs_integral_mul_le_sqrt_integral_sq μ hfminus_mem_t hg_mem
+  have h_cs2 :
+      |∫ x, f_seq t x * (g_seq t x - g x) ∂μ|
+        ≤ Real.sqrt (∫ x, (f_seq t x) ^ 2 ∂μ) *
+          Real.sqrt (∫ x, (g_seq t x - g x) ^ 2 ∂μ) :=
+    L2Utils.abs_integral_mul_le_sqrt_integral_sq μ hf_seq_mem_t hgminus_mem_t
+  -- Bound `√(∫ f_t²) ≤ √(∫(f_t-f)²) + Sf` via the L² triangle inequality
+  -- (proved here pointwise via `(a + b)² ≤ 2(a² + b²)`).
+  -- Helper: `√(a + b) ≤ √a + √b` for `a, b ≥ 0`.
+  have h_sqrt_add_le : ∀ (a b : ℝ), 0 ≤ a → 0 ≤ b →
+      Real.sqrt (a + b) ≤ Real.sqrt a + Real.sqrt b := by
+    intro a b ha hb
+    have h_a := Real.sq_sqrt ha
+    have h_b := Real.sq_sqrt hb
+    have h_sum_nn : 0 ≤ Real.sqrt a + Real.sqrt b :=
+      add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+    have h_prod_nn : 0 ≤ Real.sqrt a * Real.sqrt b :=
+      mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+    have h_sum_sq : (Real.sqrt a + Real.sqrt b) ^ 2 = a + b + 2 * (Real.sqrt a * Real.sqrt b) := by
+      have : (Real.sqrt a + Real.sqrt b) ^ 2
+            = Real.sqrt a ^ 2 + 2 * (Real.sqrt a * Real.sqrt b) + Real.sqrt b ^ 2 := by ring
+      rw [this, h_a, h_b]; ring
+    have h_le : a + b ≤ (Real.sqrt a + Real.sqrt b) ^ 2 := by
+      rw [h_sum_sq]; linarith
+    have h_step := Real.sqrt_le_sqrt h_le
+    rwa [Real.sqrt_sq h_sum_nn] at h_step
+  have h_sqrt_ftsq_bd :
+      Real.sqrt (∫ x, (f_seq t x) ^ 2 ∂μ)
+        ≤ Real.sqrt 2 *
+          (Real.sqrt (∫ x, (f_seq t x - f x) ^ 2 ∂μ) + Sf) := by
+    have h_pt : ∀ x, (f_seq t x) ^ 2 ≤
+        2 * (f_seq t x - f x) ^ 2 + 2 * (f x) ^ 2 := by
+      intro x
+      have h_apply := L2Utils.sq_add_le_two_mul_sq (f_seq t x - f x) (f x)
+      have h_decomp : (f_seq t x - f x) + f x = f_seq t x := by ring
+      rw [h_decomp] at h_apply
+      exact h_apply
+    have hint_fseq_sq : Integrable (fun x => f_seq t x ^ 2) μ :=
+      MemLp.integrable_sq hf_seq_mem_t
+    have hint_fminus_sq : Integrable (fun x => (f_seq t x - f x) ^ 2) μ :=
+      MemLp.integrable_sq hfminus_mem_t
+    have hint_f_sq : Integrable (fun x => f x ^ 2) μ :=
+      MemLp.integrable_sq hf_mem
+    have h_int_le :
+        ∫ x, (f_seq t x) ^ 2 ∂μ
+          ≤ ∫ x, (2 * (f_seq t x - f x) ^ 2 + 2 * (f x) ^ 2) ∂μ := by
+      refine MeasureTheory.integral_mono_ae
+        hint_fseq_sq ?_ (Filter.Eventually.of_forall h_pt)
+      exact (hint_fminus_sq.const_mul _).add (hint_f_sq.const_mul _)
+    have h_int_eq :
+        ∫ x, (2 * (f_seq t x - f x) ^ 2 + 2 * (f x) ^ 2) ∂μ
+        = 2 * ((∫ x, (f_seq t x - f x) ^ 2 ∂μ) + (∫ x, (f x) ^ 2 ∂μ)) := by
+      rw [MeasureTheory.integral_add (hint_fminus_sq.const_mul _) (hint_f_sq.const_mul _)]
+      rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
+      ring
+    rw [h_int_eq] at h_int_le
+    have h_sqrt_mono := Real.sqrt_le_sqrt h_int_le
+    rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2)] at h_sqrt_mono
+    have h_sub_le := h_sqrt_add_le
+        (∫ x, (f_seq t x - f x) ^ 2 ∂μ) (∫ x, (f x) ^ 2 ∂μ)
+        (L2Utils.integral_sq_nonneg μ _) (L2Utils.integral_sq_nonneg μ f)
+    have h_2pos : 0 ≤ Real.sqrt 2 := Real.sqrt_nonneg _
+    calc Real.sqrt (∫ x, (f_seq t x) ^ 2 ∂μ)
+        ≤ Real.sqrt 2 * Real.sqrt
+            ((∫ x, (f_seq t x - f x) ^ 2 ∂μ) + (∫ x, (f x) ^ 2 ∂μ)) := h_sqrt_mono
+      _ ≤ Real.sqrt 2 *
+            (Real.sqrt (∫ x, (f_seq t x - f x) ^ 2 ∂μ) + Sf) := by
+          rw [hSf_def]
+          exact mul_le_mul_of_nonneg_left h_sub_le h_2pos
+  -- Combine all the pieces.
+  -- abbreviations for the small quantities
+  set Aε : ℝ := Real.sqrt (∫ x, (f_seq t x - f x) ^ 2 ∂μ) with hAε_def
+  set Bε : ℝ := Real.sqrt (∫ x, (g_seq t x - g x) ^ 2 ∂μ) with hBε_def
+  have hAε_nn : 0 ≤ Aε := Real.sqrt_nonneg _
+  have hBε_nn : 0 ≤ Bε := Real.sqrt_nonneg _
+  -- Triangle inequality on absolute values:
+  have h_combined :
+      |∫ x, f_seq t x * g_seq t x ∂μ - ∫ x, f x * g x ∂μ|
+        ≤ Aε * Sg + Real.sqrt 2 * (Aε + Sf) * Bε := by
+    rw [h_int_split]
+    refine (abs_add_le _ _).trans ?_
+    refine add_le_add h_cs1 ?_
+    calc |∫ x, f_seq t x * (g_seq t x - g x) ∂μ|
+        ≤ Real.sqrt (∫ x, (f_seq t x) ^ 2 ∂μ) * Bε := h_cs2
+      _ ≤ Real.sqrt 2 * (Aε + Sf) * Bε :=
+          mul_le_mul_of_nonneg_right h_sqrt_ftsq_bd hBε_nn
+  -- Numerical bound: with `Aε < δ`, `Bε < δ`, `δ ≤ 1`, `δ ≤ ε/K`,
+  -- `Aε * Sg + √2·(Aε + Sf)·Bε ≤ δ·Sg + √2·(δ + Sf)·δ ≤ δ·(Sg + √2·(1 + Sf)) < ε`.
+  -- We prove the bound numerically.
+  have hAε_lt : Aε < δ := hSff
+  have hBε_lt : Bε < δ := hSgg
+  have h_sqrt2_le_2 : Real.sqrt 2 ≤ 2 := by
+    have h_sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+    nlinarith [Real.sqrt_nonneg (2 : ℝ), h_sq]
+  -- Final bound: |·| < ε
+  rw [Real.dist_eq]
+  refine lt_of_le_of_lt h_combined ?_
+  -- `Aε * Sg ≤ δ · Sg`, `Aε ≤ δ ≤ 1` so `Aε + Sf ≤ 1 + Sf`,
+  -- and `Bε ≤ δ ≤ ε/K` so `√2·(Aε + Sf)·Bε ≤ 2·(1 + Sf)·δ`.
+  have h1 : Aε * Sg ≤ δ * Sg := mul_le_mul_of_nonneg_right hAε_lt.le hSg_nn
+  have h2 : Real.sqrt 2 * (Aε + Sf) * Bε ≤ 2 * (1 + Sf) * δ := by
+    refine mul_le_mul ?_ hBε_lt.le hBε_nn (by positivity)
+    refine mul_le_mul h_sqrt2_le_2 ?_ (by linarith) (by norm_num)
+    linarith [hAε_lt.le]
+  have h_sum_le : Aε * Sg + Real.sqrt 2 * (Aε + Sf) * Bε ≤ δ * Sg + 2 * (1 + Sf) * δ := by
+    linarith
+  refine lt_of_le_of_lt h_sum_le ?_
+  -- `δ * Sg + 2 * (1 + Sf) * δ = δ · (Sg + 2 + 2·Sf)`, and `Sg + 2 + 2·Sf ≤ 2K`
+  -- with `K = Sg + Sf + 2`, so the sum is `≤ 2·δ·K ≤ (2/3)·ε < ε` since `δ ≤ ε/(3K)`.
+  have : δ * Sg + 2 * (1 + Sf) * δ = δ * (Sg + 2 + 2 * Sf) := by ring
+  rw [this]
+  -- Sg + 2 + 2·Sf ≤ 2·K = 2·(Sg + Sf + 2)
+  have h_le_2K : Sg + 2 + 2 * Sf ≤ 2 * K := by rw [hK_def]; linarith
+  have h_step : δ * (Sg + 2 + 2 * Sf) ≤ δ * (2 * K) :=
+    mul_le_mul_of_nonneg_left h_le_2K hδ_pos.le
+  refine lt_of_le_of_lt h_step ?_
+  -- `δ ≤ ε / (3K)`, so `δ · 2K ≤ (2/3) · ε < ε`.
+  have h_2K_pos : 0 < 2 * K := by positivity
+  calc δ * (2 * K) ≤ (ε / (3 * K)) * (2 * K) :=
+        mul_le_mul_of_nonneg_right hδ_le (by positivity)
+    _ = (2 / 3) * ε := by field_simp
+    _ < ε := by linarith
 
+/-! ## Lemma 3 — DQM-derived L² approximation, restated for our inner-product step
 
+This is the application of DQM along the sequence `h_t = t • u`. -/
+omit [MeasurableSpace Θ] [OpensMeasurableSpace Θ] [SecondCountableTopology Θ] in
+lemma dqm_to_rescaled_l2
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧) (θ₀ : Θ) (ℓ : 𝓧 → Θ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ) (u : Θ) :
+    RescaledL2Convergence M μ θ₀ ℓ u := by
+  -- Specialise DQM along `t ↦ t • u`.
+  have h_smul_tendsto : Filter.Tendsto (fun t : ℝ => t • u) (𝓝 (0 : ℝ)) (𝓝 (0 : Θ)) := by
+    have h_cont : Continuous (fun t : ℝ => t • u) := continuous_id.smul continuous_const
+    simpa using h_cont.tendsto (0 : ℝ)
+  have h_smul_ne : Filter.Tendsto (fun t : ℝ => t • u) (𝓝[≠] (0 : ℝ)) (𝓝 (0 : Θ)) :=
+    h_smul_tendsto.mono_left nhdsWithin_le_nhds
+  have h_along := hDQM.isLittleO.comp_tendsto h_smul_ne
+  -- Pointwise manipulation:
+  --   DQM integrand at `t • u` = t² × (rescaled integrand at t).
+  -- Apply `isLittleO_iff` to get the sup bound, then squeeze.
+  rw [show RescaledL2Convergence M μ θ₀ ℓ u
+      ↔ Filter.Tendsto (fun t : ℝ =>
+          ∫ x, (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+                - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+          (𝓝[≠] (0 : ℝ)) (𝓝 0) from Iff.rfl]
+  -- Metric convergence: reduce to `∀ ε > 0, ∀ᶠ t, |r_sq t| < ε`.
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- Choose `c = ε / (‖u‖² + 1)`; then `c · ‖u‖² < ε`.
+  set c : ℝ := ε / (‖u‖ ^ 2 + 1) with hc_def
+  have hc_pos : 0 < c := div_pos hε (by positivity)
+  have hc_bd : c * ‖u‖ ^ 2 < ε := by
+    have h_denom : 0 < ‖u‖ ^ 2 + 1 := by positivity
+    rw [hc_def, div_mul_eq_mul_div, div_lt_iff₀ h_denom]
+    nlinarith [sq_nonneg ‖u‖, hε]
+  -- From `IsLittleO` with constant `c`:
+  have h_bd := (isLittleO_iff.mp h_along) hc_pos
+  -- Inside `h_bd : ∀ᶠ t, ‖∫ dqm t•u‖ ≤ c · ‖‖t • u‖²‖`
+  -- Combine with `t ≠ 0` and rewrite.
+  filter_upwards [h_bd, self_mem_nhdsWithin] with t h_bd_t ht_mem
+  have ht_ne : t ≠ 0 := ht_mem
+  have htsq_pos : 0 < t ^ 2 := by positivity
+  have ht_inv : t * t⁻¹ = 1 := mul_inv_cancel₀ ht_ne
+  -- Pointwise identity for the DQM integrand at direction `t • u`.
+  have h_pt : ∀ x,
+      (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x
+        - (1/2 : ℝ) * ⟪t • u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+      = t ^ 2 *
+        (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+          - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 := by
+    intro x
+    have h_inner : (⟪t • u, ℓ x⟫ : ℝ) = t * (⟪u, ℓ x⟫ : ℝ) :=
+      real_inner_smul_left u (ℓ x) t
+    rw [h_inner]
+    have h_factor :
+        M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x
+          - (1/2 : ℝ) * (t * ⟪u, ℓ x⟫) * M.sqrtDensity θ₀ x
+        = t * (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+               - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) := by
+      have h_t_inv_t : t * t⁻¹ = 1 := ht_inv
+      have h_t_inv_t_a :
+          t * (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x))
+          = M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x := by
+        rw [← mul_assoc, h_t_inv_t, one_mul]
+      linarith [h_t_inv_t_a]
+    rw [h_factor]; ring
+  -- LHS of the `isLittleO` at `t`: split LHS integral using `h_pt`.
+  have h_lhs_eq :
+      ∫ x, (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x
+        - (1/2 : ℝ) * ⟪t • u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+      = t ^ 2 *
+        ∫ x, (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+              - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ := by
+    simp_rw [h_pt]
+    rw [MeasureTheory.integral_const_mul]
+  -- `‖t • u‖² = t² · ‖u‖²`.
+  have h_norm_sq : ‖t • u‖ ^ 2 = t ^ 2 * ‖u‖ ^ 2 := by
+    rw [norm_smul, mul_pow, Real.norm_eq_abs, sq_abs]
+  -- Non-negativity of both sides of `h_bd_t`.
+  have h_lhs_nn :
+      0 ≤ ∫ x, (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x
+              - (1/2 : ℝ) * ⟪t • u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ :=
+    MeasureTheory.integral_nonneg (fun _ => sq_nonneg _)
+  have h_rsq_nn :
+      0 ≤ ∫ x, (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+              - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ :=
+    MeasureTheory.integral_nonneg (fun _ => sq_nonneg _)
+  -- Unfold the function composition in `h_bd_t`.
+  simp only [Function.comp] at h_bd_t
+  -- Rewrite `h_bd_t` using `h_lhs_eq`, `h_norm_sq`, and strip the absolute values.
+  rw [Real.norm_eq_abs, abs_of_nonneg h_lhs_nn, Real.norm_eq_abs,
+      abs_of_nonneg (sq_nonneg _)] at h_bd_t
+  rw [h_lhs_eq, h_norm_sq] at h_bd_t
+  -- `h_bd_t : t² · r_sq ≤ c · (t² · ‖u‖²)` ⇒ divide by `t² > 0` : `r_sq ≤ c · ‖u‖²`.
+  have h_rsq_bd :
+      ∫ x, (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+              - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+        ≤ c * ‖u‖ ^ 2 := by
+    nlinarith [htsq_pos, h_bd_t]
+  -- Combine with `c · ‖u‖² < ε` to conclude.
+  have : ∫ x, (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+              - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ < ε :=
+    lt_of_le_of_lt h_rsq_bd hc_bd
+  rw [Real.dist_eq, sub_zero]
+  exact abs_lt.mpr ⟨by linarith [h_rsq_nn], this⟩
+
+/-! ## Lemma 4 — Sum convergence is a corollary of rate-control
+
+`SqrtSumConvergence` follows from `RescaledL2Convergence`.
+
+**Strategy**.  Let `r_t := t⁻¹·(√p_{θ+tu} − √p_θ) − ½·⟨u,ℓ⟩·√p_θ` (the residual
+controlled by `RescaledL2Convergence`).  Rearranging,
+`√p_{θ+tu} − √p_θ = t·r_t + (t/2)·⟨u,ℓ⟩·√p_θ`.
+Squaring and using `(a+b)² ≤ 2a² + 2b²` (`L2Utils.sq_add_le_two_mul_sq`),
+`(√p_{θ+tu} − √p_θ)² ≤ 2·t²·r_t² + (t²/2)·⟨u,ℓ⟩²·p_θ`.
+Integrating and taking `t → 0`, both terms tend to 0 — the first because
+`t² → 0` and `∫ r_t² → 0`, the second because `t² → 0` and
+`∫ ⟨u,ℓ⟩²·p_θ` is a fixed finite constant (Fisher information at `u`).  The
+squeeze theorem then gives the result.
+
+The Fisher-information-finite assumption (`h_Fisher`) and integrability of the
+pointwise squares (`h_r_sq_int`) are taken as hypotheses here; both follow from
+DQM via the same `MemLp` chain (see `dqm_to_rescaled_l2`). -/
+omit [MeasurableSpace Θ] [OpensMeasurableSpace Θ] [SecondCountableTopology Θ] in
+lemma sqrt_sum_convergence_of_rescaled
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧) (θ₀ : Θ) (ℓ : 𝓧 → Θ) (u : Θ)
+    (h_rescaled : RescaledL2Convergence M μ θ₀ ℓ u)
+    -- Fisher information finite along direction `u`:
+    (h_Fisher : Integrable (fun x => ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) μ)
+    -- `r_t²` integrable locally near `t = 0` (the only region used here):
+    (h_r_sq_int : ∀ᶠ t in 𝓝[≠] (0 : ℝ), Integrable
+      (fun x =>
+        (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+          - (1 / 2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ) :
+    SqrtSumConvergence M μ θ₀ u := by
+  -- Convenient abbreviations. (`set` allows Lean to unfold them on request.)
+  set C : ℝ := ∫ x, ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ with hC_def
+  set r_sq : ℝ → ℝ := fun t =>
+    ∫ x, (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+        - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ with hr_sq_def
+  set diff_sq : ℝ → ℝ := fun t =>
+    ∫ x, (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) ^ 2 ∂μ with hdiff_sq_def
+  set B : ℝ → ℝ := fun t => 2 * t ^ 2 * r_sq t + t ^ 2 / 2 * C with hB_def
+  -- `r_sq t → 0` is exactly the hypothesis `RescaledL2Convergence`.
+  have h_rsq_tendsto : Filter.Tendsto r_sq (𝓝[≠] (0 : ℝ)) (𝓝 0) := h_rescaled
+  -- Part 1: `B → 0` on `𝓝[≠] 0`.
+  have hB_tendsto : Filter.Tendsto B (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+    have h_tsq : Filter.Tendsto (fun t : ℝ => t ^ 2) (𝓝 (0 : ℝ)) (𝓝 0) := by
+      have := (continuous_pow 2).tendsto (0 : ℝ)
+      simpa using this
+    have h_tsq_ne : Filter.Tendsto (fun t : ℝ => t ^ 2) (𝓝[≠] (0 : ℝ)) (𝓝 0) :=
+      h_tsq.mono_left nhdsWithin_le_nhds
+    have h1 : Filter.Tendsto (fun t : ℝ => 2 * t ^ 2 * r_sq t) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+      have h2t : Filter.Tendsto (fun t : ℝ => 2 * t ^ 2) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+        have := h_tsq_ne.const_mul (2 : ℝ); simpa using this
+      have := h2t.mul h_rsq_tendsto
+      simpa using this
+    have h2 : Filter.Tendsto (fun t : ℝ => t ^ 2 / 2 * C) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+      have hh : Filter.Tendsto (fun t : ℝ => t ^ 2 / 2) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+        have := h_tsq_ne.div_const (2 : ℝ); simpa using this
+      have := hh.mul_const C
+      simpa using this
+    have := h1.add h2
+    simpa [hB_def] using this
+  -- Part 2: For every `t ≠ 0`, `diff_sq t ≤ B t`.
+  have h_upper : ∀ᶠ t in 𝓝[≠] (0 : ℝ), diff_sq t ≤ B t := by
+    filter_upwards [self_mem_nhdsWithin, h_r_sq_int] with t (ht : t ∈ ({0} : Set ℝ)ᶜ) h_r_sq_int_t
+    have ht_ne : t ≠ 0 := by simpa [Set.mem_compl_iff] using ht
+    -- Pointwise bound: `(√p_{θ+tu} − √p_θ)² ≤ 2·t²·r_t² + (t²/2)·⟪u,ℓ⟫²·p_θ`.
+    have h_pt : ∀ x,
+        (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) ^ 2
+        ≤ 2 * t ^ 2 *
+            (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+              - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+          + t ^ 2 / 2 * (⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) := by
+      intro x
+      -- Local names for readability
+      set a : ℝ := M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x with ha_def
+      set q : ℝ := ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x with hq_def
+      have hsq : (M.sqrtDensity θ₀ x) ^ 2 = M.density θ₀ x := M.sqrtDensity_sq θ₀ x
+      have ht_inv : t * t⁻¹ = 1 := mul_inv_cancel₀ ht_ne
+      -- Key linearisation: `a = t · (t⁻¹·a − ½·q) + (t/2)·q`.
+      have h_linear : a = t * (t⁻¹ * a - (1/2 : ℝ) * q) + (t / 2) * q := by
+        have h1 : t * (t⁻¹ * a) = a := by
+          rw [← mul_assoc, ht_inv, one_mul]
+        have : t * (t⁻¹ * a - (1/2 : ℝ) * q) + (t / 2) * q = a := by
+          rw [mul_sub, h1]; ring
+        linarith
+      -- `q² = ⟪u,ℓ⟫² · p_θ`.
+      have hq_sq : q ^ 2 = ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x := by
+        change (⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 = ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x
+        rw [mul_pow, hsq]
+      -- Apply `sq_add_le_two_mul_sq` and rearrange.
+      calc a ^ 2
+          = (t * (t⁻¹ * a - (1/2 : ℝ) * q) + (t / 2) * q) ^ 2 := by rw [← h_linear]
+        _ ≤ 2 * (t * (t⁻¹ * a - (1/2 : ℝ) * q)) ^ 2 + 2 * ((t / 2) * q) ^ 2 :=
+            L2Utils.sq_add_le_two_mul_sq _ _
+        _ = 2 * t ^ 2 * (t⁻¹ * a - (1/2 : ℝ) * q) ^ 2 + t ^ 2 / 2 * q ^ 2 := by ring
+        _ = 2 * t ^ 2 * (t⁻¹ * a - (1/2 : ℝ) * q) ^ 2
+            + t ^ 2 / 2 * (⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) := by rw [hq_sq]
+        _ = 2 * t ^ 2 *
+              (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+                - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+            + t ^ 2 / 2 * (⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) := by
+              show 2 * t ^ 2 * (t⁻¹ * a - (1/2 : ℝ) * q) ^ 2
+                   + t ^ 2 / 2 * (⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) = _
+              simp only [ha_def, hq_def]
+              ring
+    -- Integrability of the upper-bound integrand:
+    have h_rhs_int : Integrable
+        (fun x => 2 * t ^ 2 *
+            (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+              - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+          + t ^ 2 / 2 * (⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x)) μ :=
+      (h_r_sq_int_t.const_mul _).add (h_Fisher.const_mul _)
+    -- Integrability of the LHS:
+    have h_lhs_meas : Measurable
+        (fun x : 𝓧 => (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) ^ 2) := by
+      exact ((M.sqrtDensity_meas _).sub (M.sqrtDensity_meas _)).pow_const 2
+    have h_lhs_int : Integrable
+        (fun x => (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) ^ 2) μ := by
+      -- Follows from the pointwise bound together with `h_rhs_int`, via
+      -- `Integrable.mono'` (non-negative, measurable, dominated by integrable).
+      refine MeasureTheory.Integrable.mono' h_rhs_int h_lhs_meas.aestronglyMeasurable ?_
+      refine Filter.Eventually.of_forall (fun x => ?_)
+      have h_norm : ‖(M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) ^ 2‖
+                  = (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) ^ 2 := by
+        rw [Real.norm_eq_abs]
+        exact abs_of_nonneg (sq_nonneg _)
+      rw [h_norm]
+      exact h_pt x
+    -- Integrate the pointwise bound.
+    have h_int_le :
+        (∫ x, (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+        ≤ ∫ x, (2 * t ^ 2 *
+            (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+              - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+          + t ^ 2 / 2 * (⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x)) ∂μ :=
+      MeasureTheory.integral_mono_ae h_lhs_int h_rhs_int
+        (Filter.Eventually.of_forall h_pt)
+    -- Express the RHS integral as `B t`.
+    have h_rhs_eq :
+        ∫ x, (2 * t ^ 2 *
+            (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+              - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+          + t ^ 2 / 2 * (⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x)) ∂μ
+        = B t := by
+      rw [MeasureTheory.integral_add (h_r_sq_int_t.const_mul _)
+            (h_Fisher.const_mul _)]
+      rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
+    change diff_sq t ≤ B t
+    calc diff_sq t
+        = ∫ x, (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) ^ 2 ∂μ := rfl
+      _ ≤ _ := h_int_le
+      _ = B t := h_rhs_eq
+  -- Part 3: Squeeze.
+  have h_nonneg : ∀ᶠ t in (𝓝[≠] (0 : ℝ)), (0 : ℝ) ≤ diff_sq t :=
+    Filter.Eventually.of_forall (fun _ =>
+      MeasureTheory.integral_nonneg (fun _ => sq_nonneg _))
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    tendsto_const_nhds hB_tendsto h_nonneg h_upper
+
+/-! ## Final assembly: score has zero mean
+
+Assembled from the four lemmas above.
+
+Strategy:
+  1. Pick any direction `u : Θ`.
+  2. The integrand `(√p_{θ₀+t·u} − √p_{θ₀}) (√p_{θ₀+t·u} + √p_{θ₀})` integrates to 0
+     for every `t ≠ 0` (Lemma 1).
+  3. Multiplying by `t⁻¹`, the integrand factors as `(t⁻¹·diff) · sum`. By Lemma 2 +
+     Lemma 3 + Lemma 4, this integral converges to `∫ (½ ⟨u, ℓ⟩ √p_θ)(2 √p_θ) dμ
+       = ⟨u, ∫ ℓ x · p_{θ₀}(x) dμ⟩`.
+  4. The LHS is 0 for every `t ≠ 0`, hence the limit is 0.
+  5. Therefore `⟨u, ∫ ℓ p_{θ₀} dμ⟩ = 0` for *every* `u`, which gives
+     `∫ ℓ p_{θ₀} dμ = 0` and in particular `∫ ⟨u, ℓ x⟩ p_{θ₀} x dμ = 0`. -/
+lemma score_mean_zero
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (hℓ : Measurable ℓ)
+    (h_one : ∫ x, M.density θ₀ x ∂μ = 1)
+    (hint : Integrable (M.density θ₀) μ)
+    (h_one_perturb : ∀ t : ℝ, ∀ u : Θ, ∫ x, M.density (θ₀ + t • u) x ∂μ = 1)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    -- Local `L²` control of the DQM residual near `t = 0`.
+    (h_Fisher : Integrable (fun x => ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) μ)
+    (h_fminus_memLp : ∀ᶠ t in 𝓝[≠] (0 : ℝ), MemLp (fun x =>
+        t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+          - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ)
+    :
+    ∫ x, ⟪u, ℓ x⟫ * M.density θ₀ x ∂μ = 0 := by
+  -- ─────────────────────────────────────────────────────────────
+  -- Set up the four functions `f_seq, g_seq, f, g` used throughout.
+  -- ─────────────────────────────────────────────────────────────
+  set f_seq : ℝ → 𝓧 → ℝ := fun t x =>
+    t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) with hf_seq_def
+  set g_seq : ℝ → 𝓧 → ℝ := fun t x =>
+    M.sqrtDensity (θ₀ + t • u) x + M.sqrtDensity θ₀ x with hg_seq_def
+  set f : 𝓧 → ℝ := fun x =>
+    (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x with hf_def
+  set g : 𝓧 → ℝ := fun x => 2 * M.sqrtDensity θ₀ x with hg_def
+  have h_sqrt_memLp : MemLp (M.sqrtDensity θ₀) 2 μ :=
+    M.sqrtDensity_memLp_two μ θ₀ hint
+  have h_sqrt_perturb_memLp : ∀ t : ℝ, MemLp (M.sqrtDensity (θ₀ + t • u)) 2 μ := by
+    intro t
+    exact M.sqrtDensity_memLp_two μ (θ₀ + t • u) (hint_perturb t u)
+  have h_g_memLp : MemLp g 2 μ := by
+    simpa [hg_def] using h_sqrt_memLp.const_mul (2 : ℝ)
+  have h_gseq_memLp : ∀ t : ℝ, MemLp (g_seq t) 2 μ := by
+    intro t
+    simpa [hg_seq_def] using! (h_sqrt_perturb_memLp t).add h_sqrt_memLp
+  have h_gminus_memLp : ∀ t : ℝ,
+      MemLp (fun x => M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) 2 μ := by
+    intro t
+    exact (h_sqrt_perturb_memLp t).sub h_sqrt_memLp
+  have h_f_memLp : MemLp f 2 μ := by
+    have h_inner : AEStronglyMeasurable (fun x => ⟪u, ℓ x⟫) μ := by
+      simpa using (AEStronglyMeasurable.const_inner (c := u) hℓ.aestronglyMeasurable)
+    have h_prod : AEStronglyMeasurable (fun x => ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) μ := by
+      exact h_inner.mul (M.sqrtDensity_meas θ₀).aestronglyMeasurable
+    refine (MeasureTheory.memLp_two_iff_integrable_sq
+      ((show AEStronglyMeasurable f μ from by
+        simpa [hf_def, mul_assoc] using h_prod.const_mul (1 / 2 : ℝ)))).2 ?_
+    have h_funext :
+        (fun x => (f x) ^ 2) =
+        (fun x => (1 / 4 : ℝ) * (⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x)) := by
+      funext x
+      have hsq : M.sqrtDensity θ₀ x ^ 2 = M.density θ₀ x := M.sqrtDensity_sq θ₀ x
+      rw [show M.density θ₀ x = M.sqrtDensity θ₀ x ^ 2 by simpa using hsq.symm]
+      simp [hf_def]
+      ring_nf
+    rw [h_funext]
+    exact h_Fisher.const_mul (1 / 4 : ℝ)
+  have h_fseq_memLp : ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+      MemLp (fun x => t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)) 2 μ := by
+    filter_upwards [h_fminus_memLp] with t h_fminus_memLp_t
+    have h_funext :
+        (fun x => t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)) =
+        (fun x =>
+          (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+            - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x)
+          + ((1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+      funext x
+      ring
+    rw [h_funext]
+    exact h_fminus_memLp_t.add h_f_memLp
+  have h_r_sq_int : ∀ᶠ t in 𝓝[≠] (0 : ℝ), Integrable
+      (fun x =>
+        (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+          - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ := by
+    filter_upwards [h_fminus_memLp] with t h_fminus_memLp_t
+    exact h_fminus_memLp_t.integrable_sq
+  -- ─────────────────────────────────────────────────────────────
+  -- L3 → `f_seq t - f → 0` in L² (on the punctured neighbourhood of 0).
+  -- ─────────────────────────────────────────────────────────────
+  have h_rescaled : RescaledL2Convergence M μ θ₀ ℓ u :=
+    dqm_to_rescaled_l2 M μ θ₀ ℓ hDQM u
+  have hf_l2 :
+      Filter.Tendsto (fun t => ∫ x, (f_seq t x - f x) ^ 2 ∂μ) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+    -- `f_seq t x - f x` is exactly the integrand of `RescaledL2Convergence`
+    -- (up to associativity of the `(1/2)·⟪u,ℓ⟫·√p` factor). Rewrite pointwise.
+    have h_pt : ∀ t x,
+        (f_seq t x - f x) ^ 2 =
+          (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+            - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 := by
+      intro t x; simp [hf_seq_def, hf_def]
+    simp_rw [h_pt]
+    exact h_rescaled
+  -- ─────────────────────────────────────────────────────────────
+  -- L4 → `g_seq t - g → 0` in L²; convert to the punctured filter.
+  -- ─────────────────────────────────────────────────────────────
+  have h_sqrt_sum : SqrtSumConvergence M μ θ₀ u :=
+    sqrt_sum_convergence_of_rescaled M μ θ₀ ℓ u h_rescaled h_Fisher h_r_sq_int
+  have hg_l2 :
+      Filter.Tendsto (fun t => ∫ x, (g_seq t x - g x) ^ 2 ∂μ) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+    -- `(√p_{θ+tu} + √p_θ) - 2 √p_θ = √p_{θ+tu} - √p_θ`
+    have h_pt : ∀ t x,
+        (g_seq t x - g x) ^ 2
+          = (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) ^ 2 := by
+      intro t x; simp [hg_seq_def, hg_def]; ring
+    simp_rw [h_pt]
+    exact h_sqrt_sum
+  -- ─────────────────────────────────────────────────────────────
+  -- L2 → `∫ f_seq t · g_seq t dμ → ∫ f · g dμ` on the punctured filter.
+  -- ─────────────────────────────────────────────────────────────
+  have h_limit :
+      Filter.Tendsto
+        (fun t => ∫ x, f_seq t x * g_seq t x ∂μ)
+        (𝓝[≠] (0 : ℝ))
+        (𝓝 (∫ x, f x * g x ∂μ)) := by
+    refine inner_product_continuity (l := 𝓝[≠] (0 : ℝ)) μ f g f_seq g_seq
+      h_f_memLp h_g_memLp h_fseq_memLp (Filter.Eventually.of_forall h_gseq_memLp)
+      h_fminus_memLp ?_ hf_l2 hg_l2
+    · filter_upwards [Filter.Eventually.of_forall h_gminus_memLp] with t h_gminus_memLp_t
+      -- `g_seq t x - g x = √p_{θ+tu}(x) - √p_θ(x)` (pointwise functional equality)
+      have h_funext :
+          (fun x => g_seq t x - g x) =
+          (fun x => M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) := by
+        funext x; simp [hg_seq_def, hg_def]; ring
+      rw [h_funext]
+      exact h_gminus_memLp_t
+  -- ─────────────────────────────────────────────────────────────
+  -- L1 → `∫ f_seq t · g_seq t dμ = 0` for every `t ≠ 0`.
+  -- ─────────────────────────────────────────────────────────────
+  have h_const_zero :
+      ∀ᶠ t in 𝓝[≠] (0 : ℝ), ∫ x, f_seq t x * g_seq t x ∂μ = 0 := by
+    filter_upwards [self_mem_nhdsWithin] with t (ht : t ∈ ({0} : Set ℝ)ᶜ)
+    have ht_ne : t ≠ 0 := by simpa [Set.mem_compl_iff] using ht
+    -- Apply L1 at (θ₀, θ₀ + t • u):
+    have hL1 :
+        ∫ x, (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) *
+             (M.sqrtDensity (θ₀ + t • u) x + M.sqrtDensity θ₀ x) ∂μ = 0 :=
+      diff_sq_identity M μ θ₀ (θ₀ + t • u)
+        h_one (h_one_perturb t u) hint (hint_perturb t u)
+    -- Factor `t⁻¹` out of `f_seq t · g_seq t`.
+    calc ∫ x, f_seq t x * g_seq t x ∂μ
+        = ∫ x, t⁻¹ * ((M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) *
+                       (M.sqrtDensity (θ₀ + t • u) x + M.sqrtDensity θ₀ x)) ∂μ := by
+          refine integral_congr_ae ?_
+          exact Filter.Eventually.of_forall (fun x => by
+            simp [hf_seq_def, hg_seq_def]; ring)
+      _ = t⁻¹ * ∫ x, (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) *
+                     (M.sqrtDensity (θ₀ + t • u) x + M.sqrtDensity θ₀ x) ∂μ := by
+          rw [integral_const_mul]
+      _ = t⁻¹ * 0 := by rw [hL1]
+      _ = 0 := by ring
+  -- ─────────────────────────────────────────────────────────────
+  -- Therefore the limit of the (constantly-0) sequence is 0.
+  -- ─────────────────────────────────────────────────────────────
+  have h_limit_zero :
+      Filter.Tendsto
+        (fun t => ∫ x, f_seq t x * g_seq t x ∂μ)
+        (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+    have h_ee : (fun t => ∫ x, f_seq t x * g_seq t x ∂μ)
+                =ᶠ[𝓝[≠] (0 : ℝ)] (fun _ => (0 : ℝ)) := h_const_zero
+    exact (tendsto_congr' h_ee).mpr tendsto_const_nhds
+  -- Uniqueness of the limit on the *non-trivial* filter `𝓝[≠] 0`
+  -- (`NeBot` instance is automatic for ℝ via `nhdsNE_neBot` in normed fields).
+  have h_fg_zero : ∫ x, f x * g x ∂μ = 0 :=
+    tendsto_nhds_unique h_limit h_limit_zero
+  -- ─────────────────────────────────────────────────────────────
+  -- Compute ∫ f·g dμ = ∫ ⟪u, ℓ⟫ · p_θ dμ (using √p · √p = p).
+  -- ─────────────────────────────────────────────────────────────
+  have h_pointwise :
+      ∀ x, f x * g x = ⟪u, ℓ x⟫ * M.density θ₀ x := by
+    intro x
+    have hsq : M.sqrtDensity θ₀ x ^ 2 = M.density θ₀ x := M.sqrtDensity_sq θ₀ x
+    have hsq' :
+        M.sqrtDensity θ₀ x * M.sqrtDensity θ₀ x = M.density θ₀ x := by
+      have : M.sqrtDensity θ₀ x * M.sqrtDensity θ₀ x = M.sqrtDensity θ₀ x ^ 2 := by ring
+      rw [this, hsq]
+    simp [hf_def, hg_def]
+    linear_combination ⟪u, ℓ x⟫ * hsq'
+  have h_goal :
+      ∫ x, f x * g x ∂μ = ∫ x, ⟪u, ℓ x⟫ * M.density θ₀ x ∂μ := by
+    refine integral_congr_ae ?_
+    exact Filter.Eventually.of_forall h_pointwise
+  linarith [h_goal, h_fg_zero]
 
 end Score
 end AsymptoticStatistics
@@ -6182,7 +10369,7 @@ end AsymptoticStatistics
 end GLP0011B3Source23
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.LogTaylor`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/LogTaylor.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source24
 
@@ -6225,8 +10412,8 @@ noncomputable def logTaylorRemainder (u : ℝ) : ℝ :=
 
 For every `x > −1`,
   `log(1 + x) = x − x²/2 + x² · logTaylorRemainder (2 · x)`.
-(The hypothesis `x > −1` keeps the logarithm’s argument positive. The
-algebraic identity itself follows from the definition of `logTaylorRemainder`.) -/
+(Holds by definition of `logTaylorRemainder`; `x > −1` is needed so `log(1+x)`
+is the honest logarithm and not the Mathlib `0`-convention.) -/
 lemma log_one_add_eq_taylor {x : ℝ} (hx : -1 < x) :
     Real.log (1 + x) = x - (1 / 2) * x ^ 2 + x ^ 2 * logTaylorRemainder (2 * x) := by
   by_cases hx0 : x = 0
@@ -6353,6 +10540,42 @@ lemma logTaylorRemainder_tendsto_zero :
     _ = |u| * |u| ^ 2 := by ring
     _ = |u| * u ^ 2 := by rw [sq_abs]
 
+/-- **Asymptotic form** of the Taylor expansion: the residue
+`log(1 + x) − x + x²/2` is `o(x²)` near `0`.
+
+Equivalent to `logTaylorRemainder_tendsto_zero` (and proven from it), but in
+the Mathlib-idiomatic `IsLittleO` form. Useful when downstream code needs to
+chain asymptotic facts without unpacking the explicit remainder. -/
+lemma log_one_add_sub_taylor_isLittleO :
+    (fun x : ℝ => Real.log (1 + x) - x + (1 / 2) * x ^ 2) =o[𝓝 (0 : ℝ)]
+      (fun x => x ^ 2) := by
+  -- Step 1: rewrite the residue as `x² · logTaylorRemainder (2 * x)` near 0.
+  have h_eq : (fun x : ℝ => Real.log (1 + x) - x + (1 / 2) * x ^ 2)
+                =ᶠ[𝓝 (0 : ℝ)] (fun x => logTaylorRemainder (2 * x) * x ^ 2) := by
+    filter_upwards [Ioi_mem_nhds (show (-1 : ℝ) < 0 by norm_num)] with x hx
+    have h := log_one_add_eq_taylor hx
+    linarith
+  -- Step 2: `logTaylorRemainder (2·) → 0` at `0`.
+  have h_smul_tendsto : Tendsto (fun x : ℝ => 2 * x) (𝓝 0) (𝓝 0) := by
+    simpa using! (continuous_const.mul continuous_id).tendsto (0 : ℝ)
+  have h_R_tendsto :
+      Tendsto (fun x : ℝ => logTaylorRemainder (2 * x)) (𝓝 0) (𝓝 0) :=
+    logTaylorRemainder_tendsto_zero.comp h_smul_tendsto
+  -- Step 3: turn into `=o[𝓝 0] (fun _ => 1)` and multiply by `x²`.
+  have h_R_isLittleO :
+      (fun x : ℝ => logTaylorRemainder (2 * x)) =o[𝓝 (0 : ℝ)]
+        (fun _ => (1 : ℝ)) :=
+    (Asymptotics.isLittleO_const_iff (by norm_num : (1 : ℝ) ≠ 0)).mpr h_R_tendsto
+  have h_sq_isBigO :
+      (fun x : ℝ => x ^ 2) =O[𝓝 (0 : ℝ)] (fun x => x ^ 2) :=
+    Asymptotics.isBigO_refl _ _
+  have h_prod : (fun x : ℝ => logTaylorRemainder (2 * x) * x ^ 2)
+      =o[𝓝 (0 : ℝ)] (fun x : ℝ => (1 : ℝ) * x ^ 2) :=
+    h_R_isLittleO.mul_isBigO h_sq_isBigO
+  have h_simp :
+      (fun x : ℝ => (1 : ℝ) * x ^ 2) = (fun x => x ^ 2) := by funext x; ring
+  rw [h_simp] at h_prod
+  exact h_eq.trans_isLittleO h_prod
 
 end ForMathlib
 end AsymptoticStatistics
@@ -6360,25 +10583,75 @@ end AsymptoticStatistics
 end GLP0011B3Source24
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ParametricFamily.SqrtDensityRatio`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ParametricFamily/SqrtDensityRatio.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source25
 
 
+/-!
+# Square-root density ratios
+
+The Hellinger coordinate `2 * (√(pθ / p₀) - 1)` used in the likelihood
+expansions of van der Vaart, Theorems 5.39 and 7.2.
+-/
 
 namespace AsymptoticStatistics
 
+/-- Twice the centered square-root density ratio.
+
+Edge behavior: division and square root are Mathlib's totalized operations.  In
+particular, a zero denominator gives ratio zero and value `-2`; applications
+under the base law use this only on a null set. -/
+noncomputable def ParametricFamily.sqrtDensityRatio
+    {𝒳 Θ : Type*} [MeasurableSpace 𝒳]
+    (M : ParametricFamily 𝒳 Θ) (base target : Θ) (x : 𝒳) : ℝ :=
+  2 * (Real.sqrt (M.density target x / M.density base x) - 1)
+
+/-- The square-root density ratio is measurable in the observation. -/
+lemma ParametricFamily.sqrtDensityRatio_measurable
+    {𝒳 Θ : Type*} [MeasurableSpace 𝒳]
+    (M : ParametricFamily 𝒳 Θ) (base target : Θ) :
+    Measurable (M.sqrtDensityRatio base target) := by
+  unfold ParametricFamily.sqrtDensityRatio
+  exact (((M.density_meas target).div (M.density_meas base)).sqrt.sub_const _).const_mul _
+
+/-- Pointwise Taylor identity for a parametric density ratio.  It includes the
+zero-ratio boundary case and therefore needs no positivity hypothesis. -/
+lemma ParametricFamily.log_density_ratio_taylor
+    {𝒳 Θ : Type*} [MeasurableSpace 𝒳]
+    (M : ParametricFamily 𝒳 Θ) (base target : Θ) (x : 𝒳) :
+    Real.log (M.density target x / M.density base x) =
+      M.sqrtDensityRatio base target x
+        - M.sqrtDensityRatio base target x ^ 2 / 4
+        + M.sqrtDensityRatio base target x ^ 2 / 2
+          * ForMathlib.logTaylorRemainder (M.sqrtDensityRatio base target x) := by
+  simpa only [ParametricFamily.sqrtDensityRatio] using
+    (ForMathlib.log_div_nonneg_eq_sqrt_taylor
+      (M.density_nonneg target x) (M.density_nonneg base x))
 
 end AsymptoticStatistics
 
 end GLP0011B3Source25
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.DQM.Properties`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/DQM/Properties.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source26
 
 
+/-!
+# Consequences of Differentiability in Quadratic Mean (DQM)
+
+Analytical lemmas that follow from the bare DQM assumption
+(`AsymptoticStatistics.DifferentiableQuadraticMean`), independent of any specific
+theorem. They discharge the auxiliary hypotheses appearing in Theorem 7.2.
+
+Headline declarations: `dqm_residual_eventually_memLp` (the rescaled DQM residual is
+in `L²(μ)` near `0`), `dqm_score_memLp_two` (the score `⟨u, ℓ⟩·√p_{θ₀}` is in `L²(μ)`,
+essentially Theorem 7.2 (ii)), `dqm_fisher_integrable` (integrability of `⟨u, ℓ⟩² · p_{θ₀}`),
+`dqm_sqrt_density_l2_convergence`, `dqm_fisher_cont`, and the asymptotic singular-mass
+controls `dqm_perturbation_deficit_mass_tendsto` / `dqm_perturbation_excess_mass_tendsto`.
+-/
 
 open MeasureTheory Asymptotics Filter Topology
 open scoped RealInnerProductSpace ENNReal
@@ -6388,36 +10661,1383 @@ namespace AsymptoticStatistics
 variable {𝓧 : Type*} [MeasurableSpace 𝓧]
 variable {Θ : Type*} [NormedAddCommGroup Θ] [InnerProductSpace ℝ Θ]
 
+/-- **DQM ⇒ rescaled residual eventually in L²(μ).**
 
+For every direction `u : Θ`, the function
 
+  `q_t(x) := t⁻¹ · (√p_{θ₀+t·u}(x) − √p_{θ₀}(x))
+            − (1/2) · ⟨u, ℓ x⟩ · √p_{θ₀}(x)`
+
+belongs to `L²(μ)` for every `t` in some punctured neighbourhood of `0`.
+
+This theorem supplies the `h_fminus_memLp` input used by
+`LANExpansion.score_mean_zero` and `LANExpansion.LAN_expansion_score_fisher_part`.
+
+**Proof.** From `hDQM.mem`, the unrescaled DQM residual
+`r(h) := √p_{θ₀+h} − √p_{θ₀} − (1/2)⟨h, ℓ⟩·√p_{θ₀}`
+is in `L²(μ)` for every `h` in some neighbourhood of `0 ∈ Θ`.  Composing with
+the continuous map `t ↦ t • u : ℝ → Θ`, we get `MemLp (r(t·u)) 2 μ` eventually
+as `t → 0` (in the punctured filter).  For `t ≠ 0`, the pointwise identity
+`r(t·u)(x) = t · q_t(x)` (using `⟨t·u, ℓ x⟩ = t·⟨u, ℓ x⟩` and `t·t⁻¹ = 1`)
+gives `q_t = t⁻¹ · r(t·u)`, which is in `L²(μ)` by `MemLp.const_mul`. -/
+lemma dqm_residual_eventually_memLp
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ) (u : Θ) :
+    ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+      MemLp (fun x =>
+        t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+          - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+  -- Step 1: continuous specialisation `t ↦ t • u : ℝ → Θ`.
+  have h_smul_tendsto :
+      Filter.Tendsto (fun t : ℝ => t • u) (𝓝 (0 : ℝ)) (𝓝 (0 : Θ)) := by
+    have h_cont : Continuous (fun t : ℝ => t • u) := continuous_id.smul continuous_const
+    simpa using h_cont.tendsto (0 : ℝ)
+  have h_smul_ne :
+      Filter.Tendsto (fun t : ℝ => t • u) (𝓝[≠] (0 : ℝ)) (𝓝 (0 : Θ)) :=
+    h_smul_tendsto.mono_left nhdsWithin_le_nhds
+  -- Step 2: pull back `hDQM.mem` along `t ↦ t • u`.
+  have h_residual_eventually :
+      ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+        MemLp (fun x => M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x
+                        - (1/2 : ℝ) * ⟪t • u, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+    exact h_smul_ne.eventually hDQM.mem
+  -- Step 3: combine with `t ≠ 0`; pointwise rewrite to `t⁻¹ · r(t·u) = q_t`.
+  filter_upwards [h_residual_eventually, self_mem_nhdsWithin]
+    with t h_residual_t ht_mem
+  have ht_ne : t ≠ 0 := by simpa [Set.mem_compl_iff] using ht_mem
+  have ht_inv : t * t⁻¹ = 1 := mul_inv_cancel₀ ht_ne
+  -- Pointwise identity: `q_t(x) = t⁻¹ · r(t·u)(x)`.
+  have h_pt : ∀ x,
+      t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+        - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x
+      = t⁻¹ *
+        (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x
+          - (1/2 : ℝ) * ⟪t • u, ℓ x⟫ * M.sqrtDensity θ₀ x) := by
+    intro x
+    have h_inner : (⟪t • u, ℓ x⟫ : ℝ) = t * ⟪u, ℓ x⟫ :=
+      real_inner_smul_left u (ℓ x) t
+    have h_t_inv_t : t⁻¹ * t = 1 := inv_mul_cancel₀ ht_ne
+    rw [h_inner]
+    -- Algebraic: t⁻¹·(A − tB) = t⁻¹·A − t⁻¹·t·B = t⁻¹·A − B.
+    field_simp
+  -- Step 4: rewrite the goal to `MemLp (t⁻¹ · r(t·u)) 2 μ` and apply
+  --         `MemLp.const_mul` to `h_residual_t`.
+  have h_funext :
+      (fun x =>
+        t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+          - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x)
+      = (fun x =>
+        t⁻¹ *
+          (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x
+            - (1/2 : ℝ) * ⟪t • u, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+    funext x; exact h_pt x
+  rw [h_funext]
+  exact h_residual_t.const_mul (t⁻¹)
+
+/-- **DQM ⇒ score is in L²(μ).**
+
+For every direction `u : Θ`, the function `x ↦ ⟨u, ℓ x⟩ · √p_{θ₀}(x)` is in
+`L²(μ)`. This is the L² content behind the existence of the Fisher information
+in direction `u` and is essentially conclusion (ii) of Theorem 7.2.
+
+**Proof.** Pick any `t ≠ 0` in the eventually-set produced by
+`dqm_residual_eventually_memLp`. Then
+  `q_t = t⁻¹·(√p_{θ₀+t·u} − √p_{θ₀}) − (1/2)·⟨u, ℓ⟩·√p_{θ₀} ∈ L²(μ)`.
+Both `√p_{θ₀+t·u}` and `√p_{θ₀}` are in `L²(μ)` (via `sqrtDensity_memLp_two`
+applied to the integrable densities), so their (scaled) difference
+`t⁻¹·(√p_{θ₀+t·u} − √p_{θ₀})` is in `L²(μ)`.
+Subtracting `q_t` recovers `(1/2)·⟨u, ℓ⟩·√p_{θ₀}`, and scaling by `2` gives
+`⟨u, ℓ⟩·√p_{θ₀}`. -/
+lemma dqm_score_memLp_two
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ)
+    (hint : Integrable (M.density θ₀) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ) (u : Θ)
+    (hint_perturb : ∀ t : ℝ, Integrable (M.density (θ₀ + t • u)) μ) :
+    MemLp (fun x => ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+  -- Step 1: extract a witness `t ≠ 0` such that `MemLp q_t 2 μ`.
+  have h_q := dqm_residual_eventually_memLp M μ θ₀ ℓ hDQM u
+  have h_q' :
+      ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+        (MemLp (fun x =>
+            t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+              - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ) ∧ t ≠ 0 := by
+    filter_upwards [h_q, self_mem_nhdsWithin] with t hq ht_mem
+    exact ⟨hq, ht_mem⟩
+  obtain ⟨t, ht_qt, ht_ne⟩ := h_q'.exists
+  -- Step 2: square roots of both densities are in L²(μ).
+  have h_sqrt_θ : MemLp (M.sqrtDensity θ₀) 2 μ :=
+    M.sqrtDensity_memLp_two μ θ₀ hint
+  have h_sqrt_θtu : MemLp (M.sqrtDensity (θ₀ + t • u)) 2 μ :=
+    M.sqrtDensity_memLp_two μ (θ₀ + t • u) (hint_perturb t)
+  -- Step 3: their difference, scaled by `t⁻¹`, is in L²(μ).
+  have h_diff_memLp :
+      MemLp (fun x => M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x) 2 μ :=
+    h_sqrt_θtu.sub h_sqrt_θ
+  have h_scaled_diff_memLp :
+      MemLp (fun x =>
+        t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)) 2 μ :=
+    h_diff_memLp.const_mul (t⁻¹)
+  -- Step 4: `(1/2)·⟨u, ℓ⟩·√p_{θ₀} = scaled_diff − q_t` (pointwise),
+  --         hence in L²(μ) by closure under subtraction.
+  have h_half_score :
+      MemLp (fun x => (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+    have h_funext :
+        (fun x => (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) =
+        (fun x =>
+          (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)) -
+          (t⁻¹ * (M.sqrtDensity (θ₀ + t • u) x - M.sqrtDensity θ₀ x)
+            - (1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+      funext x; ring
+    rw [h_funext]
+    exact h_scaled_diff_memLp.sub ht_qt
+  -- Step 5: scale by 2 to drop the `(1/2)` factor.
+  have h_funext :
+      (fun x => ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) =
+      (fun x => 2 * ((1/2 : ℝ) * ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+    funext x; ring
+  rw [h_funext]
+  exact h_half_score.const_mul (2 : ℝ)
+
+/-- **DQM rate, sequence form.**
+
+Specialise the `IsLittleO` rate of DQM along the sequence `htil_n := h_n / √n`,
+which → `0` in `Θ` whenever `h_n → h` (bounded). The conclusion is the
+sequence form of vdV's "DQM along the curve `θ₀ + h_n / √n`":
+
+  `∫ (√n · (√p_{θ₀ + h_n/√n} − √p_{θ₀}) − ½⟨h_n, ℓ⟩ · √p_{θ₀})² dμ → 0`.
+
+Pure DQM analysis — no Fisher continuity assumption needed (the score appears
+with `h_n`, not the limit `h`). The "swap to `h`" step lives in
+`dqm_sqrt_density_l2_convergence`. -/
+lemma dqm_residual_rate_along
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    {h : Θ} {h_n : ℕ → Θ} (hconv : Tendsto h_n atTop (𝓝 h)) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ x,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                          - M.sqrtDensity θ₀ x)
+           - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+      atTop (𝓝 0) := by
+  -- Abbreviation: `htil_n := (1/√n) • h_n`.
+  set htil : ℕ → Θ := fun n => (Real.sqrt n)⁻¹ • h_n n with hhtil_def
+  -- `htil_n → 0`.
+  have hhtil_tendsto : Tendsto htil atTop (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    have h_norm_h_n : Tendsto (fun n : ℕ => ‖h_n n‖) atTop (𝓝 ‖h‖) := hconv.norm
+    have h_inv_sqrt : Tendsto (fun n : ℕ => (Real.sqrt n)⁻¹) atTop (𝓝 0) := by
+      have h1 : Tendsto (fun n : ℕ => Real.sqrt n) atTop atTop := by
+        have h2 : Tendsto (fun n : ℕ => (n : ℝ)) atTop atTop := tendsto_natCast_atTop_atTop
+        exact Real.tendsto_sqrt_atTop.comp h2
+      simpa using! h1.inv_tendsto_atTop
+    have h_prod := h_inv_sqrt.mul h_norm_h_n
+    simp only [zero_mul] at h_prod
+    refine h_prod.congr' ?_
+    refine Filter.Eventually.of_forall fun n => ?_
+    change (Real.sqrt n)⁻¹ * ‖h_n n‖ = ‖htil n‖
+    rw [hhtil_def, norm_smul, Real.norm_eq_abs,
+        abs_of_nonneg (inv_nonneg.mpr (Real.sqrt_nonneg _))]
+  -- ‖h_n‖ ≤ M_bd uniformly (from `hconv.norm`).
+  have h_bound : ∃ M_bd : ℝ, ∀ n, ‖h_n n‖ ≤ M_bd := by
+    obtain ⟨M_bd, _, hM⟩ := hconv.norm.bddAbove_range.exists_ge 0
+    exact ⟨M_bd, fun n => hM ‖h_n n‖ ⟨n, rfl⟩⟩
+  obtain ⟨M_bd, hM_bd⟩ := h_bound
+  -- DQM along the sequence htil_n → 0.
+  have h_along : (fun n : ℕ =>
+        ∫ x, (M.sqrtDensity (θ₀ + htil n) x - M.sqrtDensity θ₀ x
+              - (1 / 2 : ℝ) * ⟪htil n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+      =o[atTop] (fun n : ℕ => ‖htil n‖ ^ 2) :=
+    hDQM.isLittleO.comp_tendsto hhtil_tendsto
+  -- Convert to ε-δ form.
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  set c : ℝ := ε / (M_bd ^ 2 + 1) with hc_def
+  have hc_pos : 0 < c := div_pos hε (by positivity)
+  have hc_bd : ∀ n, c * ‖h_n n‖ ^ 2 < ε := by
+    intro n
+    have h_denom : 0 < M_bd ^ 2 + 1 := by positivity
+    have h_norm_sq : ‖h_n n‖ ^ 2 ≤ M_bd ^ 2 :=
+      pow_le_pow_left₀ (norm_nonneg _) (hM_bd n) 2
+    rw [hc_def, div_mul_eq_mul_div, div_lt_iff₀ h_denom]
+    nlinarith [hε, h_norm_sq, sq_nonneg M_bd]
+  have h_bd := (Asymptotics.isLittleO_iff.mp h_along) hc_pos
+  obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp h_bd
+  refine ⟨max N 1, fun n hn => ?_⟩
+  have hN_le : N ≤ n := le_trans (le_max_left _ _) hn
+  have hn_one_le : 1 ≤ n := le_trans (le_max_right _ _) hn
+  have hn_nat_pos : 0 < n := hn_one_le
+  have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_nat_pos
+  have hsqrt_pos : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn_pos
+  have hsqrt_ne : Real.sqrt n ≠ 0 := ne_of_gt hsqrt_pos
+  have h_bd_n := hN n hN_le
+  -- Pointwise: `(target_n)² = (√n)² · r(htil_n)²`.
+  have h_pt : ∀ x,
+      (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                      - M.sqrtDensity θ₀ x)
+       - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+      = (Real.sqrt n) ^ 2 *
+        (M.sqrtDensity (θ₀ + htil n) x - M.sqrtDensity θ₀ x
+          - (1 / 2 : ℝ) * ⟪htil n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 := by
+    intro x
+    have h_inner : (⟪htil n, ℓ x⟫ : ℝ) = (Real.sqrt n)⁻¹ * (⟪h_n n, ℓ x⟫ : ℝ) := by
+      rw [hhtil_def]; exact real_inner_smul_left (h_n n) (ℓ x) _
+    rw [hhtil_def, h_inner]
+    have h_factor :
+        M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x
+          - (1 / 2 : ℝ) * ((Real.sqrt n)⁻¹ * ⟪h_n n, ℓ x⟫) * M.sqrtDensity θ₀ x
+        = (Real.sqrt n)⁻¹ *
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                          - M.sqrtDensity θ₀ x)
+           - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) := by
+      have h_t_inv_t : (Real.sqrt n)⁻¹ * Real.sqrt n = 1 :=
+        inv_mul_cancel₀ hsqrt_ne
+      have hcancel :
+          (Real.sqrt n)⁻¹ * (Real.sqrt n *
+              (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                - M.sqrtDensity θ₀ x))
+          = M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+            - M.sqrtDensity θ₀ x := by
+        rw [← mul_assoc, h_t_inv_t, one_mul]
+      linarith [hcancel]
+    rw [h_factor]
+    field_simp
+  have h_int_eq :
+      ∫ x,
+        (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x)
+         - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+      = (Real.sqrt n) ^ 2 *
+        ∫ x,
+          (M.sqrtDensity (θ₀ + htil n) x - M.sqrtDensity θ₀ x
+            - (1 / 2 : ℝ) * ⟪htil n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ := by
+    simp_rw [h_pt]
+    rw [MeasureTheory.integral_const_mul]
+  have h_norm_htil_sq : ‖htil n‖ ^ 2 = (Real.sqrt n)⁻¹ ^ 2 * ‖h_n n‖ ^ 2 := by
+    rw [hhtil_def, norm_smul, mul_pow, Real.norm_eq_abs, sq_abs]
+  have h_int_nn :
+      0 ≤ ∫ x,
+          (M.sqrtDensity (θ₀ + htil n) x - M.sqrtDensity θ₀ x
+            - (1 / 2 : ℝ) * ⟪htil n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ :=
+    MeasureTheory.integral_nonneg (fun _ => sq_nonneg _)
+  have h_bound_t : ∫ x,
+          (M.sqrtDensity (θ₀ + htil n) x - M.sqrtDensity θ₀ x
+            - (1 / 2 : ℝ) * ⟪htil n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ ≤
+        c * ((Real.sqrt n)⁻¹ ^ 2 * ‖h_n n‖ ^ 2) := by
+    have := h_bd_n
+    rw [Real.norm_eq_abs, abs_of_nonneg h_int_nn,
+        Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)] at this
+    rw [h_norm_htil_sq] at this
+    exact this
+  have h_target_bd :
+      (Real.sqrt n) ^ 2 *
+        ∫ x,
+          (M.sqrtDensity (θ₀ + htil n) x - M.sqrtDensity θ₀ x
+            - (1 / 2 : ℝ) * ⟪htil n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ ≤
+        (Real.sqrt n) ^ 2 * (c * ((Real.sqrt n)⁻¹ ^ 2 * ‖h_n n‖ ^ 2)) :=
+    mul_le_mul_of_nonneg_left h_bound_t (sq_nonneg _)
+  have h_simp :
+      (Real.sqrt n) ^ 2 * (c * ((Real.sqrt n)⁻¹ ^ 2 * ‖h_n n‖ ^ 2)) =
+        c * ‖h_n n‖ ^ 2 := by
+    field_simp
+  rw [h_int_eq, Real.dist_eq, sub_zero]
+  have h_target_nn : 0 ≤ (Real.sqrt n) ^ 2 *
+        ∫ x,
+          (M.sqrtDensity (θ₀ + htil n) x - M.sqrtDensity θ₀ x
+            - (1 / 2 : ℝ) * ⟪htil n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ :=
+    mul_nonneg (sq_nonneg _) h_int_nn
+  rw [abs_of_nonneg h_target_nn]
+  rw [h_simp] at h_target_bd
+  exact lt_of_le_of_lt h_target_bd (hc_bd n)
+
+/-- **DQM ⇒ joint L² convergence of rescaled square-root density.**
+
+Given `h_n → h` in `Θ`,
+  `√n · (√p_{θ₀ + h_n/√n} − √p_{θ₀}) → ½⟨h, ℓ⟩ · √p_{θ₀}`  in `L²(μ)`.
+
+Central analytical input to Theorem 7.2 Steps 2 and 3.
+
+Combines `dqm_residual_rate_along` (which gives the same convergence with
+`⟨h_n, ℓ⟩` in place of `⟨h, ℓ⟩`) with the Fisher-continuity-at-`0` hypothesis
+`h_fisher_cont` (automatic in finite-dim from `dqm_fisher_integrable`).
+
+**Proof.** Pointwise `(X + Y)² ≤ 2X² + 2Y²` where
+`X := √n(√p_n − √p) − ½⟨h_n, ℓ⟩√p` and `Y := ½⟨h_n − h, ℓ⟩√p`. Both
+`∫X² → 0` (from `dqm_residual_rate_along`) and `∫Y² → 0` (from Fisher
+continuity at `0` applied to `h_n − h → 0`). Squeeze. -/
+lemma dqm_sqrt_density_l2_convergence
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ)
+    (hint : Integrable (M.density θ₀) μ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h_fisher_cont :
+      Tendsto (fun v : Θ => ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+        (𝓝 0) (𝓝 0))
+    {h : Θ} {h_n : ℕ → Θ} (hconv : Tendsto h_n atTop (𝓝 h)) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ x,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                          - M.sqrtDensity θ₀ x)
+           - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+      atTop (𝓝 0) := by
+  -- The two pieces.
+  have h_first : Tendsto (fun n : ℕ =>
+        ∫ x,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                          - M.sqrtDensity θ₀ x)
+           - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+        atTop (𝓝 0) :=
+    dqm_residual_rate_along M μ θ₀ ℓ hDQM hconv
+  -- The Fisher-continuity piece, in the form `∫ ((1/2)⟨h_n − h, ℓ⟩√p)² → 0`.
+  have h_second : Tendsto (fun n : ℕ =>
+        ∫ x, ((1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+        atTop (𝓝 0) := by
+    have hconv_diff : Tendsto (fun n : ℕ => h_n n - h) atTop (𝓝 0) := by
+      have := hconv.sub (tendsto_const_nhds (x := h))
+      simpa using! this
+    -- Pointwise rewrite: ((1/2)⟨v, ℓ⟩√p)² = (1/4)⟨v, ℓ⟩²·p.
+    have h_inner_int_eq : ∀ v : Θ,
+        ∫ x, ((1 / 2 : ℝ) * ⟪v, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+          = (1 / 4 : ℝ) * ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ := by
+      intro v
+      have hpt : ∀ x,
+          ((1 / 2 : ℝ) * ⟪v, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 =
+            (1 / 4 : ℝ) * (⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x) := by
+        intro x
+        have hsq : (M.sqrtDensity θ₀ x) ^ 2 = M.density θ₀ x :=
+          M.sqrtDensity_sq θ₀ x
+        have heq : ((1 / 2 : ℝ) * ⟪v, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+              = (1 / 4 : ℝ) * (⟪v, ℓ x⟫ ^ 2 * (M.sqrtDensity θ₀ x) ^ 2) := by ring
+        rw [heq, hsq]
+      simp_rw [hpt]
+      rw [MeasureTheory.integral_const_mul]
+    have h_fisher_along :
+        Tendsto (fun n : ℕ => ∫ x, ⟪h_n n - h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+          atTop (𝓝 0) :=
+      h_fisher_cont.comp hconv_diff
+    have h_quarter := h_fisher_along.const_mul (1 / 4 : ℝ)
+    simp only [mul_zero] at h_quarter
+    refine h_quarter.congr fun n => ?_
+    rw [h_inner_int_eq (h_n n - h)]
+  -- Eventually-integrability of X² (the `dqm_residual_rate_along` integrand).
+  -- From `hDQM.mem` composed with `htil_n → 0`: `r(htil_n) ∈ L²(μ)` eventually.
+  set htil : ℕ → Θ := fun n => (Real.sqrt n)⁻¹ • h_n n with hhtil_def
+  have hhtil_tendsto : Tendsto htil atTop (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    have h_inv_sqrt : Tendsto (fun n : ℕ => (Real.sqrt n)⁻¹) atTop (𝓝 0) := by
+      have h1 : Tendsto (fun n : ℕ => Real.sqrt n) atTop atTop :=
+        Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop
+      simpa using! h1.inv_tendsto_atTop
+    have h_prod := h_inv_sqrt.mul hconv.norm
+    simp only [zero_mul] at h_prod
+    refine h_prod.congr' (Filter.Eventually.of_forall fun n => ?_)
+    change (Real.sqrt n)⁻¹ * ‖h_n n‖ = ‖htil n‖
+    rw [hhtil_def, norm_smul, Real.norm_eq_abs,
+        abs_of_nonneg (inv_nonneg.mpr (Real.sqrt_nonneg _))]
+  have hX_memLp_eventually : ∀ᶠ (n : ℕ) in atTop,
+      MemLp (fun x => Real.sqrt n *
+                (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                  - M.sqrtDensity θ₀ x)
+              - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+    have h_mem_along := hhtil_tendsto.eventually hDQM.mem
+    -- h_mem_along : ∀ᶠ n, MemLp (r(htil n)) 2 μ, where
+    -- r(htil n)(x) = √p_{θ₀ + htil n}(x) − √p_{θ₀}(x) − (1/2)⟨htil n, ℓ x⟩ √p_{θ₀}(x)
+    --             = √p_n(x) − √p_{θ₀}(x) − (1/2·1/√n)⟨h_n, ℓ x⟩ √p_{θ₀}(x).
+    -- Then √n · r(htil n)(x) = √n(√p_n − √p) − (1/2)⟨h_n, ℓ⟩√p = X_n(x),
+    -- so X_n = (√n)·r(htil n) ∈ L²(μ) (constant scaling) when r(htil n) ∈ L²(μ).
+    filter_upwards [h_mem_along, Filter.eventually_ge_atTop 1] with n h_mem_n hn_pos
+    have hn_nat_pos : 0 < n := hn_pos
+    have hn_pos_real : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_nat_pos
+    have hsqrt_pos : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn_pos_real
+    have hsqrt_ne : Real.sqrt n ≠ 0 := ne_of_gt hsqrt_pos
+    -- Pointwise: X_n(x) = √n · r(htil n)(x).
+    have h_eq : (fun x => Real.sqrt n *
+                  (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                    - M.sqrtDensity θ₀ x)
+                - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x)
+              = (fun x => Real.sqrt n *
+                  (M.sqrtDensity (θ₀ + htil n) x - M.sqrtDensity θ₀ x
+                    - (1 / 2 : ℝ) * ⟪htil n, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+      funext x
+      have h_inner : (⟪htil n, ℓ x⟫ : ℝ) = (Real.sqrt n)⁻¹ * (⟪h_n n, ℓ x⟫ : ℝ) := by
+        rw [hhtil_def]; exact real_inner_smul_left (h_n n) (ℓ x) _
+      rw [hhtil_def, h_inner]
+      have h_t_inv_t : (Real.sqrt n)⁻¹ * Real.sqrt n = 1 :=
+        inv_mul_cancel₀ hsqrt_ne
+      have hcancel :
+          Real.sqrt n * ((Real.sqrt n)⁻¹ * (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫
+                          * M.sqrtDensity θ₀ x)
+          = (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x := by
+        rw [show Real.sqrt n * ((Real.sqrt n)⁻¹ * (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫
+                                  * M.sqrtDensity θ₀ x)
+              = Real.sqrt n * (Real.sqrt n)⁻¹ * (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫
+                  * M.sqrtDensity θ₀ x from by ring,
+            mul_inv_cancel₀ hsqrt_ne, one_mul]
+      ring_nf
+      ring_nf at hcancel
+      linarith [hcancel]
+    rw [h_eq]
+    exact h_mem_n.const_mul (Real.sqrt n)
+  -- Y_n is in L²(μ) for every n (from dqm_score_memLp_two on direction h_n n - h).
+  have hY_memLp : ∀ n,
+      MemLp (fun x => (1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+    intro n
+    have h_score_memLp :
+        MemLp (fun x => ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ :=
+      dqm_score_memLp_two M μ θ₀ ℓ hint hDQM (h_n n - h)
+        (fun t => hint_perturb t (h_n n - h))
+    -- Multiply by 1/2 (constant).
+    have h_eq : (fun x => (1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x)
+              = (fun x => (1 / 2 : ℝ) * (⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+      funext x; ring
+    rw [h_eq]
+    exact h_score_memLp.const_mul (1 / 2 : ℝ)
+  -- Squeeze.
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' (b := atTop)
+    (g := fun (_ : ℕ) => (0 : ℝ))
+    (h := fun (n : ℕ) =>
+      2 * ∫ x,
+            (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                            - M.sqrtDensity θ₀ x)
+             - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ +
+      2 * ∫ x,
+            ((1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+    tendsto_const_nhds
+    ?_
+    (Filter.Eventually.of_forall fun (_ : ℕ) =>
+      MeasureTheory.integral_nonneg (fun _ => sq_nonneg _))
+    ?_
+  · -- Upper bound → 0.
+    have h1 := h_first.const_mul (2 : ℝ)
+    have h2 := h_second.const_mul (2 : ℝ)
+    simp only [mul_zero] at h1 h2
+    have := h1.add h2
+    simpa using! this
+  · -- Pointwise + integration upper bound (eventually for `n ≥ 1`).
+    filter_upwards [hX_memLp_eventually] with n hX_memLp_n
+    -- Pointwise (X + Y)² ≤ 2X² + 2Y².
+    have h_pt : ∀ x,
+        (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x)
+         - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ≤
+          2 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                              - M.sqrtDensity θ₀ x)
+               - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 +
+          2 * ((1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 := by
+      intro x
+      have h_inner_split :
+          (⟪h, ℓ x⟫ : ℝ) = (⟪h_n n, ℓ x⟫ : ℝ) - (⟪h_n n - h, ℓ x⟫ : ℝ) := by
+        have h_lin : (⟪h_n n - h, ℓ x⟫ : ℝ) = (⟪h_n n, ℓ x⟫ : ℝ) - (⟪h, ℓ x⟫ : ℝ) :=
+          inner_sub_left (h_n n) h (ℓ x)
+        linarith [h_lin]
+      have h_eq :
+          Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                         - M.sqrtDensity θ₀ x)
+            - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x
+          = (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                            - M.sqrtDensity θ₀ x)
+             - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) +
+            ((1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) := by
+        rw [h_inner_split]; ring
+      rw [h_eq]
+      exact L2Utils.sq_add_le_two_mul_sq _ _
+    -- Integrability of RHS.
+    have hX_sq_int := hX_memLp_n.integrable_sq
+    have hY_sq_int := (hY_memLp n).integrable_sq
+    have h_rhs_int : Integrable (fun x =>
+        2 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                            - M.sqrtDensity θ₀ x)
+             - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 +
+        2 * ((1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ :=
+      (hX_sq_int.const_mul 2).add (hY_sq_int.const_mul 2)
+    -- Integrate.
+    have h_integrate :
+        ∫ x, (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                              - M.sqrtDensity θ₀ x)
+              - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ ≤
+        ∫ x,
+          (2 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                                - M.sqrtDensity θ₀ x)
+                - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 +
+           2 * ((1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) ∂μ :=
+      MeasureTheory.integral_mono_of_nonneg
+        (Filter.Eventually.of_forall (fun _ => sq_nonneg _))
+        h_rhs_int
+        (Filter.Eventually.of_forall h_pt)
+    -- Split RHS via `integral_add` and `integral_const_mul`.
+    have h_split :
+        ∫ x,
+          (2 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                                - M.sqrtDensity θ₀ x)
+                - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 +
+           2 * ((1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) ∂μ =
+        2 * ∫ x,
+              (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                              - M.sqrtDensity θ₀ x)
+               - (1 / 2 : ℝ) * ⟪h_n n, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ +
+        2 * ∫ x,
+              ((1 / 2 : ℝ) * ⟪h_n n - h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ := by
+      rw [MeasureTheory.integral_add (hX_sq_int.const_mul 2) (hY_sq_int.const_mul 2),
+          MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
+    linarith [h_integrate, h_split.symm ▸ h_integrate]
+
+/-- **DQM ⇒ Fisher information is finite.**
+
+Concrete restatement of `dqm_score_memLp_two` as the integrability of
+`x ↦ ⟨u, ℓ x⟩² · p_{θ₀}(x)`.  This is exactly the form of `h_Fisher` in
+`LANExpansion.score_mean_zero` and `LANExpansion.LAN_expansion_score_fisher_part`, so it discharges
+that hypothesis and simultaneously closes Theorem 7.2 (ii) for direction `u`. -/
+lemma dqm_fisher_integrable
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ)
+    (hint : Integrable (M.density θ₀) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ) (u : Θ)
+    (hint_perturb : ∀ t : ℝ, Integrable (M.density (θ₀ + t • u)) μ) :
+    Integrable (fun x => ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) μ := by
+  have h_score_memLp :
+      MemLp (fun x => ⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ :=
+    dqm_score_memLp_two M μ θ₀ ℓ hint hDQM u hint_perturb
+  have h_int_sq :
+      Integrable (fun x => (⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ :=
+    h_score_memLp.integrable_sq
+  -- Pointwise: `(⟨u,ℓ⟩·√p_θ)² = ⟨u,ℓ⟩² · p_θ` since `(√p_θ)² = p_θ`.
+  have h_pt : ∀ x,
+      (⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 = ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x := by
+    intro x
+    have hsq : (M.sqrtDensity θ₀ x) ^ 2 = M.density θ₀ x := M.sqrtDensity_sq θ₀ x
+    rw [mul_pow, hsq]
+  have h_funext :
+      (fun x => ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) =
+      (fun x => (⟪u, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) := by
+    funext x; rw [h_pt]
+  rw [h_funext]
+  exact h_int_sq
+
+/-- **Norm-squared score is integrable against the density** (finite-dim).
+
+Decomposes `‖ℓ x‖²` as `∑ i (ℓ x).ofLp i ^ 2 = ∑ i ⟪e_i, ℓ x⟫²` using the
+standard orthonormal basis of `EuclideanSpace ℝ (Fin k)`, then applies
+`dqm_fisher_integrable` per coordinate and sums. -/
+lemma dqm_norm_sq_score_integrable
+    {k : ℕ}
+    (M : ParametricFamily 𝓧 (EuclideanSpace ℝ (Fin k))) (μ : Measure 𝓧)
+    (θ₀ : EuclideanSpace ℝ (Fin k))
+    (ℓ : 𝓧 → EuclideanSpace ℝ (Fin k))
+    (hint : Integrable (M.density θ₀) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : EuclideanSpace ℝ (Fin k),
+      Integrable (M.density (θ₀ + t • u)) μ) :
+    Integrable (fun x => ‖ℓ x‖ ^ 2 * M.density θ₀ x) μ := by
+  classical
+  -- Rewrite `‖ℓ x‖² = ∑ i, ⟪e_i, ℓ x⟫²` via the standard basis `e_i := single i 1`.
+  have h_sum_ofLp_sq : ∀ y : EuclideanSpace ℝ (Fin k),
+      ‖y‖ ^ 2 = ∑ i, (y.ofLp i) ^ 2 := by
+    intro y
+    rw [EuclideanSpace.norm_eq,
+      Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+    exact Finset.sum_congr rfl (fun i _ => by rw [Real.norm_eq_abs, sq_abs])
+  have h_ofLp_eq_inner : ∀ (y : EuclideanSpace ℝ (Fin k)) (i : Fin k),
+      (y.ofLp i : ℝ)
+        = ⟪(EuclideanSpace.single i (1 : ℝ) : EuclideanSpace ℝ (Fin k)), y⟫ := by
+    intro y i
+    have h := EuclideanSpace.inner_single_left (𝕜 := ℝ) i (1 : ℝ) y
+    rw [map_one, one_mul] at h
+    exact h.symm
+  have h_fun_eq : (fun x => ‖ℓ x‖ ^ 2 * M.density θ₀ x)
+      = fun x => ∑ i : Fin k,
+        ⟪(EuclideanSpace.single i (1 : ℝ) : EuclideanSpace ℝ (Fin k)), ℓ x⟫ ^ 2
+          * M.density θ₀ x := by
+    funext x
+    rw [h_sum_ofLp_sq, Finset.sum_mul]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [h_ofLp_eq_inner]
+  rw [h_fun_eq]
+  refine integrable_finsetSum _ (fun i _ => ?_)
+  exact dqm_fisher_integrable M μ θ₀ ℓ hint hDQM
+    (EuclideanSpace.single i (1 : ℝ)) (fun t => hint_perturb t _)
+
+/-- **DQM ⇒ Fisher quadratic form is continuous at 0** (finite-dim).
+
+The map `v ↦ ∫ ⟨v, ℓ x⟩² p_{θ₀}(x) dμ(x)` tends to `0` as `v → 0`. This
+discharges the `h_fisher_cont` auxiliary hypothesis of
+`LANExpansion.LAN_expansion_iii` / `Ch7.AsymptoticRepresentation.LAN_representation`.
+
+Proof: Cauchy-Schwarz gives the pointwise bound
+`⟪v, ℓ x⟫² * p(x) ≤ ‖v‖² * ‖ℓ x‖² * p(x)`, and
+`dqm_norm_sq_score_integrable` provides `∫ ‖ℓ‖² p dμ < ∞`. Hence
+`∫ ⟪v, ℓ⟫² p dμ ≤ ‖v‖² · C` for a constant `C`, and `‖v‖² → 0` as `v → 0`. -/
+lemma dqm_fisher_cont
+    {k : ℕ}
+    (M : ParametricFamily 𝓧 (EuclideanSpace ℝ (Fin k))) (μ : Measure 𝓧)
+    (θ₀ : EuclideanSpace ℝ (Fin k))
+    (ℓ : 𝓧 → EuclideanSpace ℝ (Fin k))
+    (hint : Integrable (M.density θ₀) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : EuclideanSpace ℝ (Fin k),
+      Integrable (M.density (θ₀ + t • u)) μ) :
+    Tendsto
+      (fun v : EuclideanSpace ℝ (Fin k) =>
+        ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+      (𝓝 0) (𝓝 0) := by
+  classical
+  -- `C := ∫ ‖ℓ‖² p_θ₀ dμ < ∞` (finite by `dqm_norm_sq_score_integrable`).
+  set C : ℝ := ∫ x, ‖ℓ x‖ ^ 2 * M.density θ₀ x ∂μ with hC_def
+  have hC_int := dqm_norm_sq_score_integrable M μ θ₀ ℓ hint hDQM hint_perturb
+  have hp_nn : ∀ x, 0 ≤ M.density θ₀ x := M.density_nonneg θ₀
+  -- Pointwise Cauchy-Schwarz bound (after multiplying by `p(x) ≥ 0`).
+  have h_bound : ∀ v : EuclideanSpace ℝ (Fin k), ∀ x,
+      ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ≤ ‖v‖ ^ 2 * (‖ℓ x‖ ^ 2 * M.density θ₀ x) := by
+    intro v x
+    have h_cs : ⟪v, ℓ x⟫ ^ 2 ≤ ‖v‖ ^ 2 * ‖ℓ x‖ ^ 2 := by
+      have h := real_inner_mul_inner_self_le v (ℓ x)
+      rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq, ← sq] at h
+      linarith
+    calc ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x
+        ≤ (‖v‖ ^ 2 * ‖ℓ x‖ ^ 2) * M.density θ₀ x :=
+          mul_le_mul_of_nonneg_right h_cs (hp_nn x)
+      _ = ‖v‖ ^ 2 * (‖ℓ x‖ ^ 2 * M.density θ₀ x) := by ring
+  -- Nonnegativity of the integrand.
+  have h_nn : ∀ v x, 0 ≤ ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x := fun v x =>
+    mul_nonneg (sq_nonneg _) (hp_nn x)
+  -- Integrated bound: `∫ ⟪v, ℓ⟫² p dμ ≤ ‖v‖² · C`. Integrability of the LHS
+  -- comes from `dqm_fisher_integrable` (per-direction).
+  have h_int_bound : ∀ v : EuclideanSpace ℝ (Fin k),
+      ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ ≤ ‖v‖ ^ 2 * C := by
+    intro v
+    have h_int_v : Integrable (fun x => ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x) μ :=
+      dqm_fisher_integrable M μ θ₀ ℓ hint hDQM v (fun t => hint_perturb t v)
+    calc ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ
+        ≤ ∫ x, ‖v‖ ^ 2 * (‖ℓ x‖ ^ 2 * M.density θ₀ x) ∂μ :=
+          MeasureTheory.integral_mono_ae h_int_v (hC_int.const_mul _)
+            (Filter.Eventually.of_forall (h_bound v))
+      _ = ‖v‖ ^ 2 * C := by rw [MeasureTheory.integral_const_mul]
+  -- `v → 0` ⇒ `‖v‖² · C → 0`.
+  have h_upper : Tendsto
+      (fun v : EuclideanSpace ℝ (Fin k) => ‖v‖ ^ 2 * C) (𝓝 0) (𝓝 0) := by
+    have h_norm_sq_zero : Tendsto
+        (fun v : EuclideanSpace ℝ (Fin k) => ‖v‖ ^ 2) (𝓝 0) (𝓝 0) := by
+      have := ((continuous_norm (E := EuclideanSpace ℝ (Fin k))).pow 2).tendsto
+        (0 : EuclideanSpace ℝ (Fin k))
+      simpa [norm_zero] using! this
+    have := h_norm_sq_zero.mul_const C
+    simpa [zero_mul] using this
+  -- Squeeze: `0 ≤ ∫ ⟪v, ℓ⟫² p ≤ ‖v‖² · C` and `‖v‖² C → 0`, `0 → 0`.
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (tendsto_const_nhds (x := (0 : ℝ))) h_upper
+    (Filter.Eventually.of_forall (fun v =>
+      MeasureTheory.integral_nonneg (fun x => h_nn v x)))
+    (Filter.Eventually.of_forall h_int_bound)
+
+/-! ## DQM ⇒ asymptotic singular-mass control (vdV §7.3)
+
+The two lemmas below replace the *exact* finite-`n` change-of-measure identity (which forced
+absolute continuity and hence a common-support hypothesis) by a DQM-derived **asymptotic** bound:
+each per-factor singular set carries `o(1/n)` probability mass. DQM does *not* imply common
+support; this is asymptotic singular-mass control, not a derivation of common support from DQM.
+
+The "probability mass" here is the density integral `∫_A p dμ` over the singular set `A`, NOT the
+bare `μ`-volume `μ A` (DQM controls density integrals, not the dominating-measure volume; a
+`μ`-volume statement would be FALSE on infinite-`μ` / small-density regions). -/
+
+/-- **Deficit side — `n · P_{θ_n}({p₀ = 0}) = o(1)`** (the genuine `Q ⊥ P` side).
+
+Under DQM at `θ₀`, for a fixed direction `h`, the rescaled probability mass that the *perturbed*
+density `p_{θ₀ + h/√n}` places on the set where the *base* density `p_{θ₀}` vanishes tends
+to `0`:
+`n · ∫_{x : p_{θ₀}(x) = 0} p_{θ₀+h/√n}(x) dμ → 0`.
+
+vdV §7.3 (contiguity footing): DQM-derived asymptotic singular-mass control replacing the exact
+change-of-measure identity.
+
+**Proof.** Bound a restricted piece of the single `dqm_sqrt_density_l2_convergence` residual
+`Rₙ = ∫(√n(√p_n − √p₀) − ½⟨h,ℓ⟩√p₀)² dμ → 0`. On `{p_{θ₀} = 0}` the base root `√p₀ = 0`,
+so the residual integrand restricted there collapses to `(√n·√p_n)² = n·p_n`:
+`n ∫_{p₀=0} p_n dμ = ∫_{p₀=0} gₙ dμ ≤ Rₙ → 0`.
+Direct, no Cauchy–Schwarz. Reuse: `dqm_sqrt_density_l2_convergence`, `dqm_fisher_cont`
+(to feed `h_fisher_cont`), `M.sqrtDensity_sq`. -/
+lemma dqm_perturbation_deficit_mass_tendsto
+    {k : ℕ}
+    (M : ParametricFamily 𝓧 (EuclideanSpace ℝ (Fin k))) (μ : Measure 𝓧)
+    (θ₀ : EuclideanSpace ℝ (Fin k))
+    (ℓ : 𝓧 → EuclideanSpace ℝ (Fin k))
+    (hint : Integrable (M.density θ₀) μ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : EuclideanSpace ℝ (Fin k),
+      Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h : EuclideanSpace ℝ (Fin k)) :
+    Tendsto
+      (fun n : ℕ =>
+        (n : ℝ) * ∫ x in {x | M.density θ₀ x = 0},
+          M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x ∂μ)
+      atTop (𝓝 0) := by
+  -- `Rₙ → 0` from the L² convergence along the constant sequence `h_n ≡ h`.
+  have h_fisher_cont := dqm_fisher_cont M μ θ₀ ℓ hint hDQM hint_perturb
+  have hR : Tendsto
+      (fun n : ℕ =>
+        ∫ x,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                          - M.sqrtDensity θ₀ x)
+           - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+      atTop (𝓝 0) := by
+    have := dqm_sqrt_density_l2_convergence M μ θ₀ ℓ hint
+      (fun t u => hint_perturb t u) hDQM h_fisher_cont
+      (h := h) (h_n := fun _ => h) tendsto_const_nhds
+    simpa using! this
+  -- Eventual L²-membership of the residual integrand `Xₙ`, hence integrability of `gₙ = Xₙ²`.
+  have hX_memLp_eventually : ∀ᶠ (n : ℕ) in atTop,
+      MemLp (fun x => Real.sqrt n *
+                (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+              - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+    have h_inv_sqrt : Tendsto (fun n : ℕ => (Real.sqrt n)⁻¹) atTop (𝓝 0) := by
+      have h1 : Tendsto (fun n : ℕ => Real.sqrt n) atTop atTop :=
+        Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop
+      simpa using! h1.inv_tendsto_atTop
+    have hhtil_tendsto : Tendsto (fun n : ℕ => (Real.sqrt n)⁻¹ • h) atTop (𝓝 0) := by
+      have := h_inv_sqrt.smul_const h
+      simpa using! this
+    have h_mem_along := hhtil_tendsto.eventually hDQM.mem
+    filter_upwards [h_mem_along, Filter.eventually_ge_atTop 1] with n h_mem_n hn_pos
+    have hn_nat_pos : 0 < n := hn_pos
+    have hn_pos_real : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_nat_pos
+    have hsqrt_pos : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn_pos_real
+    have hsqrt_ne : Real.sqrt n ≠ 0 := ne_of_gt hsqrt_pos
+    have h_eq : (fun x => Real.sqrt n *
+                  (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+                - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x)
+              = (fun x => Real.sqrt n *
+                  (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x
+                    - (1 / 2 : ℝ) * ⟪(Real.sqrt n)⁻¹ • h, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+      funext x
+      have h_inner : (⟪(Real.sqrt n)⁻¹ • h, ℓ x⟫ : ℝ)
+          = (Real.sqrt n)⁻¹ * (⟪h, ℓ x⟫ : ℝ) :=
+        real_inner_smul_left h (ℓ x) _
+      rw [h_inner]
+      have h_t_inv_t : Real.sqrt n * (Real.sqrt n)⁻¹ = 1 := mul_inv_cancel₀ hsqrt_ne
+      field_simp
+    rw [h_eq]
+    exact h_mem_n.const_mul (Real.sqrt n)
+  -- Squeeze `0 ≤ (n)·∫_{p₀=0} p_n = ∫_{p₀=0} gₙ ≤ Rₙ → 0`.
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' (b := atTop)
+    (g := fun (_ : ℕ) => (0 : ℝ))
+    (h := fun (n : ℕ) =>
+      ∫ x,
+        (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+         - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+    tendsto_const_nhds hR ?_ ?_
+  · -- Lower bound: `0 ≤ (n)·∫_{p₀=0} p_n`.
+    refine Filter.Eventually.of_forall fun n => ?_
+    apply mul_nonneg (Nat.cast_nonneg n)
+    exact MeasureTheory.setIntegral_nonneg
+      (measurableSet_eq_fun (M.density_meas θ₀) measurable_const)
+      (fun x _ => M.density_nonneg _ x)
+  · -- Upper bound: `(n)·∫_{p₀=0} p_n = ∫_{p₀=0} gₙ ≤ Rₙ`, eventually for `n ≥ 1`.
+    filter_upwards [hX_memLp_eventually, Filter.eventually_ge_atTop 1]
+      with n hX_memLp_n hn_pos
+    have hn_nat_pos : 0 < n := hn_pos
+    have hn_pos_real : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_nat_pos
+    -- On `{p₀ = 0}`, `√p₀ = 0`, so `gₙ = (√n·√p_n)² = n·p_n`.
+    have hset : MeasurableSet {x | M.density θ₀ x = 0} :=
+      measurableSet_eq_fun (M.density_meas θ₀) measurable_const
+    -- `gₙ` is integrable (`Xₙ ∈ L²`).
+    have hg_int := hX_memLp_n.integrable_sq
+    -- `(n)·∫_{p₀=0} p_n = ∫_{p₀=0} gₙ`.
+    have h_restr_eq :
+        (n : ℝ) * ∫ x in {x | M.density θ₀ x = 0},
+            M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x ∂μ
+          = ∫ x in {x | M.density θ₀ x = 0},
+            (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                            - M.sqrtDensity θ₀ x)
+             - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ := by
+      rw [← MeasureTheory.integral_const_mul]
+      refine MeasureTheory.setIntegral_congr_fun hset (fun x hx => ?_)
+      have hx0 : M.density θ₀ x = 0 := hx
+      have hsqrt0 : M.sqrtDensity θ₀ x = 0 := by
+        unfold ParametricFamily.sqrtDensity; rw [hx0, Real.sqrt_zero]
+      have hpsq : M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x ^ 2
+          = M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x := M.sqrtDensity_sq _ x
+      rw [hsqrt0]
+      have hnsq : (Real.sqrt n) ^ 2 = (n : ℝ) := Real.sq_sqrt (le_of_lt hn_pos_real)
+      have hpt : (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - 0)
+                - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * 0) ^ 2
+            = (Real.sqrt n) ^ 2 * M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x ^ 2 := by
+        ring
+      rw [hpt, hnsq, hpsq]
+    rw [h_restr_eq]
+    -- `∫_{p₀=0} gₙ ≤ ∫ gₙ = Rₙ`.
+    exact MeasureTheory.setIntegral_le_integral hg_int
+      (Filter.Eventually.of_forall (fun _ => sq_nonneg _))
+
+/-- **Excess side — `n · P_{θ₀}({p_n = 0}) = o(1)`** (the `exp∘log` encoding-junk side).
+
+Under DQM at `θ₀`, for a fixed direction `h`, the rescaled probability mass that the *base*
+density `p_{θ₀}` places on the set where the *perturbed* density `p_{θ₀ + h/√n}` vanishes tends
+to `0`:
+`n · ∫_{x : p_{θ₀+h/√n}(x) = 0} p_{θ₀}(x) dμ → 0`.
+
+vdV §7.3 (contiguity footing): DQM-derived asymptotic singular-mass control replacing the exact
+change-of-measure identity.
+
+This side exists **only** because the conclusion's `exp∘log` encoding deposits junk mass `1` on
+`{p₀ > 0, p_n = 0}`; the honest Radon–Nikodym ratio drops it, leaving only the deficit side.
+
+**Proof (absolute-continuity).** On `{p_{θ₀+h/√n} = 0}` the perturbed root
+`√p_n = 0`, so `√n·(√p_n − √p₀) = −√n·√p₀` and `n·mₙ = ∫_{p_n=0} (√n(√p_n−√p₀))² dμ` with
+`mₙ = ∫_{p_n=0} p₀ dμ`. Decompose `√n(√p_n−√p₀) = Xₙ + ½⟨h,ℓ⟩√p₀` (`Xₙ` the
+`dqm_sqrt_density_l2_convergence` residual integrand) and bound by `(a+b)² ≤ 2a²+2b²`:
+`n·mₙ ≤ 2∫_{p_n=0} Xₙ² + ½∫_{p_n=0} ⟨h,ℓ⟩²p₀ ≤ 2Rₙ + ½Bₙ`, where `Bₙ = ∫_{p_n=0} ⟨h,ℓ⟩²p₀ dμ`.
+With `Bₙ ≤ I = ∫ ⟨h,ℓ⟩²p₀` (a fixed finite constant by `dqm_fisher_integrable`), `n·mₙ` is
+bounded, so `mₙ → 0`; then `Bₙ → 0` by absolute continuity of the integral against
+`P₀ = μ.withDensity p₀` (the singular-set mass `P₀({p_n=0}) = mₙ → 0`), and finally
+`n·mₙ ≤ 2Rₙ + ½Bₙ → 0`. Reuse: `dqm_sqrt_density_l2_convergence`, `dqm_fisher_integrable`,
+`dqm_fisher_cont`, `L2Utils.sq_add_le_two_mul_sq`, `Integrable.tendsto_setIntegral_nhds_zero`. -/
+lemma dqm_perturbation_excess_mass_tendsto
+    {k : ℕ}
+    (M : ParametricFamily 𝓧 (EuclideanSpace ℝ (Fin k))) (μ : Measure 𝓧)
+    (θ₀ : EuclideanSpace ℝ (Fin k))
+    (ℓ : 𝓧 → EuclideanSpace ℝ (Fin k))
+    (hint : Integrable (M.density θ₀) μ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : EuclideanSpace ℝ (Fin k),
+      Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h : EuclideanSpace ℝ (Fin k)) :
+    Tendsto
+      (fun n : ℕ =>
+        (n : ℝ) * ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0},
+          M.density θ₀ x ∂μ)
+      atTop (𝓝 0) := by
+  -- `Rₙ → 0` from the L² convergence along the constant sequence `h_n ≡ h`.
+  have h_fisher_cont := dqm_fisher_cont M μ θ₀ ℓ hint hDQM hint_perturb
+  have hR : Tendsto
+      (fun n : ℕ =>
+        ∫ x,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                          - M.sqrtDensity θ₀ x)
+           - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+      atTop (𝓝 0) := by
+    have := dqm_sqrt_density_l2_convergence M μ θ₀ ℓ hint
+      (fun t u => hint_perturb t u) hDQM h_fisher_cont
+      (h := h) (h_n := fun _ => h) tendsto_const_nhds
+    simpa using! this
+  -- `G := ⟨h,ℓ⟩²·p₀ ∈ L¹(μ)`; `I := ∫ G dμ` and `Bₙ := ∫_{p_n=0} G dμ ≤ I`.
+  have hG_int : Integrable (fun x => ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x) μ :=
+    dqm_fisher_integrable M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+  -- `½·G = (½⟨h,ℓ⟩√p₀)²·2`; the score-square integrand `(½⟨h,ℓ⟩√p₀)² ∈ L¹`.
+  have hYsq_int : Integrable
+      (fun x => ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ := by
+    have h_eq : (fun x => ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2)
+        = (fun x => (1 / 4 : ℝ) * (⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x)) := by
+      funext x
+      have hsq : (M.sqrtDensity θ₀ x) ^ 2 = M.density θ₀ x := M.sqrtDensity_sq θ₀ x
+      have : ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+          = (1 / 4 : ℝ) * (⟪h, ℓ x⟫ ^ 2 * (M.sqrtDensity θ₀ x) ^ 2) := by ring
+      rw [this, hsq]
+    rw [h_eq]
+    exact hG_int.const_mul (1 / 4 : ℝ)
+  -- Eventual L²-membership of the residual integrand `Xₙ` (same as the deficit side).
+  have hX_memLp_eventually : ∀ᶠ (n : ℕ) in atTop,
+      MemLp (fun x => Real.sqrt n *
+                (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+              - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+    have h_inv_sqrt : Tendsto (fun n : ℕ => (Real.sqrt n)⁻¹) atTop (𝓝 0) := by
+      have h1 : Tendsto (fun n : ℕ => Real.sqrt n) atTop atTop :=
+        Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop
+      simpa using! h1.inv_tendsto_atTop
+    have hhtil_tendsto : Tendsto (fun n : ℕ => (Real.sqrt n)⁻¹ • h) atTop (𝓝 0) := by
+      have := h_inv_sqrt.smul_const h
+      simpa using! this
+    have h_mem_along := hhtil_tendsto.eventually hDQM.mem
+    filter_upwards [h_mem_along, Filter.eventually_ge_atTop 1] with n h_mem_n hn_pos
+    have hn_nat_pos : 0 < n := hn_pos
+    have hn_pos_real : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_nat_pos
+    have hsqrt_pos : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn_pos_real
+    have hsqrt_ne : Real.sqrt n ≠ 0 := ne_of_gt hsqrt_pos
+    have h_eq : (fun x => Real.sqrt n *
+                  (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+                - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x)
+              = (fun x => Real.sqrt n *
+                  (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x
+                    - (1 / 2 : ℝ) * ⟪(Real.sqrt n)⁻¹ • h, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+      funext x
+      have h_inner : (⟪(Real.sqrt n)⁻¹ • h, ℓ x⟫ : ℝ)
+          = (Real.sqrt n)⁻¹ * (⟪h, ℓ x⟫ : ℝ) :=
+        real_inner_smul_left h (ℓ x) _
+      rw [h_inner]
+      have h_t_inv_t : Real.sqrt n * (Real.sqrt n)⁻¹ = 1 := mul_inv_cancel₀ hsqrt_ne
+      field_simp
+    rw [h_eq]
+    exact h_mem_n.const_mul (Real.sqrt n)
+  -- `P₀ := μ.withDensity (ENNReal.ofReal ∘ p₀)`, a finite measure.
+  set ρ : 𝓧 → ℝ≥0∞ := fun x => ENNReal.ofReal (M.density θ₀ x) with hρ_def
+  have hρ_meas : Measurable ρ := (M.density_meas θ₀).ennreal_ofReal
+  have hρ_lt_top : ∀ᵐ x ∂μ, ρ x < ∞ :=
+    Filter.Eventually.of_forall (fun x => ENNReal.ofReal_lt_top)
+  have hρ_toReal : ∀ x, (ρ x).toReal = M.density θ₀ x := fun x => by
+    rw [hρ_def]; exact ENNReal.toReal_ofReal (M.density_nonneg θ₀ x)
+  set P₀ : Measure 𝓧 := μ.withDensity ρ with hP₀_def
+  -- `⟨h,ℓ⟩² ∈ L¹(P₀)`.
+  have hsq_int_P₀ : Integrable (fun x => ⟪h, ℓ x⟫ ^ 2) P₀ := by
+    rw [hP₀_def, integrable_withDensity_iff hρ_meas hρ_lt_top]
+    refine hG_int.congr ?_
+    refine Filter.Eventually.of_forall (fun x => ?_)
+    simp only [hρ_toReal]
+  -- Measurable singular sets.
+  have hset : ∀ n : ℕ, MeasurableSet {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0} :=
+    fun n => measurableSet_eq_fun (M.density_meas _) measurable_const
+  -- Key identity: on `{p_n=0}`, `∫_{p_n=0} G dμ = ∫_{p_n=0} ⟨h,ℓ⟩² dP₀`.
+  have hB_bridge : ∀ n : ℕ,
+      ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}, ⟪h, ℓ x⟫ ^ 2 ∂P₀
+        = ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0},
+            ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ := by
+    intro n
+    rw [hP₀_def,
+      setIntegral_withDensity_eq_setIntegral_toReal_smul hρ_meas
+        (Filter.Eventually.of_forall (fun x => ENNReal.ofReal_lt_top)) _ (hset n)]
+    refine MeasureTheory.setIntegral_congr_fun (hset n) (fun x _ => ?_)
+    rw [hρ_toReal, smul_eq_mul, mul_comm]
+  -- `mₙ := ∫_{p_n=0} p₀ dμ`.  `P₀({p_n=0}) = ENNReal.ofReal mₙ`.
+  have hm_nonneg : ∀ n : ℕ,
+      0 ≤ ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}, M.density θ₀ x ∂μ :=
+    fun n => MeasureTheory.setIntegral_nonneg (hset n) (fun x _ => M.density_nonneg _ x)
+  have hP₀_apply : ∀ n : ℕ,
+      P₀ {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}
+        = ENNReal.ofReal
+            (∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}, M.density θ₀ x ∂μ) := by
+    intro n
+    rw [hP₀_def, withDensity_apply ρ (hset n), hρ_def,
+      ← ofReal_integral_eq_lintegral_ofReal (hint.restrict)
+        (ae_restrict_of_ae (Filter.Eventually.of_forall (M.density_nonneg θ₀)))]
+  -- `n·mₙ ≤ 2·Rₙ + ½·Bₙ`  (`Bₙ = ∫_{p_n=0} G dμ`), eventually for `n ≥ 1`.
+  have h_key : ∀ᶠ (n : ℕ) in atTop,
+      (n : ℝ) * ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}, M.density θ₀ x ∂μ
+        ≤ 2 * ∫ x,
+            (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+             - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+          + (1 / 2 : ℝ) * ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0},
+              ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ := by
+    filter_upwards [hX_memLp_eventually, Filter.eventually_ge_atTop 1]
+      with n hX_memLp_n hn_pos
+    have hn_nat_pos : 0 < n := hn_pos
+    have hn_pos_real : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_nat_pos
+    have hsqrt_pos : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn_pos_real
+    have hnsq : (Real.sqrt n) ^ 2 = (n : ℝ) := Real.sq_sqrt (le_of_lt hn_pos_real)
+    set s : Set 𝓧 := {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0} with hs_def
+    -- `n·mₙ = ∫_s (√n(√p_n − √p₀))² dμ`.
+    have h_nm_eq :
+        (n : ℝ) * ∫ x in s, M.density θ₀ x ∂μ
+          = ∫ x in s,
+              (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                              - M.sqrtDensity θ₀ x)) ^ 2 ∂μ := by
+      rw [← MeasureTheory.integral_const_mul]
+      refine MeasureTheory.setIntegral_congr_fun (hset n) (fun x hx => ?_)
+      have hx0 : M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0 := hx
+      have hsqrtn0 : M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0 := by
+        unfold ParametricFamily.sqrtDensity; rw [hx0, Real.sqrt_zero]
+      have hp₀sq : M.sqrtDensity θ₀ x ^ 2 = M.density θ₀ x := M.sqrtDensity_sq θ₀ x
+      rw [hsqrtn0]
+      have : (Real.sqrt n * (0 - M.sqrtDensity θ₀ x)) ^ 2
+          = (Real.sqrt n) ^ 2 * M.sqrtDensity θ₀ x ^ 2 := by ring
+      rw [this, hnsq, hp₀sq]
+    -- pointwise `(√n(√p_n−√p₀))² = (Xₙ + ½⟨h,ℓ⟩√p₀)² ≤ 2Xₙ² + 2(½⟨h,ℓ⟩√p₀)²`.
+    have h_pt : ∀ x,
+        (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)) ^ 2
+          ≤ 2 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+                  - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+            + 2 * ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 := by
+      intro x
+      set a : ℝ := Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                    - M.sqrtDensity θ₀ x)
+                  - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x with ha_def
+      set b : ℝ := (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x with hb_def
+      have hsum : Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                    - M.sqrtDensity θ₀ x) = a + b := by rw [ha_def, hb_def]; ring
+      rw [hsum]
+      exact L2Utils.sq_add_le_two_mul_sq a b
+    -- integrate the pointwise bound over `s`.
+    have hX_sq_int := hX_memLp_n.integrable_sq
+    -- `√n(√p_n−√p₀) ∈ L²`, hence its square is integrable.
+    have hZ_memLp : MemLp (fun x => Real.sqrt n *
+          (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)) 2 μ := by
+      have h_sqrt_n := M.sqrtDensity_memLp_two μ (θ₀ + (Real.sqrt n)⁻¹ • h) (hint_perturb _ h)
+      have h_sqrt_0 := M.sqrtDensity_memLp_two μ θ₀ hint
+      exact (h_sqrt_n.sub h_sqrt_0).const_mul (Real.sqrt n)
+    have hZ_sq_int := hZ_memLp.integrable_sq
+    have h_rhs_int : Integrable (fun x =>
+        2 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+              - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+        + 2 * ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ :=
+      (hX_sq_int.const_mul 2).add (hYsq_int.const_mul 2)
+    have h_int_mono :
+        ∫ x in s,
+            (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                            - M.sqrtDensity θ₀ x)) ^ 2 ∂μ
+          ≤ ∫ x in s,
+              (2 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                                    - M.sqrtDensity θ₀ x)
+                    - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+               + 2 * ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) ∂μ :=
+      MeasureTheory.setIntegral_mono_on
+        hZ_sq_int.integrableOn h_rhs_int.integrableOn (hset n)
+        (fun x _ => by
+          have := h_pt x; simpa using! this)
+    -- split the RHS integral and bound each piece by its full integral.
+    have h_split :
+        ∫ x in s,
+            (2 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                                  - M.sqrtDensity θ₀ x)
+                  - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+             + 2 * ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) ∂μ
+          = 2 * ∫ x in s,
+              (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                              - M.sqrtDensity θ₀ x)
+               - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+            + 2 * ∫ x in s,
+              ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ := by
+      rw [MeasureTheory.integral_add ((hX_sq_int.const_mul 2).integrableOn)
+            ((hYsq_int.const_mul 2).integrableOn),
+          MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
+    -- `∫_s Xₙ² ≤ Rₙ`.
+    have hX_le : ∫ x in s,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+           - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+        ≤ ∫ x,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+           - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ :=
+      MeasureTheory.setIntegral_le_integral hX_sq_int
+        (Filter.Eventually.of_forall (fun _ => sq_nonneg _))
+    -- `∫_s (½⟨h,ℓ⟩√p₀)² = ¼·∫_s G dμ`.
+    have hY_eq : ∫ x in s, ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+        = (1 / 4 : ℝ) * ∫ x in s, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ := by
+      rw [← MeasureTheory.integral_const_mul]
+      refine MeasureTheory.setIntegral_congr_fun (hset n) (fun x _ => ?_)
+      have hsq : (M.sqrtDensity θ₀ x) ^ 2 = M.density θ₀ x := M.sqrtDensity_sq θ₀ x
+      have : ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+          = (1 / 4 : ℝ) * (⟪h, ℓ x⟫ ^ 2 * (M.sqrtDensity θ₀ x) ^ 2) := by ring
+      rw [this, hsq]
+    rw [h_nm_eq]
+    calc
+      ∫ x in s,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                          - M.sqrtDensity θ₀ x)) ^ 2 ∂μ
+        ≤ 2 * ∫ x in s,
+              (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                              - M.sqrtDensity θ₀ x)
+               - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+            + 2 * ∫ x in s,
+              ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ := by
+              rw [← h_split]; exact h_int_mono
+      _ ≤ 2 * ∫ x,
+              (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x
+                              - M.sqrtDensity θ₀ x)
+               - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+            + (1 / 2 : ℝ) * ∫ x in s, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ := by
+              rw [hY_eq]
+              have hrw : (2 : ℝ) * ((1 / 4 : ℝ) * ∫ x in s, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+                  = (1 / 2 : ℝ) * ∫ x in s, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ := by ring
+              rw [hrw]
+              have := hX_le
+              linarith
+  -- `Bₙ → 0`: absolute continuity of the integral against `P₀`.
+  have hP₀_set_tendsto : Tendsto
+      (fun n : ℕ => P₀ {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}) atTop (𝓝 0) := by
+    -- first `mₙ → 0` from `n·mₙ ≤ 2Rₙ + ½·I` (bounded), `Bₙ ≤ I`.
+    have hI_nonneg : 0 ≤ ∫ x, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ :=
+      MeasureTheory.integral_nonneg
+        (fun x => mul_nonneg (sq_nonneg _) (M.density_nonneg _ x))
+    -- `n·mₙ ≤ 2Rₙ + ½·I`, eventually.
+    have h_nm_bound : ∀ᶠ (n : ℕ) in atTop,
+        (n : ℝ) * ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}, M.density θ₀ x ∂μ
+          ≤ 2 * ∫ x,
+              (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+               - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+            + (1 / 2 : ℝ) * ∫ x, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ := by
+      filter_upwards [h_key] with n hkey
+      have hG_le : ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0},
+            ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ
+          ≤ ∫ x, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ :=
+        MeasureTheory.setIntegral_le_integral hG_int
+          (Filter.Eventually.of_forall
+            (fun x => mul_nonneg (sq_nonneg _) (M.density_nonneg _ x)))
+      linarith [hkey, hG_le]
+    -- RHS of `h_nm_bound` is bounded (`Rₙ → 0`), so `n·mₙ` is `O(1)`; hence `mₙ → 0`.
+    have h_rhs_tendsto : Tendsto
+        (fun n : ℕ =>
+          2 * ∫ x,
+              (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+               - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+            + (1 / 2 : ℝ) * ∫ x, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+        atTop (𝓝 ((1 / 2 : ℝ) * ∫ x, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)) := by
+      have h2R := hR.const_mul (2 : ℝ)
+      simp only [mul_zero] at h2R
+      have := h2R.add (tendsto_const_nhds
+        (x := (1 / 2 : ℝ) * ∫ x, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ))
+      simpa using! this
+    -- bound `n·mₙ ≤ C` eventually, so `mₙ ≤ C/n → 0`.  `C := L + 1` (the RHS limit).
+    set C : ℝ := ((1 / 2 : ℝ) * ∫ x, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ) + 1 with hC_def
+    have h_rhs_le_C : ∀ᶠ (n : ℕ) in atTop,
+        2 * ∫ x,
+            (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+             - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+          + (1 / 2 : ℝ) * ∫ x, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ ≤ C := by
+      have := h_rhs_tendsto
+      rw [Metric.tendsto_atTop] at this
+      obtain ⟨N, hN⟩ := this 1 (by norm_num)
+      filter_upwards [Filter.eventually_ge_atTop N] with n hn
+      have := hN n hn
+      rw [Real.dist_eq, abs_lt] at this
+      rw [hC_def]; linarith [this.2]
+    -- Extract a uniform upper bound on `n·mₙ`.
+    have h_nm_le_C : ∀ᶠ (n : ℕ) in atTop,
+        (n : ℝ) * ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}, M.density θ₀ x ∂μ
+          ≤ C := by
+      filter_upwards [h_nm_bound, h_rhs_le_C] with n hn hnC
+      exact hn.trans hnC
+    -- `mₙ → 0`.
+    have hg0 : Tendsto (fun n : ℕ => max C 0 * (n : ℝ)⁻¹) atTop (𝓝 0) := by
+      have h_inv : Tendsto (fun n : ℕ => (n : ℝ)⁻¹) atTop (𝓝 0) :=
+        tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop
+      have := h_inv.const_mul (max C 0)
+      simpa using! this
+    have hm_tendsto : Tendsto
+        (fun n : ℕ =>
+          ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}, M.density θ₀ x ∂μ)
+        atTop (𝓝 0) := by
+      refine squeeze_zero' (Filter.Eventually.of_forall hm_nonneg) ?_ hg0
+      -- `mₙ ≤ (max C 0)/n`.
+      filter_upwards [h_nm_le_C, Filter.eventually_ge_atTop 1] with n hnC hn_pos
+      have hn_pos_real : (0 : ℝ) < (n : ℝ) := by exact_mod_cast (hn_pos : 1 ≤ n)
+      have hnm_le : (n : ℝ) * ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0},
+            M.density θ₀ x ∂μ ≤ max C 0 := hnC.trans (le_max_left _ _)
+      have hkey : (∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}, M.density θ₀ x ∂μ)
+          ≤ max C 0 / (n : ℝ) := by
+        rw [le_div_iff₀ hn_pos_real]; linarith [hnm_le]
+      rw [div_eq_mul_inv] at hkey
+      exact hkey
+    -- `P₀({p_n=0}) = ENNReal.ofReal mₙ → ENNReal.ofReal 0 = 0`.
+    have hcomp := (ENNReal.continuous_ofReal.tendsto 0).comp hm_tendsto
+    simp only [ENNReal.ofReal_zero] at hcomp
+    refine hcomp.congr (fun n => ?_)
+    rw [Function.comp_apply, hP₀_apply n]
+  -- AC: `∫_{p_n=0} ⟨h,ℓ⟩² dP₀ → 0`.
+  have hB_tendsto : Tendsto
+      (fun n : ℕ =>
+        ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0}, ⟪h, ℓ x⟫ ^ 2 ∂P₀)
+      atTop (𝓝 0) :=
+    hsq_int_P₀.tendsto_setIntegral_nhds_zero hP₀_set_tendsto
+  -- Hence `∫_{p_n=0} G dμ → 0` via the bridge.
+  have hBμ_tendsto : Tendsto
+      (fun n : ℕ =>
+        ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0},
+          ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+      atTop (𝓝 0) := by
+    refine hB_tendsto.congr (fun n => ?_)
+    exact hB_bridge n
+  -- Squeeze `0 ≤ n·mₙ ≤ 2Rₙ + ½·Bₙ → 0`.
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' (b := atTop)
+    (g := fun (_ : ℕ) => (0 : ℝ))
+    (h := fun (n : ℕ) =>
+      2 * ∫ x,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h) x - M.sqrtDensity θ₀ x)
+           - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+        + (1 / 2 : ℝ) * ∫ x in {x | M.density (θ₀ + (Real.sqrt n)⁻¹ • h) x = 0},
+            ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+    tendsto_const_nhds ?_
+    (Filter.Eventually.of_forall fun n =>
+      mul_nonneg (Nat.cast_nonneg n) (hm_nonneg n))
+    h_key
+  · -- Upper envelope → 0.
+    have h2R := hR.const_mul (2 : ℝ)
+    simp only [mul_zero] at h2R
+    have hhalfB := hBμ_tendsto.const_mul (1 / 2 : ℝ)
+    simp only [mul_zero] at hhalfB
+    have := h2R.add hhalfB
+    simpa using! this
 
 end AsymptoticStatistics
 
 end GLP0011B3Source26
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.MeanVarConvergence`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/MeanVarConvergence.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source27
 
 
+/-!
+Convergence in probability from mean + variance control.
+
+Standalone probability lemma used in Step 4 of Theorem 7.2: if `E[Y_n] → c` and
+`Var[Y_n] → 0`, then `Y_n → c` in probability.
+
+Theorem-agnostic; lives outside any chapter directory.
+-/
 
 open MeasureTheory ProbabilityTheory Filter Topology
 open scoped ENNReal
 
 namespace AsymptoticStatistics
 
+/-- If `E[Y_n] → c` and `Var[Y_n] → 0`, then `Y_n → c` in probability. -/
+theorem tendstoInMeasure_of_tendsto_mean_of_tendsto_variance
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} {P : Measure Ω} [IsFiniteMeasure P]
+    {Y : ℕ → Ω → ℝ} {c : ℝ}
+    (hmem : ∀ n, MemLp (Y n) 2 P)
+    (h_mean : Tendsto (fun n => ∫ ω, Y n ω ∂P) atTop (𝓝 c))
+    (h_var : Tendsto (fun n => variance (Y n) P) atTop (𝓝 0)) :
+    TendstoInMeasure P Y atTop (fun _ => c) := by
+  rw [tendstoInMeasure_iff_norm]
+  intro ε hε
+  set δ : ℝ := ε / 2 with hδdef
+  have hδ : 0 < δ := by positivity
+  have hε_eq : ε = δ + δ := by simp [hδdef]
+  -- Eventually the bias `|E[Y n] − c|` is strictly below `δ`.
+  have h_bias : ∀ᶠ n in atTop, |(∫ ω, Y n ω ∂P) - c| < δ := by
+    obtain ⟨N, hN⟩ := (Metric.tendsto_atTop.mp h_mean) δ hδ
+    refine eventually_atTop.mpr ⟨N, fun n hn => ?_⟩
+    have := hN n hn
+    rwa [Real.dist_eq] at this
+  -- Pointwise: `|Y n ω − c| ≥ ε ⇒ |Y n ω − E[Y n]| ≥ δ` (whenever bias `< δ`).
+  have h_subset :
+      ∀ᶠ n in atTop,
+        P {ω | ε ≤ ‖Y n ω - c‖} ≤ P {ω | δ ≤ |Y n ω - ∫ a, Y n a ∂P|} := by
+    filter_upwards [h_bias] with n hbias
+    refine measure_mono ?_
+    intro ω hω
+    rw [Set.mem_ofPred_eq, Real.norm_eq_abs] at hω
+    rw [Set.mem_ofPred_eq]
+    have hsplit : Y n ω - c = (Y n ω - ∫ a, Y n a ∂P) + ((∫ a, Y n a ∂P) - c) := by ring
+    have htri : |Y n ω - c| ≤ |Y n ω - ∫ a, Y n a ∂P| + |(∫ a, Y n a ∂P) - c| := by
+      rw [hsplit]; exact abs_add_le _ _
+    linarith
+  -- Chebyshev controls the inner deviation set by `Var[Y n] / δ²`.
+  have h_cheby :
+      ∀ᶠ n in atTop,
+        P {ω | ε ≤ ‖Y n ω - c‖} ≤ ENNReal.ofReal (variance (Y n) P / δ ^ 2) := by
+    filter_upwards [h_subset] with n hn
+    exact hn.trans (meas_ge_le_variance_div_sq (hmem n) hδ)
+  -- The Chebyshev bound tends to `0`.
+  have h_bound :
+      Tendsto (fun n => ENNReal.ofReal (variance (Y n) P / δ ^ 2)) atTop (𝓝 0) := by
+    have h1 : Tendsto (fun n => variance (Y n) P / δ ^ 2) atTop (𝓝 (0 / δ ^ 2)) :=
+      h_var.div_const _
+    rw [zero_div] at h1
+    have h2 := (ENNReal.continuous_ofReal.tendsto 0).comp h1
+    simpa using! h2
+  -- Squeeze.
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_bound
+    (Eventually.of_forall (fun _ => zero_le)) h_cheby
+
+/-- A constant sequence trivially converges in probability to its value. -/
+lemma tendstoInMeasure_const
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} {P : Measure Ω} (c : ℝ) :
+    TendstoInMeasure P (fun _ : ℕ => fun _ : Ω => c) atTop (fun _ : Ω => c) := by
+  rw [tendstoInMeasure_iff_norm]
+  intro ε hε
+  have h_empty : {ω : Ω | ε ≤ ‖(c : ℝ) - c‖} = ∅ := by
+    ext ω
+    simp [show ¬ (ε ≤ 0) from not_le.mpr hε]
+  simp_rw [h_empty, measure_empty]
+  exact tendsto_const_nhds
+
+/-- Scaling a real-valued `TendstoInMeasure` sequence by a constant preserves the limit. -/
+lemma tendstoInMeasure_const_mul
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} {P : Measure Ω}
+    {Y : ℕ → Ω → ℝ} {a : ℝ} (c : ℝ)
+    (hY : TendstoInMeasure P Y atTop (fun _ => a)) :
+    TendstoInMeasure P (fun n ω => c * Y n ω) atTop (fun _ => c * a) := by
+  rcases eq_or_ne c 0 with rfl | hc
+  · simp only [zero_mul]
+    exact tendstoInMeasure_const 0
+  rw [tendstoInMeasure_iff_norm]
+  intro ε hε
+  have h_abs_c_pos : 0 < |c| := abs_pos.mpr hc
+  have h_ratio_pos : 0 < ε / |c| := div_pos hε h_abs_c_pos
+  have h_bd := tendstoInMeasure_iff_norm.mp hY (ε / |c|) h_ratio_pos
+  have h_eq : ∀ n : ℕ,
+      {ω | ε ≤ ‖c * Y n ω - c * a‖}
+        = {ω | ε / |c| ≤ ‖Y n ω - a‖} := by
+    intro n
+    ext ω
+    simp only [Set.mem_ofPred_eq, Real.norm_eq_abs]
+    rw [show c * Y n ω - c * a = c * (Y n ω - a) from by ring, abs_mul]
+    refine ⟨fun h => ?_, fun h => ?_⟩
+    · rw [div_le_iff₀ h_abs_c_pos]; linarith
+    · calc ε = (ε / |c|) * |c| := by rw [div_mul_cancel₀ _ (ne_of_gt h_abs_c_pos)]
+        _ ≤ |Y n ω - a| * |c| := mul_le_mul_of_nonneg_right h h_abs_c_pos.le
+        _ = |c| * |Y n ω - a| := by ring
+  simp_rw [h_eq]
+  exact h_bd
+
+/-- Convergence in probability of real-valued sequences is preserved under addition. -/
+lemma tendstoInMeasure_add
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} {P : Measure Ω}
+    {Y Z : ℕ → Ω → ℝ} {a b : ℝ}
+    (hY : TendstoInMeasure P Y atTop (fun _ => a))
+    (hZ : TendstoInMeasure P Z atTop (fun _ => b)) :
+    TendstoInMeasure P (fun n ω => Y n ω + Z n ω) atTop (fun _ => a + b) := by
+  rw [tendstoInMeasure_iff_norm]
+  intro ε hε
+  set δ : ℝ := ε / 2 with hδ_def
+  have hδ_pos : 0 < δ := by positivity
+  have hε_le : ε ≤ δ + δ := by rw [hδ_def]; linarith
+  have hY_bd := tendstoInMeasure_iff_norm.mp hY δ hδ_pos
+  have hZ_bd := tendstoInMeasure_iff_norm.mp hZ δ hδ_pos
+  have h_sub : ∀ n : ℕ,
+      P {ω | ε ≤ ‖(Y n ω + Z n ω) - (a + b)‖}
+        ≤ P {ω | δ ≤ ‖Y n ω - a‖} + P {ω | δ ≤ ‖Z n ω - b‖} := by
+    intro n
+    have h_inclusion :
+        {ω | ε ≤ ‖(Y n ω + Z n ω) - (a + b)‖}
+          ⊆ {ω | δ ≤ ‖Y n ω - a‖} ∪ {ω | δ ≤ ‖Z n ω - b‖} := by
+      intro ω hω
+      rw [Set.mem_ofPred_eq, Real.norm_eq_abs] at hω
+      by_contra h
+      rw [Set.mem_union, not_or] at h
+      obtain ⟨hY', hZ'⟩ := h
+      rw [Set.mem_ofPred_eq, Real.norm_eq_abs, not_le] at hY'
+      rw [Set.mem_ofPred_eq, Real.norm_eq_abs, not_le] at hZ'
+      have hdecomp : (Y n ω + Z n ω) - (a + b) = (Y n ω - a) + (Z n ω - b) := by ring
+      have htri : |(Y n ω + Z n ω) - (a + b)| ≤ |Y n ω - a| + |Z n ω - b| := by
+        rw [hdecomp]; exact abs_add_le _ _
+      linarith
+    exact (measure_mono h_inclusion).trans (measure_union_le _ _)
+  have h_sum_tendsto : Filter.Tendsto
+      (fun n => P {ω | δ ≤ ‖Y n ω - a‖} + P {ω | δ ≤ ‖Z n ω - b‖})
+      Filter.atTop (𝓝 0) := by
+    have := hY_bd.add hZ_bd
+    simpa using this
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    tendsto_const_nhds h_sum_tendsto
+    (Filter.Eventually.of_forall fun _ => zero_le)
+    (Filter.Eventually.of_forall h_sub)
 
 end AsymptoticStatistics
 
 end GLP0011B3Source27
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.IntegrableTail`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/IntegrableTail.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source28
 
 
+/-!
+Asymptotic Statistics — `L¹`-tail integrals vanish.
+
+Theorem-agnostic DCT consequence: if `h ∈ L¹(μ)`, `f : α → ℝ` is measurable, and
+`t n → ∞`, then the tail integral of `h` on `{y | t n < f y}` tends to `0`.
+
+Used in Theorem 7.2 Step 6b (bounding `∫ g² · 1_{g² > nε²/2} · p dμ → 0`) and
+expected to resurface in Step 6a (controlling `g²`-tails under a truncation).
+
+## Contents
+
+* `tendsto_setIntegral_tail_of_integrable` — the main lemma.
+-/
 
 open MeasureTheory Filter Topology
 
@@ -6426,6 +12046,54 @@ namespace ForMathlib
 
 variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
+/-- **L¹ tail integrals vanish along a diverging threshold.**
+
+If `h : α → ℝ` is integrable, `f : α → ℝ` is measurable, and `t : ℕ → ℝ` satisfies
+`t n → ∞`, then `∫_{y : f y > t n} h(x) dμ → 0` as `n → ∞`.
+
+**Proof.** DCT on `F n x := {y | t n < f y}.indicator h x`:
+* Dominator: `|h|`, integrable by `Integrable.abs`.
+* Pointwise: for each `x`, `f x` is a finite real, so `t n > f x` eventually,
+  which forces `x ∉ {y | t n < f y}` and hence the indicator vanishes eventually. -/
+lemma tendsto_setIntegral_tail_of_integrable
+    {h : α → ℝ} (hh : Integrable h μ)
+    {f : α → ℝ} (hf : Measurable f)
+    {t : ℕ → ℝ} (ht : Tendsto t atTop atTop) :
+    Tendsto (fun n : ℕ => ∫ x in {y | t n < f y}, h x ∂μ) atTop (𝓝 0) := by
+  have hS_meas : ∀ n : ℕ, MeasurableSet {y | t n < f y} :=
+    fun n => measurableSet_lt measurable_const hf
+  -- Convert set integrals to indicator integrals.
+  suffices h_ind : Tendsto
+      (fun n : ℕ => ∫ x, {y | t n < f y}.indicator h x ∂μ) atTop (𝓝 0) by
+    refine h_ind.congr (fun n => ?_)
+    exact MeasureTheory.integral_indicator (hS_meas n)
+  -- DCT ingredients.
+  have h_meas : ∀ n : ℕ, AEStronglyMeasurable
+      (fun x => {y | t n < f y}.indicator h x) μ :=
+    fun n => hh.aestronglyMeasurable.indicator (hS_meas n)
+  have h_bound : ∀ n : ℕ, ∀ᵐ x ∂μ,
+      ‖{y | t n < f y}.indicator h x‖ ≤ |h x| := by
+    intro n
+    refine Filter.Eventually.of_forall fun x => ?_
+    by_cases hx : x ∈ {y | t n < f y}
+    · rw [Set.indicator_of_mem hx, Real.norm_eq_abs]
+    · rw [Set.indicator_of_notMem hx, norm_zero]; exact abs_nonneg _
+  have h_ptwise : ∀ᵐ x ∂μ,
+      Tendsto (fun n : ℕ => {y | t n < f y}.indicator h x) atTop (𝓝 0) := by
+    refine Filter.Eventually.of_forall fun x => ?_
+    refine Filter.Tendsto.congr' ?_ tendsto_const_nhds
+    filter_upwards [ht.eventually_gt_atTop (f x)] with n hn
+    symm
+    rw [Set.indicator_of_notMem]
+    simp only [Set.mem_ofPred_eq, not_lt]
+    exact hn.le
+  have h_DCT :=
+    MeasureTheory.tendsto_integral_of_dominated_convergence
+      (F := fun n : ℕ => fun x => {y | t n < f y}.indicator h x)
+      (f := fun _ => (0 : ℝ))
+      (bound := fun x => |h x|)
+      h_meas hh.abs h_bound h_ptwise
+  simpa using h_DCT
 
 end ForMathlib
 end AsymptoticStatistics
@@ -6433,11 +12101,24 @@ end AsymptoticStatistics
 end GLP0011B3Source28
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.Markov`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/Markov.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source29
 
 
+/-!
+Asymptotic Statistics — Bochner-integral Markov utilities.
+
+Pointwise and set-integral lemmas of Markov / Chebyshev flavour, stated for Bochner
+integrals of real-valued functions. All theorem-agnostic.
+
+## Contents
+
+* `setIntegral_le_const_mul_of_threshold` — if `c < f` on a measurable set `S`
+  and `p ≥ 0`, then `∫_S p dμ ≤ c⁻¹ · ∫_S f · p dμ`.
+* `setIntegral_union_le_add_of_nonneg` — for `f ≥ 0`,
+  `∫_{A ∪ B} f dμ ≤ ∫_A f dμ + ∫_B f dμ` (even for overlapping `A, B`).
+-/
 
 open MeasureTheory Filter Topology
 
@@ -6446,6 +12127,68 @@ namespace ForMathlib
 
 variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
+/-- **Markov inequality for a set integral with a nonneg weight.**
+
+On a measurable set `S` where `c < f`, if the weight `p` is nonnegative then
+`∫_S p dμ ≤ c⁻¹ · ∫_S f · p dμ`.
+
+Proof. On `S` the pointwise bound `p ≤ c⁻¹ · f · p` follows from `1 < c⁻¹ · f`
+(since `c > 0` and `c < f`) and `p ≥ 0`. Monotonicity of `setIntegral` then
+gives the inequality; pull `c⁻¹` out via `integral_const_mul`. -/
+lemma setIntegral_le_const_mul_of_threshold
+    {f p : α → ℝ} {S : Set α} {c : ℝ}
+    (hc_pos : 0 < c) (hS_meas : MeasurableSet S)
+    (hS_bound : ∀ x ∈ S, c < f x)
+    (hp_nn : ∀ x ∈ S, 0 ≤ p x)
+    (hp_int : IntegrableOn p S μ)
+    (hfp_int : IntegrableOn (fun x => f x * p x) S μ) :
+    ∫ x in S, p x ∂μ ≤ c⁻¹ * ∫ x in S, f x * p x ∂μ := by
+  have h_pt : ∀ x ∈ S, p x ≤ c⁻¹ * (f x * p x) := by
+    intro x hxS
+    have hf : c < f x := hS_bound x hxS
+    have hp : 0 ≤ p x := hp_nn x hxS
+    have h_factor : 1 ≤ c⁻¹ * f x := by
+      rw [← div_eq_inv_mul, le_div_iff₀ hc_pos, one_mul]
+      exact hf.le
+    calc p x = 1 * p x := (one_mul _).symm
+      _ ≤ (c⁻¹ * f x) * p x := mul_le_mul_of_nonneg_right h_factor hp
+      _ = c⁻¹ * (f x * p x) := by ring
+  have h_step1 :
+      ∫ x in S, p x ∂μ ≤ ∫ x in S, c⁻¹ * (f x * p x) ∂μ :=
+    MeasureTheory.setIntegral_mono_on hp_int (hfp_int.const_mul _) hS_meas h_pt
+  simpa [MeasureTheory.integral_const_mul] using h_step1
+
+/-- **Set-integral subadditivity on a possibly-overlapping union** (nonneg weight).
+
+For `f ≥ 0`, `∫_{A ∪ B} f dμ ≤ ∫_A f dμ + ∫_B f dμ`.
+
+Proof. Split `A ∪ B = A ⊔ (B \ A)` (disjoint) and use `setIntegral_union` for the
+equality `∫_{A ∪ B} = ∫_A + ∫_{B\A}`. Then `B \ A ⊆ B` and `f ≥ 0` give
+`∫_{B\A} f ≤ ∫_B f` by `setIntegral_mono_set`. -/
+lemma setIntegral_union_le_add_of_nonneg
+    {f : α → ℝ} {A B : Set α}
+    (hA_meas : MeasurableSet A) (hB_meas : MeasurableSet B)
+    (hf_nn : ∀ x, 0 ≤ f x)
+    (hf_A : IntegrableOn f A μ) (hf_B : IntegrableOn f B μ) :
+    ∫ x in A ∪ B, f x ∂μ ≤ ∫ x in A, f x ∂μ + ∫ x in B, f x ∂μ := by
+  have hBdiffA_meas : MeasurableSet (B \ A) := hB_meas.diff hA_meas
+  have hBdiffA_sub : B \ A ⊆ B := Set.sdiff_subset
+  have h_union_eq : A ∪ B = A ∪ (B \ A) := by
+    ext x
+    simp only [Set.mem_union, Set.mem_sdiff]
+    tauto
+  have h_disj : Disjoint A (B \ A) := by
+    rw [Set.disjoint_left]
+    intro x hxA ⟨_, hxnA⟩; exact hxnA hxA
+  have hf_BdiffA : IntegrableOn f (B \ A) μ :=
+    hf_B.mono_set hBdiffA_sub
+  have h_split : ∫ x in A ∪ B, f x ∂μ = ∫ x in A, f x ∂μ + ∫ x in B \ A, f x ∂μ := by
+    rw [h_union_eq, MeasureTheory.setIntegral_union h_disj hBdiffA_meas hf_A hf_BdiffA]
+  have h_mono : ∫ x in B \ A, f x ∂μ ≤ ∫ x in B, f x ∂μ := by
+    refine MeasureTheory.setIntegral_mono_set hf_B ?_ ?_
+    · exact Filter.Eventually.of_forall (fun x => hf_nn x)
+    · exact Filter.Eventually.of_forall hBdiffA_sub
+  linarith
 
 end ForMathlib
 end AsymptoticStatistics
@@ -6453,11 +12196,31 @@ end AsymptoticStatistics
 end GLP0011B3Source29
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.LocalAsymptoticNormality.LANExpansion`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/LocalAsymptoticNormality/LANExpansion.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source30
 
 
+/-!
+# Theorem 7.2 — Local Asymptotic Normality (LAN) expansion
+
+Reference: van der Vaart, *Asymptotic Statistics* (Cambridge, 1998), §7.2.
+
+Let `(P_θ : θ ∈ Θ)` be a parametric family on `(𝓧, μ)` differentiable in
+quadratic mean (DQM) at `θ` with score `ℓ_θ`. Then for any `h_n → h` and
+i.i.d. `X_i ∼ P_θ`:
+
+  log ∏_i (p_{θ + h_n/√n}(X_i) / p_θ(X_i))
+    = (1/√n) ∑_i ⟨h, ℓ_θ(X_i)⟩  -  ½ ⟨h, I_θ h⟩  +  o_P(1),
+
+where `I_θ = P_θ ℓ_θ ℓ_θᵀ` is the Fisher information.
+
+The proof goes through the L²(μ)-convergence
+`√n (√p_{θ + h_n/√n} - √p_θ) → ½ ⟨h, ℓ_θ⟩ √p_θ` (the defining condition of DQM),
+a Taylor expansion of `2 log(1 + W/2) = W - W²/4 + o_P(W²)` applied to
+`W_i := 2 (√(p_{θ + h_n/√n}/p_θ)(X_i) - 1)`, and a mean-variance LLN/CLT
+pair for the i.i.d. sample `(W_i)`.
+-/
 
 set_option linter.style.longFile 2500
 
@@ -6471,36 +12234,2430 @@ variable {𝓧 : Type*} [MeasurableSpace 𝓧]
 variable {Θ : Type*} [NormedAddCommGroup Θ] [InnerProductSpace ℝ Θ]
   [MeasurableSpace Θ] [OpensMeasurableSpace Θ] [SecondCountableTopology Θ]
 
+/-! ## Setup
 
+Fix a model `M`, a base parameter `θ₀`, a dominating measure `μ`, a score `ℓ`,
+and a convergent sequence `h_n → h ∈ Θ`. -/
 
+/-! ## Auxiliary Hellinger-type statistic
 
+Central to Steps 2–6 of the LAN expansion. Writing `p_n := M.density (θ₀ + h_n/√n)` and
+`p := M.density θ₀`,
+`auxStatistic M θ₀ h_n n x = 2·(√(p_n(x)/p(x)) − 1)`.
 
+At `n = 0` the scaling factor `(√0)⁻¹ = 0` collapses the perturbation, so `W_0` is
+identically zero on `{p > 0}` — irrelevant for `atTop` limits. -/
 
+/-- The Hellinger-type statistic `W_n(x) = 2 (√(p_n(x) / p(x)) − 1)` of the LAN expansion,
+where `p_n = M.density (θ₀ + (√n)⁻¹ • h_n n)` and `p = M.density θ₀` (vdV §7.2). -/
+noncomputable def auxStatistic
+    (M : ParametricFamily 𝓧 Θ) (θ₀ : Θ) (h_n : ℕ → Θ) (n : ℕ) (x : 𝓧) : ℝ :=
+  2 * (Real.sqrt (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x / M.density θ₀ x) - 1)
 
+omit [MeasurableSpace Θ] [OpensMeasurableSpace Θ] [SecondCountableTopology Θ] in
+lemma auxStatistic_measurable
+    (M : ParametricFamily 𝓧 Θ) (θ₀ : Θ) (h_n : ℕ → Θ) (n : ℕ) :
+    Measurable (auxStatistic M θ₀ h_n n) := by
+  unfold auxStatistic
+  exact (((M.density_meas _).div (M.density_meas _)).sqrt.sub_const _).const_mul _
 
+/-! ## Step 1 — Score has zero mean
 
+Assuming DQM at `θ₀`, the score satisfies `P_{θ₀} ℓ = 0`, i.e. for every direction `u ∈ Θ`,
+`∫ ⟨u, ℓ x⟩ p_{θ₀}(x) dμ(x) = 0`.
 
+Proof idea (informal): DQM gives `√n(√p_{θ₀+h/√n} − √p_{θ₀}) → ½ ⟨h, ℓ⟩ √p_{θ₀}` in L²(μ),
+so by inner-product continuity `√n ∫ (√p_n − √p) √p dμ → ½ ⟨h, P_{θ₀} ℓ⟩`. The LHS is
+identically `0` (both densities integrate to 1), hence `P_{θ₀} ℓ = 0`. -/
+lemma score_mean_zero
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (hℓ : Measurable ℓ)
+    (h_one : ∫ x, M.density θ₀ x ∂μ = 1)
+    (hint : Integrable (M.density θ₀) μ)
+    (h_one_perturb : ∀ t : ℝ, ∀ u : Θ, ∫ x, M.density (θ₀ + t • u) x ∂μ = 1)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (u : Θ) :
+    ∫ x, ⟪u, ℓ x⟫ * M.density θ₀ x ∂μ = 0 :=
+  -- DQM supplies Fisher integrability and the residual `L²` bound.
+  Score.score_mean_zero M μ θ₀ ℓ hℓ h_one hint h_one_perturb hint_perturb hDQM
+    (dqm_fisher_integrable M μ θ₀ ℓ hint hDQM u (fun t => hint_perturb t u))
+    (dqm_residual_eventually_memLp M μ θ₀ ℓ hDQM u)
 
+/-! ## Step 2 — `Σᵢ E[W_{ni}]` limit
 
+Define `W_{n,i}(x) = 2(√(p_{θ₀+h_n/√n}(x) / p_{θ₀}(x)) − 1)`.
+Then `n · ∫ W_n · p dμ → −¼ ⟨h, I_θ₀ h⟩`.
 
+Proof: the algebraic identity `∫W_n · p dμ = −∫(√p_n − √p)² dμ` (from
+`(√p_n − √p)² = p_n + p − 2√(p_n p)` plus `∫p_n = ∫p = 1`), then
+`n · ∫(√p_n − √p)² dμ = ‖√n(√p_n − √p)‖²_{L²} → ‖½⟨h, ℓ⟩√p‖²_{L²} = ¼ I(h, h)`
+via `dqm_sqrt_density_l2_convergence` + `tendsto_integral_sq_of_tendsto_integral_diff_sq`. -/
+omit [OpensMeasurableSpace Θ] [SecondCountableTopology Θ] in
+lemma sum_expect_W_tendsto
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (_hℓ : Measurable ℓ)
+    (h_one : ∫ x, M.density θ₀ x ∂μ = 1)
+    (hint : Integrable (M.density θ₀) μ)
+    (h_one_perturb : ∀ t : ℝ, ∀ u : Θ, ∫ x, M.density (θ₀ + t • u) x ∂μ = 1)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h_fisher_cont :
+      Filter.Tendsto (fun v : Θ => ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+        (𝓝 0) (𝓝 0))
+    (h : Θ) (h_n : ℕ → Θ) (hconv : Filter.Tendsto h_n Filter.atTop (𝓝 h)) :
+    Filter.Tendsto
+      (fun n : ℕ =>
+        n * ∫ x, 2 *
+            (Real.sqrt ((M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) / M.density θ₀ x) - 1)
+            * M.density θ₀ x ∂μ)
+      Filter.atTop
+      (𝓝 (- (1/4 : ℝ) * fisherInformation M μ θ₀ ℓ h h)) := by
+  -- Algebraic identity `∫W_n · p dμ = -∫(√p_n - √p)² dμ`.
+  have h_alg : ∀ n : ℕ,
+      ∫ x, 2 * (Real.sqrt ((M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) /
+                            M.density θ₀ x) - 1) * M.density θ₀ x ∂μ
+      = -∫ x, (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                - M.sqrtDensity θ₀ x) ^ 2 ∂μ := by
+    intro n
+    -- Pointwise: `2(√(p_n/p) - 1)·p = -(√p_n - √p)² + p_n - p`.
+    have h_pt : ∀ x,
+        2 * (Real.sqrt ((M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) /
+                          M.density θ₀ x) - 1) * M.density θ₀ x
+        = -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+          + M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.density θ₀ x := by
+      intro x
+      set pn := M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x with hpn_def
+      set p := M.density θ₀ x with hp_def
+      have hpn_nn : 0 ≤ pn := M.density_nonneg _ _
+      have hp_nn : 0 ≤ p := M.density_nonneg _ _
+      -- `(√pn - √p)² = pn + p - 2 √pn · √p = pn + p - 2 √(pn·p)`.
+      have h_sqDensity_pn :
+          (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) ^ 2 = pn :=
+        M.sqrtDensity_sq _ x
+      have h_sqDensity_p :
+          (M.sqrtDensity θ₀ x) ^ 2 = p := M.sqrtDensity_sq _ x
+      have h_sqrt_pn_nn :
+          0 ≤ M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x :=
+        M.sqrtDensity_nonneg _ x
+      have h_sqrt_p_nn : 0 ≤ M.sqrtDensity θ₀ x := M.sqrtDensity_nonneg _ x
+      have h_sqrt_mul : M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x *
+                          M.sqrtDensity θ₀ x
+                        = Real.sqrt (pn * p) := by
+        rw [show (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) = Real.sqrt pn
+              from rfl,
+            show M.sqrtDensity θ₀ x = Real.sqrt p from rfl,
+            ← Real.sqrt_mul hpn_nn]
+      have h_sqrt_div_mul :
+          Real.sqrt (pn / p) * p = Real.sqrt (pn * p) := by
+        by_cases hp_zero : p = 0
+        · rw [hp_zero]; simp
+        · have hp_pos : 0 < p := lt_of_le_of_ne hp_nn (Ne.symm hp_zero)
+          have hp_ne : p ≠ 0 := hp_zero
+          -- √(pn/p) * p = √(pn/p) * √p * √p = √((pn/p)*p) * √p = √pn * √p = √(pn*p)
+          have step1 : Real.sqrt (pn / p) * p
+              = Real.sqrt (pn / p) * (Real.sqrt p * Real.sqrt p) := by
+            rw [Real.mul_self_sqrt hp_nn]
+          have step2 : Real.sqrt (pn / p) * (Real.sqrt p * Real.sqrt p)
+              = (Real.sqrt (pn / p) * Real.sqrt p) * Real.sqrt p := by ring
+          have step3 : Real.sqrt (pn / p) * Real.sqrt p =
+              Real.sqrt ((pn / p) * p) := by
+            rw [← Real.sqrt_mul (div_nonneg hpn_nn hp_nn)]
+          have step4 : (pn / p) * p = pn := by
+            field_simp
+          rw [step1, step2, step3, step4, ← Real.sqrt_mul hpn_nn]
+      -- Combine.
+      have h_sq_expand :
+          (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+          = pn + p - 2 * Real.sqrt (pn * p) := by
+        have : (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                  - M.sqrtDensity θ₀ x) ^ 2
+             = (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) ^ 2
+                + (M.sqrtDensity θ₀ x) ^ 2
+                - 2 * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        * M.sqrtDensity θ₀ x) := by ring
+        rw [this, h_sqDensity_pn, h_sqDensity_p, h_sqrt_mul]
+      -- The left side simplifies to `2√(pn·p) - 2p`.
+      have h_LHS : 2 * (Real.sqrt (pn / p) - 1) * p
+                 = 2 * Real.sqrt (pn * p) - 2 * p := by
+        have : 2 * (Real.sqrt (pn / p) - 1) * p
+             = 2 * (Real.sqrt (pn / p) * p) - 2 * p := by ring
+        rw [this, h_sqrt_div_mul]
+      rw [h_LHS, h_sq_expand]; ring
+    -- Integrate the pointwise identity.
+    have h_pn_int : Integrable (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n)) μ :=
+      hint_perturb ((Real.sqrt n)⁻¹) (h_n n)
+    have h_sq_int : Integrable (fun x =>
+        (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2) μ := by
+      -- The square of the difference is ≤ 2·p_n + 2·p (integrable).
+      -- More directly: the pointwise identity gives it equal to p_n + p - 2√(pn·p),
+      -- and √(pn·p) ≤ (pn + p)/2, so the whole thing is between 0 and 2(pn + p).
+      -- Quickest: use `MemLp.integrable_sq` after showing the difference ∈ L².
+      have h_sqrt_pn_memLp : MemLp (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n)) 2 μ :=
+        M.sqrtDensity_memLp_two μ _ h_pn_int
+      have h_sqrt_p_memLp : MemLp (M.sqrtDensity θ₀) 2 μ :=
+        M.sqrtDensity_memLp_two μ _ hint
+      exact (h_sqrt_pn_memLp.sub h_sqrt_p_memLp).integrable_sq
+    have h_sum_int : Integrable (fun x =>
+        M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.density θ₀ x) μ :=
+      h_pn_int.sub hint
+    have h_rhs_int : Integrable (fun x =>
+        -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+          + M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.density θ₀ x) μ := by
+      have h_part1 : Integrable (fun x =>
+          -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2) μ :=
+        h_sq_int.neg
+      have : (fun x =>
+          -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+            + M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.density θ₀ x)
+           = (fun x =>
+          -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+            + (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.density θ₀ x)) := by
+        funext x; ring
+      rw [this]
+      exact h_part1.add h_sum_int
+    calc ∫ x, 2 * (Real.sqrt ((M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) /
+                          M.density θ₀ x) - 1) * M.density θ₀ x ∂μ
+        = ∫ x, (-(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                    - M.sqrtDensity θ₀ x) ^ 2
+                + M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.density θ₀ x) ∂μ := by
+          refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall ?_)
+          exact h_pt
+      _ = (∫ x, -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                    - M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+          + ∫ x, (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.density θ₀ x) ∂μ := by
+          have h_part1 : Integrable (fun x =>
+              -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2) μ :=
+            h_sq_int.neg
+          rw [show (fun x =>
+              -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+                + M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.density θ₀ x)
+              = (fun x =>
+              -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+                + (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.density θ₀ x)) from
+            by funext x; ring]
+          exact MeasureTheory.integral_add h_part1 h_sum_int
+      _ = -∫ x, (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                    - M.sqrtDensity θ₀ x) ^ 2 ∂μ + 0 := by
+          congr 1
+          · exact MeasureTheory.integral_neg _
+          · rw [MeasureTheory.integral_sub h_pn_int hint,
+                h_one_perturb ((Real.sqrt n)⁻¹) (h_n n), h_one]
+            ring
+      _ = -∫ x, (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                    - M.sqrtDensity θ₀ x) ^ 2 ∂μ := by ring
+  -- Apply the L² norm-square limit.
+  -- f_n := √n·(√p_n - √p), g := (1/2)⟨h, ℓ⟩√p. From dqm_sqrt_density_l2_convergence:
+  -- ∫(f_n - g)² → 0. Hence ∫f_n² → ∫g² = (1/4)·I(h, h).
+  have h_g_memLp : MemLp (fun x => (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+    have h_score_memLp :
+        MemLp (fun x => ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ :=
+      dqm_score_memLp_two M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+    have h_eq : (fun x => (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x)
+              = (fun x => (1 / 2 : ℝ) * (⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+      funext x; ring
+    rw [h_eq]
+    exact h_score_memLp.const_mul _
+  have h_fn_diff_memLp : ∀ n : ℕ,
+      MemLp (fun x =>
+        Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x)
+        - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+    intro n
+    -- √n·(√p_n - √p) ∈ L² and (1/2)⟨h, ℓ⟩√p ∈ L², so difference ∈ L².
+    have h_sqrt_pn_memLp :
+        MemLp (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n)) 2 μ :=
+      M.sqrtDensity_memLp_two μ _ (hint_perturb _ _)
+    have h_sqrt_p_memLp : MemLp (M.sqrtDensity θ₀) 2 μ :=
+      M.sqrtDensity_memLp_two μ _ hint
+    have h_diff : MemLp (fun x =>
+        M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) 2 μ :=
+      h_sqrt_pn_memLp.sub h_sqrt_p_memLp
+    have h_scaled : MemLp (fun x =>
+        Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x)) 2 μ :=
+      h_diff.const_mul (Real.sqrt n)
+    exact h_scaled.sub h_g_memLp
+  have h_l2_conv :=
+    dqm_sqrt_density_l2_convergence M μ θ₀ ℓ hint hint_perturb hDQM
+      h_fisher_cont hconv
+  have h_tendsto_sq :=
+    L2Utils.tendsto_integral_sq_of_tendsto_integral_diff_sq μ
+      (f := fun n x =>
+        Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x))
+      (g := fun x => (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x)
+      h_g_memLp (Filter.Eventually.of_forall h_fn_diff_memLp) h_l2_conv
+  -- Compute `∫g² = (1/4) · I(h, h)`.
+  have h_g_sq_eq :
+      ∫ x, ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ
+        = (1 / 4 : ℝ) * fisherInformation M μ θ₀ ℓ h h := by
+    have hpt : ∀ x,
+        ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+          = (1 / 4 : ℝ) * (⟪h, ℓ x⟫ * ⟪h, ℓ x⟫ * M.density θ₀ x) := by
+      intro x
+      have hsq : (M.sqrtDensity θ₀ x) ^ 2 = M.density θ₀ x :=
+        M.sqrtDensity_sq θ₀ x
+      have : ((1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2
+            = (1 / 4 : ℝ) * (⟪h, ℓ x⟫ * ⟪h, ℓ x⟫ * (M.sqrtDensity θ₀ x) ^ 2) := by ring
+      rw [this, hsq]
+    simp_rw [hpt]
+    rw [MeasureTheory.integral_const_mul]
+    rfl
+  -- Link the quadratic form ∫(√n(√p_n - √p))² to n · ∫(√p_n - √p)².
+  have h_sq_scale : ∀ n : ℕ,
+      ∫ x, (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                            - M.sqrtDensity θ₀ x)) ^ 2 ∂μ
+      = (n : ℝ) * ∫ x, (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                            - M.sqrtDensity θ₀ x) ^ 2 ∂μ := by
+    intro n
+    have h_pt : ∀ x,
+        (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                          - M.sqrtDensity θ₀ x)) ^ 2
+        = (n : ℝ) * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x) ^ 2 := by
+      intro x
+      have hsqrt_sq : (Real.sqrt n) ^ 2 = (n : ℝ) :=
+        Real.sq_sqrt (Nat.cast_nonneg n)
+      have : (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                              - M.sqrtDensity θ₀ x)) ^ 2
+            = (Real.sqrt n) ^ 2 * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                                      - M.sqrtDensity θ₀ x) ^ 2 := by ring
+      rw [this, hsqrt_sq]
+    simp_rw [h_pt]
+    rw [MeasureTheory.integral_const_mul]
+  -- Assemble.
+  rw [h_g_sq_eq] at h_tendsto_sq
+  have h_target : Filter.Tendsto
+      (fun n : ℕ => (n : ℝ) * ∫ x, (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                                    - M.sqrtDensity θ₀ x) ^ 2 ∂μ) Filter.atTop
+      (𝓝 ((1 / 4 : ℝ) * fisherInformation M μ θ₀ ℓ h h)) := by
+    have := h_tendsto_sq
+    refine this.congr fun n => ?_
+    exact h_sq_scale n
+  -- Combine: n · ∫W_n · p = -n · ∫(√p_n - √p)² → -(1/4)·I.
+  have h_alg_n : ∀ n : ℕ,
+      (n : ℝ) * ∫ x, 2 * (Real.sqrt ((M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) /
+                                      M.density θ₀ x) - 1) * M.density θ₀ x ∂μ
+      = -((n : ℝ) * ∫ x, (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                            - M.sqrtDensity θ₀ x) ^ 2 ∂μ) := by
+    intro n
+    rw [h_alg n]; ring
+  -- Rewrite the target limit `-(1/4)·I` as `-((1/4)·I)` to match `h_target.neg`.
+  have h_lim_eq : -(1 / 4 : ℝ) * fisherInformation M μ θ₀ ℓ h h
+                  = -((1 / 4 : ℝ) * fisherInformation M μ θ₀ ℓ h h) := by ring
+  rw [h_lim_eq]
+  exact h_target.neg.congr fun n => (h_alg_n n).symm
 
+/-! ## Step 3 — Variance control
 
+For i.i.d. `X_i ∼ P_{θ₀}`, `Var[Σᵢ W_{n,i} − (1/√n) Σᵢ ⟨h, ℓ(X_i)⟩] → 0`. The
+core analytic content is `E_{θ₀}[(√n W_n − ⟨h, ℓ⟩)²] → 0`, which is exactly
 
+  `∫ (√n · W_n(x) − ⟨h, ℓ x⟩)² · p_{θ₀}(x) dμ → 0`.
 
+**Proof**. The pointwise bound
+  `(√n W_n − g)² · p ≤ 4 · (√n(√p_n − √p) − ½ g √p)²`
+(equality on `{p > 0}` using `√(p_n/p)·√p = √p_n`; trivially `0 ≤ RHS` on
+`{p = 0}`) plus `dqm_sqrt_density_l2_convergence` (the L² residual `φ_n`
+integrates to 0) gives `∫(√n W_n − g)² · p dμ ≤ 4 ∫φ_n² dμ → 0`. Squeeze. -/
+omit [OpensMeasurableSpace Θ] [SecondCountableTopology Θ] in
+lemma variance_tendsto_zero
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (_hℓ : Measurable ℓ)
+    (hint : Integrable (M.density θ₀) μ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h_fisher_cont :
+      Filter.Tendsto (fun v : Θ => ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+        (𝓝 0) (𝓝 0))
+    (h : Θ) (h_n : ℕ → Θ) (hconv : Filter.Tendsto h_n Filter.atTop (𝓝 h)) :
+    Filter.Tendsto
+      (fun n : ℕ =>
+        ∫ x,
+          (Real.sqrt n * 2 *
+              (Real.sqrt ((M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) / M.density θ₀ x) - 1)
+            - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x ∂μ)
+      Filter.atTop
+      (𝓝 0) := by
+  -- Key pointwise bound: target ≤ 4 · φ_n² (with equality on {p > 0}).
+  have h_pt : ∀ n : ℕ, ∀ x,
+      (Real.sqrt n * 2 * (Real.sqrt ((M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) /
+                                      M.density θ₀ x) - 1)
+        - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x
+      ≤ 4 *
+        (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x)
+          - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 := by
+    intro n x
+    set pn := M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x with hpn_def
+    set p := M.density θ₀ x with hp_def
+    have hpn_nn : 0 ≤ pn := M.density_nonneg _ _
+    have hp_nn : 0 ≤ p := M.density_nonneg _ _
+    by_cases hp_zero : p = 0
+    · -- p = 0: LHS = 0, RHS ≥ 0.
+      rw [hp_zero]
+      simp only [div_zero, Real.sqrt_zero, zero_sub, mul_neg, mul_one, mul_zero, one_div,
+        Nat.ofNat_pos, mul_nonneg_iff_of_pos_left, ge_iff_le]
+      positivity
+    -- p > 0: show equality.
+    have hp_pos : 0 < p := lt_of_le_of_ne hp_nn (Ne.symm hp_zero)
+    have hp_sqrt_nn : 0 ≤ Real.sqrt p := Real.sqrt_nonneg _
+    have h_sqDensity_p : M.sqrtDensity θ₀ x = Real.sqrt p := rfl
+    have h_sqDensity_pn :
+        M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x = Real.sqrt pn := rfl
+    have h_p_eq : p = Real.sqrt p * Real.sqrt p := (Real.mul_self_sqrt hp_nn).symm
+    -- Key identity on {p > 0}: √(pn/p) · √p = √pn.
+    have h_sqrt_div_mul : Real.sqrt (pn / p) * Real.sqrt p = Real.sqrt pn := by
+      rw [← Real.sqrt_mul (div_nonneg hpn_nn hp_nn), div_mul_cancel₀ pn hp_zero]
+    -- (√n · W_n − g) · √p = 2√n·(√pn − √p) − g · √p
+    have h_inner_mul :
+        (Real.sqrt n * 2 * (Real.sqrt (pn / p) - 1) - ⟪h, ℓ x⟫) * Real.sqrt p
+        = 2 * Real.sqrt n * (Real.sqrt pn - Real.sqrt p)
+          - ⟪h, ℓ x⟫ * Real.sqrt p := by
+      have : (Real.sqrt n * 2 * (Real.sqrt (pn / p) - 1) - ⟪h, ℓ x⟫) * Real.sqrt p
+           = 2 * Real.sqrt n * (Real.sqrt (pn / p) * Real.sqrt p - Real.sqrt p)
+              - ⟪h, ℓ x⟫ * Real.sqrt p := by ring
+      rw [this, h_sqrt_div_mul]
+    -- Square both sides and use (a · b)² = a²·b² plus p = √p·√p.
+    have h_LHS_eq :
+        (Real.sqrt n * 2 * (Real.sqrt (pn / p) - 1) - ⟪h, ℓ x⟫) ^ 2 * p
+        = (2 * Real.sqrt n * (Real.sqrt pn - Real.sqrt p)
+            - ⟪h, ℓ x⟫ * Real.sqrt p) ^ 2 := by
+      calc (Real.sqrt n * 2 * (Real.sqrt (pn / p) - 1) - ⟪h, ℓ x⟫) ^ 2 * p
+          = (Real.sqrt n * 2 * (Real.sqrt (pn / p) - 1) - ⟪h, ℓ x⟫) ^ 2
+              * (Real.sqrt p * Real.sqrt p) := by rw [← h_p_eq]
+        _ = ((Real.sqrt n * 2 * (Real.sqrt (pn / p) - 1) - ⟪h, ℓ x⟫) * Real.sqrt p) ^ 2 := by
+            ring
+        _ = (2 * Real.sqrt n * (Real.sqrt pn - Real.sqrt p)
+              - ⟪h, ℓ x⟫ * Real.sqrt p) ^ 2 := by rw [h_inner_mul]
+    have h_RHS_eq :
+        4 * (Real.sqrt n * (Real.sqrt pn - Real.sqrt p)
+              - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * Real.sqrt p) ^ 2
+        = (2 * Real.sqrt n * (Real.sqrt pn - Real.sqrt p)
+            - ⟪h, ℓ x⟫ * Real.sqrt p) ^ 2 := by ring
+    rw [h_sqDensity_pn, h_sqDensity_p, h_LHS_eq, ← h_RHS_eq]
+  -- L² residual → 0 via dqm_sqrt_density_l2_convergence.
+  have h_l2 :=
+    dqm_sqrt_density_l2_convergence M μ θ₀ ℓ hint hint_perturb hDQM h_fisher_cont hconv
+  -- Multiply by 4.
+  have h_l2_4 :
+      Filter.Tendsto (fun n : ℕ =>
+        4 * ∫ x,
+              (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                              - M.sqrtDensity θ₀ x)
+                - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+        Filter.atTop (𝓝 0) := by
+    have := h_l2.const_mul (4 : ℝ)
+    simpa using this
+  -- Integrability of the bounding integrand `4·φ_n²` for each n.
+  have hφ_sq_memLp : ∀ n : ℕ,
+      MemLp (fun x =>
+        Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x)
+        - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+    intro n
+    have h_sqrt_pn_memLp :
+        MemLp (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n)) 2 μ :=
+      M.sqrtDensity_memLp_two μ _ (hint_perturb _ _)
+    have h_sqrt_p_memLp : MemLp (M.sqrtDensity θ₀) 2 μ :=
+      M.sqrtDensity_memLp_two μ _ hint
+    have h_diff : MemLp (fun x =>
+        M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) 2 μ :=
+      h_sqrt_pn_memLp.sub h_sqrt_p_memLp
+    have h_scaled : MemLp (fun x =>
+        Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x)) 2 μ :=
+      h_diff.const_mul (Real.sqrt n)
+    have h_score_memLp :
+        MemLp (fun x => ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ :=
+      dqm_score_memLp_two M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+    have h_half : MemLp (fun x =>
+        (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+      have h_eq : (fun x => (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x)
+                = (fun x => (1 / 2 : ℝ) * (⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x)) := by
+        funext x; ring
+      rw [h_eq]
+      exact h_score_memLp.const_mul _
+    exact h_scaled.sub h_half
+  -- Squeeze.
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' (b := Filter.atTop)
+    (g := fun (_ : ℕ) => (0 : ℝ)) (h := fun n : ℕ =>
+      4 * ∫ x,
+            (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                            - M.sqrtDensity θ₀ x)
+              - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ)
+    tendsto_const_nhds h_l2_4
+    (Filter.Eventually.of_forall fun n =>
+      MeasureTheory.integral_nonneg fun x =>
+        mul_nonneg (sq_nonneg _) (M.density_nonneg θ₀ x))
+    (Filter.Eventually.of_forall fun n => ?_)
+  -- Pointwise + integration.
+  have hφ_sq_int : Integrable (fun x =>
+      (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                      - M.sqrtDensity θ₀ x)
+        - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ :=
+    (hφ_sq_memLp n).integrable_sq
+  have h_4φ_sq_int : Integrable (fun x =>
+      4 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                          - M.sqrtDensity θ₀ x)
+            - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ :=
+    hφ_sq_int.const_mul 4
+  have h_int :
+      ∫ x,
+        (Real.sqrt n * 2 * (Real.sqrt ((M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) /
+                                        M.density θ₀ x) - 1)
+          - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x ∂μ ≤
+      ∫ x, 4 *
+        (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x)
+          - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ :=
+    MeasureTheory.integral_mono_of_nonneg
+      (Filter.Eventually.of_forall fun x =>
+        mul_nonneg (sq_nonneg _) (M.density_nonneg θ₀ x))
+      h_4φ_sq_int
+      (Filter.Eventually.of_forall (h_pt n))
+  have h_pull :
+      ∫ x, 4 *
+        (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        - M.sqrtDensity θ₀ x)
+          - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ =
+        4 * ∫ x,
+          (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                          - M.sqrtDensity θ₀ x)
+            - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 ∂μ :=
+    MeasureTheory.integral_const_mul _ _
+  linarith
 
+/-! ## Step 4 — Mean + variance → 0 ⇒ tendsto in probability (assembly)
 
+On an auxiliary probability space `(Ω, P)` carrying an iid sample `X : ℕ → Ω → 𝓧`
+with law `P_{θ₀} = μ.withDensity p_{θ₀}`, the *centred* sum
 
+  `Y_n(ω) := ∑_{i<n} W_n(X_i ω) − (1/√n) ∑_{i<n} ⟨h, ℓ(X_i ω)⟩`,
+  `W_n := auxStatistic M θ₀ h_n n`
 
+converges in P-probability to `−¼ · fisherInformation M μ θ₀ ℓ h h`. Since Step 1
+gives `P_{θ₀} ⟨h, ℓ⟩ = 0`, this is the `(⋆)` clause of the informal outline:
 
+  `∑_i W_{n,i} = (1/√n) ∑_i g(X_i) − ¼ P g² + o_P(1)`.
 
+The proof applies `tendstoInMeasure_of_tendsto_mean_of_tendsto_variance`
+with the centred sum as `Y_n`, using
+  * `E_{P}[Y_n] = n · ∫ W_n · p dμ − √n · ∫ ⟨h, ℓ⟩ · p dμ → −¼ · I(h, h)`
+    (Step 2 `sum_expect_W_tendsto` + Step 1 `score_mean_zero`),
+  * `Var_{P}[Y_n] = n · Var[W_n(X_0) − (1/√n) g(X_0)]
+                    ≤ ∫ (√n · W_n − g)² · p dμ → 0` (Step 3 `variance_tendsto_zero`).
+The identical-distribution hypothesis transfers expectations/variances from P to
+integrals against `p · μ`; pairwise independence makes variance of the sum additive. -/
+lemma sum_W_decomp
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} (P : Measure Ω) [IsProbabilityMeasure P]
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (hℓ : Measurable ℓ)
+    (h_one : ∫ x, M.density θ₀ x ∂μ = 1)
+    (hint : Integrable (M.density θ₀) μ)
+    (h_one_perturb : ∀ t : ℝ, ∀ u : Θ, ∫ x, M.density (θ₀ + t • u) x ∂μ = 1)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h_fisher_cont :
+      Filter.Tendsto (fun v : Θ => ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+        (𝓝 0) (𝓝 0))
+    (h : Θ) (h_n : ℕ → Θ) (hconv : Filter.Tendsto h_n Filter.atTop (𝓝 h))
+    (X : ℕ → Ω → 𝓧) (hX_meas : ∀ i, Measurable (X i))
+    (hindep : Pairwise fun i j => ProbabilityTheory.IndepFun (X i) (X j) P)
+    (hident : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hlaw : Measure.map (X 0) P
+              = μ.withDensity fun x => ENNReal.ofReal (M.density θ₀ x)) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ i ∈ Finset.range n, auxStatistic M θ₀ h_n n (X i ω))
+        - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, ⟪h, ℓ (X i ω)⟫)
+      Filter.atTop
+      (fun _ => -(1/4 : ℝ) * fisherInformation M μ θ₀ ℓ h h) := by
+  -- Notation.
+  set g : 𝓧 → ℝ := fun x => ⟪h, ℓ x⟫ with hg_def
+  set p : 𝓧 → ℝ := M.density θ₀ with hp_def
+  set ν : Measure 𝓧 := μ.withDensity fun x => ENNReal.ofReal (p x) with hν_def
+  set W : ℕ → 𝓧 → ℝ := auxStatistic M θ₀ h_n with hW_def
+  -- Basic measurability + nonnegativity of p.
+  have hp_meas : Measurable p := M.density_meas θ₀
+  have hp_nn : ∀ x, 0 ≤ p x := M.density_nonneg θ₀
+  have hg_meas : Measurable g :=
+    ((continuous_const (y := h)).inner continuous_id).measurable.comp hℓ
+  have hW_meas : ∀ n, Measurable (W n) := fun n => auxStatistic_measurable M θ₀ h_n n
+  -- `hident`-derived: each `X i` has law ν = μ.withDensity p.
+  have h_map : ∀ i, Measure.map (X i) P = ν := by
+    intro i
+    rw [(hident i).map_eq, hlaw]
+  -- Transfer lemma: `∫ ω, f (X i ω) ∂P = ∫ x, f x · p x ∂μ` (integrable/bochner side).
+  have h_transfer : ∀ (f : 𝓧 → ℝ), AEStronglyMeasurable f ν →
+      ∀ i, ∫ ω, f (X i ω) ∂P = ∫ x, f x * p x ∂μ := by
+    intro f hf_aesm i
+    have h_aesm_map : AEStronglyMeasurable f (Measure.map (X i) P) := by
+      rw [h_map i]; exact hf_aesm
+    have h_step1 : ∫ ω, f (X i ω) ∂P = ∫ y, f y ∂ν := by
+      rw [← h_map i, MeasureTheory.integral_map (hX_meas i).aemeasurable h_aesm_map]
+    have h_step2 : ∫ y, f y ∂ν = ∫ y, p y * f y ∂μ := by
+      rw [hν_def,
+          integral_withDensity_eq_integral_toReal_smul
+            (μ := μ) hp_meas.ennreal_ofReal
+            (MeasureTheory.ae_of_all μ fun _ => ENNReal.ofReal_lt_top) f]
+      refine MeasureTheory.integral_congr_ae (MeasureTheory.ae_of_all μ fun y => ?_)
+      simp [ENNReal.toReal_ofReal (hp_nn y)]
+    rw [h_step1, h_step2]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+    ring
+  -- The centred summand `Z n (X i ω) := W n (X i ω) - (1/√n)·g(X i ω)`, whose sum over
+  -- `i ∈ range n` is `Y n ω`.
+  set Z : ℕ → 𝓧 → ℝ := fun n x => W n x - (Real.sqrt n)⁻¹ * g x with hZ_def
+  have hZ_meas : ∀ n, Measurable (Z n) :=
+    fun n => (hW_meas n).sub ((measurable_const).mul hg_meas)
+  -- Rewrite `Y n ω` as `∑ i, Z n (X i ω)`.
+  have hY_eq : ∀ n : ℕ, ∀ ω,
+      (∑ i ∈ Finset.range n, W n (X i ω))
+        - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω)
+      = ∑ i ∈ Finset.range n, Z n (X i ω) := by
+    intro n ω
+    simp only [Z, Finset.mul_sum, ← Finset.sum_sub_distrib]
+  -- Integrability transfer: f · p ∈ L¹(μ) ⇒ f ∘ X i ∈ L¹(P).
+  have h_transfer_int : ∀ (f : 𝓧 → ℝ), Measurable f →
+      Integrable (fun x => f x * p x) μ →
+      ∀ i, Integrable (fun ω => f (X i ω)) P := by
+    intro f hf_meas hfp_int i
+    have hf_ν : Integrable f ν := by
+      rw [hν_def]
+      refine (MeasureTheory.integrable_withDensity_iff hp_meas.ennreal_ofReal
+                (MeasureTheory.ae_of_all μ fun _ => ENNReal.ofReal_lt_top)).mpr ?_
+      refine hfp_int.congr (MeasureTheory.ae_of_all μ fun x => ?_)
+      simp [ENNReal.toReal_ofReal (hp_nn x)]
+    have hf_map : Integrable f (Measure.map (X i) P) := by
+      rw [h_map i]; exact hf_ν
+    exact (MeasureTheory.integrable_map_measure hf_meas.aestronglyMeasurable
+            (hX_meas i).aemeasurable).mp hf_map
+  -- L² memberships for √p and √p_n (standard), plus g · √p.
+  have h_sqrt_p_memLp : MemLp (M.sqrtDensity θ₀) 2 μ :=
+    M.sqrtDensity_memLp_two μ _ hint
+  have h_sqrt_pn_memLp : ∀ n : ℕ,
+      MemLp (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n)) 2 μ :=
+    fun n => M.sqrtDensity_memLp_two μ _ (hint_perturb _ _)
+  have h_score_memLp : MemLp (fun x => ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ :=
+    dqm_score_memLp_two M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+  -- `W n · p` integrable over μ: pointwise = `-(√p_n - √p)² + p_n - p`.
+  have hWnp_int : ∀ n : ℕ, Integrable (fun x => W n x * p x) μ := by
+    intro n
+    have h_sqrt_diff_memLp : MemLp (fun x =>
+        M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) 2 μ :=
+      (h_sqrt_pn_memLp n).sub h_sqrt_p_memLp
+    have h_sq_int : Integrable (fun x =>
+        (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2) μ :=
+      h_sqrt_diff_memLp.integrable_sq
+    have hpn_int : Integrable (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n)) μ :=
+      hint_perturb _ _
+    -- RHS integrable: -(√p_n - √p)² + p_n - p.
+    have h_rhs_int : Integrable (fun x =>
+        -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+          + M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - p x) μ := by
+      have h1 := h_sq_int.neg
+      have : (fun x =>
+          -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+            + M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - p x)
+          = (fun x =>
+          (-(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2)
+            + (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - p x)) := by funext x; ring
+      rw [this]
+      exact h1.add (hpn_int.sub hint)
+    -- Pointwise identity (copied from Step 2).
+    have h_pt : ∀ x, W n x * p x
+        = -(M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+          + M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - p x := by
+      intro x
+      change 2 * (Real.sqrt (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x / M.density θ₀ x) - 1)
+            * M.density θ₀ x = _
+      set pn := M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+      set pp := M.density θ₀ x
+      have hpn_nn : 0 ≤ pn := M.density_nonneg _ _
+      have hpp_nn : 0 ≤ pp := M.density_nonneg _ _
+      have h_sqDensity_pn :
+          (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) ^ 2 = pn := M.sqrtDensity_sq _ x
+      have h_sqDensity_p : (M.sqrtDensity θ₀ x) ^ 2 = pp := M.sqrtDensity_sq _ x
+      have h_sqrt_mul : M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x *
+                          M.sqrtDensity θ₀ x
+                        = Real.sqrt (pn * pp) := by
+        rw [show (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) = Real.sqrt pn from rfl,
+            show M.sqrtDensity θ₀ x = Real.sqrt pp from rfl,
+            ← Real.sqrt_mul hpn_nn]
+      have h_sqrt_div_mul : Real.sqrt (pn / pp) * pp = Real.sqrt (pn * pp) := by
+        by_cases hp_zero : pp = 0
+        · rw [hp_zero]; simp
+        · have hp_ne : pp ≠ 0 := hp_zero
+          have step1 : Real.sqrt (pn / pp) * pp
+              = Real.sqrt (pn / pp) * (Real.sqrt pp * Real.sqrt pp) := by
+            rw [Real.mul_self_sqrt hpp_nn]
+          have step2 : Real.sqrt (pn / pp) * (Real.sqrt pp * Real.sqrt pp)
+              = (Real.sqrt (pn / pp) * Real.sqrt pp) * Real.sqrt pp := by ring
+          have step3 : Real.sqrt (pn / pp) * Real.sqrt pp = Real.sqrt ((pn / pp) * pp) := by
+            rw [← Real.sqrt_mul (div_nonneg hpn_nn hpp_nn)]
+          have step4 : (pn / pp) * pp = pn := by field_simp
+          rw [step1, step2, step3, step4, ← Real.sqrt_mul hpn_nn]
+      have h_sq_expand :
+          (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2
+          = pn + pp - 2 * Real.sqrt (pn * pp) := by
+        have : (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                  - M.sqrtDensity θ₀ x) ^ 2
+             = (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) ^ 2
+                + (M.sqrtDensity θ₀ x) ^ 2
+                - 2 * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                        * M.sqrtDensity θ₀ x) := by ring
+        rw [this, h_sqDensity_pn, h_sqDensity_p, h_sqrt_mul]
+      have h_LHS : 2 * (Real.sqrt (pn / pp) - 1) * pp = 2 * Real.sqrt (pn * pp) - 2 * pp := by
+        have : 2 * (Real.sqrt (pn / pp) - 1) * pp
+             = 2 * (Real.sqrt (pn / pp) * pp) - 2 * pp := by ring
+        rw [this, h_sqrt_div_mul]
+      change 2 * (Real.sqrt (pn / pp) - 1) * pp = _
+      rw [h_LHS, h_sq_expand]; ring
+    exact h_rhs_int.congr (MeasureTheory.ae_of_all μ fun x => (h_pt x).symm)
+  -- `g · p` integrable over μ: factors as `(g · √p) · √p`, both L²(μ).
+  have hgp_int : Integrable (fun x => g x * p x) μ := by
+    have h_eq : (fun x => g x * p x)
+              = fun x => (g x * M.sqrtDensity θ₀ x) * M.sqrtDensity θ₀ x := by
+      funext x
+      have hsq : (M.sqrtDensity θ₀ x) ^ 2 = p x := M.sqrtDensity_sq θ₀ x
+      calc g x * p x = g x * (M.sqrtDensity θ₀ x) ^ 2 := by rw [hsq]
+        _ = (g x * M.sqrtDensity θ₀ x) * M.sqrtDensity θ₀ x := by ring
+    rw [h_eq]
+    exact h_score_memLp.integrable_mul h_sqrt_p_memLp
+  -- Integrability under P of each summand.
+  have hWnX_int : ∀ n i, Integrable (fun ω => W n (X i ω)) P :=
+    fun n i => h_transfer_int (W n) (hW_meas n) (hWnp_int n) i
+  have hgX_int : ∀ i, Integrable (fun ω => g (X i ω)) P :=
+    fun i => h_transfer_int g hg_meas hgp_int i
+  -- Expected value of a single summand via transfer.
+  have hWn_aesm_ν : ∀ n, AEStronglyMeasurable (W n) ν :=
+    fun n => (hW_meas n).aestronglyMeasurable
+  have hg_aesm_ν : AEStronglyMeasurable g ν := hg_meas.aestronglyMeasurable
+  have hEW : ∀ n i, ∫ ω, W n (X i ω) ∂P = ∫ x, W n x * p x ∂μ :=
+    fun n i => h_transfer (W n) (hWn_aesm_ν n) i
+  have hEg : ∀ i, ∫ ω, g (X i ω) ∂P = ∫ x, g x * p x ∂μ :=
+    fun i => h_transfer g hg_aesm_ν i
+  -- The score has zero mean, hence `∫ g · p dμ = 0`.
+  have h_Pg_zero : ∫ x, g x * p x ∂μ = 0 :=
+    score_mean_zero M μ θ₀ ℓ hℓ h_one hint h_one_perturb hint_perturb hDQM h
+  -- Integrability of `W n² · p` and `g² · p`.
+  have hgsq_p_int : Integrable (fun x => g x ^ 2 * p x) μ :=
+    dqm_fisher_integrable M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+  -- Pointwise bound: `W n x² · p x ≤ 4 · (√p_n - √p)²`.
+  have hWnsq_p_bound : ∀ n : ℕ, ∀ x, W n x ^ 2 * p x
+      ≤ 4 *
+        (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2 := by
+    intro n x
+    change (2 * (Real.sqrt (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x / M.density θ₀ x) - 1))
+         ^ 2 * M.density θ₀ x ≤ _
+    set pn := M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+    set pp := M.density θ₀ x
+    have hpn_nn : 0 ≤ pn := M.density_nonneg _ _
+    have hpp_nn : 0 ≤ pp := M.density_nonneg _ _
+    by_cases hp_zero : pp = 0
+    · rw [hp_zero, mul_zero]
+      refine mul_nonneg (by norm_num) (sq_nonneg _)
+    -- pp > 0
+    have hpp_pos : 0 < pp := lt_of_le_of_ne hpp_nn (Ne.symm hp_zero)
+    have h_sqDensity_pn :
+        (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) ^ 2 = pn := M.sqrtDensity_sq _ x
+    have h_sqDensity_p : (M.sqrtDensity θ₀ x) ^ 2 = pp := M.sqrtDensity_sq _ x
+    have h_sqrt_mul : M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x *
+                        M.sqrtDensity θ₀ x = Real.sqrt (pn * pp) := by
+      rw [show (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x) = Real.sqrt pn from rfl,
+          show M.sqrtDensity θ₀ x = Real.sqrt pp from rfl,
+          ← Real.sqrt_mul hpn_nn]
+    have h_sqrt_div_mul : Real.sqrt (pn / pp) * Real.sqrt pp = Real.sqrt pn := by
+      rw [← Real.sqrt_mul (div_nonneg hpn_nn hpp_nn), div_mul_cancel₀ pn hp_zero]
+    -- Square the inner product with √pp.
+    have h_inner :
+        (2 * (Real.sqrt (pn / pp) - 1)) * Real.sqrt pp
+          = 2 * (Real.sqrt pn - Real.sqrt pp) := by
+      have : (2 * (Real.sqrt (pn / pp) - 1)) * Real.sqrt pp
+           = 2 * (Real.sqrt (pn / pp) * Real.sqrt pp - Real.sqrt pp) := by ring
+      rw [this, h_sqrt_div_mul]
+    -- Square gives the identity.
+    have h_sq_eq : (2 * (Real.sqrt (pn / pp) - 1)) ^ 2 * pp
+        = 4 * (Real.sqrt pn - Real.sqrt pp) ^ 2 := by
+      have h_factor :
+          ((2 * (Real.sqrt (pn / pp) - 1)) * Real.sqrt pp) ^ 2
+            = (2 * (Real.sqrt (pn / pp) - 1)) ^ 2 * (Real.sqrt pp * Real.sqrt pp) := by ring
+      have h_rearrange : (2 * (Real.sqrt (pn / pp) - 1)) ^ 2 * pp
+          = ((2 * (Real.sqrt (pn / pp) - 1)) * Real.sqrt pp) ^ 2 := by
+        rw [h_factor, Real.mul_self_sqrt hpp_nn]
+      rw [h_rearrange, h_inner]; ring
+    rw [h_sq_eq]
+    -- sqrtDensity = Real.sqrt ∘ density by definition, so RHS matches LHS.
+    exact le_refl _
+  -- Integrability of `W n² · p`.
+  have hWnsq_p_int : ∀ n : ℕ, Integrable (fun x => W n x ^ 2 * p x) μ := by
+    intro n
+    have h_sqrt_diff_memLp : MemLp (fun x =>
+        M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) 2 μ :=
+      (h_sqrt_pn_memLp n).sub h_sqrt_p_memLp
+    have h_sq_int : Integrable (fun x =>
+        (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2) μ :=
+      h_sqrt_diff_memLp.integrable_sq
+    have h_4sq_int : Integrable (fun x =>
+        4 * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2) μ :=
+      h_sq_int.const_mul 4
+    refine Integrable.mono' h_4sq_int ?_ (MeasureTheory.ae_of_all μ fun x => ?_)
+    · exact (((hW_meas n).pow_const 2).mul hp_meas).aestronglyMeasurable
+    · have h_nn : 0 ≤ W n x ^ 2 * p x := mul_nonneg (sq_nonneg _) (hp_nn x)
+      rw [Real.norm_eq_abs, abs_of_nonneg h_nn]
+      exact hWnsq_p_bound n x
+  -- MemLp W_n and g over ν.
+  have hWn_memLp_ν : ∀ n : ℕ, MemLp (W n) 2 ν := by
+    intro n
+    refine (MeasureTheory.memLp_two_iff_integrable_sq (hWn_aesm_ν n)).mpr ?_
+    -- Integrable (W_n²) ν ↔ Integrable (W_n² · p) μ
+    have h_eq : (fun x => W n x ^ 2) = (fun x => W n x ^ 2) := rfl
+    rw [hν_def]
+    refine (MeasureTheory.integrable_withDensity_iff hp_meas.ennreal_ofReal
+              (MeasureTheory.ae_of_all μ fun _ => ENNReal.ofReal_lt_top)).mpr ?_
+    refine (hWnsq_p_int n).congr (MeasureTheory.ae_of_all μ fun x => ?_)
+    simp [ENNReal.toReal_ofReal (hp_nn x)]
+  have hg_memLp_ν : MemLp g 2 ν := by
+    refine (MeasureTheory.memLp_two_iff_integrable_sq hg_aesm_ν).mpr ?_
+    rw [hν_def]
+    refine (MeasureTheory.integrable_withDensity_iff hp_meas.ennreal_ofReal
+              (MeasureTheory.ae_of_all μ fun _ => ENNReal.ofReal_lt_top)).mpr ?_
+    refine hgsq_p_int.congr (MeasureTheory.ae_of_all μ fun x => ?_)
+    simp [ENNReal.toReal_ofReal (hp_nn x)]
+  -- MemLp Z_n over ν: Z_n = W_n - (√n)⁻¹ · g.
+  have hZn_memLp_ν : ∀ n : ℕ, MemLp (Z n) 2 ν := by
+    intro n
+    have h_scaled : MemLp (fun x => (Real.sqrt n)⁻¹ * g x) 2 ν := hg_memLp_ν.const_mul _
+    have : (Z n) = (W n) - fun x => (Real.sqrt n)⁻¹ * g x := by
+      funext x; simp [Z]
+    rw [this]
+    exact (hWn_memLp_ν n).sub h_scaled
+  -- MemLp Z_n ∘ X_i over P: transfer via MemLp.comp_of_map.
+  have hZnX_memLp : ∀ n i, MemLp (fun ω => Z n (X i ω)) 2 P := by
+    intro n i
+    have h_map_memLp : MemLp (Z n) 2 (Measure.map (X i) P) := by
+      rw [h_map i]; exact hZn_memLp_ν n
+    exact MemLp.comp_of_map h_map_memLp (hX_meas i).aemeasurable
+  -- h_mem: sum of Z_n(X_i) is L² under P, and Y_n equals that sum.
+  have h_mem : ∀ n, MemLp (fun ω =>
+      (∑ i ∈ Finset.range n, W n (X i ω))
+        - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω)) 2 P := by
+    intro n
+    have h_sum_memLp : MemLp (fun ω => ∑ i ∈ Finset.range n, Z n (X i ω)) 2 P :=
+      MeasureTheory.memLp_finsetSum _ (fun i _ => hZnX_memLp n i)
+    exact h_sum_memLp.ae_eq (MeasureTheory.ae_of_all P fun ω => (hY_eq n ω).symm)
+  -- Mean limit.
+  have h_mean : Filter.Tendsto
+      (fun n => ∫ ω,
+        ((∑ i ∈ Finset.range n, W n (X i ω))
+          - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω)) ∂P)
+      Filter.atTop
+      (𝓝 (-(1/4 : ℝ) * fisherInformation M μ θ₀ ℓ h h)) := by
+    -- Expand the integral of the sum.
+    have h_expand : ∀ n : ℕ, ∫ ω,
+        ((∑ i ∈ Finset.range n, W n (X i ω))
+          - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω)) ∂P
+        = (n : ℝ) * ∫ x, W n x * p x ∂μ
+            - Real.sqrt n * ∫ x, g x * p x ∂μ := by
+      intro n
+      have h_sumW : ∫ ω, ∑ i ∈ Finset.range n, W n (X i ω) ∂P
+                  = (n : ℝ) * ∫ x, W n x * p x ∂μ := by
+        rw [MeasureTheory.integral_finsetSum _ (fun i _ => hWnX_int n i)]
+        simp_rw [hEW n]
+        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+      have h_sumg : ∫ ω, ∑ i ∈ Finset.range n, g (X i ω) ∂P
+                  = (n : ℝ) * ∫ x, g x * p x ∂μ := by
+        rw [MeasureTheory.integral_finsetSum _ (fun i _ => hgX_int i)]
+        simp_rw [hEg]
+        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+      rw [MeasureTheory.integral_sub
+            (MeasureTheory.integrable_finsetSum _ (fun i _ => hWnX_int n i))
+            ((MeasureTheory.integrable_finsetSum _ (fun i _ => hgX_int i)).const_mul _),
+          h_sumW, MeasureTheory.integral_const_mul, h_sumg]
+      -- Simplify `n·∫W·p - (√n)⁻¹·(n·∫g·p)` to `n·∫W·p - √n·∫g·p`.
+      have h_inv_mul : (Real.sqrt n)⁻¹ * ((n : ℝ) * ∫ x, g x * p x ∂μ)
+                     = Real.sqrt n * ∫ x, g x * p x ∂μ := by
+        rcases Nat.eq_zero_or_pos n with rfl | hn_pos
+        · simp
+        · have h_nn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg _
+          have hsqrt_pos : 0 < Real.sqrt n :=
+            Real.sqrt_pos.mpr (by exact_mod_cast hn_pos)
+          have hsqrt_ne : Real.sqrt n ≠ 0 := ne_of_gt hsqrt_pos
+          have h_sqrt_sq : Real.sqrt n * Real.sqrt n = (n : ℝ) := Real.mul_self_sqrt h_nn
+          have h_key : (Real.sqrt n)⁻¹ * (n : ℝ) = Real.sqrt n := by
+            field_simp; linarith [h_sqrt_sq]
+          rw [← mul_assoc, h_key]
+      linarith [h_inv_mul]
+    -- Score zero mean eliminates the g term.
+    have h_expand' : ∀ n, ∫ ω,
+        ((∑ i ∈ Finset.range n, W n (X i ω))
+          - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω)) ∂P
+        = n * ∫ x, W n x * p x ∂μ := by
+      intro n; rw [h_expand n, h_Pg_zero]; ring
+    -- Rewrite the target via `sum_expect_W_tendsto`.
+    have h_step2 := sum_expect_W_tendsto M μ θ₀ ℓ hℓ h_one hint h_one_perturb hint_perturb
+      hDQM h_fisher_cont h h_n hconv
+    refine h_step2.congr fun n => ?_
+    rw [h_expand' n]
+    rfl
+  have h_var : Filter.Tendsto
+      (fun n => ProbabilityTheory.variance
+        (fun ω =>
+          (∑ i ∈ Finset.range n, W n (X i ω))
+            - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω)) P)
+      Filter.atTop (𝓝 0) := by
+    have h_step3 := variance_tendsto_zero M μ θ₀ ℓ hℓ hint hint_perturb hDQM
+      h_fisher_cont h h_n hconv
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      tendsto_const_nhds h_step3
+      (Filter.Eventually.of_forall fun n => ProbabilityTheory.variance_nonneg _ _)
+      ?_
+    refine Filter.eventually_atTop.mpr ⟨1, fun n hn => ?_⟩
+    -- The variance of Y_n equals the variance of (Σᵢ Z_n ∘ X_i) via hY_eq.
+    rw [ProbabilityTheory.variance_congr
+          (MeasureTheory.ae_of_all P fun ω => hY_eq n ω)]
+    -- Apply variance_sum to the pairwise independent summands.
+    have h_Zn_indep : (↑(Finset.range n) : Set ℕ).Pairwise
+        fun i j => ProbabilityTheory.IndepFun (fun ω => Z n (X i ω))
+                                              (fun ω => Z n (X j ω)) P := by
+      intros i _ j _ hij
+      exact (hindep hij).comp (hZ_meas n) (hZ_meas n)
+    -- Rewrite `fun ω => ∑ i, Z n (X i ω)` as `∑ i, fun ω => Z n (X i ω)` (η-equal).
+    have h_sum_fn : (fun ω => ∑ i ∈ Finset.range n, Z n (X i ω))
+                  = ∑ i ∈ Finset.range n, fun ω => Z n (X i ω) := by
+      funext ω; simp [Finset.sum_apply]
+    rw [h_sum_fn,
+        ProbabilityTheory.IndepFun.variance_sum
+          (fun i _ => hZnX_memLp n i) h_Zn_indep]
+    -- All summands have the same variance by identical distribution.
+    have h_var_same : ∀ i ∈ Finset.range n,
+        ProbabilityTheory.variance (fun ω => Z n (X i ω)) P
+          = ProbabilityTheory.variance (fun ω => Z n (X 0 ω)) P := by
+      intros i _
+      exact ((hident i).comp (hZ_meas n)).variance_eq
+    rw [Finset.sum_congr rfl h_var_same, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+    -- Bound the variance by E[X²] using IsProbabilityMeasure P.
+    have h_aesm_Z0 : AEStronglyMeasurable (fun ω => Z n (X 0 ω)) P :=
+      ((hZ_meas n).comp (hX_meas 0)).aestronglyMeasurable
+    have h_var_le :
+        ProbabilityTheory.variance (fun ω => Z n (X 0 ω)) P
+          ≤ ∫ ω, Z n (X 0 ω) ^ 2 ∂P := by
+      have := ProbabilityTheory.variance_le_expectation_sq h_aesm_Z0
+      simpa using this
+    have h_mul_le : (n : ℝ) * ProbabilityTheory.variance (fun ω => Z n (X 0 ω)) P
+                  ≤ (n : ℝ) * ∫ ω, Z n (X 0 ω) ^ 2 ∂P :=
+      mul_le_mul_of_nonneg_left h_var_le (Nat.cast_nonneg n)
+    -- Transfer E_P[(Z_n ∘ X_0)²] = ∫ Z_n² · p dμ.
+    have h_int_eq : ∫ ω, Z n (X 0 ω) ^ 2 ∂P
+                 = ∫ x, Z n x ^ 2 * p x ∂μ :=
+      h_transfer (fun x => Z n x ^ 2)
+        ((hZ_meas n).pow_const 2).aestronglyMeasurable 0
+    rw [h_int_eq] at h_mul_le
+    -- Pull n inside the integral.
+    have h_pull : (n : ℝ) * ∫ x, Z n x ^ 2 * p x ∂μ
+                = ∫ x, (n : ℝ) * (Z n x ^ 2 * p x) ∂μ :=
+      (MeasureTheory.integral_const_mul _ _).symm
+    rw [h_pull] at h_mul_le
+    -- Pointwise identity for n ≥ 1:
+    --   n · (Z_n x)² · p x = (√n · W_n x - g x)² · p x.
+    have hn_pos_real : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+    have h_sqrt_sq : Real.sqrt n * Real.sqrt n = (n : ℝ) :=
+      Real.mul_self_sqrt (Nat.cast_nonneg n)
+    have h_sqrt_ne : Real.sqrt n ≠ 0 :=
+      ne_of_gt (Real.sqrt_pos.mpr hn_pos_real)
+    have h_inv_mul : Real.sqrt n * (Real.sqrt n)⁻¹ = 1 :=
+      mul_inv_cancel₀ h_sqrt_ne
+    have h_pt_eq : ∀ x, (n : ℝ) * (Z n x ^ 2 * p x)
+                  = (Real.sqrt n * W n x - g x) ^ 2 * p x := by
+      intro x
+      have h_factor : Real.sqrt n * W n x - g x
+                    = Real.sqrt n * (W n x - (Real.sqrt n)⁻¹ * g x) := by
+        calc Real.sqrt n * W n x - g x
+            = Real.sqrt n * W n x - 1 * g x := by ring
+          _ = Real.sqrt n * W n x - (Real.sqrt n * (Real.sqrt n)⁻¹) * g x := by
+              rw [h_inv_mul]
+          _ = Real.sqrt n * (W n x - (Real.sqrt n)⁻¹ * g x) := by ring
+      change (n : ℝ) * ((W n x - (Real.sqrt n)⁻¹ * g x) ^ 2 * p x) = _
+      calc (n : ℝ) * ((W n x - (Real.sqrt n)⁻¹ * g x) ^ 2 * p x)
+          = (Real.sqrt n * Real.sqrt n) * ((W n x - (Real.sqrt n)⁻¹ * g x) ^ 2 * p x) := by
+            rw [h_sqrt_sq]
+        _ = (Real.sqrt n * (W n x - (Real.sqrt n)⁻¹ * g x)) ^ 2 * p x := by ring
+        _ = (Real.sqrt n * W n x - g x) ^ 2 * p x := by rw [← h_factor]
+    simp_rw [h_pt_eq] at h_mul_le
+    -- The RHS of h_mul_le matches the Step 3 integrand up to re-association
+    -- (unfolding W = auxStatistic, g = ⟨h, ℓ·⟩, p = M.density θ₀).
+    have h_integrand_eq : ∀ x,
+        (Real.sqrt n * W n x - g x) ^ 2 * p x
+          = (Real.sqrt n * 2 *
+              (Real.sqrt (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x / M.density θ₀ x) - 1)
+              - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x := by
+      intro x
+      change (Real.sqrt n * (2 *
+              (Real.sqrt (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x / M.density θ₀ x) - 1))
+            - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x
+          = _
+      ring
+    refine le_of_le_of_eq h_mul_le ?_
+    exact MeasureTheory.integral_congr_ae (MeasureTheory.ae_of_all μ h_integrand_eq)
+  exact tendstoInMeasure_of_tendsto_mean_of_tendsto_variance h_mem h_mean h_var
 
+/-! ## Step 5 — Taylor expansion of `log`
 
+For all `x > -1`, `log(1+x) = x − ½ x² + x² R(2x)` with one **global** `R` that
+satisfies `R(u) → 0` as `u → 0`. Here
+`R = ForMathlib.logTaylorRemainder`. The same global remainder function applies
+to every `x`, which is needed to pass from `max |W_{n,i}| → 0` to
+`max |R(W_{n,i})| → 0`. -/
+lemma log_one_add_taylor :
+    ∃ R : ℝ → ℝ, Filter.Tendsto R (𝓝 0) (𝓝 0) ∧
+      ∀ x : ℝ, -1 < x →
+        Real.log (1 + x) = x - (1 / 2) * x ^ 2 + x ^ 2 * R (2 * x) :=
+  ⟨ForMathlib.logTaylorRemainder,
+    ForMathlib.logTaylorRemainder_tendsto_zero,
+    fun _ hx => ForMathlib.log_one_add_eq_taylor hx⟩
 
+/-! ## Step-3 L¹ corollary — `∫ |n·W_n² − g²| · p dμ → 0`
 
+This corollary of `variance_tendsto_zero` supplies the two Δ-hypotheses
+of `max_abs_W_tendsto_zero` and the primary estimate for the Markov bound. The
+core argument is Cauchy–Schwarz on the factorisation
 
+  `|n · W_n² − g²| = |√n · W_n − g| · |√n · W_n + g|`
 
+followed by bounding the second factor using
+`(√n W_n + g)² ≤ 2(√n W_n − g)² + 8 g²` and integrating. -/
 
+omit [MeasurableSpace Θ] [OpensMeasurableSpace Θ] [SecondCountableTopology Θ] in
+/-- Pointwise bound `W_n(x)² · p(x) ≤ 4 · (√p_n − √p)²`. -/
+lemma auxStatistic_sq_mul_density_le
+    (M : ParametricFamily 𝓧 Θ) (θ₀ : Θ) (h_n : ℕ → Θ) (n : ℕ) (x : 𝓧) :
+    auxStatistic M θ₀ h_n n x ^ 2 * M.density θ₀ x
+      ≤ 4 *
+        (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) ^ 2 := by
+  change (2 * (Real.sqrt (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x / M.density θ₀ x) - 1))
+        ^ 2 * M.density θ₀ x ≤ _
+  set pn := M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+  set pp := M.density θ₀ x
+  have hpn_nn : 0 ≤ pn := M.density_nonneg _ _
+  have hpp_nn : 0 ≤ pp := M.density_nonneg _ _
+  by_cases hp_zero : pp = 0
+  · rw [hp_zero, mul_zero]
+    refine mul_nonneg (by norm_num) (sq_nonneg _)
+  have h_sqrt_div_mul : Real.sqrt (pn / pp) * Real.sqrt pp = Real.sqrt pn := by
+    rw [← Real.sqrt_mul (div_nonneg hpn_nn hpp_nn), div_mul_cancel₀ pn hp_zero]
+  have h_inner :
+      (2 * (Real.sqrt (pn / pp) - 1)) * Real.sqrt pp
+        = 2 * (Real.sqrt pn - Real.sqrt pp) := by
+    have : (2 * (Real.sqrt (pn / pp) - 1)) * Real.sqrt pp
+         = 2 * (Real.sqrt (pn / pp) * Real.sqrt pp - Real.sqrt pp) := by ring
+    rw [this, h_sqrt_div_mul]
+  have h_factor :
+      ((2 * (Real.sqrt (pn / pp) - 1)) * Real.sqrt pp) ^ 2
+        = (2 * (Real.sqrt (pn / pp) - 1)) ^ 2 * (Real.sqrt pp * Real.sqrt pp) := by ring
+  have h_rearrange : (2 * (Real.sqrt (pn / pp) - 1)) ^ 2 * pp
+      = ((2 * (Real.sqrt (pn / pp) - 1)) * Real.sqrt pp) ^ 2 := by
+    rw [h_factor, Real.mul_self_sqrt hpp_nn]
+  have h_sq_eq : (2 * (Real.sqrt (pn / pp) - 1)) ^ 2 * pp
+      = 4 * (Real.sqrt pn - Real.sqrt pp) ^ 2 := by
+    rw [h_rearrange, h_inner]; ring
+  rw [h_sq_eq]
+  exact le_refl _
 
+omit [SecondCountableTopology Θ] in
+/-- Integrability of `|n · W_n² − g²| · p` for each `n`. -/
+lemma delta_l1_integrable
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (hℓ : Measurable ℓ)
+    (hint : Integrable (M.density θ₀) μ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h : Θ) (h_n : ℕ → Θ) (n : ℕ) :
+    Integrable (fun x =>
+      |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+        * M.density θ₀ x) μ := by
+  -- Bound `|n · W_n² − g²| · p ≤ n · (W_n² · p) + g² · p`, both RHS integrable.
+  -- W_n² · p ≤ 4 · (√p_n − √p)² pointwise ⇒ integrable.
+  have h_sqrt_diff_memLp : MemLp (fun x =>
+      M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) 2 μ := by
+    exact (M.sqrtDensity_memLp_two μ _ (hint_perturb _ _)).sub
+      (M.sqrtDensity_memLp_two μ _ hint)
+  have h_Wnsq_p_int : Integrable
+      (fun x => auxStatistic M θ₀ h_n n x ^ 2 * M.density θ₀ x) μ := by
+    have h_sq_int := h_sqrt_diff_memLp.integrable_sq
+    have h_m : Measurable fun x =>
+        auxStatistic M θ₀ h_n n x ^ 2 * M.density θ₀ x :=
+      ((auxStatistic_measurable M θ₀ h_n n).pow_const 2).mul (M.density_meas θ₀)
+    refine Integrable.mono' (h_sq_int.const_mul 4) h_m.aestronglyMeasurable
+      (MeasureTheory.ae_of_all μ fun x => ?_)
+    rw [Real.norm_eq_abs,
+        abs_of_nonneg (mul_nonneg (sq_nonneg _) (M.density_nonneg θ₀ x))]
+    exact auxStatistic_sq_mul_density_le M θ₀ h_n n x
+  have h_gsq_p_int : Integrable (fun x => ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x) μ :=
+    dqm_fisher_integrable M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+  -- Bound: |n · W_n² − g²| · p ≤ (n · W_n² + g²) · p
+  have h_bound_int : Integrable
+      (fun x => ((n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 + ⟪h, ℓ x⟫ ^ 2)
+                  * M.density θ₀ x) μ := by
+    have h1 : Integrable
+        (fun x => (n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 * M.density θ₀ x) μ := by
+      have : (fun x => (n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 * M.density θ₀ x)
+            = fun x => (n : ℝ) * (auxStatistic M θ₀ h_n n x ^ 2 * M.density θ₀ x) := by
+        funext x; ring
+      rw [this]; exact h_Wnsq_p_int.const_mul _
+    have h2 : (fun x => ((n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 + ⟪h, ℓ x⟫ ^ 2)
+                        * M.density θ₀ x)
+            = fun x => (n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 * M.density θ₀ x
+                       + ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x := by
+      funext x; ring
+    rw [h2]; exact h1.add h_gsq_p_int
+  have hg_meas : Measurable fun x => ⟪h, ℓ x⟫ :=
+    ((continuous_const (y := h)).inner continuous_id).measurable.comp hℓ
+  have h_outer_meas : Measurable fun x =>
+      |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2| * M.density θ₀ x := by
+    have h_diff : Measurable fun x =>
+        (n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2 :=
+      (((auxStatistic_measurable M θ₀ h_n n).pow_const 2).const_mul (n : ℝ)).sub
+        (hg_meas.pow_const 2)
+    exact (continuous_abs.measurable.comp h_diff).mul (M.density_meas θ₀)
+  refine Integrable.mono' h_bound_int h_outer_meas.aestronglyMeasurable
+    (MeasureTheory.ae_of_all μ fun x => ?_)
+  have h_lhs_nn : 0 ≤ |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+              * M.density θ₀ x :=
+    mul_nonneg (abs_nonneg _) (M.density_nonneg θ₀ x)
+  have h_A_nn : 0 ≤ (n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 :=
+    mul_nonneg (Nat.cast_nonneg _) (sq_nonneg _)
+  have h_B_nn : 0 ≤ (⟪h, ℓ x⟫ : ℝ) ^ 2 := sq_nonneg _
+  have h_abs_le :
+      |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+        ≤ (n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 + ⟪h, ℓ x⟫ ^ 2 :=
+    calc |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+        ≤ |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2| + |⟪h, ℓ x⟫ ^ 2| := abs_sub _ _
+      _ = (n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 + ⟪h, ℓ x⟫ ^ 2 := by
+          rw [abs_of_nonneg h_A_nn, abs_of_nonneg h_B_nn]
+  rw [Real.norm_eq_abs, abs_of_nonneg h_lhs_nn]
+  exact mul_le_mul_of_nonneg_right h_abs_le (M.density_nonneg θ₀ x)
+
+omit [SecondCountableTopology Θ] in
+/-- Step-3 L¹ corollary: `∫ |n · W_n² − g²| · p dμ → 0`. Proof via Cauchy–Schwarz on
+the factorisation `n · W_n² − g² = (√n · W_n − g)(√n · W_n + g)`, with the first
+factor's L² norm going to 0 by Step 3 (`variance_tendsto_zero`) and the second
+factor's L² norm eventually bounded via `(a+b)² ≤ 2(a−b)² + 8b²`. -/
+lemma delta_l1_tendsto
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (hℓ : Measurable ℓ)
+    (hint : Integrable (M.density θ₀) μ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h_fisher_cont :
+      Filter.Tendsto (fun v : Θ => ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+        (𝓝 0) (𝓝 0))
+    (h : Θ) (h_n : ℕ → Θ) (hconv : Filter.Tendsto h_n Filter.atTop (𝓝 h)) :
+    Filter.Tendsto
+      (fun n : ℕ =>
+        ∫ x, |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+              * M.density θ₀ x ∂μ)
+      Filter.atTop (𝓝 0) := by
+  -- Notation and basic facts.
+  have hp_nn : ∀ x, 0 ≤ M.density θ₀ x := M.density_nonneg θ₀
+  have hp_meas : Measurable (M.density θ₀) := M.density_meas θ₀
+  have hW_meas : ∀ n, Measurable (auxStatistic M θ₀ h_n n) :=
+    fun n => auxStatistic_measurable M θ₀ h_n n
+  have hg_meas : Measurable (fun x => ⟪h, ℓ x⟫) :=
+    ((continuous_const (y := h)).inner continuous_id).measurable.comp hℓ
+  have hsp_nn : ∀ x, 0 ≤ M.sqrtDensity θ₀ x := M.sqrtDensity_nonneg θ₀
+  have hsp_sq : ∀ x, M.sqrtDensity θ₀ x ^ 2 = M.density θ₀ x := M.sqrtDensity_sq θ₀
+  have hsp_mul : ∀ x, M.sqrtDensity θ₀ x * M.sqrtDensity θ₀ x = M.density θ₀ x := by
+    intro x; rw [← sq]; exact hsp_sq x
+  -- Step-3 gives `α_n := ∫ (√n · W_n − g)² · p dμ → 0`.
+  have h_step3 := variance_tendsto_zero M μ θ₀ ℓ hℓ hint hint_perturb hDQM
+    h_fisher_cont h h_n hconv
+  have h_α : Filter.Tendsto
+      (fun n : ℕ => ∫ x,
+        (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x ∂μ)
+      Filter.atTop (𝓝 0) := by
+    refine h_step3.congr (fun n => ?_)
+    refine MeasureTheory.integral_congr_ae (MeasureTheory.ae_of_all μ fun x => ?_)
+    change (Real.sqrt n * 2 *
+            (Real.sqrt (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x / M.density θ₀ x) - 1)
+            - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x
+          = (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x
+    change (Real.sqrt n * 2 *
+            (Real.sqrt (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x / M.density θ₀ x) - 1)
+            - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x
+          = (Real.sqrt n *
+              (2 * (Real.sqrt (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x /
+                              M.density θ₀ x) - 1)) - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x
+    ring
+  -- `g² · p ∈ L¹(μ)` (Fisher finite).
+  have hgsq_p_int : Integrable (fun x => ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x) μ :=
+    dqm_fisher_integrable M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+  set Pg_sq : ℝ := ∫ x, ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ with hPg_sq_def
+  have hPg_sq_nn : 0 ≤ Pg_sq := by
+    refine MeasureTheory.integral_nonneg fun x => ?_
+    exact mul_nonneg (sq_nonneg _) (hp_nn x)
+  -- Pointwise: `(√n W_n + g)² ≤ 2 (√n W_n − g)² + 8 g²`.
+  have h_β_pt : ∀ n : ℕ, ∀ x,
+      (Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x
+        ≤ 2 * ((Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x)
+          + 8 * (⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x) := by
+    intro n x
+    have h_px : 0 ≤ M.density θ₀ x := hp_nn x
+    -- Pointwise: (a + b)² ≤ 2·(a-b)² + 8·b², where a = √n W_n, b = g.
+    -- Via a + b = (a - b) + 2b, so (a+b)² = ((a-b) + 2b)² ≤ 2(a-b)² + 2(2b)² = 2(a-b)² + 8b².
+    have h_sq :
+        (Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫) ^ 2
+          ≤ 2 * (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+            + 8 * ⟪h, ℓ x⟫ ^ 2 := by
+      nlinarith [sq_nonneg (Real.sqrt n * auxStatistic M θ₀ h_n n x -
+                              ⟪h, ℓ x⟫ - 2 * ⟪h, ℓ x⟫),
+                 sq_nonneg (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫),
+                 sq_nonneg (⟪h, ℓ x⟫)]
+    have := mul_le_mul_of_nonneg_right h_sq h_px
+    linarith [this]
+  -- Integrability of `(√n W_n ± g)² · p`.
+  have h_sumsq_int : ∀ n : ℕ, Integrable
+      (fun x => (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                  * M.density θ₀ x) μ := by
+    intro n
+    -- Bound by 4 · (scaled sqrtDensity diff)² + 4 · g² · p, both integrable.
+    have h_sqrt_diff_memLp : MemLp (fun x =>
+        Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x -
+                        M.sqrtDensity θ₀ x)
+        - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+      have h_sqrt_p : MemLp (M.sqrtDensity θ₀) 2 μ :=
+        M.sqrtDensity_memLp_two μ _ hint
+      have h_sqrt_pn : MemLp (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n)) 2 μ :=
+        M.sqrtDensity_memLp_two μ _ (hint_perturb _ _)
+      have h_scaled : MemLp (fun x =>
+          Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+                          - M.sqrtDensity θ₀ x)) 2 μ :=
+        (h_sqrt_pn.sub h_sqrt_p).const_mul _
+      have h_score := dqm_score_memLp_two M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+      have h_half : MemLp (fun x => (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) 2 μ := by
+        have h_eq : (fun x => (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x)
+                  = fun x => (1 / 2 : ℝ) * (⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) := by
+          funext x; ring
+        rw [h_eq]; exact h_score.const_mul _
+      exact h_scaled.sub h_half
+    have h_φ_sq_int : Integrable (fun x =>
+        (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x -
+                          M.sqrtDensity θ₀ x)
+          - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ :=
+      h_sqrt_diff_memLp.integrable_sq
+    have h_4φ_sq_int : Integrable (fun x =>
+        4 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x -
+                              M.sqrtDensity θ₀ x)
+              - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2) μ :=
+      h_φ_sq_int.const_mul 4
+    -- Pointwise bound from Step 3's proof (equality on {p > 0}, trivial on {p = 0}).
+    have h_bound_pt : ∀ x,
+        (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2 * M.density θ₀ x
+          ≤ 4 * (Real.sqrt n * (M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x -
+                                 M.sqrtDensity θ₀ x)
+                  - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * M.sqrtDensity θ₀ x) ^ 2 := by
+      -- This is the same pointwise bound as in `variance_tendsto_zero`'s proof.
+      intro x
+      set pn := M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+      set pp := M.density θ₀ x
+      have hpn_nn : 0 ≤ pn := M.density_nonneg _ _
+      have hpp_nn : 0 ≤ pp := M.density_nonneg _ _
+      by_cases hp_zero : pp = 0
+      · rw [hp_zero, mul_zero]
+        refine mul_nonneg (by norm_num) (sq_nonneg _)
+      have hp_pos : 0 < pp := lt_of_le_of_ne hpp_nn (Ne.symm hp_zero)
+      have h_sqDensity_pn :
+          M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x = Real.sqrt pn := rfl
+      have h_sqDensity_p : M.sqrtDensity θ₀ x = Real.sqrt pp := rfl
+      have h_p_eq : pp = Real.sqrt pp * Real.sqrt pp := (Real.mul_self_sqrt hpp_nn).symm
+      have h_sqrt_div_mul : Real.sqrt (pn / pp) * Real.sqrt pp = Real.sqrt pn := by
+        rw [← Real.sqrt_mul (div_nonneg hpn_nn hpp_nn), div_mul_cancel₀ pn hp_zero]
+      change (Real.sqrt n * (2 * (Real.sqrt (pn / pp) - 1)) - ⟪h, ℓ x⟫) ^ 2 * pp ≤ _
+      have h_inner_mul :
+          (Real.sqrt n * (2 * (Real.sqrt (pn / pp) - 1)) - ⟪h, ℓ x⟫) * Real.sqrt pp
+            = 2 * Real.sqrt n * (Real.sqrt pn - Real.sqrt pp)
+              - ⟪h, ℓ x⟫ * Real.sqrt pp := by
+        have : (Real.sqrt n * (2 * (Real.sqrt (pn / pp) - 1)) - ⟪h, ℓ x⟫) * Real.sqrt pp
+             = 2 * Real.sqrt n * (Real.sqrt (pn / pp) * Real.sqrt pp - Real.sqrt pp)
+                - ⟪h, ℓ x⟫ * Real.sqrt pp := by ring
+        rw [this, h_sqrt_div_mul]
+      have h_LHS_eq :
+          (Real.sqrt n * (2 * (Real.sqrt (pn / pp) - 1)) - ⟪h, ℓ x⟫) ^ 2 * pp
+            = (2 * Real.sqrt n * (Real.sqrt pn - Real.sqrt pp)
+                - ⟪h, ℓ x⟫ * Real.sqrt pp) ^ 2 := by
+        calc (Real.sqrt n * (2 * (Real.sqrt (pn / pp) - 1)) - ⟪h, ℓ x⟫) ^ 2 * pp
+            = (Real.sqrt n * (2 * (Real.sqrt (pn / pp) - 1)) - ⟪h, ℓ x⟫) ^ 2
+                * (Real.sqrt pp * Real.sqrt pp) := by rw [← h_p_eq]
+          _ = ((Real.sqrt n * (2 * (Real.sqrt (pn / pp) - 1)) - ⟪h, ℓ x⟫) *
+                Real.sqrt pp) ^ 2 := by ring
+          _ = (2 * Real.sqrt n * (Real.sqrt pn - Real.sqrt pp)
+                - ⟪h, ℓ x⟫ * Real.sqrt pp) ^ 2 := by rw [h_inner_mul]
+      have h_RHS_eq :
+          4 * (Real.sqrt n * (Real.sqrt pn - Real.sqrt pp)
+                - (1 / 2 : ℝ) * ⟪h, ℓ x⟫ * Real.sqrt pp) ^ 2
+            = (2 * Real.sqrt n * (Real.sqrt pn - Real.sqrt pp)
+                - ⟪h, ℓ x⟫ * Real.sqrt pp) ^ 2 := by ring
+      rw [h_LHS_eq, ← h_RHS_eq, h_sqDensity_pn, h_sqDensity_p]
+    refine Integrable.mono' h_4φ_sq_int ?_ (MeasureTheory.ae_of_all μ fun x => ?_)
+    · exact ((((hW_meas n).const_mul (Real.sqrt n)).sub hg_meas).pow_const 2).mul
+              hp_meas |>.aestronglyMeasurable
+    · rw [Real.norm_eq_abs,
+          abs_of_nonneg (mul_nonneg (sq_nonneg _) (hp_nn x))]
+      exact h_bound_pt x
+  have h_sumsq_int_plus : ∀ n : ℕ, Integrable
+      (fun x => (Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫) ^ 2
+                  * M.density θ₀ x) μ := by
+    intro n
+    -- Use h_β_pt + integrability of 2 α_n integrand + 8 · g² · p.
+    have h_minus := h_sumsq_int n
+    have h_bound : Integrable
+        (fun x => 2 * ((Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                          * M.density θ₀ x)
+                    + 8 * (⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x)) μ :=
+      (h_minus.const_mul 2).add (hgsq_p_int.const_mul 8)
+    refine Integrable.mono' h_bound ?_ (MeasureTheory.ae_of_all μ fun x => ?_)
+    · exact ((((hW_meas n).const_mul (Real.sqrt n)).add hg_meas).pow_const 2).mul
+              hp_meas |>.aestronglyMeasurable
+    · rw [Real.norm_eq_abs,
+          abs_of_nonneg (mul_nonneg (sq_nonneg _) (hp_nn x))]
+      exact h_β_pt n x
+  -- β_n bound: `β_n ≤ 2 α_n + 8 Pg²`.
+  have h_β_bound : ∀ n : ℕ,
+      (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫) ^ 2
+              * M.density θ₀ x ∂μ)
+        ≤ 2 * (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                      * M.density θ₀ x ∂μ)
+          + 8 * Pg_sq := by
+    intro n
+    have h_int_le :=
+      MeasureTheory.integral_mono_of_nonneg
+        (MeasureTheory.ae_of_all μ fun x =>
+          mul_nonneg (sq_nonneg _) (hp_nn x))
+        (((h_sumsq_int n).const_mul 2).add (hgsq_p_int.const_mul 8))
+        (MeasureTheory.ae_of_all μ (h_β_pt n))
+    have h_rhs_eq :
+        ∫ x, 2 * ((Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                    * M.density θ₀ x)
+              + 8 * (⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x) ∂μ
+          = 2 * (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                          * M.density θ₀ x ∂μ)
+            + 8 * Pg_sq := by
+      rw [MeasureTheory.integral_add ((h_sumsq_int n).const_mul 2)
+            (hgsq_p_int.const_mul 8),
+          MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
+    simp only [Pi.add_apply] at h_int_le
+    rw [h_rhs_eq] at h_int_le
+    exact h_int_le
+  -- Cauchy–Schwarz step: `∫ |n · W_n² − g²| · p ≤ √α_n · √β_n`.
+  have h_cs : ∀ n : ℕ,
+      ∫ x, |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+            * M.density θ₀ x ∂μ
+        ≤ Real.sqrt (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                            * M.density θ₀ x ∂μ)
+          * Real.sqrt (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫) ^ 2
+                              * M.density θ₀ x ∂μ) := by
+    intro n
+    -- F = |√n · W_n − g| · √p, G = |√n · W_n + g| · √p.
+    set F : 𝓧 → ℝ := fun x =>
+      |Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫| * M.sqrtDensity θ₀ x
+    set G : 𝓧 → ℝ := fun x =>
+      |Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫| * M.sqrtDensity θ₀ x
+    -- MemLp of F, G (via pointwise equality with the signed version).
+    have h_F_sq_eq : ∀ x,
+        F x ^ 2 = (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                  * M.density θ₀ x := by
+      intro x
+      change (|Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫| * M.sqrtDensity θ₀ x) ^ 2
+          = _
+      rw [mul_pow, sq_abs]
+      congr 1
+      rw [show M.sqrtDensity θ₀ x ^ 2 = M.density θ₀ x from hsp_sq x]
+    have h_G_sq_eq : ∀ x,
+        G x ^ 2 = (Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫) ^ 2
+                  * M.density θ₀ x := by
+      intro x
+      change (|Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫| * M.sqrtDensity θ₀ x) ^ 2
+          = _
+      rw [mul_pow, sq_abs]
+      congr 1
+      rw [show M.sqrtDensity θ₀ x ^ 2 = M.density θ₀ x from hsp_sq x]
+    have hF_meas : Measurable F :=
+      (continuous_abs.measurable.comp
+        (((hW_meas n).const_mul (Real.sqrt n)).sub hg_meas)).mul (M.sqrtDensity_meas θ₀)
+    have hG_meas : Measurable G :=
+      (continuous_abs.measurable.comp
+        (((hW_meas n).const_mul (Real.sqrt n)).add hg_meas)).mul (M.sqrtDensity_meas θ₀)
+    have hF_memLp : MemLp F 2 μ := by
+      refine (MeasureTheory.memLp_two_iff_integrable_sq hF_meas.aestronglyMeasurable).mpr ?_
+      refine (h_sumsq_int n).congr (MeasureTheory.ae_of_all μ fun x => ?_)
+      exact (h_F_sq_eq x).symm
+    have hG_memLp : MemLp G 2 μ := by
+      refine (MeasureTheory.memLp_two_iff_integrable_sq hG_meas.aestronglyMeasurable).mpr ?_
+      refine (h_sumsq_int_plus n).congr (MeasureTheory.ae_of_all μ fun x => ?_)
+      exact (h_G_sq_eq x).symm
+    -- F · G = |n W_n² − g²| · p pointwise.
+    have h_FG_eq : ∀ x, F x * G x
+        = |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2| * M.density θ₀ x := by
+      intro x
+      change |Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫| * M.sqrtDensity θ₀ x
+            * (|Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫| * M.sqrtDensity θ₀ x)
+          = _
+      have h_sqrt_mul :
+          M.sqrtDensity θ₀ x * M.sqrtDensity θ₀ x = M.density θ₀ x := hsp_mul x
+      have h_n_real : (n : ℝ) = Real.sqrt n * Real.sqrt n := (Real.mul_self_sqrt (Nat.cast_nonneg
+          n)).symm
+      calc |Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫| * M.sqrtDensity θ₀ x
+            * (|Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫| * M.sqrtDensity θ₀ x)
+          = (|Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫|
+              * |Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫|)
+              * (M.sqrtDensity θ₀ x * M.sqrtDensity θ₀ x) := by ring
+        _ = |(Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫)
+              * (Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫)|
+              * M.density θ₀ x := by rw [← abs_mul, h_sqrt_mul]
+        _ = |(Real.sqrt n * auxStatistic M θ₀ h_n n x) ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+              * M.density θ₀ x := by
+            congr 1; congr 1; ring
+        _ = |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+              * M.density θ₀ x := by
+            congr 2
+            rw [show (Real.sqrt n * auxStatistic M θ₀ h_n n x) ^ 2
+                    = Real.sqrt n * Real.sqrt n * auxStatistic M θ₀ h_n n x ^ 2 from by ring,
+                ← h_n_real]
+    -- Apply CS.
+    have h_FG_nn : ∀ x, 0 ≤ F x * G x := by
+      intro x
+      exact mul_nonneg (mul_nonneg (abs_nonneg _) (hsp_nn x))
+                        (mul_nonneg (abs_nonneg _) (hsp_nn x))
+    have h_cs_abs :=
+      AsymptoticStatistics.L2Utils.abs_integral_mul_le_sqrt_integral_sq μ hF_memLp hG_memLp
+    have h_FG_int :
+        ∫ x, F x * G x ∂μ
+          = ∫ x, |(n : ℝ) * auxStatistic M θ₀ h_n n x ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+                  * M.density θ₀ x ∂μ :=
+      MeasureTheory.integral_congr_ae (MeasureTheory.ae_of_all μ h_FG_eq)
+    have h_abs_int_eq :
+        |∫ x, F x * G x ∂μ|
+          = ∫ x, F x * G x ∂μ := by
+      rw [abs_of_nonneg]
+      exact MeasureTheory.integral_nonneg (fun x => h_FG_nn x)
+    have h_F_sq_int :
+        ∫ x, F x ^ 2 ∂μ
+          = ∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                  * M.density θ₀ x ∂μ :=
+      MeasureTheory.integral_congr_ae (MeasureTheory.ae_of_all μ h_F_sq_eq)
+    have h_G_sq_int :
+        ∫ x, G x ^ 2 ∂μ
+          = ∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x + ⟪h, ℓ x⟫) ^ 2
+                  * M.density θ₀ x ∂μ :=
+      MeasureTheory.integral_congr_ae (MeasureTheory.ae_of_all μ h_G_sq_eq)
+    rw [h_abs_int_eq, h_FG_int, h_F_sq_int, h_G_sq_int] at h_cs_abs
+    exact h_cs_abs
+  -- Squeeze: `0 ≤ target ≤ √α_n · √(2 α_n + 8 Pg²) → 0`.
+  have h_upper_tendsto : Filter.Tendsto
+      (fun n : ℕ =>
+        Real.sqrt (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                          * M.density θ₀ x ∂μ)
+        * Real.sqrt (2 * (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                          * M.density θ₀ x ∂μ) + 8 * Pg_sq))
+      Filter.atTop (𝓝 0) := by
+    have h1 : Filter.Tendsto (fun n : ℕ =>
+        Real.sqrt (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                          * M.density θ₀ x ∂μ)) Filter.atTop (𝓝 0) := by
+      have := (Real.continuous_sqrt.tendsto 0).comp h_α
+      simpa using! this
+    have h2 : Filter.Tendsto (fun n : ℕ =>
+        Real.sqrt (2 * (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                          * M.density θ₀ x ∂μ) + 8 * Pg_sq))
+        Filter.atTop (𝓝 (Real.sqrt (8 * Pg_sq))) := by
+      have h_lin : Filter.Tendsto (fun n : ℕ =>
+          2 * (∫ x, (Real.sqrt n * auxStatistic M θ₀ h_n n x - ⟪h, ℓ x⟫) ^ 2
+                          * M.density θ₀ x ∂μ) + 8 * Pg_sq)
+          Filter.atTop (𝓝 (2 * 0 + 8 * Pg_sq)) :=
+        (h_α.const_mul 2).add_const _
+      have := (Real.continuous_sqrt.tendsto (2 * 0 + 8 * Pg_sq)).comp h_lin
+      simpa using! this
+    have := h1.mul h2
+    simpa using this
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    tendsto_const_nhds h_upper_tendsto
+    (Filter.Eventually.of_forall fun n =>
+      MeasureTheory.integral_nonneg
+        fun x => mul_nonneg (abs_nonneg _) (hp_nn x))
+    (Filter.Eventually.of_forall fun n => ?_)
+  refine (h_cs n).trans ?_
+  refine mul_le_mul_of_nonneg_left ?_ (Real.sqrt_nonneg _)
+  exact Real.sqrt_le_sqrt (h_β_bound n)
+
+/-! ## Step 6a — `Σᵢ W_{n,i}² →ₚ P g²`
+
+On the same iid setup as `sum_W_decomp` (probability space `(Ω, ℙ)`, iid
+sample `X : ℕ → Ω → 𝓧` with law `P_{θ₀} = μ.withDensity p_{θ₀}`),
+
+  `∑_{i < n} W_n(X_i ω)² →ₚ P_{θ₀} g² = fisherInformation M μ θ₀ ℓ h h`.
+
+The proof writes `Σ W_n² = (1/n) (Σ g²(X_i) + Σ Δ_{n,i})`
+where `Δ_{n,i} := n · W_n(X_i)² − g(X_i)²`. Then:
+  * `(1/n) Σ g²(X_i) →ₚ P g²` by the strong law of large numbers applied
+    to the iid sequence `g² ∘ X_i` (in-probability follows from a.s.),
+    using `dqm_fisher_integrable` for `g² · p ∈ L¹(μ) ⇒ g² ∘ X_i ∈ L¹(ℙ)`.
+  * `(1/n) Σ Δ_{n,i} →ₚ 0` by Markov, via
+    `E|Δ_{n,1}| = ∫ |n · W_n² − g²| · p dμ → 0` (a Step-3 corollary, proved
+    by Cauchy–Schwarz on `|n W_n² − g²| ≤ |√n W_n − g| · |√n W_n + g|`). -/
+lemma sum_W_sq_tendsto_to_Pg_sq
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} (P : Measure Ω) [IsProbabilityMeasure P]
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (hℓ : Measurable ℓ)
+    (hint : Integrable (M.density θ₀) μ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h_fisher_cont :
+      Filter.Tendsto (fun v : Θ => ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+        (𝓝 0) (𝓝 0))
+    (h : Θ) (h_n : ℕ → Θ) (hconv : Filter.Tendsto h_n Filter.atTop (𝓝 h))
+    (X : ℕ → Ω → 𝓧) (hX_meas : ∀ i, Measurable (X i))
+    (hindep : Pairwise fun i j => ProbabilityTheory.IndepFun (X i) (X j) P)
+    (hident : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hlaw : Measure.map (X 0) P
+              = μ.withDensity fun x => ENNReal.ofReal (M.density θ₀ x)) :
+    TendstoInMeasure P
+      (fun n ω => ∑ i ∈ Finset.range n, auxStatistic M θ₀ h_n n (X i ω) ^ 2)
+      Filter.atTop
+      (fun _ => fisherInformation M μ θ₀ ℓ h h) := by
+  -- Notation.
+  set g : 𝓧 → ℝ := fun x => ⟪h, ℓ x⟫ with hg_def
+  set p : 𝓧 → ℝ := M.density θ₀ with hp_def
+  set ν : Measure 𝓧 := μ.withDensity fun x => ENNReal.ofReal (p x) with hν_def
+  set W : ℕ → 𝓧 → ℝ := auxStatistic M θ₀ h_n with hW_def
+  have hp_meas : Measurable p := M.density_meas θ₀
+  have hp_nn : ∀ x, 0 ≤ p x := M.density_nonneg θ₀
+  have hg_meas : Measurable g :=
+    ((continuous_const (y := h)).inner continuous_id).measurable.comp hℓ
+  have hgsq_meas : Measurable (fun x => g x ^ 2) := hg_meas.pow_const 2
+  have hW_meas : ∀ n, Measurable (W n) := fun n => auxStatistic_measurable M θ₀ h_n n
+  -- Each `X i` has law `ν`.
+  have h_map : ∀ i, Measure.map (X i) P = ν := by
+    intro i
+    rw [(hident i).map_eq, hlaw]
+  -- Transfer integrals: `∫ ω, f (X i ω) ∂P = ∫ x, f x · p x ∂μ`.
+  have h_transfer : ∀ (f : 𝓧 → ℝ), AEStronglyMeasurable f ν →
+      ∀ i, ∫ ω, f (X i ω) ∂P = ∫ x, f x * p x ∂μ := by
+    intro f hf_aesm i
+    have h_aesm_map : AEStronglyMeasurable f (Measure.map (X i) P) := by
+      rw [h_map i]; exact hf_aesm
+    have h_step1 : ∫ ω, f (X i ω) ∂P = ∫ y, f y ∂ν := by
+      rw [← h_map i, MeasureTheory.integral_map (hX_meas i).aemeasurable h_aesm_map]
+    have h_step2 : ∫ y, f y ∂ν = ∫ y, p y * f y ∂μ := by
+      rw [hν_def,
+          integral_withDensity_eq_integral_toReal_smul
+            (μ := μ) hp_meas.ennreal_ofReal
+            (MeasureTheory.ae_of_all μ fun _ => ENNReal.ofReal_lt_top) f]
+      refine MeasureTheory.integral_congr_ae (MeasureTheory.ae_of_all μ fun y => ?_)
+      simp [ENNReal.toReal_ofReal (hp_nn y)]
+    rw [h_step1, h_step2]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+    ring
+  -- Transfer integrability: `f · p ∈ L¹(μ) ⇒ f ∘ X i ∈ L¹(P)`.
+  have h_transfer_int : ∀ (f : 𝓧 → ℝ), Measurable f →
+      Integrable (fun x => f x * p x) μ →
+      ∀ i, Integrable (fun ω => f (X i ω)) P := by
+    intro f hf_meas hfp_int i
+    have hf_ν : Integrable f ν := by
+      rw [hν_def]
+      refine (MeasureTheory.integrable_withDensity_iff hp_meas.ennreal_ofReal
+                (MeasureTheory.ae_of_all μ fun _ => ENNReal.ofReal_lt_top)).mpr ?_
+      refine hfp_int.congr (MeasureTheory.ae_of_all μ fun x => ?_)
+      simp [ENNReal.toReal_ofReal (hp_nn x)]
+    have hf_map : Integrable f (Measure.map (X i) P) := by
+      rw [h_map i]; exact hf_ν
+    exact (MeasureTheory.integrable_map_measure hf_meas.aestronglyMeasurable
+            (hX_meas i).aemeasurable).mp hf_map
+  -- Integrability of `g² · p`.
+  have hgsq_p_int : Integrable (fun x => g x ^ 2 * p x) μ :=
+    dqm_fisher_integrable M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+  -- Rewrite `fisherInformation` as `Pg_sq`.
+  set Pg_sq : ℝ := ∫ x, g x ^ 2 * p x ∂μ with hPg_sq_def
+  have h_fisher_eq : fisherInformation M μ θ₀ ℓ h h = Pg_sq := by
+    change ∫ x, (⟪h, ℓ x⟫ * ⟪h, ℓ x⟫) * M.density θ₀ x ∂μ = ∫ x, g x ^ 2 * p x ∂μ
+    refine MeasureTheory.integral_congr_ae (MeasureTheory.ae_of_all μ fun x => ?_)
+    change (⟪h, ℓ x⟫ * ⟪h, ℓ x⟫) * M.density θ₀ x = ⟪h, ℓ x⟫ ^ 2 * M.density θ₀ x
+    ring
+  suffices h : TendstoInMeasure P
+      (fun n ω => ∑ i ∈ Finset.range n, W n (X i ω) ^ 2)
+      Filter.atTop (fun _ : Ω => Pg_sq) by
+    refine h.congr_right ?_
+    exact Filter.Eventually.of_forall (fun _ => h_fisher_eq.symm)
+  -- Δ_n(x) := n · W_n(x)² − g(x)².
+  set Δ : ℕ → 𝓧 → ℝ := fun n x => (n : ℝ) * W n x ^ 2 - g x ^ 2 with hΔ_def
+  have hΔ_meas : ∀ n, Measurable (Δ n) :=
+    fun n => (((hW_meas n).pow_const 2).const_mul _).sub hgsq_meas
+  -- `W_n² · p ∈ L¹(μ)` via the 4·(√p_n − √p)² bound.
+  have hWnsq_p_int : ∀ n : ℕ, Integrable (fun x => W n x ^ 2 * p x) μ := by
+    intro n
+    have h_sqrt_diff_memLp : MemLp (fun x =>
+        M.sqrtDensity (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x - M.sqrtDensity θ₀ x) 2 μ :=
+      (M.sqrtDensity_memLp_two μ _ (hint_perturb _ _)).sub
+        (M.sqrtDensity_memLp_two μ _ hint)
+    have h_sq_int := h_sqrt_diff_memLp.integrable_sq
+    have h_m : Measurable fun x => W n x ^ 2 * p x :=
+      ((hW_meas n).pow_const 2).mul hp_meas
+    refine Integrable.mono' (h_sq_int.const_mul 4) h_m.aestronglyMeasurable
+      (MeasureTheory.ae_of_all μ fun x => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) (hp_nn x))]
+    exact auxStatistic_sq_mul_density_le M θ₀ h_n n x
+  -- `Δ_n · p ∈ L¹(μ)`.
+  have hΔp_int : ∀ n, Integrable (fun x => Δ n x * p x) μ := by
+    intro n
+    have h_eq : (fun x => Δ n x * p x)
+              = fun x => (n : ℝ) * (W n x ^ 2 * p x) - g x ^ 2 * p x := by
+      funext x; change ((n : ℝ) * W n x ^ 2 - g x ^ 2) * p x = _; ring
+    rw [h_eq]
+    exact ((hWnsq_p_int n).const_mul _).sub hgsq_p_int
+  -- `Δ_n ∘ X_i ∈ L¹(P)` and `g² ∘ X_i ∈ L¹(P)`.
+  have hΔX_int : ∀ n i, Integrable (fun ω => Δ n (X i ω)) P :=
+    fun n i => h_transfer_int (Δ n) (hΔ_meas n) (hΔp_int n) i
+  have hgsqX_int : ∀ i, Integrable (fun ω => g (X i ω) ^ 2) P :=
+    fun i => h_transfer_int (fun x => g x ^ 2) hgsq_meas hgsq_p_int i
+  -- `g² ∘ X_i` is IdentDistrib with `g² ∘ X_0`, and pairwise independent.
+  have hgsqX_ident : ∀ i, ProbabilityTheory.IdentDistrib
+      (fun ω => g (X i ω) ^ 2) (fun ω => g (X 0 ω) ^ 2) P P := fun i =>
+    (hident i).comp hgsq_meas
+  have hgsqX_indep : Pairwise fun i j =>
+      ProbabilityTheory.IndepFun (fun ω => g (X i ω) ^ 2) (fun ω => g (X j ω) ^ 2) P := by
+    intro i j hij
+    exact (hindep hij).comp hgsq_meas hgsq_meas
+  have hE_gsqX : ∫ ω, g (X 0 ω) ^ 2 ∂P = Pg_sq :=
+    h_transfer (fun x => g x ^ 2) hgsq_meas.aestronglyMeasurable 0
+  -- Part A: `(1/n) ∑ g²(X_i) →_{a.s.} Pg_sq` by SLLN.
+  have h_slln : ∀ᵐ ω ∂P, Filter.Tendsto
+      (fun n : ℕ => (∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ))
+      Filter.atTop (𝓝 Pg_sq) := by
+    have h := ProbabilityTheory.strong_law_ae_real
+      (μ := P) (fun i ω => g (X i ω) ^ 2) (hgsqX_int 0) hgsqX_indep hgsqX_ident
+    filter_upwards [h] with ω hω
+    rw [← hE_gsqX]; exact hω
+  -- Part A in-measure.
+  have hA_meas : ∀ n : ℕ, AEStronglyMeasurable
+      (fun ω => (∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ)) P := by
+    intro n
+    have h_sum : Measurable fun ω => ∑ i ∈ Finset.range n, g (X i ω) ^ 2 :=
+      Finset.measurable_sum _ (fun i _ => (hg_meas.comp (hX_meas i)).pow_const 2)
+    exact (h_sum.div_const _).aestronglyMeasurable
+  have hA_tendsto : TendstoInMeasure P
+      (fun n ω => (∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ))
+      Filter.atTop (fun _ => Pg_sq) :=
+    tendstoInMeasure_of_tendsto_ae hA_meas h_slln
+  -- Part B: `(1/n) ∑ Δ_n(X_i) →_P 0` via L¹.
+  have hΔ_l1 := delta_l1_tendsto M μ θ₀ ℓ hℓ hint hint_perturb hDQM h_fisher_cont h h_n hconv
+  have hB_meas : ∀ n, AEStronglyMeasurable
+      (fun ω => (∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)) P := by
+    intro n
+    have h_sum : Measurable fun ω => ∑ i ∈ Finset.range n, Δ n (X i ω) :=
+      Finset.measurable_sum _ (fun i _ => (hΔ_meas n).comp (hX_meas i))
+    exact (h_sum.div_const _).aestronglyMeasurable
+  have hB_int : ∀ n, Integrable
+      (fun ω => (∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)) P := by
+    intro n
+    refine (MeasureTheory.integrable_finsetSum _ ?_).div_const _
+    intro i _
+    exact hΔX_int n i
+  -- L¹ bound: `∫ |B_n| dP ≤ ∫ |Δ_n| · p dμ` for `n ≥ 1`.
+  have hB_L1_bound : ∀ n : ℕ, 1 ≤ n →
+      ∫ ω, |(∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)| ∂P
+        ≤ ∫ x, |Δ n x| * p x ∂μ := by
+    intro n hn
+    have hn_pos_real : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+    have hn_ne : (n : ℝ) ≠ 0 := ne_of_gt hn_pos_real
+    have h_pt : ∀ ω, |(∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)|
+                    ≤ (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, |Δ n (X i ω)| := by
+      intro ω
+      rw [abs_div, abs_of_pos hn_pos_real, div_eq_inv_mul]
+      refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+      exact Finset.abs_sum_le_sum_abs _ _
+    have h_int_abs : Integrable
+        (fun ω => ∑ i ∈ Finset.range n, |Δ n (X i ω)|) P :=
+      MeasureTheory.integrable_finsetSum _ (fun i _ => (hΔX_int n i).abs)
+    calc ∫ ω, |(∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)| ∂P
+        ≤ ∫ ω, (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, |Δ n (X i ω)| ∂P := by
+          refine MeasureTheory.integral_mono_ae (hB_int n).abs ?_
+            (Filter.Eventually.of_forall h_pt)
+          exact h_int_abs.const_mul _
+      _ = (n : ℝ)⁻¹ * ∫ ω, ∑ i ∈ Finset.range n, |Δ n (X i ω)| ∂P := by
+          rw [MeasureTheory.integral_const_mul]
+      _ = (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, ∫ ω, |Δ n (X i ω)| ∂P := by
+          rw [MeasureTheory.integral_finsetSum _ (fun i _ => (hΔX_int n i).abs)]
+      _ = (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, ∫ x, |Δ n x| * p x ∂μ := by
+          congr 1
+          refine Finset.sum_congr rfl fun i _ => ?_
+          exact h_transfer (fun x => |Δ n x|)
+            (continuous_abs.measurable.comp (hΔ_meas n)).aestronglyMeasurable i
+      _ = (n : ℝ)⁻¹ * ((n : ℝ) * ∫ x, |Δ n x| * p x ∂μ) := by
+          rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+      _ = ∫ x, |Δ n x| * p x ∂μ := by
+          rw [← mul_assoc, inv_mul_cancel₀ hn_ne, one_mul]
+  -- `∫ |B_n| dP → 0`.
+  have h_integral_B_abs : Filter.Tendsto
+      (fun n : ℕ => ∫ ω, |(∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)| ∂P)
+      Filter.atTop (𝓝 0) := by
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      tendsto_const_nhds hΔ_l1
+      (Filter.Eventually.of_forall fun n =>
+        MeasureTheory.integral_nonneg (fun ω => abs_nonneg _))
+      (Filter.eventually_atTop.mpr ⟨1, hB_L1_bound⟩)
+  -- Convert `∫ |B_n| → 0` to `eLpNorm B_n 1 → 0`, then to in-measure.
+  have hB_eLpNorm : Filter.Tendsto
+      (fun n : ℕ => eLpNorm (fun ω => (∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)) 1 P)
+      Filter.atTop (𝓝 0) := by
+    have h_eLpNorm_eq : ∀ n : ℕ,
+        eLpNorm (fun ω => (∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)) 1 P
+          = ENNReal.ofReal
+              (∫ ω, |(∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)| ∂P) := by
+      intro n
+      rw [MeasureTheory.eLpNorm_one_eq_lintegral_enorm (hB_meas n),
+          ← MeasureTheory.ofReal_integral_norm_eq_lintegral_enorm (hB_int n)]
+      simp only [Real.norm_eq_abs]
+    simp_rw [h_eLpNorm_eq]
+    have := (ENNReal.continuous_ofReal.tendsto 0).comp h_integral_B_abs
+    simpa using! this
+  have hB_tendsto : TendstoInMeasure P
+      (fun n ω => (∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ))
+      Filter.atTop (fun _ => (0 : ℝ)) := by
+    refine MeasureTheory.tendstoInMeasure_of_tendsto_eLpNorm
+      (p := 1) (by norm_num) ?_
+    refine hB_eLpNorm.congr fun n => ?_
+    congr 1
+    funext ω; simp
+  -- Pointwise decomposition: `∑ W_n(X_i)² = A n ω + B n ω`.
+  have h_SAB : ∀ n : ℕ, ∀ ω : Ω,
+      ∑ i ∈ Finset.range n, W n (X i ω) ^ 2
+        = (∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ)
+          + (∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ) := by
+    intro n ω
+    rcases Nat.eq_zero_or_pos n with rfl | hn_pos
+    · simp
+    have hn_ne : (n : ℝ) ≠ 0 := by exact_mod_cast hn_pos.ne'
+    rw [← add_div, ← Finset.sum_add_distrib]
+    have h_pt : ∀ i, g (X i ω) ^ 2 + Δ n (X i ω) = (n : ℝ) * W n (X i ω) ^ 2 := by
+      intro i
+      change g (X i ω) ^ 2 + ((n : ℝ) * W n (X i ω) ^ 2 - g (X i ω) ^ 2)
+            = (n : ℝ) * W n (X i ω) ^ 2
+      ring
+    simp_rw [h_pt]
+    rw [← Finset.mul_sum, mul_div_cancel_left₀ _ hn_ne]
+  -- Combine via ε-split.
+  rw [MeasureTheory.tendstoInMeasure_iff_norm]
+  intro ε hε
+  set δ : ℝ := ε / 2 with hδ_def
+  have hδ_pos : 0 < δ := by positivity
+  have hε_le : ε ≤ δ + δ := by rw [hδ_def]; linarith
+  have hA_bd := MeasureTheory.tendstoInMeasure_iff_norm.mp hA_tendsto δ hδ_pos
+  have hB_bd := MeasureTheory.tendstoInMeasure_iff_norm.mp hB_tendsto δ hδ_pos
+  have h_meas_sub : ∀ n : ℕ,
+      P {ω | ε ≤ ‖(∑ i ∈ Finset.range n, W n (X i ω) ^ 2) - Pg_sq‖}
+        ≤ P {ω | δ ≤ ‖(∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ) - Pg_sq‖}
+          + P {ω | δ ≤ ‖(∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ) - (0 : ℝ)‖} := by
+    intro n
+    have h_inclusion :
+        {ω | ε ≤ ‖(∑ i ∈ Finset.range n, W n (X i ω) ^ 2) - Pg_sq‖}
+          ⊆ {ω | δ ≤ ‖(∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ) - Pg_sq‖}
+            ∪ {ω | δ ≤ ‖(∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ) - (0 : ℝ)‖} := by
+      intro ω hω
+      rw [Set.mem_ofPred_eq, Real.norm_eq_abs, h_SAB n ω] at hω
+      by_contra h
+      rw [Set.mem_union, not_or] at h
+      obtain ⟨hA', hB'⟩ := h
+      rw [Set.mem_ofPred_eq, Real.norm_eq_abs, not_le] at hA'
+      rw [Set.mem_ofPred_eq, Real.norm_eq_abs, not_le] at hB'
+      have hdecomp :
+          ((∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ)
+            + (∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)) - Pg_sq
+          = ((∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ) - Pg_sq)
+            + ((∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ) - 0) := by ring
+      have htri :
+          |((∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ)
+              + (∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ)) - Pg_sq|
+            ≤ |(∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ) - Pg_sq|
+              + |(∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ) - 0| := by
+        rw [hdecomp]; exact abs_add_le _ _
+      linarith
+    exact (measure_mono h_inclusion).trans (measure_union_le _ _)
+  have h_sum_tendsto : Filter.Tendsto
+      (fun n : ℕ =>
+        P {ω | δ ≤ ‖(∑ i ∈ Finset.range n, g (X i ω) ^ 2) / (n : ℝ) - Pg_sq‖}
+          + P {ω | δ ≤ ‖(∑ i ∈ Finset.range n, Δ n (X i ω)) / (n : ℝ) - (0 : ℝ)‖})
+      Filter.atTop (𝓝 0) := by
+    have := hA_bd.add hB_bd
+    simpa using this
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    tendsto_const_nhds h_sum_tendsto
+    (Filter.Eventually.of_forall fun n => zero_le)
+    (Filter.Eventually.of_forall h_meas_sub)
+
+/-! ## Step 6b — single-index tail of `|W_{n}|` (analytic core)
+
+The statement `max_{1≤i≤n} |W_{n,i}| →ₚ 0` from van der Vaart is obtained from the
+**single-index** analytic core proved here, namely
+
+  `∀ ε > 0, n · P_{θ₀}({|W_n| > ε}) → 0`,
+
+by a trivial union bound. The `max` form itself is `max_abs_W_tendsto_zero_iid`
+below (Step 6b-iid), which wraps this core with
+`P(max_i |W_{n,i}| > ε) ≤ n · P(|W_{n,1}| > ε)` on the iid sample.
+
+**Proof.** Set `g := ⟨h, ℓ⟩` and threshold `t_n := n ε²/2`. From the pointwise
+set inclusion
+  `{|W_n|>ε} ⊆ {g² > t_n} ∪ {|n W_n² − g²| > t_n}`
+(because `g² ≤ t_n` and `|n W_n² − g²| ≤ t_n` force `n W_n² ≤ 2 t_n = n ε²`),
+Markov on each piece gives
+  `n · P_{θ₀}({|W_n|>ε}) ≤ (2/ε²) · (∫ g² · 𝟙_{g²>t_n} · p dμ + ∫ |n W_n² − g²| · p dμ)`.
+The first integrand is dominated by the `L¹`-function `g² · p`
+(via `dqm_fisher_integrable`) and `𝟙_{g²>t_n}(x) → 0` pointwise, so DCT drives it
+to `0`. The second integrand → 0 by the hypothesis `h_delta_l1`
+(a Step-3 corollary: `E[(√n W_n − g)²] → 0` implies
+`E[|n W_n² − g²|] → 0` via Cauchy–Schwarz). -/
+omit [SecondCountableTopology Θ] in
+lemma max_abs_W_tendsto_zero
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (hℓ : Measurable ℓ)
+    (hint : Integrable (M.density θ₀) μ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h : Θ) (h_n : ℕ → Θ) (_hconv : Filter.Tendsto h_n Filter.atTop (𝓝 h))
+    (h_delta_integrable : ∀ n : ℕ,
+      Integrable (fun x =>
+        |(n : ℝ) * (auxStatistic M θ₀ h_n n x) ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+          * M.density θ₀ x) μ)
+    (h_delta_l1 :
+      Filter.Tendsto
+        (fun n : ℕ =>
+          ∫ x, |(n : ℝ) * (auxStatistic M θ₀ h_n n x) ^ 2 - ⟪h, ℓ x⟫ ^ 2|
+                * M.density θ₀ x ∂μ)
+        Filter.atTop (𝓝 0)) :
+    ∀ ε > 0,
+      Filter.Tendsto
+        (fun n : ℕ =>
+          (n : ℝ) *
+            ∫ x in {y | ε < |auxStatistic M θ₀ h_n n y|}, M.density θ₀ x ∂μ)
+        Filter.atTop (𝓝 0) := by
+  intro ε hε
+  -- Abbreviations.
+  set W : ℕ → 𝓧 → ℝ := auxStatistic M θ₀ h_n with hW_def
+  set g : 𝓧 → ℝ := fun x => ⟪h, ℓ x⟫ with hg_def
+  set p : 𝓧 → ℝ := M.density θ₀ with hp_def
+  have hW_meas : ∀ n : ℕ, Measurable (W n) :=
+    fun n => auxStatistic_measurable M θ₀ h_n n
+  have hg_meas : Measurable g :=
+    ((continuous_const (y := h)).inner continuous_id).measurable.comp hℓ
+  have hp_meas : Measurable p := M.density_meas θ₀
+  have hp_nn : ∀ x, 0 ≤ p x := M.density_nonneg θ₀
+  have hε_sq_pos : (0 : ℝ) < ε ^ 2 := pow_pos hε 2
+  -- Fisher-type integrability: g² · p ∈ L¹.
+  have hg2p_int : Integrable (fun x => g x ^ 2 * p x) μ :=
+    dqm_fisher_integrable M μ θ₀ ℓ hint hDQM h (fun t => hint_perturb t h)
+  have hg2p_nn : ∀ x, 0 ≤ g x ^ 2 * p x :=
+    fun x => mul_nonneg (sq_nonneg _) (hp_nn x)
+  -- Measurability of the three level sets.
+  have hA_meas : ∀ n : ℕ, MeasurableSet {y | ε < |W n y|} :=
+    fun n => measurableSet_lt measurable_const (continuous_abs.measurable.comp (hW_meas n))
+  have hBg_meas : ∀ n : ℕ, MeasurableSet {y | (n : ℝ) * ε ^ 2 / 2 < g y ^ 2} :=
+    fun n => measurableSet_lt measurable_const (hg_meas.pow_const 2)
+  have hBΔ_meas : ∀ n : ℕ, MeasurableSet
+      {y | (n : ℝ) * ε ^ 2 / 2 < |(n : ℝ) * (W n y) ^ 2 - g y ^ 2|} := by
+    intro n
+    refine measurableSet_lt measurable_const ?_
+    exact continuous_abs.measurable.comp
+      ((((hW_meas n).pow_const 2).const_mul ((n : ℝ))).sub (hg_meas.pow_const 2))
+  -- The two convergent tails.
+  set A₁ : ℕ → ℝ := fun n =>
+    ∫ x in {y | (n : ℝ) * ε ^ 2 / 2 < g y ^ 2}, g x ^ 2 * p x ∂μ with hA₁_def
+  set A₂ : ℕ → ℝ := fun n =>
+    ∫ x, |(n : ℝ) * (W n x) ^ 2 - g x ^ 2| * p x ∂μ with hA₂_def
+  -- A₁ → 0 by DCT on the `g²`-tail (via `tendsto_setIntegral_tail_of_integrable`).
+  have hA₁_tendsto : Filter.Tendsto A₁ Filter.atTop (𝓝 0) := by
+    have h_threshold_tendsto :
+        Filter.Tendsto (fun n : ℕ => (n : ℝ) * ε ^ 2 / 2) Filter.atTop Filter.atTop := by
+      have h_nat : Filter.Tendsto (fun n : ℕ => (n : ℝ)) Filter.atTop Filter.atTop :=
+        tendsto_natCast_atTop_atTop
+      have h_scaled :
+          Filter.Tendsto (fun n : ℕ => (n : ℝ) * (ε ^ 2 / 2)) Filter.atTop Filter.atTop :=
+        h_nat.atTop_mul_const (by positivity)
+      simpa [mul_div_assoc] using h_scaled
+    exact ForMathlib.tendsto_setIntegral_tail_of_integrable
+      hg2p_int (hg_meas.pow_const 2) h_threshold_tendsto
+  -- A₂ → 0 by hypothesis.
+  have hA₂_tendsto : Filter.Tendsto A₂ Filter.atTop (𝓝 0) := h_delta_l1
+  -- The combined upper bound tends to zero.
+  have h_upper_tendsto :
+      Filter.Tendsto (fun n : ℕ => (2 / ε ^ 2) * (A₁ n + A₂ n))
+        Filter.atTop (𝓝 0) := by
+    have h_sum : Filter.Tendsto (fun n : ℕ => A₁ n + A₂ n) Filter.atTop (𝓝 0) := by
+      simpa using hA₁_tendsto.add hA₂_tendsto
+    have := h_sum.const_mul (2 / ε ^ 2)
+    simpa using this
+  -- Step B+C: set-integral chain (eventually, for `n ≥ 1`) assembling
+  -- set inclusion + union-subadditivity + Markov on each piece.
+  have h_le : ∀ᶠ (n : ℕ) in Filter.atTop,
+      (n : ℝ) * ∫ x in {y | ε < |W n y|}, p x ∂μ ≤ (2 / ε ^ 2) * (A₁ n + A₂ n) := by
+    refine Filter.eventually_atTop.mpr ⟨1, fun (n : ℕ) (hn : 1 ≤ n) => ?_⟩
+    have hn_nat_pos : 0 < n := hn
+    have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_nat_pos
+    have hn_ne : (n : ℝ) ≠ 0 := ne_of_gt hn_pos
+    have hε2_ne : ε ^ 2 ≠ 0 := ne_of_gt hε_sq_pos
+    have h_t_pos : (0 : ℝ) < (n : ℝ) * ε ^ 2 / 2 := by positivity
+    -- Set inclusion: `{|W n|>ε} ⊆ Bg ∪ BΔ`.
+    have h_incl : {y | ε < |W n y|} ⊆
+        {y | (n : ℝ) * ε ^ 2 / 2 < g y ^ 2} ∪
+        {y | (n : ℝ) * ε ^ 2 / 2 < |(n : ℝ) * (W n y) ^ 2 - g y ^ 2|} := by
+      intro y hy
+      rw [Set.mem_union]
+      by_contra h_not
+      push Not at h_not
+      obtain ⟨h_notg, h_notΔ⟩ := h_not
+      simp only [Set.mem_ofPred_eq, not_lt] at h_notg h_notΔ
+      have h3 : (n : ℝ) * (W n y) ^ 2 - g y ^ 2 ≤ (n : ℝ) * ε ^ 2 / 2 :=
+        (le_abs_self _).trans h_notΔ
+      have h4 : (n : ℝ) * (W n y) ^ 2 ≤ (n : ℝ) * ε ^ 2 := by linarith
+      have h5 : (W n y) ^ 2 ≤ ε ^ 2 := le_of_mul_le_mul_left h4 hn_pos
+      have h6 : |W n y| ≤ ε := abs_le_of_sq_le_sq h5 hε.le
+      exact (not_lt.mpr h6) hy
+    -- Step 1 (monotonicity): `∫_A p ≤ ∫_{Bg ∪ BΔ} p`.
+    have h_step1 :
+        ∫ x in {y | ε < |W n y|}, p x ∂μ ≤
+          ∫ x in {y | (n : ℝ) * ε ^ 2 / 2 < g y ^ 2} ∪
+                {y | (n : ℝ) * ε ^ 2 / 2 < |(n : ℝ) * (W n y) ^ 2 - g y ^ 2|},
+            p x ∂μ := by
+      refine MeasureTheory.setIntegral_mono_set hint.integrableOn
+        (Filter.Eventually.of_forall (fun x => hp_nn x))
+        (Filter.Eventually.of_forall h_incl)
+    -- Step 2 (union-subadditivity): `∫_{Bg ∪ BΔ} p ≤ ∫_{Bg} p + ∫_{BΔ} p`.
+    have h_step2 :=
+      ForMathlib.setIntegral_union_le_add_of_nonneg
+        (hBg_meas n) (hBΔ_meas n) hp_nn hint.integrableOn hint.integrableOn
+    -- Step 3a (Markov on Bg): `∫_{Bg} p ≤ t⁻¹ · A₁`.
+    have h_mk_Bg :=
+      ForMathlib.setIntegral_le_const_mul_of_threshold
+        h_t_pos (hBg_meas n) (fun _ hx => hx)
+        (fun x _ => hp_nn x) hint.integrableOn hg2p_int.integrableOn
+    -- Step 3b (Markov on BΔ, then extend domain): `∫_{BΔ} p ≤ t⁻¹ · A₂`.
+    have h_mk_BΔ :
+        ∫ x in {y | (n : ℝ) * ε ^ 2 / 2 < |(n : ℝ) * (W n y) ^ 2 - g y ^ 2|}, p x ∂μ ≤
+          ((n : ℝ) * ε ^ 2 / 2)⁻¹ * A₂ n := by
+      have h_loc :=
+        ForMathlib.setIntegral_le_const_mul_of_threshold
+          h_t_pos (hBΔ_meas n) (fun _ hx => hx)
+          (fun x _ => hp_nn x) hint.integrableOn
+          (h_delta_integrable n).integrableOn
+      have h_ext :
+          ∫ x in {y | (n : ℝ) * ε ^ 2 / 2 < |(n : ℝ) * (W n y) ^ 2 - g y ^ 2|},
+            |(n : ℝ) * (W n x) ^ 2 - g x ^ 2| * p x ∂μ ≤ A₂ n :=
+        MeasureTheory.setIntegral_le_integral (h_delta_integrable n)
+          (Filter.Eventually.of_forall
+            (fun x => mul_nonneg (abs_nonneg _) (hp_nn x)))
+      exact h_loc.trans
+        (mul_le_mul_of_nonneg_left h_ext (inv_pos.mpr h_t_pos).le)
+    -- Combine + multiply by `n` + simplify coefficient `n / (nε²/2) = 2/ε²`.
+    have h_combined :
+        ∫ x in {y | ε < |W n y|}, p x ∂μ ≤
+          ((n : ℝ) * ε ^ 2 / 2)⁻¹ * A₁ n + ((n : ℝ) * ε ^ 2 / 2)⁻¹ * A₂ n :=
+      h_step1.trans (h_step2.trans (add_le_add h_mk_Bg h_mk_BΔ))
+    have h_coef_eq :
+        (n : ℝ) * (((n : ℝ) * ε ^ 2 / 2)⁻¹ * A₁ n
+                      + ((n : ℝ) * ε ^ 2 / 2)⁻¹ * A₂ n)
+          = (2 / ε ^ 2) * (A₁ n + A₂ n) := by
+      field_simp
+    calc (n : ℝ) * ∫ x in {y | ε < |W n y|}, p x ∂μ
+        ≤ (n : ℝ) * (((n : ℝ) * ε ^ 2 / 2)⁻¹ * A₁ n
+                        + ((n : ℝ) * ε ^ 2 / 2)⁻¹ * A₂ n) :=
+          mul_le_mul_of_nonneg_left h_combined (Nat.cast_nonneg n)
+      _ = (2 / ε ^ 2) * (A₁ n + A₂ n) := h_coef_eq
+  -- Squeeze to conclude.
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    tendsto_const_nhds h_upper_tendsto
+    (Filter.Eventually.of_forall fun n => by
+      refine mul_nonneg (Nat.cast_nonneg n) ?_
+      exact MeasureTheory.setIntegral_nonneg (hA_meas n) (fun x _ => hp_nn x))
+    h_le
+
+/-! ## Step 6b — `max_{i<n} |W_{n,i}| →ₚ 0` (iid union-bound upgrade)
+
+Promotes the single-index analytic core `max_abs_W_tendsto_zero` to the actual
+statement `max_{1≤i≤n} |W_{n,i}(ω)| →ₚ 0` used by van der Vaart. On the same
+iid setup as `sum_W_decomp`/`sum_W_sq_tendsto_to_Pg_sq`, we bound
+`P(⋃_{i<n} {|W_n(X_i)| > ε}) ≤ n · ν({|W_n|>ε})` (union bound + `IdentDistrib`),
+then identify `n · ν(…) = ENNReal.ofReal(n · ∫_{|W_n|>ε} p dμ) → 0` via the
+single-index lemma. -/
+lemma max_abs_W_tendsto_zero_iid
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} (P : Measure Ω) [IsProbabilityMeasure P]
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (hℓ : Measurable ℓ)
+    (hint : Integrable (M.density θ₀) μ)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h_fisher_cont :
+      Filter.Tendsto (fun v : Θ => ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+        (𝓝 0) (𝓝 0))
+    (h : Θ) (h_n : ℕ → Θ) (hconv : Filter.Tendsto h_n Filter.atTop (𝓝 h))
+    (X : ℕ → Ω → 𝓧) (hX_meas : ∀ i, Measurable (X i))
+    (_hindep : Pairwise fun i j => ProbabilityTheory.IndepFun (X i) (X j) P)
+    (hident : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hlaw : Measure.map (X 0) P
+              = μ.withDensity fun x => ENNReal.ofReal (M.density θ₀ x)) :
+    ∀ ε > 0, Filter.Tendsto
+      (fun n : ℕ => P (⋃ i ∈ Finset.range n,
+                        {ω | ε < |auxStatistic M θ₀ h_n n (X i ω)|}))
+      Filter.atTop (𝓝 0) := by
+  intro ε hε
+  set W : ℕ → 𝓧 → ℝ := auxStatistic M θ₀ h_n with hW_def
+  set p : 𝓧 → ℝ := M.density θ₀ with hp_def
+  set ν : Measure 𝓧 := μ.withDensity fun x => ENNReal.ofReal (p x) with hν_def
+  have hp_meas : Measurable p := M.density_meas θ₀
+  have hp_nn : ∀ x, 0 ≤ p x := M.density_nonneg θ₀
+  have hW_meas : ∀ n, Measurable (W n) := fun n => auxStatistic_measurable M θ₀ h_n n
+  have hA_meas : ∀ n : ℕ, MeasurableSet {y | ε < |W n y|} := fun n =>
+    measurableSet_lt measurable_const (continuous_abs.measurable.comp (hW_meas n))
+  -- Each `X i` has law `ν`.
+  have h_map : ∀ i, Measure.map (X i) P = ν := fun i => by
+    rw [(hident i).map_eq, hlaw]
+  -- Feed `max_abs_W_tendsto_zero` with its two Δ-hypotheses (Step-3 L¹ corollary).
+  have h_delta_int := fun n =>
+    delta_l1_integrable M μ θ₀ ℓ hℓ hint hint_perturb hDQM h h_n n
+  have h_delta_l1 :=
+    delta_l1_tendsto M μ θ₀ ℓ hℓ hint hint_perturb hDQM h_fisher_cont h h_n hconv
+  have h_single :=
+    max_abs_W_tendsto_zero M μ θ₀ ℓ hℓ hint hint_perturb hDQM h h_n hconv
+      h_delta_int h_delta_l1 ε hε
+  -- Lift the single-index tail to `ℝ≥0∞`.
+  have h_single_ennreal :
+      Filter.Tendsto (fun n : ℕ =>
+          ENNReal.ofReal ((n : ℝ) * ∫ x in {y | ε < |W n y|}, p x ∂μ))
+        Filter.atTop (𝓝 0) := by
+    have h := (ENNReal.continuous_ofReal.tendsto 0).comp h_single
+    rw [ENNReal.ofReal_zero] at h
+    exact h
+  -- Upper bound: `P(⋃_i …) ≤ ENNReal.ofReal (n · ∫_{…} p dμ)`.
+  have h_bound : ∀ n : ℕ,
+      P (⋃ i ∈ Finset.range n, {ω | ε < |W n (X i ω)|})
+        ≤ ENNReal.ofReal ((n : ℝ) * ∫ x in {y | ε < |W n y|}, p x ∂μ) := by
+    intro n
+    -- Union bound.
+    have h_union :
+        P (⋃ i ∈ Finset.range n, {ω | ε < |W n (X i ω)|})
+          ≤ ∑ i ∈ Finset.range n, P {ω | ε < |W n (X i ω)|} :=
+      measure_biUnion_finset_le _ _
+    -- Each `P{|W_n(X_i)| > ε}` equals `ν{|W_n| > ε}`.
+    have h_each : ∀ i, P {ω | ε < |W n (X i ω)|} = ν {y | ε < |W n y|} := by
+      intro i
+      have hpre : {ω | ε < |W n (X i ω)|} = (X i)⁻¹' {y | ε < |W n y|} := rfl
+      rw [hpre, ← Measure.map_apply (hX_meas i) (hA_meas n), h_map i]
+    -- Sum over `range n` collapses to `n • ν(A_n)`.
+    have h_sum_eq :
+        ∑ i ∈ Finset.range n, P {ω | ε < |W n (X i ω)|}
+          = (n : ℕ) • ν {y | ε < |W n y|} := by
+      rw [Finset.sum_congr rfl (fun i _ => h_each i),
+          Finset.sum_const, Finset.card_range]
+    -- `ν(A_n) = ∫⁻_{A_n} ENNReal.ofReal p dμ`.
+    have hν_expr :
+        ν {y | ε < |W n y|} = ∫⁻ x in {y | ε < |W n y|}, ENNReal.ofReal (p x) ∂μ := by
+      rw [hν_def, MeasureTheory.withDensity_apply _ (hA_meas n)]
+    -- `∫⁻_{A_n} ENNReal.ofReal p dμ = ENNReal.ofReal (∫_{A_n} p dμ)`.
+    have h_of_real :
+        ∫⁻ x in {y | ε < |W n y|}, ENNReal.ofReal (p x) ∂μ
+          = ENNReal.ofReal (∫ x in {y | ε < |W n y|}, p x ∂μ) :=
+      (ofReal_integral_eq_lintegral_ofReal hint.integrableOn
+          (MeasureTheory.ae_of_all _ fun x => hp_nn x)).symm
+    -- `n • ENNReal.ofReal x = ENNReal.ofReal (n · x)` for `x ≥ 0`.
+    have h_nsmul :
+        (n : ℕ) • ENNReal.ofReal (∫ x in {y | ε < |W n y|}, p x ∂μ)
+          = ENNReal.ofReal ((n : ℝ) * ∫ x in {y | ε < |W n y|}, p x ∂μ) := by
+      rw [nsmul_eq_mul, ← ENNReal.ofReal_natCast,
+          ← ENNReal.ofReal_mul (Nat.cast_nonneg n)]
+    calc P (⋃ i ∈ Finset.range n, {ω | ε < |W n (X i ω)|})
+        ≤ ∑ i ∈ Finset.range n, P {ω | ε < |W n (X i ω)|} := h_union
+      _ = (n : ℕ) • ν {y | ε < |W n y|} := h_sum_eq
+      _ = (n : ℕ) • ENNReal.ofReal (∫ x in {y | ε < |W n y|}, p x ∂μ) := by
+          rw [hν_expr, h_of_real]
+      _ = ENNReal.ofReal ((n : ℝ) * ∫ x in {y | ε < |W n y|}, p x ∂μ) := h_nsmul
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_single_ennreal
+    (Filter.Eventually.of_forall fun _ => zero_le)
+    (Filter.Eventually.of_forall h_bound)
+
+/-! ## Step 5 corollary — pointwise Taylor identity for the log density ratio
+
+Uses `ForMathlib.log_one_add_eq_taylor` with `x = √(p_n/p) − 1 = W_{n,i}/2`:
+`log (p_n/p) = W − W²/4 + (W²/2) · R(W)` where `R = ForMathlib.logTaylorRemainder`.
+
+**No positivity hypothesis is required.** When `p_n = 0` (or `p = 0`), Lean's
+convention `log 0 = 0` combined with the specific shape of `logTaylorRemainder`
+makes the identity hold at the boundary: `W = -2`, and `R(-2) = 3/2`, so
+`W − W²/4 + (W²/2) · R(-2) = -2 − 1 + 3 = 0 = log 0`. This eliminates the
+`hpn_pos_ν` regularity hypothesis from `LAN_expansion_iii` and restores vdV's
+literal statement (only DQM + structural regularity needed). -/
+omit [MeasurableSpace Θ] [OpensMeasurableSpace Θ] [SecondCountableTopology Θ] in
+lemma log_density_ratio_taylor
+    (M : ParametricFamily 𝓧 Θ) (θ₀ : Θ) (h_n : ℕ → Θ) (n : ℕ) (x : 𝓧) :
+    Real.log (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x / M.density θ₀ x)
+      = auxStatistic M θ₀ h_n n x
+        - auxStatistic M θ₀ h_n n x ^ 2 / 4
+        + auxStatistic M θ₀ h_n n x ^ 2 / 2
+          * ForMathlib.logTaylorRemainder (auxStatistic M θ₀ h_n n x) := by
+  exact M.log_density_ratio_taylor θ₀ (θ₀ + (Real.sqrt n)⁻¹ • h_n n) x
+
+/-! ## LAN expansion clause (iii) — the full assembly
+
+On the iid setup as in `sum_W_decomp`, with ae-positive densities `p` and `p_n`,
+the log-likelihood ratio admits the expansion
+
+  `∑_{i<n} log (p_n(X_i) / p(X_i))
+    = (1/√n) ∑_{i<n} ⟨h, ℓ(X_i)⟩ − (1/2) ⟨h, I_{θ₀} h⟩ + o_P(1)`.
+
+Proof: apply the Taylor identity to each summand (ae under `P`, via positivity
+of `p` and `p_n`) to get `∑ log = ∑ W − (1/4) ∑ W² + (1/2) ∑ W² R(W)`. Combining
+with Steps 4, 6a, 6b-iid:
+
+* Step 4 gives `∑W − (1/√n)∑g →_P −(1/4)·I`.
+* Step 6a gives `∑W² →_P I`.
+* Step 6b-iid + continuity of `R` at 0 + Step 6a's boundedness gives
+  `∑ W² R(W) →_P 0` (ε-δ argument).
+
+Target = (∑W − (1/√n)∑g + (1/4)I) + (−(1/4)∑W² + (1/4)I) + (1/2)∑W²R(W), each
+bracket →_P 0. -/
+theorem LAN_expansion_iii
+    {k : ℕ}
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} (P : Measure Ω) [IsProbabilityMeasure P]
+    (M : ParametricFamily 𝓧 (EuclideanSpace ℝ (Fin k))) (μ : Measure 𝓧)
+    (θ₀ : EuclideanSpace ℝ (Fin k))
+    (ℓ : 𝓧 → EuclideanSpace ℝ (Fin k)) (hℓ : Measurable ℓ)
+    (h_one : ∫ x, M.density θ₀ x ∂μ = 1)
+    (hint : Integrable (M.density θ₀) μ)
+    (h_one_perturb : ∀ t : ℝ, ∀ u : EuclideanSpace ℝ (Fin k),
+      ∫ x, M.density (θ₀ + t • u) x ∂μ = 1)
+    (hint_perturb : ∀ t : ℝ, ∀ u : EuclideanSpace ℝ (Fin k),
+      Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h : EuclideanSpace ℝ (Fin k)) (h_n : ℕ → EuclideanSpace ℝ (Fin k))
+    (hconv : Filter.Tendsto h_n Filter.atTop (𝓝 h))
+    (X : ℕ → Ω → 𝓧) (hX_meas : ∀ i, Measurable (X i))
+    (hindep : Pairwise fun i j => ProbabilityTheory.IndepFun (X i) (X j) P)
+    (hident : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hlaw : Measure.map (X 0) P
+              = μ.withDensity fun x => ENNReal.ofReal (M.density θ₀ x)) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ i ∈ Finset.range n,
+          Real.log (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) (X i ω)
+                    / M.density θ₀ (X i ω)))
+        - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, ⟪h, ℓ (X i ω)⟫
+        + (1/2 : ℝ) * fisherInformation M μ θ₀ ℓ h h)
+      Filter.atTop (fun _ => (0 : ℝ)) := by
+  set g : 𝓧 → ℝ := fun x => ⟪h, ℓ x⟫ with hg_def
+  set W : ℕ → 𝓧 → ℝ := auxStatistic M θ₀ h_n with hW_def
+  set I : ℝ := fisherInformation M μ θ₀ ℓ h h with hI_def
+  set R : ℝ → ℝ := ForMathlib.logTaylorRemainder with hR_def
+  have hp_nn : ∀ x, 0 ≤ M.density θ₀ x := M.density_nonneg θ₀
+  -- Fisher quadratic-form continuity at zero follows from DQM via `dqm_fisher_cont`.
+  have h_fisher_cont :
+      Filter.Tendsto
+        (fun v : EuclideanSpace ℝ (Fin k) =>
+          ∫ x, ⟪v, ℓ x⟫ ^ 2 * M.density θ₀ x ∂μ)
+        (𝓝 0) (𝓝 0) :=
+    dqm_fisher_cont M μ θ₀ ℓ hint hDQM hint_perturb
+  -- Fisher information is non-negative.
+  have hI_nn : 0 ≤ I := by
+    refine MeasureTheory.integral_nonneg fun x => ?_
+    change 0 ≤ (⟪h, ℓ x⟫ * ⟪h, ℓ x⟫) * M.density θ₀ x
+    exact mul_nonneg (mul_self_nonneg _) (hp_nn x)
+  -- Step 4, 6a, 6b-iid outputs.
+  have hA_tendsto :=
+    sum_W_decomp P M μ θ₀ ℓ hℓ h_one hint h_one_perturb hint_perturb
+      hDQM h_fisher_cont h h_n hconv X hX_meas hindep hident hlaw
+  have hB_tendsto :=
+    sum_W_sq_tendsto_to_Pg_sq P M μ θ₀ ℓ hℓ hint hint_perturb hDQM
+      h_fisher_cont h h_n hconv X hX_meas hindep hident hlaw
+  have hMax_tendsto :=
+    max_abs_W_tendsto_zero_iid P M μ θ₀ ℓ hℓ hint hint_perturb hDQM
+      h_fisher_cont h h_n hconv X hX_meas hindep hident hlaw
+  -- Part 1: `(∑W - (1/√n)∑g) + (1/4)·I  →_P  0`.
+  have h_part1 : TendstoInMeasure P
+      (fun n ω =>
+        ((∑ i ∈ Finset.range n, W n (X i ω))
+         - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω))
+        + (1/4 : ℝ) * I)
+      Filter.atTop (fun _ => (0 : ℝ)) := by
+    have h_sum := AsymptoticStatistics.tendstoInMeasure_add
+      hA_tendsto (AsymptoticStatistics.tendstoInMeasure_const ((1/4 : ℝ) * I))
+    have h_lim : -(1/4 : ℝ) * I + (1/4 : ℝ) * I = 0 := by ring
+    rw [h_lim] at h_sum
+    exact h_sum
+  -- Part 2: `-(1/4)·∑W² + (1/4)·I  →_P  0`.
+  have h_part2 : TendstoInMeasure P
+      (fun n ω =>
+        -(1/4 : ℝ) * (∑ i ∈ Finset.range n, W n (X i ω) ^ 2) + (1/4 : ℝ) * I)
+      Filter.atTop (fun _ => (0 : ℝ)) := by
+    have hB_scaled :=
+      AsymptoticStatistics.tendstoInMeasure_const_mul (-(1/4 : ℝ)) hB_tendsto
+    have h_sum := AsymptoticStatistics.tendstoInMeasure_add
+      hB_scaled (AsymptoticStatistics.tendstoInMeasure_const ((1/4 : ℝ) * I))
+    have h_lim : -(1/4 : ℝ) * I + (1/4 : ℝ) * I = 0 := by ring
+    rw [h_lim] at h_sum
+    exact h_sum
+  -- Part 3: `(1/2) · ∑ W²(X_i) R(W(X_i)) →_P 0`.
+  have h_part3 : TendstoInMeasure P
+      (fun n ω => (1/2 : ℝ) *
+        ∑ i ∈ Finset.range n, W n (X i ω) ^ 2 * R (W n (X i ω)))
+      Filter.atTop (fun _ => (0 : ℝ)) := by
+    -- It suffices to show `∑ W² R(W) →_P 0`, then scale by (1/2).
+    suffices hC : TendstoInMeasure P
+        (fun n ω => ∑ i ∈ Finset.range n, W n (X i ω) ^ 2 * R (W n (X i ω)))
+        Filter.atTop (fun _ => (0 : ℝ)) by
+      have := AsymptoticStatistics.tendstoInMeasure_const_mul (1/2 : ℝ) hC
+      simpa using this
+    -- ε-δ argument using B_n (bounded) and Max (→ 0) + continuity of R.
+    rw [MeasureTheory.tendstoInMeasure_iff_norm]
+    intro ε hε
+    set Mbd : ℝ := I + 1 with hMbd_def
+    have hMbd_pos : 0 < Mbd := by linarith
+    set ε' : ℝ := ε / (2 * Mbd) with hε'_def
+    have hε'_pos : 0 < ε' := div_pos hε (by positivity)
+    -- Continuity of `R` at 0 → γ witness.
+    obtain ⟨γ, hγ_pos, hγ⟩ :=
+      Metric.tendsto_nhds_nhds.mp ForMathlib.logTaylorRemainder_tendsto_zero ε' hε'_pos
+    have hγ2_pos : 0 < γ / 2 := by positivity
+    -- Step 6a: eventually `P{|B_n - I| ≥ 1} < δ/2`.
+    have hB_bd :=
+      MeasureTheory.tendstoInMeasure_iff_norm.mp hB_tendsto 1 one_pos
+    -- Step 6b-iid: `P(⋃_i {|W(X_i)| > γ/2}) → 0`.
+    have hMax_bd := hMax_tendsto (γ / 2) hγ2_pos
+    -- Pointwise bound: inclusion of level sets.
+    have h_incl : ∀ n : ℕ,
+        {ω | ε ≤ ‖(∑ i ∈ Finset.range n, W n (X i ω) ^ 2 * R (W n (X i ω))) - 0‖}
+          ⊆ (⋃ i ∈ Finset.range n, {ω | γ / 2 < |W n (X i ω)|})
+            ∪ {ω | 1 ≤ ‖(∑ i ∈ Finset.range n, W n (X i ω) ^ 2) - I‖} := by
+      intro n ω hω
+      rw [Set.mem_ofPred_eq, sub_zero, Real.norm_eq_abs] at hω
+      by_contra h
+      rw [Set.mem_union, not_or] at h
+      obtain ⟨h_not_max, h_not_B⟩ := h
+      -- `h_not_max` : `¬ ω ∈ ⋃ i, {|W(X_i ω)| > γ/2}`, so `∀ i < n, |W(X_i ω)| ≤ γ/2`.
+      have h_W_le : ∀ i ∈ Finset.range n, |W n (X i ω)| ≤ γ / 2 := by
+        intro i hi
+        by_contra h_gt
+        push Not at h_gt
+        exact h_not_max (Set.mem_biUnion hi h_gt)
+      -- `h_not_B` gives `|B_n ω - I| < 1`, so `B_n ω < Mbd`.
+      rw [Set.mem_ofPred_eq, Real.norm_eq_abs, not_le] at h_not_B
+      have hB_sum_nn : 0 ≤ ∑ i ∈ Finset.range n, W n (X i ω) ^ 2 :=
+        Finset.sum_nonneg fun i _ => sq_nonneg _
+      have hB_lt : (∑ i ∈ Finset.range n, W n (X i ω) ^ 2) < Mbd := by
+        have : (∑ i ∈ Finset.range n, W n (X i ω) ^ 2) - I < 1 := by
+          have := abs_lt.mp h_not_B
+          linarith [this.2]
+        linarith
+      -- For each i, `|R(W(X_i ω))| < ε'`.
+      have h_R_bd : ∀ i ∈ Finset.range n, |R (W n (X i ω))| < ε' := by
+        intro i hi
+        have h_W_lt : |W n (X i ω)| < γ := lt_of_le_of_lt (h_W_le i hi) (by linarith)
+        have h_dist : dist (W n (X i ω)) (0 : ℝ) < γ := by
+          rw [dist_zero_right, Real.norm_eq_abs]; exact h_W_lt
+        have : dist (R (W n (X i ω))) (0 : ℝ) < ε' := hγ h_dist
+        rw [dist_zero_right, Real.norm_eq_abs] at this
+        exact this
+      -- Pointwise summand bound: `|W²·R(W)| ≤ W² · ε'`.
+      have h_summand : ∀ i ∈ Finset.range n,
+          |W n (X i ω) ^ 2 * R (W n (X i ω))| ≤ W n (X i ω) ^ 2 * ε' := by
+        intro i hi
+        rw [abs_mul]
+        have h1 : |W n (X i ω) ^ 2| = W n (X i ω) ^ 2 := abs_of_nonneg (sq_nonneg _)
+        rw [h1]
+        exact mul_le_mul_of_nonneg_left (h_R_bd i hi).le (sq_nonneg _)
+      have h_abs_sum : |∑ i ∈ Finset.range n, W n (X i ω) ^ 2 * R (W n (X i ω))|
+          ≤ ∑ i ∈ Finset.range n, |W n (X i ω) ^ 2 * R (W n (X i ω))| :=
+        Finset.abs_sum_le_sum_abs _ _
+      have h_bound_total :
+          ∑ i ∈ Finset.range n, |W n (X i ω) ^ 2 * R (W n (X i ω))|
+            ≤ ε' * ∑ i ∈ Finset.range n, W n (X i ω) ^ 2 := by
+        calc ∑ i ∈ Finset.range n, |W n (X i ω) ^ 2 * R (W n (X i ω))|
+            ≤ ∑ i ∈ Finset.range n, W n (X i ω) ^ 2 * ε' :=
+              Finset.sum_le_sum h_summand
+          _ = ε' * ∑ i ∈ Finset.range n, W n (X i ω) ^ 2 := by
+              rw [← Finset.sum_mul, mul_comm]
+      -- Combine: `|C_n| ≤ ε' · B_n < ε' · Mbd = ε/2 < ε`. Contradicts `hω`.
+      have h_final :
+          |∑ i ∈ Finset.range n, W n (X i ω) ^ 2 * R (W n (X i ω))| < ε := by
+        have h1 : ε' * Mbd = ε / 2 := by
+          rw [hε'_def]; field_simp
+        calc |∑ i ∈ Finset.range n, W n (X i ω) ^ 2 * R (W n (X i ω))|
+            ≤ ∑ i ∈ Finset.range n, |W n (X i ω) ^ 2 * R (W n (X i ω))| := h_abs_sum
+          _ ≤ ε' * ∑ i ∈ Finset.range n, W n (X i ω) ^ 2 := h_bound_total
+          _ < ε' * Mbd := mul_lt_mul_of_pos_left hB_lt hε'_pos
+          _ = ε / 2 := h1
+          _ < ε := by linarith
+      exact absurd hω (not_le.mpr h_final)
+    have h_sum_tendsto :
+        Filter.Tendsto
+          (fun n : ℕ =>
+            P (⋃ i ∈ Finset.range n, {ω | γ / 2 < |W n (X i ω)|})
+              + P {ω | 1 ≤ ‖(∑ i ∈ Finset.range n, W n (X i ω) ^ 2) - I‖})
+          Filter.atTop (𝓝 0) := by
+      have := hMax_bd.add hB_bd
+      simpa using this
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      tendsto_const_nhds h_sum_tendsto
+      (Filter.Eventually.of_forall fun _ => zero_le)
+      (Filter.Eventually.of_forall fun n => ?_)
+    calc P {ω | ε ≤ ‖(∑ i ∈ Finset.range n, W n (X i ω) ^ 2 * R (W n (X i ω))) - 0‖}
+        ≤ P ((⋃ i ∈ Finset.range n, {ω | γ / 2 < |W n (X i ω)|})
+              ∪ {ω | 1 ≤ ‖(∑ i ∈ Finset.range n, W n (X i ω) ^ 2) - I‖}) :=
+          measure_mono (h_incl n)
+      _ ≤ P (⋃ i ∈ Finset.range n, {ω | γ / 2 < |W n (X i ω)|})
+          + P {ω | 1 ≤ ‖(∑ i ∈ Finset.range n, W n (X i ω) ^ 2) - I‖} :=
+          measure_union_le _ _
+  -- Combine parts via `tendstoInMeasure_add`.
+  have h_combined : TendstoInMeasure P
+      (fun n ω =>
+        (((∑ i ∈ Finset.range n, W n (X i ω))
+          - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω))
+          + (1/4 : ℝ) * I)
+        + (-(1/4 : ℝ) * (∑ i ∈ Finset.range n, W n (X i ω) ^ 2) + (1/4 : ℝ) * I)
+        + ((1/2 : ℝ) *
+            ∑ i ∈ Finset.range n, W n (X i ω) ^ 2 * R (W n (X i ω))))
+      Filter.atTop (fun _ => (0 : ℝ)) := by
+    have h12 := AsymptoticStatistics.tendstoInMeasure_add h_part1 h_part2
+    have h123 := AsymptoticStatistics.tendstoInMeasure_add h12 h_part3
+    have h_zero : (0 : ℝ) + 0 + 0 = 0 := by ring
+    rw [show (0 : ℝ) = (0 : ℝ) + 0 + 0 from by ring]
+    exact h123
+  -- Identify the target using the pointwise Taylor identity, which holds without
+  -- a separate positivity assumption.
+  refine h_combined.congr (fun n => ?_) (Filter.Eventually.of_forall fun _ => rfl)
+  filter_upwards with ω
+  -- Pointwise Taylor identity for each summand.
+  have h_taylor_each : ∀ i ∈ Finset.range n,
+      Real.log (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) (X i ω) / M.density θ₀ (X i ω))
+        = W n (X i ω)
+          - W n (X i ω) ^ 2 / 4
+          + W n (X i ω) ^ 2 / 2 * R (W n (X i ω)) :=
+    fun i _ => log_density_ratio_taylor M θ₀ h_n n (X i ω)
+  rw [Finset.sum_congr rfl h_taylor_each]
+  -- Algebraic manipulation: split sum and rearrange.
+  have h_split : ∑ i ∈ Finset.range n,
+        (W n (X i ω) - W n (X i ω) ^ 2 / 4
+          + W n (X i ω) ^ 2 / 2 * R (W n (X i ω)))
+      = (∑ i ∈ Finset.range n, W n (X i ω))
+        - (1/4 : ℝ) * (∑ i ∈ Finset.range n, W n (X i ω) ^ 2)
+        + (1/2 : ℝ) * (∑ i ∈ Finset.range n,
+              W n (X i ω) ^ 2 * R (W n (X i ω))) := by
+    rw [Finset.mul_sum, Finset.mul_sum,
+        ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  rw [h_split]
+  ring
+
+/-! ## Main theorem — model-level conclusions
+
+The model-level content of Theorem 7.2 — `P_θ ℓ = 0` and Fisher-information
+finiteness — on the parametric family itself, free of any sample-space data.
+The iid-sample conclusion (clause (iii), the LAN expansion proper) is
+`LAN_expansion_iii` above, on a separately-carried probability space `(Ω, P)`
+with `X : ℕ → Ω → 𝓧` iid under `P_{θ₀}`. -/
+theorem LAN_expansion_score_fisher_part
+    (M : ParametricFamily 𝓧 Θ) (μ : Measure 𝓧)
+    (θ₀ : Θ) (ℓ : 𝓧 → Θ) (hℓ : Measurable ℓ)
+    (h_one : ∫ x, M.density θ₀ x ∂μ = 1)
+    (hint : Integrable (M.density θ₀) μ)
+    (h_one_perturb : ∀ t : ℝ, ∀ u : Θ, ∫ x, M.density (θ₀ + t • u) x ∂μ = 1)
+    (hint_perturb : ∀ t : ℝ, ∀ u : Θ, Integrable (M.density (θ₀ + t • u)) μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ) :
+    -- (i) score has zero mean (Step 1)
+    (∀ u : Θ, ∫ x, ⟪u, ℓ x⟫ * M.density θ₀ x ∂μ = 0) ∧
+    -- (ii) Fisher information is well-defined for every direction `u`,
+    --      i.e. `⟨u, ℓ⟩² · p_{θ₀}` is integrable. Derived from DQM.
+    (∀ u : Θ, Integrable (fun x => ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) μ) := by
+  refine ⟨?_, ?_⟩
+  · -- (i) Step 1.
+    intro u
+    exact score_mean_zero M μ θ₀ ℓ hℓ h_one hint h_one_perturb hint_perturb hDQM u
+  · -- (ii) Fisher information finite: derived from DQM via `dqm_fisher_integrable`.
+    intro u
+    exact dqm_fisher_integrable M μ θ₀ ℓ hint hDQM u (fun t => hint_perturb t u)
+
+/-! ## vdV Theorem 7.2 (full form) — (i) ∧ (ii) ∧ (iii)
+
+van der Vaart, *Asymptotic Statistics*, Theorem 7.2 in full. Conclusions:
+
+(i)   Score has zero mean under `P_{θ₀}`: `∀ u, ∫ ⟨u, ℓ⟩ · p_{θ₀} dμ = 0`.
+(ii)  Fisher information is well-defined: `⟨u, ℓ⟩² · p_{θ₀}` is integrable for every `u`.
+(iii) LAN expansion: for every converging sequence `h_n → h`,
+
+  `∑_{i<n} log (p_{θ₀ + h_n/√n}(X_i) / p_{θ₀}(X_i))
+     = (1/√n) ∑_{i<n} ⟨h, ℓ(X_i)⟩  − (1/2) ⟨h, I_{θ₀} h⟩  + o_{P_{θ₀}}(1)`.
+
+Specialised to `Θ = EuclideanSpace ℝ (Fin k)` to match vdV's finite-dimensional
+setting; `dqm_fisher_cont` supplies continuity of Fisher information.
+
+**Only vdV-structural hypotheses remain**:
+
+* `IsPDFOf M μ` — packages "`p_θ` is a μ-density that normalises and is integrable
+  for every `θ`". vdV tacitly assumes this by writing `p_θ` at all.
+* `hDQM` — differentiability in quadratic mean at `θ₀`.
+* `hconv : h_n → h` — the parameter perturbation sequence converges.
+* iid sample setup (`X`, `hX_meas`, `hindep`, `hident`, `hlaw`).
+
+Fisher continuity follows from DQM via `dqm_fisher_cont`. The Taylor identity
+in `log_density_ratio_taylor` requires no positivity assumption because it
+holds universally under Lean's `log 0 = 0` convention. -/
+theorem LAN_expansion
+    {k : ℕ}
+    {Ω : Type*} {mΩ : MeasurableSpace Ω} (P : Measure Ω) [IsProbabilityMeasure P]
+    (M : ParametricFamily 𝓧 (EuclideanSpace ℝ (Fin k))) (μ : Measure 𝓧)
+    (θ₀ : EuclideanSpace ℝ (Fin k))
+    (ℓ : 𝓧 → EuclideanSpace ℝ (Fin k))
+    -- LEAN-ONLY: measurability of the score representative.
+    (hℓ : Measurable ℓ)
+    -- USER-INPUT: normalized density family and differentiability in quadratic
+    -- mean at `θ₀`; vdV Theorem 7.2.
+    (hPDF : IsPDFOf M μ)
+    (hDQM : DifferentiableQuadraticMean M μ θ₀ ℓ)
+    (h : EuclideanSpace ℝ (Fin k)) (h_n : ℕ → EuclideanSpace ℝ (Fin k))
+    -- USER-INPUT: convergence of the local parameter directions; vdV Theorem 7.2.
+    (hconv : Filter.Tendsto h_n Filter.atTop (𝓝 h))
+    (X : ℕ → Ω → 𝓧)
+    -- LEAN-ONLY: measurability of each sample coordinate.
+    (hX_meas : ∀ i, Measurable (X i))
+    -- USER-INPUT: iid observations from the base law `P_{θ₀}`; vdV Theorem 7.2.
+    (hindep : Pairwise fun i j => ProbabilityTheory.IndepFun (X i) (X j) P)
+    (hident : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hlaw : Measure.map (X 0) P
+              = μ.withDensity fun x => ENNReal.ofReal (M.density θ₀ x)) :
+    -- (i) score has zero mean under `P_{θ₀}`
+    (∀ u : EuclideanSpace ℝ (Fin k), ∫ x, ⟪u, ℓ x⟫ * M.density θ₀ x ∂μ = 0) ∧
+    -- (ii) Fisher information is finite for every direction `u`
+    (∀ u : EuclideanSpace ℝ (Fin k),
+      Integrable (fun x => ⟪u, ℓ x⟫ ^ 2 * M.density θ₀ x) μ) ∧
+    -- (iii) LAN expansion
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ i ∈ Finset.range n,
+          Real.log (M.density (θ₀ + (Real.sqrt n)⁻¹ • h_n n) (X i ω)
+                    / M.density θ₀ (X i ω)))
+        - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, ⟪h, ℓ (X i ω)⟫
+        + (1/2 : ℝ) * fisherInformation M μ θ₀ ℓ h h)
+      Filter.atTop (fun _ => (0 : ℝ)) := by
+  have h_one : ∫ x, M.density θ₀ x ∂μ = 1 := hPDF.density_integral_eq_one θ₀
+  have hint : Integrable (M.density θ₀) μ := hPDF.density_integrable θ₀
+  have h_one_perturb : ∀ t : ℝ, ∀ u : EuclideanSpace ℝ (Fin k),
+      ∫ x, M.density (θ₀ + t • u) x ∂μ = 1 :=
+    fun t u => hPDF.density_integral_eq_one (θ₀ + t • u)
+  have hint_perturb : ∀ t : ℝ, ∀ u : EuclideanSpace ℝ (Fin k),
+      Integrable (M.density (θ₀ + t • u)) μ :=
+    fun t u => hPDF.density_integrable (θ₀ + t • u)
+  refine ⟨?_, ?_, ?_⟩
+  · intro u
+    exact score_mean_zero M μ θ₀ ℓ hℓ h_one hint h_one_perturb hint_perturb hDQM u
+  · intro u
+    exact dqm_fisher_integrable M μ θ₀ ℓ hint hDQM u (fun t => hint_perturb t u)
+  · exact LAN_expansion_iii P M μ θ₀ ℓ hℓ h_one hint h_one_perturb hint_perturb
+      hDQM h h_n hconv X hX_meas hindep hident hlaw
 
 end LANExpansion
 end AsymptoticStatistics
@@ -6508,12 +14665,25 @@ end AsymptoticStatistics
 end GLP0011B3Source30
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.LowerBounds.T6_FinDimLAN.Abstract1DLAN`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/LowerBounds/T6_FinDimLAN/Abstract1DLAN.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source31
 
 
+/-!
+# 1D LAN expansion adapter for the abstract `QMDPath` (vdV §25.3)
 
+This file bridges `Core.QMDPath` (the abstract quadratic-mean-differentiable
+path, without the bounded-density specialisation) to the project's 1-D
+`DifferentiableQuadraticMean` / `LAN_expansion_iii` machinery. It builds the
+`L²(γ.dominating)` membership of `√p_t`, of `score · √p_0`, and of the QMD
+residual `√p_t - √p_0 - (t/2)·score·√p_0`; wraps the path as a 1-D
+`ParametricFamily`; establishes its `DifferentiableQuadraticMean`; and applies
+`LAN_expansion_iii` at `k = 1` to obtain the LAN expansion.
+
+Headline declarations: `QMDPath.to1DParametricFamily`, `QMDPath.dqm`,
+`QMDPath.lanExpansion1D`.
+-/
 
 open MeasureTheory Filter Topology
 open scoped ENNReal
@@ -6541,12 +14711,504 @@ theorem memLp_sqrt_rnDeriv (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P)
   exact AsymptoticStatistics.ForMathlib.RnDerivSqrt.memLp_sqrt_rnDeriv
     (γ.curve_absContinuous t)
 
+/-- L²(γ.dominating)-membership of `score · √p_0`.
 
+The score is typed `↥(L2ZeroMean P)`, hence `(γ.score : Ω → ℝ) ∈ L²(P)`.
+With `P ≪ γ.dominating` (from `curve_at_zero` + `curve_absContinuous 0`)
+and `γ.dominating` σ-finite, the bridge `withDensity_rnDeriv_eq` plus
+`integrable_withDensity_iff` translates `∫ score² dP < ∞` (given by
+`Lp.memLp γ.score`) to `∫ (score · √p_0)² dγ.dominating < ∞`.
 
+This is the *dual* of
+`RnDerivSqrt.memLp_two_of_memLp_two_mul_sqrt_rnDeriv` (which goes the
+other direction, μ → P). The two are symmetric uses of the same
+`integrable_withDensity_iff` bridge.
 
+We bypass the `qmd_limit` route (`memLp_two_score_mul_sqrt_of_qmd`)
+because the score is typed against `P` (not `γ.dominating`); for the
+score-term-at-zero specifically, the direct `P ≪ γ.dominating` route
+is cleaner than re-deriving an L²(`γ.dominating`)-equivalent statement
+from the abstract `qmd_limit`. -/
+theorem memLp_score_term_at_zero (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P) :
+    MemLp (fun ω =>
+        (γ.score : Ω → ℝ) ω
+          * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+      2 γ.dominating := by
+  have : SigmaFinite γ.dominating := γ.dominating_sigmaFinite
+  -- `P ≪ γ.dominating` from `curve_at_zero` + `curve_absContinuous 0`.
+  have hP_ac : P ≪ γ.dominating := by
+    have h0 := γ.curve_absContinuous 0
+    rwa [γ.curve_at_zero] at h0
+  -- The score, as the underlying function of an `L²(P)` element, is in `L²(P)`.
+  have h_score_memLp : MemLp ((γ.score : Lp ℝ 2 P) : Ω → ℝ) 2 P :=
+    Lp.memLp _
+  -- Square-integrability of the score under `P`.
+  have h_score_sq_int :
+      Integrable (fun ω => (γ.score : Ω → ℝ) ω ^ 2) P :=
+    h_score_memLp.integrable_sq
+  -- The canonical Lp representative is `StronglyMeasurable`.
+  have h_score_sm : StronglyMeasurable ((γ.score : Lp ℝ 2 P) : Ω → ℝ) :=
+    Lp.stronglyMeasurable _
+  have h_score_sm' : StronglyMeasurable (fun ω => (γ.score : Ω → ℝ) ω) :=
+    h_score_sm
+  -- Pointwise rewrite key: `(curve 0).rnDeriv γ.dominating = P.rnDeriv γ.dominating`
+  -- using `curve_at_zero : γ.curve 0 = P`.
+  have h_curve0_eq : (γ.curve 0).rnDeriv γ.dominating
+        = P.rnDeriv γ.dominating := by
+    rw [γ.curve_at_zero]
+  -- Square-root of the rnDeriv is measurable.
+  have h_sqrt_meas : Measurable
+      (fun ω => Real.sqrt (P.rnDeriv γ.dominating ω).toReal) :=
+    (Measure.measurable_rnDeriv P γ.dominating).ennreal_toReal.sqrt
+  -- AEStronglyMeasurability of the product on `γ.dominating`.
+  have h_prod_meas :
+      AEStronglyMeasurable
+        (fun ω => (γ.score : Ω → ℝ) ω
+          * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+        γ.dominating := by
+    refine h_score_sm'.aestronglyMeasurable.mul ?_
+    rw [h_curve0_eq]
+    exact h_sqrt_meas.aestronglyMeasurable
+  -- Reduce `MemLp 2` to `Integrable (·²)`.
+  rw [memLp_two_iff_integrable_sq h_prod_meas]
+  -- Pointwise: `(score · √p_0)² = score² · p_0.toReal`,
+  -- using `(curve 0).rnDeriv = P.rnDeriv`.
+  have h_pw :
+      (fun ω => ((γ.score : Ω → ℝ) ω
+            * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal) ^ 2)
+        = fun ω => (γ.score : Ω → ℝ) ω ^ 2
+            * (P.rnDeriv γ.dominating ω).toReal := by
+    funext ω
+    have hpt : ((γ.curve 0).rnDeriv γ.dominating ω)
+        = P.rnDeriv γ.dominating ω := congrFun h_curve0_eq ω
+    rw [hpt, mul_pow, Real.sq_sqrt ENNReal.toReal_nonneg]
+  rw [h_pw]
+  -- Use `integrable_withDensity_iff` to translate
+  -- `∫ score² · p_0 dγ.dominating < ∞ ⟺ ∫ score² dP < ∞` (the latter is `h_score_sq_int`).
+  have hP_eq : P = γ.dominating.withDensity (P.rnDeriv γ.dominating) :=
+    (Measure.withDensity_rnDeriv_eq P γ.dominating hP_ac).symm
+  have h_iff := MeasureTheory.integrable_withDensity_iff
+      (Measure.measurable_rnDeriv P γ.dominating)
+      (Measure.rnDeriv_lt_top P γ.dominating)
+      (g := fun ω => (γ.score : Ω → ℝ) ω ^ 2)
+  rw [← hP_eq] at h_iff
+  exact h_iff.mp h_score_sq_int
 
+/-- The QMD residual at scale `t`:
+`√p_t(ω) − √p_0(ω) − (t/2) · score(ω) · √p_0(ω)`.
 
+Matches the pointwise form of the structure's `qmd_limit` lambda and of
+`ForMathlib.QMDAnalytic.qmdRem` with `g := (γ.score : Ω → ℝ)`. The DQM
+bridge uses this as the residual function up to the `(1/2)·⟨h, ℓ⟩`
+re-norming dictated by `DifferentiableQuadraticMean.isLittleO`. -/
+noncomputable def qmdResidual (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P)
+    (t : ℝ) : Ω → ℝ := fun ω =>
+  Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+    - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+    - (t / 2) * (γ.score : Ω → ℝ) ω
+        * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
 
+/-- L²(γ.dominating)-membership of the QMD residual.
+
+Each summand is `MemLp 2 γ.dominating`:
+* `√p_t` and `√p_0` by `memLp_sqrt_rnDeriv`.
+* `(t/2) · score · √p_0` by `memLp_score_term_at_zero` rescaled with
+  `MemLp.const_mul`.
+
+The overall membership follows by `MemLp.sub` applied twice. -/
+theorem residual_memLp (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P) (t : ℝ) :
+    MemLp (qmdResidual γ t) 2 γ.dominating := by
+  -- Three L² ingredients.
+  have h_pt : MemLp (fun ω =>
+      Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal) 2 γ.dominating :=
+    memLp_sqrt_rnDeriv γ t
+  have h_p0 : MemLp (fun ω =>
+      Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal) 2 γ.dominating :=
+    memLp_sqrt_rnDeriv γ 0
+  have h_score_p0 : MemLp (fun ω =>
+      (γ.score : Ω → ℝ) ω
+        * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+      2 γ.dominating := memLp_score_term_at_zero γ
+  -- Rescale `score · √p_0` by `t/2`. Pointwise:
+  -- `(t/2) * score * √p_0 = (t/2) * (score * √p_0)`.
+  have h_scaled : MemLp (fun ω =>
+      (t / 2) * (γ.score : Ω → ℝ) ω
+        * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+      2 γ.dominating := by
+    have h := h_score_p0.const_mul (t / 2)
+    -- `h : MemLp (fun ω => (t/2) * ((γ.score) ω * √p_0)) 2 γ.dominating`,
+    -- rewrite to the associativity-shifted form used in `qmdResidual`.
+    have h_eq : (fun ω =>
+          (t / 2) * ((γ.score : Ω → ℝ) ω
+            * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal))
+        = fun ω =>
+          (t / 2) * (γ.score : Ω → ℝ) ω
+            * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal := by
+      funext ω; ring
+    rw [h_eq] at h
+    exact h
+  -- Combine via `MemLp.sub`.
+  unfold qmdResidual
+  exact (h_pt.sub h_p0).sub h_scaled
+
+/-! ### Step 2. The 1D `ParametricFamily` adapter
+
+Wrap the abstract path γ as a `ParametricFamily Ω (EuclideanSpace ℝ (Fin 1))`
+indexed by `EuclideanSpace ℝ (Fin 1)` (the parameter type expected by
+`LAN_expansion_iii`, invoked at `k = 1` in `lanExpansion1D`).
+
+Density: `((curve θ).rnDeriv γ.dominating).toReal`, with
+`θ ∈ EuclideanSpace ℝ (Fin 1)` extracted as `θ 0 : ℝ`. Mirrors
+`boundedDensityPath_to1DParametricFamily` modulo `P → γ.dominating` for
+the dominating measure. -/
+
+/-- The abstract QMD path `γ` as a `ParametricFamily` on `Ω` indexed by
+`EuclideanSpace ℝ (Fin 1)`: the density at `θ` is the Radon–Nikodym derivative
+`((γ.curve (θ 0)).rnDeriv γ.dominating).toReal`. -/
+noncomputable def to1DParametricFamily
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P) :
+    AsymptoticStatistics.ParametricFamily Ω
+      (EuclideanSpace ℝ (Fin 1)) where
+  density θ ω := ((γ.curve (θ 0)).rnDeriv γ.dominating ω).toReal
+  density_meas _ :=
+    (Measure.measurable_rnDeriv _ _).ennreal_toReal
+  density_nonneg _ _ := ENNReal.toReal_nonneg
+
+/-- The 1D score function as a `EuclideanSpace ℝ (Fin 1)`-valued map:
+package the scalar `γ.score(ω) ∈ ℝ` into the singleton vector
+`EuclideanSpace.single 0 (γ.score(ω))`. -/
+noncomputable def score1D
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P) :
+    Ω → EuclideanSpace ℝ (Fin 1) :=
+  fun ω => EuclideanSpace.single 0 (((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω)
+
+/-- For `θ : EuclideanSpace ℝ (Fin 1)`, `‖θ‖² = (θ 0)²`. -/
+private lemma euclideanSpace_norm_sq_fin1 (θ : EuclideanSpace ℝ (Fin 1)) :
+    ‖θ‖ ^ 2 = θ 0 ^ 2 := by
+  rw [EuclideanSpace.norm_eq]
+  have hsum_nn : 0 ≤ ∑ i : Fin 1, ‖θ i‖ ^ 2 :=
+    Finset.sum_nonneg fun _ _ => sq_nonneg _
+  rw [Real.sq_sqrt hsum_nn]
+  simp
+
+/-- For `θ : EuclideanSpace ℝ (Fin 1)`, `‖θ‖ = |θ 0|`. -/
+private lemma euclideanSpace_norm_fin1 (θ : EuclideanSpace ℝ (Fin 1)) :
+    ‖θ‖ = |θ 0| := by
+  have h_sq := euclideanSpace_norm_sq_fin1 θ
+  have h_norm_nn : 0 ≤ ‖θ‖ := norm_nonneg _
+  have h_abs_nn : 0 ≤ |θ 0| := abs_nonneg _
+  nlinarith [h_sq, sq_abs (θ 0), Real.sq_sqrt h_norm_nn,
+    Real.sqrt_sq h_norm_nn, Real.sqrt_sq h_abs_nn]
+
+/-- The pointwise DQM-residual at shift `h ∈ EuclideanSpace ℝ (Fin 1)`
+equals `qmdResidual γ (h 0) ω`. The `(1/2)·⟪h, score1D⟫` re-normings
+unwind to `(h 0 / 2) · score(ω)`. -/
+private lemma dqm_residual_pointwise_eq
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P)
+    (h : EuclideanSpace ℝ (Fin 1)) (ω : Ω) :
+    (to1DParametricFamily γ).sqrtDensity (0 + h) ω
+      - (to1DParametricFamily γ).sqrtDensity 0 ω
+      - (1/2 : ℝ) * @inner ℝ _ _ h (score1D γ ω)
+          * (to1DParametricFamily γ).sqrtDensity 0 ω
+    = qmdResidual γ (h 0) ω := by
+  unfold AsymptoticStatistics.ParametricFamily.sqrtDensity
+    to1DParametricFamily qmdResidual score1D
+  have h_inner :
+      @inner ℝ _ _ h (EuclideanSpace.single 0 (((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω))
+        = ((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω * h 0 := by
+    rw [PiLp.inner_apply, Fin.sum_univ_one]
+    have h_single : EuclideanSpace.single (0 : Fin 1)
+        (((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω) (0 : Fin 1)
+          = ((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω := by
+      simp
+    rw [h_single]
+    change ((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω * h 0
+        = ((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω * h 0
+    rfl
+  have h_zero_apply : ((0 : EuclideanSpace ℝ (Fin 1)) 0) = 0 := rfl
+  have h_add_apply : ((0 + h) 0) = h 0 := by rw [zero_add]
+  change Real.sqrt ((γ.curve ((0 + h) 0)).rnDeriv γ.dominating ω).toReal
+        - Real.sqrt ((γ.curve
+            ((0 : EuclideanSpace ℝ (Fin 1)) 0)).rnDeriv γ.dominating ω).toReal
+        - (1/2 : ℝ) *
+            @inner ℝ _ _ h (EuclideanSpace.single 0 (((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω))
+            * Real.sqrt ((γ.curve
+                ((0 : EuclideanSpace ℝ (Fin 1)) 0)).rnDeriv γ.dominating ω).toReal
+      = Real.sqrt ((γ.curve (h 0)).rnDeriv γ.dominating ω).toReal
+        - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+        - (h 0 / 2) * ((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω
+            * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+  rw [h_zero_apply, h_add_apply, h_inner]
+  ring
+
+/-- The DQM Hellinger residual function (as a function of ω, parameterised
+by h) equals `fun ω ↦ qmdResidual γ (h 0) ω`. -/
+private lemma dqm_residual_funext
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P)
+    (h : EuclideanSpace ℝ (Fin 1)) :
+    (fun ω =>
+      (to1DParametricFamily γ).sqrtDensity (0 + h) ω
+        - (to1DParametricFamily γ).sqrtDensity 0 ω
+        - (1/2 : ℝ) * @inner ℝ _ _ h (score1D γ ω)
+            * (to1DParametricFamily γ).sqrtDensity 0 ω)
+      = fun ω => qmdResidual γ (h 0) ω :=
+  funext fun ω => dqm_residual_pointwise_eq γ h ω
+
+/-- Squared form of the DQM-residual function equality, for use under integrals. -/
+private lemma dqm_residual_sq_funext
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P)
+    (h : EuclideanSpace ℝ (Fin 1)) :
+    (fun ω =>
+      ((to1DParametricFamily γ).sqrtDensity (0 + h) ω
+        - (to1DParametricFamily γ).sqrtDensity 0 ω
+        - (1/2 : ℝ) * @inner ℝ _ _ h (score1D γ ω)
+            * (to1DParametricFamily γ).sqrtDensity 0 ω) ^ 2)
+      = fun ω => qmdResidual γ (h 0) ω ^ 2 := by
+  funext ω
+  rw [dqm_residual_pointwise_eq γ h ω]
+
+/-- Bridge: the Bochner integral of `qmdResidual² dγ.dominating` equals
+`(eLpNorm qmdResidual 2 γ.dominating).toReal ^ 2`, given MemLp.
+This unifies the abstract structure's `qmd_limit_toReal_sq` derived
+form (the corollary of the structure's ℝ≥0∞-form `qmd_limit` field,
+giving `(eLpNorm).toReal²/t² → 0`) with DQM's
+`∫ residual² ∂μ`-integral form needed for `IsLittleO`. -/
+private lemma integral_qmdResidual_sq_eq_eLpNorm_toReal_sq
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P) (t : ℝ) :
+    ∫ ω, qmdResidual γ t ω ^ 2 ∂γ.dominating
+      = (eLpNorm (qmdResidual γ t) 2 γ.dominating).toReal ^ 2 := by
+  have h_residual_memLp : MemLp (qmdResidual γ t) 2 γ.dominating :=
+    residual_memLp γ t
+  have h_sqrt :=
+    AsymptoticStatistics.ForMathlib.QMDAnalytic.sqrt_integral_sq_eq_eLpNorm_toReal
+      h_residual_memLp
+  have h_int_nn : 0 ≤ ∫ ω, qmdResidual γ t ω ^ 2 ∂γ.dominating :=
+    integral_nonneg fun _ => sq_nonneg _
+  have := congrArg (fun x => x ^ 2) h_sqrt
+  rw [Real.sq_sqrt h_int_nn] at this
+  exact this
+
+/-- 1D `DifferentiableQuadraticMean` for the abstract `QMDPath`'s
+parametric family at `θ = 0`, with score `score1D γ`. The `mem` field
+follows from `residual_memLp` + the funext bridge; the `isLittleO` field
+follows from `γ.qmd_limit_toReal_sq` (qualitative `Tendsto` along `𝓝[≠] 0`,
+derived from the structure's ℝ≥0∞-form `qmd_limit`),
+combined with the integral/eLpNorm bridge above and a composition along
+`θ ↦ θ 0`. -/
+theorem dqm (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P) :
+    AsymptoticStatistics.DifferentiableQuadraticMean
+      (to1DParametricFamily γ) γ.dominating
+      (0 : EuclideanSpace ℝ (Fin 1)) (score1D γ) := by
+  refine ⟨?_, ?_⟩
+  · -- mem: eventually MemLp.
+    -- The MemLp of the residual holds for ALL t, so we can use Eventually.of_forall.
+    refine Filter.Eventually.of_forall (fun h => ?_)
+    rw [dqm_residual_funext γ h]
+    exact residual_memLp γ (h 0)
+  · -- isLittleO: ∫ residual² ∂γ.dominating =o[𝓝 0] ‖h‖².
+    rw [Asymptotics.isLittleO_iff]
+    intro ε hε
+    -- From `γ.qmd_limit_toReal_sq` (derived from the ℝ≥0∞-form `qmd_limit`),
+    -- get an Iio-ball for `(eLpNorm…).toReal²/t² < ε`.
+    have h_qmd := AsymptoticStatistics.Core.QMDPath.QMDPath.qmd_limit_toReal_sq γ
+    -- The qmd_limit is over `𝓝[≠] 0`. Convert: for `ε > 0`,
+    -- there exists δ > 0 such that for all 0 < |t| < δ,
+    -- `(eLpNorm …).toReal² / t² < ε`.
+    have h_iso : Set.Iio ε ∈ 𝓝 (0 : ℝ) := Iio_mem_nhds hε
+    have h_ev_t : ∀ᶠ t : ℝ in 𝓝[≠] 0,
+        (eLpNorm (fun ω : Ω =>
+          Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+            - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+            - (t / 2) * (γ.score : Ω → ℝ) ω
+                * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+          2 γ.dominating).toReal ^ 2 / t ^ 2 < ε := h_qmd h_iso
+    -- Recast the inner expression as `qmdResidual γ t ω` via funext.
+    have h_residual_eq : ∀ t : ℝ,
+        (fun ω : Ω =>
+          Real.sqrt ((γ.curve t).rnDeriv γ.dominating ω).toReal
+            - Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal
+            - (t / 2) * (γ.score : Ω → ℝ) ω
+                * Real.sqrt ((γ.curve 0).rnDeriv γ.dominating ω).toReal)
+          = qmdResidual γ t := by
+      intro t; funext ω; rfl
+    -- Convert the t-eventually condition to a θ-eventually one along
+    -- `θ ↦ θ 0` from EuclideanSpace ℝ (Fin 1) to ℝ. Continuity of `θ ↦ θ 0`
+    -- gives `Tendsto (θ ↦ θ 0) (𝓝 0) (𝓝 0)`. Together with the `θ ≠ 0`
+    -- side, it tends along the punctured filter only when `θ 0 ≠ 0`.
+    -- Strategy: work with the membership form `t ∈ Iio ε` — recover the
+    -- `t = 0` case manually (then residual is 0 a.e., int = 0).
+    -- 1) Mem-of-nhds for the ε-set in ℝ (without the punctured filter):
+    --    use `mem_nhdsWithin` to extract a neighborhood `U` of 0 in ℝ such
+    --    that `∀ t ∈ U, t ≠ 0 → ratio t < ε`.
+    have h_ev_t' :
+        ∀ᶠ t : ℝ in 𝓝 0,
+          t ≠ 0 →
+            (eLpNorm (qmdResidual γ t) 2 γ.dominating).toReal ^ 2 / t ^ 2 < ε := by
+      rw [eventually_nhdsWithin_iff] at h_ev_t
+      -- Rewrite the function inside via h_residual_eq.
+      filter_upwards [h_ev_t] with t ht ht_ne
+      have hres := ht ht_ne
+      rw [h_residual_eq t] at hres
+      exact hres
+    -- 2) Compose with continuity of `θ ↦ θ 0`. Use the norm-domination
+    -- `|θ 0| ≤ ‖θ‖` and `Tendsto ‖θ‖ → 0` from continuous_norm.
+    have h_proj_tendsto : Tendsto (fun θ : EuclideanSpace ℝ (Fin 1) => θ 0)
+        (𝓝 0) (𝓝 0) := by
+      have h_norm_tendsto : Tendsto
+          (fun θ : EuclideanSpace ℝ (Fin 1) => ‖θ‖) (𝓝 0) (𝓝 0) := by
+        have := (continuous_norm (E := EuclideanSpace ℝ (Fin 1))).tendsto 0
+        simpa [norm_zero] using this
+      -- |θ 0| ≤ ‖θ‖ via euclideanSpace_norm_sq_fin1: ‖θ‖² = (θ 0)².
+      rw [Metric.tendsto_nhds_nhds] at h_norm_tendsto ⊢
+      intro ε hε
+      obtain ⟨δ, hδ_pos, hδ⟩ := h_norm_tendsto ε hε
+      refine ⟨δ, hδ_pos, ?_⟩
+      intro θ hθ
+      have h_norm_lt : ‖θ‖ < ε := by
+        have := hδ hθ; simpa [dist_zero_right] using this
+      have h_norm_sq_eq : ‖θ‖ ^ 2 = (θ 0) ^ 2 := euclideanSpace_norm_sq_fin1 θ
+      have h_abs_le : |θ 0| ≤ ‖θ‖ := by
+        have h_sq_le : (θ 0) ^ 2 ≤ ‖θ‖ ^ 2 := by rw [h_norm_sq_eq]
+        have := Real.sqrt_le_sqrt h_sq_le
+        rwa [Real.sqrt_sq_eq_abs, Real.sqrt_sq (norm_nonneg _)] at this
+      simp only [dist_zero_right, Real.norm_eq_abs]
+      exact lt_of_le_of_lt h_abs_le h_norm_lt
+    have h_ev_θ :
+        ∀ᶠ θ : EuclideanSpace ℝ (Fin 1) in 𝓝 0,
+          θ 0 ≠ 0 →
+            (eLpNorm (qmdResidual γ (θ 0)) 2 γ.dominating).toReal ^ 2 / (θ 0) ^ 2
+              < ε :=
+      h_proj_tendsto.eventually h_ev_t'
+    -- Final goal: `‖∫ residual² ∂μ‖ ≤ ε * ‖‖θ‖²‖`.
+    simp_rw [dqm_residual_sq_funext γ]
+    -- Both sides are nonneg, so we can drop norms:
+    have h_int_nn :
+        ∀ θ : EuclideanSpace ℝ (Fin 1),
+          0 ≤ ∫ ω, qmdResidual γ (θ 0) ω ^ 2 ∂γ.dominating := fun θ =>
+      integral_nonneg fun _ => sq_nonneg _
+    have h_norm_sq_nn :
+        ∀ θ : EuclideanSpace ℝ (Fin 1), 0 ≤ ‖θ‖ ^ 2 := fun _ => sq_nonneg _
+    filter_upwards [h_ev_θ] with θ hθ
+    rw [Real.norm_eq_abs, abs_of_nonneg (h_int_nn θ),
+        Real.norm_eq_abs, abs_of_nonneg (h_norm_sq_nn θ)]
+    -- Split on θ = 0 vs θ ≠ 0.
+    by_cases h_θ_zero : θ = 0
+    · -- θ = 0 case: residual is zero (h 0 = 0 ⇒ qmdResidual γ 0 ≡ 0 by definition).
+      have h_θ0_zero : (θ : EuclideanSpace ℝ (Fin 1)) 0 = 0 := by
+        rw [h_θ_zero]; rfl
+      have h_norm_zero : ‖θ‖ = 0 := by rw [h_θ_zero]; exact norm_zero
+      have h_norm_sq_zero : ‖θ‖ ^ 2 = 0 := by rw [h_norm_zero]; ring
+      -- qmdResidual γ 0 ω = √p_0 - √p_0 - 0 = 0. Use `unfold qmdResidual`.
+      have h_res_zero : ∀ ω, qmdResidual γ 0 ω = 0 := by
+        intro ω
+        unfold qmdResidual
+        simp
+      have h_int_zero :
+          ∫ ω, qmdResidual γ (θ 0) ω ^ 2 ∂γ.dominating = 0 := by
+        rw [h_θ0_zero]
+        simp [h_res_zero]
+      rw [h_int_zero, h_norm_sq_zero]
+      simp
+    · -- θ ≠ 0 case: use h_ev_θ directly.
+      have h_θ0_ne : θ 0 ≠ 0 := by
+        intro h
+        apply h_θ_zero
+        ext i
+        fin_cases i
+        exact h
+      have hθ_lt := hθ h_θ0_ne
+      -- Convert `(eLpNorm).toReal² / (θ 0)² < ε` to bound on integral.
+      rw [integral_qmdResidual_sq_eq_eLpNorm_toReal_sq γ (θ 0)]
+      -- Now goal: `(eLpNorm…).toReal² ≤ ε · ‖θ‖²`.
+      have h_t_sq_pos : 0 < (θ 0) ^ 2 := by positivity
+      have h_norm_sq_eq : ‖θ‖ ^ 2 = (θ 0) ^ 2 := euclideanSpace_norm_sq_fin1 θ
+      -- From hθ_lt : (eLpNorm…).toReal² / (θ 0)² < ε
+      -- Multiply both sides by (θ 0)² > 0.
+      have h_le : (eLpNorm (qmdResidual γ (θ 0)) 2 γ.dominating).toReal ^ 2
+            ≤ ε * (θ 0) ^ 2 := by
+        have := (div_lt_iff₀ h_t_sq_pos).mp hθ_lt
+        linarith
+      rw [h_norm_sq_eq]
+      exact h_le
+
+/-! ### Step 3. LAN expansion bridge
+
+Compose `to1DParametricFamily` + `IsPDFOf` (induced from
+`Measure.integral_toReal_rnDeriv`) + `dqm` with
+`Asymptotics.LAN.LANExpansion.LAN_expansion_iii` at `k = 1` to obtain the
+genuine LAN expansion of the log-likelihood ratio along the abstract
+QMDPath. -/
+
+/-- Helper: `IsPDFOf (to1DParametricFamily γ) γ.dominating`. The density
+integrates to 1 (since each `curve θ` is a probability measure absolutely
+continuous w.r.t. `γ.dominating`) and is `γ.dominating`-integrable. Both
+proofs lean on the `[SigmaFinite γ.dominating]` instance from
+`Core.QMDPath`. -/
+private theorem isPDFOf
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P) :
+    AsymptoticStatistics.IsPDFOf
+      (to1DParametricFamily γ) γ.dominating where
+  density_integral_eq_one θ := by
+    have : IsProbabilityMeasure (γ.curve (θ 0)) := γ.curve_isProbability (θ 0)
+    have h_ac : γ.curve (θ 0) ≪ γ.dominating := γ.curve_absContinuous (θ 0)
+    have h_int :=
+      MeasureTheory.Measure.integral_toReal_rnDeriv
+        (μ := γ.curve (θ 0)) (ν := γ.dominating) h_ac
+    have h_univ : (γ.curve (θ 0)).real Set.univ = 1 := by
+      have := isProbabilityMeasure_iff.mp ‹_›
+      simp [Measure.real, this]
+    change ∫ ω, ((γ.curve (θ 0)).rnDeriv γ.dominating ω).toReal ∂γ.dominating = 1
+    rw [h_int, h_univ]
+  density_integrable θ := by
+    have : IsProbabilityMeasure (γ.curve (θ 0)) := γ.curve_isProbability (θ 0)
+    have h_int :=
+      MeasureTheory.Measure.integrable_toReal_rnDeriv
+        (μ := γ.curve (θ 0)) (ν := γ.dominating)
+    change Integrable
+      (fun ω => ((γ.curve (θ 0)).rnDeriv γ.dominating ω).toReal) γ.dominating
+    exact h_int
+
+/-- 1D LAN expansion for the abstract `QMDPath`: applying
+`Asymptotics.LAN.LANExpansion.LAN_expansion_iii` at `k = 1` to the
+`QMDPath`-derived parametric family. The output is the standard
+`TendstoInMeasure` form
+`Σᵢ log(p_{h_n/√n}/p_0) − (1/√n)·Σᵢ ⟪h, ℓ Xᵢ⟫ + (1/2)·I(h,h) →_P 0`. -/
+theorem lanExpansion1D
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P)
+    (h : EuclideanSpace ℝ (Fin 1)) (h_n : ℕ → EuclideanSpace ℝ (Fin 1))
+    (hconv : Tendsto h_n atTop (𝓝 h))
+    {Ω' : Type*} [MeasurableSpace Ω'] (P' : Measure Ω') [IsProbabilityMeasure P']
+    (X : ℕ → Ω' → Ω) (hX_meas : ∀ i, Measurable (X i))
+    (hindep : Pairwise fun i j => ProbabilityTheory.IndepFun (X i) (X j) P')
+    (hident : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) P' P')
+    (hlaw : Measure.map (X 0) P'
+              = γ.dominating.withDensity (fun x => ENNReal.ofReal
+                  ((to1DParametricFamily γ).density 0 x)))
+    (hℓ_meas : Measurable (score1D γ)) :
+    TendstoInMeasure P'
+      (fun n ω =>
+        (∑ i ∈ Finset.range n,
+          Real.log
+            ((to1DParametricFamily γ).density
+                (0 + (Real.sqrt n)⁻¹ • h_n n) (X i ω) /
+              (to1DParametricFamily γ).density 0 (X i ω)))
+        - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n,
+            @inner ℝ _ _ h (score1D γ (X i ω))
+        + (1/2 : ℝ) *
+          AsymptoticStatistics.fisherInformation
+            (to1DParametricFamily γ) γ.dominating 0
+            (score1D γ) h h)
+      Filter.atTop (fun _ => (0 : ℝ)) := by
+  have h_pdf := isPDFOf γ
+  have h_dqm := dqm γ
+  exact AsymptoticStatistics.LANExpansion.LAN_expansion_iii
+    P' (to1DParametricFamily γ) γ.dominating
+    0 (score1D γ) hℓ_meas
+    (h_pdf.density_integral_eq_one 0)
+    (h_pdf.density_integrable 0)
+    (fun t u => h_pdf.density_integral_eq_one (0 + t • u))
+    (fun t u => h_pdf.density_integrable (0 + t • u))
+    h_dqm h h_n hconv X hX_meas hindep hident hlaw
 
 end QMDPath
 end AsymptoticStatistics.LowerBounds.T6_FinDimLAN
@@ -6554,7 +15216,7 @@ end AsymptoticStatistics.LowerBounds.T6_FinDimLAN
 end GLP0011B3Source31
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLAN`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/LowerBounds/T6_FinDimLAN/NondominatedQMDLAN.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source32
 
@@ -7739,20 +16401,20 @@ representative. -/
 theorem qmd_score_mean_integrable_and_lan_nondominated
     (P : Measure Ω) [IsProbabilityMeasure P]
     (curve : ℝ → Measure Ω)
-    -- A one-sided probability path through `P`; vdV Lemma 25.14.
+    -- USER-INPUT: a one-sided probability path through `P`; vdV Lemma 25.14.
     (hprob : ∀ t, 0 ≤ t → IsProbabilityMeasure (curve t))
     (hzero : curve 0 = P)
     (g : Ω → ℝ)
-    -- Measurability of the score representative.
+    -- LEAN-ONLY: measurability of the score representative.
     (hg : Measurable g)
-    -- Right differentiability in quadratic mean with score `g`;
+    -- USER-INPUT: right differentiability in quadratic mean with score `g`;
     -- vdV Lemma 25.14.
     (hqmd : IsRightQMD P curve g)
     (P' : Measure Ω') [IsProbabilityMeasure P']
     (X : ℕ → Ω' → Ω)
-    -- Measurability of each sample coordinate.
+    -- LEAN-ONLY: measurability of each sample coordinate.
     (hX_meas : ∀ i, Measurable (X i))
-    -- Iid observations with common law `P`; vdV Lemma 25.14.
+    -- USER-INPUT: iid observations with common law `P`; vdV Lemma 25.14.
     (hindep : ProbabilityTheory.iIndepFun X P')
     (hident : ∀ i, IdentDistrib (X i) (X 0) P' P')
     (hlaw : Measure.map (X 0) P' = P) :
@@ -7972,7 +16634,7 @@ end AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLAN
 end GLP0011B3Source32
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.Probability.ScoreCLT`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/Probability/ScoreCLT.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source33
 
@@ -7993,7 +16655,7 @@ Theorem 7.10 (§7.3, Convergence to a Normal Experiment): the asymptotic normali
 sum of iid score contributions follows from the multivariate CLT applied to those
 contributions.
 
-The moment data are expressed as
+Deviation from the textbook statement: the Lean formalization carries the moment data as
 explicit hypotheses on the projections $\langle u, Y_0\rangle$ — zero mean
 (`h_zero_mean`), the covariance identity $u^{\top}\Sigma\,v$ (`h_cov`), and a square
 integrability assumption `MemLp (Y 0) 2 P` (`hL2`) — rather than abstractly assuming
@@ -8007,7 +16669,7 @@ Step 1 of the proof. The underlying classical result is the multivariate Lindebe
 CLT together with the Cramér–Wold device (van der Vaart, Chapter 2, §2.3 Characteristic
 Functions, Example 2.18 and the Cramér–Wold lemma, p. 16).
 
-**Proof.** The proof uses the Cramér–Wold device implemented through
+**Proof formalization notes.** The proof uses the Cramér–Wold device implemented through
 Lévy's continuity theorem. For every test direction $t \in \mathbb{R}^k$, the scalar
 projection $Z_i := \langle t, Y_i\rangle$ is iid with zero mean (from `h_zero_mean`) and
 variance $t^{\top}\Sigma\, t$ (from `h_cov`). Mathlib's 1D CLT
@@ -8020,6 +16682,14 @@ $\operatorname{charFun}\!\big(N(0,\Sigma)\big)(t)$. Lévy's continuity theorem
 characteristic-function convergence to weak convergence in `ProbabilityMeasure`, which
 is unpacked as `WeakConverges`.
 
+**Bibliographic comments.** The multivariate central limit theorem is classical folklore
+with no single seminal origin; it is the natural vector-valued extension of the
+Lindeberg–Lévy theorem. The reduction of multivariate weak convergence to the family of
+all one-dimensional projections — the key step here — is the Cramér–Wold device:
+H. Cramér and H. Wold, "Some theorems on distribution functions", *Journal of the London
+Mathematical Society* 11 (1936), 290–294. The continuity-theorem machinery that converts
+pointwise characteristic-function convergence into weak convergence is due to Paul Lévy
+(*Calcul des probabilités*, Gauthier-Villars, Paris, 1925).
 -/
 
 open MeasureTheory ProbabilityTheory Filter Topology
@@ -8193,20 +16863,39 @@ end AsymptoticStatistics
 end GLP0011B3Source33
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.GaussianMGF`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/GaussianMGF.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source34
 
 
 /-!
-# Gaussian exponential tilting
+# Multivariate Gaussian moment-generating function
 
-The one-dimensional Gaussian moment-generating function is expressed as
-`∫ exp(t · x) dN(μ, v)(x) = exp(μ t + v t²/2)`.
-Exponential tilting shifts Gaussian means: first in one dimension, then in
-finite products, and finally for multivariate Gaussians through their
-square-root covariance representation. These identities underlie the
-Gaussian tilt in van der Vaart's Theorem 7.10.
+Mathlib (at commit v4.29.1) gives us:
+* the 1D Gaussian MGF (`ProbabilityTheory.mgf_gaussianReal`), and
+* the multivariate Gaussian characteristic function
+  (`ProbabilityTheory.charFun_multivariateGaussian`).
+
+But it does **not** provide the real MGF of a multivariate Gaussian. Deriving
+the 7.10 provider hypotheses `hMgfTilt` / `hTilt` requires that identity, so we
+build it here.
+
+The derivation chain:
+
+1. `integral_exp_mul_gaussianReal` — repackaging `mgf_gaussianReal` so that
+   `∫ exp(t · x) d(gaussianReal μ v) = exp(μ t + v t²/2)` is a plain integral
+   equation, not `mgf`-notation.
+2. `integral_exp_inner_stdGaussian` — via `map_pi_eq_stdGaussian` plus
+   `integral_fintype_prod_eq_prod` the integral factorises into a product of
+   1D integrals, each collapsing to `exp(aᵢ²/2)` via step 1, then reassembles
+   to `exp(‖a‖²/2)` via `EuclideanSpace.real_norm_sq_eq`.
+3. `integral_exp_inner_multivariateGaussian` — unfold
+   `multivariateGaussian μ S = (stdGaussian E).map (fun x ↦ μ + √S · x)`,
+   apply `integral_map`, linear change of variables, and use step 2.
+
+These are purely `Mathlib-level` — no `AsymptoticStatistics`-specific content
+above the import of `Mathlib`. Namespace is intentionally `ProbabilityTheory`
+so that the identifiers read naturally alongside Mathlib's Gaussian API.
 -/
 
 open MeasureTheory Matrix
@@ -8224,6 +16913,234 @@ lemma integral_exp_mul_gaussianReal (μ : ℝ) (v : NNReal) (t : ℝ) :
   have := mgf_gaussianReal ⟨aemeasurable_id, hmap⟩ t
   simpa [mgf, id] using this
 
+/-- **Standard Gaussian moment-generating function** on a Euclidean space.
+
+For the standard Gaussian measure on `EuclideanSpace ℝ ι` and any `a` in that
+space, `∫ exp(⟨a, x⟩) d(stdGaussian)(x) = exp(‖a‖² / 2)`. -/
+lemma integral_exp_inner_stdGaussian
+    {ι : Type*} [Fintype ι] (a : EuclideanSpace ℝ ι) :
+    ∫ x, Real.exp (⟪a, x⟫) ∂stdGaussian (EuclideanSpace ℝ ι)
+      = Real.exp (‖a‖ ^ 2 / 2) := by
+  -- Pull the integral through `map_pi_eq_stdGaussian` down to a product-measure
+  -- integral over `ι → ℝ`.
+  rw [← map_pi_eq_stdGaussian (ι := ι),
+    integral_map (by fun_prop) (by fun_prop)]
+  -- On the product measure, the inner unfolds to `∑ i, y i * a.ofLp i` and
+  -- `exp` of a sum splits as a product; apply Fubini.
+  have h_inner : ∀ y : ι → ℝ,
+      ⟪a, (WithLp.toLp 2 y : EuclideanSpace ℝ ι)⟫
+        = ∑ i, a.ofLp i * y i := by
+    intro y
+    rw [PiLp.inner_apply]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    -- `(WithLp.toLp 2 y).ofLp i = y i`, and `⟪a i, b i⟫ = b i * a i` on `ℝ` (defeq).
+    change y i * a.ofLp i = a.ofLp i * y i
+    ring
+  have h_prod : ∀ y : ι → ℝ,
+      Real.exp (⟪a, (WithLp.toLp 2 y : EuclideanSpace ℝ ι)⟫)
+        = ∏ i, Real.exp (a.ofLp i * y i) := by
+    intro y
+    rw [h_inner y, ← Real.exp_sum]
+  simp_rw [h_prod]
+  rw [integral_fintype_prod_eq_prod
+    (f := fun i y => Real.exp (a.ofLp i * y))]
+  -- Each factor is a 1D Gaussian MGF at parameter `a.ofLp i`.
+  simp_rw [integral_exp_mul_gaussianReal 0 1 _]
+  simp_rw [NNReal.coe_one, one_mul, zero_mul, zero_add]
+  -- Combine the product of `exp(·²/2)` back into `exp((∑·²)/2)` and identify
+  -- with `exp(‖a‖²/2)` via `EuclideanSpace.real_norm_sq_eq`.
+  rw [← Real.exp_sum]
+  congr 1
+  rw [EuclideanSpace.real_norm_sq_eq, Finset.sum_div]
+
+/-- **Multivariate Gaussian moment-generating function**. For `y ∼ N(μ, S)` on
+`EuclideanSpace ℝ (Fin k)` with `S` positive semidefinite and any `t`,
+`∫ exp(⟨t, y⟩) dN(μ, S)(y) = exp(⟨t, μ⟩ + (t ⬝ᵥ S *ᵥ t)/2)`. -/
+lemma integral_exp_inner_multivariateGaussian
+    {k : ℕ} (μ : EuclideanSpace ℝ (Fin k)) (S : Matrix (Fin k) (Fin k) ℝ)
+    (hS : S.PosSemidef) (t : EuclideanSpace ℝ (Fin k)) :
+    ∫ y, Real.exp (⟪t, y⟫) ∂multivariateGaussian μ S
+      = Real.exp (⟪t, μ⟫ + (t.ofLp ⬝ᵥ S.mulVec t.ofLp) / 2) := by
+  classical
+  -- Unfold the definition and pass the integral through the affine push-forward.
+  rw [multivariateGaussian,
+    integral_map (by fun_prop) (by fun_prop)]
+  -- Split `⟨t, μ + Ax⟩ = ⟨t, μ⟩ + ⟨t, Ax⟩`, pull `exp` out of the sum, and
+  -- factor the constant `exp(⟨t, μ⟩)` out of the integral.
+  simp_rw [inner_add_right, Real.exp_add]
+  rw [integral_const_mul]
+  congr 1
+  -- Self-adjointness of `toEuclideanCLM (sqrt S)` lets us pivot the inner onto
+  -- the first argument: `⟨t, A x⟩ = ⟨A t, x⟩`, reducing to `integral_exp_inner_stdGaussian`.
+  set A : EuclideanSpace ℝ (Fin k) →L[ℝ] EuclideanSpace ℝ (Fin k) :=
+    toEuclideanCLM (𝕜 := ℝ) (CFC.sqrt S) with hA_def
+  set_option backward.isDefEq.respectTransparency false in
+  have hA_sa : IsSelfAdjoint A :=
+    (CFC.sqrt_nonneg S).isSelfAdjoint.map (toEuclideanCLM (𝕜 := ℝ))
+  have h_inner_swap : ∀ x : EuclideanSpace ℝ (Fin k),
+      Real.exp (⟪t, A x⟫) = Real.exp (⟪A t, x⟫) := by
+    intro x
+    congr 1
+    have := ContinuousLinearMap.adjoint_inner_left A x t
+    rw [hA_sa.adjoint_eq] at this
+    exact this.symm
+  simp_rw [h_inner_swap]
+  rw [integral_exp_inner_stdGaussian]
+  congr 1
+  -- Identify `‖A t‖² = t.ofLp ⬝ᵥ S.mulVec t.ofLp` via self-adjoint + sqrt·sqrt = S.
+  rw [sq, ← real_inner_self_eq_norm_mul_norm]
+  have h_self_adjoint_swap : ⟪A t, A t⟫ = ⟪t, A (A t)⟫ := by
+    have := ContinuousLinearMap.adjoint_inner_left A (A t) t
+    rw [hA_sa.adjoint_eq] at this
+    exact this
+  rw [h_self_adjoint_swap]
+  -- `A (A t) = toEuclideanCLM (sqrt S · sqrt S) t = toEuclideanCLM S t`.
+  have hAA : A ∘L A = toEuclideanCLM (𝕜 := ℝ) S := by
+    change A * A = toEuclideanCLM (𝕜 := ℝ) S
+    rw [hA_def, ← map_mul, CFC.sqrt_mul_sqrt_self _ hS.nonneg]
+  have hAAt : A (A t) = (toEuclideanCLM (𝕜 := ℝ) S) t := by
+    change (A ∘L A) t = _
+    rw [hAA]
+  rw [hAAt, Matrix.inner_toEuclideanCLM]
+
+/-- Bridge lemma: the `WithLp.equiv`-spelling inner product with a `Matrix.mulVec`
+in the second argument equals the underlying `dotProduct`. Pure book-keeping. -/
+private lemma inner_equivSymm_mulVec_eq_dotProduct
+    {k : ℕ} (u : EuclideanSpace ℝ (Fin k)) (S : Matrix (Fin k) (Fin k) ℝ)
+    (v : EuclideanSpace ℝ (Fin k)) :
+    ⟪u, (WithLp.equiv 2 _).symm (S.mulVec ((WithLp.equiv 2 _) v))⟫
+      = u.ofLp ⬝ᵥ S.mulVec v.ofLp := by
+  rw [show (u.ofLp ⬝ᵥ S.mulVec v.ofLp) = ∑ i, u.ofLp i * (S.mulVec v.ofLp) i from rfl]
+  simp only [PiLp.inner_apply, WithLp.equiv_apply, WithLp.equiv_symm_apply]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  change (S.mulVec v.ofLp) i * u.ofLp i = u.ofLp i * (S.mulVec v.ofLp) i
+  ring
+
+/-- **Tilted Gaussian integrates to one**. If `π` has second marginal
+`multivariateGaussian 0 J`, then for any `h`, `∫ exp q.2 ∂(π.map tilt_map) = 1`
+where `tilt_map p := (p.1, ⟪h, p.2⟫ - ½ ⟪h, J h⟩)`.
+
+This is the **MGF half** of `hMgfTilt` (`LAN_representation`'s Step 5 provider).
+Integrability is an immediate corollary via `Integrable.of_integral_ne_zero`. -/
+theorem integral_exp_tilt_eq_one
+    {k d : ℕ}
+    (π : Measure (EuclideanSpace ℝ (Fin d) × EuclideanSpace ℝ (Fin k)))
+    [IsProbabilityMeasure π]
+    (J : Matrix (Fin k) (Fin k) ℝ) (hJ : J.PosSemidef)
+    (h_marginal : π.map Prod.snd = multivariateGaussian 0 J)
+    (h : EuclideanSpace ℝ (Fin k)) :
+    ∫ q, Real.exp q.2 ∂(π.map
+        (fun p : EuclideanSpace ℝ (Fin d) × EuclideanSpace ℝ (Fin k) =>
+          (p.1, ⟪h, p.2⟫ - (1 / 2 : ℝ) *
+            ⟪h, (WithLp.equiv 2 _).symm (J.mulVec ((WithLp.equiv 2 _) h))⟫)))
+      = 1 := by
+  set c : ℝ := (1 / 2 : ℝ) *
+    ⟪h, (WithLp.equiv 2 (Fin k → ℝ)).symm (J.mulVec ((WithLp.equiv 2 (Fin k → ℝ)) h))⟫ with hc_def
+  have hc_eq : c = (h.ofLp ⬝ᵥ J.mulVec h.ofLp) / 2 := by
+    rw [hc_def, inner_equivSymm_mulVec_eq_dotProduct]; ring
+  -- Integrand measurability for the various `integral_map` applications.
+  have hexp_meas : AEStronglyMeasurable
+      (fun y : EuclideanSpace ℝ (Fin k) => Real.exp ⟪h, y⟫) (multivariateGaussian 0 J) :=
+    by fun_prop
+  calc ∫ q, Real.exp q.2 ∂(π.map
+          (fun p : EuclideanSpace ℝ (Fin d) × EuclideanSpace ℝ (Fin k) =>
+            (p.1, ⟪h, p.2⟫ - c)))
+      = ∫ p, Real.exp (⟪h, p.2⟫ - c) ∂π := by
+        rw [integral_map (by fun_prop) (by fun_prop)]
+    _ = ∫ p, Real.exp ⟪h, p.2⟫ * Real.exp (-c) ∂π := by
+        simp_rw [sub_eq_add_neg, Real.exp_add]
+    _ = (∫ p, Real.exp ⟪h, p.2⟫ ∂π) * Real.exp (-c) := integral_mul_const _ _
+    _ = (∫ y, Real.exp ⟪h, y⟫ ∂(π.map Prod.snd)) * Real.exp (-c) := by
+        rw [integral_map (by fun_prop) (by rw [h_marginal]; exact hexp_meas)]
+    _ = (∫ y, Real.exp ⟪h, y⟫ ∂(multivariateGaussian (0 : EuclideanSpace ℝ (Fin k)) J))
+          * Real.exp (-c) := by rw [h_marginal]
+    _ = Real.exp (⟪h, (0 : EuclideanSpace ℝ (Fin k))⟫
+          + (h.ofLp ⬝ᵥ J.mulVec h.ofLp) / 2) * Real.exp (-c) := by
+        rw [integral_exp_inner_multivariateGaussian 0 J hJ h]
+    _ = Real.exp ((h.ofLp ⬝ᵥ J.mulVec h.ofLp) / 2) * Real.exp (-c) := by
+        rw [inner_zero_right, zero_add]
+    _ = Real.exp (0 : ℝ) := by
+        rw [← Real.exp_add, ← hc_eq]; ring_nf
+    _ = 1 := Real.exp_zero
+
+/-- **Integrability of the exponential tilt under `π` with Gaussian second marginal**.
+Companion to `integral_exp_tilt_eq_one`: the integrand `fun q => exp q.2` is
+integrable on `π.map tilt_map`, by `Integrable.of_integral_ne_zero` applied to the
+value `1`. -/
+theorem integrable_exp_tilt
+    {k d : ℕ}
+    (π : Measure (EuclideanSpace ℝ (Fin d) × EuclideanSpace ℝ (Fin k)))
+    [IsProbabilityMeasure π]
+    (J : Matrix (Fin k) (Fin k) ℝ) (hJ : J.PosSemidef)
+    (h_marginal : π.map Prod.snd = multivariateGaussian 0 J)
+    (h : EuclideanSpace ℝ (Fin k)) :
+    Integrable (fun q : EuclideanSpace ℝ (Fin d) × ℝ => Real.exp q.2)
+      (π.map (fun p : EuclideanSpace ℝ (Fin d) × EuclideanSpace ℝ (Fin k) =>
+        (p.1, ⟪h, p.2⟫ - (1 / 2 : ℝ) *
+          ⟪h, (WithLp.equiv 2 _).symm (J.mulVec ((WithLp.equiv 2 _) h))⟫))) :=
+  MeasureTheory.integrable_of_integral_eq_one
+    (integral_exp_tilt_eq_one π J hJ h_marginal h)
+
+/-- **Linear pushforward identity for multivariate Gaussians** (spelled via the
+matrix-to-CLM embedding). For every matrix `A`, the push-forward of
+`multivariateGaussian μ S` under `toEuclideanCLM A` equals
+`multivariateGaussian (toEuclideanCLM A μ) (A * S * Aᴴ)`.
+
+This is the key measure identity consumed by Theorem 7.10 Step 7 (`hTilt`).
+Proof via `IsGaussian.ext`: compute means and covariance bilinear forms on each
+side. The covariance side uses `covarianceBilin_map` (which inserts the adjoint,
+equal to `toEuclideanCLM Aᴴ` because `toEuclideanCLM` is a star algebra iso),
+then `covarianceBilin_multivariateGaussian`, then matrix algebra
+(`dotProduct_mulVec` + `Matrix.mul_mulVec`) to collapse `A * S * Aᴴ`. -/
+theorem multivariateGaussian_map_toEuclideanCLM
+    {k : ℕ} (A : Matrix (Fin k) (Fin k) ℝ)
+    (μ : EuclideanSpace ℝ (Fin k))
+    {S : Matrix (Fin k) (Fin k) ℝ} (hS : S.PosSemidef) :
+    (multivariateGaussian μ S).map (Matrix.toEuclideanCLM (𝕜 := ℝ) A)
+      = multivariateGaussian (Matrix.toEuclideanCLM (𝕜 := ℝ) A μ)
+          (A * S * Aᴴ) := by
+  classical
+  -- `A * S * Aᴴ` is positive semidefinite (needed for the RHS covariance identity).
+  have hT : (A * S * Aᴴ).PosSemidef := by
+    have := hS.conjTranspose_mul_mul_same (B := Aᴴ)
+    rwa [Matrix.conjTranspose_conjTranspose] at this
+  -- Integrability of id under the Gaussian.
+  have hInt : Integrable (fun x : EuclideanSpace ℝ (Fin k) => x)
+      (multivariateGaussian μ S) := ProbabilityTheory.IsGaussian.integrable_id
+  have hMemLp : MeasureTheory.MemLp
+      (id : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)) 2
+      (multivariateGaussian μ S) := ProbabilityTheory.IsGaussian.memLp_two_id
+  refine IsGaussian.ext ?_ ?_
+  · -- Means agree: both equal `toEuclideanCLM A μ`.
+    simp only [id_eq]
+    rw [integral_id_multivariateGaussian,
+      integral_map (by fun_prop) (by fun_prop),
+      ContinuousLinearMap.integral_comp_id_comm hInt,
+      integral_id_multivariateGaussian]
+  · -- Covariance bilinear forms agree.
+    ext u v
+    -- Adjoint of `toEuclideanCLM A` equals `toEuclideanCLM Aᴴ` (star preserving).
+    set_option backward.isDefEq.respectTransparency false in
+    have h_adj : ContinuousLinearMap.adjoint (Matrix.toEuclideanCLM (𝕜 := ℝ) A)
+        = Matrix.toEuclideanCLM (𝕜 := ℝ) Aᴴ := by
+      rw [← ContinuousLinearMap.star_eq_adjoint]
+      exact (map_star (Matrix.toEuclideanCLM (𝕜 := ℝ)) A).symm
+    rw [covarianceBilin_map hMemLp,
+      covarianceBilin_multivariateGaussian hS,
+      covarianceBilin_multivariateGaussian hT,
+      h_adj]
+    simp only [Matrix.ofLp_toEuclideanCLM]
+    -- Matrix-algebra identity: `u ⬝ᵥ (A * S * Aᴴ) *ᵥ v = Aᴴ.mulVec u ⬝ᵥ S.mulVec (Aᴴ.mulVec v)`.
+    have key : ∀ u' v' : Fin k → ℝ,
+        u' ⬝ᵥ (A * S * Aᴴ).mulVec v' = Aᴴ.mulVec u' ⬝ᵥ S.mulVec (Aᴴ.mulVec v') := by
+      intro u' v'
+      rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec]
+      congr 1
+      -- `vecMul u' A = Aᴴ.mulVec u'` on real matrices: both equal `fun i => ∑ j, A j i * u' j`.
+      ext i
+      change ∑ j, u' j * A j i = ∑ j, A j i * u' j
+      exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+    exact (key u.ofLp v.ofLp).symm
 
 /-- **CLM lift of `Matrix.toLpLin 2 2`** for rectangular matrices.
 
@@ -8245,6 +17162,94 @@ lemma ofLp_matrixToEuclideanCLMRect
     {d k : ℕ} (A : Matrix (Fin d) (Fin k) ℝ) (v : EuclideanSpace ℝ (Fin k)) :
     (matrixToEuclideanCLMRect A v).ofLp = A.mulVec v.ofLp := rfl
 
+/-- **Adjoint of `matrixToEuclideanCLMRect A`** equals `matrixToEuclideanCLMRect Aᵀ`.
+
+For real rectangular matrices, the CLM-adjoint of `A.mulVec` is exactly the CLM
+of the transpose `Aᵀ.mulVec`, paralleling the square version where `Aᴴ = Aᵀ`
+(`conjTranspose_eq_transpose_of_trivial` for `ℝ`).
+
+**Proof**: lift `Matrix.toEuclideanLin_conjTranspose_eq_adjoint` (which says
+`Matrix.toEuclideanLin Aᴴ = LinearMap.adjoint (Matrix.toEuclideanLin A)` at the
+LinearMap level) to CLM via `LinearMap.adjoint_toContinuousLinearMap` (which
+says `LinearMap.toContinuousLinearMap` commutes with adjoint in finite-dim).
+For real, `Aᴴ = Aᵀ` via `Matrix.conjTranspose_eq_transpose_of_trivial`. -/
+lemma matrixToEuclideanCLMRect_adjoint
+    {d k : ℕ} (A : Matrix (Fin d) (Fin k) ℝ) :
+    ContinuousLinearMap.adjoint (matrixToEuclideanCLMRect A)
+      = matrixToEuclideanCLMRect Aᵀ := by
+  unfold matrixToEuclideanCLMRect
+  rw [← LinearMap.adjoint_toContinuousLinearMap]
+  congr 1
+  -- LinearMap.adjoint (Matrix.toLpLin 2 2 A) = Matrix.toLpLin 2 2 Aᵀ.
+  -- Substitute Aᵀ = Aᴴ on ℝ, then apply Matrix.toEuclideanLin_conjTranspose_eq_adjoint.
+  have hAT_eq : (Aᵀ : Matrix (Fin k) (Fin d) ℝ) = Aᴴ :=
+    (Matrix.conjTranspose_eq_transpose_of_trivial A).symm
+  rw [hAT_eq]
+  exact (Matrix.toEuclideanLin_conjTranspose_eq_adjoint A).symm
+
+/-- **Linear pushforward identity for multivariate Gaussians — rectangular case.**
+
+For a rectangular matrix `A : Matrix (Fin d) (Fin k) ℝ`, the push-forward of
+`multivariateGaussian μ S` (on `EuclideanSpace ℝ (Fin k)`) under the CLM
+`matrixToEuclideanCLMRect A` (viewed as `E_k →L[ℝ] E_d`) equals
+`multivariateGaussian (matrixToEuclideanCLMRect A μ) (A * S * Aᵀ)` on
+`EuclideanSpace ℝ (Fin d)`.
+
+Companion to `multivariateGaussian_map_toEuclideanCLM` (square case). It gives
+the Gaussian pushforward used to transport loss integrals through a `d × k` matrix:
+`∫⁻ g, L(c - ψDotMat g) ∂N(0, S) = ∫⁻ z, L(c - z) ∂N(0, ψDotMat S ψDotMatᵀ)`.
+
+**Proof structure** parallel to the square case (`multivariateGaussian_map_toEuclideanCLM`):
+- Means agree via `integral_id_multivariateGaussian` + `integral_map` +
+  `ContinuousLinearMap.integral_comp_id_comm`.
+- Covariance bilinear forms agree via `covarianceBilin_map` + `matrixToEuclideanCLMRect_adjoint`
+  + `covarianceBilin_multivariateGaussian` + matrix algebra
+  (`Matrix.dotProduct_mulVec` + `Matrix.mulVec_mulVec` to collapse `A * S * Aᵀ`). -/
+theorem multivariateGaussian_map_rectangular
+    {d k : ℕ} (A : Matrix (Fin d) (Fin k) ℝ)
+    (μ : EuclideanSpace ℝ (Fin k))
+    {S : Matrix (Fin k) (Fin k) ℝ} (hS : S.PosSemidef) :
+    (multivariateGaussian μ S).map (matrixToEuclideanCLMRect A)
+      = multivariateGaussian (matrixToEuclideanCLMRect A μ) (A * S * Aᵀ) := by
+  classical
+  -- `A * S * Aᵀ` is positive semidefinite.
+  have hT : (A * S * Aᵀ).PosSemidef := by
+    have := hS.mul_mul_conjTranspose_same A
+    rwa [Matrix.conjTranspose_eq_transpose_of_trivial] at this
+  -- Integrability of id under the source Gaussian.
+  have hInt : Integrable (fun x : EuclideanSpace ℝ (Fin k) => x)
+      (multivariateGaussian μ S) := ProbabilityTheory.IsGaussian.integrable_id
+  have hMemLp : MeasureTheory.MemLp
+      (id : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)) 2
+      (multivariateGaussian μ S) := ProbabilityTheory.IsGaussian.memLp_two_id
+  refine IsGaussian.ext ?_ ?_
+  · -- Means agree: both equal `matrixToEuclideanCLMRect A μ`.
+    simp only [id_eq]
+    rw [integral_id_multivariateGaussian,
+      integral_map (by fun_prop) (by fun_prop),
+      ContinuousLinearMap.integral_comp_id_comm hInt,
+      integral_id_multivariateGaussian]
+  · -- Covariance bilinear forms agree.
+    ext u v
+    rw [covarianceBilin_map hMemLp,
+      covarianceBilin_multivariateGaussian hS,
+      covarianceBilin_multivariateGaussian hT,
+      matrixToEuclideanCLMRect_adjoint]
+    simp only [ofLp_matrixToEuclideanCLMRect]
+    -- Matrix algebra: `u ⬝ᵥ (A * S * Aᵀ).mulVec v = Aᵀ.mulVec u ⬝ᵥ S.mulVec (Aᵀ.mulVec v)`.
+    -- State as a quantified helper to control the `Matrix.dotProduct_mulVec` rewrite
+    -- direction (the LHS of the main goal already has a matching pattern,
+    -- so direct rewrite would target the wrong side).
+    have key : ∀ u' v' : Fin d → ℝ,
+        u' ⬝ᵥ (A * S * Aᵀ).mulVec v' = Aᵀ.mulVec u' ⬝ᵥ S.mulVec (Aᵀ.mulVec v') := by
+      intro u' v'
+      rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec]
+      congr 1
+      -- `vecMul u' A = Aᵀ.mulVec u'` on real matrices: both equal `fun i => ∑ j, A j i * u' j`.
+      ext i
+      change ∑ j, u' j * A j i = ∑ j, A j i * u' j
+      exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+    exact (key u.ofLp v.ofLp).symm
 
 /-- **Girsanov / Esscher identity for 1D standard Gaussian**. Tilting
 `gaussianReal 0 1` by the exponential density `exp(a · x - a² / 2)` produces
@@ -8255,7 +17260,7 @@ Proof by PDF comparison: both sides rewrite to `volume.withDensity f` via
 with the exponential tilt, and the resulting density matches the `a`-mean PDF
 because `exp(-(x-a)²/2) = exp(-x²/2) · exp(a·x - a²/2)`.
 
-First step of the Girsanov chain for Theorem 7.10; lifts
+First step of the Girsanov chain for the Theorem 7.10 `hTilt` provider; lifts
 to the multivariate case via the product-measure representation of `stdGaussian`. -/
 lemma gaussianReal_withDensity_exp_shift (a : ℝ) :
     (gaussianReal 0 1).withDensity
@@ -8295,7 +17300,7 @@ Proof goes through `pi_withDensity_prod`: the exponential density factors as a
 product `∏ i, exp(aᵢ yᵢ - aᵢ² / 2)`, each factor is the 1D Girsanov density, and
 `gaussianReal_withDensity_exp_shift` shifts each component individually.
 
-Second step of the multivariate Girsanov chain (Theorem 7.10). -/
+Second step of the multivariate Girsanov chain (`hTilt` for Theorem 7.10). -/
 lemma pi_gaussianReal_withDensity_exp_shift {ι : Type*} [Fintype ι] (a : ι → ℝ) :
     (Measure.pi (fun _ : ι => gaussianReal 0 1)).withDensity
         (fun y => ENNReal.ofReal (Real.exp (∑ i, a i * y i - ∑ i, a i ^ 2 / 2)))
@@ -8530,7 +17535,7 @@ end ProbabilityTheory
 end GLP0011B3Source34
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.ForMathlib.Slutsky`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/ForMathlib/Slutsky.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source35
 
@@ -8538,9 +17543,9 @@ section GLP0011B3Source35
 /-!
 # Slutsky perturbation for `WeakConverges`
 
-Slutsky's theorem in the "close-in-probability" form, stated at the
+Slutsky's theorem in the "close-in-probability" form, stated at the project's
 pushforward-measure level (`WeakConverges`). Given two sequences of random variables
-`X n, Y n : Ω n → E` (probability measures `P n` on varying spaces), if
+`X n, Y n : Ω n → E` (base measures `P n` varying in both space and total mass), if
 
 * the push-forward laws `(P n).map (X n)` weakly converge to `ν`, and
 * the pair `dist (X n) (Y n)` converges to `0` in `P n`-probability,
@@ -8549,8 +17554,8 @@ then `(P n).map (Y n)` weakly converges to `ν` as well. This is the "varying ba
 version — Mathlib's `tendstoInDistribution_of_tendstoInMeasure_sub` only covers a
 single fixed base measure on a single space.
 
-In Theorem 7.10 Step 3, this absorbs the LAN residual (an `o_P(1)` under
-`P^n_{θ₀}`) into joint weak convergence of `(T_n, log-likelihood)`.
+Used by Theorem 7.10 Step 3 to absorb the `LAN_expansion_iii` residual (an `o_P(1)`
+under `P^n_{θ₀}`) into the joint weak convergence of `(T_n, log-likelihood)`.
 
 The proof mirrors Mathlib's: reduce to Lipschitz test functions via
 `tendsto_iff_forall_lipschitz_integral_tendsto`, then split `|F(Y) − F(X)|` on
@@ -8569,9 +17574,7 @@ Varying-base version (each `P n` lives on its own space `Ω n`). Adapted from
 `MeasureTheory.tendstoInDistribution_of_tendstoInMeasure_sub`, which is stated for a
 single base `μ''` on a normed additive group. The three-piece estimate
 `|∫F Y − ∫F ν| ≤ L·(ε/2) + 2·‖F‖∞ · P{dist ≥ ε/2} + |∫F X − ∫F ν|` carries over
-with `dist` in place of `‖·-·‖`.
-The underlying Mathlib proof is Apache-2.0; see NOTICE at the repository root.
--/
+without change; we use `dist` in place of `‖·-·‖`. -/
 theorem WeakConverges.slutsky_of_tendstoInMeasure_dist
     {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
     {E : Type*} [MeasurableSpace E] [PseudoMetricSpace E] [Nonempty E]
@@ -8589,7 +17592,7 @@ theorem WeakConverges.slutsky_of_tendstoInMeasure_dist
     (by infer_instance)
   have h_prob_Y : ∀ n, IsProbabilityMeasure ((P n).map (Y n)) := fun n =>
     (by infer_instance)
-  -- Package the pushforwards as `ProbabilityMeasure` to apply the Lipschitz
+  -- Package the pushforwards as `ProbabilityMeasure` so we can apply the Lipschitz
   -- characterisation of weak convergence. Use local `let`-bindings to keep the
   -- subtype folded under `rw [tendsto_iff_forall_lipschitz_integral_tendsto]`.
   let pX : ℕ → ProbabilityMeasure E := fun n => ⟨(P n).map (X n), h_prob_X n⟩
@@ -8697,7 +17700,7 @@ theorem WeakConverges.slutsky_of_tendstoInMeasure_dist
           rw [mul_assoc]
           gcongr
           grw [measureReal_le_one, mul_one]
-  -- Step C: the RHS tends to `L * (ε / 2) + 0 + 0`; the strict bound follows from `L * (ε / 2) < L * ε`.
+  -- Step C: the RHS tends to `L * (ε / 2) + 0 + 0`; we win because `L * (ε / 2) < L * ε`.
   have h_tendsto : Tendsto (fun n =>
       L * (ε / 2) + M * (P n).real {ω | ε / 2 ≤ dist (X n ω) (Y n ω)}
         + |∫ ω, F ω ∂((P n).map (X n)) - ∫ ω, F ω ∂ν|)
@@ -8729,7 +17732,7 @@ end AsymptoticStatistics
 end GLP0011B3Source35
 end AronowAudit.P001.Wave1.GLP0011B3
 
-/-! Adapted from StatLean module `AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLeCamThird`. -/
+/-! Copied from `StatLean/AsymptoticStatistics/LowerBounds/T6_FinDimLAN/NondominatedQMDLeCamThird.lean`. -/
 namespace AronowAudit.P001.Wave1.GLP0011B3
 section GLP0011B3Source36
 
@@ -10028,6 +19031,298 @@ theorem qmd_local_contiguous
   rw [heq] at hofReal
   simpa only [ENNReal.ofReal_zero] using hofReal
 
+/-- A zero-score QMD path is asymptotically equivalent to baseline for all
+uniformly bounded measurable tests.
+
+Proof idea: combine contiguity in both directions with the zero-score LAN
+limit and actual product comparison. -/
+theorem zero_score_local_product_equivalent
+    (γ : NondominatedQMDPath P) (hscore : γ.score = 0)
+    (f : ∀ n, (Fin n → Ω) → ℝ) (C : ℝ)
+    (hf : ∀ n, Measurable (f n)) (hbound : ∀ n X, |f n X| ≤ C) :
+    Tendsto (fun n =>
+      (∫ X, f n X ∂(Measure.pi (fun _ : Fin n => γ.curve ((Real.sqrt n)⁻¹))))
+        - ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P)))
+      atTop (nhds 0) := by
+  have hC : 0 ≤ C :=
+    (abs_nonneg (f 0 (fun i => Fin.elim0 i))).trans
+      (hbound 0 (fun i => Fin.elim0 i))
+  have hlog0 : WeakConverges
+      (fun n => (Measure.pi (fun _ : Fin n => P)).map
+        (actualLogLikelihood γ 1 n))
+      (Measure.dirac 0) := by
+    let v₀ : NNReal := ⟨1 ^ 2 * ‖γ.score‖ ^ 2,
+      mul_nonneg (sq_nonneg _) (sq_nonneg _)⟩
+    have h : WeakConverges
+        (fun n => (Measure.pi (fun _ : Fin n => P)).map
+          (actualLogLikelihood γ 1 n))
+        (gaussianReal (-(v₀ : ℝ) / 2) v₀) := by
+      simpa only [v₀] using!
+        weakConverges_actualLogLikelihood_under_pi γ 1 zero_le_one
+    have hv₀ : v₀ = 0 := by
+      apply NNReal.eq
+      (norm_num [v₀, hscore]; rfl)
+    rw [hv₀] at h
+    simpa only [NNReal.coe_zero, neg_zero, zero_div,
+      ProbabilityTheory.gaussianReal_zero_var] using h
+  let truncExp : BoundedContinuousFunction ℝ ℝ :=
+    { toFun := fun x => min (Real.exp x) 1
+      continuous_toFun := Real.continuous_exp.min continuous_const
+      map_bounded' := ⟨1, fun x y => by
+        rw [Real.dist_eq]
+        have hx0 : 0 ≤ min (Real.exp x) 1 :=
+          le_min (Real.exp_pos _).le zero_le_one
+        have hy0 : 0 ≤ min (Real.exp y) 1 :=
+          le_min (Real.exp_pos _).le zero_le_one
+        have hx1 : min (Real.exp x) 1 ≤ 1 := min_le_right _ _
+        have hy1 : min (Real.exp y) 1 ≤ 1 := min_le_right _ _
+        rw [abs_le]
+        constructor <;> linarith⟩ }
+  have htrunc : Tendsto (fun n =>
+      ∫ X, min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+        ∂(Measure.pi (fun _ : Fin n => P))) atTop (nhds 1) := by
+    have h := hlog0 truncExp
+    have hmap : ∀ n,
+        ∫ x, truncExp x
+            ∂((Measure.pi (fun _ : Fin n => P)).map
+              (actualLogLikelihood γ 1 n)) =
+          ∫ X, truncExp (actualLogLikelihood γ 1 n X)
+            ∂(Measure.pi (fun _ : Fin n => P)) := by
+      intro n
+      exact integral_map
+        (measurable_actualLogLikelihood γ 1 n).aemeasurable
+        truncExp.continuous.aestronglyMeasurable
+    simp_rw [hmap] at h
+    dsimp only [truncExp] at h
+    rw [MeasureTheory.integral_dirac] at h
+    norm_num at h
+    exact h
+  have hmass := integral_exp_actualLogLikelihood_tendsto_one γ 1 zero_le_one
+  have hExpL1_eq : ∀ n,
+      ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) - 1|
+          ∂(Measure.pi (fun _ : Fin n => P)) =
+        (∫ X, Real.exp (actualLogLikelihood γ 1 n X)
+          ∂(Measure.pi (fun _ : Fin n => P))) + 1 -
+          2 * (∫ X, min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+            ∂(Measure.pi (fun _ : Fin n => P))) := by
+    intro n
+    have hexp := integrable_exp_actualLogLikelihood γ 1 zero_le_one n
+    have hone : Integrable (fun _ : Fin n → Ω => (1 : ℝ))
+        (Measure.pi (fun _ : Fin n => P)) := integrable_const 1
+    have hmin : Integrable (fun X =>
+        min (Real.exp (actualLogLikelihood γ 1 n X)) 1)
+        (Measure.pi (fun _ : Fin n => P)) := by
+      refine hexp.mono' ?_ ?_
+      · exact (((measurable_actualLogLikelihood γ 1 n).exp).min
+          measurable_const).aestronglyMeasurable
+      · filter_upwards with X
+        rw [Real.norm_eq_abs, abs_of_nonneg]
+        · exact min_le_left _ _
+        · exact le_min (Real.exp_pos _).le zero_le_one
+    have hpw : (fun X =>
+        |Real.exp (actualLogLikelihood γ 1 n X) - 1|) =
+        fun X => Real.exp (actualLogLikelihood γ 1 n X) + 1 -
+          2 * min (Real.exp (actualLogLikelihood γ 1 n X)) 1 := by
+      funext X
+      by_cases hz : Real.exp (actualLogLikelihood γ 1 n X) ≤ 1
+      · rw [min_eq_left hz, abs_of_nonpos (sub_nonpos.mpr hz)]
+        ring_nf
+      · have hz' : 1 ≤ Real.exp (actualLogLikelihood γ 1 n X) :=
+          (lt_of_not_ge hz).le
+        rw [min_eq_right hz', abs_of_nonneg (sub_nonneg.mpr hz')]
+        ring_nf
+    rw [hpw]
+    calc
+      ∫ X, Real.exp (actualLogLikelihood γ 1 n X) + 1 -
+          2 * min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+          ∂(Measure.pi (fun _ : Fin n => P)) =
+          (∫ X, Real.exp (actualLogLikelihood γ 1 n X) + 1
+            ∂(Measure.pi (fun _ : Fin n => P))) -
+          ∫ X, 2 * min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+            ∂(Measure.pi (fun _ : Fin n => P)) :=
+        integral_sub (hexp.add hone) (hmin.const_mul 2)
+      _ = _ := by
+        rw [integral_add hexp hone, integral_const_mul, integral_const]
+        have hOne : (Measure.pi (fun _ : Fin n => P)).real Set.univ = 1 := by
+          simp only [measureReal_def, measure_univ, ENNReal.toReal_one]
+        rw [hOne]
+        simp only [smul_eq_mul, mul_one]
+  have hExpL1 : Tendsto (fun n =>
+      ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) - 1|
+        ∂(Measure.pi (fun _ : Fin n => P))) atTop (nhds 0) := by
+    have hcalc := (hmass.add_const 1).sub (htrunc.const_mul 2)
+    have hcalc' : Tendsto (fun n =>
+        (∫ X, Real.exp (actualLogLikelihood γ 1 n X)
+          ∂(Measure.pi (fun _ : Fin n => P))) + 1 -
+          2 * (∫ X, min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+            ∂(Measure.pi (fun _ : Fin n => P)))) atTop (nhds 0) := by
+      simpa only [one_add_one_eq_two, mul_one, sub_self] using hcalc
+    exact hcalc'.congr' (Filter.Eventually.of_forall fun n => (hExpL1_eq n).symm)
+  have hbad : Tendsto (fun n =>
+      ((Measure.pi (fun _ : Fin n => P))
+        {X | (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal = 0}).toReal)
+      atTop (nhds 0) := by
+    have hz := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp
+      (γ.base_zeroLikelihood_localScale_tendsto 1 zero_le_one)
+    refine squeeze_zero
+      (fun _ => ENNReal.toReal_nonneg)
+      (fun n => ENNReal.toReal_mono
+        (ENNReal.mul_ne_top (ENNReal.natCast_ne_top n) (measure_ne_top P _))
+        (by simpa only [one_mul] using!
+          acProductLikelihood_toReal_zero_mass_le γ ((Real.sqrt n)⁻¹) n)) ?_
+    simpa only [one_mul, Function.comp_apply, ENNReal.toReal_zero] using! hz
+  have hExpActualL1_eq : ∀ n,
+      ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) -
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal|
+          ∂(Measure.pi (fun _ : Fin n => P)) =
+        ((Measure.pi (fun _ : Fin n => P))
+          {X | (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal = 0}).toReal := by
+    intro n
+    have hexp := integrable_exp_actualLogLikelihood γ 1 zero_le_one n
+    have hR := (γ.integrable_acProductLikelihood_and_integral
+      ((Real.sqrt n)⁻¹) (inv_nonneg.mpr (Real.sqrt_nonneg _)) n).1
+    rw [integral_congr_ae (Filter.Eventually.of_forall fun X => by
+      rw [abs_of_nonneg]
+      by_cases hzero :
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal = 0
+      · simp [hzero, actualLogLikelihood]
+      · rw [show actualLogLikelihood γ 1 n X = Real.log
+            (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal by
+            simp only [actualLogLikelihood, one_mul]]
+        rw [Real.exp_log (lt_of_le_of_ne ENNReal.toReal_nonneg (Ne.symm hzero))]
+        exact sub_nonneg.mpr le_rfl
+      )]
+    rw [integral_sub hexp hR]
+    simpa only [one_mul] using
+      integral_exp_actualLogLikelihood_sub_likelihood γ 1 zero_le_one n
+  have hExpActualL1 : Tendsto (fun n =>
+      ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) -
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal|
+        ∂(Measure.pi (fun _ : Fin n => P))) atTop (nhds 0) :=
+    hbad.congr' (Filter.Eventually.of_forall fun n => (hExpActualL1_eq n).symm)
+  have hActualL1 : Tendsto (fun n =>
+      ∫ X, |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal - 1|
+        ∂(Measure.pi (fun _ : Fin n => P))) atTop (nhds 0) := by
+    apply squeeze_zero
+    · intro n
+      exact integral_nonneg fun _ => abs_nonneg _
+    · intro n
+      have hR := (γ.integrable_acProductLikelihood_and_integral
+        ((Real.sqrt n)⁻¹) (inv_nonneg.mpr (Real.sqrt_nonneg _)) n).1
+      have hexp := integrable_exp_actualLogLikelihood γ 1 zero_le_one n
+      have hleft := (hR.sub (integrable_const 1)).abs
+      have hfirst : Integrable (fun X =>
+          |Real.exp (actualLogLikelihood γ 1 n X) -
+            (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal|)
+          (Measure.pi (fun _ : Fin n => P)) := (hexp.sub hR).abs
+      have hsecond : Integrable (fun X =>
+          |Real.exp (actualLogLikelihood γ 1 n X) - 1|)
+          (Measure.pi (fun _ : Fin n => P)) :=
+        (hexp.sub (integrable_const 1)).abs
+      calc
+        ∫ X, |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal - 1|
+            ∂(Measure.pi (fun _ : Fin n => P)) ≤
+          ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) -
+              (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal| +
+              |Real.exp (actualLogLikelihood γ 1 n X) - 1|
+            ∂(Measure.pi (fun _ : Fin n => P)) := by
+              apply integral_mono hleft (hfirst.add hsecond)
+              intro X
+              calc
+                |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal - 1| ≤
+                    |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal -
+                      Real.exp (actualLogLikelihood γ 1 n X)| +
+                    |Real.exp (actualLogLikelihood γ 1 n X) - 1| :=
+                  abs_sub_le _ _ _
+                _ = _ := by
+                  rw [abs_sub_comm
+                    (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal]
+                  rfl
+        _ = (∫ X, |Real.exp (actualLogLikelihood γ 1 n X) -
+              (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal|
+            ∂(Measure.pi (fun _ : Fin n => P))) +
+              ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) - 1|
+              ∂(Measure.pi (fun _ : Fin n => P)) := by
+                rw [integral_add hfirst hsecond]
+    · simpa only [zero_add] using hExpActualL1.add hExpL1
+  obtain ⟨error, herror, hcomparison⟩ :=
+    γ.product_integral_comparison 1 C zero_le_one f hf hbound
+  have hweighted : Tendsto (fun n =>
+      (∫ X, f n X *
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+          ∂(Measure.pi (fun _ : Fin n => P))) -
+        ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P)))
+      atTop (nhds 0) := by
+    apply (tendsto_zero_iff_abs_tendsto_zero _).mpr
+    change Tendsto (fun n =>
+      |(∫ X, f n X *
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+          ∂(Measure.pi (fun _ : Fin n => P))) -
+        ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P))|)
+      atTop (nhds 0)
+    apply squeeze_zero (g := fun n => C *
+      ∫ X, |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal - 1|
+        ∂(Measure.pi (fun _ : Fin n => P)))
+    · exact fun _ => abs_nonneg _
+    · intro n
+      let R : (Fin n → Ω) → ℝ := fun X =>
+        (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+      have hR : Integrable R (Measure.pi (fun _ : Fin n => P)) :=
+        (γ.integrable_acProductLikelihood_and_integral
+          ((Real.sqrt n)⁻¹) (inv_nonneg.mpr (Real.sqrt_nonneg _)) n).1
+      have hfint : Integrable (f n) (Measure.pi (fun _ : Fin n => P)) := by
+        refine Integrable.of_bound (hf n).aestronglyMeasurable C ?_
+        exact Filter.Eventually.of_forall fun X => by
+          simpa only [Real.norm_eq_abs] using hbound n X
+      have hfR : Integrable (fun X => f n X * R X)
+          (Measure.pi (fun _ : Fin n => P)) :=
+        hR.bdd_mul (hf n).aestronglyMeasurable
+          (Filter.Eventually.of_forall fun X => by
+            simpa only [Real.norm_eq_abs] using hbound n X)
+      have hrewrite :
+          (∫ X, f n X * R X ∂(Measure.pi (fun _ : Fin n => P))) -
+              ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P)) =
+            ∫ X, f n X * (R X - 1) ∂(Measure.pi (fun _ : Fin n => P)) := by
+        rw [← integral_sub hfR hfint]
+        apply integral_congr_ae
+        filter_upwards with X
+        ring_nf
+      change |(∫ X, f n X * R X ∂(Measure.pi (fun _ : Fin n => P))) -
+        ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P))| ≤ _
+      rw [hrewrite]
+      have hmajor : Integrable (fun X => C * |R X - 1|)
+          (Measure.pi (fun _ : Fin n => P)) :=
+        ((hR.sub (integrable_const 1)).abs).const_mul C
+      have hb := MeasureTheory.norm_integral_le_of_norm_le hmajor
+        (Filter.Eventually.of_forall fun X => by
+          rw [Real.norm_eq_abs, abs_mul]
+          exact mul_le_mul_of_nonneg_right (hbound n X) (abs_nonneg _))
+      rw [integral_const_mul] at hb
+      simpa only [Real.norm_eq_abs, R] using hb
+    · simpa only [mul_zero] using hActualL1.const_mul C
+  have hcomparison' : Tendsto (fun n =>
+      (∫ X, f n X ∂(Measure.pi (fun _ : Fin n =>
+          γ.curve ((Real.sqrt n)⁻¹)))) -
+        ∫ X, f n X *
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+          ∂(Measure.pi (fun _ : Fin n => P)))
+      atTop (nhds 0) := by
+    apply (tendsto_zero_iff_abs_tendsto_zero _).mpr
+    change Tendsto (fun n =>
+      |(∫ X, f n X ∂(Measure.pi (fun _ : Fin n =>
+          γ.curve ((Real.sqrt n)⁻¹)))) -
+        ∫ X, f n X *
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+          ∂(Measure.pi (fun _ : Fin n => P))|) atTop (nhds 0)
+    apply squeeze_zero (fun _ => abs_nonneg _)
+    · intro n
+      simpa only [one_mul] using hcomparison n
+    · exact herror
+  have hsum := hcomparison'.add hweighted
+  convert hsum using 1
+  · funext n
+    ring_nf
+  · ring_nf
 
 end AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLeCamThird
 
@@ -10037,9 +19332,11 @@ end AronowAudit.P001.Wave1.GLP0011B3
 /-!
 ## P001-T12: regular local-alternative score identity
 
-The coordinate QMD path constructions include S-finite dominating measures.
-The local score CLT and contiguity results give the statistical inputs for
-the score identity.
+The following adapters construct coordinate QMD paths directly from the
+frozen audit hypotheses, including the S-finite dominating-measure case.
+The copied StatLean local score CLT and contiguity results above discharge
+both statistical inputs identified as missing in the original mapper.
+No additional proposition is assumed by the final theorem.
 -/
 
 open MeasureTheory ProbabilityTheory Filter
@@ -10549,6 +19846,8 @@ theorem regular_local_alternative_score_identity_proof {K τ : ℕ}
   exact regular_influence_information_lower_bound_proof
     (conditionalModelLaw νX κ g θ) (fun xy => modelScore g xy.2 xy.1 θ) ψ
     hs2 hregular.2.2.1 hs0 hregular.2.2.2.1 I hI hpd hid
+
+example : type_of% @AronowAudit.P001.regular_local_alternative_score_identity := regular_local_alternative_score_identity_proof
 
 end AronowAudit.P001.Wave1
 

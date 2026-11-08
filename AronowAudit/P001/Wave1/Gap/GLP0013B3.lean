@@ -98,7 +98,8 @@ private theorem t56r2_partial_measurable {Ω : Type*} [MeasurableSpace Ω]
   fun_prop
 
 /-- Induction on the sample size gives both exact moments. Independence makes
-the mixed odd terms vanish, and the constant squared summands give the recurrence. -/
+the mixed odd terms vanish, and the constant squared summands give the recurrence.
+The induction was adapted from the earlier lw-GLP0013B3 draft and checked here. -/
 private theorem t56r2_partial_moments {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : ℕ → Ω → ℝ)
     (hm : ∀ i, Measurable (Z i)) (hi : iIndepFun Z μ)
@@ -305,6 +306,8 @@ theorem quadratic_plugin_degenerate_counterexample_proof {Ω : Type*} [Measurabl
     have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
     field_simp
     <;> ring
+
+example : type_of% @AronowAudit.P001.quadratic_plugin_degenerate_counterexample := quadratic_plugin_degenerate_counterexample_proof
 
 end
 end AronowAudit.P001.Wave1

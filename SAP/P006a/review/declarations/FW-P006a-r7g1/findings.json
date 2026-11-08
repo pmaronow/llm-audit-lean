@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P006-T1",
+    "theorem": "SAP.P006a.T1",
+    "fingerprint": "44222169b5b24f0cf39fa1b429e4e1c27625511c9415704425c071727a5c8024",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteWitnesses.lean: nonnegative Bernoulli masses on admissible policies, normalization of the four-Boolean joint mass, feasibility of (0,0), (0,1), (1,1), and (17/18,1), the reward polynomial from the actual observed-outcome finite sum, its gap identity, benchmark rewards 3/4 and 19/20, optimum value 1369/1440, and conditional population average 1. This is a genuine finite iid experiment with independent conditional treatment draws, deterministic bounded potential outcomes, and the oracle zero estimator. The unique optimum and welfare gaps also follow directly from the displayed polynomial and bounded linear welfare. See scratch/WitnessAudit.md for the condition-by-condition printed-reading check.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T2",
+    "theorem": "SAP.P006a.T2",
+    "fingerprint": "4685b1afe6774d76b3749a4e25abce99121e1edf19d015be8053e195b7c53430",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: constructs simpleE : Experiment Bool Unit 1 with PX=dirac (), potential outcomes 0 and 1, oracle baseline 0, and for every admissible policy a Bernoulli treatment law with parameter pi (). Proves every OutcomeStanding field, evaluated estimator L1, vector unbiasedness, pointwise unbiasedness, and an independent auxiliary representation, simultaneously on the full admissible class. Also proves positive normalized masses (1/2,1/2) and antitone scores (1,9/10) for the finite-support clauses. The named standing and estimator proofs have no sorryAx dependence.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T3",
+    "theorem": "SAP.P006a.T3",
+    "fingerprint": "edfa90a133dea74bf1e4811cc8e2824d4ce811b9915504520403c9eb66d39a4d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: the same genuine Bernoulli experiment satisfies all design and estimator hypotheses on the full admissible class, and the zero policy belongs to that class. Directly computes expected ATT and welfare as pi (), and constructs the all-treated policy as both a reward and welfare maximizer; thus both optimizer implications have genuine instances. Compiled scratch/FiniteWitnesses.lean independently checks the two-type reward polynomial, feasible optimizer, and the printed closed-form value 9/20. All relevant named scratch proofs have no sorryAx dependence.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T4",
+    "theorem": "SAP.P006a.T4",
+    "fingerprint": "509747579018e155f98b41ac961759d2c575c8469cf189e03a919899900650b3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteWitnesses.lean: checks feasibility of the two optimizer policies, both fixed-query means equal zero, evaluated estimator values +1 and -1, both complete TT reward formulas, the respective attained reward maxima, all-treated estimator means +1 and -1 with denominator one, and zero marginal heterogeneity. Every random object is a bounded function of one fair Boolean covariate and its prescribed treatment coin. The two welfare functions are linear on the nonempty square, giving the asserted maxima and regrets 1/2 without any supremum fallback. See scratch/WitnessAudit.md for every printed-reading condition.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T5",
+    "theorem": "SAP.P006a.T5",
+    "fingerprint": "8d40d9b160751b3500f3d52a3a463e296d9c5a61636e0df3f9386167de2e6e3f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteWitnesses.lean: verifies the shared estimator has fixed-query mean zero, its two own-covariate conditional means are +1/2 and -1/2, and the two complete score formulas are -(a+b)/8 and 5(a+b)/16. Checks the attained endpoint scores 0 and 5/8 and strict positive treatment-effect order 0<1/8<1/4. The nonempty feasible square and these bounded linear formulas supply genuine attained score maxima. Independent fair covariates and independent conditional treatment coins give the displayed finite expectations; the common uniform reference measure has actual density one. See scratch/WitnessAudit.md for the full condition check.",
+    "confidence": "high"
+  }
+]

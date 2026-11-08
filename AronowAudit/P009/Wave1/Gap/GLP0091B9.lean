@@ -756,5 +756,7 @@ theorem complete_finite_lemmas_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
   rw [MixingBasics.sum_incoming hn E]
   field_simp
 
+example : type_of% @AronowAudit.P009.complete_finite_lemmas := complete_finite_lemmas_proof
+
 end
 end AronowAudit.P009.Wave1

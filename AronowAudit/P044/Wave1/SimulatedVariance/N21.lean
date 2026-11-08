@@ -16,7 +16,7 @@ theorem n21_proof : N21 := by
     (fun t => cliqueConditionalSecond t false) = 234399385 / 480661776 at hsecond
   change expect (fun _ : Fin 66 => (1 / 66 : ℚ))
     (fun t => cliqueConditionalV t false) = 1040129476423 / 2326402995840 at hvariance
-  -- The identity follows from the product law and rational casting.
+  -- This step uses only the safe product-law identity and rational casting.
   have hreal (u : Fin 66 → Fin 66 → ℚ) (v : Fin 66 → ℚ)
       (hu : ∀ t : Fin 66, expect (fun _ : Fin 66 => (1 / 66 : ℚ)) (u t) = v t) :
       expect (fun x : Fin 66 × Fin 66 => ((cliqueJointMass false x : ℚ) : ℝ))

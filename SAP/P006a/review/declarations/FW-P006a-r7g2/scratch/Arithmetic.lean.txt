@@ -1,0 +1,88 @@
+import SAP.P006a.Defs
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators ENNReal
+open SAP.P006a
+
+noncomputable section
+
+-- T9: positive beneficiaries, nonempty whole sample, and strict dilution.
+example : let t : Fin 2 → ℝ := ![1, 0]
+    0 < (2 : ℕ) ∧ 0 < (beneficiaries t).card ∧
+    (beneficiaries t).card < 2 ∧
+    fittedOptimalUtility t = 1/2 ∧ beneficiaryMean t = 1 ∧
+    fittedOptimalUtility t < beneficiaryMean t := by
+  dsimp
+  have hB : beneficiaries (![1, 0] : Fin 2 → ℝ) = {0} := by
+    ext i
+    fin_cases i <;> norm_num [beneficiaries]
+  norm_num [positiveEffectSum, fittedOptimalUtility, beneficiaryMean, hB]
+
+-- T9: exact midpoints meet every hypothesis of the two interval branches,
+-- and their associated treatment rates meet the printed-table branch.
+example : let vH : ℝ := 146954/1000000
+    let vS : ℝ := 25186/1000000
+    let bH := vH*(255/62)
+    let bS := vS*(7264/1360)
+    let rH : ℝ := 62/255
+    let rS : ℝ := 1360/7264
+    293907/2000000 ≤ vH ∧ vH ≤ 293909/2000000 ∧ bH = vH*(255/62) ∧
+    50371/2000000 ≤ vS ∧ vS ≤ 50373/2000000 ∧ bS = vS*(7264/1360) ∧
+    0 < rH ∧ 14694/100000 ≤ vH ∧ rH ≤ 2432/10000 ∧
+    0 < rS ∧ 2517/100000 ≤ vS ∧ rS ≤ 1873/10000 ∧
+    14989257/24800000 ≤ bH ∧ bH ≤ 14989359/24800000 ∧ 59/400 < bH ∧
+    672601/5000000 ≤ bS ∧ bS ≤ 11434671/85000000 ∧ 51/2000 < bS ∧
+    604/1000 < vH/rH ∧ 134/1000 < vS/rS ∧
+    1465/10000 < vH ∧ vH < 1475/10000 ∧
+    245/10000 < vS ∧ vS < 255/10000 ∧
+    6035/10000 < bH ∧ bH < 6045/10000 ∧
+    1345/10000 < bS ∧ bS < 1355/10000 := by
+  norm_num
+
+-- T10: one-unit ATO integrates π(c)y1, pointwise even before moment assumptions.
+lemma review_oneATO {C : Type} [MeasurableSpace C]
+    (D : OutcomeLaw C) (π : C → ℝ) :
+    oneATOExpectation D π = ∫ z, π z.1 * z.2.2 ∂D := by
+  simp [oneATOExpectation, wATO, treatedCount, coinMass, bit]
+
+-- T10: full treated-data invariance; no finite-support restriction.
+example {C : Type} [MeasurableSpace C]
+    (D D' : OutcomeLaw C) (π : C → ℝ) (hπ : Admissible π)
+    (hD : Measure.map treatedProjection D = Measure.map treatedProjection D') :
+    oneATOExpectation D π = oneATOExpectation D' π := by
+  let f : C × ℝ → ℝ := fun z => π z.1 * z.2
+  have hp : Measurable (treatedProjection : C × (ℝ × ℝ) → C × ℝ) := by
+    unfold treatedProjection
+    fun_prop
+  have hf : StronglyMeasurable f := by
+    apply Measurable.stronglyMeasurable
+    exact (hπ.1.comp measurable_fst).mul measurable_snd
+  rw [review_oneATO, review_oneATO]
+  change (∫ z, f (treatedProjection z) ∂D) = ∫ z, f (treatedProjection z) ∂D'
+  rw [← integral_map_of_stronglyMeasurable hp hf,
+    ← integral_map_of_stronglyMeasurable hp hf, hD]
+
+-- T10: every witness condition, with arbitrary B>0, and no junk supremum.
+example (B : ℝ) (hB : 0 < B) :
+    let D : OutcomeLaw Unit := Measure.dirac ((), (1+B, 1))
+    let F : Set (Unit → ℝ) := {fun _ => 1}
+    FiniteOutcomeLaw D ∧ Admissible (fun _ : Unit => (1 : ℝ)) ∧
+    IsBest F (oneATOExpectation D) (fun _ => 1) ∧
+    (∫ z, (1 : ℝ) ∂D) = 1 ∧
+    outcomeWelfare D (fun _ => 1) = -B ∧
+    bestValue F (outcomeWelfare D) = -B ∧
+    (∀ V : (Unit → ℝ) → ℝ, regret F V (fun _ => 1) = 0) ∧
+    (fun _ : Unit => (0 : ℝ)) ∉ F ∧ ¬ (0 ≥ B) := by
+  have hD : FiniteOutcomeLaw (Measure.dirac ((), (1+B, (1 : ℝ)))) :=
+    ⟨inferInstance, integrable_dirac (by finiteness), integrable_dirac (by finiteness)⟩
+  simp [hD, Admissible, IsBest, outcomeWelfare, bestValue,
+    regret, not_le.mpr hB]
+  intro h
+  have h01 := congrFun h ()
+  norm_num at h01
+
+example : NondegenerateReward ({fun _ : Unit => (1 : ℝ)}) oneATOExpectation := by
+  refine ⟨Measure.dirac ((), ((2 : ℝ), (1 : ℝ))), fun _ => 1, ?_, ?_, ?_⟩
+  · refine ⟨inferInstance, integrable_dirac (by simp), integrable_dirac (by simp)⟩
+  · simp [IsBest]
+  · simp

@@ -1,15 +1,26 @@
 import AronowAudit.P004.Wave1.PairedWitnessBlueprint
 
-/-! # Refutation of the printed IPW proposition (P004-T35)
+/-! # Blueprint: refutation of `AronowAudit.P004.printed_ipw_proposition` (P004-T35)
 
-The printed assertion conjoins the linearization, the variance equation (37)–(40)
-(unsigned pair term and literal `i` fit in the `j` residual), and the standardized normal
-limit. The target negates its full universal closure, with the `Space` binder and its
-instance binders inside the negation, at universe `0`.
+Dossier group P004, record 4. The frozen contract (`AronowAudit/P004/P004_Spatial.lean`,
+a `sorry` draft) is the conjunction of the printed linearization, the printed variance
+equation (37)-(40) (unsigned pair term, literal `i` fit in the `j` residual), and the
+standardized normal limit. Resolution: `refute` (map-P004; referee 1 accept, referee 2
+accept with the full-universal-closure fix, applied here).
 
-The paired witness satisfies every outer hypothesis. At every positive even `N` the true
-variance is `2/N`, while `printedVarianceFormula` is `1/N`, so the asserted eventual
-equality fails on a cofinal set. The linearization and CLT conjuncts are not needed.
+As for the sibling record `IpwBoundCoverage`, the target negates the full universal closure
+with the `Space` binder and its instance binders inside the negation, at universe `0`.
+
+Paper proof (map-P004 REPORT, record 4): the same paired witness satisfies every outer guard;
+at every positive even `N` the true variance is `2/N` while `printedVarianceFormula` is `1/N`,
+so the asserted eventual equality fails on a cofinal set. The linearization and CLT conjuncts
+are never used (in particular the unproved draft `ipw_linearization_counterexample` is not
+used).
+
+The final declaration (writer) is `AronowAudit.P004.Wave1.printed_ipw_proposition_refuted`
+in `AronowAudit/P004/Wave1/IpwProposition.lean`. All nodes are shared with record 3
+(`LinePopulation.N3`-`N7`, `PairedWitness.PW1`-`PW11`); the only node specific to this record
+is `PW11`.
 -/
 
 namespace AronowAudit.P004.Wave1.IpwProposition
@@ -20,8 +31,8 @@ open AronowAudit.P004 MeasureTheory Filter
 open AronowAudit.P004.Wave1.PairedWitness
 open scoped BigOperators
 
-/-- Negation of the full universal closure (universe `0`) of the printed
-IPW proposition (P004-T35). -/
+/-- Frozen target: the negation of the full universal closure (universe `0`) of the exact
+recorded contract `AronowAudit.P004.printed_ipw_proposition`. -/
 def Target : Prop :=
   ¬ (∀ {Space : ℕ → Type} [∀ N, MetricSpace (Space N)] [∀ N, MeasurableSpace (Space N)]
       {k : ℕ} (P : PopulationSequence Space)
@@ -44,7 +55,11 @@ def Target : Prop :=
         NormalLimit p (fun N z => (fittedIPW (R N) (O N) (θhat N) z-ame (p N) (R N)) /
           Real.sqrt (variance (p N) (augmented (p N) (R N) (g N))))))
 
-/-- The component bounds imply the result: instantiate at the paired witness and contradict the eventual
+/-- Fidelity check: `Target` is literally the negation of the frozen contract at universe 0,
+with every binder (including `Space` and its instances) inside the negation. -/
+example : Target ↔ ¬ (type_of% @AronowAudit.P004.printed_ipw_proposition.{0}) := Iff.rfl
+
+/-- The nodes suffice (proved): instantiate at the paired witness and contradict the eventual
 variance equality at a positive even `N` (`2/N = 1/N` is false). -/
 theorem assemble (l3 : LinePopulation.N3) (l4 : LinePopulation.N4) (l5 : LinePopulation.N5)
     (l6 : LinePopulation.N6) (l7 : LinePopulation.N7)

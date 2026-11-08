@@ -1,0 +1,97 @@
+import SAP.P008b.Challenge
+
+open SAP.P008b MeasureTheory ProbabilityTheory
+open scoped BigOperators
+
+noncomputable section
+namespace Audit
+
+def coin : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
+def cubeMeasure (N : ℕ) : Measure (Assignment N) :=
+  (PMF.uniformOfFintype (Assignment N)).toMeasure
+
+instance : IsProbabilityMeasure coin := by
+  unfold coin
+  infer_instance
+
+theorem cube_product (N : ℕ) :
+    cubeMeasure N = Measure.pi (fun _ : Fin N => coin) := by
+  apply Measure.ext_iff_singleton.mpr
+  intro z
+  simp [cubeMeasure, coin, Measure.pi_singleton,
+    PMF.uniformOfFintype_apply, Assignment, ENNReal.inv_pow]
+
+theorem cube_probability (N : ℕ) (E : Assignment N → Prop) :
+    (uniformLaw (Assignment N)).prob E = (cubeMeasure N {z | E z}).toReal := by
+  classical
+  rw [cubeMeasure, PMF.toMeasure_apply_fintype]
+  rw [ENNReal.toReal_sum (by
+    intro z hz
+    by_cases h : E z <;>
+      simp [PMF.uniformOfFintype_apply, Set.indicator, h, Assignment])]
+  simp only [FiniteLaw.prob, uniformLaw, PMF.uniformOfFintype_apply,
+    Set.indicator_apply, apply_ite ENNReal.toReal, ENNReal.toReal_zero,
+    ENNReal.toReal_inv, ENNReal.toReal_natCast, Set.mem_ofPred_eq,
+    Finset.sum_filter]
+
+theorem cube_bernoulli (N : ℕ) :
+    commonBernoulli (uniformLaw (Assignment N)) (1 / 2) := by
+  intro z
+  norm_num [uniformLaw, Assignment, Fintype.card_fun, ← inv_pow]
+
+def extend (N : ℕ) (A : Finset (Fin N)) (u : A → Bool) (i : Fin N) : Bool :=
+  if hi : i ∈ A then u ⟨i, hi⟩ else false
+
+theorem local_dependency (N : ℕ) (f : Bool → ℝ) :
+    boundedPairDependency (uniformLaw (Assignment N)) (fun i z => f (z i)) 0 := by
+  classical
+  refine ⟨fun _ _ => False, by simp, by simp, ?_⟩
+  intro A B hAB hG P R hP hR
+  have hcoords : iIndepFun (fun i (z : Assignment N) => z i) (cubeMeasure N) := by
+    rw [cube_product]
+    exact iIndepFun_pi (X := fun _ => id) (fun _ => aemeasurable_id)
+  have hrestr := iIndepFun.indepFun_finset A B hAB hcoords (fun i => measurable_pi_apply i)
+  let E : Set (A → Bool) := {u | P (fun i => (extend N A u i, f (extend N A u i)))}
+  let F : Set (B → Bool) := {u | R (fun i => (extend N B u i, f (extend N B u i)))}
+  have hEP (z : Assignment N) :
+      (fun i : A => z i) ∈ E ↔ P (fun i => (z i, f (z i))) := by
+    apply hP
+    intro i hi
+    simp [extend, hi]
+  have hFR (z : Assignment N) :
+      (fun i : B => z i) ∈ F ↔ R (fun i => (z i, f (z i))) := by
+    apply hR
+    intro i hi
+    simp [extend, hi]
+  have hEq := hrestr.measure_inter_preimage_eq_mul E F
+    MeasurableSet.of_discrete MeasurableSet.of_discrete
+  have hEq' :
+      cubeMeasure N {z | P (fun i => (z i, f (z i))) ∧ R (fun i => (z i, f (z i)))} =
+        cubeMeasure N {z | P (fun i => (z i, f (z i)))} *
+          cubeMeasure N {z | R (fun i => (z i, f (z i)))} := by
+    simpa only [Set.preimage, Set.ofPred_and, hEP, hFR] using hEq
+  rw [cube_probability, cube_probability, cube_probability, hEq', ENNReal.toReal_mul]
+
+theorem T28_hypotheses :
+    (0 : ℝ) < 1 / 2 ∧ (1 / 2 : ℝ) < 1 ∧ (0 : ℝ) ≤ 1 ∧
+    (∀ n, commonBernoulli (uniformLaw (Assignment (n + 1))) (1 / 2)) ∧
+    (∀ n (i : Fin (n + 1)) (z : Assignment (n + 1)), |bit (z i)| ≤ 1) ∧
+    (∀ n, boundedPairDependency (uniformLaw (Assignment (n + 1)))
+      (fun i z => bit (z i)) 0) := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro n
+    exact cube_bernoulli (n + 1)
+  · intro n i z
+    cases h : z i <;> norm_num [bit, h]
+  · intro n
+    exact local_dependency (n + 1) bit
+
+theorem T28_target_nonzero (n : ℕ) :
+    finiteAMR (uniformLaw (Assignment (n + 1))) (fun i z => bit (z i)) = 1 := by
+  simp [finiteAMR, marginal, FiniteLaw.expect, Function.update_self, bit,
+    (uniformLaw (Assignment (n + 1))).total]
+  exact inv_mul_cancel₀ (by positivity)
+
+#print axioms T28_hypotheses
+#print axioms T28_target_nonzero
+end Audit

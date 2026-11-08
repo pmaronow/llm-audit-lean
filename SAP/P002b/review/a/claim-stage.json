@@ -1,0 +1,80 @@
+[
+  {
+    "theorem": "SAP.P002b.T16",
+    "target_id": "P002-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "Faithful explicit refutation of the printed equality in (E.14): the specified centered 4-by-2 array has second-moment matrix (1/2)I, coordinate fourth moments 1/2, left maximum 2 and right expression 3. It meets the contextual covariate assumptions, so the false equality is genuinely contradicted."
+  },
+  {
+    "theorem": "SAP.P002b.T17",
+    "target_id": "P002-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "Includes every corrected coordinate and augmented-norm inequality, with the explicit bound 1+k*sqrt(A*n), and the fixed-dimension O(sqrt(n)) consequence. n>0 excludes empty-unit maxima. Allowing A=0 and k=0 is a harmless extension; no additional restriction is imposed on the claimed domain."
+  },
+  {
+    "theorem": "SAP.P002b.T18",
+    "target_id": "P002-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both exact feasible-minus-oracle identities have the corrected minus-treated/plus-control signs. Valid design and support membership make the arm means genuine means; the two determinant assumptions are exactly the full-rank domain specified by the canonical claim. The result even holds without the irrelevant global monotonicity and centering assumptions."
+  },
+  {
+    "theorem": "SAP.P002b.T19",
+    "target_id": "P002-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "States the negative inverse-Gram coefficient error for each arm and arbitrary beta, and identifies the actual residual cross term as minus two times h'G^{-1}h. Only that arm's invertibility is required, as in the exact canonical identities."
+  },
+  {
+    "theorem": "SAP.P002b.T20",
+    "target_id": "P002-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The finite oracle expansion and intercept cancellation match the canonical exact statement. The probabilistic part adds positive oracle design variance at every sequence index and nonsingular control-arm Gram matrices for every supported assignment at every index. These are genuine additional restrictions beyond Xi; the Challenge docstring explicitly discloses both. The restricted sequence domain is nonempty: take sizes j+4, one covariate x_i=(2*i-n+1)/n, y_i(0)=y_i(1)=x_i^2, all compliers and n1=floor(n/2), with delta=0,e=1/4,A=1,B=4,r=1/4."
+  },
+  {
+    "theorem": "SAP.P002b.T22",
+    "target_id": "P002-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "For a nonempty complete crossing list, it asserts existence of a completed finite run and every canonical endpoint, index and set-correctness assertion for all completed runs, with a length bound. Algorithm2Run already includes finiteness and completion. The statement does not quantify over arbitrary prescribed admissible choice policies or assert their termination, whereas formal content (i)-(iv) requires finite execution whatever admissible choices are made. This loss is disclosed in the Challenge docstring. The data-generation and everywhere-positive denominator conditions are the canonical data and Assumptions 6/7, not a conclusion hidden in a hypothesis."
+  },
+  {
+    "theorem": "SAP.P002b.T23",
+    "target_id": "P002-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical formal content expressly assumes at least one intersection, so J != [] is appropriate here. Algorithm1Run requires an exact sorted crossing list, the printed gap sample points, and a critical index only at each sample; the theorem then proves validity on each closed gap and the squared-critical-value and piece-set equalities. No endpoint conclusion is assumed in the run predicate."
+  },
+  {
+    "theorem": "SAP.P002b.T24",
+    "target_id": "P002-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "Includes both arms' full coefficient-vector linearity (hence slope linearity), the entire adjusted-contrast identity, and Wald cancellation guarded only by the nonzero denominator. Both arm rank conditions are explicitly the canonical domain. Arbitrary real Y,D extend the binary observed-data case without narrowing it."
+  },
+  {
+    "theorem": "SAP.P002b.T25",
+    "target_id": "P002-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "Under exactly the canonical constant additive effect, valid design, exclusion, monotonicity and nonempty-complier conditions, states baseline recovery, the true LATE and both full-randomization coverage lower bounds at every interior alpha. A deterministic least-squares minimizer fills singular-arm ambiguity, as the canonical note permits. The studentization convention agrees with the stated extended values and 0/0=0."
+  },
+  {
+    "theorem": "SAP.P002b.T26",
+    "target_id": "P002-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "Contains all canonical formal content (a)-(c): unconditional affine contrast, Wald zero contrast/statistic and confidence-set inclusion when its denominator is nonzero, and the just-identified IV product and ratio identities under both specified invertibilities. The index permutation of the interaction blocks has no effect. The canonical note explicitly excludes the descriptive finite-union-of-intervals sentence from the target, so omitting it does not narrow this canonical claim."
+  },
+  {
+    "theorem": "SAP.P002b.T27",
+    "target_id": "P002-T27",
+    "my_reading_vs_claim": "whole",
+    "reason": "All four index constancy and finite-endpoint persistence assertions are present, including either infinite endpoint. Distinctness is inequality of functions, so coincident functions do not introduce spurious crossings. DataGeneratedCoefficients and ARRegular encode the actual paper AR curves and Assumptions 6/7; nonnegative numerators follow from squared contrasts."
+  },
+  {
+    "theorem": "SAP.P002b.T29",
+    "target_id": "P002-T29",
+    "my_reading_vs_claim": "whole",
+    "reason": "Whole in the refutation sense: negates precisely the printed universal exact nominal-coverage limit with the supplied Theta and full-randomization confidence set. The model classes can be nonempty at every sufficiently large size and every LATE: at delta=0,r=1/4,A=1/2 the fourth-moment bound forces both centered arrays to vanish, giving coverage 1 for every n>=2. Constant additive-effect all-complier populations witness nonemptiness, so no empty-infimum convention is needed for this refutation."
+  },
+  {
+    "theorem": "SAP.P002b.T30",
+    "target_id": "P002-T30",
+    "my_reading_vs_claim": "whole",
+    "reason": "Whole in the refutation sense: negates the printed universal exact adjusted nominal-coverage limit with the supplied Xi. A substantive nonempty witness uses k=1,delta=0,e=1/4,A=4,B=1/2,r=1/4. The fourth-moment bound forces population residuals to be zero; uniform fourth-moment and second-moment bounds make singular-arm probabilities tend uniformly to zero, so the worst-case coverage tends to 1. Centered distinct bounded covariates and constant additive-effect all-complier outcomes witness nonempty classes; this does not rely on empty infima or a malformed regression on a positive limiting fraction of assignments."
+  }
+]

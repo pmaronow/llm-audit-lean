@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.MeasureTheory.Order.Group.Lattice
 import AronowAudit.External.StatLean.AsymptoticStatistics.Core.NondominatedQMDPath
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.Contiguity
@@ -646,6 +642,189 @@ theorem integrable_acProductLikelihood_and_integral
         (fun ω => ((γ.curve t).rnDeriv P ω).toReal)
         (ι := Fin n) (μ := P))
 
+/-- Bounded expectations under the full local product law are asymptotically
+equal to baseline expectations weighted by the actual RN product likelihood.
+
+The proof expands `(singularPart+acPart)^n`, bounds all terms with a singular
+coordinate, and identifies the all-AC term by the product AC identity at the
+nonnegative parameter supplied by `ha`; no MGF, uniform-integrability,
+absolute-continuity, or normalization assumption is used. -/
+theorem product_integral_comparison
+    (γ : NondominatedQMDPath P) (a C : ℝ) (ha : 0 ≤ a)
+    (f : ∀ n : ℕ, (Fin n → Ω) → ℝ)
+    (hf_meas : ∀ n, Measurable (f n))
+    (hf_bound : ∀ n X, |f n X| ≤ C) :
+    ∃ error : ℕ → ℝ, Tendsto error atTop (nhds 0) ∧ ∀ n,
+      |(∫ X, f n X ∂(Measure.pi (fun _ : Fin n =>
+            γ.curve (a * (Real.sqrt n)⁻¹))))
+        - ∫ X, f n X *
+            (γ.acProductLikelihood (a * (Real.sqrt n)⁻¹) n X).toReal
+            ∂(Measure.pi (fun _ : Fin n => P))| ≤ error n := by
+  classical
+  have hC : 0 ≤ C := by
+    exact (abs_nonneg (f 0 (fun i => Fin.elim0 i))).trans
+      (hf_bound 0 (fun i => Fin.elim0 i))
+  let u : ℕ → ℝ := fun n => a * (Real.sqrt n)⁻¹
+  let error : ℕ → ℝ := fun n =>
+    C * ((n : ℝ≥0∞) * γ.singularMass (u n)).toReal
+  refine ⟨error, ?_, ?_⟩
+  · have hs := γ.singular_mass_localScale_tendsto a ha
+    have hsreal := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hs
+    convert! hsreal.const_mul C using 1
+    all_goals simp only [ENNReal.toReal_zero, mul_zero]
+  intro n
+  have hut : 0 ≤ u n :=
+    mul_nonneg ha (inv_nonneg.mpr (Real.sqrt_nonneg _))
+  let : IsProbabilityMeasure (γ.curve (u n)) :=
+    γ.curve_isProbability (u n) hut
+  let Q : Measure Ω := γ.curve (u n)
+  let A : Measure Ω := γ.acPart (u n)
+  let ν : Measure (Fin n → Ω) := Measure.pi (fun _ : Fin n => Q)
+  let ρ : Measure (Fin n → Ω) := Measure.pi (fun _ : Fin n => A)
+  let Pn : Measure (Fin n → Ω) := Measure.pi (fun _ : Fin n => P)
+  let L : (Fin n → Ω) → ℝ≥0∞ := γ.acProductLikelihood (u n) n
+  have hAQ : A ≤ Q := by
+    simpa only [A, Q, acPart] using
+      Measure.withDensity_rnDeriv_le (γ.curve (u n)) P
+  let : IsFiniteMeasure A := isFiniteMeasure_of_le Q hAQ
+  have hAac : A ≪ Q := hAQ.absolutelyContinuous
+  have hρν : ρ ≤ ν := by
+    let D : (Fin n → Ω) → ℝ≥0∞ :=
+      fun X => ∏ i : Fin n, A.rnDeriv Q (X i)
+    have hcoord : ∀ i : Fin n, A.rnDeriv Q ≤ᵐ[Q] 1 :=
+      fun _ => Measure.rnDeriv_le_one_of_le hAQ
+    have hall : (fun X : Fin n → Ω => fun i => A.rnDeriv Q (X i))
+        ≤ᵐ[ν] (fun _ => fun _ : Fin n => (1 : ℝ≥0∞)) := by
+      simpa only [ν] using! Measure.ae_le_pi hcoord
+    have hDle : D ≤ᵐ[ν] 1 := by
+      filter_upwards [hall] with X hX
+      dsimp only [D]
+      exact Finset.prod_le_one₀ (fun _ _ => zero_le)
+        (fun i _ => hX i)
+    have htilt : ν.withDensity D = ρ := by
+      have hcoordtilt : Q.withDensity (A.rnDeriv Q) = A :=
+        Measure.withDensity_rnDeriv_eq A Q hAac
+      calc
+        ν.withDensity D =
+            Measure.pi (fun _ : Fin n => Q.withDensity (A.rnDeriv Q)) := by
+          simpa only [ν, D] using
+            MeasureTheory.pi_withDensity_prod
+              (fun _ : Fin n => Measure.measurable_rnDeriv A Q)
+        _ = ρ := by simp only [hcoordtilt, ρ]
+    rw [← htilt]
+    simpa using withDensity_mono hDle
+  let R : Measure (Fin n → Ω) := ν - ρ
+  have hRρ : R + ρ = ν := by
+    exact Measure.sub_add_cancel_of_le hρν
+  have hνprob : IsProbabilityMeasure ν := by
+    dsimp only [ν, Q]
+    infer_instance
+  let : IsProbabilityMeasure ν := hνprob
+  have hfν : Integrable (f n) ν := by
+    refine Integrable.of_bound (hf_meas n).aestronglyMeasurable C ?_
+    exact Filter.Eventually.of_forall fun X => by
+      simpa only [Real.norm_eq_abs] using hf_bound n X
+  have hfρ : Integrable (f n) ρ := hfν.mono_measure hρν
+  have hRν : R ≤ ν := Measure.sub_le
+  have hfR : Integrable (f n) R := hfν.mono_measure hRν
+  have hfull : ∫ X, f n X ∂ν =
+      (∫ X, f n X ∂R) + ∫ X, f n X ∂ρ := by
+    rw [← hRρ, integral_add_measure hfR hfρ]
+  have hρbase : ρ = Pn.withDensity L := by
+    simpa only [ρ, Pn, L, A, u] using
+      γ.pi_acPart_eq_withDensity_acProductLikelihood (u n) hut n
+  have hLmeas : Measurable L := by
+    dsimp only [L, acProductLikelihood]
+    exact Finset.measurable_prod _ fun i _ =>
+      (Measure.measurable_rnDeriv (γ.curve (u n)) P).comp
+        (measurable_pi_apply i)
+  have hLfin : ∀ᵐ X ∂Pn, L X < ⊤ := by
+    have hcoordfin : ∀ i : Fin n,
+        (fun _ : Ω => True) ≤ᵐ[P]
+          (fun ω => (γ.curve (u n)).rnDeriv P ω ≠ ⊤) := by
+      intro i
+      filter_upwards [Measure.rnDeriv_ne_top (γ.curve (u n)) P] with ω hω
+      exact fun _ => hω
+    have hall : (fun X : Fin n → Ω => fun _ : Fin n => True)
+        ≤ᵐ[Pn] (fun X i => (γ.curve (u n)).rnDeriv P (X i) ≠ ⊤) := by
+      simpa only [Pn] using Measure.ae_le_pi hcoordfin
+    filter_upwards [hall] with X hX
+    exact lt_top_iff_ne_top.mpr (by
+      dsimp only [L, acProductLikelihood]
+      exact ENNReal.prod_ne_top fun i _ => hX i trivial)
+  have hweighted : ∫ X, f n X * (L X).toReal ∂Pn =
+      ∫ X, f n X ∂ρ := by
+    rw [hρbase,
+      integral_withDensity_eq_integral_toReal_smul hLmeas hLfin (f n)]
+    apply integral_congr_ae
+    filter_upwards with X
+    simp only [smul_eq_mul, mul_comm]
+  have hdiff :
+      (∫ X, f n X ∂ν) - ∫ X, f n X * (L X).toReal ∂Pn =
+        ∫ X, f n X ∂R := by
+    rw [hweighted, hfull]
+    ring
+  have hboundR : |∫ X, f n X ∂R| ≤ C * R.real Set.univ := by
+    have hb := MeasureTheory.norm_integral_le_of_norm_le_const
+      (μ := R) (f := f n) (C := C)
+      (Filter.Eventually.of_forall fun X => by
+        simpa only [Real.norm_eq_abs] using hf_bound n X)
+    simpa only [Real.norm_eq_abs] using hb
+  have hsfin : γ.singularMass (u n) ≠ ⊤ :=
+    ne_top_of_le_ne_top (measure_ne_top (γ.curve (u n)) _)
+      (Measure.singularPart_le (γ.curve (u n)) P Set.univ)
+  have hsing_le_one : (γ.singularMass (u n)).toReal ≤ 1 := by
+    rw [← ENNReal.toReal_one]
+    apply (ENNReal.toReal_le_toReal hsfin ENNReal.one_ne_top).2
+    calc
+      γ.singularMass (u n) ≤ γ.curve (u n) Set.univ :=
+        Measure.singularPart_le (γ.curve (u n)) P Set.univ
+      _ = 1 := measure_univ
+  have hA_mass : (A Set.univ).toReal =
+      1 - (γ.singularMass (u n)).toReal := by
+    have hdec := γ.curve_eq_singularPart_add_acPart (u n) hut
+    have happ := congrArg (fun M : Measure Ω => M Set.univ) hdec
+    have hAfin : A Set.univ ≠ ⊤ := measure_ne_top _ _
+    have happ' : (1 : ℝ≥0∞) =
+        γ.singularMass (u n) + A Set.univ := by
+      simpa only [Measure.add_apply, measure_univ, singularMass, singularPart,
+        acPart, A] using happ
+    have hreal := congrArg ENNReal.toReal happ'
+    rw [ENNReal.toReal_one, ENNReal.toReal_add hsfin hAfin] at hreal
+    linarith
+  have hρ_mass : ρ.real Set.univ =
+      (1 - (γ.singularMass (u n)).toReal) ^ n := by
+    simp only [ρ, measureReal_def, Measure.pi_univ, Finset.prod_const,
+      ENNReal.toReal_pow, hA_mass]
+    rw [Finset.card_univ, Fintype.card_fin]
+  have hR_mass : R.real Set.univ =
+      1 - (1 - (γ.singularMass (u n)).toReal) ^ n := by
+    change ((ν - ρ) Set.univ).toReal =
+      1 - (1 - (γ.singularMass (u n)).toReal) ^ n
+    rw [Measure.sub_apply MeasurableSet.univ hρν,
+      ENNReal.toReal_sub_of_le (hρν Set.univ) (measure_ne_top ν Set.univ)]
+    have hρ_mass' : (ρ Set.univ).toReal =
+        (1 - (γ.singularMass (u n)).toReal) ^ n := by
+      simpa only [measureReal_def] using hρ_mass
+    rw [measure_univ, ENNReal.toReal_one, hρ_mass']
+  have hmissing : R.real Set.univ ≤
+      (n : ℝ) * (γ.singularMass (u n)).toReal := by
+    rw [hR_mass]
+    have hsnonneg : 0 ≤ (γ.singularMass (u n)).toReal :=
+      ENNReal.toReal_nonneg
+    simpa only [sub_sub_cancel] using
+      (one_sub_pow_le_nsmul_one_sub
+        (x := 1 - (γ.singularMass (u n)).toReal)
+        (by linarith [hsing_le_one]) (by linarith [hsnonneg]) n)
+  rw [show (a * (Real.sqrt n)⁻¹) = u n from rfl]
+  change |(∫ X, f n X ∂ν) - ∫ X, f n X * (L X).toReal ∂Pn| ≤ error n
+  rw [hdiff]
+  calc
+    |∫ X, f n X ∂R| ≤ C * R.real Set.univ := hboundR
+    _ ≤ C * ((n : ℝ) * (γ.singularMass (u n)).toReal) :=
+      mul_le_mul_of_nonneg_left hmissing hC
+    _ = error n := by
+      simp only [error, ENNReal.toReal_mul, ENNReal.toReal_natCast]
 
 end NondominatedQMDPath
 end AsymptoticStatistics.Core.NondominatedQMDPath

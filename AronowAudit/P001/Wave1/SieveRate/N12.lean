@@ -3,7 +3,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 /-! Boundary Chebyshev estimates, with all interval and constant calculations
-kept explicit. -/
+kept explicit.  Draft only: no Lean process has been run on this file. -/
 
 set_option autoImplicit false
 

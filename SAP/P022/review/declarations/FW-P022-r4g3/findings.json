@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P022-T13",
+    "theorem": "SAP.P022.T13",
+    "fingerprint": "94b2f4bec333fe23750bb0ff163cfb80f106765a75f469d3c06567d7b35ec6ae",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:10: N=4,m=k=2, y1(i)=i, y0(i)=i^2. Design constructs all four required numeric proofs; the potential-outcome vectors have exactly the required types. No other theorem hypothesis exists.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P022-T14",
+    "theorem": "SAP.P022.T14",
+    "fingerprint": "8fa8c66fbbfcd5b0a927b8eaeaebc11e1b7c2693139dd06e20f196a18a92f632",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:15: N=4,m=k=2, y1(i)=i, y0(i)=i^2, identity permutation; m+k=N is proved by reflexivity, satisfying every hypothesis.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P022-T15",
+    "theorem": "SAP.P022.T15",
+    "fingerprint": "d951f2a7629986810b28172253057ed5795a89adcaef2d00ce7232d065cadae8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:241 (example after corner_ui): cornerWitness with N=q+4, m=floor(N/2), k=N-m, periodic pairs (0,0),(0,1),(1,0),(1,1); cornerLaw is their equal mixture, theta=1,rho=1/2. corner_conditions proves all of Conditions123, including marginal CDF convergence at every real threshold; corner_ui proves uniform square integrability with bounded cutoff suprema.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P022-T16",
+    "theorem": "SAP.P022.T16",
+    "fingerprint": "2d7e186ffd71362a8db09997343a7d2a7d61cd9dfb88f2c1b8c56bd727fef2d7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:245 (bounded-sequence example): the same nested four-corner population, cornerLaw, theta=1,rho=1/2,C=1, with corner_conditions and corner_bounded. The positive split epsilon1=epsilon2=epsilon3=1 and epsilon=3 is constructed. For C=0, both margins are forced to zero, so the exceptional right side zero is meaningful.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P022-T17",
+    "theorem": "SAP.P022.T17",
+    "fingerprint": "f1946a45f6bbf69d57a9635b7ca2778ec8c9aa0b897f754557177523690f27f4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:252 (final example): the same nested four-corner population and equal-mixture law, theta=1,rho=1/2, with corner_conditions, corner_third and corner_nonsingular proving every corollary hypothesis. Nonsingularity follows from the positive masses at (0,0),(0,1),(1,0); a line containing them would have both coefficients zero. The universal Wald-input premise is also satisfiable: W_q(pi)=v/N_q is nonnegative and N_q W_q=v for any v>=0. The scratch file imports only SAP.P022.Defs and its printed axiom lists contain no audited theorem or sorryAx.",
+    "confidence": 0.97
+  }
+]

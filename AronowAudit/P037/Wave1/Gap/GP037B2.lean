@@ -78,6 +78,8 @@ theorem estimated_cutoff_random_proof {Ω : Type*} [Fintype Ω]
     (∑ z, (∏ j, P.mass (z j))*(if event z then (1:ℝ) else 0))<1 := by
   exact estimated_cutoff_random_bounds P E hp hq 10000 101 (by omega) (by omega)
 
+example : type_of% @AronowAudit.P037.estimated_cutoff_random := estimated_cutoff_random_proof
+
 lemma nomination_univ10 : (Finset.univ : Finset (Fin 10)) = {0,1,2,3,4,5,6,7,8,9} := by
   ext i; fin_cases i <;> simp
 
@@ -110,7 +112,7 @@ lemma nomination_referents20 : networkReferents nominationWitness20 = {1,2} := b
 
 attribute [-instance] instDecidableGP037B2
 
-/-- Exact census of the twenty three-of-six seed choices. -/
+/-- Exact census of the twenty three-of-six seed choices, checked by the kernel. -/
 lemma nomination_count_direct (k : Fin 4) :
     (((Finset.univ.powersetCard 3).filter (fun s : Finset (Fin 6) =>
       (rowExposure nominationWitness20 {1,2} (s.image graphEligible20) 0).val+1=k.val)).card) =
@@ -156,6 +158,8 @@ theorem nomination_union_counterexamples_proof :
   · intro k
     simp only [nomination_probabilities.1, nomination_probabilities.2]
     fin_cases k <;> norm_num
+
+example : type_of% @AronowAudit.P037.nomination_union_counterexamples := nomination_union_counterexamples_proof
 
 abbrev RareProbabilityDesignBlock := {s : Finset (Fin 10) // s.card=5}
 
@@ -382,5 +386,7 @@ theorem rare_probability_design_counterexample_proof :
       (1/127008:ℝ)/2 < |(r:ℝ)/10000-1/127008|
     have hh : (1/127008:ℝ)/2 = 1/254016 := by norm_num
     simpa only [hh] using rare_exposure_frequency_counterexample.1 r
+
+example : type_of% @AronowAudit.P037.rare_probability_design_counterexample := rare_probability_design_counterexample_proof
 
 end AronowAudit.P037.Wave1

@@ -322,4 +322,6 @@ theorem heavy_median_bootstrap_variance_counterexample_final {Ω : Type*}
   filter_upwards [eventually_ge_atTop (2 : ℕ)] with k hk
   exact hbad (2*k+1) ⟨k, by omega⟩ (by omega)
 
+example : type_of% @AronowAudit.P001.heavy_median_bootstrap_variance_counterexample := AronowAudit.P001.Wave1.TailA.heavy_median_bootstrap_variance_counterexample_final
+
 end AronowAudit.P001.Wave1.TailA

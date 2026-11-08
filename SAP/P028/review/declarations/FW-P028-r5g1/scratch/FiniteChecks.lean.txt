@@ -1,0 +1,72 @@
+import SAP.P028.Defs
+import SAP.P028.Defs.WholeW1
+
+open SAP.P028
+open scoped BigOperators
+set_option maxRecDepth 100000
+set_option maxHeartbeats 2000000
+
+-- Independent checks: no Challenge theorem is imported or used.
+example : finiteValid lowerLaw := by
+  constructor
+  · intro i; fin_cases i <;> norm_num [lowerLaw]
+  constructor
+  · norm_num [lowerLaw, Fin.sum_univ_succ]
+  constructor
+  · intro i; fin_cases i <;> norm_num [lowerLaw, bit]
+  constructor
+  · norm_num [fexpect, fpc, fprob, fc, bit, lowerLaw, Fin.sum_univ_succ]
+  · norm_num [fpc, fprob, fc, lowerLaw, Fin.sum_univ_succ]
+
+example : finiteValid upperLaw := by
+  constructor
+  · intro i; fin_cases i <;> norm_num [upperLaw]
+  constructor
+  · norm_num [upperLaw, Fin.sum_univ_succ]
+  constructor
+  · intro i; fin_cases i <;> norm_num [upperLaw, bit]
+  constructor
+  · norm_num [fexpect, fpc, fprob, fc, bit, upperLaw, Fin.sum_univ_succ]
+  · norm_num [fpc, fprob, fc, upperLaw, Fin.sum_univ_succ]
+
+example : finiteMeanDomain lowerLaw := by
+  constructor
+  · intro z; cases z <;> norm_num [fprob, fr, lowerLaw, Fin.sum_univ_succ]
+  constructor
+  · intro d z; cases d <;> cases z <;> norm_num [fprob, fd, lowerLaw, Fin.sum_univ_succ]
+  · intro d z; cases d <;> cases z <;> norm_num [fprob, fd, fr, lowerLaw, Fin.sum_univ_succ]
+
+example : finiteMeanDomain upperLaw := by
+  constructor
+  · intro z; cases z <;> norm_num [fprob, fr, upperLaw, Fin.sum_univ_succ]
+  constructor
+  · intro d z; cases d <;> cases z <;> norm_num [fprob, fd, upperLaw, Fin.sum_univ_succ]
+  · intro d z; cases d <;> cases z <;> norm_num [fprob, fd, fr, upperLaw, Fin.sum_univ_succ]
+
+example : observedLaw lowerLaw = observedLaw upperLaw := by
+  funext o
+  rcases o with ⟨z,d,r,v⟩
+  cases z <;> cases d <;> cases r <;> cases v <;>
+    norm_num [observedLaw, fprob, assignmentMass, fd, fr, fy, lowerLaw, upperLaw,
+      Fin.sum_univ_succ]
+
+example : fcy lowerLaw false = 1423/10235 ∧ fcy lowerLaw true = 6749/10235 ∧
+    fcy upperLaw false = 7633/10235 ∧ fcy upperLaw true = 7642/10235 := by
+  norm_num [fcy, fmean, fprob, fc, bit, lowerLaw, upperLaw, Fin.sum_univ_succ]
+
+example : printedSystem (1/2) (3/4) (3/4) 0 0 ∧
+    ¬ mixtureSystem (1/2) (3/4) (3/4) 0 0 ∧
+    ¬ correctedSystem (1/2) (3/4) (3/4) 0 0 := by
+  constructor
+  · norm_num [printedSystem]
+  constructor
+  · rintro ⟨n,h0,h1,hbounds⟩
+    rcases hbounds with ⟨_,_,_,_,_,hn⟩
+    linarith
+  · norm_num [correctedSystem]
+
+-- T4's quantified hypotheses are compatible with a genuine mixture.
+example : (0:ℝ) < 1/2 ∧ (1/2:ℝ) < 1 ∧
+    mixtureSystem (1/2) (3/4) (3/4) 1 1 := by
+  refine ⟨by norm_num, by norm_num, 1/2, ?_⟩
+  norm_num

@@ -1,0 +1,85 @@
+[
+  {
+    "target_id": "P024-T1",
+    "theorem": "SAP.P024.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional concrete witness: three equally likely onsets, four dates, untreated outcomes (1,4,9,16), treated outcomes (3,6,11,18), effect set consisting of dates 2 and 3. All estimator denominators are nonzero. Exact rational recomputation gives the three HT values 69/4, 21/4, -33/2, mean 2 and variance 1561/8, and the claimed null statistics and ranks. See scratch/audit_checks.py and scratch/audit_checks.json.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P024-T2",
+    "theorem": "SAP.P024.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The T1 calendar model satisfies the estimation hypotheses: date 2 is in its actual overlap set, proved in scratch/Check.lean:22. The uniform sharp-null clause has, for example, the singleton assignment space and any constant statistic; the concrete three-onset example is nonconstant. A nonuniform four-schedule instance with zero-mass assignments and two overlapping periods was also checked in exact rational arithmetic. No independence or no-trend condition is required.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P024-T3",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: this target has no theorem. claims.json explicitly marks no_lean=true and explains that the printed paragraph supplies neither a precise robustness comparison nor a formal design comparison. Its false necessity reading is already refuted by T1; the corrected mathematical content is in T2. There is no basis here for separately certifying the prose claims of a stronger design or an advance over prior work.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P024-T4",
+    "theorem": "SAP.P024.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The positive-sized dominant populations exist for every K=k+2. Proper nonempty subsets exist already at K=2 (the subset {0}, Lean-checked in scratch/Check.lean:108); half-allocation types and the independent parent law are nonempty by their definitions. Exact enumeration for every K from 2 through 10 verified all proper-subset formulas, error bounds, conditional means and the even-K half-design moments, including every six-cluster number. The error persists when empty-arm estimates are defined to equal the true effect. The ordinary limits follow from 2/2^K tending to zero and the displayed ratios tending to one.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P024-T5",
+    "theorem": "SAP.P024.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A single simultaneous witness for every substantive consistency hypothesis is compiled in scratch/Check.lean:82: K=k+2 unit-sized clusters, all Y0=0 and Y1=1, independent Bernoulli(1/2), B=1, eta=1/4, maximum weight 1/K tending to zero. Its effect is nonzero. Empty-arm extensions are unconstrained and may grow, for example as 10^K; their error probability in this instance is 2^(1-K) for epsilon=1/2. The complete-design branch also has ordinary instances: the same populations with uniform floor(K/2)-of-K treatment and eta=1/4. The separate weight equivalence has no outcome or design antecedents. The two omitted canonical assertions are exactly those disclosed in the docstring and record.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P024-T6",
+    "theorem": "SAP.P024.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Two units, m=1, and a uniformly selected treated unit satisfy the count and actual-marginal hypotheses together (scratch/Check.lean:42); m>0 and m<N are immediate. Arbitrary fixed outcomes are allowed. Exact enumeration of the canonical six-unit population for all m=1,...,5 gives expectation 2, equal to its effect. The fixed-count restriction, including its pointwise application to zero-mass assignments and its exclusion of conditional Bernoulli random counts, is explicitly disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P024-T7",
+    "theorem": "SAP.P024.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every k, unitPopulation k has equal positive sizes and admits p=1/3 (scratch/Check.lean:103); at K=2 the conditioning probability is exactly 4/9 (scratch/Check.lean:29). The domain consists of proper nonempty subsets, and the retained strict positivity rules out division by zero. Exact conditional calculations for K=2,...,7 at p=1/3,1/2,2/3 give equal-size unbiasedness. The unequal-size witness is realized by three individuals in clusters of sizes 1 and 2, control outcomes all zero and treatment outcomes (0,1,1), giving conditional mean 1/2 and individual effect 2/3. Only the general closed formula for the conditioning probability is dropped, exactly as disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P024-T8",
+    "theorem": "SAP.P024.T8",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "SAP/P024/Challenge/Part1.lean:51 and record.json's P024-T8 restriction describe fixed nonempty block counts and actual within-block marginal probabilities m_b/N_b as added restrictions and describe variable counts and unequal propensities as omitted cases. However, claims.json's P024-T8 canonical_claim.note already stipulates uniform fixed m_b-of-N_b assignment with 1<=m_b<=N_b-1 and pi_b=m_b/N_b. Those variable-count and unequal-propensity cases are not part of its mandatory formal claim. The declared narrowing is therefore inaccurate relative to that canonical component.",
+      "SAP/P024/Defs/Part4.lean:60 retains all three mandatory conclusions and actually allows more within-block laws than the canonical uniform-subset reading: any law with the stated fixed counts and common actual marginals. A block of four units with treated subsets {0,1} and {2,3}, each of probability 1/2, satisfies the Lean hypotheses but is not uniform over the six two-unit subsets (Lean-checked in scratch/Check.lean:114). This is a valid generalization, not a mathematical falsehood or loss of the required identity. The record and docstring should distinguish it from a restriction to the printed informal wording."
+    ],
+    "fix": "Replace the T8 restriction paragraph with: 'This covers the entire mandatory fixed-count formal component of P024-T8. In each nonempty block require 0<m_b<N_b, exactly m_b treated units on every assignment, and actual marginal probability m_b/N_b for every unit. The canonical uniform m_b-of-N_b design satisfies these conditions; the theorem also allows balanced nonuniform laws with the same fixed counts and marginals. Independence across blocks is not required. The optional pooled-difference bias example is not included.' In record.json classify coverage of the mandatory canonical component as whole and describe the broader admissible assignment laws; do not describe fixed counts and common marginals as additions to that component. No Lean statement change is needed.",
+    "nonvacuity": "Two blocks of two units, using the same uniform treated-unit index in both blocks, satisfy every hypothesis despite cross-block dependence (scratch/Check.lean:56). A one-block four-unit balanced nonuniform law also satisfies the count and marginal assumptions (scratch/Check.lean:114), establishing the scope extension. Exact enumeration of all 16 allocations in the canonical two-block unequal-treatment-fraction example verifies the pointwise HT/weighted-means identity and expectation 3 for both estimators; the pooled contrast has expectation 35/4. All block and population denominators are positive.",
+    "confidence": "high"
+  }
+]

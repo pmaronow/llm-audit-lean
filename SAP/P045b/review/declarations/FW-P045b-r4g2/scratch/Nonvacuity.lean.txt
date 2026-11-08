@@ -1,0 +1,73 @@
+import SAP.P045b.Defs
+
+open Finset
+open scoped BigOperators
+open SAP.P045b
+
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+namespace Review
+
+lemma assignments2 : (univ : Finset (Assignment 2)) =
+    {![false,false], ![false,true], ![true,false], ![true,true]} := by decide
+
+noncomputable def pairOutcome (_i : Fin 2) (z : Assignment 2) : ℝ :=
+  if z 0 = true ∧ z 1 = true then 1 else 0
+
+-- T25: all explicit count/probability assumptions and the positive conditioning event.
+example : 0 < (2 : ℕ) ∧ (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1 := by norm_num
+
+example : prob (SAP.P045b.bernoulli (1/2)) (armExists (n := 2) true) = 3/4 := by
+  norm_num [prob, SAP.P045b.expect, assignments2, SAP.P045b.bernoulli, armExists, Fin.exists_fin_succ,
+    Fin.prod_univ_succ]
+
+lemma conditional_pair :
+    condMean (SAP.P045b.bernoulli (1/2)) (armExists true) (armMean pairOutcome true) = 1/3 := by
+  norm_num [condMean, prob, SAP.P045b.expect, assignments2, SAP.P045b.bernoulli, armExists,
+    armMean, pairOutcome, Fin.card_filter_univ_succ, Fin.exists_fin_succ, Fin.prod_univ_succ, Fin.sum_univ_succ]
+
+lemma marginal_pair :
+    mean (fun i => marginal (SAP.P045b.bernoulli (1/2)) pairOutcome i true) = 1/2 := by
+  norm_num [mean, marginal, condMean, prob, SAP.P045b.expect, assignments2, SAP.P045b.bernoulli,
+    pairOutcome, Fin.prod_univ_succ, Fin.sum_univ_succ]
+
+example : T25Statement := by
+  intro h
+  have bad := h 2 (by norm_num) (1/2) (by norm_num) (by norm_num) pairOutcome true
+  rw [conditional_pair, marginal_pair] at bad
+  norm_num at bad
+
+-- T22: the sample-size-one experiment is a genuine probability law with positive variance.
+lemma assignments1 : (univ : Finset (Assignment 1)) = {![false], ![true]} := by decide
+
+example : (∀ z : Assignment 1, 0 < SAP.P045b.bernoulli (1/2) z) ∧
+    SAP.P045b.expect (SAP.P045b.bernoulli (1/2)) (fun _ : Assignment 1 => 1) = 1 ∧
+    variance (SAP.P045b.bernoulli (1/2)) (signMean (n := 1)) = 1 := by
+  constructor
+  · intro z
+    norm_num [SAP.P045b.bernoulli, Fin.prod_univ_succ]
+  · norm_num [SAP.P045b.expect, variance, signMean, mean, sign, assignments1,
+      SAP.P045b.bernoulli, Fin.prod_univ_succ, Fin.sum_univ_succ]
+
+example : SAP.P045b.expect (SAP.P045b.bernoulli (1/2)) (seWitness 0) = 1 := by
+  unfold SAP.P045b.expect
+  change (∑ z : Assignment 1, SAP.P045b.bernoulli (1/2) z * seWitness 0 z) = 1
+  rw [assignments1]
+  norm_num [SAP.P045b.bernoulli, Fin.prod_univ_succ, seWitness,
+    varianceWitness, varianceFactor, Real.sqrt_div]
+
+example : SAP.P045b.expect (SAP.P045b.bernoulli (1/2)) (varianceWitness 0) = 5/4 := by
+  unfold SAP.P045b.expect
+  change (∑ z : Assignment 1, SAP.P045b.bernoulli (1/2) z * varianceWitness 0 z) = 5/4
+  rw [assignments1]
+  norm_num [SAP.P045b.bernoulli, Fin.prod_univ_succ, varianceWitness, varianceFactor]
+
+-- T24: positive unequal group sizes and a positive baseline, so the ratio clause applies.
+example : ∃ (n : Fin 2 → ℕ) (b : (g : Fin 2) → Fin (n g) → ℝ),
+    (∀ g, 0 < n g) ∧ 0 < baselineMean b := by
+  refine ⟨![1,2], fun _ _ => 1, ?_, ?_⟩
+  · intro g; fin_cases g <;> norm_num
+  · norm_num [baselineMean, mean, Fin.sum_univ_succ]
+
+end Review

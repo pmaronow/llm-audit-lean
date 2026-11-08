@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.Algebra.BigOperators.Field
 import Mathlib.Basic.Real.Basic
 

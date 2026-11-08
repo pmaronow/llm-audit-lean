@@ -28,7 +28,7 @@ theorem tailC_dot_weighted_right {d : ℕ} (x u v : Fin d → ℝ) (p q : ℝ) :
     Finset.sum_add_distrib, Finset.mul_sum]
   congr 1 <;> apply Finset.sum_congr rfl <;> intros <;> ring
 
-/-- An arm remainder, with the integrand of P005-T11(c). -/
+/-- An arm remainder, with exactly the integrand of the independently proved T11(c). -/
 def tailC_arm_remainder {n d : ℕ} (P : Population n d) (t : Arm)
     (S : Finset (Fin n)) : ℝ :=
   let A := armSet t S
@@ -167,9 +167,7 @@ theorem noninteracted_debiased_linear_expansion_proof
   exact le_trans (div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) hb
 
 
-/-!
-P005-T27: the interacted debiased remainder as a difference of arm remainders.
--/
+/-! Record 13, P005-T27. -/
 
 theorem tailC_arm_remainder_difference {n d m : ℕ} (P : Population n d)
     (hm : 0 < m) (hmn : m < n) (S : Finset (Fin n)) (hS : S ∈ design n m) :
@@ -223,6 +221,10 @@ theorem interacted_debiased_linear_expansion_proof
   exact le_trans (div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))
     (kappa_bounds (P n) (by omega) hP.2).1
 
+
+example : type_of% @AronowAudit.P005.noninteracted_debiased_linear_expansion := AronowAudit.P005.Wave1.noninteracted_debiased_linear_expansion_proof
+
+example : type_of% @AronowAudit.P005.interacted_debiased_linear_expansion := AronowAudit.P005.Wave1.interacted_debiased_linear_expansion_proof
 
 end
 end AronowAudit.P005.Wave1

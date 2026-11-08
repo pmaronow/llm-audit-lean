@@ -4,7 +4,14 @@ import Mathlib.MeasureTheory.Measure.Portmanteau
 import Mathlib.Probability.IdentDistrib
 import Mathlib.Data.Fin.Rev
 
-/-! Identical repetitions, reversal, and equality of joint laws. -/
+/-!
+Draft dd-GP0182B2. No Lean execution was performed.
+
+Record 8: the analytic coverage endgame is below. The fresh proof of record 24
+is absent in this worktree. Consequently the unconditional final declaration
+and its type check are intentionally not asserted; see the run report.
+Record 11: the complete proposed proof and exact type check follow the helpers.
+-/
 
 noncomputable section
 namespace AronowAudit.P018.Wave1
@@ -16,7 +23,7 @@ set_option maxHeartbeats 2000000
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 
-/-! Reversal identities for repeated records. -/
+/-! ## Record 11: identical repetitions, reversal, and equality of joint laws. -/
 
 def concentrated_repetitions_flip {N : ℕ} (d : Dyad N) : Dyad N :=
   ⟨(members d).image Fin.rev, by
@@ -154,8 +161,8 @@ theorem concentrated_repetitions_record_reduction {N : ℕ} (ω : Fin N → Bool
       score, nsmul_eq_mul, mul_sub, mul_add]
   simp only [repeatedVariance, weightedVariance, hg, hs]
 
-/-- The total inverse rule gives scale invariance even at singular samples,
-without a scalar-rank side condition. -/
+/-- The already proved total inverse rule also gives scale invariance at
+singular samples. This removes an unnecessary scalar-rank side condition. -/
 theorem concentrated_repetitions_scale_total {N : ℕ} (w : Dyad N → ℝ)
     (ω : Fin N → Bool) (a : ℝ) (ha : a ≠ 0) :
     weightedOLS signKernel (fun d => a*w d) ω = weightedOLS signKernel w ω ∧
@@ -300,5 +307,8 @@ theorem concentrated_repetitions_counterexample_proof (N : ℕ) (hN : 2 ≤ N) :
   change (unitSampleLaw signKernel N).map F = (unitSampleLaw signKernel N).map R
   rw [hpair, ← Measure.map_map hF (concentrated_repetitions_reverse_preserving N).measurable,
     (concentrated_repetitions_reverse_preserving N).map_eq]
+
+example : type_of% @AronowAudit.P018.concentrated_repetitions_counterexample :=
+  concentrated_repetitions_counterexample_proof
 
 end AronowAudit.P018.Wave1

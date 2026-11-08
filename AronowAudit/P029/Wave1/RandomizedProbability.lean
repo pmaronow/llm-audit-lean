@@ -23,6 +23,9 @@ theorem randomized_probability_independent {Ω : Type u} {A : Type v}
   exact RandomizedProbability.assemble RandomizedProbability.n1_proof
     RandomizedProbability.n2_proof ν e he0 he1 v hv
 
+example : AronowAudit.P029.Wave1.RandomizedProbability.Target.{u, v} :=
+  @randomized_probability_independent.{u, v}
+
 end
 
 end AronowAudit.P029.Wave1

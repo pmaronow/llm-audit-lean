@@ -1,0 +1,145 @@
+import SAP.P019b.Defs.WholeW1
+
+open scoped BigOperators
+open scoped ENNReal
+open SAP.P019b MeasureTheory ProbabilityTheory
+
+namespace WholeReview
+noncomputable section
+open Classical
+
+abbrev Atom := Bool × Bool × Bool
+
+def fairPMF : PMF Atom := PMF.ofFintype (fun _ => 1/8)
+  (by
+    norm_num [Fintype.sum_prod_type, Fintype.sum_bool]
+    exact ENNReal.mul_inv_cancel (by norm_num) (by norm_num))
+
+-- bad=false: X=Y; bad=true: X=not Y. Both have independent fair B,Y,Z.
+def model (bad : Bool) : WholeStudy Atom where
+  law := fairPMF.toMeasure
+  probability := inferInstance
+  W := fun a => if a.1 then 1 else 0
+  X := fun a => if bad then !a.2.1 else a.2.1
+  Y := fun a => a.2.1
+  Z := fun a => a.2.2
+  V := fun a => (if a.1 then 1 else 0) +
+    (if (if bad then !a.2.1 else a.2.1) && a.2.2 then 1 else 0)
+  measurable_W := measurable_of_countable _
+  measurable_X := measurable_of_countable _
+  measurable_Y := measurable_of_countable _
+  measurable_Z := measurable_of_countable _
+  measurable_V := measurable_of_countable _
+  bounded := by
+    refine ⟨1, Filter.Eventually.of_forall ?_⟩
+    rintro ⟨b,y,z⟩
+    cases bad <;> cases b <;> cases y <;> cases z <;> norm_num
+
+lemma model_mean (bad : Bool) (f : Atom → ℝ) :
+    (model bad).mean f = ∑ a, (1/8 : ℝ) * f a := by
+  simp [WholeStudy.mean, model, PMF.integral_eq_sum, fairPMF]
+
+lemma model_prob (bad : Bool) (D : Atom → Prop) :
+    (model bad).prob D =
+      ((∑ a : Atom, if D a then (1/8 : ℝ≥0∞) else 0) : ℝ≥0∞).toReal := by
+  simp [WholeStudy.prob, model, PMF.toMeasure_apply_fintype, fairPMF,
+    Set.indicator]
+
+lemma model_noLiars (bad : Bool) : (model bad).noLiarsDesign := by
+  apply Filter.Eventually.of_forall
+  rintro ⟨b,y,z⟩
+  cases bad <;> cases b <;> cases y <;> cases z <;>
+    norm_num [model, bitVal]
+
+lemma fair_measure_real (s : Set Atom) :
+    (fairPMF.toMeasure s).toReal = ∑ a, (1/8 : ℝ) * (if a ∈ s then 1 else 0) := by
+  rw [PMF.toMeasure_apply_fintype]
+  rw [ENNReal.toReal_sum (by
+    intro a ha
+    by_cases h : a ∈ s <;> simp [Set.indicator, h, fairPMF])]
+  apply Finset.sum_congr rfl
+  intro a ha
+  by_cases h : a ∈ s <;> norm_num [Set.indicator, h, fairPMF]
+
+set_option maxHeartbeats 1000000 in
+lemma fair_indep (f : Bool → Bool → ℕ × Bool × Bool) :
+    IndepFun (fun a : Atom => f a.1 a.2.1) (fun a => a.2.2) fairPMF.toMeasure := by
+  apply indepFun_iff_measure_inter_preimage_eq_mul.mpr
+  intro s t hs ht
+  apply (ENNReal.toReal_eq_toReal_iff' (measure_ne_top _ _)
+    (ENNReal.mul_ne_top (measure_ne_top _ _) (measure_ne_top _ _))).mp
+  simp only [ENNReal.toReal_mul, fair_measure_real,
+    Fintype.sum_prod_type, Fintype.sum_bool, Set.mem_inter_iff, Set.mem_preimage]
+  by_cases h0 : f false false ∈ s <;>
+    by_cases h1 : f false true ∈ s <;>
+    by_cases h2 : f true false ∈ s <;>
+    by_cases h3 : f true true ∈ s <;>
+    by_cases k0 : false ∈ t <;> by_cases k1 : true ∈ t <;>
+    norm_num [h0, h1, h2, h3, k0, k1]
+
+lemma model_independent (bad : Bool) : (model bad).treatmentIndependent :=
+  fair_indep (fun b y => (if b then 1 else 0, if bad then !y else y, y))
+
+lemma model_nondegenerate (bad : Bool) : (model bad).nondegenerate := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro z y
+    cases bad <;> cases z <;> cases y <;>
+      simp only [WholeStudy.cv, WholeStudy.ce, model_mean]
+    all_goals norm_num [WholeStudy.prob, model, fairPMF, WholeStudy.cell,
+        PMF.toMeasure_apply_fintype, Set.indicator,
+        Fintype.sum_prod_type, Fintype.sum_bool]
+  · cases bad <;>
+      simp only [WholeStudy.variance, model_mean]
+    all_goals norm_num [model, bitVal,
+        Fintype.sum_prod_type, Fintype.sum_bool]
+  · cases bad <;>
+      simp only [WholeStudy.variance, model_mean]
+    all_goals norm_num [model, bitVal,
+        Fintype.sum_prod_type, Fintype.sum_bool]
+
+lemma good_standing : (model false).standing := by
+  refine ⟨?_, model_noLiars false, model_independent false, model_nondegenerate false⟩
+  exact Filter.Eventually.of_forall (fun a h => h)
+
+example : ∃ S : WholeStudy Atom, S.standing := ⟨model false, good_standing⟩
+
+-- A genuine positive-mass failure of monotonicity for T17's second implication.
+lemma bad_nonvacuous : (model true).noLiarsDesign ∧ (model true).treatmentIndependent ∧
+    (model true).nondegenerate ∧ ¬(model true).monotone := by
+  refine ⟨model_noLiars true, model_independent true, model_nondegenerate true, ?_⟩
+  intro h
+  have hz := MeasureTheory.ae_iff.mp h
+  norm_num [model, fairPMF, PMF.toMeasure_apply_fintype, Set.indicator,
+    Fintype.sum_prod_type, Fintype.sum_bool] at hz
+
+example : (model true).falseMass = 1/2 ∧ (model true).confessorX = 0 ∧
+    (model true).mu = 1/2 ∧ (model true).combined = 1 ∧
+    (model false).mu = 1/2 ∧ (model false).combined = 1/2 := by
+  simp only [WholeStudy.falseMass, WholeStudy.confessorX, WholeStudy.mu,
+    WholeStudy.combined, WholeStudy.listMean, WholeStudy.ce, model_mean]
+  norm_num [WholeStudy.prob, WholeStudy.cell, model, fairPMF, bitVal,
+    PMF.toMeasure_apply_fintype, Set.indicator,
+    Fintype.sum_prod_type, Fintype.sum_bool]
+  rw [ENNReal.toReal_add (by finiteness) (by finiteness)]
+  norm_num
+
+-- The uniform level-test premise of T21 has actual witnesses as well.
+lemma neverReject_level (n : ℕ) (α : ℝ) (hα : 0 ≤ α) :
+    ∀ (Ω : Type) [MeasurableSpace Ω] (S : WholeStudy Ω),
+      S.shiftedNull → S.rejectionProb n (fun _ => false) ≤ α := by
+  intro Ω _ S hnull
+  simpa [WholeStudy.rejectionProb, WholeStudy.sampleProb] using hα
+
+example (n : ℕ) : 0 ≤ (1/20 : ℝ) ∧ (1/20 : ℝ) ≤ 1 ∧
+    (∀ (Ω : Type) [MeasurableSpace Ω] (S : WholeStudy Ω),
+      S.shiftedNull → S.rejectionProb n (fun _ => false) ≤ (1/20 : ℝ)) ∧
+    (∀ z, 0 < (model false).prob ((model false).cell z true)) := by
+  refine ⟨by norm_num, by norm_num, neverReject_level n _ (by norm_num), ?_⟩
+  exact fun z => ((model_nondegenerate false).1 z true).1
+
+#print axioms good_standing
+#print axioms bad_nonvacuous
+#print axioms neverReject_level
+
+end
+end WholeReview

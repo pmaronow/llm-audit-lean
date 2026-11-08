@@ -1,0 +1,116 @@
+import SAP.P061a.Defs
+import SAP.P061a.Defs.WholeW1
+
+set_option autoImplicit false
+open SAP.P061a
+open scoped BigOperators Classical
+
+namespace Audit
+
+noncomputable def uniformDesign (Ω : Type) [Fintype Ω] [Nonempty Ω] : AtomicDesign Ω where
+  mass := fun _ => (Fintype.card Ω : ℝ)⁻¹
+  mass_nonnegative := fun _ => inv_nonneg.mpr (Nat.cast_nonneg _)
+  mass_summable := hasSum_fintype _ |>.summable
+  mass_total := by simp [tsum_fintype]
+
+-- T1: the complete stipulated family exists, including N=0.
+example : ∃ D : ∀ N, AtomicDesign (Fin N → Fin 3),
+    ∀ N z, (D N).mass z = (3 : ℝ)⁻¹ ^ N := by
+  refine ⟨fun N => uniformDesign (Fin N → Fin 3), ?_⟩
+  intro N z
+  simp [uniformDesign, Fintype.card_fun, inv_pow]
+
+-- T2: normalization and independent-product masses, for every number of copies.
+example : ∃ D : AtomicDesign BitPair, ∀ z, D.mass z = (1/4 : ℝ) := by
+  refine ⟨uniformDesign BitPair, ?_⟩
+  intro z
+  norm_num [uniformDesign, BitPair]
+
+example (K : ℕ) : ∃ D : AtomicDesign (Fin K → BitPair),
+    ∀ z, D.mass z = ∏ _i : Fin K, (Fintype.card BitPair : ℝ)⁻¹ := by
+  refine ⟨uniformDesign (Fin K → BitPair), ?_⟩
+  intro z
+  simp [uniformDesign, Fintype.card_fun, inv_pow]
+
+-- A direct finite calculation, independent of the Challenge theorems.
+example : exposureProbability (uniformDesign BitPair) edgeExposure 0 1 = (1/4 : ℝ) ∧
+    exposureProbability (uniformDesign BitPair) edgeExposure 0 0 = (1/4 : ℝ) ∧
+    exposureMean (uniformDesign BitPair) edgeExposure ownBit 0 1 = 1 ∧
+    exposureMean (uniformDesign BitPair) edgeExposure ownBit 0 0 = 0 := by
+  norm_num [exposureProbability, exposureMean, eventProbability, mean, uniformDesign,
+    tsum_fintype, BitPair, Fintype.sum_prod_type, Fin.sum_univ_two,
+    edgeExposure, ownBit, partnerBit]
+
+example : edgeExposureVector (0,0) = (0,0) ∧
+    edgeExposureVector (0,1) = (2,1) ∧
+    edgeExposureVector (1,0) = (1,2) ∧
+    edgeExposureVector (1,1) = (3,3) := by
+  norm_num [edgeExposureVector, edgeExposure, ownBit, partnerBit]
+
+example : (∀ i : Fin 2, versionExposure i ![1,0] = versionExposure i ![2,0]) ∧
+    versionResponse 0 ![1,0] = 1 ∧ versionResponse 0 ![2,0] = 2 := by
+  refine ⟨?_, by norm_num [versionResponse], by norm_num [versionResponse]⟩
+  intro i
+  fin_cases i <;> norm_num [versionExposure, coarsenVersion]
+
+noncomputable def localPairMass (m : ℕ) (z : BitPair) : ℝ :=
+  if z.1 = z.2 then (1+pairParameter m)/4 else (1-pairParameter m)/4
+
+lemma parameter_bounds (m : ℕ) : 0 ≤ pairParameter m ∧ pairParameter m ≤ 1/2 := by
+  unfold pairParameter
+  split_ifs with h
+  · have hm : (2 : ℝ) ≤ m := by exact_mod_cast h
+    constructor
+    · positivity
+    · apply (div_le_iff₀ (by linarith : (0 : ℝ) < m)).mpr
+      linarith
+  · norm_num
+
+lemma pair_mass_positive (m : ℕ) (z : BitPair) : 0 < localPairMass m z := by
+  have hb := parameter_bounds m
+  unfold localPairMass
+  split_ifs <;> linarith
+
+lemma pair_mass_total (m : ℕ) : ∑ z : BitPair, localPairMass m z = 1 := by
+  simp [BitPair, Fintype.sum_prod_type, Fin.sum_univ_two, localPairMass]
+  ring
+
+noncomputable def pairDesign (m : ℕ) : AtomicDesign (Fin (m^8) → BitPair) where
+  mass := fun z => ∏ k, localPairMass m (z k)
+  mass_nonnegative := fun z => Finset.prod_nonneg (fun k _ => le_of_lt (pair_mass_positive m (z k)))
+  mass_summable := hasSum_fintype _ |>.summable
+  mass_total := by
+    rw [tsum_fintype, ← Fintype.prod_sum]
+    simp [pair_mass_total]
+
+-- T4 and T5's rate example: the exact family is a genuine full-support design.
+example : ∃ D : ∀ m, AtomicDesign (Fin (m^8) → BitPair),
+    (∀ m z, (D m).mass z = ∏ k : Fin (m^8),
+      if (z k).1 = (z k).2 then (1+pairParameter m)/4 else (1-pairParameter m)/4) ∧
+    (∀ m z, supported (D m) z) := by
+  refine ⟨pairDesign, fun _ _ => rfl, ?_⟩
+  intro m z
+  change 0 < ∏ k, localPairMass m (z k)
+  exact Finset.prod_pos (fun k _ => pair_mass_positive m (z k))
+
+-- Pair-level covariance and variance, at the first permitted value m=2.
+noncomputable def onePair : AtomicDesign BitPair where
+  mass := localPairMass 2
+  mass_nonnegative := fun z => le_of_lt (pair_mass_positive 2 z)
+  mass_summable := hasSum_fintype _ |>.summable
+  mass_total := by simpa [tsum_fintype] using pair_mass_total 2
+
+example : designCovariance onePair (ownBit 0) (ownBit 1) = (1/8 : ℝ) := by
+  norm_num [designCovariance, mean, onePair, localPairMass, pairParameter,
+    tsum_fintype, BitPair, Fintype.sum_prod_type, Fin.sum_univ_two, ownBit]
+
+noncomputable def pairContribution (z : BitPair) : ℝ :=
+  2 * ((2*ownBit 0 z-1)*(1+(1/2 : ℝ)*partnerBit 0 z) +
+    (2*ownBit 1 z-1)*(1+(1/2 : ℝ)*partnerBit 1 z))
+
+example : designVariance onePair pairContribution = variancePolynomial 2 := by
+  norm_num [designVariance, mean, onePair, localPairMass, pairParameter,
+    tsum_fintype, BitPair, Fintype.sum_prod_type, Fin.sum_univ_two,
+    pairContribution, ownBit, partnerBit, variancePolynomial]
+
+end Audit

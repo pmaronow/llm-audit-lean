@@ -15,7 +15,7 @@ import AronowAudit.P004.Wave1.LinePopulation.N7
 import AronowAudit.P004.Wave1.DesignLimits.DL8
 import AronowAudit.P004.Wave1.DesignLimits.NF
 
-/-! P004-T36: refutation of the full universal closure of the printed
+/-! P004-T36: refutation of the full universal closure of the recorded printed
 observational-coverage assertion, at universe zero. -/
 
 namespace AronowAudit.P004.Wave1
@@ -52,6 +52,9 @@ theorem printed_observational_coverage_refuted :
     ObservationalCoverage.o1_proof ObservationalCoverage.o3_proof
     ObservationalCoverage.o4_proof ObservationalCoverage.o5_proof
     ObservationalCoverage.o11_proof ObservationalCoverage.o12_proof dl8_proof nf_proof
+
+example : AronowAudit.P004.Wave1.ObservationalCoverage.Target :=
+  printed_observational_coverage_refuted
 
 end
 end AronowAudit.P004.Wave1

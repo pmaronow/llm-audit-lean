@@ -1,0 +1,176 @@
+import SAP.P037a.Defs
+
+open SAP.P037a MeasureTheory Set Filter
+open scoped BigOperators ENNReal NNReal Classical Topology
+
+namespace ReviewP037a
+
+noncomputable def fair : Design (Fin 2) where
+  weight := fun _ => 1 / 2
+  nonneg := by intro z; norm_num
+  total := by norm_num [Fin.sum_univ_two]
+
+-- Two fixed retained students, complementary exposure, and opposite outcomes.
+-- The block total is genuinely random, taking values +2 and -2.
+noncomputable def rows (B : ℕ) : RetainedRow (B+1) where
+  students := fun _ => 2
+  assignments := fun _ => 2
+  law := fun _ => fair
+  exposed := fun _ z i => decide (z.val = i.val)
+  y := fun _ i => if i.val = 0 then 1 else -1
+  g := fun _ _ => 0
+  pi := fun _ _ => 1/2
+  pi_def := by
+    intro b i
+    fin_cases i <;> norm_num [mean, fair, Fin.sum_univ_two]
+  pi_pos := by intro b i; norm_num
+
+noncomputable def second (B : ℕ) : PairedExposure (rows B) where
+  exposed := fun _ z i => !decide (z.val = i.val)
+  y := fun _ i => if i.val = 0 then 1 else -1
+  g := fun _ _ => 0
+  pi := fun _ _ => 1/2
+  pi_def := by
+    intro b i
+    change (1/2:ℝ) = mean fair (fun z : Fin 2 => if !decide (z.val = i.val) then 1 else 0)
+    fin_cases i <;> norm_num [mean, fair, Fin.sum_univ_two]
+  pi_pos := by intro b i; norm_num
+
+lemma size (B : ℕ) : populationSize (rows B) = 2*(B+1) := by
+  simp [populationSize, rows, Nat.mul_comm]
+
+example : BlockBounds rows 2 2 (1/2) 1 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_⟩
+  intro B
+  constructor
+  · rw [size]
+    push_cast
+    rfl
+  · intro b
+    constructor
+    · exact le_rfl
+    · intro i
+      change (1/2:ℝ) ≤ 1/2 ∧ |(if i.val = 0 then (1:ℝ) else -1)| ≤ 1 ∧ |(0:ℝ)| ≤ 1
+      split_ifs <;> norm_num
+
+example : ∀ B b i, (1/2:ℝ) ≤ (second B).pi b i ∧
+    |(second B).y b i| ≤ 1 ∧ |(second B).g b i| ≤ 1 := by
+  intro B b i
+  change (1/2:ℝ) ≤ 1/2 ∧ |(if i.val = 0 then (1:ℝ) else -1)| ≤ 1 ∧ |(0:ℝ)| ≤ 1
+  split_ifs <;> norm_num
+
+lemma block_variance (B : ℕ) (b : Fin (B+1)) :
+    variance ((rows B).law b) (blockTotal (rows B) b) = 4 := by
+  change variance fair (fun z : Fin 2 => ∑ i : Fin 2,
+    contribution (if decide (z.val=i.val) then 1 else 0) (1/2)
+      (if i.val = 0 then 1 else -1) 0) = 4
+  norm_num [variance, mean, contribution, fair, Fin.sum_univ_two]
+
+lemma contrast_variance (B : ℕ) (b : Fin (B+1)) :
+    variance ((rows B).law b) (contrastBlockTotal (rows B) (second B) b) = 16 := by
+  change variance fair (fun z : Fin 2 =>
+    (∑ i : Fin 2, contribution (if decide (z.val=i.val) then 1 else 0) (1/2)
+      (if i.val = 0 then 1 else -1) 0) -
+    (∑ i : Fin 2, contribution (if !decide (z.val=i.val) then 1 else 0) (1/2)
+      (if i.val = 0 then 1 else -1) 0)) = 16
+  norm_num [variance, mean, contribution, fair, Fin.sum_univ_two]
+
+example : (0:ℝ) < 4 ∧ ∀ B : ℕ, 4*((B:ℝ)+1) ≤ totalBlockVariance (rows B) := by
+  constructor
+  · norm_num
+  · intro B
+    simp [totalBlockVariance, block_variance, mul_comm]
+
+example : (0:ℝ) < 16 ∧ ∀ B : ℕ, 16*((B:ℝ)+1) ≤
+    ∑ b, variance ((rows B).law b) (contrastBlockTotal (rows B) (second B) b) := by
+  constructor
+  · norm_num
+  · intro B
+    simp [contrast_variance, mul_comm]
+
+def xs (B : ℕ) : Covariates (rows B) 1 := fun _ _ _ => 1
+
+def Q : Matrix (Fin 1) (Fin 1) ℝ := fun _ _ => 1
+
+noncomputable def pHat (B : ℕ) (_w : RowAssignment (rows B))
+    (b : Fin (B+1)) (i : Fin ((rows B).students b)) : ℝ := (rows B).pi b i
+
+lemma gram (B : ℕ) (k l : Fin 1) : covariateGram (rows B) (xs B) k l = 1 := by
+  have hn : (B+1:ℝ) ≠ 0 := by positivity
+  change (∑ b : Fin (B+1), ∑ i : Fin 2, (1:ℝ)*1) / populationSize (rows B) = 1
+  rw [size]
+  simp [Fin.sum_univ_two, nsmul_eq_mul, hn, mul_comm]
+
+lemma rhs (B : ℕ) (k : Fin 1) : covariateRhs (rows B) (xs B) k = 0 := by
+  change (∑ b : Fin (B+1), ∑ i : Fin 2,
+    (1:ℝ)*(if i.val = 0 then 1 else -1)) / populationSize (rows B) = 0
+  simp [Fin.sum_univ_two]
+
+example : ∀ B b i k, |xs B b i k| ≤ (1:ℝ) := by
+  intro B b i k
+  norm_num [xs]
+
+example : ∀ k l, Tendsto (fun B => covariateGram (rows B) (xs B) k l)
+    atTop (nhds (Q k l)) := by
+  intro k l
+  simpa [gram, Q] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (1:ℝ))
+    atTop (nhds 1))
+
+example : ∀ k, Tendsto (fun B => covariateRhs (rows B) (xs B) k)
+    atTop (nhds ((0 : Fin 1 → ℝ) k)) := by
+  intro k
+  simpa [rhs] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0:ℝ))
+    atTop (nhds 0))
+
+example : ∀ a : Fin 1 → ℝ, a ≠ 0 → 0 < ∑ k, a k*(Q.mulVec a) k := by
+  intro a ha
+  have ha0 : a 0 ≠ 0 := by
+    intro hz
+    apply ha
+    funext k
+    fin_cases k
+    exact hz
+  simpa [Q, Matrix.mulVec, dotProduct, pow_two] using sq_pos_of_ne_zero ha0
+
+example : ∀ B w b i, 0 < pHat B w b i := by
+  intro B w b i
+  change (0:ℝ) < 1/2
+  norm_num
+
+example : ∀ eps : ℝ, 0 < eps → Tendsto (fun B => rowProbability (rows B)
+    (fun w => ∃ b i, eps < Real.sqrt (B+1)*|pHat B w b i-(rows B).pi b i|))
+    atTop (nhds 0) := by
+  intro eps heps
+  simpa [rowProbability, pHat, not_lt.mpr heps.le] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0:ℝ)) atTop (nhds 0))
+
+example : ∀ B b i, (rows B).g b i =
+    ∑ k, xs B b i k*(Q⁻¹.mulVec (0 : Fin 1 → ℝ)) k := by
+  intro B b i
+  simp [rows]
+
+-- Strict Lindeberg threshold premises are satisfiable, too.
+example : 2*(2:ℝ)*(1+2*1/(1/2)) < (100:ℝ)*Real.sqrt (4*(0+1)) := by
+  norm_num
+example : 4*(2:ℝ)*(1+2*1/(1/2)) < (100:ℝ)*Real.sqrt (16*(0+1)) := by
+  norm_num
+
+-- T12's small examples are evaluations of the actual definition.
+example : eligibleCount 0 = 40 ∧ eligibleCount 100 = 40 ∧ eligibleCount 200 = 40 ∧
+    eligibleCount 375 = 52 ∧ eligibleCount 520 = 60 ∧ eligibleCount 521 = 64 ∧
+    eligibleCount 550 = 64 ∧ eligibleCount 715 = 64 := by
+  norm_num [eligibleCount]
+
+example : (eligibleCount 100:ℝ)/100 ≠ (eligibleCount 200:ℝ)/200 := by
+  norm_num [eligibleCount]
+
+-- T13's three interval premises have a joint interior instance.
+example : ∃ t b m : ℝ,
+    (35/1000 ≤ t ∧ t ≤ 45/1000) ∧
+    (-855/1000 ≤ b ∧ b ≤ -845/1000) ∧
+    (222/1000 ≤ m ∧ m ≤ 223/1000) ∧
+    fittedEffect t b (1/5) = -13/100 ∧ m + fittedEffect t b (1/5) = 37/400 := by
+  refine ⟨1/25, -17/20, 89/400, ?_⟩
+  norm_num [fittedEffect]
+
+end ReviewP037a

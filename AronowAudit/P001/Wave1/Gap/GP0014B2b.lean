@@ -12,8 +12,8 @@ set_option maxHeartbeats 800000
 set_option maxRecDepth 3000
 set_option autoImplicit false
 
-/-! The event-to-L¹ extension below follows from equality of
-weighted pushforward measures, rather than a simple-function limit. -/
+/-! Record 9. The event-to-L¹ extension below is implemented by equality of
+weighted pushforward measures, rather than by a simple-function limit. -/
 
 /-- Equality on every outcome event identifies the weighted outcome laws.
 Integrating the identity function then extends the equality to the outcome itself.
@@ -152,7 +152,7 @@ private theorem GP0014B2b_mar_ci_weighted_setIntegral {Ω E : Type*}
       exact ae_of_all _ (fun ω => by
         by_cases h : Y ω ∈ A <;> simp [I, Set.indicator, h])
 
-/-- Under MAR, a respondent CEF is a population CEF. -/
+/-- Record 9, with exactly the held theorem's binders and conclusion. -/
 theorem mar_respondent_cef_is_population_cef_proof {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
    (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
    (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R) (hYi : Integrable Y μ)
@@ -259,7 +259,10 @@ theorem mar_respondent_cef_is_population_cef_proof {Ω E : Type*} [MeasurableSpa
     _ = ∫ ω in X ⁻¹' C, m (X ω) ∂μ :=
       setIntegral_congr_ae (hX hC) (hHa.mono (fun ω h _ => h))
 
-/-! Stable outcomes: no MAR or population integrability of `m ∘ X` is used. -/
+example : type_of% @AronowAudit.P001.mar_respondent_cef_is_population_cef :=
+  mar_respondent_cef_is_population_cef_proof
+
+/-! Record 10. No MAR or population integrability of `m ∘ X` is used. -/
 
 private theorem GP0014B2b_stable_censoring_on_response {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (Y R : Ω → ℝ) (hR : Measurable R) :
@@ -277,8 +280,7 @@ private theorem GP0014B2b_stable_censoring_piecewise {Ω : Type*} (Y R : Ω → 
   funext ω
   rcases hbinary ω with h | h <;> simp [censored, Set.piecewise, h]
 
-/-- A respondent CEF determines a piecewise CEF of the censored outcome
-given response status and covariates. -/
+/-- Record 10, with exactly the held theorem's binders and conclusion. -/
 theorem stable_outcomes_respondent_cef_proof {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
    (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
    (Y R : Ω → ℝ) (hY : Measurable Y) (hR : Measurable R) (hYi : Integrable Y μ)
@@ -358,6 +360,9 @@ theorem stable_outcomes_respondent_cef_proof {Ω E : Type*} [MeasurableSpace Ω]
       ∫ ω in (fun ω => (R ω, X ω)) ⁻¹' A, z ω ∂μ
     rw [hsplit, setIntegral_union hdis hT₀ hci.integrableOn hci.integrableOn,
       setIntegral_union hdis hT₀ hzi.integrableOn hzi.integrableOn, hfirst, hsecond]
+
+example : type_of% @AronowAudit.P001.stable_outcomes_respondent_cef :=
+  stable_outcomes_respondent_cef_proof
 
 end
 end AronowAudit.P001.Wave1

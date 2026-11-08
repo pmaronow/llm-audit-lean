@@ -1,0 +1,34 @@
+import SAP.P009b.Challenge
+
+open SAP.P009b
+
+-- A genuine six-unit support instance for T21.
+example : UniformBaselineSupport6 (fun _ => 0) (fun _ => 0) := by
+  simp [UniformBaselineSupport6]
+
+-- An admissible real-valued reflexive binary array and involution for T20.
+example : (0 < (1 : ℕ)) ∧
+    (∀ i j : Fin 1, (1 : ℝ) = 0 ∨ (1 : ℝ) = 1) ∧
+    (∀ i : Fin 1, (1 : ℝ) = 1) ∧
+    Function.Involutive (id : Fin 1 → Fin 1) := by
+  simp [Function.Involutive]
+
+-- The zero-outcome fair experiment makes the no-interference hypothesis real.
+example : NoInterference (fairExperiment 1 (fun _ _ => 0)) := by
+  simp [NoInterference, fairExperiment]
+
+-- These are actual three-valued laws on which the finite CDF clauses act.
+example : 0 < (1 / 2 : ℝ) ∧ (1 / 2 : ℝ) < 1 := by norm_num
+example : (∀ i : Fin 3, sharpValue i = -1 ∨ sharpValue i = 0 ∨ sharpValue i = 1) := by
+  intro i
+  fin_cases i <;> norm_num [sharpValue]
+
+-- Finite moment-chain data, with both powered outcomes defined on support.
+example : ∀ z : Assignment 1,
+    0 < (fairExperiment 1 (fun _ _ => (1 : ℝ))).design.mass z →
+    OrdinaryPowerW3 ((fairExperiment 1 (fun _ _ => (1 : ℝ))).outcome 0 z) 1 1 := by
+  intro z _
+  right
+  left
+  norm_num [fairExperiment, OrdinaryPowerW3]
+

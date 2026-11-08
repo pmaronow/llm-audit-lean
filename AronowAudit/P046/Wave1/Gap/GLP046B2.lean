@@ -3,10 +3,10 @@ import AronowAudit.P046.Wave1.Gap.GP046B2
 /-!
 P046-T3: conditional Hoeffding with the conditional centre `muW`.
 
-Expanding the event indicator over all bit vectors identifies its conditional
-expectation with the finite product Bernoulli tail, before unconditional
-integration. The bound uses the binary conditional table, its product-sampling
-lift, and the heterogeneous Bernoulli Hoeffding inequality.
+The proved binary conditional table, its product-sampling lift, and the
+heterogeneous Bernoulli Hoeffding bound are reused from `GP046B2`.  Expanding
+the event indicator over all bit vectors identifies its conditional expectation
+with the finite product Bernoulli tail, before any unconditional integration.
 -/
 
 namespace AronowAudit.P046.Wave1
@@ -173,6 +173,8 @@ theorem conditional_hoeffding_proof (M : Study) (hM : ValidStudy M)
   by_cases h : t ≤
       |(∑ i, bit (b i) / M.pi (W (a i))) / n - (∑ i, M.m (W (a i))) / n| <;>
     simp [A, muW, Set.indicator, h]
+
+example : type_of% @AronowAudit.P046.conditional_hoeffding := conditional_hoeffding_proof
 
 end
 

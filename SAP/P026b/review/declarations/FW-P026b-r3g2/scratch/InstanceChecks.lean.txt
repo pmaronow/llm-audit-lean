@@ -1,0 +1,222 @@
+import SAP.P026b.Defs
+import SAP.P026b.Defs.WholeW1
+
+open Finset
+open scoped BigOperators
+open SAP.P026b
+
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+noncomputable section
+
+-- T18: the complete real-valued counterexample, independently of the Challenge.
+example : T18Statement := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · norm_num [probabilityDesign, realXorThree, Fin.sum_univ_succ]
+  · intro i
+    fin_cases i <;>
+      norm_num [positiveMarginals, marginal, expectation, indicator, realXorThree,
+        Fin.sum_univ_succ]
+  · intro j hj
+    fin_cases j
+    · norm_num [xorFittingSet] at hj
+    · intro u v
+      norm_num [expectation, realXorThree, Fin.sum_univ_succ]
+      ring
+    · intro u v
+      norm_num [expectation, realXorThree, Fin.sum_univ_succ]
+      ring
+  · norm_num [covariance, expectation, indicator, realXorThree, xorFit,
+      fittingOutcomes, observed, Fin.sum_univ_succ]
+
+example : covariance realXorThree (fun w => indicator realXorThree true w 0)
+    (fun w => xorFit (fittingOutcomes realXorThree xorFittingSet
+      (fun _ => 1) (fun _ => 0) w)) = 1 / 4 := by
+  norm_num [covariance, expectation, indicator, realXorThree, xorFit,
+    fittingOutcomes, observed, Fin.sum_univ_succ]
+
+-- No nonzero separation direction exists in either logistic fitting stratum.
+-- Positive outcomes occur at x=0 and 4 in L, x=1 and 4 in R;
+-- a negative outcome at x=2 lies strictly between these in both strata.
+example (a b : ℝ) :
+    (0 ≤ a → 0 ≤ a+4*b → a+2*b ≤ 0 → a=0 ∧ b=0) ∧
+    (0 ≤ a+b → 0 ≤ a+4*b → a+2*b ≤ 0 → a=0 ∧ b=0) := by
+  constructor <;> intros <;> constructor <;> linarith
+
+-- A two-unit law, one unit treated with probability 1/2 each, on the full
+-- binary allocation space. This supplies all structure fields used by T20/T22
+-- and the fixed-size hypotheses of T21(a).
+def leftAllocation : Fin 2 → Bool := ![true, false]
+def rightAllocation : Fin 2 → Bool := ![false, true]
+
+def twoUnitWeight (w : Fin 2 → Bool) : ℝ :=
+  (if w = leftAllocation then 1/2 else 0) +
+  (if w = rightAllocation then 1/2 else 0)
+
+lemma twoUnitSum (f : (Fin 2 → Bool) → ℝ) :
+    (∑ w, twoUnitWeight w * f w) =
+      (1/2)*f leftAllocation + (1/2)*f rightAllocation := by
+  classical
+  simp [twoUnitWeight, add_mul, Finset.sum_add_distrib, ite_mul]
+
+def twoUnitExperiment : UnitExperiment (Fin 2) where
+  weight := twoUnitWeight
+  nonnegative := by
+    intro w
+    unfold twoUnitWeight
+    split_ifs <;> norm_num
+  normalized := by
+    have h := twoUnitSum (fun _ => 1)
+    norm_num at h
+    exact h
+  positive := by
+    intro i
+    rw [twoUnitSum, twoUnitSum]
+    fin_cases i <;> norm_num [leftAllocation, rightAllocation]
+
+example : ∃ E : UnitExperiment (Fin 2),
+    (∀ i, marginal E.design true i = 1/2 ∧ marginal E.design false i = 1/2) ∧
+    (∀ w, 0 < E.weight w → (∑ i, indicator E.design true w i) = 1) := by
+  refine ⟨twoUnitExperiment, ?_, ?_⟩
+  · intro i
+    simp only [marginal, expectation, indicator, UnitExperiment.design, twoUnitExperiment]
+    rw [twoUnitSum, twoUnitSum]
+    fin_cases i <;> norm_num [indicator, UnitExperiment.design, leftAllocation, rightAllocation]
+  · intro w hw
+    have h : w = leftAllocation ∨ w = rightAllocation := by
+      by_contra hn
+      simp only [not_or] at hn
+      have hz : twoUnitWeight w = 0 := by simp [twoUnitWeight, hn.1, hn.2]
+      change 0 < twoUnitWeight w at hw
+      linarith
+    rcases h with rfl | rfl <;>
+      norm_num [indicator, UnitExperiment.design, leftAllocation, rightAllocation,
+        Fin.sum_univ_succ]
+
+-- T22: the fixed, nonzero prediction g=3 meets the covariance premise
+-- under a genuine positive-marginal experiment.
+example : ∀ i : Fin 2,
+    covariance twoUnitExperiment.design
+      (fun w => indicator twoUnitExperiment.design true w i) (fun _ => (3 : ℝ)) = 0 := by
+  intro i
+  change (∑ w, twoUnitWeight w * _) - (∑ w, twoUnitWeight w * _) *
+    (∑ w, twoUnitWeight w * _) = 0
+  rw [twoUnitSum, twoUnitSum, twoUnitSum]
+  fin_cases i <;> norm_num [indicator, UnitExperiment.design, leftAllocation, rightAllocation]
+
+-- T21's specified real cluster witness, with every UnitExperiment field.
+lemma witnessSum (f : (Fin 3 → Bool) → ℝ) :
+    (∑ w, T21WitnessWeight w * f w) =
+      (f (T21OneHot 0) + f (T21OneHot 1) + f (T21OneHot 2)) / 3 := by
+  classical
+  simp only [T21WitnessWeight, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  simp only [ite_mul, zero_mul]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  norm_num [Fin.sum_univ_succ]
+  ring
+
+def clusterAssignment : UnitExperiment (Fin 3) where
+  weight := T21WitnessWeight
+  nonnegative := by
+    intro w
+    apply Finset.sum_nonneg
+    intro j hj
+    split_ifs <;> norm_num
+  normalized := by
+    have h := witnessSum (fun _ => 1)
+    norm_num at h
+    exact h
+  positive := by
+    intro i
+    rw [witnessSum, witnessSum]
+    fin_cases i <;> norm_num [T21OneHot]
+
+def clusterWitness : ClusterExperiment (Fin 4) (Fin 3) where
+  cluster := T21WitnessCluster
+  covers := by
+    intro c
+    fin_cases c
+    · exact ⟨0, rfl⟩
+    · exact ⟨1, rfl⟩
+    · exact ⟨2, rfl⟩
+  assignment := clusterAssignment
+
+lemma clusterWitnessExpectation (f : (Fin 3 → Bool) → ℝ) :
+    expectation clusterWitness.unitDesign f =
+      (f (T21OneHot 0) + f (T21OneHot 1) + f (T21OneHot 2)) / 3 := by
+  exact witnessSum f
+
+example : expectation clusterWitness.unitDesign
+    (differenceInMeans clusterWitness.unitDesign (![1,1,0,0]) (![1,1,0,0])) = 1/9 := by
+  rw [clusterWitnessExpectation]
+  simp only [differenceInMeans, observedArmSum, observed, indicator,
+    ClusterExperiment.unitDesign, clusterWitness, T21WitnessCluster, T21OneHot,
+    Fin.sum_univ_succ]
+  norm_num
+
+example : ∀ c d : Fin 3, c ≠ d →
+    disagreement clusterWitness.clusterDesign c d = 2/3 := by
+  intro c d hcd
+  simp only [disagreement, expectation, ClusterExperiment.clusterDesign,
+    UnitExperiment.design, clusterWitness, clusterAssignment]
+  rw [witnessSum]
+  fin_cases c <;> fin_cases d <;>
+    norm_num [T21OneHot, ClusterExperiment.clusterDesign, UnitExperiment.design,
+      clusterWitness, clusterAssignment] at *
+
+
+lemma clusterWitnessMarginal (a : Bool) (c : Fin 3) :
+    marginal clusterWitness.clusterDesign a c = (if a then 1/3 else 2/3) := by
+  simp only [marginal, expectation, ClusterExperiment.clusterDesign,
+    UnitExperiment.design, clusterWitness, clusterAssignment]
+  rw [witnessSum]
+  cases a <;> fin_cases c <;>
+    norm_num [indicator, ClusterExperiment.clusterDesign, UnitExperiment.design,
+      clusterWitness, clusterAssignment, T21OneHot]
+
+lemma clusterWitnessUnitMarginal (a : Bool) (i : Fin 4) :
+    marginal clusterWitness.unitDesign a i = (if a then 1/3 else 2/3) := by
+  simp only [marginal, expectation, ClusterExperiment.unitDesign,
+    clusterWitness, clusterAssignment]
+  rw [witnessSum]
+  cases a <;> fin_cases i <;>
+    norm_num [indicator, ClusterExperiment.unitDesign, clusterWitness,
+      T21WitnessCluster, T21OneHot]
+
+example : ∀ w, 0 < clusterWitness.assignment.weight w →
+    (∑ c, indicator clusterWitness.clusterDesign true w c) = 1 ∧
+    0 < ∑ i, indicator clusterWitness.unitDesign true w i ∧
+    0 < ∑ i, indicator clusterWitness.unitDesign false w i := by
+  intro w hw
+  change 0 < T21WitnessWeight w at hw
+  have h : w = T21OneHot 0 ∨ w = T21OneHot 1 ∨ w = T21OneHot 2 := by
+    by_contra hn
+    simp only [not_or] at hn
+    have hz : T21WitnessWeight w = 0 := by
+      norm_num [T21WitnessWeight, Fin.sum_univ_succ, hn.1, hn.2.1, hn.2.2]
+    linarith
+  rcases h with rfl | rfl | rfl <;>
+    simp only [indicator, ClusterExperiment.clusterDesign, ClusterExperiment.unitDesign,
+      UnitExperiment.design, clusterWitness, T21WitnessCluster, T21OneHot,
+      Fin.sum_univ_succ] <;> norm_num
+
+example : expectation clusterWitness.unitDesign
+    (ht clusterWitness.unitDesign 4 (![1,1,0,0]) (![1,1,0,0])) = 0 := by
+  rw [clusterWitnessExpectation]
+  simp only [ht, htTotal]
+  simp only [clusterWitnessUnitMarginal]
+  simp only [indicator, ClusterExperiment.unitDesign, clusterWitness,
+    T21WitnessCluster, T21OneHot, Fin.sum_univ_succ]
+  norm_num
+
+example : ate 4 (![1,1,0,0] : Fin 4 → ℝ) (![1,1,0,0]) = 0 := by
+  simp [ate]
+
+example : 0 < (1 : ℕ) ∧ 1 < Fintype.card (Fin 2) ∧
+    probabilityDesign twoUnitExperiment.design := by
+  refine ⟨by norm_num, by norm_num, ?_⟩
+  exact ⟨twoUnitExperiment.nonnegative, twoUnitExperiment.normalized⟩
+
+end

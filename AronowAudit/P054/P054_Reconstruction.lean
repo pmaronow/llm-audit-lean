@@ -10,8 +10,8 @@ import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity
 
 /-!
-Conditional finite reconstruction identities for ratios and intercept-only weighted least squares.
-These identities do not identify the historical procedure,
+Conditional finite reconstruction identities for P054-N001 after the accepted
+19 October review. These identities do not identify the historical procedure,
 the sampling design, or national confidence-interval coverage.
 -/
 
@@ -134,6 +134,32 @@ theorem ratio_reconstruction {N : ℕ} (hN : 2 ≤ N)
   rw [he]
   exact equal_weight_ratio d y c hc hy hn
 
+/-- Exact loss gap: the ratio is the intercept-only weighted least-squares
+fit, not merely a convenient name for a binary-response formula. -/
+theorem weighted_intercept_loss_gap (d w y : I → ℝ)
+    (hW : groupWeight d w ≠ 0) (a : ℝ) :
+    (∑ i, d i*w i*(y i-a)^2) =
+      (∑ i, d i*w i*(y i-weightedProportion d w y)^2) +
+        groupWeight d w * (a-weightedProportion d w y)^2 := by
+  let p := weightedProportion d w y
+  have he (i : I) : d i*w i*(y i-a)^2 =
+      d i*w i*(y i-p)^2 + 2*(p-a)*ratioResidual d w y i + (p-a)^2*(d i*w i) := by
+    dsimp [p, ratioResidual]
+    ring
+  simp_rw [he, Finset.sum_add_distrib, ← Finset.mul_sum]
+  rw [ratioResidual_sum d w y hW]
+  change _ = _ + groupWeight d w * (a-p)^2
+  dsimp [groupWeight]
+  ring
+
+theorem weighted_intercept_minimizes (d w y : I → ℝ)
+    (hd : ∀ i, d i = 0 ∨ d i = 1) (hw : ∀ i, 0 < w i)
+    (hn : 0 < groupCount d) (a : ℝ) :
+    (∑ i, d i*w i*(y i-weightedProportion d w y)^2) ≤
+      ∑ i, d i*w i*(y i-a)^2 := by
+  have hW := groupWeight_pos d w hd hw hn
+  rw [weighted_intercept_loss_gap d w y (ne_of_gt hW) a]
+  exact le_add_of_nonneg_right (mul_nonneg hW.le (sq_nonneg _))
 
 /-- P054-T2: the classical intercept-only WLS variance reduces to p(1-p)/(n-1).
 This algebra establishes neither historical use nor survey-design coverage. -/
@@ -158,7 +184,24 @@ theorem classical_intercept_wls (d w y : I → ℝ)
   · field_simp [ne_of_gt hn0]
     <;> ring
 
+/-- A concrete eligible two-respondent model supplies nonempty hypotheses
+for both reconstruction targets, independently of the historical data. -/
+theorem reconstruction_binary_instance :
+    let d : Fin 2 → ℝ := fun _ => 1
+    let w : Fin 2 → ℝ := fun _ => 1
+    let y : Fin 2 → ℝ := fun i => (i.val : ℝ)
+    (∀ i, d i = 0 ∨ d i = 1) ∧ (∀ i, y i = 0 ∨ y i = 1) ∧
+    (∀ i, 0 < w i) ∧ 2 ≤ groupCount d ∧
+    weightedProportion d w y = 1/2 := by
+  norm_num [groupCount, weightedProportion, groupWeight, Fin.sum_univ_succ]
 
 end
 end AronowAudit.P054
 
+#print axioms AronowAudit.P054.ratio_linearisation
+#print axioms AronowAudit.P054.equal_weight_ratio
+#print axioms AronowAudit.P054.classical_intercept_wls
+#print axioms AronowAudit.P054.ratio_reconstruction
+#print axioms AronowAudit.P054.weighted_intercept_loss_gap
+#print axioms AronowAudit.P054.weighted_intercept_minimizes
+#print axioms AronowAudit.P054.reconstruction_binary_instance

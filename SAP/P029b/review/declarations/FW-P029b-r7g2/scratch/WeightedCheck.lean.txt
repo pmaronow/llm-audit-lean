@@ -1,0 +1,60 @@
+import SAP.P029b.Defs
+
+open SAP.P029b
+open scoped BigOperators
+
+noncomputable section
+namespace Review23
+
+set_option maxHeartbeats 1200000
+
+def q0 : ReceiptParameters := ⟨packageCells, by
+  intro x; cases x <;> norm_num [packageCells]⟩
+def better : ReceiptParameters := ⟨fun xz =>
+  if xz = (true,true) then 9/10 else packageCells xz, by
+  intro x; cases x <;> norm_num [packageCells]⟩
+def weightNat (i : Observation) : ℕ := if receiptData i then 9 else 1
+def weightedProduct (q : ReceiptParameters) : ℝ :=
+  ∏ i : Observation, receiptLikelihood q i ^ weightNat i
+
+lemma likelihood_pos (q : ReceiptParameters) (i : Observation) :
+    0 < receiptLikelihood q i := by
+  have hp : 0 < q.val (i.1,i.2.1) ∧ q.val (i.1,i.2.1) < 1 := by
+    cases hz : i.2.1 with
+    | false => exact ⟨(q.property i.1).1,
+        lt_trans (q.property i.1).2.1 (q.property i.1).2.2⟩
+    | true => exact ⟨lt_trans (q.property i.1).1 (q.property i.1).2.1,
+        (q.property i.1).2.2⟩
+  unfold receiptLikelihood bernoulliFactor
+  cases hd : receiptData i <;> simp [hd] <;> linarith [hp.1,hp.2]
+
+lemma weighted_eq_log (q : ReceiptParameters) :
+    weightedObjective (receiptLikelihood q) observationWeight =
+      -Real.log (weightedProduct q) := by
+  unfold weightedObjective weightedProduct
+  rw [Real.log_prod (fun i _ => ne_of_gt (pow_pos (likelihood_pos q i) _))]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [Real.log_pow]
+  unfold observationWeight weightNat
+  cases receiptData i <;> norm_num
+
+lemma product_better : weightedProduct q0 < weightedProduct better := by
+  simp only [weightedProduct, Fintype.prod_prod_type, Fintype.prod_bool,
+    Fin.prod_univ_succ]
+  norm_num [receiptLikelihood, receiptData, weightNat,
+    bernoulliFactor, q0, better, packageCells, twoSidedSuccesses]
+
+example : ¬ IsMinimizer
+    (fun q : ReceiptParameters => weightedObjective (receiptLikelihood q) observationWeight) q0 := by
+  intro h
+  have hstrict : weightedObjective (receiptLikelihood better) observationWeight <
+      weightedObjective (receiptLikelihood q0) observationWeight := by
+    rw [weighted_eq_log, weighted_eq_log]
+    apply neg_lt_neg
+    apply Real.log_lt_log _ product_better
+    exact Finset.prod_pos (fun i _ => pow_pos (likelihood_pos q0 i) _)
+  exact (not_le_of_gt hstrict) (h better)
+
+end Review23

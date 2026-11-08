@@ -81,6 +81,14 @@ theorem marked_retained_draw_power_limit (m : ℕ → ℕ) (hm : Tendsto m atTop
 
 def markedPairCoefficient (N : ℕ) : ℝ := ((N-1 : ℕ) : ℝ)/(N : ℝ)
 
+theorem marked_pair_coefficient_bounds (N : ℕ) :
+    0 ≤ markedPairCoefficient N ∧ markedPairCoefficient N ≤ 1 := by
+  constructor
+  · exact div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+  · by_cases hN : N = 0
+    · simp [markedPairCoefficient,hN]
+    · exact (div_le_one (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hN))).mpr
+        (by exact_mod_cast Nat.sub_le N 1)
 
 theorem marked_pair_coefficient_limit (m : ℕ → ℕ) (hm : Tendsto m atTop atTop) :
     Tendsto (fun n => markedPairCoefficient (m n)) atTop (𝓝 1) := by

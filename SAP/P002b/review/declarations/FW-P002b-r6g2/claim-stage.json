@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P002b.T21",
+    "target_id": "P002-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The quantifier order, fixed positive dimension, all parameter bounds, Xi rather than Theta, nested LATE/model suprema, exact design probability, strict tail with correct negative-cutoff treatment, inner limsup and existence of an ordinary outer right-hand limit in [0,1] all match the canonical corrected E.36. Xi expands to exactly Assumptions 1,2,4,5, with population covariance, residual fourth moments, centering and the equivalent Rayleigh lower bound. ENNReal is used without converting infinity to a real. The extra n=0 term is an empty model supremum and has no effect on the sample-size limsup. The specified least-squares choice and zero-scale conventions match definitions_needed; no positive residual-variance condition was added."
+  },
+  {
+    "theorem": "SAP.P002b.T22",
+    "target_id": "P002-T22",
+    "my_reading_vs_claim": "broader",
+    "reason": "All clauses of the corrected canonical algorithm claim are included. The theorem also proves them for arbitrary nonnegative quadratic-ratio families with everywhere-positive denominators, a valid generalization beyond data-generated squared AR curves. Algorithm2Step uses precisely the printed selected-curve next crossing and both prescribed next-sample branches; pieceSet keeps each recorded index with its own interval. Universal admissible history-dependent policies have an existential completed run with the iteration bound, so termination is a conclusion and is not assumed by merely considering completed runs. The separate universal completed-run clause gives ordered crossing endpoints, coverage of the real line, closed-interval quantile-index persistence, each piece equality and the union equality. Assumption 6 and the nonempty crossing-list branch agree with the claim."
+  },
+  {
+    "theorem": "SAP.P002b.T23",
+    "target_id": "P002-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical claim expressly concerns at least one intersection. Algorithm1Run imposes exactly the complete ordered gap list and a quantile index at each prescribed interior sample, while the conclusion proves persistence and equality with the squared empirical critical value at every real point of each closed gap, including its finite endpoints. The piece equality states the corrected H.1 and uses the same empirical quantile as (13)-(14). DataGeneratedCoefficients has the genuine common observed response/receipt vectors and the correct raw coefficients (15)-(16); its raw branch covers all canonical data under the standing assumptions. It additionally handles adjusted full-rank generated curves. The nonnegative numerator condition follows automatically for squared AR statistics, and positive denominators are precisely Assumption 6. No independence condition is needed for deterministic correctness at a fixed realized simulation list."
+  },
+  {
+    "theorem": "SAP.P002b.T24",
+    "target_id": "P002-T24",
+    "my_reading_vs_claim": "broader",
+    "reason": "Both corrected slope identities follow from the stronger equality of full intercept-and-slope coefficient vectors, the expanded adjusted-contrast identity is exactly I.2, and the final implication substitutes the ratio in (12) under exactly its nonzero-denominator condition. Both arm Gram determinants being nonzero is equivalent to the canonical full-column-rank requirement because the arms are nonempty. Arbitrary real Y,D, uncentered x and k=0 extend the algebra beyond its observed-data setting without dropping any canonical case. The paper calls tau_adj the covariate-adjusted difference-in-means statistic in standing assumption (9), so the docstring's word 'statistic' need not mean the studentized ratio Delta_adj; the initial terminological concern in the blind reading is resolved by that explicit canonical definition."
+  },
+  {
+    "theorem": "SAP.P002b.T25",
+    "target_id": "P002-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "The n and arm-size conditions, structural exclusion, monotonicity, nonempty complier set and additive effect on every unit are exactly the formal canonical hypotheses. The conclusion includes recovery for every assignment, equality of the LATE with beta, and coverage at least 1-alpha for both full-randomization sets at every interior alpha. The observed response vector is held fixed inside each randomization quantile; this is the independent complete-randomization conditional law required by the claim. Finite attained quantiles correctly handle ties, infinity and zero-over-zero. The fixed genuine least-squares-minimizer rule for singular arms is stated in the definition and adds no rank or positivity assumption. Covariate centering is unnecessary for this coverage argument; allowing further covariate arrays loses no canonical case."
+  }
+]

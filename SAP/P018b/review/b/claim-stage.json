@@ -1,0 +1,86 @@
+[
+  {
+    "theorem": "SAP.P018b.T15",
+    "target_id": "P018-T15",
+    "my_reading_vs_claim": "broader",
+    "reason": "Covers every canonical identity and every numerical value in (a)-(b), with q_dt=e_dt X_dt and the canonical complete dyad set as special cases. The universal algebra also allows arbitrary finite simple edge sets, k=0, and zero record counts; these are true additional cases, not missing hypotheses. Fin 2 in orderedNonincidentMeat represents the two orientations of each unordered nonincident dyad. The inequality premise is N>=3 and nonzero PIP, not the inequality itself. Nonempty instances exist with three units, all three dyads, k=1, T=1, q=1 and P=1, where PIP=3. Exact six-dyad arithmetic was independently recomputed."
+  },
+  {
+    "theorem": "SAP.P018b.T16",
+    "target_id": "P018-T16",
+    "my_reading_vs_claim": "broader",
+    "reason": "Both corrected decompositions and all five Appendix C steps are present. Arbitrary record scores encode exactly X_dt e_dt and impose no regression assumption. Finite injective two-element edge sets generalize the complete dyad set, while zero records and zero dimension are harmless additional cases; all positive canonical dimensions and record counts remain covered. N-2 is real subtraction. Three units, three distinct dyads, one scalar record per dyad and nonzero scores give a nonempty instance."
+  },
+  {
+    "theorem": "SAP.P018b.T17",
+    "target_id": "P018-T17",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Keeps the exact full-rank OLS data, coefficients, residuals, score orthogonality and negative covariance diagonals from (c), and the specified finite iid population, population Gram/beta, positive definite formula and positive-probability event from (d). Omits all of (a), (b), (e), the middle factor, determinant/trace/negative-definite classification of Vhat, explicit population support and determinant values, full data equality on the event, and distributional-limit interpretation of the leading formula. The sample Gram determinant 20 is retained; the omitted population determinants are det(Q) and det(leading covariance). Independent rational computation verified all retained numerical matrices and the event probability 1/4096. This is an explicit nonvacuous certificate."
+  },
+  {
+    "theorem": "SAP.P018b.T18",
+    "target_id": "P018-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains the incidence identities, symmetry and difference of two positive semidefinite sandwiches, the guarded square-root domain, contraction and consistency after truncation, and the negative-event bound. Omits the full-rank OLS counterexample proving failure of positive semidefiniteness, and proves the rarity limit only for a fixed positive target, rather than arbitrary N-dependent targets bounded away from zero. Symmetric P is exactly what justifies PMP being positive semidefinite when the middle factor is. The probability inequalities remain true for the arbitrary functions allowed, since measures of arbitrary sets are outer measures and probability measures are finite. Nonempty positive-dimensional graph instances exist; the limit hypotheses hold, for example, for V=4 and deterministic v_N=4/N for N>=1."
+  },
+  {
+    "theorem": "SAP.P018b.T19",
+    "target_id": "P018-T19",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Asserts existence of a bounded iid-unit two-record model with all-sample rank, residual bound 8, infinite absolute and squared slope moments, infinite positive but finite negative variance-estimate parts, and the probability/Gaussian limits with matrix [[4+v,-v],[-v,v]], v>0. It does not specify the countable unit law, the common symmetric small-dyad formula, population projection zero or Gram/support formulas, exact coefficient/determinant/residual expressions, event/lower-bound details, H/q/v formulas, full-estimator moment conclusions, or the directed reformulation. RepeatedStanding allows record maps to depend on N,d,t and does not impose symmetry; the statement is consequently an existential properties-only summary rather than a certificate of the specified construction. The supplied M,C,A,B construction is a candidate satisfying the retained properties: det(sample Gram)=4D sum s_d^2>0; rare all-small events give divergent moments; bounded block scores and a nonsingular population Gram yield the retained weak and probability limits. Extended integrals correctly express divergence without assigning zero to infinite moments."
+  },
+  {
+    "theorem": "SAP.P018b.T20",
+    "target_id": "P018-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Only the abstract weak-convergence plus uniformly-integrable-squares implication in (iii) is asserted: means tend to zero and covariance matrices tend to the covariance of the mean-zero limit. The weak-limit definition and L2/tail conditions are conventional and make all used moments genuine integrable moments. The linear-approximation identities, sandwich consistency, OLS specialization and N-times-variance identity, target-subtraction implication, deterministic-limit notation, and bounded-data/rank nonimplication are absent. The hypotheses are satisfiable, e.g. xi_N identically zero on singleton probability spaces, nu=Dirac(0), k=1; also by a fixed centered Gaussian law in k=1."
+  },
+  {
+    "theorem": "SAP.P018b.T21",
+    "target_id": "P018-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Precisely the diagonal-plus-neighbor equality with the sparse ordered conditional-covariance sum in (ii) survives. It omits neighbor counts, total pair counts, and the distinction from/correction to unconditional score variance in (iii). Standing and N>=2 are imposed. The conditionally centered residual-covariance definition matches the printed conditional covariance, and Standing prevents condExp/integral default-zero cases. The sign kernel with N=3 is a genuine probability model with nonzero shared-unit covariances, so this is not an empty-index identity alone."
+  },
+  {
+    "theorem": "SAP.P018b.T22",
+    "target_id": "P018-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The independent standard-normal product representation, joint Gaussian errors, independence from all covariates, zero means, complete overlap covariance formula and zero conditional means given all covariates are present for every N>=2,T>=1. The response Y=beta_0+beta_1|X_i-X_j|+error and its conditional-mean/correct-specification conclusion are absent. Finite products of real Gaussian probabilities give explicit nontrivial instances, for example N=3,T=2 with six errors; every error has variance 3."
+  },
+  {
+    "theorem": "SAP.P018b.T23",
+    "target_id": "P018-T23",
+    "my_reading_vs_claim": "broader",
+    "reason": "The corrected scalar predictor, score as coordinate derivatives of log likelihood, negative Jacobian, semidefiniteness, score outer products and both finite-sample sums cover (i)-(v). The weighted outer-product definition of logisticBread is the same matrix as X^T diag(p(1-p))X. The generic same-data score-product expectation is explicitly used and shown positive semidefinite under coordinate L2, excluding nonintegrable-integral conventions. Allowing k=0 and adding this expected-product positivity generalize the listed content harmlessly. k=2,x=(1,2),y=1,beta=0 gives a nontrivial instance, and a two-point probability with score +/- (1,2) satisfies the generic L2 hypotheses."
+  },
+  {
+    "theorem": "SAP.P018b.T24",
+    "target_id": "P018-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All exact table ratios, attained extrema, D>C>H comparisons, D/C range and rounding robustness in (i)-(iii), and 11/8<1.64, are present. In (iv) the two separate one-sided significance bounds are replaced by their joint consequence on the smaller simultaneous intervals 21/2000<=|b|<=23/2000, 15/2000<=dyadic<=17/2000, 3/2000<=hc<=5/2000. These intervals force both denominators positive. The table rounding inequalities also give H-1/2000>0, so no division-by-zero convention is used. Exact rational recomputation verified every retained ratio and bound. The printed values b=-.011,dyadic=.008,hc=.002 satisfy the joint premises."
+  },
+  {
+    "theorem": "SAP.P018b.T25",
+    "target_id": "P018-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "Faithfully refutes the printed universal correspondence claim by negating 'for every N>=3 there exist nonnegative variance components representing sharedCov N 1 1 in the two-role family'. A single N suffices to refute that claim; it does not separately assert nonrepresentation for every N. At N=3 the off-diagonal entry for dyads {0,1} and {1,2} is 1 in the shared-unit covariance and 0 for every two-role parameter triple, including every nonnegative one. Thus the refutation uses the actual covariance families, not a dimension or integrability artifact."
+  },
+  {
+    "theorem": "SAP.P018b.T26",
+    "target_id": "P018-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "Negates the universal conjunction of the printed conditional-covariance identity and the existence of a mean-zero finite-L2 asymptotic law with limiting unconditional variance target. It restricts the counterexample search to eventual a.s. sample rank, which strengthens the refutation of the canonical population-rank class. It need not refute the true asymptotic-law component separately. A concrete counterexample is U uniform[-1,1], X(u,v)=(1,u+v), Y(u,v)=u^2+v^2: Standing holds, G=diag(1,2/3), beta=(2/3,0), and sample rank is a.s. full for N>=3. At N=3 the whole design recovers each U_i, so all conditional residual covariances vanish, while the intercept entry of Var(score sum) is 16/15. This refutes precisely the displayed identity."
+  },
+  {
+    "theorem": "SAP.P018b.T27",
+    "target_id": "P018-T27",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The unconditional target and fitted-residual sandwich are correct, and Standing plus Proposition1Extra explicitly render the bounded iid population-rank/intercept setting and fitted-residual/nonzero-moment assumptions. There is the substantive additional SampleRank hypothesis: a deterministic N0 after which every sample Gram is nonsingular a.s. Population nonsingularity alone does not imply this; a finite-support k=2 model can have all-identical units with positive probability at every finite N. The conjunction is nevertheless nonvacuous: the fair-sign k=1 kernel has G=1, every sample Gram D>0 for N>=2, |ehat|<=4, all design moments 1, E[ehat_d^2]=2(N-2)/N and E[ehat_d ehat_f]=(N-4)/N for neighbors, both nonzero for N>=5. Its unconditional trueTarget is 4. These formulas were checked by exact finite enumeration for N=3,...,7."
+  },
+  {
+    "theorem": "SAP.P018b.T28",
+    "target_id": "P018-T28",
+    "my_reading_vs_claim": "whole",
+    "reason": "The T(d)=1 scalar fair-sign specialization is an admissible instance of the printed repeated-dyad claim, with eventual nonzero fitted moments as for T27. Its literal unsummed target is N/D^2*(2+2(N-2))=4/D, whereas betahat=2 mean(sign), beta=0 and N Var(betahat)=4 for N>=2. Thus the first asserted difference tends to 4, not zero, and refutes the conjunction of printed conclusions. The second limit is not separately negated by the theorem; in fact N Vhat tends to 4 as well. All variables are bounded with genuine finite moments, so Mathlib's zero value for infinite scalar variance is irrelevant."
+  }
+]

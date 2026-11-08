@@ -20,10 +20,10 @@ import Mathlib.Tactic.FinCases
 # P036: corrected unadjusted regression and HC2 claims
 
 Source: Aronow et al., *Information and Access to United Nations Diplomatic
-Missions*, printed pp. 595–596 (PDF pp. 2–3). P036-T1 and P036-T2.
-The latter uses a finite-population setting and makes no claim about the
-four adjusted specifications. Units may be any finite type, thus including
-`Fin 189` in the paper.
+Missions*, printed pp. 595–596 (PDF pp. 2–3). Targets P036-T1 and P036-T2.
+The latter uses the finite-population setting supplied by the named validator,
+derivation.md §§1–2; it makes no claim about the four adjusted specifications.
+Units may be any finite type, thus including `Fin 189` in the paper.
 -/
 
 namespace AronowAudit.P036
@@ -197,12 +197,12 @@ def armMean {ι : Type*} (s : Finset ι) (Y : ι → ℝ) : ℝ :=
   (∑ i ∈ s, Y i) / (s.card : ℝ)
 
 /-- Sum of squared deviations from an arm mean, for the OLS residuals and
-the sample variance in P036-T2. -/
+the sample variance in validator derivation.md §2 (target T2). -/
 def armSS {ι : Type*} (s : Finset ι) (Y : ι → ℝ) : ℝ :=
   ∑ i ∈ s, (Y i - armMean s Y) ^ 2
 
-/-- Sample variance with divisor `n_w - 1`, as in P036-T2;
-this is not a population variance. -/
+/-- Sample variance with divisor `n_w - 1`, supplied in T2 and validator
+derivation.md §2; this is not a population variance. -/
 def sampleVariance {ι : Type*} (s : Finset ι) (Y : ι → ℝ) : ℝ :=
   armSS s Y / ((s.card : ℝ) - 1)
 
@@ -272,7 +272,7 @@ theorem arm_square_decomposition {ι : Type*} (s : Finset ι) (Y : ι → ℝ)
         sum_const, nsmul_eq_mul, armSS]
 
 /-- The usual computational identity for centered sums of squares;
-finite lemma for T2's binary-outcome sample variance. -/
+finite lemma for T2's binary-outcome sample variance, derivation.md §4. -/
 theorem armSS_formula {ι : Type*} (s : Finset ι) (Y : ι → ℝ)
     (hs : 0 < s.card) :
     armSS s Y = (∑ i ∈ s, (Y i)^2) - (∑ i ∈ s, Y i)^2 / (s.card : ℝ) := by
@@ -290,7 +290,7 @@ theorem armSS_formula {ι : Type*} (s : Finset ι) (Y : ι → ℝ)
       <;> ring
 
 /-- For k ones among n binary observations, sample variance is
-`k(n-k)/(n(n-1))`, T2(e). The hypothesis
+`k(n-k)/(n(n-1))`, T2(e), validator derivation.md §4. The hypothesis
 records binary outcomes and their count, rather than inventing raw data. -/
 theorem binary_sample_variance {ι : Type*} (s : Finset ι) (Y : ι → ℝ)
     (hs : 2 ≤ s.card) (k : ℕ) (hbin : ∀ i ∈ s, Y i = 0 ∨ Y i = 1)
@@ -410,17 +410,17 @@ theorem table_coefficient_rounding :
     roundsToThree (tableCoefficients 10 7).1 (74 / 1000) := by
   norm_num [roundsToThree, tableCoefficients]
 
-/-- T2: the two columns of an unadjusted design matrix, `D_i=(1,T_i)'`.
-The paper calls `T` “Peers”. -/
+/-- Validator derivation.md §2 (T2), the two columns of an unadjusted
+design matrix: `D_i=(1,T_i)'`. The paper calls `T` “Peers”. -/
 def designRow {ι : Type*} (s : Finset ι) (i : ι) (a : Fin 2) : ℝ :=
   if a = 0 then 1 else peers (s : Set ι) i
 
-/-- `D'D=∑_i D_iD_i'`, as in T2(a).
+/-- `D'D=∑_i D_iD_i'`, as in T2(a), validator derivation.md §2.
 Matrices are represented by their real entries indexed by `Fin 2`. -/
 def gram {ι : Type*} [Fintype ι] (s : Finset ι) (a b : Fin 2) : ℝ :=
   ∑ i, designRow s i a * designRow s i b
 
-/-- Explicit inverse of `D'D`. The theorem
+/-- Explicit inverse of `D'D`, validator derivation.md §2. The theorem
 `gram_inverse` certifies both inverse products for nonempty arms. -/
 def gramInverse {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (a b : Fin 2) : ℝ :=
@@ -430,25 +430,25 @@ def gramInverse {ι : Type*} [Fintype ι] [DecidableEq ι]
     if b = 0 then -1 / (sᶜ.card : ℝ)
     else 1 / (s.card : ℝ) + 1 / (sᶜ.card : ℝ)
 
-/-- Matrix formula `(D'D)⁻¹D'Y` for the OLS coefficient vector, T2(a).
-Entry zero is intercept; entry one is peer slope. -/
+/-- Matrix formula `(D'D)⁻¹D'Y` for the OLS coefficient vector, T2(a),
+validator derivation.md §2. Entry zero is intercept; entry one is peer slope. -/
 def regressionCoefficient {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (Y : ι → ℝ) (a : Fin 2) : ℝ :=
   ∑ b, gramInverse s a b * ∑ i, designRow s i b * Y i
 
-/-- OLS residual `e_i=Y_i-α̂-τ̂T_i`, T2.
-When both arms are nonempty, T1 certifies the coefficients as the unique OLS minimizer. -/
+/-- OLS residual `e_i=Y_i-α̂-τ̂T_i`, T2, validator derivation.md §2.
+The coefficients are the unique OLS minimizer certified for T1. -/
 def olsResidual {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (Y : ι → ℝ) (i : ι) : ℝ :=
   Y i - (olsCoefficients s Y).1 - (olsCoefficients s Y).2 * peers (s : Set ι) i
 
-/-- Leverage `h_i=D_i'(D'D)⁻¹D_i`, T2(a). -/
+/-- Leverage `h_i=D_i'(D'D)⁻¹D_i`, T2(a), derivation.md §2. -/
 def leverage {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (i : ι) : ℝ :=
   ∑ a, ∑ b, designRow s i a * gramInverse s a b * designRow s i b
 
 /-- HC2 covariance `(D'D)⁻¹(∑_i e_i²/(1-h_i)D_iD_i')(D'D)⁻¹`,
-T2(b). The sum over units is placed outside
+T2(b), validator derivation.md §2. The sum over units is placed outside
 the two matrix-entry sums by finite distributivity. -/
 def hc2Covariance {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (Y : ι → ℝ) (a b : Fin 2) : ℝ :=
@@ -462,8 +462,8 @@ def hc2Variance {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (Y : ι → ℝ) : ℝ :=
   hc2Covariance s Y 1 1
 
-/-- The Neyman variance estimate `s₁²/n₁+s₀²/n₀`, T2(b),
-for the unadjusted specifications only. -/
+/-- The Neyman variance estimate `s₁²/n₁+s₀²/n₀`, T2(b), supplied by
+validator derivation.md §§1–2 for the unadjusted specifications only. -/
 def neymanEstimate {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (Y : ι → ℝ) : ℝ :=
   sampleVariance s Y / (s.card : ℝ) +
@@ -503,9 +503,8 @@ theorem sum_peers_mul {ι : Type*} [Fintype ι] [DecidableEq ι]
   classical
   simp [peers, Set.indicator, ite_mul, ← sum_filter]
 
-/-- The matrix coefficient formula agrees with the arm-mean formula
-`α̂=Ȳ₀` and `τ̂=Ȳ₁-Ȳ₀`, T2(a). When both arms are nonempty, T1(ii)
-certifies that these coefficients are the unique least-squares minimizer. -/
+/-- The matrix formula for OLS agrees with the unique least-squares
+minimizer: `α̂=Ȳ₀` and `τ̂=Ȳ₁-Ȳ₀`, T2(a), repeating T1(ii). -/
 theorem matrix_ols_coefficients {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (Y : ι → ℝ) :
     (regressionCoefficient s Y 0, regressionCoefficient s Y 1) =
@@ -517,7 +516,7 @@ theorem matrix_ols_coefficients {ι : Type*} [Fintype ι] [DecidableEq ι]
       sum_peers_mul, hsum, olsCoefficients, armMean] <;> ring
 
 /-- Leverage equals the reciprocal of the size of the unit's assigned
-arm, T2(a). -/
+arm, T2(a), validator derivation.md §2. -/
 theorem leverage_by_arm {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (i : ι) :
     leverage s i = if i ∈ s then 1 / (s.card : ℝ) else 1 / (sᶜ.card : ℝ) := by
@@ -526,7 +525,7 @@ theorem leverage_by_arm {ι : Type*} [Fintype ι] [DecidableEq ι]
     simp [leverage, Fin.sum_univ_two, designRow, gramInverse, peers, hi] <;> ring
 
 /-- The fitted residual is the observation minus its own arm's sample
-mean, T2(a–b). -/
+mean, T2(a–b), validator derivation.md §2. -/
 theorem residual_by_arm {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (Y : ι → ℝ) (i : ι) :
     olsResidual s Y i = if i ∈ s then Y i - armMean s Y
@@ -594,7 +593,7 @@ theorem hc2_eq_neyman {ι : Type*} [Fintype ι] [DecidableEq ι]
   <;> ring
 
 /-- Binary-outcome HC2 contribution from an arm of size n and count k,
-Table 1, T2(e). Natural counts are cast to
+Table 1 and validator derivation.md §4, T2(e). Natural counts are cast to
 reals before subtraction; only feasible counts are used in the instances. -/
 def binaryHC2Arm (n k : ℕ) : ℝ :=
   (k : ℝ) * ((n : ℝ) - (k : ℝ)) / ((n : ℝ)^2 * ((n : ℝ) - 1))
@@ -653,40 +652,41 @@ theorem table_hc2_se_rounding :
   constructor <;> constructor <;> norm_num <;> nlinarith
 
 /-- Complete randomization of n₁ peer assignments: all size-n₁ subsets
-of the finite population (T2), interpreting the printed “94 were randomly
-assigned” (Section II, p. 595). -/
+of the finite population. Supplied by T2 / derivation.md §1, interpreting
+the printed “94 were randomly assigned” (Section II, p. 595). -/
 def assignments {ι : Type*} [Fintype ι] (n₁ : ℕ) : Finset (Finset ι) :=
   (univ : Finset ι).powersetCard n₁
 
 /-- Expectation over the uniform complete-randomization design, an
 arithmetic average over all `assignments`. No outcomes are randomized.
-T2(c–d). -/
+T2(c–d), validator derivation.md §1. -/
 def designExpectation {ι : Type*} [Fintype ι] (n₁ : ℕ)
     (F : Finset ι → ℝ) : ℝ :=
   Finset.expect (assignments (ι := ι) n₁) F
 
-/-- Variance over assignment alone, T2(c–d):
+/-- Variance over assignment alone, T2(c–d), derivation.md §1:
 the design average of squared deviations from the design expectation. -/
 def designVariance {ι : Type*} [Fintype ι] (n₁ : ℕ)
     (F : Finset ι → ℝ) : ℝ :=
   designExpectation n₁ (fun s => (F s - designExpectation n₁ F)^2)
 
 /-- Fixed potential outcomes yield `Y_i=Y_i(T_i)`. Neither missing
-counterfactuals nor treatment effects are assumed known from the data
-in corrected P036-T2. -/
+counterfactuals nor treatment effects are assumed known from the data.
+Supplied by validator derivation.md §1 for corrected target T2. -/
 def observedOutcome {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (Y₁ Y₀ : ι → ℝ) (i : ι) : ℝ :=
   if i ∈ s then Y₁ i else Y₀ i
 
-/-- Finite-population mean `μ_w=N⁻¹∑Y_i(w)`, T2(c–d). -/
+/-- Finite-population mean `μ_w=N⁻¹∑Y_i(w)`, T2(c–d), derivation.md §1. -/
 def populationMean {ι : Type*} [Fintype ι] (Y : ι → ℝ) : ℝ := armMean univ Y
 
 /-- Finite-population variance `S_w²=(N-1)⁻¹∑(Y_i(w)-μ_w)²`;
-also applied to individual treatment effects. T2. -/
+also applied to individual treatment effects. T2, derivation.md §1. -/
 def populationVariance {ι : Type*} [Fintype ι] (Y : ι → ℝ) : ℝ :=
   armSS univ Y / ((Fintype.card ι : ℝ) - 1)
 
-/-- Fixed individual treatment effects `τ_i=Y_i(1)-Y_i(0)`, T2(c–d). -/
+/-- Fixed individual treatment effects `τ_i=Y_i(1)-Y_i(0)`, T2(c–d),
+supplied by validator derivation.md §1. -/
 def unitEffect {ι : Type*} (Y₁ Y₀ : ι → ℝ) (i : ι) : ℝ := Y₁ i - Y₀ i
 
 /-- The unadjusted peer coefficient from observed outcomes under an
@@ -709,7 +709,7 @@ theorem assignments_nonempty {ι : Type*} [Fintype ι] (n₁ : ℕ)
   exact Nat.choose_pos h
 
 /-- A fixed unit belongs to `N-1 choose n₁-1` assignments. Finite
-counting lemma for T2(c–d). -/
+counting lemma for T2(c–d), validator derivation.md §1. -/
 theorem single_inclusion_count {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n : ℕ) (hn : 1 ≤ n) (i : ι) :
     ((assignments (ι := ι) n).filter (fun s => i ∈ s)).card =
@@ -719,7 +719,7 @@ theorem single_inclusion_count {ι : Type*} [Fintype ι] [DecidableEq ι]
   simpa [assignments] using h
 
 /-- Two distinct units belong jointly to `N-2 choose n₁-2` assignments.
-Finite counting lemma for T2(c–d). -/
+Finite counting lemma for T2(c–d), validator derivation.md §1. -/
 theorem pair_inclusion_count {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n : ℕ) (hn : 2 ≤ n) (i j : ι) (hij : i ≠ j) :
     ((assignments (ι := ι) n).filter (fun s => i ∈ s ∧ j ∈ s)).card =
@@ -729,7 +729,7 @@ theorem pair_inclusion_count {ι : Type*} [Fintype ι] [DecidableEq ι]
   simpa [assignments, hij, Finset.insert_subset_iff] using h
 
 /-- Under uniform complete randomization, `E[T_i]=n₁/N`, as used in
-T2(c–d). No inclusion probabilities are
+T2(c–d), validator derivation.md §1. No inclusion probabilities are
 postulated as extra hypotheses. -/
 theorem expected_peer_indicator {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n : ℕ) (hn : 1 ≤ n) (hN : n ≤ Fintype.card ι) (i : ι) :
@@ -752,7 +752,7 @@ theorem expected_peer_indicator {ι : Type*} [Fintype ι] [DecidableEq ι]
   nlinarith [hc]
 
 /-- Under complete randomization, `E[T_i T_j]=n₁(n₁-1)/(N(N-1))`
-for distinct units. Finite lemma for T2(c–d). -/
+for distinct units. Finite lemma for T2(c–d), derivation.md §1. -/
 theorem expected_peer_pair {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n : ℕ) (hn : 2 ≤ n) (hN : n ≤ Fintype.card ι) (i j : ι) (hij : i ≠ j) :
     designExpectation (ι := ι) n (fun s => peers (s : Set ι) i * peers (s : Set ι) j) =
@@ -807,7 +807,7 @@ theorem expected_peer_pair {ι : Type*} [Fintype ι] [DecidableEq ι]
   nlinarith [hc]
 
 /-- Expected sample total equals the sampling fraction times the
-population total. Finite lemma for T2(c). -/
+population total. Finite lemma for T2(c), derivation.md §1. -/
 theorem expected_sample_total {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n : ℕ) (hn : 1 ≤ n) (hN : n ≤ Fintype.card ι) (Y : ι → ℝ) :
     designExpectation n (fun s => ∑ i ∈ s, Y i) =
@@ -830,7 +830,7 @@ theorem expected_sample_total {ι : Type*} [Fintype ι] [DecidableEq ι]
     _ = _ := (mul_sum _ _ _).symm
 
 /-- The double-sum diagonal/off-diagonal decomposition used with the
-one- and two-unit inclusion probabilities, T2(c–d). -/
+one- and two-unit inclusion probabilities, T2(c–d), derivation.md §1. -/
 theorem weighted_pair_sum {ι : Type*} [Fintype ι] [DecidableEq ι]
     (p q : ℝ) (Y : ι → ℝ) :
     (∑ i, ∑ j, (if i = j then p else q) * Y i * Y j) =
@@ -854,7 +854,7 @@ theorem weighted_pair_sum {ι : Type*} [Fintype ι] [DecidableEq ι]
       ring
 
 /-- Exact second moment of a sample total under complete randomization,
-from the counted inclusion probabilities, T2(c–d). -/
+from the counted inclusion probabilities, T2(c–d), derivation.md §1. -/
 theorem expected_sample_total_sq {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n : ℕ) (hn : 2 ≤ n) (hN : n ≤ Fintype.card ι) (Y : ι → ℝ) :
     designExpectation n (fun s => (∑ i ∈ s, Y i)^2) =
@@ -903,14 +903,14 @@ theorem expected_sample_total_sq {ι : Type*} [Fintype ι] [DecidableEq ι]
     _ = _ := weighted_pair_sum _ _ Y
 
 /-- An arm mean depends only on the outcomes in that arm. Finite lemma
-for observed potential outcomes in T2(a,c). -/
+for observed potential outcomes in T2(a,c), derivation.md §§1–2. -/
 theorem armMean_congr {ι : Type*} (s : Finset ι) (Y Z : ι → ℝ)
     (h : ∀ i ∈ s, Y i = Z i) : armMean s Y = armMean s Z := by
   unfold armMean
   rw [sum_congr rfl h]
 
 /-- An arm sample variance depends only on the outcomes in that arm.
-Finite lemma for T2(d). -/
+Finite lemma for T2(d), validator derivation.md §2. -/
 theorem sampleVariance_congr {ι : Type*} (s : Finset ι) (Y Z : ι → ℝ)
     (h : ∀ i ∈ s, Y i = Z i) : sampleVariance s Y = sampleVariance s Z := by
   unfold sampleVariance armSS
@@ -921,7 +921,7 @@ theorem sampleVariance_congr {ι : Type*} (s : Finset ι) (Y Z : ι → ℝ)
   rw [h i hi]
 
 /-- The observed arm means and sample variances use the corresponding
-potential-outcome array, T2(a,d). -/
+potential-outcome array, T2(a,d), derivation.md §1. -/
 theorem observed_arm_quantities {ι : Type*} [Fintype ι] [DecidableEq ι]
     (s : Finset ι) (Y₁ Y₀ : ι → ℝ) :
     armMean s (observedOutcome s Y₁ Y₀) = armMean s Y₁ ∧
@@ -939,7 +939,7 @@ theorem observed_arm_quantities {ι : Type*} [Fintype ι] [DecidableEq ι]
     sampleVariance_congr s _ _ h₁, sampleVariance_congr sᶜ _ _ h₀⟩
 
 /-- Sample means are unbiased for finite-population means under complete
-randomization, T2(c). -/
+randomization, T2(c), validator derivation.md §1. -/
 theorem expected_sample_mean {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n : ℕ) (hn : 1 ≤ n) (hN : n ≤ Fintype.card ι) (Y : ι → ℝ) :
     designExpectation n (fun s => armMean s Y) = populationMean Y := by
@@ -961,7 +961,7 @@ theorem expected_sample_mean {ι : Type*} [Fintype ι] [DecidableEq ι]
       <;> ring
 
 /-- Unbiasedness of sample variance with divisor n-1 under sampling
-without replacement, T2(d). -/
+without replacement, T2(d), validator derivation.md §2. -/
 theorem expected_sample_variance {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n : ℕ) (hn : 2 ≤ n) (hN : n ≤ Fintype.card ι) (Y : ι → ℝ) :
     designExpectation n (fun s => sampleVariance s Y) = populationVariance Y := by
@@ -998,7 +998,7 @@ theorem expected_sample_variance {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- Complementation interchanges uniform complete randomization of n₁
 units and of n₀ units, when n₁+n₀=N. Finite lemma for the control-arm
-moments in T2(c–d). -/
+moments in T2(c–d), validator derivation.md §1. -/
 theorem design_complement {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n₁ n₀ : ℕ) (hN : n₁ + n₀ = Fintype.card ι) (F : Finset ι → ℝ) :
     designExpectation n₁ (fun s => F sᶜ) = designExpectation n₀ F := by
@@ -1020,7 +1020,7 @@ theorem design_complement {ι : Type*} [Fintype ι] [DecidableEq ι]
     (fun s _ => compl_compl s) (fun s _ => compl_compl s) (fun _ _ => rfl)
 
 /-- The OLS peer coefficient is unbiased for the average potential-outcome
-difference under complete randomization, T2(c). -/
+difference under complete randomization, T2(c), derivation.md §1. -/
 theorem randomization_unbiased_effect {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n₁ n₀ : ℕ) (h₁ : 2 ≤ n₁) (h₀ : 2 ≤ n₀)
     (hN : n₁ + n₀ = Fintype.card ι) (Y₁ Y₀ : ι → ℝ) :
@@ -1036,7 +1036,7 @@ theorem randomization_unbiased_effect {ι : Type*} [Fintype ι] [DecidableEq ι]
     expected_sample_mean n₀ (by omega) (by omega) Y₀]
 
 /-- Both observed sample variances are unbiased for their respective
-fixed potential-outcome population variances, T2(d). -/
+fixed potential-outcome population variances, T2(d), derivation.md §2. -/
 theorem randomization_unbiased_variances {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n₁ n₀ : ℕ) (h₁ : 2 ≤ n₁) (h₀ : 2 ≤ n₀)
     (hN : n₁ + n₀ = Fintype.card ι) (Y₁ Y₀ : ι → ℝ) :
@@ -1052,7 +1052,7 @@ theorem randomization_unbiased_variances {ι : Type*} [Fintype ι] [DecidableEq 
     exact expected_sample_variance n₀ h₀ (by omega) Y₀
 
 /-- Design variance equals the second moment minus the squared first
-moment on a nonempty complete-randomization space, T2(c). -/
+moment on a nonempty complete-randomization space, T2(c), derivation.md §1. -/
 theorem designVariance_second_moment {ι : Type*} [Fintype ι]
     (n : ℕ) (hN : n ≤ Fintype.card ι) (F : Finset ι → ℝ) :
     designVariance n F = designExpectation n (fun s => (F s)^2) -
@@ -1071,7 +1071,7 @@ theorem designVariance_second_moment {ι : Type*} [Fintype ι]
       ring
 
 /-- Shifting a statistic by a fixed real constant does not change its
-design variance, T2(c). -/
+design variance, T2(c), validator derivation.md §1. -/
 theorem designVariance_sub_const {ι : Type*} [Fintype ι]
     (n : ℕ) (hN : n ≤ Fintype.card ι) (F : Finset ι → ℝ) (c : ℝ) :
     designVariance n (fun s => F s - c) = designVariance n F := by
@@ -1096,7 +1096,7 @@ theorem designVariance_congr {ι : Type*} [Fintype ι]
   rw [h s hs]
 
 /-- Exact sampling-without-replacement variance of a sample total,
-T2(c), derived from the counted moments. -/
+T2(c), validator derivation.md §1, derived from the counted moments. -/
 theorem sample_total_variance {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n : ℕ) (hn : 2 ≤ n) (hN : n ≤ Fintype.card ι) (Y : ι → ℝ) :
     designVariance n (fun s => ∑ i ∈ s, Y i) =
@@ -1114,7 +1114,7 @@ theorem sample_total_variance {ι : Type*} [Fintype ι] [DecidableEq ι]
   <;> ring
 
 /-- Expansion of a finite sum of squared linear combinations, for the
-exact potential-outcome variance identity, T2(c). -/
+exact potential-outcome variance identity, T2(c), derivation.md §1. -/
 theorem sum_linear_combination_sq {ι : Type*} [Fintype ι]
     (u v : ℝ) (A B : ι → ℝ) :
     (∑ i, (u * A i + v * B i)^2) =
@@ -1128,7 +1128,7 @@ theorem sum_linear_combination_sq {ι : Type*} [Fintype ι]
     _ = _ := by simp only [sum_add_distrib, ← mul_sum]
 
 /-- Exact finite-population Neyman variance of the unadjusted peer
-coefficient, T2(c). The expectation and variance
+coefficient, T2(c), validator derivation.md §1. The expectation and variance
 are uniform sums over assignments and all potential outcomes are fixed. -/
 theorem randomization_variance_identity {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n₁ n₀ : ℕ) (h₁ : 2 ≤ n₁) (h₀ : 2 ≤ n₀)
@@ -1184,7 +1184,7 @@ theorem randomization_variance_identity {ι : Type*} [Fintype ι] [DecidableEq �
   field_simp
   <;> ring
 
-/-- T2(c–d): the unadjusted difference
+/-- T2(c–d), validator derivation.md §§1–2: the unadjusted difference
 in means is unbiased, has the exact Neyman randomization variance, and
 both sample variances are unbiased for their finite-population variances.
 All arrays are arbitrary fixed real potential outcomes. -/
@@ -1205,8 +1205,8 @@ theorem complete_randomization_moments {ι : Type*} [Fintype ι] [DecidableEq ι
     randomization_unbiased_variances n₁ n₀ h₁ h₀ hN Y₁ Y₀⟩
 
 /-- Expected unadjusted HC2 variance equals `S₁²/n₁+S₀²/n₀`, T2(d),
-derived from the sandwich identity and unbiased sample variances on the
-uniform assignment space. -/
+validator derivation.md §2, derived from the sandwich identity and
+unbiased sample variances on the uniform assignment space. -/
 theorem expected_hc2_variance {ι : Type*} [Fintype ι] [DecidableEq ι]
     (n₁ n₀ : ℕ) (h₁ : 2 ≤ n₁) (h₀ : 2 ≤ n₀)
     (hN : n₁ + n₀ = Fintype.card ι) (Y₁ Y₀ : ι → ℝ) :
@@ -1233,7 +1233,7 @@ theorem expected_hc2_variance {ι : Type*} [Fintype ι] [DecidableEq ι]
         (randomization_unbiased_variances n₁ n₀ h₁ h₀ hN Y₁ Y₀).2]
 
 /-- Finite-population variance is nonnegative with the target's positive
-divisor N-1, T2(d). -/
+divisor N-1, T2(d), validator derivation.md §1. -/
 theorem populationVariance_nonneg {ι : Type*} [Fintype ι]
     (hN : 2 ≤ Fintype.card ι) (Y : ι → ℝ) : 0 ≤ populationVariance Y := by
   have hNr : (2 : ℝ) ≤ Fintype.card ι := by exact_mod_cast hN
@@ -1241,7 +1241,7 @@ theorem populationVariance_nonneg {ι : Type*} [Fintype ι]
   exact div_nonneg (sum_nonneg (fun i hi => sq_nonneg _)) (by linarith)
 
 /-- Finite-population variance is zero exactly for a constant array;
-applied to individual treatment effects in T2(d). -/
+applied to individual treatment effects in T2(d), derivation.md §1. -/
 theorem populationVariance_zero_iff_constant {ι : Type*} [Fintype ι]
     (hN : 2 ≤ Fintype.card ι) (Y : ι → ℝ) :
     populationVariance Y = 0 ↔ ∃ c : ℝ, ∀ i, Y i = c := by
@@ -1303,6 +1303,63 @@ theorem corrected_hc2_conservativeness {ι : Type*} [Fintype ι] [DecidableEq ι
     have hz := (populationVariance_zero_iff_constant hNp (unitEffect Y₁ Y₀)).mpr hc
     rw [hz, zero_div] at hgap
     linarith
+
+#print axioms peers_binary
+#print axioms interest_is_subset
+#print axioms conditional_mean_of_model
+#print axioms corrected_model_conditional_mean
+#print axioms unadjusted_conditional_means
+#print axioms sum_peers
+#print axioms arm_centered_sum
+#print axioms arm_square_decomposition
+#print axioms armSS_formula
+#print axioms binary_sample_variance
+#print axioms rss_partition
+#print axioms rss_decomposition
+#print axioms ols_unique_minimizer
+#print axioms table_any_coefficients
+#print axioms table_interest_coefficients
+#print axioms table_coefficient_rounding
+#print axioms gram_entries
+#print axioms gram_inverse
+#print axioms sum_peers_mul
+#print axioms matrix_ols_coefficients
+#print axioms leverage_by_arm
+#print axioms residual_by_arm
+#print axioms hc2_arm_formula
+#print axioms hc2_eq_neyman
+#print axioms table_any_hc2
+#print axioms table_interest_hc2
+#print axioms table_from_binary_counts
+#print axioms table_hc2_se_rounding
+#print axioms assignments_card
+#print axioms assignments_nonempty
+#print axioms single_inclusion_count
+#print axioms pair_inclusion_count
+#print axioms expected_peer_indicator
+#print axioms expected_peer_pair
+#print axioms expected_sample_total
+#print axioms weighted_pair_sum
+#print axioms expected_sample_total_sq
+#print axioms armMean_congr
+#print axioms sampleVariance_congr
+#print axioms observed_arm_quantities
+#print axioms expected_sample_mean
+#print axioms expected_sample_variance
+#print axioms design_complement
+#print axioms randomization_unbiased_effect
+#print axioms randomization_unbiased_variances
+#print axioms designVariance_second_moment
+#print axioms designVariance_sub_const
+#print axioms designVariance_congr
+#print axioms sample_total_variance
+#print axioms sum_linear_combination_sq
+#print axioms randomization_variance_identity
+#print axioms complete_randomization_moments
+#print axioms expected_hc2_variance
+#print axioms populationVariance_nonneg
+#print axioms populationVariance_zero_iff_constant
+#print axioms corrected_hc2_conservativeness
 
 end
 end AronowAudit.P036

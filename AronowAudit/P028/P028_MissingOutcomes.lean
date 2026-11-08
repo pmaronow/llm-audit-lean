@@ -8,7 +8,7 @@ open Classical
 
 /-- A latent unit's two treatment potentials, two binary outcome potentials, and two
 response potentials. Section 2, p. 678: “let Dᵢ(z) be the potential treatment”.
-Exclusion is built in: Y(d,z) = Y(d). R(z) represents outcome recording. -/
+Exclusion is built in: Y(d,z) = Y(d). R(z) is the validator's addition (N005). -/
 structure BinaryAtom where
   d0 : Bool
   d1 : Bool
@@ -21,9 +21,9 @@ structure BinaryAtom where
 /-- Rational representation of a binary variable's value in {0,1}. -/
 def bit (b : Bool) : ℚ := if b then 1 else 0
 
-/-- Seventeen latent atoms with rational weights, without normalization or positivity
-constraints. The predicate `finiteValid` imposes these constraints for the witnesses.
-The independent assignment coin is added by `jointMass`. -/
+/-- The validator's finite population law on the 17 positive-mass latent atoms.
+The independent assignment coin is added by `jointMass`, rather than identified
+with a latent response or outcome variable. N005 derivation, explicit laws. -/
 structure BinaryLaw where
   atom : Fin 17 → BinaryAtom
   mass : Fin 17 → ℚ
@@ -31,18 +31,16 @@ structure BinaryLaw where
 /-- P[Z=0]=99/200, P[Z=1]=101/200; the two witnesses use the same coin. -/
 def assignmentMass (z : Bool) : ℚ := if z then 101/200 else 99/200
 
-/-- Product weights on Fin 17 × Bool: latent atom and independent assignment.
-For a `finiteValid` law, these are probability masses implementing Section 2
-assumption (i). -/
+/-- Probability mass on the actual sample space Fin 17 × Bool: latent atom and
+independent assignment. This explicitly implements Section 2 assumption (i). -/
 def jointMass (M : BinaryLaw) (i : Fin 17) (z : Bool) : ℚ :=
   M.mass i * assignmentMass z
 
-/-- Sum of latent weights over an event; a probability when `finiteValid M` holds. -/
+/-- Elementary probability under a finite rational law. -/
 def fprob (M : BinaryLaw) (E : Fin 17 → Prop) : ℚ :=
   ∑ i, if E i then M.mass i else 0
 
-/-- Weighted sum of a function over the latent atoms; a population expectation
-when `finiteValid M` holds. -/
+/-- Elementary population expectation under a finite rational law. -/
 def fexpect (M : BinaryLaw) (f : Fin 17 → ℚ) : ℚ := ∑ i, M.mass i * f i
 
 /-- Ordinary event conditional mean, used only together with positive event mass.
@@ -54,7 +52,7 @@ def fmean (M : BinaryLaw) (f : Fin 17 → ℚ) (E : Fin 17 → Prop) : ℚ :=
 def fd (a : BinaryAtom) (z : Bool) : Bool := if z then a.d1 else a.d0
 /-- Observed outcome Y=Y(D(Z)), implicit in Section 2, p. 678. -/
 def fy (a : BinaryAtom) (z : Bool) : Bool := if fd a z then a.y1 else a.y0
-/-- Outcome-recording indicator R=R(Z). -/
+/-- Outcome recording R=R(Z), validator's definition (N005). -/
 def fr (a : BinaryAtom) (z : Bool) : Bool := if z then a.r1 else a.r0
 
 /-- Complier event “D(1)>D(0)”, Section 2, p. 678. -/
@@ -69,7 +67,8 @@ def fcy (M : BinaryLaw) (d : Bool) : ℚ :=
   fmean M (fun i => bit (if d then (M.atom i).y1 else (M.atom i).y0))
     (fun i => fc (M.atom i))
 
-/-- Joint probability of a recorded outcome cell, conditional on assignment. -/
+/-- Joint probability of a recorded outcome cell, conditional on assignment.
+`s_zdv/n_z` in N005's source table. -/
 def recordedCell (M : BinaryLaw) (z d v : Bool) : ℚ :=
   fprob M (fun i => fd (M.atom i) z = d ∧ fr (M.atom i) z = true ∧ fy (M.atom i) z = v)
 /-- Joint probability of a missing-outcome cell, conditional on assignment. -/
@@ -92,7 +91,7 @@ def finiteValid (M : BinaryLaw) : Prop :=
   fexpect M (fun i => bit (M.atom i).d1 - bit (M.atom i).d0) = fpc M ∧
   0 < fpc M
 
-/-- The lower witness on 17 latent atoms. -/
+/-- The lower witness, all 17 atoms exactly as in N005 models.json. -/
 def lowerLaw : BinaryLaw where
   atom := ![⟨true, true, false, false, true, false⟩,
     ⟨true, true, false, false, true, true⟩,
@@ -129,7 +128,7 @@ def lowerLaw : BinaryLaw where
     110786242/12792470625,
     9603827/511698825]
 
-/-- The upper witness on 17 latent atoms. -/
+/-- The upper witness, all 17 atoms exactly as in N005 models.json. -/
 def upperLaw : BinaryLaw where
   atom := ![⟨true, true, false, false, false, true⟩,
     ⟨true, true, false, false, true, true⟩,
@@ -168,7 +167,7 @@ def upperLaw : BinaryLaw where
 
 /-- Random assignment is independent of every latent event, including the response
 potentials. This is stronger than the paper requires, not an omitted hypothesis. 
-Reference (P028-T1): Section 4, p. 679. -/
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem finite_assignment_independent (M : BinaryLaw) (E : Fin 17 → Prop) (z : Bool) :
     (∑ i, if E i then jointMass M i z else 0) = fprob M E * assignmentMass z := by
   classical
@@ -178,9 +177,9 @@ theorem finite_assignment_independent (M : BinaryLaw) (E : Fin 17 → Prop) (z :
   intro i _
   split_ifs <;> simp
 
-/-- T1: both explicit laws have positive normalized masses, monotonic treatment
+/-- T1 (N1): both explicit laws have positive normalized masses, monotonic treatment
 potentials, and first stage P_c=2047/9999>0. Binary potentials imply boundedness. 
-Reference (P028-T1): Section 4, p. 679. -/
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem missing_witness_assumptions :
     finiteValid lowerLaw ∧ finiteValid upperLaw ∧
     fpc lowerLaw = 2047/9999 ∧ fpc upperLaw = 2047/9999 ∧
@@ -191,18 +190,18 @@ theorem missing_witness_assumptions :
   repeat' apply And.intro
   all_goals intro i; fin_cases i <;> norm_num [bit]
 
-/-- The recorded source counts. -/
+/-- The recorded source counts, N005 derivation, source reconstruction table. -/
 def recordedCount (z d v : Bool) : ℚ :=
   if z then (if d then (if v then 110 else 67) else (if v then 130 else 164))
   else (if d then (if v then 40 else 39) else (if v then 167 else 212))
-/-- The missing source counts. -/
+/-- The missing source counts, N005 derivation, source reconstruction table. -/
 def missingCount (z d : Bool) : ℚ := if z then (if d then 8 else 26) else (if d then 1 else 36)
-/-- Assignment-arm denominators (all units): 495 and 505. -/
+/-- Assignment-arm denominators (all units), N005 source table: 495 and 505. -/
 def armCount (z : Bool) : ℚ := if z then 505 else 495
 
-/-- T1: each law exactly reproduces every recorded-outcome and missing-outcome
+/-- T1 (N2): each law exactly reproduces every recorded-outcome and missing-outcome
 cell of the source table, conditional on assignment. 
-Reference (P028-T1): Section 4, p. 679. -/
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem missing_witness_observed_cells :
     (∀ z d v, recordedCell lowerLaw z d v = recordedCount z d v / armCount z ∧
                 recordedCell upperLaw z d v = recordedCount z d v / armCount z) ∧
@@ -216,17 +215,17 @@ theorem missing_witness_observed_cells :
       norm_num [missingCell, missingCount, armCount, fprob, lowerLaw, upperLaw,
         fd, fr, Fin.sum_univ_succ]
 
-/-- T1: the entire law of everything observed agrees in the two witnesses. 
-Reference (P028-T1): Section 4, p. 679. -/
+/-- T1 (N2): the entire law of everything observed agrees in the two witnesses. 
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem missing_witness_same_observed_law : observedLaw lowerLaw = observedLaw upperLaw := by
   funext ⟨z, d, r, v⟩
   cases z <;> cases d <;> cases r <;> cases v <;>
     norm_num [observedLaw, assignmentMass, fprob, lowerLaw, upperLaw,
       fd, fr, fy, Fin.sum_univ_succ]
 
-/-- T1: the lower and upper laws have the different complier mean pairs
+/-- T1 (N3): the lower and upper laws have the different complier mean pairs
 (1423/10235,6749/10235) and (7633/10235,7642/10235). 
-Reference (P028-T1): Section 4, p. 679. -/
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem missing_witness_complier_means :
     fcy lowerLaw false = 1423/10235 ∧ fcy lowerLaw true = 6749/10235 ∧
     fcy upperLaw false = 7633/10235 ∧ fcy upperLaw true = 7642/10235 := by
@@ -235,7 +234,7 @@ theorem missing_witness_complier_means :
 /-- T1: two concrete laws satisfy all standing causal assumptions and agree on
 (Z,D,R,R·Y), but differ in both complier average potential outcomes. Thus incomplete
 recording alone does not justify Section 4's point-identification inference. 
-Reference (P028-T1): Section 4, p. 679. -/
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem missing_outcome_counterexample :
     finiteValid lowerLaw ∧ finiteValid upperLaw ∧
     observedLaw lowerLaw = observedLaw upperLaw ∧
@@ -251,7 +250,7 @@ theorem missing_outcome_counterexample :
 /-- T1 consequence: for either potential outcome, no function of the observed law
 can return its complier mean in every admissible finite law (and hence in every
 probability model allowed by the paper). 
-Reference (P028-T1): Section 4, p. 679. -/
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem missing_outcome_not_identified (d : Bool) :
     ¬ ∃ F : (Bool × Bool × Bool × Bool → ℚ) → ℚ,
       ∀ M : BinaryLaw, finiteValid M → F (observedLaw M) = fcy M d := by
@@ -263,10 +262,10 @@ theorem missing_outcome_not_identified (d : Bool) :
   · exact h.2.2.2.2.2.2.2.1 he
   · exact h.2.2.2.2.2.2.2.2 he
 
-/-- Respondent assignment-arm means E[Y|Z=z,R=1]. -/
+/-- Respondent assignment-arm means E[Y|Z=z,R=1], N005. -/
 def respondentArmMean (M : BinaryLaw) (z : Bool) : ℚ :=
   fmean M (fun i => bit (fy (M.atom i) z)) (fun i => fr (M.atom i) z = true)
-/-- Respondent cell means E[Y|D=d,Z=z,R=1]. -/
+/-- Respondent cell means E[Y|D=d,Z=z,R=1], N005. -/
 def respondentCellMean (M : BinaryLaw) (d z : Bool) : ℚ :=
   fmean M (fun i => bit (fy (M.atom i) z))
     (fun i => fd (M.atom i) z = d ∧ fr (M.atom i) z = true)
@@ -284,16 +283,16 @@ def corollaryPair (p q r e0 e1 a n : ℚ) : ℚ × ℚ :=
 def fullCorollary (M : BinaryLaw) : ℚ × ℚ :=
   corollaryPair (fpc M) (ftakeup M true false) (ftakeup M false true)
     (fey M false) (fey M true) (fcellmean M true false) (fcellmean M false true)
-/-- The mixed available-case plug-in: take-up from every
+/-- The mixed available-case plug-in criticized by N005: take-up from every
 unit, means from respondents, without any response assumption. -/
 def respondentCorollary (M : BinaryLaw) : ℚ × ℚ :=
   corollaryPair (fpc M) (ftakeup M true false) (ftakeup M false true)
     (respondentArmMean M false) (respondentArmMean M true)
     (respondentCellMean M true false) (respondentCellMean M false true)
 
-/-- T1: take-up and respondent means coincide with the exact source table,
+/-- T1 (N2,N4): take-up and respondent means coincide with the exact source table,
 while the full-population arm means differ between the witnesses. 
-Reference (P028-T1): Section 4, p. 679. -/
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem missing_witness_reported_moments :
     (∀ M ∈ [lowerLaw, upperLaw],
       ftakeup M true false = 16/99 ∧ ftakeup M false true = 64/101 ∧
@@ -309,9 +308,9 @@ theorem missing_witness_reported_moments :
         lowerLaw, upperLaw, fd, fr, fy, bit, Fin.sum_univ_succ]
   · norm_num [fey, fexpect, lowerLaw, upperLaw, fd, fy, bit, Fin.sum_univ_succ]
 
-/-- T1: Corollary 1 returns the correct pair at full-population moments.
+/-- T1 (N4,N5): Corollary 1 returns the correct pair at full-population moments.
 The respondent plug-in is the same in both laws and is correct in neither. 
-Reference (P028-T1): Section 4, p. 679. -/
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem missing_witness_corollary_comparison :
     fullCorollary lowerLaw = (1423/10235,6749/10235) ∧
     fullCorollary upperLaw = (7633/10235,7642/10235) ∧
@@ -335,27 +334,27 @@ theorem missing_witness_corollary_comparison :
     norm_num
 
 /-- The full-compliance witness has a single constant potential vector and two
-assignment atoms, each of probability 1/2. -/
+assignment atoms, each of probability 1/2. E002 derivation, section 2. -/
 def fullPotential : BinaryAtom := ⟨false,true,false,true,true,true⟩
-/-- Probability on the two assignment atoms of the full-compliance witness. -/
+/-- Probability on the two assignment atoms of the E002 witness. -/
 def twoAtomProb (E : Bool → Prop) : ℚ := ∑ z : Bool, if E z then 1/2 else 0
 /-- Conditional expectation in the two-atom witness, used only on positive events. -/
 def twoAtomMean (f : Bool → ℚ) (E : Bool → Prop) : ℚ :=
   (∑ z : Bool, if E z then (1/2)*f z else 0) / twoAtomProb E
 
-/-- T7: the constant potential vector is independent of the assignment coin.
+/-- T7(F1): the constant potential vector is independent of the assignment coin.
 The equality holds for every potential-vector event and both assignments. 
-Reference (P028-T7): Proposition 1 proof, p. 678. -/
+Audit source (P028-T7): Proposition 1 proof, p. 678; E002 full-compliance witness. -/
 theorem full_compliance_independent (E : BinaryAtom → Prop) (z : Bool) :
     twoAtomProb (fun b => E fullPotential ∧ b = z) =
       twoAtomProb (fun _ => E fullPotential) * twoAtomProb (fun b => b = z) := by
   by_cases h : E fullPotential <;> cases z <;> norm_num [twoAtomProb, Fintype.sum_bool, h]
 
-/-- T7: an explicit two-atom law satisfies every standing assumption,
+/-- T7(F1)-(F5): an explicit two-atom law satisfies every standing assumption,
 has P_c=1 and complier means (0,1), but the noncomplier conditioning event is
 null and the proof's division has numerator and denominator zero. Both pure
 noncomplier cells are also null, so Corollary 1's positive-cell premise fails. 
-Reference (P028-T7): Proposition 1 proof, p. 678. -/
+Audit source (P028-T7): Proposition 1 proof, p. 678; E002 full-compliance witness. -/
 theorem full_compliance_counterexample :
     twoAtomProb (fun _ => True) = 1 ∧
     twoAtomProb (fun z => z = false) = 1/2 ∧ twoAtomProb (fun z => z = true) = 1/2 ∧
@@ -377,11 +376,9 @@ theorem full_compliance_counterexample :
     (∀ a n : ℝ, 0*a+0*n = 0) := by
   norm_num [twoAtomProb, twoAtomMean, fullPotential, fc, fd, fy, bit, Fintype.sum_bool]
 
-/-- Multiplying latent weights that sum to one by the independent assignment coin
-gives joint weights that sum to one on the 34 sample-space atoms. Nonnegativity
-is separate; `missing_witness_joint_probability` proves strict positivity for
-both witnesses.
-Reference (P028-T1): Section 4, p. 679. -/
+/-- The finite latent law times the independently randomized assignment coin is
+an actual normalized probability law on all 34 sample-space atoms. 
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem finite_joint_normalized (M : BinaryLaw) (h : (∑ i, M.mass i) = 1) :
     (∑ i : Fin 17, ∑ z : Bool, jointMass M i z) = 1 := by
   have hi : ∀ i, (∑ z : Bool, jointMass M i z) = M.mass i := by
@@ -391,9 +388,9 @@ theorem finite_joint_normalized (M : BinaryLaw) (h : (∑ i, M.mass i) = 1) :
   simp_rw [hi]
   exact h
 
-/-- T1: the complete product laws have total mass one and strictly positive
+/-- T1(N1): the complete product laws have total mass one and strictly positive
 mass at every atom. This certifies the probability laws, not just their moments. 
-Reference (P028-T1): Section 4, p. 679. -/
+Audit source (P028-T1): Section 4, p. 679, and the N005 validator's explicit laws. -/
 theorem missing_witness_joint_probability :
     (∑ i : Fin 17, ∑ z : Bool, jointMass lowerLaw i z) = 1 ∧
     (∑ i : Fin 17, ∑ z : Bool, jointMass upperLaw i z) = 1 ∧
@@ -415,3 +412,16 @@ end AronowAudit.P028
 
 
 
+#print axioms AronowAudit.P028.finite_assignment_independent
+#print axioms AronowAudit.P028.missing_witness_assumptions
+#print axioms AronowAudit.P028.missing_witness_observed_cells
+#print axioms AronowAudit.P028.missing_witness_same_observed_law
+#print axioms AronowAudit.P028.missing_witness_complier_means
+#print axioms AronowAudit.P028.missing_outcome_counterexample
+#print axioms AronowAudit.P028.missing_outcome_not_identified
+#print axioms AronowAudit.P028.missing_witness_reported_moments
+#print axioms AronowAudit.P028.missing_witness_corollary_comparison
+#print axioms AronowAudit.P028.full_compliance_independent
+#print axioms AronowAudit.P028.full_compliance_counterexample
+#print axioms AronowAudit.P028.finite_joint_normalized
+#print axioms AronowAudit.P028.missing_witness_joint_probability

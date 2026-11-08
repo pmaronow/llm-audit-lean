@@ -1,0 +1,51 @@
+import SAP.P054.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+namespace P054Audit
+
+open SAP.P054
+
+theorem selected_weight_pos {N : ℕ} (d w : Fin N → ℝ)
+    (hd : ∀ i, d i = 0 ∨ d i = 1) (hw : ∀ i, 0 < w i)
+    (hn : 0 < groupCount d) : 0 < groupWeight d w := by
+  have hd_nonneg : ∀ i, 0 ≤ d i := by
+    intro i
+    rcases hd i with h | h <;> simp [h]
+  have hselected : ∃ i ∈ (Finset.univ : Finset (Fin N)), 0 < d i :=
+    (Finset.sum_pos_iff_of_nonneg (fun i _ => hd_nonneg i)).mp hn
+  rcases hselected with ⟨i, hi, hdi⟩
+  exact (Finset.sum_pos_iff_of_nonneg
+    (fun j _ => mul_nonneg (hd_nonneg j) (le_of_lt (hw j)))).mpr
+    ⟨i, hi, mul_pos hdi (hw i)⟩
+
+-- Check every distinct denominator in T1, including nested divisions.
+theorem t1_denominators {N : ℕ} (hN : 2 ≤ N) (d w : Fin N → ℝ)
+    (hd : ∀ i, d i = 0 ∨ d i = 1) (hw : ∀ i, 0 < w i)
+    (hn : 0 < groupCount d) :
+    groupCount d ≠ 0 ∧ groupWeight d w ≠ 0 ∧
+    (groupWeight d w)^2 ≠ 0 ∧ (N : ℝ) ≠ 0 ∧ (N : ℝ) - 1 ≠ 0 ∧
+    (N : ℝ) * ((N : ℝ) - 1) ≠ 0 ∧
+    (groupWeight d w / (N : ℝ))^2 ≠ 0 := by
+  have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hNp : 0 < (N : ℝ) := by linarith
+  have hNm : 0 < (N : ℝ) - 1 := by linarith
+  have hWp := selected_weight_pos d w hd hw hn
+  exact ⟨ne_of_gt hn, ne_of_gt hWp, pow_ne_zero _ (ne_of_gt hWp),
+    ne_of_gt hNp, ne_of_gt hNm, mul_ne_zero (ne_of_gt hNp) (ne_of_gt hNm),
+    pow_ne_zero _ (div_ne_zero (ne_of_gt hWp) (ne_of_gt hNp))⟩
+
+-- Check every distinct denominator in T2 without assuming T2's conclusion.
+theorem t2_denominators {N : ℕ} (d w : Fin N → ℝ)
+    (hd : ∀ i, d i = 0 ∨ d i = 1) (hw : ∀ i, 0 < w i)
+    (hn : 2 ≤ groupCount d) :
+    groupCount d ≠ 0 ∧ groupWeight d w ≠ 0 ∧ groupCount d - 1 ≠ 0 ∧
+    (groupCount d - 1) * groupWeight d w ≠ 0 := by
+  have hnp : 0 < groupCount d := by linarith
+  have hnm : 0 < groupCount d - 1 := by linarith
+  have hWp := selected_weight_pos d w hd hw hnp
+  exact ⟨ne_of_gt hnp, ne_of_gt hWp, ne_of_gt hnm,
+    mul_ne_zero (ne_of_gt hnm) (ne_of_gt hWp)⟩
+
+end P054Audit

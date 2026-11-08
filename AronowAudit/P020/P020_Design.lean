@@ -35,7 +35,7 @@ def designCovariance {Ω : Type*} (L : FiniteLaw Ω) (T U : Ω → ℝ) : ℝ :=
   expectation L (fun ω => (T ω - expectation L T) * (U ω - expectation L U))
 
 /-- "efficiency (typically mean square error)", p. 40 (PDF p. 2), made explicit
-in correction P020-E001: E[(T - Δ)^2]. -/
+in correction E001: E[(T - Δ)^2]. -/
 def meanSquaredError {Ω : Type*} (L : FiniteLaw Ω) (T : Ω → ℝ) (d : ℝ) : ℝ :=
   expectation L (fun ω => (T ω - d)^2)
 
@@ -83,7 +83,7 @@ theorem designVariance_nonneg {Ω : Type*} (L : FiniteLaw Ω) (T : Ω → ℝ) :
     0 ≤ designVariance L T := by
   exact expectation_nonneg L _ (fun _ _ => sq_nonneg _)
 
-/-- Correction P020-E001(a), pp. 40 and 42: MSE equals variance plus squared bias
+/-- Correction E001(a), pp. 40 and 42: MSE equals variance plus squared bias
 for each fixed finite population; no limit assumption is needed. -/
 theorem mse_bias_variance {Ω : Type*} (L : FiniteLaw Ω) (T : Ω → ℝ) (d : ℝ) :
     meanSquaredError L T d = designVariance L T + (designBias L T d)^2 := by
@@ -99,13 +99,13 @@ theorem mse_bias_variance {Ω : Type*} (L : FiniteLaw Ω) (T : Ω → ℝ) (d : 
       unfold designVariance designBias
       ring
 
-/-- Correction P020-E001(a): the squared-bias term is a lower bound on MSE (T2). -/
+/-- Correction E001(a): the squared-bias term is a lower bound on MSE (T2). -/
 theorem squared_bias_le_mse {Ω : Type*} (L : FiniteLaw Ω) (T : Ω → ℝ) (d : ℝ) :
     (designBias L T d)^2 ≤ meanSquaredError L T d := by
   rw [mse_bias_variance]
   linarith [designVariance_nonneg L T]
 
-/-- Correction P020-E001(c): finite-sum Markov bound for squared estimation error,
+/-- Correction E001(c): finite-sum Markov bound for squared estimation error,
 P(|U - Δ| > ε) ≤ MSE(U)/ε², with ε > 0 (T2 finite lemma). -/
 theorem mse_markov_bound {Ω : Type*} (L : FiniteLaw Ω) (T : Ω → ℝ)
     (d ε : ℝ) (hε : 0 < ε) :
@@ -124,7 +124,7 @@ theorem mse_markov_bound {Ω : Type*} (L : FiniteLaw Ω) (T : Ω → ℝ)
   · simp only [zero_mul]
     exact mul_nonneg (L.nonneg ω hω) (sq_nonneg _)
 
-/-- Correction P020-E001(b): a nonzero limiting bias guarantees eventual MSE
+/-- Correction E001(b): a nonzero limiting bias guarantees eventual MSE
 inferiority to a specified comparator whose MSE tends to zero (T2). -/
 theorem eventual_mse_inferiority {Ω : ℕ → Type*}
     (L : ∀ h, FiniteLaw (Ω h)) (T U : ∀ h, Ω h → ℝ) (d : ℕ → ℝ)
@@ -146,7 +146,7 @@ theorem eventual_mse_inferiority {Ω : ℕ → Type*}
     exact lt_of_lt_of_le (hu.trans ht) (squared_bias_le_mse (L h) (T h) (d h))
   exact Filter.eventually_atTop.1 he
 
-/-- Correction P020-E001(c): vanishing MSE implies convergence in probability
+/-- Correction E001(c): vanishing MSE implies convergence in probability
 for sequences of finite randomization distributions (T2). -/
 theorem vanishing_mse_consistent {Ω : ℕ → Type*}
     (L : ∀ h, FiniteLaw (Ω h)) (U : ∀ h, Ω h → ℝ) (d : ℕ → ℝ)
@@ -585,6 +585,7 @@ theorem expectation_const_mul {Ω : Type*} (L : FiniteLaw Ω) (T : Ω → ℝ) (
     expectation L (fun ω => c * T ω) = c * expectation L T := by
   simp_rw [mul_comm c]
   exact expectation_mul_const L T c
+
 
 
 /-- Each HT potential-total estimator is unbiased, equations (11)-(12), p. 48,
@@ -1417,7 +1418,7 @@ theorem sharp_null_moment_facts (P : ClusterPopulation)
 
 /-- Substitution of the sharp-null moment facts into equation (17) gives
 exactly the displayed M^4σ²/(N²(M-1)m_c m_t) formula, p. 52 (T10 algebra).
-This is an algebraic identity, separate from the sampling identity. -/
+This theorem audits the printed algebra, separately from the sampling identity. -/
 theorem sharp_null_formula_algebra (P : ClusterPopulation)
     (I : IndividualPotentialOutcomes P) (hnull : IndividualSharpNull I)
     (s : Finset (Fin P.M)) (hs : s ∈ assignments P) :
@@ -2156,7 +2157,7 @@ theorem difference_mse_bound {Ω : Type*} (L : FiniteLaw Ω) (T U : Ω → ℝ) 
     2 * meanSquaredError L T a + 2 * meanSquaredError L U b at hh
   linarith
 /-- Squared estimation error has nonnegative finite design expectation,
-Section 3.3, p. 45, and correction P020-E001. -/
+Section 3.3, p. 45, and correction E001. -/
 theorem meanSquaredError_nonneg {Ω : Type*} (L : FiniteLaw Ω) (T : Ω → ℝ) (d : ℝ) :
     0 ≤ meanSquaredError L T d :=
   expectation_nonneg L _ (fun _ _ => sq_nonneg _)
@@ -2363,6 +2364,13 @@ theorem replicated_size (P : ClusterPopulation) (h : ℕ) (hh : 0 < h) :
   all_goals rfl
 
 
+/-- Within-cluster replication multiplies each arm's individual count by h,
+finite cancellation step of equation (10), p. 47. -/
+theorem replicated_arm_size (P : ClusterPopulation) (h : ℕ) (hh : 0 < h)
+    (a : Bool) (s : Finset (Fin P.M)) :
+    armSize (replicateWithin P h hh) a s = (h : ℝ) * armSize P a s := by
+  cases a <;> simp [armSize, armSum, replicateWithin, Nat.cast_mul, ← Finset.mul_sum]
+
 /-- Within-cluster replication multiplies both potential differenced totals
 by h, so the single fixed k has the same scale, pp. 47 and 54. -/
 theorem replicated_raj_potential (P : ClusterPopulation) (h : ℕ) (hh : 0 < h)
@@ -2480,10 +2488,10 @@ theorem fixed_clusters_persistent_bias (P : ClusterPopulation)
 counterexamples without changing their assignment distribution. -/
 theorem univ_three : (Finset.univ : Finset (Fin 3)) = {0, 1, 2} := by decide
 
-/-- P020-E001's concrete admissible population for T1: M=3, m_t=1,
+/-- E001's concrete admissible population for T1: M=3, m_t=1,
 n=(1,2,4), Y^T_0=(0,1,1), Y^T_1=(0,0,0), N=7. It realizes the
 individual outcomes (0), (1,0), (1,0,0,0), with all treatment outcomes zero.
-P020-E001, correction of pp. 40,42; equations (6),(13),(20)-(21). -/
+Validator E001, repair of pp. 40,42; equations (6),(13),(20)-(21). -/
 abbrev efficiencyPopulation : ClusterPopulation where
   M := 3
   mt := 1
@@ -2494,12 +2502,12 @@ abbrev efficiencyPopulation : ClusterPopulation where
   y0 := ![0, 1, 1]
   y1 := ![0, 0, 0]
 
-/-- The three equally likely assignments of the P020-E001 instance exhaust the
+/-- The three equally likely assignments of the E001 instance exhaust the
 complete cluster randomization distribution (T1). -/
 theorem efficiency_assignments : assignments efficiencyPopulation =
     ({({0} : Finset (Fin 3)), {1}, {2}} : Finset (Finset (Fin 3))) := by decide
 
-/-- The stored totals of P020-E001 are the sums of the exact binary individual
+/-- The stored totals of E001 are the sums of the exact binary individual
 potential outcomes in T1, with the first control individual equal to one
 in clusters 2 and 3 and every other outcome zero. -/
 theorem efficiency_individual_realization (j : Fin 3) :
@@ -2508,7 +2516,7 @@ theorem efficiency_individual_realization (j : Fin 3) :
     clusterTotal (fun _ : Fin (efficiencyPopulation.n j) => (0 : ℝ)) = efficiencyPopulation.y1 j := by
   fin_cases j <;> norm_num [efficiencyPopulation, clusterTotal, Fin.sum_univ_succ] <;> decide
 
-/-- Exact assignmentwise values, ATE, bias and MSE in P020-E001 (T1(i)-(ii)).
+/-- Exact assignmentwise values, ATE, bias and MSE in E001 (T1(i)-(ii)).
 The three assignments are listed in treated-cluster order. -/
 theorem efficiency_exact_values :
     populationSize efficiencyPopulation = 7 ∧
@@ -2533,7 +2541,7 @@ theorem efficiency_exact_values :
     horvitzThompson, htTotal, armSize, armSum, controls, controlCount,
     populationSize, efficiencyPopulation, Fin.sum_univ_succ, univ_three]
 
-/-- P020-E001's exact fixed-k Des Raj assignment values, unbiased expectation,
+/-- E001's exact fixed-k Des Raj assignment values, unbiased expectation,
 and completed-square MSE with minimum attained iff k=2/21 (T1(iii)). -/
 theorem efficiency_raj_mse (k : ℝ) :
     desRaj efficiencyPopulation k {0} = -3 / 7 + 6 / 7 * k ∧
@@ -2567,7 +2575,7 @@ theorem efficiency_raj_mse (k : ℝ) :
   · intro he; nlinarith [sq_nonneg (k - 2 / 21)]
   · intro he; rw [he]; norm_num
 
-/-- P020-E001's population size moments and optimal coefficient agree with
+/-- E001's population size moments and optimal coefficient agree with
 Section 5.3: σ²(n)=14/9, σ(n,Y^T_0)=4/9, σ(n,Y^T_1)=0 and k*=2/21 (T1(iii)). -/
 theorem efficiency_optimal_coefficient :
     clusterVariance (fun j => (efficiencyPopulation.n j : ℝ)) = 14 / 9 ∧
@@ -2577,7 +2585,7 @@ theorem efficiency_optimal_coefficient :
   norm_num [clusterVariance, clusterCovariance, clusterMean, optimalCoefficient,
     armOptimalCoefficient, controlCount, efficiencyPopulation, Fin.sum_univ_succ]
 
-/-- P020-E001: biased difference-in-means has strictly smaller MSE than the
+/-- E001: biased difference-in-means has strictly smaller MSE than the
 best fixed-k Des Raj estimator and HT; it beats every fixed real k (T1(iv)). -/
 theorem efficiency_mse_counterexample (k : ℝ) :
     (131 : ℝ) / 33075 < 3 / 686 ∧ (3 : ℝ) / 686 < 1 / 98 ∧
@@ -2595,7 +2603,7 @@ theorem efficiency_mse_counterexample (k : ℝ) :
   refine ⟨by norm_num, by norm_num, ?_⟩
   nlinarith [sq_nonneg (k - 2 / 21)]
 
-/-- P020-E001's probability of an absolute error greater than 1/25 is exactly
+/-- E001's probability of an absolute error greater than 1/25 is exactly
 one, providing an explicit inconsistency witness (T1(v)). -/
 theorem efficiency_error_probability :
     errorProbability (clusterLaw efficiencyPopulation) (differenceInMeans efficiencyPopulation)
@@ -2604,7 +2612,7 @@ theorem efficiency_error_probability :
     averageTreatmentEffect, differenceInMeans, armSize, armSum, controls,
     populationSize, efficiencyPopulation, Fin.sum_univ_succ, univ_three]
 
-/-- Full all-h P020-E001 refutation of eventual relative-MSE inferiority under
+/-- Full all-h E001 refutation of eventual relative-MSE inferiority under
 persistent bias (T1(v)). Copying each individual h times keeps every estimator,
 bias, MSE and the probability-one error witness unchanged. k may depend on h.
 The sample size N_h = 7h grows without bound. -/
@@ -2642,7 +2650,7 @@ theorem efficiency_all_replications_counterexample (h : ℕ) (hh : 0 < h) (k : �
     exact ⟨trivial, (hInv s k).2.2.1, trivial⟩
   · exact efficiency_exact_values.2.2.2.2.2.2.2.2.2.1
 
-/-- The P020-E001 replication has arbitrarily large sample size N_h = 7h,
+/-- The E001 replication has arbitrarily large sample size N_h = 7h,
 expressed as divergence of its exact size formula to infinity (T1(v)). -/
 theorem efficiency_sample_size_grows : Tendsto (fun h : ℕ => 7 * h) atTop atTop := by
   apply Filter.tendsto_atTop.2
@@ -2650,7 +2658,7 @@ theorem efficiency_sample_size_grows : Tendsto (fun h : ℕ => 7 * h) atTop atTo
   filter_upwards [Filter.eventually_ge_atTop b] with h hh
   omega
 
-/-- P020-E001's fixed-M sequence is inconsistent despite uniformly beating both
+/-- E001's fixed-M sequence is inconsistent despite uniformly beating both
 specified unbiased comparator families; its bias is the same nonzero constant
 -1/315 at every h (T1(v)). -/
 theorem efficiency_inconsistent :
@@ -2661,7 +2669,7 @@ theorem efficiency_inconsistent :
   rw [efficiency_exact_values.2.2.2.2.2.2.2.2.2.1]
   norm_num
 
-/-- P020-E005's concrete admissible population for equation (31): M=3, m_t=1,
+/-- E005's concrete admissible population for equation (31): M=3, m_t=1,
 n=(1,2,3), Y^T_0=(0,0,0), Y^T_1=(0,0,3), N=6 (T6). It can be realized
 with control individual outcomes zero and every treatment individual in
 cluster 3 equal to one, every other treatment individual equal to zero. -/
@@ -2675,11 +2683,11 @@ abbrev slopePopulation : ClusterPopulation where
   y0 := ![0, 0, 0]
   y1 := ![0, 0, 3]
 
-/-- All three assignments of the P020-E005 instance are equally likely (T6). -/
+/-- All three assignments of the E005 instance are equally likely (T6). -/
 theorem slope_assignments : assignments slopePopulation =
     ({({0} : Finset (Fin 3)), {1}, {2}} : Finset (Finset (Fin 3))) := by decide
 
-/-- P020-E005: k-hat is the OLS slope of observed totals on size, with intercept.
+/-- E005: k-hat is the OLS slope of observed totals on size, with intercept.
 It equals (0,0,3/2); estimates equal (0,0,3/8), and E[Δ_R1]=1/8≠1/2.
 Both covariances in the corrected (31) yield bias -3/8, whereas the printed
 repeated-control covariance expression is identically zero (T6). -/
@@ -2709,7 +2717,7 @@ theorem estimated_slope_counterexample :
     differenced, armMeanSize, armSize, armSum, controls, controlCount,
     populationSize, slopePopulation, Fin.sum_univ_succ, univ_three]
 
-/-- P020-E010(e)'s concrete population: M=2, m_t=m_c=1, n=(1,2),
+/-- E010(e)'s concrete population: M=2, m_t=m_c=1, n=(1,2),
 Y^T_0=(0,0), Y^T_1=(1,2), N=3; k=b_0=0,b_1=1 (T9(a)). -/
 abbrev subscriptPopulation : ClusterPopulation where
   M := 2
@@ -2742,7 +2750,7 @@ theorem control_subscript_counterexample :
     rajTotal, rajPotential, differenced, clusterMean, armSum, controls, controlCount,
     populationSize, subscriptPopulation, Fin.sum_univ_succ, Finset.univ_fin2]
 
-/-- P020-E010(i)'s bracket error in equation (35): for M=2, k=0 and both
+/-- E010(i)'s bracket error in equation (35): for M=2, k=0 and both
 potential-total vectors (0,2), correct covariance is 1. The expression with
 only the first factor inside E is -1 at cluster 1 (zero-based 0), and +1
 at cluster 2 (zero-based 1), so it is not the covariance (T9(b)). -/
@@ -2815,8 +2823,8 @@ theorem differenced_zero {M : ℕ} (v size : Fin M → ℝ) : differenced v size
 
 /-- The exact quadratic identity in Appendix C, pp. 72-73 (T14 finite lemma):
 the moment objective changes relative to k=0 by (c+t+2)σ²(n)k(k-2k*).
-Positive size variance is explicit. The actual design-variance
-identification is stated in optimal_raj_variance. -/
+Positive size variance is explicit. The remaining actual design-variance
+identification is separately drafted in optimal_raj_variance. -/
 theorem raj_moment_quadratic_identity (P : ClusterPopulation) (k : ℝ)
     (hsize : 0 < clusterVariance (fun j => (P.n j : ℝ))) :
     rajMomentObjective P k - rajMomentObjective P 0 =
@@ -2968,7 +2976,234 @@ theorem optimal_raj_variance (P : ClusterPopulation)
       exact (mul_eq_zero.mp hk).imp id sub_eq_zero.mp
     · rintro (hk | hk) <;> rw [hk] <;> rw [hk] at hgap <;> nlinarith [hgap]
 
+/-- Any real potential cluster total has an individual realization in every
+nonempty cluster: give its first individual that total and every other
+individual zero. This verifies that storing sufficient totals imposes no
+extra restriction on the Section 2 potential-outcomes model, pp. 41 and 48. -/
+theorem cluster_total_realizable (n : ℕ) (hn : 0 < n) (y : ℝ) :
+    clusterTotal (fun i : Fin n => if i.val = 0 then y else 0) = y := by
+  cases n with
+  | zero => omega
+  | succ n => simp [clusterTotal, Fin.sum_univ_succ]
 
 end
 end AronowAudit.P020
 
+#print axioms AronowAudit.P020.expectation_add
+#print axioms AronowAudit.P020.expectation_sub
+#print axioms AronowAudit.P020.expectation_const
+#print axioms AronowAudit.P020.expectation_mul_const
+#print axioms AronowAudit.P020.expectation_nonneg
+#print axioms AronowAudit.P020.designVariance_nonneg
+#print axioms AronowAudit.P020.mse_bias_variance
+#print axioms AronowAudit.P020.squared_bias_le_mse
+#print axioms AronowAudit.P020.mse_markov_bound
+#print axioms AronowAudit.P020.eventual_mse_inferiority
+#print axioms AronowAudit.P020.vanishing_mse_consistent
+#print axioms AronowAudit.P020.assignments_nonempty
+#print axioms AronowAudit.P020.clusterMean_sub
+#print axioms AronowAudit.P020.clusterMean_add
+#print axioms AronowAudit.P020.clusterMean_mul
+#print axioms AronowAudit.P020.clusterMean_const
+#print axioms AronowAudit.P020.centered_mean_zero
+#print axioms AronowAudit.P020.differenced_mean
+#print axioms AronowAudit.P020.clusterCovariance_product
+#print axioms AronowAudit.P020.differenced_variance
+#print axioms AronowAudit.P020.differenced_covariance
+#print axioms AronowAudit.P020.populationSize_pos
+#print axioms AronowAudit.P020.mean_size
+#print axioms AronowAudit.P020.uniform_expectation
+#print axioms AronowAudit.P020.assignment_inclusion_count
+#print axioms AronowAudit.P020.expected_treatment_sum
+#print axioms AronowAudit.P020.designCovariance_product
+#print axioms AronowAudit.P020.expectation_pos
+#print axioms AronowAudit.P020.expected_arm_sum
+#print axioms AronowAudit.P020.ratio_expectation_identity
+#print axioms AronowAudit.P020.assignment_arm_counts
+#print axioms AronowAudit.P020.arm_size_pos
+#print axioms AronowAudit.P020.expected_arm_size
+#print axioms AronowAudit.P020.difference_in_means_bias
+#print axioms AronowAudit.P020.expectation_const_mul
+#print axioms AronowAudit.P020.ht_total_unbiased
+#print axioms AronowAudit.P020.raj_potential_sum
+#print axioms AronowAudit.P020.raj_total_unbiased
+#print axioms AronowAudit.P020.expected_arm_mean_size
+#print axioms AronowAudit.P020.raj_total_identity
+#print axioms AronowAudit.P020.ht_unbiased
+#print axioms AronowAudit.P020.affine_cluster_total
+#print axioms AronowAudit.P020.ht_affine_identity
+#print axioms AronowAudit.P020.ht_not_location_invariant
+#print axioms AronowAudit.P020.des_raj_unbiased
+#print axioms AronowAudit.P020.centered_sum_zero
+#print axioms AronowAudit.P020.covariate_adjustment_sum_zero
+#print axioms AronowAudit.P020.raj_covariate_potential_sum
+#print axioms AronowAudit.P020.raj_covariate_total_unbiased
+#print axioms AronowAudit.P020.des_raj_covariates_unbiased
+#print axioms AronowAudit.P020.estimated_raj_total_mean
+#print axioms AronowAudit.P020.estimated_coefficient_bias
+#print axioms AronowAudit.P020.raj_potential_affine
+#print axioms AronowAudit.P020.des_raj_affine_invariant
+#print axioms AronowAudit.P020.clusterCovariance_comm
+#print axioms AronowAudit.P020.clusterCovariance_self
+#print axioms AronowAudit.P020.clusterVariance_nonneg
+#print axioms AronowAudit.P020.clusterVariance_sub
+#print axioms AronowAudit.P020.covariance_remainder_nonpos
+#print axioms AronowAudit.P020.variance_formula_le_approximate
+#print axioms AronowAudit.P020.individual_sharp_null_total
+#print axioms AronowAudit.P020.sharp_null_moment_facts
+#print axioms AronowAudit.P020.sharp_null_formula_algebra
+#print axioms AronowAudit.P020.sharp_null_exact_variance
+#print axioms AronowAudit.P020.ht_variance_components
+#print axioms AronowAudit.P020.ht_variance_identity_bound
+#print axioms AronowAudit.P020.combined_variance_conservative
+#print axioms AronowAudit.P020.raj_variance_conservative
+#print axioms AronowAudit.P020.sharp_null_variance_conservative
+#print axioms AronowAudit.P020.arm_variance_completed_square
+#print axioms AronowAudit.P020.arm_coefficient_optimal
+#print axioms AronowAudit.P020.optimal_raj_variance
+#print axioms AronowAudit.P020.coefficient_improvement_intervals
+#print axioms AronowAudit.P020.equal_size_raj_eq_ht
+#print axioms AronowAudit.P020.independent_blocks_unbiased_variance
+#print axioms AronowAudit.P020.independent_blocks_variance_estimator_conservative
+#print axioms AronowAudit.P020.arm_sum_bounded
+#print axioms AronowAudit.P020.growing_clusters_consistent
+#print axioms AronowAudit.P020.copy_average_moments
+#print axioms AronowAudit.P020.limit_ratio_identity
+#print axioms AronowAudit.P020.replicated_size
+#print axioms AronowAudit.P020.replicated_arm_size
+#print axioms AronowAudit.P020.replicated_raj_potential
+#print axioms AronowAudit.P020.replicated_raj_total
+#print axioms AronowAudit.P020.replicated_law
+#print axioms AronowAudit.P020.within_replication_invariant
+#print axioms AronowAudit.P020.constant_design_biased_inconsistent
+#print axioms AronowAudit.P020.fixed_clusters_persistent_bias
+#print axioms AronowAudit.P020.univ_three
+#print axioms AronowAudit.P020.efficiency_assignments
+#print axioms AronowAudit.P020.efficiency_individual_realization
+#print axioms AronowAudit.P020.efficiency_exact_values
+#print axioms AronowAudit.P020.efficiency_raj_mse
+#print axioms AronowAudit.P020.efficiency_optimal_coefficient
+#print axioms AronowAudit.P020.efficiency_mse_counterexample
+#print axioms AronowAudit.P020.efficiency_error_probability
+#print axioms AronowAudit.P020.efficiency_all_replications_counterexample
+#print axioms AronowAudit.P020.efficiency_sample_size_grows
+#print axioms AronowAudit.P020.efficiency_inconsistent
+#print axioms AronowAudit.P020.slope_assignments
+#print axioms AronowAudit.P020.estimated_slope_counterexample
+#print axioms AronowAudit.P020.control_subscript_counterexample
+#print axioms AronowAudit.P020.expectation_bracket_counterexample
+#print axioms AronowAudit.P020.corrected_affine_chain
+#print axioms AronowAudit.P020.bracket_admissible_counterexample
+#print axioms AronowAudit.P020.designCovariance_comm
+#print axioms AronowAudit.P020.designVariance_sub
+#print axioms AronowAudit.P020.designVariance_mul
+#print axioms AronowAudit.P020.ate_variance_linear_identity
+#print axioms AronowAudit.P020.differenced_zero
+#print axioms AronowAudit.P020.raj_moment_quadratic_identity
+#print axioms AronowAudit.P020.cluster_total_realizable
+
+#print axioms AronowAudit.P020.individual_sharp_null_facts
+
+#print axioms AronowAudit.P020.designCovariance_self
+
+#print axioms AronowAudit.P020.expectation_fintype_sum
+
+#print axioms AronowAudit.P020.treatment_indicator_mean
+
+#print axioms AronowAudit.P020.treatment_pair_mean
+
+#print axioms AronowAudit.P020.treatment_sum_product
+
+#print axioms AronowAudit.P020.treatment_sum_covariance
+
+#print axioms AronowAudit.P020.designCovariance_scale
+
+#print axioms AronowAudit.P020.designCovariance_const_sub_left
+
+#print axioms AronowAudit.P020.designCovariance_const_sub_both
+
+#print axioms AronowAudit.P020.control_sum_complement
+
+#print axioms AronowAudit.P020.arm_sum_covariance
+
+#print axioms AronowAudit.P020.ht_total_design_variance
+
+#print axioms AronowAudit.P020.ht_total_design_covariance
+
+#print axioms AronowAudit.P020.ht_design_variance_formula
+
+#print axioms AronowAudit.P020.expectation_congr_support
+
+#print axioms AronowAudit.P020.arm_sum_second_moment
+
+#print axioms AronowAudit.P020.arm_sample_ssd_identity
+
+#print axioms AronowAudit.P020.arm_sample_ssd_expectation
+
+#print axioms AronowAudit.P020.combined_estimator_expectation
+
+#print axioms AronowAudit.P020.full_uniform_expectation
+
+#print axioms AronowAudit.P020.uniform_product_moment
+
+#print axioms AronowAudit.P020.uniform_coordinate_expectation
+
+#print axioms AronowAudit.P020.uniform_coordinate_product
+
+#print axioms AronowAudit.P020.designCovariance_sum_sum
+
+#print axioms AronowAudit.P020.uniform_sum_variance
+
+#print axioms AronowAudit.P020.assignment_subtype_expectation
+
+#print axioms AronowAudit.P020.assignment_subtype_variance
+
+#print axioms AronowAudit.P020.designVariance_const_mul
+
+#print axioms AronowAudit.P020.raj_variance_curvature_pos
+
+#print axioms AronowAudit.P020.raj_design_variance_moment
+
+#print axioms AronowAudit.P020.raj_design_variance_gap
+
+#print axioms AronowAudit.P020.raj_design_variance_completed_square
+
+#print axioms AronowAudit.P020.expectation_mono_support
+
+#print axioms AronowAudit.P020.ratio_mse_bound
+
+#print axioms AronowAudit.P020.difference_mse_bound
+
+#print axioms AronowAudit.P020.meanSquaredError_nonneg
+
+#print axioms AronowAudit.P020.constant_div_nat_tendsto
+
+#print axioms AronowAudit.P020.mse_rate_consistent
+
+#print axioms AronowAudit.P020.copy_average_mse
+
+#print axioms AronowAudit.P020.copy_average_consistent
+
+#print axioms AronowAudit.P020.arm_size_ge_count
+
+#print axioms AronowAudit.P020.copy_size_ge_count
+
+#print axioms AronowAudit.P020.copied_ratio_identity
+
+#print axioms AronowAudit.P020.copied_arm_ratio_mse_bound
+
+#print axioms AronowAudit.P020.copied_difference_mse_bound
+
+#print axioms AronowAudit.P020.designVariance_product
+
+#print axioms AronowAudit.P020.designVariance_add_const
+
+#print axioms AronowAudit.P020.clusterVariance_product
+
+#print axioms AronowAudit.P020.observed_cluster_mean_identity
+
+#print axioms AronowAudit.P020.observed_variance_expectation
+
+#print axioms AronowAudit.P020.pooled_variance_excess
+
+#print axioms AronowAudit.P020.clusterVariance_add_const

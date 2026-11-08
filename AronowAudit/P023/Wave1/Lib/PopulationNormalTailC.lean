@@ -165,6 +165,47 @@ theorem tc04_population_normal_test (μ : Measure ℝ) [IsFiniteMeasure μ]
     change b j*(X x j*m x-X x j*predict X a x)=b j*(X x j*(m x-predict X a x))
     ring
 
+/-- Positive definiteness makes the full normal-equation solution unique. -/
+theorem tc04_population_normal_unique (μ : Measure ℝ) [IsFiniteMeasure μ]
+    (hs : MarginSupport μ) (J : ℕ) (hpd : MomentPositiveDefinite μ J)
+    (m : ℝ → ℝ) (a b : Fin (J+2) → ℝ)
+    (hm : ∀ j : Fin (J+2), Integrable
+      (fun x => polynomialDesign J (fun x : ℝ => x) party x j*m x) μ)
+    (ha : PopNormal μ J m a) (hb : PopNormal μ J m b) : a=b := by
+  let X := polynomialDesign J (fun x : ℝ => x) party
+  have hpred (x : ℝ) : predict X (a-b) x=predict X a x-predict X b x := by
+    simp [predict, mul_sub, Finset.sum_sub_distrib]
+  have hta := tc04_population_normal_test μ hs J m a (a-b) hm ha
+  have htb := tc04_population_normal_test μ hs J m b (a-b) hm hb
+  have hi (c : Fin (J+2) → ℝ) :
+      Integrable (fun x => predict X (a-b) x*(m x-predict X c x)) μ := by
+    have he : (fun x => predict X (a-b) x*(m x-predict X c x)) =
+        (fun x => ∑ j, (a-b) j*(X x j*(m x-predict X c x))) := by
+      funext x
+      rw [predict,Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro j _
+      ring
+    rw [he]
+    apply integrable_finsetSum
+    intro j _
+    apply ((((hm j).sub (tc04_design_fit_integrable μ hs J j c)).const_mul ((a-b) j))).congr
+    apply Filter.Eventually.of_forall
+    intro x
+    change (a-b) j*(X x j*m x-X x j*predict X c x)=(a-b) j*(X x j*(m x-predict X c x))
+    ring
+  have hz : expectation μ (fun x => predict X (a-b) x^2)=0 := by
+    have he : (fun x => predict X (a-b) x^2) =
+        (fun x => predict X (a-b) x*(m x-predict X b x)-
+          predict X (a-b) x*(m x-predict X a x)) := by
+      funext x
+      rw [hpred]
+      ring
+    unfold expectation at *
+    rw [he, integral_sub (hi b) (hi a), htb, hta, sub_self]
+  apply sub_eq_zero.mp
+  by_contra hn
+  exact (ne_of_gt (hpd (a-b) hn)) hz
 
 end
 end AronowAudit.P023.Wave1

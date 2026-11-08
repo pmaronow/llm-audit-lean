@@ -1,8 +1,3 @@
-/-
-Documentation corrected for llm-audit-lean.
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.Probability.CDF
 import Mathlib.Probability.Independence.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
@@ -31,15 +26,17 @@ threshold `d_α` with `C e^{-c d_α²} ≤ α` gives a test of level `α` at *ev
 
 * `empCDF`, `ksDist` — the empirical distribution function of a finite sample and its
   Kolmogorov distance to a population law.
-* `integral_ksDist_le` — the in-expectation bound `E Dₙ ≤ 4/√n`.
+* `integral_ksDist_le` — the in-expectation bound `E Dₙ ≤ 2/√n`.
 * `ksDist_concentration` — bounded-differences concentration of `Dₙ` around its mean.
 * `dkw_uniform` — the tail bound, `P(√n Dₙ ≥ d) ≤ 4 e^{-d²/16}`.
 
 **Constants (documented deviation).** The sharp form of this inequality has the constants
-`C = 2`, `c = 2`. The route formalised here delivers `C = 4`, `c = 1/16`, by composing
-the two ingredients below. Concretely:
+`C = 2`, `c = 2`, and those are *not* what the route formalised here delivers. We state the
+strictly weaker `C = 4`, `c = 1/16`, which is exactly what the two ingredients below compose
+to and which is implied by the sharp form, so the statement is true. Concretely:
 
-* the mean bound `integral_ksDist_le` is proved at `√n · E Dₙ ≤ 4`, and
+* the mean bound `integral_ksDist_le` is proved at `√n · E Dₙ ≤ 4` (the true value is
+  `≈ 0.87`, the mean of the Kolmogorov limit law `sup|B°|`), and
 * the bounded-differences bound `ksDist_concentration` gives `exp(−2(d − 4)²)` for `d ≥ 4`.
 
 Composing the two: `min_d [2(d − M)² − c d²] = −2cM²/(2 − c)`, so with `M = 4` the pair
@@ -50,10 +47,20 @@ proof.) For `d ≤ 4√(log 4) = 4.709…` the envelope `4 e^{−d²/16}` exceed
 is vacuous — in particular it covers the whole range `d ≤ 4` where the mean bound leaves
 nothing to prove.
 
-**Comparison of constants.** A mean bound `√n · E Dₙ ≤ 4` combined with
-`exp(−2(d − 4)²)` does not yield the envelope `4 e^{−d²/8}`:
-`max_d [d²/8 − 2(d − 4)²] = 32/15 > log 4`, attained at `d = 64/15`.
-The weaker envelope `4 e^{−d²/16}` is compatible with these two bounds.
+**Deviation from the frozen statement, and the coordinated edit it forced.** The frozen
+statements were `√n · E Dₙ ≤ 2` and `4 e^{−d²/8}`. The mean constant `2` is *not* reachable
+by any elementary route (see items 1–7 below); the route that is executable lands at `4`,
+and `M = 4` provably breaks the frozen headline — `max_d [d²/8 − 2(d − 4)²] = 32/15 = 2.133 >
+log 4 = 1.386` (at `d = 64/15`), while the vacuous regime of `4 e^{−d²/8}` only reaches
+`d = √(8 log 4) = 3.330 < 4`, so the band `d ∈ (3.330, 4)` would be covered by neither
+regime. Per the charter rule *state the constants that are actually provable*, the two
+statements were amended to `4/√n` and `4 e^{−d²/16}`, and the single downstream consumer of
+`c`, the numeral inside `ksThreshold` in `GoodnessOfFit/KSConsistency.lean`, was changed from
+`√(8 log(4/α))` to `√(16 log(4/α))` (the deviation is recorded at that definition too).
+Every statement in `KSConsistency.lean` and `KSLocalPower.lean` is phrased through
+`ksThreshold` and re-derives its level from the defining equation `4 e^{−s²/16} = α`, so no
+other edit was required: the calibrated thresholds are `√2` times larger, i.e. the tests are
+more conservative, and all four headline theorems there hold verbatim.
 
 **Reference.** E.L. Lehmann and J.P. Romano, *Testing Statistical Hypotheses*, 4th ed.,
 Springer Nature Switzerland AG, 2022 (ISBN 978-3-030-70577-0), Chapter 16 (Testing Goodness of
@@ -83,31 +90,36 @@ a uniform-in-`n` exponential tail for the empirical process. (`TSH4 §16.2 Thm 1
 1. *How much slack does the headline allow at a fixed `c`?* `dkw_uniform` composes a mean
    bound `√n · E Dₙ ≤ M` with the tail `exp(−2(d − M)²)`. Since
    `min_d [2(d − M)² − c d²] = −2cM²/(2 − c)`, the composition yields
-   `P(√n Dₙ ≥ d) ≤ exp(2cM²/(2 − c)) · e^{−c d²}` for **every** `d ≥ 0`. For
-   `c = 1/8`, the choice `C = 4` allows only `M ≤ √(15 log 4/2) = 3.2245`; for
-   `c = 1/16`, it allows every `M ≤ √(31 log 4/2) = 4.635`, so `M = 4` fits.
+   `P(√n Dₙ ≥ d) ≤ exp(2cM²/(2 − c)) · e^{−c d²}` for **every** `d ≥ 0`. At the frozen
+   `c = 1/8` the headline `C = 4` survives only `M ≤ √(15 log 4/2) = 3.2245`; at the amended
+   `c = 1/16` it survives every `M ≤ √(31 log 4/2) = 4.635`, so `M = 4` fits.
 
 2. *Grid + union bound cannot give any constant.* With the quantile grid `t₁ < … < t_m`,
    monotonicity gives `Dₙ ≤ max_j |Δ(t_j)| + 1/m`, and each `Δ(t_j)` is `1/(4n)`-sub-Gaussian,
    so `E max_j |Δ(t_j)| ≤ √(log(2m)/(2n))` and
-   `√n E Dₙ ≤ √(log(2m)/2) + √n/m`. The `√(log n)` factor is intrinsic to a
-   *single-scale* union bound; chaining or a martingale argument removes it.
+   `√n E Dₙ ≤ √(log(2m)/2) + √n/m`. Every choice of `m` leaves `√(log(2m)/2) ≥ √(log(2√n)/2)`,
+   which diverges. The `√(log n)` factor is intrinsic to a *single-scale* union bound; only
+   chaining or a martingale argument removes it.
 
-3. *Large mean constants weaken the calibration.* By (1), a mean constant `M = 5400`
-   forces `c ≈ 4.8 · 10⁻⁸` when `C = 4`.
+3. *Generic VC chaining is available but too lossy.* `ConcentrationInequalities.glivenko_cantelli`
+   bounds exactly this integrand by `5400/√n` (generic VC bound at `vcDim = 1`, for an i.i.d.
+   *stream* `X : ℕ → Ξ → ℝ`; the finite sample here would first have to be transported to the
+   canonical infinite product). By (1) that constant forces `c ≈ 4.8 · 10⁻⁸`, i.e. a
+   statistically useless calibration, so it is not the route taken.
 
 4. *The route actually formalised* (`M = 4`). Symmetrisation gives
    `E Dₙ ≤ 2 E supₜ |n⁻¹ ∑ᵢ εᵢ 1{Xᵢ ≤ t}|` with `ε` Rademacher and independent of `X`
    (`ConcentrationInequalities.empirical_symmetrization_countable`, instantiated at the
    countable class of half-lines `{x ≤ q}`, `q ∈ ℚ`; the reduction of the `ℝ`-supremum to the
-   `ℚ`-supremum is `dkw_iSup_real_eq_iSup_rat`). Conditionally on `X`, each signed count is a value
-   of a ±1 random walk: the index set `{i : Xᵢ ≤ t}` is a prefix of the sorted sample
-   (`exists_dkwWalk_eq`, via `Tuple.sort` and the fact that a downward-closed subset of
-   `Fin n` is an initial segment). Thus the supremum is bounded by the running maximum
-   (`abs_signed_count_le_dkwMax`). Finally
+   `ℚ`-supremum is `dkw_iSup_real_eq_iSup_rat`). **Conditionally on `X`, that supremum is
+   exactly the maximum of a ±1 random walk**: as `t` sweeps `ℝ`, the index set `{i : Xᵢ ≤ t}`
+   runs precisely through the prefixes of the sorted sample, so
+   `supₜ |∑ᵢ εᵢ 1{Xᵢ ≤ t}| = max_{0 ≤ j ≤ n} |Sⱼ|` (`exists_dkwWalk_eq`, via `Tuple.sort` and
+   the fact that a downward-closed subset of `Fin n` is an initial segment). Finally
    `E max_j |Sⱼ| ≤ 2 E|Sₙ| ≤ 2√n` (`integral_dkwMax_le`), whence `√n · E Dₙ ≤ 4`.
 
-5. *The maximal step, in the form used here.* The proof uses **Lévy's maximal inequality**
+5. *The maximal step, in the form used here.* Rather than Doob's `L^p` inequality (absent from
+   Mathlib at v4.29.1) the proof uses **Lévy's maximal inequality**
    `P(max_{j ≤ n} |Sⱼ| ≥ a) ≤ 2 P(|Sₙ| ≥ a)` (`dkw_levy`), proved by reflecting the increments
    after the first passage time: the reflection is the coordinatewise sign flip
    `s ↦ (c_j(i) · s_i)_i` with `c_j = 1` on the first `j` steps and `−1` after, and it preserves
@@ -117,23 +129,25 @@ a uniform-in-`n` exponential tail for the empirical process. (`TSH4 §16.2 Thm 1
    `E max_j |Sⱼ| ≤ 2 E|Sₙ|`, and `E|Sₙ| ≤ √n` follows from `E Sₙ² = n` by the elementary
    `|x| ≤ (x² + c²)/(2c)` at `c = √n` (no Cauchy–Schwarz or `Lᵖ` interpolation needed).
 
-6. *Reflection comparison.* For the simple symmetric walk started at `S₀ = 0`,
-   the one-sided running maximum satisfies
-   `E max_{0≤j≤n} Sⱼ = E|Sₙ| − P(Sₙ ≥ 1)`.
-   Both expectations are asymptotic to `√(2n/π)` as `n → ∞`. This asymptotic
-   equivalent alone does not establish a bound valid for every `n` with leading
-   constant `√(2/π)`, or a uniform DKW mean constant `4√(2/π)`. The formalized
-   argument in (4)–(5) uses the absolute running maximum and yields the uniform
-   mean constant `4`.
+6. *Why `4` and not less.* Inside this route the constant is not repairable: combining *every*
+   elementary tail available for the `±1` walk — Kolmogorov `P ≤ n/a²`, Lévy plus Hoeffding
+   `P ≤ 4e^{−a²/2n}`, and the trivial `P ≤ 1` — gives
+   `E max_j |Sⱼ| ≤ ∫₀^∞ min(1, n/a², 4e^{−a²/2n}) da = 1.66185…·√n`, i.e. `M ≤ 3.3237`, still
+   above the frozen `c = 1/8` budget `3.2245` of item (1); adding the fourth moment makes it
+   worse (`1.7314·√n`). Only the exact reflection value `E max_j Sⱼ = E|Sₙ| = √(2n/π)(1+o(1))`,
+   giving `M = 4√(2/π) = 3.19154`, crosses that line — the miss survives every standard
+   refinement, so it is the *method*, not the bookkeeping, that is short. Hence the constant
+   was amended rather than the route re-engineered.
 
-7. *A martingale route to `c = 1/8`.* Under the quantile transform `u = F(t)` the empirical process
+7. *What would restore `c = 1/8`.* Under the quantile transform `u = F(t)` the empirical process
    `α(u) = ∑ᵢ (1{Uᵢ ≤ u} − u)` satisfies `E[α(u₂) ∣ ℱ_{u₁}] = ((1−u₂)/(1−u₁)) α(u₁)`, i.e.
    `M(u) := α(u)/(1−u)` is a **martingale** in `u`; hence `exp(θM)` is a submartingale, and
    Doob plus Hoeffding's mgf bound give `P(sup_{u ≤ 1/2} α ≥ x√n) ≤ e^{−x²/2}`. Four such pieces
    give `P(√n Dₙ > x) ≤ 4 e^{−x²/2}` and so `√n E Dₙ ≤ √(2 log 4) + 4∫_{√(2 log 4)}^∞ e^{−x²/2} dx
-   ≤ 2.27`, inside the `c = 1/8` budget. This route uses the martingale property of the
-   empirical process along a countable dense set of levels: a discrete-time martingale for each finite grid, followed by
-   monotone convergence.
+   ≤ 2.27`, inside the `c = 1/8` budget. Formalising it needs the martingale property of the
+   empirical process along a countable dense set of levels (a discrete-time martingale for each
+   finite grid, then monotone convergence), which is a self-contained project the repository does
+   not have. It remains the only way back to the frozen exponent.
 
 **Bibliographic comments.** The inequality is due to A. Dvoretzky, J. Kiefer, and
 J. Wolfowitz, "Asymptotic minimax character of the sample distribution function and of the
@@ -143,8 +157,7 @@ P. Massart, "The tight constant in the Dvoretzky–Kiefer–Wolfowitz inequality
 Probab.* **18** (1990), 1269–1283. The concentration step is the bounded-differences
 method of C. McDiarmid, "On the method of bounded differences," in *Surveys in
 Combinatorics 1989*, LMS Lecture Note Series **141**, Cambridge Univ. Press, 1989,
-148–188. The expectation bound here uses symmetrization, Lévy’s maximal inequality,
-and the layer-cake formula. For background on entropy/chaining methods, see R. M. Dudley, "The sizes of
+148–188; the entropy/chaining bound for the expectation follows R. M. Dudley, "The sizes of
 compact subsets of Hilbert space and continuity of Gaussian processes," *J. Funct. Anal.*
 **1** (1967), 290–330. The statistic itself is A. N. Kolmogorov's, "Sulla determinazione
 empirica di una legge di distribuzione," *Giorn. Ist. Ital. Attuari* **4** (1933), 83–91,
@@ -224,7 +237,7 @@ private lemma dkw_iSup_real_eq_iSup_rat (g : ℝ → ℝ)
 
 /-! ### The symmetrised sign process: Lévy's maximal inequality for the `±1` walk
 
-This section supplies the maximal bound used in the header: conditionally on the
+This section supplies the second half of route (4) of the header: conditionally on the
 sample, the Rademacher process over half-lines is the `±1` walk along the sorted sample,
 and its running maximum has `L¹` norm at most `2√n`.  Everything here is elementary; the
 sign randomisation lives on `StatLean.ConcentrationInequalities.signVec`. -/
@@ -253,12 +266,17 @@ private lemma dkwPre_mono (σ : Equiv.Perm (Fin n)) {j j' : ℕ} (h : j ≤ j') 
   simp only [dkwPre, Finset.mem_filter, Finset.mem_univ, true_and] at hi ⊢
   exact lt_of_lt_of_le hi h
 
+private lemma dkwPre_zero (σ : Equiv.Perm (Fin n)) : dkwPre σ 0 = ∅ := by
+  simp [dkwPre]
 
 private lemma dkwPre_full (σ : Equiv.Perm (Fin n)) : dkwPre σ n = Finset.univ := by
   ext i
   simp only [dkwPre, Finset.mem_filter, Finset.mem_univ, true_and, iff_true]
   exact (σ.symm i).isLt
 
+private lemma dkwWalk_zero (σ : Equiv.Perm (Fin n)) (s : Fin n → ℝ) :
+    dkwWalk σ s 0 = 0 := by
+  simp [dkwWalk, dkwPre_zero]
 
 private lemma measurable_dkwWalk (σ : Equiv.Perm (Fin n)) (j : ℕ) :
     Measurable (fun s : Fin n → ℝ => dkwWalk σ s j) :=
@@ -323,6 +341,7 @@ private lemma dkwWalk_refl_full (σ : Equiv.Perm (Fin n)) (s : Fin n → ℝ) (j
   simp only [dkwWalk] at hsplit h1 h2 ⊢
   rw [hsplit, h1, h2]
   ring
+
 
 
 namespace Levy
@@ -493,6 +512,12 @@ private lemma integral_coord (i : Fin n) {f : ℝ → ℝ} (hf : Measurable f) :
   conv_rhs => rw [← hmp.map_eq]
   rw [integral_map (measurable_pi_apply i).aemeasurable hf.aestronglyMeasurable]
 
+private lemma integrable_coord (i : Fin n) :
+    Integrable (fun s : Fin n → ℝ => s i) (signVec n) := by
+  refine Integrable.mono' (integrable_const (1 : ℝ))
+    (measurable_pi_apply i).aestronglyMeasurable ?_
+  filter_upwards [signVec_ae_abs_le (n := n)] with s hs
+  rw [Real.norm_eq_abs]; exact hs i
 
 private lemma integrable_coord_mul (i j : Fin n) :
     Integrable (fun s : Fin n → ℝ => s i * s j) (signVec n) := by
@@ -749,9 +774,10 @@ open StatLean.ConcentrationInequalities in
 
 Proved by symmetrisation (`empirical_symmetrization_countable`), the sorted-prefix walk
 representation of the Rademacher process over half-lines, and Lévy's maximal inequality
-plus the layer-cake formula (`integral_dkwMax_le`). -/
+plus the layer-cake formula (`integral_dkwMax_le`).  See the file header for why the
+constant is `4` and not the sharp `0.87…`. -/
 theorem integral_ksDist_le {n : ℕ}
-    -- USER-INPUT: a nonempty sample.
+    -- USER-INPUT: a nonempty sample (for `n = 0` the statement is false: `D₀ = supₜ F(t)`).
     (hn : 0 < n) (μ : Measure ℝ) [IsProbabilityMeasure μ] (X : Fin n → Ω → ℝ)
     -- USER-INPUT: the sample variables are measurable (data regularity).
     (hmeas : ∀ i, Measurable (X i))

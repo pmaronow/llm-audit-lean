@@ -67,6 +67,7 @@ theorem three_point_atom_approximation_completed {Ω : Type*} [Fintype Ω] (P : 
       by_cases ha : x ∈ A <;> by_cases hb : x ∈ B <;> simp_all [f] <;> norm_num
     rw [he, prob_finset, abs_of_nonpos (by linarith)]
     linarith
+#print axioms three_point_atom_approximation_completed
 end
 end AronowAudit.P009.AtomCompletion
 
@@ -78,5 +79,6 @@ theorem three_point_atom_approximation {Ω : Type*} [Fintype Ω] (P : Law Ω)
       |prob P (fun ω => f ω = 1)-α/2| ≤ δ ∧
       |prob P (fun ω => f ω = -1)-α/2| ≤ δ := by
   exact AtomCompletion.three_point_atom_approximation_completed P δ α hδ hα
+#print axioms three_point_atom_approximation
 end
 end AronowAudit.P009

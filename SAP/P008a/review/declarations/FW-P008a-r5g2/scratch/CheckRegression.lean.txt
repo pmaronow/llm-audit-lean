@@ -1,0 +1,107 @@
+import SAP.P008a.Challenge
+
+open SAP.P008a
+open scoped BigOperators Classical
+
+noncomputable section
+
+lemma checkTreated : nTreated (![false, false, true, true] : Assignment 4) = 2 := by
+  simp only [nTreated, Fin.sum_univ_succ]
+  norm_num [bit]
+
+lemma checkControl : nControl (![false, false, true, true] : Assignment 4) = 2 := by
+  rw [nControl, checkTreated]
+  norm_num
+
+-- The shared regression hypotheses of T6, T9 and T10 have a two-arm instance.
+example : 1 ≤ nTreated wholeBandwidthAssignment ∧
+    1 ≤ nControl wholeBandwidthAssignment ∧ (0 : ℝ) ≤ 2 / 5 := by
+  norm_num [wholeBandwidthAssignment, checkTreated, checkControl]
+
+-- This instance also meets the off-diagonal separation hypotheses of T6.
+example : (∀ i : Fin 4, bandwidthExampleDistance i i = 0) ∧
+    (∀ i j : Fin 4, i ≠ j → (2 / 5 : ℝ) < bandwidthExampleDistance i j) := by
+  constructor
+  · intro i; simp [bandwidthExampleDistance]
+  · intro i j hij
+    fin_cases i <;> fin_cases j <;> norm_num [bandwidthExampleDistance] at *
+
+-- Nonzero observed residuals and regression scores, checked from definitions.
+example : groupResidual wholeBandwidthAssignment wholeBandwidthMeans = ![-1, 1, -1, 1] ∧
+    regressionScore wholeBandwidthAssignment wholeBandwidthMeans = wholeBandwidthScores := by
+  constructor <;> funext i <;> fin_cases i <;>
+    norm_num [groupResidual, groupMean, contrastWeight, regressionScore,
+      checkTreated, checkControl, wholeBandwidthAssignment, wholeBandwidthMeans,
+      wholeBandwidthScores, bit, Fin.sum_univ_succ]
+
+-- Verify the matrix inverse too, so the scores above are actual OLS scores.
+lemma checkGramInverse :
+    ((binaryDesign wholeBandwidthAssignment).transpose *
+      binaryDesign wholeBandwidthAssignment)⁻¹ = !![1 / 2, -1 / 2; -1 / 2, 1] := by
+  apply Matrix.inv_eq_right_inv
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp only [Matrix.mul_apply, Matrix.transpose_apply, binaryDesign, Fin.sum_univ_succ] <;>
+    norm_num [wholeBandwidthAssignment, bit]
+
+example : wholeOLSCoefficient wholeBandwidthAssignment wholeBandwidthMeans = ![1, 4] ∧
+    olsResidual wholeBandwidthAssignment wholeBandwidthMeans = ![-1, 1, -1, 1] ∧
+    wholeOLSScore wholeBandwidthAssignment wholeBandwidthMeans = wholeBandwidthScores := by
+  repeat' constructor
+  all_goals funext i; fin_cases i <;>
+    simp only [wholeOLSCoefficient, wholeOLSScore, wholeOLSWeight, olsResidual,
+      checkGramInverse, Matrix.mulVec, dotProduct, Matrix.mul_apply, Matrix.transpose_apply,
+      binaryDesign, Fin.sum_univ_succ] <;>
+    norm_num [wholeBandwidthAssignment, wholeBandwidthMeans, wholeBandwidthScores, bit]
+
+-- The genuine cutoff-plus-position discrepancy (not independent invented scores).
+example : archivedVariance (regressionScore wholeBandwidthAssignment wholeBandwidthMeans)
+      bandwidthExampleDistance (2 / 5) 1 = 1 ∧
+    archivedVariance (regressionScore wholeBandwidthAssignment wholeBandwidthMeans)
+      bandwidthExampleDistance (2 / 5) 2 = 1 / 2 ∧
+    physicalVariance (regressionScore wholeBandwidthAssignment wholeBandwidthMeans)
+      bandwidthExampleDistance (2 / 5) 1 = 1 ∧
+    physicalVariance (regressionScore wholeBandwidthAssignment wholeBandwidthMeans)
+      bandwidthExampleDistance (2 / 5) 2 = 1 := by
+  norm_num [archivedVariance, physicalVariance, hac, bandwidthExampleDistance,
+    regressionScore, contrastWeight, groupResidual, groupMean, checkTreated, checkControl,
+    wholeBandwidthAssignment, wholeBandwidthMeans, bit, Fin.sum_univ_succ]
+
+-- Both included and excluded pairs occur, and nonzero reciprocal coefficients
+-- satisfy T6's covariance-support premise at this cutoff.
+def checkA (i j : Fin 3) : ℝ := if i.val < 2 ∧ j.val < 2 then 1 else 0
+def checkD (i j : Fin 3) : ℝ := |(![0, 1, 4] : Fin 3 → ℝ) i - ![0, 1, 4] j|
+
+example : (0 : ℕ) < 3 ∧ (0 : Fin 3) ≠ 1 ∧ (0 : ℝ) ≤ 1 ∧
+    (∀ i : Fin 3, checkD i i = 0) ∧
+    (∀ i j, (1 : ℝ) < checkD i j → checkA i j * checkA j i = 0) ∧
+    checkA 0 1 * checkA 1 0 = 1 ∧ 1 < checkD 0 2 := by
+  refine ⟨by decide, by decide, by norm_num, ?_, ?_, by norm_num [checkA], by norm_num [checkD]⟩
+  · intro i; simp [checkD]
+  · intro i j h
+    fin_cases i <;> fin_cases j <;> norm_num [checkD, checkA] at *
+
+-- The zero-residual alternative in T10 is inhabited as well.
+example : ∀ i : Fin 4, groupResidual wholeBandwidthAssignment (fun _ => 3) i = 0 := by
+  intro i; fin_cases i <;>
+    norm_num [groupResidual, groupMean, checkTreated, checkControl,
+      wholeBandwidthAssignment, bit, Fin.sum_univ_succ]
+
+-- The all-pairs premise in T9/T10 also has a genuine nonzero-score instance.
+example : (∀ i j : Fin 4, bandwidthExampleDistance i j ≤ 6) ∧
+    hac wholeBandwidthScores bandwidthExampleDistance 6 = 0 := by
+  constructor
+  · intro i j
+    fin_cases i <;> fin_cases j <;> norm_num [bandwidthExampleDistance]
+  · norm_num [hac, wholeBandwidthScores, bandwidthExampleDistance, Fin.sum_univ_succ]
+
+-- The generic box hypotheses in T9 are satisfiable by distinct nodes too.
+example : let p : Fin 4 → Plane := fun i => WithLp.toLp 2 ![(i : ℝ), 0]
+    (∀ i a, 0 ≤ p i a ∧ p i a ≤ 4) ∧
+    1 ≤ nTreated wholeBandwidthAssignment ∧ 1 ≤ nControl wholeBandwidthAssignment := by
+  dsimp
+  refine ⟨?_, ?_, ?_⟩
+  · intro i a
+    fin_cases i <;> fin_cases a <;> norm_num [WithLp.toLp]
+  · norm_num [wholeBandwidthAssignment, checkTreated]
+  · norm_num [wholeBandwidthAssignment, checkControl]

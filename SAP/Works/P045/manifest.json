@@ -1,0 +1,833 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.bernoulli_count_counterexample",
+      "AronowAudit.P045.bernoulli_direct_failure",
+      "AronowAudit.P045.bernoulli_direct_failure_means",
+      "AronowAudit.P045.bernoulli_ratio_counterexample",
+      "SAP.P045a.WH.W1.T1_whole",
+      "SAP.P045a.WH.W1.T1_assembly",
+      "SAP.P045a.WH.W1.T1_L1_proof",
+      "SAP.P045a.WH.W1.retained_T1",
+      "AronowAudit.P045.expect_finset_sum",
+      "AronowAudit.P045.bernoulli_coordinate_expect",
+      "AronowAudit.P045.co_members_marginal_four",
+      "AronowAudit.P045.four_arm_domains",
+      "AronowAudit.P045.co_members_arm_mean",
+      "AronowAudit.P045.bernoulli4_count_law",
+      "AronowAudit.P045.bernoulli_arm_count_conditional",
+      "AronowAudit.P045.witness_high_expect",
+      "AronowAudit.P045.witness_low_expect"
+    ],
+    "statement_definition": "SAP.P045a.T1WholeStatement",
+    "target_id": "P045-T1",
+    "theorem": "SAP.P045a.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P045.overall_group_unbiased",
+        "reason": "The aggregate correction supplies the one-group overall identity used in the Solution."
+      },
+      {
+        "lean_name": "AronowAudit.P045.selected_mean_expect",
+        "reason": "The aggregate correction supplies the uniform selection identity specialized in the Solution."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P045.bernoulli_group_ht_unbiased",
+      "AronowAudit.P045.co_members_group_ht_expectation",
+      "AronowAudit.P045.co_members_group_ht_formula",
+      "AronowAudit.P045.cr_group_arm_unbiased",
+      "AronowAudit.P045.marginal_estimator_correction",
+      "SAP.P045a.WH.W1.T2_whole",
+      "SAP.P045a.WH.W1.T2_assembly",
+      "SAP.P045a.WH.W1.T2_L1_proof",
+      "SAP.P045a.WH.W1.retained_T1",
+      "SAP.P045a.WH.W1.retained_T2",
+      "SAP.P045a.WH.W1.ratio_failure",
+      "SAP.P045a.WH.W1.contrasts_of_means",
+      "SAP.P045a.WH.W1.coupled_cr_domains",
+      "SAP.P045a.WH.W1.coupled_cr_support",
+      "SAP.P045a.WH.W1.cr_arm_denominator",
+      "SAP.P045a.WH.W1.sap_expect_sub",
+      "AronowAudit.P045.bernoulli_count_counterexample",
+      "AronowAudit.P045.bernoulli_direct_failure",
+      "AronowAudit.P045.bernoulli_direct_failure_means",
+      "AronowAudit.P045.bernoulli_ratio_counterexample",
+      "AronowAudit.P045.co_members_marginal_four",
+      "AronowAudit.P045.four_arm_domains",
+      "AronowAudit.P045.bernoulli_count_event_probability",
+      "AronowAudit.P045.expect_sub",
+      "AronowAudit.P045.witness_high_expect",
+      "AronowAudit.P045.witness_low_expect",
+      "AronowAudit.P045.uniform_first_stage_mean",
+      "AronowAudit.P045.Wave1.dvc_complement_average"
+    ],
+    "statement_definition": "SAP.P045a.T2WholeStatement",
+    "target_id": "P045-T2",
+    "theorem": "SAP.P045a.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P045.identical_group_selected_moments",
+        "reason": "The selected six-group counterexample already exports the estimator moments; this general identical-group calculation is a helper."
+      },
+      {
+        "lean_name": "AronowAudit.P045.three_unit_affine_moments",
+        "reason": "The additive local and full counterexample rows already export the retained moments; the general affine formulas are not part of the retained statement."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P045.singleton_group_finite_moments",
+      "AronowAudit.P045.singleton_variance_counterexample",
+      "SAP.P045a.WH.W1.T3_whole",
+      "SAP.P045a.WH.W1.T3_assembly",
+      "SAP.P045a.WH.W1.T3_L1_proof",
+      "SAP.P045a.WH.W1.T3_L2_proof",
+      "SAP.P045a.WH.W1.retained_T3",
+      "SAP.P045a.WH.W1.toy_local",
+      "SAP.P045a.WH.W1.toy_sample_variance",
+      "AronowAudit.P045.fixed_three_supports",
+      "AronowAudit.P045.cr_expect_average",
+      "AronowAudit.P045.cr_mass_probability",
+      "AronowAudit.P045.Wave1.dvc_selected_sample_variance"
+    ],
+    "statement_definition": "SAP.P045a.T3WholeStatement",
+    "target_id": "P045-T3",
+    "theorem": "SAP.P045a.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains mathematical parts (a)-(d), including the exact bias, nonnegativity, equality if and only if within-group effects are constant, both general singleton-drop biases, both dilated biases and their strict negativity criterion, and undefined corrected toy variance on every admissible toy assignment. Omits execution of an R implementation that propagates undefined arm variances to NA and emits a warning, and replacement of the reported toy output entries by NA. The optional regenerated six-by-six toy is not asserted.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P045.direct_group_cr_unbiased",
+        "reason": "Its mean identity is included in the complete direct-variance correction row."
+      },
+      {
+        "lean_name": "AronowAudit.P045.pop_var_nonnegative",
+        "reason": "Nonnegativity is already exported by the correction and singleton bias rows."
+      },
+      {
+        "lean_name": "AronowAudit.P045.pop_var_scale",
+        "reason": "The selected dilated-bias row already exports the scaled variance calculations."
+      },
+      {
+        "lean_name": "AronowAudit.P045.pop_var_zero_iff_constant",
+        "reason": "The correction row already exports the equality characterization."
+      },
+      {
+        "lean_name": "AronowAudit.P045.selected_direct_cr_unbiased",
+        "reason": "Its selected mean identity is included in the complete direct-variance correction row."
+      },
+      {
+        "lean_name": "AronowAudit.P045.singleton_sample_variance_undefined",
+        "reason": "The retained toy theorem directly states undefined required variance on every admissible toy assignment."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P045.Wave1.direct_variance_correction_proof",
+      "AronowAudit.P045.Wave1.singleton_drop_bias_proof",
+      "AronowAudit.P045.Wave1.singleton_drop_dilated_bias_proof",
+      "AronowAudit.P045.toy_required_direct_variance_undefined"
+    ],
+    "target_id": "P045-T4",
+    "theorem": "SAP.P045a.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.full_neighborhood_counterexample",
+      "SAP.P045a.WH.W1.T5_whole",
+      "SAP.P045a.WH.W1.T5_assembly",
+      "SAP.P045a.WH.W1.retained_T5",
+      "AronowAudit.P045.full_neighborhood_events",
+      "AronowAudit.P045.sum_tuple_succ"
+    ],
+    "statement_definition": "SAP.P045a.T5WholeStatement",
+    "target_id": "P045-T5",
+    "theorem": "SAP.P045a.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains mathematical event characterizations and all corrected/complement expectation formulas, including threshold sufficiency. Omits the cited numerical two-unit bias instance, literal execution of the repaired R code, recomputation of software weights, and outcome-generation or population-size changes. The general event identity is stated for a genuine finite design with positive event probability; the population contrast requires a positive population size and positive probabilities for both extreme events.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.event_ht_conditional",
+      "AronowAudit.P045.full_neighborhood_events",
+      "AronowAudit.P045.full_neighborhood_ht_correction"
+    ],
+    "target_id": "P045-T6",
+    "theorem": "SAP.P045a.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.faulty_copy_counterexample",
+      "AronowAudit.P045.faulty_copy_full_counterexample",
+      "SAP.P045a.WH.W1.T7_whole",
+      "SAP.P045a.WH.W1.T7_assembly",
+      "SAP.P045a.WH.W1.retained_T7"
+    ],
+    "statement_definition": "SAP.P045a.T7WholeStatement",
+    "target_id": "P045-T7",
+    "theorem": "SAP.P045a.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P045.one_deletion_bias_bounds",
+        "reason": "Both bounds are already included in the nonmonotone counterexample row."
+      },
+      {
+        "lean_name": "AronowAudit.P045.two_deletion_bias_bounds",
+        "reason": "Both bounds are already included in the nonmonotone counterexample row."
+      },
+      {
+        "lean_name": "AronowAudit.P045.zero_deletion_hajek_counterexample",
+        "reason": "Its zero-deletion value and bounds are already included in the nonmonotone row; the domain row covers every retained deletion count."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P045.deletion_domain_certificate",
+      "AronowAudit.P045.nonmonotone_hajek_counterexample"
+    ],
+    "target_id": "P045-T8",
+    "theorem": "SAP.P045a.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains corrected-copy symmetry, deletion/addition bounds and unchanged-upper recovery, all four exposure implications, the HT mixture and bias formulas and positive-spillover sign, and the Hajek zero-deletion bias and zero-to-one-deletion absolute-bias comparison. Omits the explicit matrix decomposition U+transpose(U)+diag(M), the separate zero-diagonal conclusion, implementation/output recomputation and simulation-reporting instructions, and any assertion about probability-approximation bias or approximate centering.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.corrected_copy_monotone",
+      "AronowAudit.P045.corrected_copy_symmetric",
+      "AronowAudit.P045.deletion_exposure_inclusions",
+      "AronowAudit.P045.hajek_bias_correction",
+      "AronowAudit.P045.missing_ties_ht_bias"
+    ],
+    "target_id": "P045-T9",
+    "theorem": "SAP.P045a.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P045.four_path_marking_certificate",
+        "reason": "This supports the existing sampler proof; the retained statement does not export the separate ball certificate."
+      },
+      {
+        "lean_name": "AronowAudit.P045.four_path_repeat_trace_mass",
+        "reason": "This retry calculation supports the existing sampler proof; the retained statement exports its terminal law."
+      },
+      {
+        "lean_name": "AronowAudit.P045.four_path_repeat_trace_sum",
+        "reason": "This convergent retry sum supports the existing sampler proof; the retained statement exports its terminal law."
+      },
+      {
+        "lean_name": "AronowAudit.P045.singleton_draw_bad_trace",
+        "reason": "The aggregate row already supplies the full separation-failure probability and treatment-law counterexample."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P045.Wave1.cluster_sampler_counterexample_proof",
+      "SAP.P045a.WH.W2.T10_whole",
+      "SAP.P045a.WH.W2.T10_assembly",
+      "SAP.P045a.WH.W2.T10_L1_proof",
+      "SAP.P045a.WH.W2.T10_L2_proof",
+      "SAP.P045a.WH.W2.T10_L3_proof",
+      "AronowAudit.P045.four_path_coded_draws",
+      "AronowAudit.P045.four_path_repeat_trace_mass",
+      "AronowAudit.P045.four_path_repeat_trace_sum",
+      "AronowAudit.P045.bernoulli_coordinate_expect",
+      "AronowAudit.P045.independent_pair_expect",
+      "AronowAudit.P045.Wave1.ClusterSampler.n3_proof",
+      "AronowAudit.P045.Wave1.ClusterSampler.n4_proof",
+      "AronowAudit.P045.Wave1.ClusterSampler.n5_proof",
+      "AronowAudit.P045.Wave1.ClusterSampler.n6_proof",
+      "AronowAudit.P045.Wave1.ClusterSampler.n7_proof"
+    ],
+    "statement_definition": "SAP.P045a.T10WholeStatement",
+    "target_id": "P045-T10",
+    "theorem": "SAP.P045a.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the deterministic guarantees for every admissible choice sequence and existence of a completed run; marked vertices and admissible choices are specified by definition. Omits all of the uniform-choice four-path instance, namely center-set probabilities and the resulting cluster-treatment distribution, and actual software replacement/recomputation.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.greedy_three_net_correction"
+    ],
+    "target_id": "P045-T11",
+    "theorem": "SAP.P045a.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.naive_denominator_counterexample",
+      "SAP.P045a.WH.W2.T12_whole",
+      "SAP.P045a.WH.W2.T12_assembly"
+    ],
+    "statement_definition": "SAP.P045a.T12WholeStatement",
+    "target_id": "P045-T12",
+    "theorem": "SAP.P045a.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.naive_bias_correction",
+      "AronowAudit.P045.naive_expansion_correct",
+      "AronowAudit.P045.spillover_cancellation_instance",
+      "SAP.P045a.WH.W2.T13_whole",
+      "SAP.P045a.WH.W2.T13_assembly",
+      "AronowAudit.P045.prob_nonneg",
+      "AronowAudit.P045.ht_total_unbiased",
+      "AronowAudit.P045.expect_div"
+    ],
+    "statement_definition": "SAP.P045a.T13WholeStatement",
+    "target_id": "P045-T13",
+    "theorem": "SAP.P045a.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the actual 450-unit witness and its arm means, pooled and printed values and direct contrasts, the 20-design/8-empty-subclass counts and possible subclass sizes, undefined printed ratios with a defined pooled ratio, and the general discrepancy identity for positive counts. Omits the explicit count 12 of the other assignments, the strict-positivity conclusion for positive numerators, and the equal-subclass-mean doubling assertion.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.pooling_counterexample",
+      "AronowAudit.P045.pooling_empty_subclass",
+      "AronowAudit.P045.pooling_population_counterexample"
+    ],
+    "target_id": "P045-T14",
+    "theorem": "SAP.P045a.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.Wave1.tract_mixture_bias_identified",
+      "AronowAudit.P045.pooled_ratio_correction",
+      "AronowAudit.P045.tract_partition",
+      "SAP.P045a.WH.W2.T15_whole",
+      "SAP.P045a.WH.W2.T15_assembly",
+      "AronowAudit.P045.Wave1.tract_mixture_expectation"
+    ],
+    "statement_definition": "SAP.P045a.T15WholeStatement",
+    "target_id": "P045-T15",
+    "theorem": "SAP.P045a.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains all four probability formulas and positivity, the printed assignment empty/nonempty-cell and HT calculations, support sizes 20 and 19, and all unconditional and restricted-support means. Omits separately stated population totals 20 and 10 and true effect 1, the equivalence between a nonempty d11 cell and adjacency of the treated pair, and identification of the exceptional adjacent pair {3,9} with an empty d00 cell. The theorem still states that the unconditional contrast mean is 1.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.empty_cell_counterexample"
+    ],
+    "target_id": "P045-T16",
+    "theorem": "SAP.P045a.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T17_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.empty_hajek",
+      "AronowAudit.P045.empty_ht_total",
+      "AronowAudit.P045.nonempty_ht_conditional"
+    ],
+    "statement_definition": "SAP.P045b.T17Statement",
+    "supporting_declarations": [
+      "AronowAudit.P045.ht_unbiased_headline"
+    ],
+    "supporting_definitions": [
+      "SAP.P045b.exposureSampleMean"
+    ],
+    "target_id": "P045-T17",
+    "theorem": "SAP.P045b.T17"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T18_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.coordinate_removal_correct",
+      "AronowAudit.P045.coordinate_removal_instance",
+      "AronowAudit.P045.reindexed_outcome_unique"
+    ],
+    "statement_definition": "SAP.P045b.T18Statement",
+    "target_id": "P045-T18",
+    "theorem": "SAP.P045b.T18"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T19_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.fixed_count_peers_correct"
+    ],
+    "statement_definition": "SAP.P045b.T19Statement",
+    "target_id": "P045-T19",
+    "theorem": "SAP.P045b.T19"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T20_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.within_hops_counterexample"
+    ],
+    "statement_definition": "SAP.P045b.T20Statement",
+    "target_id": "P045-T20",
+    "theorem": "SAP.P045b.T20"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T21_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.epsilon_net_correction"
+    ],
+    "statement_definition": "SAP.P045b.T21Statement",
+    "supporting_declarations": [
+      "AronowAudit.P045.within_hops_counterexample"
+    ],
+    "target_id": "P045-T21",
+    "theorem": "SAP.P045b.T21"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T22_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P045.sign_mean_chebyshev",
+        "reason": "Included by the complete mean_se_counterexample assembly."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P045.mean_se_counterexample",
+      "AronowAudit.P045.mean_se_finite_obstruction",
+      "AronowAudit.P045.sign_mean_finite_moments"
+    ],
+    "statement_definition": "SAP.P045b.T22Statement",
+    "supporting_declarations": [
+      "AronowAudit.P045.bernoulli_coordinate_expect"
+    ],
+    "target_id": "P045-T22",
+    "theorem": "SAP.P045b.T22"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T23_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.absolute_variance_consistency",
+      "AronowAudit.P045.mean_square_bound",
+      "AronowAudit.P045.nonvanishing_variance_counterexample",
+      "AronowAudit.P045.table_standard_error_comparison"
+    ],
+    "statement_definition": "SAP.P045b.T23Statement",
+    "supporting_declarations": [
+      "AronowAudit.P045.mean_se_counterexample",
+      "AronowAudit.P045.bernoulli_coordinate_expect"
+    ],
+    "target_id": "P045-T23",
+    "theorem": "SAP.P045b.T23"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T24_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.dilated_effect_labels",
+      "AronowAudit.P045.total_direct_indirect_identity"
+    ],
+    "statement_definition": "SAP.P045b.T24Statement",
+    "target_id": "P045-T24",
+    "theorem": "SAP.P045b.T24"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T25_glue",
+    "decision": "refuted",
+    "description": "Direct refutation of the printed within-group Bernoulli unbiasedness assertion, independent of any first-stage design.",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P045.Wave1.bernoulli_unbiasedness_as_printed_refuted",
+        "reason": "Negation of the larger conjunction does not isolate the group assertion; its already proved N1/N2 witness facts give the direct refutation."
+      }
+    ],
+    "rows_used": [],
+    "statement_definition": "SAP.P045b.T25Statement",
+    "supporting_declarations": [
+      "AronowAudit.P045.Wave1.BernoulliUnbiasedness.n1_proof",
+      "AronowAudit.P045.Wave1.BernoulliUnbiasedness.n2_proof"
+    ],
+    "target_id": "P045-T25",
+    "theorem": "SAP.P045b.T25"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T26_glue",
+    "decision": "restricted",
+    "description": "Failure of the guarantee extended to the package statistic that drops singleton-arm variance contributions.",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Only refutes the extension to the singleton-drop software statistic on 0 < m_g < n_g. It does not refute the Hudgens–Halloran estimator on its defined domain with at least two units in each required arm, or establish the printed direct-effect variance values as values of that estimator.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.Wave1.direct_variance_as_printed_refuted"
+    ],
+    "statement_definition": "SAP.P045b.T26Statement",
+    "target_id": "P045-T26",
+    "theorem": "SAP.P045b.T26"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T27_glue",
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.Wave1.all_control_as_documented_refuted"
+    ],
+    "statement_definition": "SAP.P045b.T27Statement",
+    "target_id": "P045-T27",
+    "theorem": "SAP.P045b.T27"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T29_glue",
+    "decision": "refuted",
+    "description": "Refutes the documented universal contract for the package sampler as coded, including its singleton-number rule and retry traces.",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.Wave1.cluster_sampler_as_documented_refuted"
+    ],
+    "statement_definition": "SAP.P045b.T29Statement",
+    "target_id": "P045-T29",
+    "theorem": "SAP.P045b.T29"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T30_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.ht_unbiased_headline"
+    ],
+    "statement_definition": "SAP.P045b.T30Statement",
+    "target_id": "P045-T30",
+    "theorem": "SAP.P045b.T30"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T31_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.contagion_decomposition"
+    ],
+    "statement_definition": "SAP.P045b.T31Statement",
+    "target_id": "P045-T31",
+    "theorem": "SAP.P045b.T31"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T32_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P045.ExposureVariance.clique_exact_moments",
+        "reason": "Included by clique_variance_counterexample."
+      },
+      {
+        "lean_name": "AronowAudit.P045.ExposureVariance.clique_fixed_table_counterexamples",
+        "reason": "The all-fixed-table result includes both representative tables."
+      },
+      {
+        "lean_name": "AronowAudit.P045.ExposureVariance.clique_joint_moments",
+        "reason": "Included by clique_variance_counterexample."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P045.ExposureVariance.clique_all_fixed_table_counterexamples",
+      "AronowAudit.P045.ExposureVariance.clique_exact_profile_estimates",
+      "AronowAudit.P045.ExposureVariance.clique_full_counts",
+      "AronowAudit.P045.ExposureVariance.clique_probability_laws",
+      "AronowAudit.P045.ExposureVariance.clique_real_variance_shortfall",
+      "AronowAudit.P045.ExposureVariance.clique_relabeling_verified",
+      "AronowAudit.P045.ExposureVariance.clique_retained_weights",
+      "AronowAudit.P045.ExposureVariance.clique_structure",
+      "AronowAudit.P045.ExposureVariance.clique_variance_counterexample"
+    ],
+    "statement_definition": "SAP.P045b.T32Statement",
+    "supporting_declarations": [
+      "AronowAudit.P045.ExposureVariance.clique_observation_marginal",
+      "AronowAudit.P045.ExposureVariance.clique_observation_independent_mass"
+    ],
+    "target_id": "P045-T32",
+    "theorem": "SAP.P045b.T32"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "bridge": "SAP.P045b.Bridge.T33_glue",
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P045.ExposureVariance.exact_variance_conservative",
+      "AronowAudit.P045.ExposureVariance.exact_variance_surplus",
+      "AronowAudit.P045.ExposureVariance.ht_unbiased"
+    ],
+    "statement_definition": "SAP.P045b.T33Statement",
+    "target_id": "P045-T33",
+    "theorem": "SAP.P045b.T33"
+  }
+]

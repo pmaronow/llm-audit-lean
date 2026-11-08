@@ -1,0 +1,166 @@
+import SAP.P033.Challenge
+
+open MeasureTheory ProbabilityTheory Set Filter
+open scoped BigOperators Topology
+open SAP.P033
+
+set_option maxHeartbeats 800000
+
+noncomputable section
+
+-- These checks do not invoke any of the five Challenge theorems.
+
+-- T1: the stipulated Gaussian experiment is a genuine probability experiment,
+-- with independent coordinates and positive standard errors.
+example : IsProbabilityMeasure (rdConditionalLaw m1Treated m1Control) := by
+  unfold rdConditionalLaw
+  infer_instance
+
+example : iIndepFun (fun si (Y : (Fin 2 × Fin 4) → ℝ) => Y si)
+    (rdConditionalLaw m1Treated m1Control) := by
+  exact iIndepFun_pi (X := fun _ => id) (fun _ => aemeasurable_id)
+
+example : 0 < m1SELinear ∧ 0 < m1SECorrected := by
+  constructor <;> dsimp [m1SELinear, m1SECorrected] <;> positivity
+
+example : (∑ i, m1Linear i * m1Distance i) = 0 ∧
+    (∑ i, m1Corrected i) = 1 ∧
+    rdEstimator m1Linear m1Observed = 4 := by
+  norm_num [m1Linear, m1Distance, m1Corrected, m1Bias, m1BiasMoment,
+    m1Curvature, rdEstimator, m1Observed, Fin.sum_univ_succ]
+
+-- T2(a): every premise holds for two identical standard normals; the theorem
+-- correctly permits arbitrary dependence between the two estimators.
+example : ∃ (μ : Measure ℝ) (A B : ℝ → ℝ) (τ σA σB c : ℝ),
+    IsProbabilityMeasure μ ∧ 0 < σA ∧ 0 < σB ∧ 0 < c ∧
+    HasLaw A (gaussianReal τ ⟨σA^2, sq_nonneg σA⟩) μ ∧
+    HasLaw B (gaussianReal τ ⟨σB^2, sq_nonneg σB⟩) μ := by
+  refine ⟨gaussianReal 0 1, id, id, 0, 1, 1, 1, inferInstance,
+    by norm_num, by norm_num, by norm_num, ?_, ?_⟩
+  all_goals
+    have hv : (⟨(1:ℝ)^2, sq_nonneg (1:ℝ)⟩ : NNReal) = 1 := by
+      ext
+      norm_num
+    rw [hv]
+    exact HasLaw.id
+
+-- T2(f): finite moments are available in a nonconstant example.
+example : MemLp (id : ℝ → ℝ) 2 (gaussianReal 0 1) ∧
+    MemLp (fun x : ℝ => 2*x) 2 (gaussianReal 0 1) := by
+  have h : MemLp (id : ℝ → ℝ) 2 (gaussianReal 0 1) :=
+    memLp_id_gaussianReal' 2 (by norm_num)
+  exact ⟨h, h.const_mul 2⟩
+
+example : IsProbabilityMeasure (studyDataLaw 1 ∅) ∧
+    IsProbabilityMeasure (studyDataLaw 1 Finset.univ) ∧
+    (∅ : Finset (Fin 1)).card ≠ (Finset.univ : Finset (Fin 1)).card := by
+  constructor
+  · unfold studyDataLaw rdConditionalLaw
+    infer_instance
+  constructor
+  · unfold studyDataLaw rdConditionalLaw
+    infer_instance
+  · decide
+
+example : (∀ i, m2Perturbation (m1Distance i) = 0) ∧
+    rdEffect m2Treated m1Control 0 = 24 := by
+  constructor
+  · intro i
+    fin_cases i <;> norm_num [m2Perturbation, m1Distance]
+  · norm_num [rdEffect, m2Treated, m1Treated, m1Control, m2Perturbation]
+
+-- T3: the sign space is inhabited and the estimators take nonzero values.
+example : Nonempty (Fin 10 → Bool) ∧
+    clusterEstimator clusterLinear (fun g => decide (g = 5)) = 2 ∧
+    clusterEstimator clusterCorrected (fun g => decide (g = 5)) = 4 := by
+  constructor
+  · infer_instance
+  norm_num [clusterEstimator, clusterLinear, clusterCorrected, signShock,
+    Fin.sum_univ_succ]
+
+-- Noisy-cell cancellation occurs even when individual residuals are nonzero.
+example : (∑ i, nnResidual ![(1:ℝ),-1,1,-1,1] i) = 0 ∧
+    nnResidual ![(1:ℝ),-1,1,-1,1] 0 ≠ 0 := by
+  constructor
+  · norm_num [nnResidual, Fin.sum_univ_succ] <;> ring
+  · norm_num [nnResidual, Fin.sum_univ_succ]
+
+-- T4: small admissible n has a strictly positive Gram determinant expression.
+example : 3 ≤ (3:ℕ) ∧
+    0 < shrinkingMoment 3 0 * shrinkingMoment 3 2 - shrinkingMoment 3 1 ^ 2 ∧
+    0 < shrinkingVariance 3 := by
+  norm_num [shrinkingMoment, shrinkingKernel, shrinkingDistance,
+    shrinkingVariance, shrinkingIntercept, Fin.sum_univ_succ]
+
+-- All hypotheses of the independent-cluster plug-in identity, with positive
+-- common variance. This is an explicit product of two standard normals.
+def testPi : Measure (Fin 2 → ℝ) := Measure.pi (fun _ => gaussianReal 0 1)
+
+example : IsProbabilityMeasure testPi ∧
+    (∀ g : Fin 2, MemLp (fun ω : Fin 2 → ℝ => ω g) 2 testPi) ∧
+    iIndepFun (fun g (ω : Fin 2 → ℝ) => ω g) testPi ∧
+    (∀ g : Fin 2, (∫ ω, ω g ∂testPi) = 0) ∧
+    (∀ g : Fin 2, variance (fun ω : Fin 2 → ℝ => ω g) testPi = 1) := by
+  have hlaw (g : Fin 2) : HasLaw (fun ω : Fin 2 → ℝ => ω g)
+      (gaussianReal 0 1) testPi :=
+    (measurePreserving_eval (fun _ : Fin 2 => gaussianReal 0 1) g).hasLaw
+  refine ⟨inferInstanceAs (IsProbabilityMeasure (Measure.pi
+    (fun _ : Fin 2 => gaussianReal 0 1))), ?_, ?_, ?_, ?_⟩
+  · intro g
+    exact (hlaw g).memLp (memLp_id_gaussianReal' 2 (by norm_num))
+  · exact iIndepFun_pi (X := fun _ => id) (fun _ => aemeasurable_id)
+  · intro g
+    rw [(hlaw g).integral_eq, integral_id_gaussianReal]
+  · intro g
+    rw [(hlaw g).variance_eq, variance_id_gaussianReal]
+    rfl
+
+-- The separate finite-type second-moment premise is satisfiable too.
+example : ∃ Z : Fin 10 → Unit → ℝ, ∀ g,
+    finiteMean (fun ω => (Z g ω - sampleMean (fun j => Z j ω))^2) = (9/10:ℝ) := by
+  let t : ℝ := Real.sqrt (9/10)
+  have ht : t^2 = 9/10 := Real.sq_sqrt (by norm_num)
+  let v : Fin 10 → ℝ := fun g => if g.val < 5 then t else -t
+  have hm : sampleMean v = 0 := by
+    norm_num [v, sampleMean, Fin.sum_univ_succ] <;> ring
+  have hv (g : Fin 10) : (v g)^2 = 9/10 := by
+    dsimp [v]
+    split_ifs <;> simpa only [neg_sq] using ht
+  refine ⟨fun g _ => v g, ?_⟩
+  intro g
+  change finiteMean (fun _ : Unit => (v g - sampleMean v)^2) = 9/10
+  rw [hm]
+  simpa [finiteMean] using hv g
+
+-- T4 nested-cell hypotheses have positive cell and cluster counts.
+example : ∃ (m : Fin 2 → ℕ) (owner : Fin 2 → Fin 1)
+    (ell : Fin 2 → ℝ) (y : (c : Fin 2) → Fin (m c) → ℝ),
+    (∀ c, 4 ≤ m c) ∧ owner 0 = 0 ∧ ell 0 ≠ 0 ∧
+      ∃ i j : Fin (m 0), y 0 i ≠ y 0 j := by
+  refine ⟨fun _ => 5, fun _ => 0, fun _ => 1,
+    fun _ i => (i:ℝ), ?_, rfl, by norm_num, 0, 1, by norm_num⟩
+  intro c
+  norm_num
+
+-- T5: genuine individual compliers with treatment-induced binary outcomes.
+example : countToyTreatment false 5 = 0 ∧ countToyTreatment true 5 = 1 ∧
+    countToyPotential true false 0 5 = 0 ∧
+    countToyPotential true true 0 5 = 1 ∧
+    countToyObserved true 0 5 = 1 := by
+  norm_num [countToyTreatment, countToyPotential, countToyObserved,
+    eligibleBaseline, binaryIndicator]
+
+example : waldRatio 30 25 50 0 = 1/10 ∧
+    0 < binaryPopulationVariance (1/4) ∧
+    sampleVariance ![(10:ℝ),50] = 800 ∧
+    sampleVariance ![(20:ℝ),100] = 3200 := by
+  norm_num [waldRatio, binaryPopulationVariance, sampleVariance,
+    sampleMean, Fin.sum_univ_succ]
+
+-- Every general scaling premise, instantiated with the concrete toy data.
+example : ∃ (n : ℕ) (y : Fin n → ℝ) (yE yI dE dI sd scale : ℝ),
+    2 ≤ n ∧ 0 < scale ∧ dE ≠ dI ∧ 0 < sd ∧ sd = sampleSD y ∧
+      waldRatio yE yI dE dI = 1/10 := by
+  refine ⟨2, ![10,50], 30, 25, 50, 0, Real.sqrt 800, 2,
+    by norm_num, by norm_num, by norm_num, by positivity, ?_, by norm_num [waldRatio]⟩
+  norm_num [sampleSD, sampleVariance, sampleMean, Fin.sum_univ_succ]

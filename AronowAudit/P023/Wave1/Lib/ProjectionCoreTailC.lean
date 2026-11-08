@@ -7,9 +7,10 @@ import Mathlib.Tactic.ComputeDegree
 import Mathlib.Tactic.IntervalCases
 
 /-!
-Population projection foundations. The supported-measure and bounded-degree
-versions connect polynomial projections to density comparison and population
-normal equations.
+Public population projection foundations. The finite Gram-map proofs are
+restated from the proved private helpers in GP023B2b, with new public names.
+The supported-measure and bounded-degree versions provide the general bridge
+needed by the density comparison and the population normal equations.
 -/
 
 namespace AronowAudit.P023.Wave1
@@ -58,6 +59,37 @@ theorem tc04_eq_interval (f : ℝ → ℝ) :
     ← intervalIntegral.integral_of_le (show (-1 : ℝ) ≤ 1 by norm_num)]
   norm_num
 
+theorem tc04_reflect_integral (f : ℝ → ℝ) :
+    expectation uniformMargins (fun x => f (-x)) = expectation uniformMargins f := by
+  rw [tc04_eq_interval, tc04_eq_interval, intervalIntegral.integral_comp_neg]
+  norm_num
+
+theorem tc04_power (j : ℕ) :
+    expectation uniformMargins (fun x => x ^ j) =
+      (1 / 2 : ℝ) * ((1 : ℝ) ^ (j + 1) - (-1 : ℝ) ^ (j + 1)) / (j + 1) := by
+  rw [tc04_eq_interval, integral_pow]
+  ring
+
+theorem tc04_party_power (j : ℕ) :
+    expectation uniformMargins (fun x => party x * x ^ j) = 1 / (2 * (j + 1)) := by
+  have he : (fun x : ℝ => party x * x ^ j) = (Ici (0 : ℝ)).indicator (fun x => x ^ j) := by
+    funext x
+    by_cases hx : 0 ≤ x <;> simp [party, hx, Set.indicator]
+  have hi : Ici (0 : ℝ) ∩ Icc (-1 : ℝ) 1 = Icc (0 : ℝ) 1 := by
+    ext x
+    simp only [mem_inter_iff, Set.mem_Ici, Set.mem_Icc]
+    constructor
+    · rintro ⟨h0, _, h1⟩
+      exact ⟨h0, h1⟩
+    · rintro ⟨h0, h1⟩
+      exact ⟨h0, by linarith, h1⟩
+  unfold expectation uniformMargins
+  rw [integral_smul_measure, he, integral_indicator measurableSet_Ici,
+    Measure.restrict_restrict measurableSet_Ici, hi, integral_Icc_eq_integral_Ioc,
+    ← intervalIntegral.integral_of_le (show (0 : ℝ) ≤ 1 by norm_num),
+    integral_pow]
+  simp only [one_pow, zero_pow (Nat.succ_ne_zero j)]
+  norm_num <;> ring
 
 def tc04_poly (J : ℕ) (a : Fin (J + 1) → ℝ) : Polynomial ℝ :=
   ∑ i, Polynomial.C (a i) * Polynomial.X ^ (i : ℕ)
@@ -388,6 +420,24 @@ theorem tc04_projection_spec (μ : Measure ℝ) [IsFiniteMeasure μ] (hs : Margi
     (J : ℕ) : IsProjection μ J (projection μ J) :=
   Classical.epsilon_spec (tc04_projection_exists μ hs hz J)
 
+/-- Generic uniqueness from square nondegeneracy. -/
+theorem tc04_projection_unique (μ : Measure ℝ) [IsFiniteMeasure μ] (hs : MarginSupport μ)
+    (hz : ∀ p : Polynomial ℝ, expectation μ (fun x => p.eval x^2)=0 → p=0)
+    (J : ℕ) (p q : Polynomial ℝ) (hp : IsProjection μ J p) (hq : IsProjection μ J q) : p=q := by
+  have hd : (p-q).natDegree ≤ J :=
+    (Polynomial.natDegree_sub_le p q).trans (max_le hp.1 hq.1)
+  have h1 := tc04_projection_test μ hs J p (p-q) hp hd
+  have h2 := tc04_projection_test μ hs J q (p-q) hq hd
+  apply sub_eq_zero.mp
+  apply hz
+  have he : (fun x => (p-q).eval x^2) =
+      (fun x => (party x-q.eval x)*(p-q).eval x - (party x-p.eval x)*(p-q).eval x) := by
+    funext x
+    simp only [Polynomial.eval_sub]
+    ring
+  unfold expectation at *
+  rw [he, integral_sub (tc04_supported_residual_mul_integrable μ hs q (p-q))
+    (tc04_supported_residual_mul_integrable μ hs p (p-q)), h2, h1, sub_self]
 
 /-- Every solution of the projection equations is a least-squares minimizer. -/
 theorem tc04_projection_minimum (μ : Measure ℝ) [IsFiniteMeasure μ] (hs : MarginSupport μ)

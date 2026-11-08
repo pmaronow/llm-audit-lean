@@ -33,6 +33,8 @@ theorem mar_vector_paper_support_cef :
     ⟨MarSelection.n1_proof, MarSelection.n2_proof, MarSelection.n3_proof,
       MarSelection.n4_proof, MarSelection.n5_proof, MarSelection.n6_proof, MarSelection.n7_proof⟩
 
+example : AronowAudit.P001.Wave1.MarVector.Target := mar_vector_paper_support_cef
+
 end
 
 end AronowAudit.P001.Wave1

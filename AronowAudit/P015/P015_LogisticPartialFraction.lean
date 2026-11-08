@@ -1,8 +1,10 @@
 /-
+Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
+Authors: P. M. Aronow audit contributors
 -/
-/- The logistic partial fractions are derived from Mathlib's theorem
-`cot_series_rep'` (Chris Birkbeck, Apache-2.0).
+/- The logistic partial fractions are derived from the pinned Mathlib theorem
+`cot_series_rep'` (Chris Birkbeck, Apache-2.0). No donor proof source is copied.
 -/
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
 import Mathlib.Analysis.SpecialFunctions.Sigmoid
@@ -137,5 +139,9 @@ lemma hasSum_partial_fractions (x : ℝ) : HasSum (term x) (Real.sigmoid x-1/2) 
     · rw [Real.sigmoid_neg]
       ring
 
+#print axioms hasSum_partial_fractions
+#print axioms hasSum_nonnegative
+
+#print axioms inverse_im
 end
 end AronowAudit.P015.LogisticPartialFraction

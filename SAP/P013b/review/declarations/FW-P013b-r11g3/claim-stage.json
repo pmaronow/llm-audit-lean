@@ -1,0 +1,20 @@
+[
+  {
+    "theorem": "SAP.P013b.T27",
+    "target_id": "P013-T27",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical formal reading assumes binary exposure-specific wearing potentials, Conditions 1 and 2, the Section 10 five-category mapping, and positive exposure probabilities, and concludes the four differences of population proportions and HT unbiasedness. Defs/Part10.lean:79-93 states all of these. Codes 0,1,2,3,4 correspond to d000,d001,d011,d101,d111. Observed outcomes are defined by consistent selection of the fixed potential; the indicator-sum identity is also explicit. Positive finite design weights and positive N exclude undefined quantities. The injection represents the analyzed subset of the full student network. The loopless symmetric within-school graph matches Section 10's undirected school adjacency graph, independently checked in the paper. Quantifying arbitrary positive N and finite designs includes the stated design and N=2050. No empirical numeric point estimates or missing-outcome identification are required by the formal assertion, and none is claimed. A concrete nonconstant binary instance satisfying every hypothesis compiles in scratch/Nonvacuity.lean, with all five exposure probabilities 1/5."
+  },
+  {
+    "theorem": "SAP.P013b.T26",
+    "target_id": "P013-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "All formal clauses (a)-(h) appear in Defs/Part10.lean:16-76: exact counts and ratios; inclusion plus an explicit excluded C assignment; all marginal and distinct-school pair probabilities; four-cell pair laws; signed differences and inequality for every distinct school pair; individual and same-school student exposure preservation; and different-school no-exposure joint probabilities. The supports are the full Cartesian product of uniformly selected two-of-four subsets and the full 28-of-56 powerset respectively, rather than placeholders or assumed probability tables. The student law is a normalized nonnegative finite law, common to both designs and multiplied by the uniform school law, so the canonical independence condition is enforced. An arbitrary student code in Fin 4 includes the exact own/peer Section 10 code and strengthens the preservation assertion without excluding any case of the claim. No claim about changed Table 2 values is added. Both supports and a common student law with same-school and different-school students have compiled concrete instances in scratch/Nonvacuity.lean."
+  },
+  {
+    "theorem": "SAP.P013b.T25",
+    "target_id": "P013-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part9.lean:16-83 states every canonical counterexample clause (a)-(e): the exact first-seven-blocks support witness and its positive C and zero B probabilities; a binary no-interference school population with exactly two hosted outcomes equal to one and all unhosted outcomes zero; consistent observed outcomes; HT and full ordered-pair expression (7) formulas; their expectations and variance; equality for correct positive pair input; both wrong-C-input biases (52/81 and -1/27), the strict nonconservativity inequality, and C's correct-input value 108/55. Marginal and relevant pair probabilities are proved as part of this same statement, not left as unverified witness assumptions. The generic moment premises are jointly satisfiable, as compiled in scratch/Nonvacuity.lean with independent fair host bits and p=1/4, q=27/110; both full school supports also have explicit members. This theorem affirms the canonical counterexample, which itself says the article's block-randomization sentence is correct. Its docstring identifies the refuted reading as identification of two specified lotteries and does not refute the printed sentence or expression (7) with the correct design probabilities. Exact rational recalculation independently matches all numeric conclusions."
+  }
+]

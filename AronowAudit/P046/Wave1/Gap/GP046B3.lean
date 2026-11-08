@@ -297,6 +297,8 @@ theorem population_weighted_criterion_proof (M : Study) (hM : ValidStudy M)
       filter_upwards [heq] with o ho
       rw [ho]
 
+example : type_of% @AronowAudit.P046.population_weighted_criterion := population_weighted_criterion_proof
+
 /-- Weighted risk expansion and Cauchy--Schwarz with finite second moments. -/
 theorem risk_expansion_cauchy_proof (M : Study) (hM : ValidStudy M)
     (g : ℝ → ℝ) (hg : MemLp (fun o => g (W o)) 2 M.law) :
@@ -339,6 +341,8 @@ theorem risk_expansion_cauchy_proof (M : Study) (hM : ValidStudy M)
     rw [integral_congr_ae hprod, integral_congr_ae (hsq Y1),
       integral_congr_ae (hsq (fun o => g (W o)))] at hc
     exact hc
+
+example : type_of% @AronowAudit.P046.risk_expansion_cauchy := risk_expansion_cauchy_proof
 
 end
 end AronowAudit.P046.Wave1

@@ -30,5 +30,7 @@ theorem H1_paper :
     AlgorithmSupport.n2_proof AlgorithmSupport.n3_proof AlgorithmSupport.n4_proof
     AlgorithmSupport.n5_proof AlgorithmSupport.n6_proof
 
+example : AronowAudit.P002.Wave1.H1.Target := H1_paper
+
 end
 end AronowAudit.P002.Wave1

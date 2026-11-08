@@ -1,0 +1,143 @@
+import SAP.P019a.Defs
+open SAP.P019a
+open scoped BigOperators
+open Classical
+noncomputable section
+set_option maxRecDepth 20000
+set_option maxHeartbeats 2000000
+
+namespace AuditJoint
+
+abbrev Assign := Fin 5 → Bool
+abbrev Ω := Assign × (Bool × Bool)
+
+def P : FiniteLaw Ω where
+  mass := fun _ => 1/128
+  nonneg := by intro; norm_num
+  total := by norm_num [Fintype.card_fun, Fintype.card_prod]
+
+def response (c x a : Bool) : ℕ :=
+  (if c then 1 else 0) + (if x && a then 1 else 0)
+
+def S (j : Fin 5) : Study Ω where
+  law := P
+  W := fun ω => if ω.2.1 then 1 else 0
+  X := fun ω => ω.2.2
+  Y := fun ω => ω.2.2
+  Z := fun ω => ω.1 j
+  V := fun ω => response ω.2.1 ω.2.2 (ω.1 j)
+
+theorem count_assignment (j : Fin 5) (z : Bool) :
+    (∑ b : Assign, (if b j = z then (1 : ℝ) else 0)) = 16 := by
+  have heq (b : Assign) : (if b j = z then (1 : ℝ) else 0) =
+      ∏ k : Fin 5, (if k = j then (if b k = z then (1 : ℝ) else 0) else 1) := by
+    simp
+  simp_rw [heq]
+  rw [← Fintype.prod_sum (fun (k : Fin 5) (x : Bool) =>
+    if k = j then (if x = z then (1 : ℝ) else 0) else 1)]
+  fin_cases j <;> cases z <;> norm_num [Fintype.sum_bool, Fin.prod_univ_succ]
+
+theorem assignment_sum (j : Fin 5) (h : Bool → ℝ) :
+    (∑ b : Assign, h (b j)) = 16 * (h true + h false) := by
+  have heq (b : Assign) : h (b j) =
+      (if b j = true then (1 : ℝ) else 0) * h true +
+      (if b j = false then (1 : ℝ) else 0) * h false := by
+    cases b j <;> simp
+  simp_rw [heq]
+  rw [Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.sum_mul,
+    count_assignment, count_assignment]
+  ring
+
+theorem marginal_mean (j : Fin 5) (f : Bool → Bool → Bool → ℝ) :
+    P.mean (fun ω => f ω.2.1 ω.2.2 (ω.1 j)) =
+      (f true true true + f true true false + f true false true + f true false false +
+        f false true true + f false true false + f false false true + f false false false)/8 := by
+  unfold FiniteLaw.mean P
+  rw [Fintype.sum_prod_type]
+  simp only [Fintype.sum_prod_type, Fintype.sum_bool]
+  simp only [Finset.sum_add_distrib]
+  simp_rw [← Finset.mul_sum]
+  rw [assignment_sum, assignment_sum, assignment_sum, assignment_sum]
+  ring
+
+theorem masked_mean (j : Fin 5) (z y : Bool) (f : Bool → Bool → Bool → ℝ)
+    (d : DecidablePred ((S j).cell z y)) :
+    P.mean (fun ω => @ite ℝ ((S j).cell z y ω) (d ω) (f ω.2.1 ω.2.2 (ω.1 j)) 0) =
+      P.mean (fun ω => (fun c x a => if a = z ∧ x = y then f c x a else 0)
+        ω.2.1 ω.2.2 (ω.1 j)) := by
+  apply congrArg P.mean
+  funext ω
+  by_cases h : ω.1 j = z ∧ ω.2.2 = y <;> simp [Study.cell, S, h]
+
+theorem law_common : ∀ j, (S j).law = P := by intro; rfl
+
+theorem monotone (j : Fin 5) : (S j).monotone := by
+  intro ω hp hy
+  exact hy
+
+theorem noLiars (j : Fin 5) : (S j).noLiarsDesign := by
+  intro ω hp
+  rcases ω with ⟨b,c,x⟩
+  cases c <;> cases x <;> cases hz : b j <;> norm_num [S, bitVal, hz, response]
+
+theorem independent (j : Fin 5) : (S j).treatmentIndependent := by
+  intro f z
+  change P.mean (fun ω => if ω.1 j = z then f (if ω.2.1 then 1 else 0) ω.2.2 ω.2.2 else 0) =
+    P.mean (fun ω => if ω.1 j = z then 1 else 0) *
+      P.mean (fun ω => f (if ω.2.1 then 1 else 0) ω.2.2 ω.2.2)
+  rw [marginal_mean j (fun c x a => if a = z then f (if c then 1 else 0) x x else 0),
+    marginal_mean j (fun _ _ a => if a = z then 1 else 0),
+    marginal_mean j (fun c x _ => f (if c then 1 else 0) x x)]
+  cases z <;> norm_num <;> ring
+
+theorem nondegenerate (j : Fin 5) : (S j).nondegenerate := by
+  classical
+  constructor
+  · intro z y
+    change 0 < P.prob ((S j).cell z y) ∧
+      0 < P.cv (fun ω => ((S j).V ω : ℝ)) ((S j).cell z y)
+    simp only [FiniteLaw.cv, FiniteLaw.ce, FiniteLaw.prob]
+    have hv : (S j).V = (fun ω : Ω => response ω.2.1 ω.2.2 (ω.1 j)) := rfl
+    simp only [hv]
+    rw [masked_mean j z y (fun _ _ _ => 1) _,
+      masked_mean j z y (fun c x a => (response c x a : ℝ)^2) _,
+      masked_mean j z y (fun c x a => (response c x a : ℝ)) _]
+    rw [marginal_mean j (fun _ x a => if a = z ∧ x = y then 1 else 0),
+      marginal_mean j (fun c x a => if a = z ∧ x = y then (response c x a : ℝ)^2 else 0),
+      marginal_mean j (fun c x a => if a = z ∧ x = y then (response c x a : ℝ) else 0)]
+    cases z <;> cases y <;> norm_num [response]
+  · change 0 < P.mean (fun ω => (bitVal (ω.1 j))^2) -
+      (P.mean (fun ω => bitVal (ω.1 j)))^2 ∧
+      0 < P.mean (fun ω => (bitVal (ω.2.2))^2) -
+      (P.mean (fun ω => bitVal (ω.2.2)))^2
+    rw [marginal_mean j (fun _ _ a => (bitVal a)^2),
+      marginal_mean j (fun _ _ a => bitVal a),
+      marginal_mean j (fun _ x _ => (bitVal x)^2),
+      marginal_mean j (fun _ x _ => bitVal x)]
+    norm_num [bitVal]
+
+theorem stable : jointAssignmentStable P S := by
+  intro f a
+  have pall (ω : Ω) : (∀ j, (S j).Z ω = a j) ↔ ω.1 = a := by
+    change (∀ j, ω.1 j = a j) ↔ ω.1 = a
+    exact funext_iff.symm
+  have pmarg (j : Fin 5) : P.prob (fun ω => (S j).Z ω = a j) = 1/2 := by
+    change P.mean (fun ω => if ω.1 j = a j then 1 else 0) = 1/2
+    rw [marginal_mean j (fun _ _ z => if z = a j then 1 else 0)]
+    cases a j <;> norm_num
+  simp_rw [pall, pmarg]
+  unfold FiniteLaw.mean P
+  rw [Fintype.sum_prod_type, Fintype.sum_prod_type]
+  simp only [S]
+  rw [Finset.sum_comm]
+  simp [Fintype.sum_prod_type, mul_ite]
+  ring
+
+-- This example constructs EVERY premise of T10 and uses no audited theorem.
+example : ∃ (Q : FiniteLaw Ω) (R : Fin 5 → Study Ω),
+    (∀ j, (R j).law = Q) ∧ (∀ j, (R j).standing) ∧ jointAssignmentStable Q R := by
+  refine ⟨P, S, law_common, ?_, stable⟩
+  intro j
+  exact ⟨monotone j, noLiars j, independent j, nondegenerate j⟩
+
+end AuditJoint

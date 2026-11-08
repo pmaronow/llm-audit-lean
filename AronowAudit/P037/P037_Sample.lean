@@ -35,10 +35,9 @@ noncomputable def sampleProb {Ω : Type*} [Fintype Ω]
 noncomputable def sampleMean {Ω : Type*} [Fintype Ω]
     (P : SupportedDesign Ω) (Y : Ω → ℝ) : ℝ := ∑ z, P.mass z*Y z
 
-/-- T20, released script 4 lines 151--153:
+/-- T20, released script 4 lines 151--153 (N007 doubt derivation §5):
 a school's conflict outcome enters iff its recorded mean exceeds 0.02.
-This threshold is not a definition supplied by the publication.
-The Lean definitions specify what the published software computes. -/
+This threshold is not a definition supplied by the publication. -/
 def conflictIncluded (Y : ℝ) : Prop := Y>1/50
 
 /-- T19's uniform two-of-four block (SI p. 5, Fig. S1), the six pairs. -/
@@ -106,6 +105,14 @@ This targets the probability limit over independent copies, not E[finite OLS]. -
 noncomputable def selectedBlockCoefficient (B : ℕ) (z : Fin B → Fin 6) : ℝ :=
   (∑ b, selectedWeight (z b)*selectedDelta (z b))/(∑ b, selectedWeight (z b))
 
+/-- T19(v), unweakened asymptotic component: under independent uniform
+block repetitions the selected OLS coefficient tends in probability to .012. -/
+theorem outcome_selection_regression_limit (ε : ℝ) (hε : 0<ε) :
+    Filter.Tendsto (fun B : ℕ =>
+      ∑ z : Fin B → Fin 6, (1/6:ℝ)^B *
+        (if |selectedBlockCoefficient B z-3/250| > ε then 1 else 0))
+      Filter.atTop (nhds 0) := by
+  sorry
 
 /-- T19(v), finite block-centering identities behind the probability limit. -/
 theorem selected_block_crossproducts (nT nC yT yC : ℝ)
@@ -116,7 +123,7 @@ theorem selected_block_crossproducts (nT nC yT yC : ℝ)
   have hn : nT+nC≠0 := by linarith
   constructor <;> field_simp <;> ring
 
-/-- T20(a),(b), correcting the selection description
+/-- T20(a),(b), N007 doubt derivation §5, correcting the selection description
 at main p. 567 and SI p. 10: for every exposure, fixed inclusion is IPW-unbiased
 where that unit has positive exposure probability; the kept-population average
 requires positivity only for kept units and a nonempty kept set. Arbitrary
@@ -241,10 +248,39 @@ noncomputable def localExposureProbability (n m : ℕ)
     (((seedChoices n m).filter (fun s => treatedSeedExposure self peers refs s=k)).card:ℝ) /
       (2*(Nat.choose n m:ℝ))
 
+/-- T21(W1),(W2): the complete exact probability certificates for the
+12-eligible block and the two valid realized selections. Other blocks can
+be independent copies without focal peers, yielding 48 eligibles as in S2. -/
+theorem positivity_cutoff_counterexamples :
+    (seedChoices 12 6).card=924 ∧
+    (∀ k : Fin 5, localExposureProbability 12 6 ∅ {0,1,2,3,4,5} {0} k=
+      (![1/2,1/1848,461/1848,1/4,0] : Fin 5 → ℝ) k) ∧
+    (∀ k : Fin 4, 0<(![1/2,1/1848,461/1848,1/4] : Fin 4 → ℝ) k ∧
+      (![1/2,1/1848,461/1848,1/4] : Fin 4 → ℝ) k<1) ∧
+    (0:ℝ)<1/1848 ∧ (1/1848:ℝ)<1/100 ∧
+    (∀ k : Fin 5, localExposureProbability 12 6 {2} {0,1} {0} k=
+      (![1/2,1/22,3/44,3/22,1/4] : Fin 5 → ℝ) k) ∧
+    (∀ k : Fin 4, (1/100:ℝ)<(![1/2,1/22,3/44,3/22] : Fin 4 → ℝ) k) ∧
+    ({2,3,4,5,6,7} : Finset (Fin 12))∈seedChoices 12 6 ∧
+    ({3,4,5,6,7,8} : Finset (Fin 12))∈seedChoices 12 6 ∧
+    treatedSeedExposure (n := 12) {2} {0,1} {0} {2,3,4,5,6,7}=4 ∧
+    treatedSeedExposure (n := 12) {2} {0,1} {0} {3,4,5,6,7,8}=1 := by
+  sorry
+
+/-- T21(W1)(iv): 10,000 supported draws can have counts 5000,5,2495,2500;
+all estimated probabilities are positive, but the .01 cutoff fails.
+The sequence must contain genuine supported assignments, not just four numbers. -/
+theorem cutoff_simulated_sequence :
+    ∃ z : Fin 10000 → Bool × Finset (Fin 12),
+      (∀ j, (z j).2∈seedChoices 12 6) ∧
+      (∀ k : Fin 4, ((Finset.univ.filter (fun j =>
+        (if (z j).1 then treatedSeedExposure ∅ {0,1,2,3,4,5} {0} (z j).2
+          else 0)=k.castSucc)).card:ℝ)/10000=
+        (![1/2,1/2000,499/2000,1/4] : Fin 4 → ℝ) k) := by
+  sorry
 
 /-- T22: the publication's positivity set P and the code's estimated
-probability screen. k ranges over C,S,NI,I; direct seeds are the fifth label.
-The Lean definitions specify what the published software computes. -/
+probability screen. k ranges over C,S,NI,I; direct seeds are the fifth label. -/
 def positivityPopulation {I : Type*} (π : I → Fin 4 → ℝ) : Set I :=
   {i | ∀ k, 0<π i k ∧ π i k<1}
 def probabilityScreen {I : Type*} (π : I → Fin 4 → ℝ) (cutoff : ℝ) : Set I :=
@@ -252,14 +288,30 @@ def probabilityScreen {I : Type*} (π : I → Fin 4 → ℝ) (cutoff : ℝ) : Se
 
 /-- T22, released script 3 line 195: outcome-specific analysis and
 prediction set M_o: estimated π>.01, realized nonseed, outcome and
-preprocessed baseline available, and the conflict school screen if required.
-The Lean definitions specify what the published software computes. -/
+preprocessed baseline available, and the conflict school screen if required. -/
 def codeAnalysisSet {Ω I : Type*} (estimated : I → Fin 4 → ℝ)
     (seed outcomeAvailable baselineAvailable schoolPasses : Ω → I → Prop)
     (z : Ω) : Set I :=
   {i | i∈probabilityScreen estimated (1/100) ∧ ¬seed z i ∧
     outcomeAvailable z i ∧ baselineAvailable z i ∧ schoolPasses z i}
 
+/-- T22(a),(b),(e): true positivity is equivalent to all four π>0;
+the .01 and estimated-positive sets lie inside it and the code's set
+also excludes every realized seed. No false positive is possible from
+a supported draw; failures to observe a positive exposure are possible. -/
+theorem analysis_set_inclusions {Ω I : Type*} [Fintype Ω]
+    (P : SupportedDesign Ω) (D : Ω → I → Fin 5) (J : ℕ) (hJ : 0<J)
+    (draws : Fin J → Ω) (seed outcome baseline screen : Ω → I → Prop) (z : Ω) :
+    let π := fun i k => sampleProb P (fun w => D w i=k.castSucc)
+    let phat := fun i k => ((Finset.univ.filter
+      (fun j => D (draws j) i=k.castSucc)).card:ℝ)/J
+    positivityPopulation π=probabilityScreen π 0 ∧
+    probabilityScreen π (1/100)⊆positivityPopulation π ∧
+    probabilityScreen phat (1/100)⊆probabilityScreen phat 0 ∧
+    probabilityScreen phat 0⊆positivityPopulation π ∧
+    codeAnalysisSet phat seed outcome baseline screen z⊆positivityPopulation π ∧
+    codeAnalysisSet phat seed outcome baseline screen z⊆{i | ¬seed z i} := by
+  sorry
 
 /-- T22(d), finite .01 rule: with 10,000 draws, count≥101 and
 the inverse estimated probability is ≤10000/101<100. -/
@@ -354,6 +406,49 @@ theorem rare_zero_hit_probability :
       have hlt := lt_of_le_of_lt hmul hright
       exact lt_of_mul_lt_mul_right hlt hc.le⟩
 
+/-- T30(a),(c),(d): the full independent-draw binomial law and Chebyshev
+accuracy guarantees for any exposure indicator. The exact count distribution
+is stated over actual design assignments, not a substituted assumed law. -/
+theorem exposure_monte_carlo_law {Ω : Type*} [Fintype Ω]
+    (P : SupportedDesign Ω) (E : Ω → Prop) (J : ℕ) (hJ : 0<J) :
+    let p := sampleProb P E
+    let hits := fun z : Fin J → Ω => (Finset.univ.filter (fun j => E (z j))).card
+    let mass := fun z : Fin J → Ω => ∏ j, P.mass (z j)
+    let phat := fun z => (hits z:ℝ)/J
+    (∀ r : ℕ, r≤J →
+      (∑ z, mass z*(if hits z=r then 1 else 0))=
+        (Nat.choose J r:ℝ)*p^r*(1-p)^(J-r)) ∧
+    (∑ z, mass z*phat z)=p ∧
+    (∑ z, mass z*(phat z-p)^2)=p*(1-p)/J ∧
+    (∑ z, mass z*(if hits z=0 then 1 else 0))=(1-p)^J ∧
+    (∀ ε : ℝ, 0<ε →
+      (∑ z, mass z*(if |phat z-p|≥ε then 1 else 0))≤p*(1-p)/(J*ε^2) ∧
+      p*(1-p)/(J*ε^2)≤1/(4*J*ε^2)) ∧
+    (∀ ε δ : ℝ, 0<ε → 0<δ → (J:ℝ)≥1/(4*δ*ε^2) →
+      (∑ z, mass z*(if |phat z-p|≥ε then 1 else 0))≤δ) ∧
+    (p=0 → ∀ z, hits z=0) ∧
+    (0<p ∧ p<1 → 0<(1-p)^J ∧ 0<p*(1-p)/J) := by
+  sorry
+
+/-- T22(d): at J=10,000 a positive, nondegenerate exposure has a
+nontrivial random cutoff event, so the probability screen is itself random. -/
+theorem estimated_cutoff_random {Ω : Type*} [Fintype Ω]
+    (P : SupportedDesign Ω) (E : Ω → Prop)
+    (hp : 0<sampleProb P E) (hq : sampleProb P E<1) :
+    let event := fun z : Fin 10000 → Ω =>
+      101≤(Finset.univ.filter (fun j => E (z j))).card
+    0<(∑ z, (∏ j, P.mass (z j))*(if event z then (1:ℝ) else 0)) ∧
+    (∑ z, (∏ j, P.mass (z j))*(if event z then (1:ℝ) else 0))<1 := by
+  sorry
+
+/-- T22(f), released script 3 lines 223--226: the prediction average
+uses precisely the same outcome-specific, realized assignment-dependent
+set as the regression; it has denominator |M_o(Z)|. -/
+noncomputable def codeAnalysisPredictionMean {Ω I : Type*} [Fintype I]
+    (estimated : I → Fin 4 → ℝ) (seed outcome baseline screen : Ω → I → Prop)
+    (z : Ω) (prediction : I → Fin 4 → ℝ) (k : Fin 4) : ℝ :=
+  let A := Finset.univ.filter (fun i => i∈codeAnalysisSet estimated seed outcome baseline screen z)
+  (∑ i ∈ A, prediction i k)/(A.card:ℝ)
 
 /-- T22(e): realized seeds are excluded with at least their direct-exposure
 probability, irrespective of their probabilities of the four indirect exposures. -/
@@ -371,6 +466,28 @@ theorem code_analysis_seed_exclusion {Ω I : Type*} [Fintype Ω]
   · simp only [hz, if_false, mul_zero]
     split_ifs <;> linarith [(P.positive z)]
 
+/-- T30(e): the blocked avoidance formula as an actual finite product
+randomization probability. Each uniform subset mass is 1/choose(n_b,t_b),
+and the school treatment independently contributes 1/2. -/
+theorem blocked_school_exposure_formula {b : ℕ} (n t : Fin b → ℕ)
+    (peers : (h : Fin b) → Finset (Fin (n h))) (ht : ∀ h, t h≤n h) :
+    let Ω := (h : Fin b) → {s : Finset (Fin (n h)) // s.card=t h}
+    (1/2)*(∑ z : Ω,
+      (∏ h, (1:ℝ)/(Nat.choose (n h) (t h):ℝ)) *
+        (if ∀ h, Disjoint (z h).val (peers h) then (1:ℝ) else 0))=
+      blockedSchoolExposure n t (fun h => (peers h).card) := by
+  sorry
+
+/-- T30(c), simultaneous guarantee for any finite number m of student-
+exposure pairs, with their actual indicators and independent assignment draws.
+The max-deviation event is written as an existential over the m pairs. -/
+theorem monte_carlo_simultaneous_bound {Ω : Type*} [Fintype Ω]
+    (P : SupportedDesign Ω) (m J : ℕ) (hJ : 0<J)
+    (E : Fin m → Ω → Prop) (ε : ℝ) (hε : 0<ε) :
+    (∑ z : Fin J → Ω, (∏ j, P.mass (z j)) *
+      (if ∃ k, |((Finset.univ.filter (fun j => E k (z j))).card:ℝ)/J-
+        sampleProb P (E k)|≥ε then (1:ℝ) else 0))≤(m:ℝ)/(4*J*ε^2) := by
+  sorry
 
 /-- T29's actual 40-eligible seed law: one Boolean school assignment
 and four independent uniform five-of-ten subsets. The focal student is
@@ -385,6 +502,46 @@ noncomputable def rareDesignMass (_ : RareSeedState) : ℝ := 1/(2*252^4)
 noncomputable def rareDesignProbability (k : Fin 4) : ℝ :=
   ∑ z : RareSeedState, rareDesignMass z*(if rareDesignExposure z=k then 1 else 0)
 
+/-- T29, full exact design certificate and independent-simulation moments.
+The four probabilities and zero-hit/variance formulas are conclusions of
+the actual seed law, not stipulated numbers in a surrogate distribution.
+Its support has over eight billion latent-seed states, so the proof must use
+product factorization rather than enumeration. The finite resolution and
+zero-hit power inequalities have separately proved components. -/
+theorem rare_probability_design_counterexample :
+    (∑ z : RareSeedState, rareDesignMass z)=1 ∧
+    (∀ k, rareDesignProbability k=(![1/2,1/127008,31751/127008,1/4] : Fin 4 → ℝ) k) ∧
+    (∀ k, 0<rareDesignProbability k ∧ rareDesignProbability k<1) ∧
+    (∀ r : ℕ, rareDesignProbability 1≤ |(r:ℝ)/10000-rareDesignProbability 1| ∧
+      rareDesignProbability 1/2< |(r:ℝ)/10000-rareDesignProbability 1|) ∧
+    (let hits := fun draws : Fin 10000 → RareSeedState =>
+       (Finset.univ.filter (fun j => rareDesignExposure (draws j)=1)).card
+     let mass := fun draws : Fin 10000 → RareSeedState => ∏ j, rareDesignMass (draws j)
+     (∑ draws, mass draws*(hits draws:ℝ))=625/7938 ∧
+     (∑ draws, mass draws*(if hits draws=0 then (1:ℝ) else 0))=(127007/127008:ℝ)^10000 ∧
+     (∑ draws, mass draws*((hits draws:ℝ)/10000-1/127008)^2)=127007/161310320640000) ∧
+    (9/10:ℝ)<(127007/127008:ℝ)^10000 ∧ (127007/127008:ℝ)^10000<19/20 := by
+  sorry
 
 end AronowAudit.P037
 
+#print axioms AronowAudit.P037.outcome_selection_finite_counterexample
+#print axioms AronowAudit.P037.outcome_selection_regression_limit
+#print axioms AronowAudit.P037.selected_block_crossproducts
+#print axioms AronowAudit.P037.selection_ipw_identities
+#print axioms AronowAudit.P037.threshold_assignment_invariant
+#print axioms AronowAudit.P037.count_avoiding_seeds
+#print axioms AronowAudit.P037.positivity_cutoff_counterexamples
+#print axioms AronowAudit.P037.cutoff_simulated_sequence
+#print axioms AronowAudit.P037.analysis_set_inclusions
+#print axioms AronowAudit.P037.cutoff_integer_rule
+#print axioms AronowAudit.P037.blocked_school_probability_examples
+#print axioms AronowAudit.P037.frequency_resolution
+#print axioms AronowAudit.P037.rare_exposure_frequency_counterexample
+#print axioms AronowAudit.P037.rare_zero_hit_probability
+#print axioms AronowAudit.P037.exposure_monte_carlo_law
+#print axioms AronowAudit.P037.estimated_cutoff_random
+#print axioms AronowAudit.P037.code_analysis_seed_exclusion
+#print axioms AronowAudit.P037.blocked_school_exposure_formula
+#print axioms AronowAudit.P037.monte_carlo_simultaneous_bound
+#print axioms AronowAudit.P037.rare_probability_design_counterexample

@@ -1,0 +1,142 @@
+{
+  "unit_id": "P032",
+  "work_id": "P032",
+  "targets": [
+    {
+      "target_id": "P032-T4",
+      "decision": "whole",
+      "theorem": "SAP.P032.T4",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P032.corrected_decomposition", "AronowAudit.P032.decomposition_coefficient", "AronowAudit.P032.dyad_intersection_cases", "AronowAudit.P032.id_cross_products", "AronowAudit.P032.id_substitution_cross_discrepancy", "AronowAudit.P032.id_substitution_discrepancy", "AronowAudit.P032.singleton_id_covariance"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "supporting_declarations": [{"lean_name": "AronowAudit.P032.cox_substitution_counterexample", "reason": "The T3 witness explicitly referenced by canonical clause (iii) shows that subject-id subtraction need not agree."}]
+    },
+    {
+      "target_id": "P032-T2",
+      "decision": "whole",
+      "theorem": "SAP.P032.T2",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P032.all_contrasts_lower_bound_iff", "AronowAudit.P032.ols_contrast_error", "AronowAudit.P032.ols_contrast_variance", "AronowAudit.P032.omitted_sandwich_psd_iff", "AronowAudit.P032.omitted_sign_not_determined", "AronowAudit.P032.variance_difference", "AronowAudit.P032.variance_sign_conditions"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P032.bread_symmetric", "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.centered_linear_variance", "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.dyadic_restriction_symmetric", "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_ols_variance", "reason": "Finite discrete-support auxiliary only; the arbitrary-probability-space ols_contrast_variance row supplies the general variance identity instead."}, {"lean_name": "AronowAudit.P032.quadratic_eq_dot", "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.quadratic_sub", "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.sandwich_hermitian", "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.sandwich_quadratic", "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "supporting_declarations": [{"lean_name": "AronowAudit.P032.pair_error_moments", "reason": "T1 pair-model support for the explicit sign witnesses in canonical clause (v)."}, {"lean_name": "AronowAudit.P032.bounded_pair_sampling_models", "reason": "T1 pair-model support for the explicit sign witnesses in canonical clause (v)."}, {"lean_name": "AronowAudit.P032.intercept_counterexample", "reason": "T1 pair-model support for the explicit sign witnesses in canonical clause (v)."}, {"lean_name": "AronowAudit.P032.slope_and_sign_control", "reason": "T1 pair-model support for the explicit sign witnesses in canonical clause (v)."}]
+    },
+    {
+      "target_id": "P032-T11",
+      "decision": "restricted",
+      "theorem": "SAP.P032.T11",
+      "restriction": "Retains the unadjusted OLS residual matrix decomposition with full column rank, all occurring members, common residuals and the stated outsider-singleton masks. Does not separately state the equivalent pointwise coefficient identity, conventional multiway-cluster equivalence, software computability, the square-root standard-error rule, or the eigenvalue-clipping assertion.",
+      "rows_used": ["AronowAudit.P032.headline_decomposition"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P032-T7",
+      "decision": "whole",
+      "theorem": "SAP.P032.T7",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P032.gated_psd_iff", "AronowAudit.P032.positive_part_fixed_iff", "AronowAudit.P032.positive_part_psd", "AronowAudit.P032.psd_two_by_two_iff", "AronowAudit.P032.spectral_clip_fixed_iff", "AronowAudit.P032.spectral_clip_psd", "AronowAudit.P032.spectral_clip_quadratic", "AronowAudit.P032.ten_eigenvalues_identified", "AronowAudit.P032.ten_positive_part_rank_one"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P032.positive_part_one_positive", "reason": "Its spectral/sign component is already incorporated in ten_positive_part_rank_one; not separately invoked."}, {"lean_name": "AronowAudit.P032.spectral_clip_one_positive", "reason": "Its spectral/sign component is already incorporated in ten_positive_part_rank_one; not separately invoked."}, {"lean_name": "AronowAudit.P032.ten_eigenvalue_signs", "reason": "Its spectral/sign component is already incorporated in ten_positive_part_rank_one; not separately invoked."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "supporting_declarations": [{"lean_name": "AronowAudit.P032.positive_diagonal_counterexample", "reason": "T6 defines and certifies the concrete ten-dyad matrix used in canonical clauses (iii) and (iv)."}, {"lean_name": "AronowAudit.P032.ten_variance_certificate", "reason": "T6 defines and certifies the concrete ten-dyad matrix used in canonical clauses (iii) and (iv)."}, {"lean_name": "AronowAudit.P032.ten_variance_hermitian", "reason": "T6 defines and certifies the concrete ten-dyad matrix used in canonical clauses (iii) and (iv)."}]
+    },
+    {
+      "target_id": "P032-T12",
+      "decision": "whole",
+      "theorem": "SAP.P032.T12",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P032.toy_shared_country_covariance", "AronowAudit.P032.toy_sign_cases", "AronowAudit.P032.toy_variance_identity"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P032-T1",
+      "decision": "whole",
+      "theorem": "SAP.P032.T1",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P032.block_covariances_positive_definite", "AronowAudit.P032.block_eigenbasis_certificates", "AronowAudit.P032.bounded_pair_sampling_models", "AronowAudit.P032.finite_law_iid_exists", "AronowAudit.P032.four_block_counterexample", "AronowAudit.P032.four_block_moments", "AronowAudit.P032.four_replicated_finite", "AronowAudit.P032.four_replicated_limit", "AronowAudit.P032.intercept_counterexample", "AronowAudit.P032.intercept_fit_certificate", "AronowAudit.P032.pair_eigenbasis_certificate", "AronowAudit.P032.pair_error_moments", "AronowAudit.P032.six_block_variances", "AronowAudit.P032.six_errors_bounded", "AronowAudit.P032.six_replicated_finite", "AronowAudit.P032.six_replicated_limit", "AronowAudit.P032.six_replicated_moments", "AronowAudit.P032.six_sign_error_moments", "AronowAudit.P032.six_sign_measure_product", "AronowAudit.P032.slope_and_sign_control"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P032.block_matrix_quadratic", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.block_matrix_record_restriction", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.block_matrix_restriction", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.constant_quadratic", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.fair_sign_moments", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_expectation_quadratic", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_expectation_sum", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_law_atom", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_law_composed_integral", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_law_composed_memLp", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_law_identDistrib", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_law_integral", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_law_map", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_law_probability", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.finite_law_variance", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.four_block_statistics", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.four_expected_gap_arithmetic", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.four_omega_square_certificate", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.four_replicated_centering", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.four_replicated_moments", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.four_replicated_ratio_ae", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.four_replicated_ratio_formula", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.four_residual_expectation_counterexample", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.iid_block_covariance", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.iid_finite_statistic_integral", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.iid_finite_statistic_strong_law", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.iid_finite_statistic_variance", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.intercept_dcr_centering", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.lifted_intersection", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.linear_covariance_identity", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.pair_omega_positive_definite", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.replicated_pattern", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.replicated_quadratic", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.replicated_row_sum", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.six_expected_gap_arithmetic", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.six_loading_gram_certificate", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.six_loading_identity", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.six_omega_square_certificate", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.six_replicated_centering", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.six_replicated_population_values", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.six_scaled_estimator_formula", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.six_sign_statistics", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}, {"lean_name": "AronowAudit.P032.sum_squares_positive", "reason": "Supporting calculation or transfer lemma already incorporated in the selected complete model, finite-replication or limit declarations; not separately invoked."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P032-T5",
+      "decision": "whole",
+      "theorem": "SAP.P032.T5",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P032.printed_expectation_claim_false", "AronowAudit.P032.printed_population_claim_false", "AronowAudit.P032.printed_ratio_limit_claim_false"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P032-T3",
+      "decision": "whole",
+      "theorem": "SAP.P032.T3",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P032.cox_components", "AronowAudit.P032.cox_exact_risk_sets", "AronowAudit.P032.cox_id_is_repeated_dyad", "AronowAudit.P032.cox_risk_score_certificate", "AronowAudit.P032.cox_subject_score_totals", "AronowAudit.P032.cox_substitution_counterexample", "AronowAudit.P032.cox_unique_fit"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P032-T6",
+      "decision": "whole",
+      "theorem": "SAP.P032.T6",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P032.positive_diagonal_counterexample", "AronowAudit.P032.ten_meat_decomposition", "AronowAudit.P032.ten_ols_certificate", "AronowAudit.P032.ten_variance_certificate", "AronowAudit.P032.ten_variance_hermitian"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P032-T9",
+      "decision": "whole",
+      "theorem": "SAP.P032.T9",
+      "restriction": null,
+      "statement_definition": "SAP.P032.T9WholeStatement",
+      "rows_used": ["AronowAudit.P032.asylike_coefficient_gap", "AronowAudit.P032.dcr_weights_sum", "AronowAudit.P032.rubin_pooling_gap", "AronowAudit.P032.rubin_unadjusted_commutes"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P032-T8",
+      "decision": "restricted",
+      "theorem": "SAP.P032.T8",
+      "restriction": "Retains the exact logit fits, components, completed-data decomposition values and five-imputation average, Rubin terms, pooled totals, coefficient, gap, positivity and inactive scalar clipping. Omits the separate equalities of the two completed-data decomposition values with direct ordered-pair covariance sums.",
+      "rows_used": ["AronowAudit.P032.mi_between_certificate", "AronowAudit.P032.mi_completed_data_certificate", "AronowAudit.P032.mi_partition_counts", "AronowAudit.P032.mi_pooling_counterexample"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P032-T10",
+      "decision": "whole",
+      "theorem": "SAP.P032.T10",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P032.study_neighboring_counts", "AronowAudit.P032.study_threshold_counts", "AronowAudit.P032.study_unique_rational_recovery"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P032.rounding_consistent_iff_rational", "reason": "The rational-recovery declaration already incorporates this integer-rounding step; not separately invoked."}, {"lean_name": "AronowAudit.P032.study_unique_integer_recovery", "reason": "The rational-recovery declaration already incorporates this integer-rounding step; not separately invoked."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    }
+  ]
+}

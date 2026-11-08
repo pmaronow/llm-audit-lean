@@ -43,5 +43,7 @@ theorem algorithm2_paper :
     AlgorithmSupport.n11_proof AlgorithmSupport.n12_proof AlgorithmSupport.n13_proof
     AlgorithmSupport.n14_proof
 
+example : AronowAudit.P002.Wave1.Algorithm2.Target := algorithm2_paper
+
 end
 end AronowAudit.P002.Wave1

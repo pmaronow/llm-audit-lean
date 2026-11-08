@@ -1,0 +1,23 @@
+import SAP.P012b.Defs
+open SAP.P012b Finset
+set_option maxRecDepth 100000
+set_option maxHeartbeats 2000000
+
+-- A six-seed star forest with the printed study totals. Unobserved leaves
+-- can supply the spare degree, so these structural conditions are consistent.
+def auditStudyData : Data :=
+  ⟨range 527, range 6, fun _ => 0, id,
+    fun i => if i = 0 then 3966 else if 6 ≤ i then 1 else 0,
+    fun i => decide (6 ≤ i)⟩
+example : Admissible auditStudyData := by native_decide
+example : auditStudyData.sampled.card = 527 ∧
+    auditStudyData.seeds.card = 6 ∧
+    (∑ i ∈ auditStudyData.sampled, auditStudyData.degree i) = 4487 ∧
+    0 < sampledTraitDegree auditStudyData false ∧
+    0 < sampledTraitDegree auditStudyData true := by native_decide
+
+-- Each reported lower limit remains above the universal opposing-leaf bound
+-- even at the most favorable edge of its stated rounding tolerance.
+example : (-1462 / 1983 : ℝ) < -7027/10000 - 1/20000 ∧
+    (-1462 / 1983 : ℝ) < -6918/10000 - 1/20000 ∧
+    (-1462 / 1983 : ℝ) < -7179/10000 - 1/20000 := by norm_num

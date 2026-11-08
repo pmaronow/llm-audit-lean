@@ -1,6 +1,7 @@
 import AronowAudit.P031.Wave1.LargeSampleRefutationBlueprint
 
-/-! P031-T5: the witness sizes `N = 2^(4(n+1)²)` tend to infinity. -/
+/-! Node 1 of the P031-T5 blueprint (trivial; written by the blueprint architect):
+the witness sizes `N = 2^(4(n+1)²)` tend to infinity. -/
 
 namespace AronowAudit.P031.Wave1.LargeSampleRefutation
 

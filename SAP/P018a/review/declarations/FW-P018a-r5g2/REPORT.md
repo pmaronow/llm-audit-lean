@@ -1,0 +1,15 @@
+All five declarations are faithful, with severity `none`. The five `whole` decisions in `record.json` are correct. No step-2 conclusion changed after reading the record.
+
+| Declaration | Review result |
+| --- | --- |
+| `SAP.P018a.T6` | Covers the incidence entries, shared-effect covariance, general-N role mismatch, and exact GLS identities. The GLS algebra validly generalizes the positive definite case. |
+| `SAP.P018a.T7` | Covers the full sign-pair counterexample, including the genuine positive-probability atom, joint second-order limit, completed-pivot failure, and surviving absolute consistency. |
+| `SAP.P018a.T8` | Covers the shared-endpoint moment, possibly singular CLT, target and sandwich limits, positive-variance contrast inference and coverage, and the degenerate-contrast example. |
+| `SAP.P018a.T9` | Covers all counterexample clauses, fixed weights, geometric and variance identities, event separation, and the explicitly qualified repetition construction. Both earlier docstring issues are fixed. |
+| `SAP.P018a.T10` | Covers C1–C4, including the exact mean-overlap condition, common directed kernels, normalized weights/design, scale invariance, and the two obstructions. |
+
+The blind expansion and junk-value audit are saved in `reading.md`; the claim comparison was saved in `claim-stage.json` before opening the record. Every dependency listed in `closure.json` was read, including all 51 generated auxiliary declarations printed by `scratch/ClosureChecks.lean`. The mathematical definitions use actual finite dyads, population projections, fitted residuals, ordered overlap sums and unconditional score covariances. They neither assume the conclusions nor replace quantities by placeholders.
+
+The singular-inverse and nonpositive-square-root completions were checked explicitly. T7 and T8 describe the zero-completed pivots accurately. T7 also explicitly asserts that a negative variance has no real square root. T9's unrestricted initial-size identities use the zero completion disclosed at Challenge/Part2.lean:27 and WholeW1.lean:153. Its substantive lower bounds and counterexample use N>=2 or N>=8. Quantiles are used only at probabilities strictly between one half and one. Probability measures and the bounded-data/L2 conditions protect all expectation and `toReal` uses.
+
+Independent checks use `sap-lean` on `scratch/ReviewNonvacuity.lean` and `scratch/ReviewRepeated.lean`. They construct nonempty GLS and random-effect hypothesis instances, an actual positive-variance contrast, the finite negative-variance atom, and complete repeated/directed consistency hypothesis instances. `scratch/ReviewFinite.py` also checks the counterexample matrices, weighted separation, and the deterministic mean-overlap witness with exact rational arithmetic; its output is `scratch/review-finite.json`. The asymptotic statements were compared with the canonical assertions under the supplied proof certification. Review history was limited to the two supplied files. No Solution was read, no unit source was changed, and Lake was not run.

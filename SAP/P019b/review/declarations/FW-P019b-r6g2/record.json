@@ -1,0 +1,153 @@
+[
+ {
+  "target_id": "P019-T17",
+  "decision": "whole",
+  "theorem": "SAP.P019b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.prevalence_identity",
+   "AronowAudit.P019.combined_excess",
+   "AronowAudit.P019.false_confessions_strict",
+   "SAP.P019b.WH.W1.T17_whole",
+   "SAP.P019b.WH.W1.T17_assembly",
+   "SAP.P019b.WH.W1.T12_L1_proof",
+   "SAP.P019b.WH.W1.T12_L2_proof",
+   "SAP.P019b.WH.W1.T12_L3_proof",
+   "AronowAudit.P019.regularity_probabilities",
+   "AronowAudit.P019.mean_sub",
+   "AronowAudit.P019.Wave1.t19_measure_apply",
+   "AronowAudit.P019.Wave1.t19_integral"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P019b.T17WholeStatement"
+ },
+ {
+  "target_id": "P019-T18",
+  "decision": "restricted",
+  "theorem": "SAP.P019b.T18",
+  "restriction": "Restricted to iid draws on a finite underlying probability space with arbitrary real atom masses; the theorem does not state the extension to arbitrary measurable underlying spaces with bounded list counts.",
+  "rows_used": [
+   "AronowAudit.P019.Wave1.proposition_one_variance_limit_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.combined_influence_moments",
+    "reason": "The proved variance-limit row already incorporates these supporting population influence moments."
+   },
+   {
+    "lean_name": "AronowAudit.P019.combined_influence_variance",
+    "reason": "The proved variance-limit row already identifies the influence variance with equation (3)."
+   },
+   {
+    "lean_name": "AronowAudit.P019.direct_sample_moments",
+    "reason": "The actual-variance limit is supplied directly by the aggregate row; this auxiliary sample calculation is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P019.estimator_error_decomposition",
+    "reason": "The aggregate variance-limit proof already supplies the required estimator remainder argument."
+   },
+   {
+    "lean_name": "AronowAudit.P019.estimator_product_identity",
+    "reason": "The aggregate variance-limit proof already supplies the required estimator algebra."
+   },
+   {
+    "lean_name": "AronowAudit.P019.nonconfessor_population_contrast",
+    "reason": "The selected aggregate result already incorporates the identified nonconfessor contrast."
+   }
+  ]
+ },
+ {
+  "target_id": "P019-T19",
+  "decision": "restricted",
+  "theorem": "SAP.P019b.T19",
+  "restriction": "Restricted to iid draws on a finite underlying probability space with arbitrary real atom masses; arbitrary measurable underlying spaces with bounded list counts are omitted. Retains positivity, root-n tightness, the Gaussian limit, scaled plug-in consistency, and Wald coverage for every fixed completion.",
+  "rows_used": [
+   "AronowAudit.P019.Wave1.combined_asymptotic_inference_proof",
+   "AronowAudit.P019.asymptotic_variance_positive"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.nonconfessor_population_contrast",
+    "reason": "The selected aggregate result already incorporates the identified nonconfessor contrast."
+   },
+   {
+    "lean_name": "AronowAudit.P019.plugin_identity",
+    "reason": "The aggregate inference theorem already proves consistency of the stated sample plug-in variance."
+   },
+   {
+    "lean_name": "AronowAudit.P019.population_variance_term",
+    "reason": "The aggregate inference theorem already incorporates this supporting population algebra."
+   }
+  ]
+ },
+ {
+  "target_id": "P019-T20",
+  "decision": "restricted",
+  "theorem": "SAP.P019b.T20",
+  "restriction": "Restricted to iid draws on a finite underlying probability space with arbitrary real atom masses; the two variance limits and strict comparison are not stated for arbitrary measurable underlying spaces with bounded list counts.",
+  "rows_used": [
+   "AronowAudit.P019.Wave1.proposition_two_efficiency_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.nonconfessor_population_contrast",
+    "reason": "The selected aggregate result already incorporates the identified nonconfessor contrast."
+   },
+   {
+    "lean_name": "AronowAudit.P019.population_efficiency_gap",
+    "reason": "The aggregate efficiency row already exports the strict comparison and both actual variance limits."
+   },
+   {
+    "lean_name": "AronowAudit.P019.variance_gap_strict",
+    "reason": "The aggregate efficiency row already incorporates the strict positive-gap argument."
+   },
+   {
+    "lean_name": "AronowAudit.P019.weighted_square_identity",
+    "reason": "The aggregate efficiency row already incorporates this square-completion algebra."
+   },
+   {
+    "lean_name": "AronowAudit.P019.weighted_square_minimum",
+    "reason": "The aggregate efficiency row already incorporates the weighted minimization."
+   }
+  ]
+ },
+ {
+  "target_id": "P019-T21",
+  "decision": "whole",
+  "theorem": "SAP.P019b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.Wave1.proposition_three_proof",
+   "SAP.P019b.WH.W1.T21_whole",
+   "SAP.P019b.WH.W1.T21_assembly",
+   "SAP.P019b.WH.W1.T12_L1_proof",
+   "SAP.P019b.WH.W1.T12_L2_proof",
+   "SAP.P019b.WH.W1.T12_L3_proof",
+   "SAP.P019b.WH.W1.T12_L4_proof",
+   "SAP.P019b.WH.W1.T12_assembly",
+   "AronowAudit.P019.placebo_one_identity",
+   "AronowAudit.P019.placebo_distribution_corrected",
+   "AronowAudit.P019.Wave1.t19_measure_apply",
+   "AronowAudit.P019.Wave1.t19_integral"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.Wave1.normal_pvalue_uniform_proof",
+    "reason": "The aggregate placebo inference theorem already exports every interior p-value CDF limit."
+   },
+   {
+    "lean_name": "AronowAudit.P019.placebo_influence_moments",
+    "reason": "The aggregate placebo-I theorem already supplies the full inferential conclusion using its supporting moments."
+   },
+   {
+    "lean_name": "AronowAudit.P019.placebo_influence_residual",
+    "reason": "The aggregate placebo-I theorem already supplies the full inferential conclusion using the response residual calculation."
+   },
+   {
+    "lean_name": "AronowAudit.P019.ratio_residual_identity",
+    "reason": "The aggregate placebo-I theorem already includes the completed ratio-statistic argument."
+   }
+  ],
+  "statement_definition": "SAP.P019b.T21WholeStatement"
+ }
+]

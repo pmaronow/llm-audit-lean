@@ -1,0 +1,53 @@
+[
+  {
+    "target_id": "P001-T35",
+    "theorem": "SAP.P001b.T35",
+    "fingerprint": "e7dae46d14183f06638dc0f3ef28892b585e133e62b3f1a6df3d3e0214bab29f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:43: take the probability measure given by planar Lebesgue measure restricted to [0,1] squared, with the square's indicator as density. The file independently constructs IsProbabilityMeasure and every component of JointDensity, without any Challenge theorem. All hypotheses of T35 are satisfied. Finite probabilities avoid toReal infinity; Fubini makes the possibly defaulted integrals of exceptional sections harmless.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T36",
+    "theorem": "SAP.P001b.T36",
+    "fingerprint": "f63faeb47fb95991fafae669e0e6fb25c3f87f8c65132c7e31ef41022f2b81c4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The statement is an unconditional conjunction about the explicit canonical function, with no premises that could be inconsistent. scratch/Nonvacuity.lean:101 independently checks positivity everywhere and the value 1/(4*pi) at the origin; line 109 checks that the actual ContDiff top order implies real analyticity. Mathematically, integrating over y gives exp(x)/(1+exp(x))^2, which integrates to one. At y=0 the integrand tends to 1/pi as x tends to positive infinity, giving a genuinely infinite extended integral. For nonzero y, substitution t=exp(x) gives t/[pi*(1+t)^2*(1+y^2*t^2)], integrable at both zero and infinity. No divergent Bochner integral or infinity-to-real conversion supplies a claimed finite value.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json: the divergent zero slice violates the finite-existence convention and therefore cannot refute the printed identity between finite real marginal values and slice integrals.",
+        "status": "fixed",
+        "reason": "The domain objection is valid. SAP/P001b/Challenge/Part2.lean:53 now introduces only restricted density and extended-integral facts, and lines 58-59 expressly place the zero slice outside the finite-real domain and disclaim a refutation on that domain. record.json:14-16 classifies the theorem as restricted and repeats that limitation. The retained conjunction is a correct, fully disclosed subset of the canonical statement's explicit density example; it is not labelled refuted. The architect's decision to retain these positive facts is justified by the canonical statement itself, rather than its audit note. No current false-refutation assertion remains."
+      }
+    ]
+  },
+  {
+    "target_id": "P001-T37",
+    "theorem": "SAP.P001b.T37",
+    "fingerprint": "41345e0a7facda45295168f733493af79e6af31eb2b62b54a29019cca353d9dc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:77 constructs the unit-square probability law and density, with the unit-interval indicator as a finite nonnegative marginal version. Its equality to the extended marginal slice integral is proved at every y. Line 92 independently constructs data satisfying all conditional-ratio hypotheses, using the same density and x=1/2; that slice is integrable with integral one. The theorem uses T37WholeStatement, so it has neither a Borel premise on the marginal version nor a global measurability premise on the separate normalization branch. All real-integral and strictly positive denominator requirements are met.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T38",
+    "theorem": "SAP.P001b.T38",
+    "fingerprint": "2d854f910f61a8a0e0a8ceb7e215fbaf3e4c5ac6edc54683509b1a132c3f2fdc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:114-145 independently proves the constant-zero pushforward of N(0,1) is dirac zero, its singleton mass is one, it admits no Density and differs from every positive-variance gaussianReal law, and both allowed correlation endpoints with unit positive standard deviations have zero printed denominators and zero totalized expressions. A one-member normal family is mutually independent, coefficient zero is allowed, and all moments exist. The endpoint parameters meet every printed parameter bound. The canonical claim expressly asserts the denominator singularities; the extra zero-valued formulas use documented Lean total division and are not passed off as ordinary endpoint PDF values. Both canonical counterexamples are covered, so whole is the correct record decision.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P061b.T12",
+    "target_id": "P061-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "Part3.lean:10–17 states the common-fiber EPO, EED and average treatment-effect formula; :18–24 gives design independence; :25–27 identifies every feasible assignment in a positive exposure cell under global stability. Lines 28–34 state the exact housemate-exposure schedule, global stability, the universal positive-design AEED of 1, and both Table 3 specializations. AtomicDesign matches the explicitly atomic power-set model in standing assumption S1, including countably infinite support and feasible zero-mass assignments. The same-fiber equality rendering of SUTVA matches the canonical definitions_needed and S10(d). Per-unit strict positivity is equivalent to the positive common lower bound for a fixed nonempty finite population. The positive exposure cells are automatically integrable because their outcomes are constant on support. No substantive extra hypothesis or undefined-value convention is used."
+  },
+  {
+    "theorem": "SAP.P061b.T13",
+    "target_id": "P061-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "Part3.lean:38–44 states identification of supported-cell EPOs and EEDs. Lines 45–47 give one globally stable extension agreeing on the entire design support and on every observed event; :48 states SUTVA implies NURVA; :49–50 states observed-law invariance under support agreement; :51–55 states equality of the sets of observed laws compatible with the two stability conditions. Support means positive atom mass, as prescribed by S10(a), and observedEventProbability is the full joint law of assignment and outcome vector, exactly as in the claim. Event sums are genuine probabilities and stability gives the requisite cell moments. All clauses of the canonical assertion are present."
+  },
+  {
+    "theorem": "SAP.P061b.T14",
+    "target_id": "P061-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "Part3.lean:58–67 asserts precisely the two original-design AEPOs, all three design-specific AEEDs, NURVA under the original design, failure of SUTVA, and the explicit (1,0)/(1,1) witness with the latter off support. The household schedules and the three normalized designs match every row in canonical Tables 1–2. The canonical assertion requests no separate AEPOs or NURVA results for the alternate designs, so their absence, noted in the blind reading, drops no claim clause. There are no hypotheses, and all conditional probabilities used are 1/2."
+  },
+  {
+    "theorem": "SAP.P061b.T15",
+    "target_id": "P061-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "Part3.lean:70–79 states the four Table 4 contrasts and the two support-stability/global-instability examples. Lines 80–91 state all four marginal probabilities per unit, both Table 5 contrasts, support stability under each version-specific design, failure of global stability, and no interference when raw versions agree. The binary attenuation/amplification and the nine-assignment hidden-version definitions reproduce the full schedules specified in statement and definitions_needed. The version-category map is exactly the indicator of a positive raw coordinate on Fin 3. Every relevant margin is 1/2; all spaces are finite. This covers the canonical examples and the assertion that NURVA alone gives no guarantee of cross-design equality."
+  },
+  {
+    "theorem": "SAP.P061b.T16",
+    "target_id": "P061-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "Part4.lean:11–17 quantifies over every atomic design and arbitrary exposure/outcome schedules, assumes only a positive population, positive exposure margins, and the exposure-restricted absolute first moments, and proves finite first moments and the exact HT AEPO and AEED expectation identities. The author explicitly permits the usual existence/integrability conditions, so ExposureMoment is an allowed condition, not a scope restriction. It is exactly integrability of each conditional-cell numerator, not stability, independence, bounded outcomes, or finite support. The if-then-zero estimator is the printed observed outcome times its exposure indicator. The absolute moments exclude the nonsummable-tsum default. Positivity-one exposures are allowed, and no conditioning on their zero-probability complements is needed."
+  }
+]

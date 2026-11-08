@@ -2,10 +2,11 @@ import AronowAudit.P053.P053_Audit
 import Mathlib.Probability.CDF
 
 /-!
-Gaussian quantile facts for the P053 Wald limit.
-The first three analytic lemmas are adapted from
-StatLean.HypothesisTesting.Randomization.SignChange (Apache-2.0).
-See NOTICE at the repository root.
+Gaussian quantile facts for the original P053 Wald target.
+The first three analytic lemmas adapt the proved private helpers in
+StatLean/HypothesisTesting/Randomization/SignChange.lean, commit
+ e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2 (Apache-2.0).
+See AronowAudit/External/StatLean/LICENSE and provenance.json.
 -/
 namespace AronowAudit.P053.NormalCompletion
 open MeasureTheory ProbabilityTheory Filter Set
@@ -125,3 +126,6 @@ local instance : NullSingletonClass (gaussianReal 0 1) :=
 
 end
 end AronowAudit.P053.NormalCompletion
+#print axioms AronowAudit.P053.NormalCompletion.normalCritical_cdf
+#print axioms AronowAudit.P053.NormalCompletion.normalCritical_pos
+#print axioms AronowAudit.P053.NormalCompletion.normalCritical_interval_mass

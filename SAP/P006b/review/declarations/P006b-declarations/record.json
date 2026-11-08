@@ -1,0 +1,297 @@
+[
+  {
+    "target_id": "P006-T16",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T16",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.Wave1.T16_corrected_agent_data_bound_proof",
+      "AronowAudit.P006.T16_sufficient_positivity"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.finite_convex_mean_bounds",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      }
+    ],
+    "statement_definition": "SAP.P006b.T16Statement",
+    "supporting_declarations": [
+      "AronowAudit.P006.bestValue_eq",
+      "MeasureTheory.integral_const",
+      "mul_div_cancel_right₀"
+    ]
+  },
+  {
+    "target_id": "P006-T17",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T17",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T17_selected_type",
+      "AronowAudit.P006.T17_three_type_example",
+      "SAP.P006b.WH.W1.T17_whole",
+      "SAP.P006b.WH.W1.T17_assembly",
+      "SAP.P006b.WH.W1.T17_L1_proof",
+      "SAP.P006b.WH.W1.T17_L2_proof",
+      "SAP.P006b.WH.W1.T17_L3_proof",
+      "SAP.P006b.WH.W1.T17_L4_proof",
+      "AronowAudit.P006.Wave1.RepairT6T7_unit_outcome_moments",
+      "AronowAudit.P006.Wave1.RepairT6T7_mul_integrable",
+      "AronowAudit.P006.Wave1.T2_total_moment",
+      "AronowAudit.P006.coin_is_probability",
+      "AronowAudit.P006.bestValue_eq"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.Wave1.T17_maximum_dominates_marginal_printed_false",
+        "reason": "The row refutes an unrestricted measurable-space assertion, whereas canonical clause (d) positively asserts the finite conditional-type comparison; wrong_credit cannot supply that clause or change the target."
+      }
+    ],
+    "statement_definition": "SAP.P006b.T17WholeStatement"
+  },
+  {
+    "target_id": "P006-T18",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T18",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T18_regret_sign_counterexample",
+      "SAP.P006b.WH.W1.T18_whole",
+      "SAP.P006b.WH.W1.T18_assembly",
+      "AronowAudit.P006.twoATO_formula",
+      "AronowAudit.P006.wATO_two",
+      "AronowAudit.P006.bestValue_eq"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P006b.T18WholeStatement"
+  },
+  {
+    "target_id": "P006-T19",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T19",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T19_corrected_regret",
+      "AronowAudit.P006.T19_corrected_regret_tendsto"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P006b.T19Statement",
+    "supporting_declarations": [
+      "Filter.Tendsto.congr'"
+    ]
+  },
+  {
+    "target_id": "P006-T20",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T20",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T20_logistic_counterexample"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P006b.T20Statement"
+  },
+  {
+    "target_id": "P006-T21",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T21",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T21_corrected_logistic_mean",
+      "AronowAudit.P006.logistic_bounds",
+      "AronowAudit.P006.signed_mean_formula"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P006b.T21Statement"
+  },
+  {
+    "target_id": "P006-T22",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T22",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T22_corrected_empirical_mean",
+      "AronowAudit.P006.T22_two_row_example"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P006b.T22Statement"
+  },
+  {
+    "target_id": "P006-T23",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T23",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T23_missing_outcome_counterexample"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P006b.T23Statement"
+  },
+  {
+    "target_id": "P006-T24",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T24",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.Wave1.T24_corrected_identification_proof"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.T24_mixture_mean_iff",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.T24_representative_identification",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.independent_untreated_mean",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      }
+    ],
+    "statement_definition": "SAP.P006b.T24Statement"
+  },
+  {
+    "target_id": "P006-T25",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T25",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T25_printed_lower_bound_family",
+      "AronowAudit.P006.T25_existential_lower_bound",
+      "AronowAudit.P006.T25_unique_response_variant",
+      "AronowAudit.P006.T25_exact_sample_reward",
+      "AronowAudit.P006.lower_bound_formulas",
+      "AronowAudit.P006.lower_bound_perturbed_best_iff",
+      "AronowAudit.P006.lower_bound_welfare_optimum",
+      "SAP.P006b.WH.W1.T25_whole",
+      "SAP.P006b.WH.W1.T25_assembly",
+      "SAP.P006b.WH.W1.T25_general",
+      "SAP.P006b.WH.W1.T25_L1_proof",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_treated_score",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_welfare",
+      "AronowAudit.P006.lower_bound_best_response_iff",
+      "AronowAudit.P006.scale_best_iff",
+      "AronowAudit.P006.bestValue_eq"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.iid_additive_expectation",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.lower_bound_best_response_iff",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.lower_bound_gamma_eq",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.scale_best_iff",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      }
+    ],
+    "statement_definition": "SAP.P006b.T25WholeStatement"
+  },
+  {
+    "target_id": "P006-T26",
+    "decision": "refuted",
+    "theorem": "SAP.P006b.T26",
+    "restriction": null,
+    "rows_used": [],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.Wave1.printed_average_best_response_refuted",
+        "reason": "Its negated universal omits full support and cannot itself prove the repaired statement."
+      }
+    ],
+    "statement_definition": "SAP.P006b.T26Statement",
+    "supporting_declarations": [
+      {
+        "lean_name": "SAP.P006b.T26Repair.refutation",
+        "reason": "Reassembles the explicit two-unit E26 counterexample with positive mass at every covariate point; refutes only the joint ATO/ATT assertion."
+      }
+    ]
+  },
+  {
+    "target_id": "P006-T27",
+    "decision": "refuted",
+    "theorem": "SAP.P006b.T27",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.Wave1.printed_TT_alignment_refuted"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P006b.T27Statement"
+  },
+  {
+    "target_id": "P006-T29",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T29",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T29_ato_unbounded",
+      "AronowAudit.P006.Wave1.T29_family_all_sizes_proof",
+      "AronowAudit.P006.T29_first_mode_tendsto",
+      "AronowAudit.P006.T29_first_mode_welfare",
+      "SAP.P006b.WH.W1.T29_whole",
+      "SAP.P006b.WH.W1.T29_assembly",
+      "SAP.P006b.WH.W1.T29_family",
+      "SAP.P006b.WH.W1.T29_L1_proof",
+      "AronowAudit.P006.Wave1.T2_treatment_stats",
+      "AronowAudit.P006.Wave1.T2_unit_mark_moments",
+      "AronowAudit.P006.Wave1.T2_marked_average",
+      "AronowAudit.P006.Wave1.T2_observed_coefficients",
+      "AronowAudit.P006.Wave1.T2_average_coefficients",
+      "AronowAudit.P006.Wave1.T29_finite_iid_formula",
+      "AronowAudit.P006.Wave1.T29_unique",
+      "AronowAudit.P006.Wave1.T29_one",
+      "AronowAudit.P006.Wave1.T2_best_congr",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_welfare"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.rewardP1_best",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      }
+    ],
+    "statement_definition": "SAP.P006b.T29WholeStatement",
+    "supporting_declarations": [
+      "Filter.Tendsto.congr'"
+    ]
+  },
+  {
+    "target_id": "P006-T30",
+    "decision": "whole",
+    "theorem": "SAP.P006b.T30",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P006.T30_TT_ranking_failure",
+      "SAP.P006b.WH.W1.T30_whole",
+      "SAP.P006b.WH.W1.T30_assembly",
+      "SAP.P006b.WH.W1.T30_maximum",
+      "SAP.P006b.WH.W1.T30_pair",
+      "SAP.P006b.WH.W1.T30_existence",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_treated_score",
+      "AronowAudit.P006.Wave1.RepairT6T7_positive_rule_integral_maximum",
+      "AronowAudit.P006.Wave1.RepairT6T7_mul_integrable",
+      "AronowAudit.P006.Wave1.RepairT6T7_admissible_norm",
+      "AronowAudit.P006.bestValue_eq",
+      "AronowAudit.P006.Wave1.BinaryExperiment.standing_of",
+      "AronowAudit.P006.Wave1.BinaryExperiment.n1_proof",
+      "AronowAudit.P006.Wave1.BinaryExperiment.n3_proof",
+      "AronowAudit.P006.Wave1.BinaryExperiment.n4_proof",
+      "AronowAudit.P006.Wave1.BinaryExperiment.n5_proof",
+      "AronowAudit.P006.Wave1.BinaryExperiment.fairLaw_probability"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P006b.T30WholeStatement",
+    "declaration_review_round1": {
+      "reviewer": "r1g3",
+      "verdict": "not_faithful",
+      "severity": "minor",
+      "resolution": "Corrected the docstring: both ranking premises hold, while the required score ordering fails for both properties. The statement, definitions, proof, restriction and decision are unchanged."
+    }
+  }
+]

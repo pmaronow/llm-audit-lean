@@ -3,9 +3,10 @@ import AronowAudit.P053.P053_NormalQuantiles
 import Mathlib.Topology.Order.LiminfLimsup
 
 /-!
-Block endpoint bounds, finite CDF and quantile identities, and studentized limits.
-The finite probability identities require no measurability assumptions on
-changing finite support types.
+Drafts for gap records 6, 8 and 9. Written by dd-GP013P012B1 without running
+Lean, Lake or Beam. Only the *types* of the three held declarations are used.
+The finite probability adapters below avoid any measurability assumptions on
+changing finite support types. See the accompanying run report for repair notes.
 -/
 
 namespace AronowAudit.P013.Wave1
@@ -15,8 +16,7 @@ open scoped BigOperators Topology NNReal ENNReal
 
 noncomputable section
 
-/-!
-### The least-block definition -/
+/-! ### Record 6: the literal least-block definition -/
 
 lemma block_endpoint_bounds_pos (r : ℕ) (hr : 1 ≤ r) : 0 < blockEnd r := by
   simp only [blockEnd, if_neg (by omega : r ≠ 0)]
@@ -32,6 +32,15 @@ lemma block_endpoint_bounds_mono : Monotone blockEnd := by
     exact Nat.pow_le_pow_right (by norm_num : 0 < (2 : ℕ))
       (Nat.pow_le_pow_right (by norm_num : 0 < (2 : ℕ)) hrs)
 
+lemma block_endpoint_bounds_strict : StrictMono blockEnd := by
+  intro r s hrs
+  by_cases hr : r = 0
+  · subst r
+    simpa [blockEnd] using block_endpoint_bounds_pos s (by omega)
+  · have hs : s ≠ 0 := by omega
+    simp only [blockEnd, if_neg hr, if_neg hs]
+    exact Nat.pow_lt_pow_right (by norm_num : 1 < (2 : ℕ))
+      (Nat.pow_lt_pow_right (by norm_num : 1 < (2 : ℕ)) hrs)
 
 lemma block_endpoint_bounds_nat_le_pow (i : ℕ) : i ≤ 2 ^ i := by
   induction i with
@@ -181,8 +190,9 @@ theorem block_endpoint_bounds_proof (r : ℕ) (hr : 1 ≤ r) :
       rw [hid]
       linarith
 
-/-!
-### Finite CDF and quantile identities -/
+example : type_of% @AronowAudit.P013.block_endpoint_bounds := block_endpoint_bounds_proof
+
+/-! ### Record 8: finite CDF and quantile adapters -/
 
 lemma corrected_concentration_coverage_probability_le_one
     {Ω : Type*} [Fintype Ω] (P : Design Ω) (A : Ω → Prop) :
@@ -224,10 +234,7 @@ lemma corrected_concentration_coverage_Ioc
     by_cases hb : X z ≤ b <;> simp [ha, ha', hb]
 
 /-- An elementary continuous squeeze, adapted from
-P011.CoverageCompletion.continuous_squeeze_zero.
-The adapted proof originates in StatLean's `SteinMethod` module
-(Apache-2.0); see NOTICE at the repository root.
--/
+P011.CoverageCompletion.continuous_squeeze_zero. -/
 lemma corrected_concentration_coverage_squeeze
     {G : ℕ → ℝ} {F : ℝ → ℝ} (hF : ContinuousAt F 0)
     (hb : ∀ ε > (0 : ℝ), ∀ᶠ n in atTop, F (-ε) - ε ≤ G n ∧ G n ≤ F ε + ε) :
@@ -415,8 +422,10 @@ theorem corrected_concentration_coverage_proof {L : ℕ → Type*} [∀ n : ℕ,
     exact hh
   exact le_of_tendsto ht (Eventually.of_forall (fun k => hfixed (η k) (hη0 k) (hη1 k)))
 
-/-!
-### Changing finite-space continuity and random thresholds -/
+example : type_of% @AronowAudit.P013.corrected_concentration_coverage :=
+  corrected_concentration_coverage_proof
+
+/-! ### Record 9: changing finite-space continuity and random thresholds -/
 
 lemma corrected_studentized_limit_det
     {L : ℕ → Type*} [∀ n, Fintype (L n)] (P : ∀ n, Design (L n))
@@ -680,6 +689,9 @@ theorem corrected_studentized_limit_proof {L : ℕ → Type*} [∀ n : ℕ, Fint
     corrected_studentized_limit_gaussian_cdf c s hc hspos x
   rw [heq]
   exact hcdf
+
+example : type_of% @AronowAudit.P013.corrected_studentized_limit :=
+  corrected_studentized_limit_proof
 
 end
 

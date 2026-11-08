@@ -1,0 +1,130 @@
+import SAP.P006a.Challenge
+
+open MeasureTheory ProbabilityTheory
+open scoped BigOperators ENNReal
+
+namespace Audit
+open SAP.P006a
+
+lemma coin_nonnegative (q : ℝ) (hq : 0 ≤ q ∧ q ≤ 1) (t : Bool) :
+    0 ≤ coinMass q t := by
+  cases t <;> norm_num [coinMass] <;> linarith [hq.1, hq.2]
+
+example (π : BinaryPolicy) (hπ : binaryFeasible π) (x : Bool) :
+    0 ≤ binaryRule π x ∧ binaryRule π x ≤ 1 := by
+  cases x
+  · simpa [binaryRule] using (And.intro hπ.1 hπ.2.1)
+  · simpa [binaryRule] using (And.intro hπ.2.2.1 hπ.2.2.2)
+
+example (π : BinaryPolicy) :
+    (∑ x0 : Bool, ∑ x1 : Bool, ∑ t0 : Bool, ∑ t1 : Bool,
+      coinMass (1/2) x0 * coinMass (1/2) x1 *
+        coinMass (binaryRule π x0) t0 * coinMass (binaryRule π x1) t1) = 1 := by
+  simp only [Fintype.sum_bool, coinMass, binaryRule]
+  norm_num
+  ring
+
+example : binaryFeasible (0,0) ∧ binaryFeasible (0,1) ∧
+    binaryFeasible (1,1) ∧ binaryFeasible (17/18,1) := by
+  norm_num [binaryFeasible]
+
+lemma witness_reward_formula (π : BinaryPolicy) :
+    witnessReward π = (9*π.1+10*π.2)*(4-π.1-π.2)/40 := by
+  simp only [witnessReward, Fintype.sum_bool, wATO, treatedCount,
+    Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one,
+    coinMass, binaryRule, bit, effectE001, ite_false, ite_true]
+  norm_num
+  ring
+
+example : witnessReward (0,1) = 3/4 ∧ witnessReward (1,1) = 19/20 ∧
+    witnessReward (0,1) < witnessReward (1,1) ∧
+    witnessReward (17/18,1) = 1369/1440 := by
+  norm_num [witness_reward_formula]
+
+example (π : BinaryPolicy) :
+    1369/1440-witnessReward π = (9/40)*(π.1-17/18)^2 +
+      (1-π.2)*(30-19*π.1-10*π.2)/40 := by
+  rw [witness_reward_formula]
+  ring
+
+example : finiteConditionalAverage (fun _ : Fin 2 => 1/2) ![9/10,1] ![0,1] = 1 := by
+  norm_num [finiteConditionalAverage, finiteMass, finiteA, Fin.sum_univ_two]
+
+example : printedRegretE001 = 9/20 := by
+  norm_num [printedRegretE001, effectE001, Fintype.sum_bool, Bool.forall_bool]
+
+lemma rewardA_formula (π : BinaryPolicy) : rewardA π = -(π.1+π.2)/4 := by
+  simp only [rewardA, oneTT, Fintype.sum_bool, wTT, wWeightedTT,
+    Fin.sum_univ_one, Matrix.cons_val_zero, coinMass, binaryRule, bit, estA,
+    ite_false, ite_true]
+  norm_num
+  ring
+
+lemma rewardB_formula (π : BinaryPolicy) : rewardB π = (π.1+π.2)/4 := by
+  simp only [rewardB, oneTT, Fintype.sum_bool, wTT, wWeightedTT,
+    Fin.sum_univ_one, Matrix.cons_val_zero, coinMass, binaryRule, bit, estB, estA,
+    ite_false, ite_true]
+  norm_num
+  ring
+
+example : (∀ x, fixedEstimatorMean estA x = 0 ∧ fixedEstimatorMean estB x = 0) ∧
+    (∀ x, estA x x = 1 ∧ estB x x = -1) := by
+  constructor
+  · intro x
+    cases x <;> norm_num [fixedEstimatorMean, estA, estB, Fintype.sum_bool]
+  · intro x
+    simp [estA, estB]
+
+example : treatedEstimatorMean estA (1,1) = 1 ∧
+    treatedEstimatorMean estB (1,1) = -1 ∧
+    binaryMarginalHeterogeneity (fun _ => 0) (fun _ => 0) = 0 := by
+  norm_num [treatedEstimatorMean, binaryRule, estA, estB,
+    binaryMarginalHeterogeneity, Fintype.sum_bool]
+
+example : IsBest binaryPolicies rewardA (0,0) ∧ IsBest binaryPolicies rewardB (1,1) := by
+  constructor
+  · refine ⟨by norm_num [binaryPolicies, binaryFeasible], ?_⟩
+    intro π hπ
+    rcases hπ with ⟨ha, ha', hb, hb'⟩
+    simp only [rewardA_formula]
+    linarith
+  · refine ⟨by norm_num [binaryPolicies, binaryFeasible], ?_⟩
+    intro π hπ
+    rcases hπ with ⟨ha, ha', hb, hb'⟩
+    simp only [rewardB_formula]
+    linarith
+
+example : (∀ x, (∑ xj : Bool, ∑ xk : Bool, (1/4 : ℝ)*sharedEst xj xk x) = 0) ∧
+    (∀ xj, (∑ xk : Bool, (1/2 : ℝ)*sharedEst xj xk xj) = 1/2) ∧
+    (∀ xk, (∑ xj : Bool, (1/2 : ℝ)*sharedEst xj xk xk) = -1/2) := by
+  constructor
+  · intro x
+    cases x <;> norm_num [sharedEst, Fintype.sum_bool]
+  constructor
+  · intro x
+    cases x <;> norm_num [sharedEst, Fintype.sum_bool]
+  · intro x
+    cases x <;> norm_num [sharedEst, Fintype.sum_bool]
+
+lemma scoreJ_formula (π : BinaryPolicy) : scoreJ π = -(π.1+π.2)/8 := by
+  simp only [scoreJ, Fintype.sum_bool, wTT, wWeightedTT, Fin.sum_univ_one,
+    Matrix.cons_val_zero, coinMass, binaryRule, bit, sharedEst, ite_false, ite_true]
+  norm_num
+  ring
+
+lemma scoreK_formula (π : BinaryPolicy) : scoreK π = 5*(π.1+π.2)/16 := by
+  simp only [scoreK, Fintype.sum_bool, wTT, wWeightedTT, Fin.sum_univ_one,
+    Matrix.cons_val_zero, coinMass, binaryRule, bit, sharedEst, ite_false, ite_true]
+  norm_num
+  ring
+
+example : scoreJ (0,0) = 0 ∧ scoreK (1,1) = 5/8 ∧
+    (0 : ℝ) < 1/8 ∧ (1/8 : ℝ) < 1/4 := by
+  norm_num [scoreJ_formula, scoreK_formula]
+
+#print axioms witness_reward_formula
+#print axioms rewardA_formula
+#print axioms scoreJ_formula
+#print axioms scoreK_formula
+
+end Audit

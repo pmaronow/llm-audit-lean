@@ -26,5 +26,7 @@ theorem continuity_only_counterexample_proof :
   exact ⟨uniform_amplification_diverges, uniform_amplification_sharp_log,
     continuous_bias_norm, tc11_fixed_bad_mean_properties⟩
 
+example : type_of% @AronowAudit.P023.continuity_only_counterexample := AronowAudit.P023.Wave1.continuity_only_counterexample_proof
+
 end
 end AronowAudit.P023.Wave1

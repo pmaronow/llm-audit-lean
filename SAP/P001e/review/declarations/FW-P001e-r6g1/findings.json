@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P001-T77",
+    "theorem": "SAP.P001e.T77",
+    "fingerprint": "80ece8c91a80ce2f233e4443b4fe8932dd122b420aa4c70d33b32ab748d39391",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:18 constructs a nonempty Theta=R^2 and a genuine pure-point PMF likelihood; line 22 constructs L on Unit x Theta with the required equality. Line 29 verifies that s=1/(2*sqrt(2*pi)) is positive and below the density threshold. These checks compile independently of T77.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T78",
+    "theorem": "SAP.P001e.T78",
+    "fingerprint": "61a6b3c9d76e2fac2087a5a2674fcf0c9b83a23d852c2a8597d8cbc54832331b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:42 verifies every hypothesis with n=2, K=0, the all-ones intercept matrix, Y=(0,2), and fitted coefficient b=1. The global least-squares inequality is proved for every coefficient c, and Q=2>0. Compilation succeeds without applying T78.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T79",
+    "theorem": "SAP.P001e.T79",
+    "fingerprint": "03c4524d4d1c792b01dbe18eec50cebc0bb823ebe9e0f2181c3e1fded997e89a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:60 and line 76 verify the nonempty-sample, normalized PMF/PDF and attained-MLE hypotheses using a pure-point PMF and a variance-one Gaussian. Lines 92, 96, 105 and 139 supply genuine measurable population data and the Gaussian and PMF conditional-law version premises. Line 112 constructs a CDF witness from the normalized fitted Gaussian law. All checks compile without applying T79.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T80",
+    "theorem": "SAP.P001e.T80",
+    "fingerprint": "172f5cfce01c862d149a224e188908647eeb27fa5357c960908a839ac1b1fac5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:148 verifies every population hypothesis on uniform Fin 2, with Y(i)=R(i)=i, a=0, b=1 and response probabilities both 1/2. Line 171 constructs, for every c in [1/2,1], the genuine compatible outcome vector (2*c-1,1), checking measurability, integrability, bounds, mean c, equal recorded outcomes and identical observable laws. Line 198 independently proves both finite completion vectors and means. Compilation succeeds without applying T80.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T81",
+    "theorem": "SAP.P001e.T81",
+    "fingerprint": "4e1304ffe64f1d8ce37e7aeac26565143d997211b2e150cb23aaa344d9b5afd9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no hypotheses. scratch/Check.lean:202 independently proves the entire T81Statement by expanding the definitions and checking finite real arithmetic, including all distances, donor comparisons, the completion vector and its mean. Compilation succeeds without applying T81.",
+    "confidence": "high"
+  }
+]

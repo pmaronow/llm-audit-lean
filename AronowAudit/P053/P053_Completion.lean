@@ -2,11 +2,12 @@ import AronowAudit.P053.P053_Audit
 import AronowAudit.P053.P053_CausalBridge
 
 /-!
-Variance-estimator limits for Aronow and Offer-Westort (2017).
+Completion lemmas for Aronow and Offer-Westort (2017).
 
 This module proves the estimator algebra and convergence implications from a
 shared moment-LLN interface. P053_MomentConsistency proves that interface from
-bounded-fourth-moment regularity.
+the original Regularity and closes the original targets unconditionally.
+No unfinished theorem in P053_Audit is used in these proofs.
 -/
 
 namespace AronowAudit.P053
@@ -55,6 +56,10 @@ theorem randomizationProbability_or_le (P : Population)
       · exact Finset.mem_union_right _ (Finset.mem_filter.mpr ⟨hz, hb⟩)
     _ ≤ _ := Finset.card_union_le _ _
 
+theorem randomizationProbability_false (P : Population) :
+    randomizationProbability P (fun _ => False) = 0 := by
+  classical
+  simp [randomizationProbability]
 
 theorem inProbability_congr_eventually (E : ℕ → Population)
     (X Y : (k : ℕ) → Finset (Fin (E k).size) → ℝ) (c : ℝ)
@@ -165,7 +170,7 @@ theorem regularity_inverse_size (E : ℕ → Population) (p v1 v0 vt τ : ℝ)
 
 /-- A standard SRS moment law of large numbers, exposed as a shared interface.
 The theorem `finitePopulationMomentLLN` in P053_MomentConsistency proves this
-interface from bounded-fourth-moment regularity.
+interface from the original bounded-fourth-moment regularity.
 The hypothesis concerns raw arm sample variances and the difference in means;
 it does not assume any Fisher/OLS/Neyman variance-estimator conclusion below.
 Under the bounded fourth moments in Regularity, these are the usual
@@ -178,8 +183,8 @@ def FinitePopulationMomentLLN : Prop :=
     InProbability E (fun k z => sampleVariance zᶜ (observed (E k) z)) v0 ∧
     InProbability E (fun k z => estimate (E k) z) τ
 
-/-- Neyman's scaled variance-estimator limit under regularity and convergence
-in probability of the two arm sample variances.
+/-- Neyman's scaled variance-estimator limit, conditional solely on the
+explicit, universally quantified finite-population moment LLN above.
 All estimator algebra and convergence operations are proved in this module.
 -/
 theorem neyman_variance_limit_of_arm_consistency
@@ -247,8 +252,7 @@ theorem regularity_ols_coefficients (E : ℕ → Population) (p v1 v0 vt τ : �
     filter_upwards [] with k
     rfl
 
-/-- The OLS variance limit under regularity and convergence in probability
-of the two arm sample variances. -/
+/-- The OLS variance limit from the universal SRS moment LLN. -/
 theorem ols_variance_limit_of_arm_consistency
     (E : ℕ → Population) (p v1 v0 vt τ : ℝ) (h : Regularity E p v1 v0 vt τ)
     (h1 : InProbability E (fun k z => sampleVariance z (observed (E k) z)) v1)
@@ -377,7 +381,8 @@ theorem fisher_variance_limit_of_momentLLN (hLLN : FinitePopulationMomentLLN)
   field_simp
   nlinarith [he']
 
-/-- Full Section 2 expansion, conditional on the explicit SRS moment LLN. -/
+/-- Full Section 2 expansion, with the accepted SRS moment theorem explicit.
+This proof does not depend on the unfinished unconditional expansion. -/
 theorem fisher_ols_asymptotics_of_momentLLN (hLLN : FinitePopulationMomentLLN)
     (E : ℕ → Population) (p v1 v0 vt τ : ℝ) (h : Regularity E p v1 v0 vt τ) :
     LittleOInvSize E (fun k z => fisherVariance (E k) z -
@@ -558,7 +563,7 @@ theorem constant_effect_limit_agreement_of_momentLLN (hLLN : FinitePopulationMom
   intro z hz
   ring
 
-/-- The concrete variance counterexample: the sample
+/-- The full concrete variance counterexample, now unconditional: the sample
 variance limits are supplied by the imported, proved SRS theorem and exact law
 bridges, not an assumed asymptotic estimator limit. -/
 theorem anticonservative_limit_exists_completed :
@@ -584,3 +589,33 @@ theorem anticonservative_limit_exists_completed :
 end
 end AronowAudit.P053
 
+#print axioms AronowAudit.P053.randomizationProbability_nonneg
+#print axioms AronowAudit.P053.randomizationProbability_mono
+#print axioms AronowAudit.P053.randomizationProbability_or_le
+#print axioms AronowAudit.P053.randomizationProbability_false
+#print axioms AronowAudit.P053.inProbability_congr_eventually
+#print axioms AronowAudit.P053.inProbability_deterministic
+#print axioms AronowAudit.P053.inProbability_continuous_pair
+#print axioms AronowAudit.P053.inProbability_add
+#print axioms AronowAudit.P053.inProbability_sub
+#print axioms AronowAudit.P053.inProbability_mul
+#print axioms AronowAudit.P053.inProbability_div
+#print axioms AronowAudit.P053.inProbability_sq
+#print axioms AronowAudit.P053.regularity_allocation_control
+#print axioms AronowAudit.P053.regularity_inverse_size
+#print axioms AronowAudit.P053.neyman_variance_limit_of_arm_consistency
+#print axioms AronowAudit.P053.neyman_variance_limit_of_momentLLN
+#print axioms AronowAudit.P053.regularity_ols_coefficients
+#print axioms AronowAudit.P053.ols_variance_limit_of_arm_consistency
+#print axioms AronowAudit.P053.ols_variance_limit_of_momentLLN
+#print axioms AronowAudit.P053.neyman_asymptotic_bound_of_momentLLN
+#print axioms AronowAudit.P053.regularity_oracle_ols_limit
+#print axioms AronowAudit.P053.regularity_oracle_neyman_limit
+#print axioms AronowAudit.P053.fisher_variance_limit_of_momentLLN
+#print axioms AronowAudit.P053.fisher_ols_asymptotics_of_momentLLN
+#print axioms AronowAudit.P053.local_alternative_equivalence_of_momentLLN
+#print axioms AronowAudit.P053.constant_effect_asymptotics_of_momentLLN
+#print axioms AronowAudit.P053.wald_comparison_asymptotics_of_momentLLN
+#print axioms AronowAudit.P053.fisher_neyman_local_comparison_of_momentLLN
+#print axioms AronowAudit.P053.constant_effect_limit_agreement_of_momentLLN
+#print axioms AronowAudit.P053.anticonservative_limit_exists_completed

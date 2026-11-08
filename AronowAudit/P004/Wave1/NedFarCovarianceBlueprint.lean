@@ -1,21 +1,35 @@
 import AronowAudit.P004.Wave1.FiniteConditioningBlueprint
 import AronowAudit.P004.P004_VarianceComponentsCompletion
 
-/-! # Corrected far-pair covariance bound (P004-T29(1))
+/-! # Blueprint: repair and proof of `AronowAudit.P004.ned_far_covariance` (P004-T29(1))
 
-Supplement A Lemma C.9(iii), equation (109), concerns the random rows `v̂_i` of (107)
-at distances `d_ij > 3 b_N`. The bound here assumes bounded outcomes, metric node
-distances, uniform quadratic spacing `C_b(1+s²)` for `s ≥ 0`, the kernel conditions C5,
-and a uniform NED bound. Finding P004-E018 concerns the radius-uniform spacing constant;
-P004-E021 concerns the far-pair condition.
+Dossier group P004, record 2. The held declaration (a `sorry` draft) states the corrected
+far-pair covariance bound (109) of Supplement A Lemma C.9(iii) (`d_ij > 3 b_N`), for the actual
+random rows `v̂_i` of (107) built from the deterministic fits `barMu`, under BoundedOutcomes,
+MetricNodeDistances, the uniform corrected spacing `QuadraticSpacing` (`C_b(1+s²)`), the kernel
+conditions C5, and a uniform NED bound.
 
-The bound is uniform over deterministic fits `μ₁, μ₀` bounded by `M`, with the constant
-chosen before the fits. Its second conjunct specializes to the population arm means
-`barMu`. Well-definedness and `1 ≤ bandwidth` are needed only eventually.
+Resolution: `repair_and_prove`. Both referees reclassified the mapper's `author_decision`:
+finding P004-E018 (`sol.smallest_repair`, `sol.prior_correction.corrected_text`) already fixes
+the radius-uniform single-constant reading, which is exactly `QuadraticSpacing`. The printed
+page reads `s ≥ 0` (both referees inspected the image; the dossier's `s > 0` is wrong).
+Referee fixes applied:
+* referee 2: Lemma C.9 (Supplement A p. 33) quantifies over ANY deterministic `μ₁, μ₀` with
+  `|μ_a| < B`; the target therefore asserts the bound uniformly over bounded fits (first
+  conjunct, constant chosen before the fits), and keeps the held `barMu` statement as the second
+  conjunct (it is derived from the first in `assemble`);
+* both referees: the helper `epsilon_projection_bound` (here `E1`) carries `N > 0`, `0<p<1`,
+  the table bound, bounds on BOTH fits, and `i ∈ J`; the magnitude bound is `(B+M)/(qN)`;
+* mapper's relaxations accepted by both referees: `WellDefined` and `1 ≤ bandwidth` only
+  eventually (the conclusion is eventual).
 
-Project onto disjoint `T`-balls with `T = d_ij/3`. The product error bound is
-`||v_i−ṽ_i||₂ ≤ 2LAH S_i/N²`. Covariance Cauchy–Schwarz and `m_i ≤ 2C_b b²` for `b ≥ 1`
-give the final constant `8 C_b L² A³ H`.
+Paper proof: map-P004 REPORT, record 2 (projection onto the disjoint `T`-balls, `T = d_ij/3`,
+the product error bound `||v_i−ṽ_i||₂ ≤ 2LAH S_i/N²`, covariance Cauchy–Schwarz, and
+`m_i ≤ 2C_b b²` for `b ≥ 1`; final constant `8 C_b L² A³ H`).
+
+The final declaration (writer) is
+`AronowAudit.P004.Wave1.ned_far_covariance_under_uniform_spacing` in
+`AronowAudit/P004/Wave1/NedFarCovariance.lean`. Do not cite the draft `ned_far_covariance`.
 -/
 
 universe u
@@ -27,9 +41,9 @@ noncomputable section
 open AronowAudit.P004 MeasureTheory Filter
 open scoped BigOperators
 
-/-- The bound uniformly over all deterministic fits bounded by `M`
-(Lemma C.9 as printed, with the P004-E021 far-pair condition and the P004-E018
-uniform spacing), and the `barMu` specialization. -/
+/-- Frozen target: the bound uniformly over all deterministic fits bounded by `M`
+(Lemma C.9 as printed, with the E021 far-pair condition and the E018 uniform spacing), and the
+held `barMu` specialization. -/
 def Target : Prop :=
   ∀ {Space : ℕ → Type u} [∀ N, MetricSpace (Space N)] [∀ N, MeasurableSpace (Space N)]
     (P : PopulationSequence Space) (p d : ℝ) (K ψ : ℝ → ℝ) (bandwidth : ℕ → ℝ)
@@ -64,10 +78,16 @@ def Target : Prop :=
         (∑ l ∈ ball (nodeSeparation (P N)) j (bandwidth N),
           ψ (nodeSeparation (P N) i j/3-nodeSeparation (P N) j l)))
 
+/-- Fidelity check (proved): the repaired target implies the held contract
+`ned_far_covariance` verbatim (whose all-`N` guards imply the eventual ones). -/
+example (h : Target.{u}) : type_of% @AronowAudit.P004.ned_far_covariance.{u} := by
+  intro Space _ _ P p d K ψ bw hp hb hmetric hspacing hK hψ hψanti hNED hWD hband
+  exact (h P p d K ψ bw hp hb hmetric hspacing hK hψ hψanti hNED
+    (Filter.Eventually.of_forall hWD) (Filter.Eventually.of_forall hband)).2
+
 /-- The single-`N` standing hypotheses of the far-pair computation: positive sample size,
-interior coin, table bound `B`, fit bound `M`, node distances satisfying the pseudometric
-axioms, nonnegative antitone `ψ`, the uniform NED bound with coefficient `G`, kernel bound
-`L` on `[0,∞)`, bandwidth `b>0`. -/
+interior coin, table bound `B`, fit bound `M`, node distances a metric, nonnegative antitone
+`ψ`, the uniform NED bound with coefficient `G`, kernel bound `L` on `[0,∞)`, bandwidth `b>0`. -/
 structure FarSetting {N : ℕ} (p : ℝ) (R : CircleTable N) (D : Fin N → Fin N → ℝ)
     (K ψ : ℝ → ℝ) (B M G L b : ℝ) : Prop where
   hN : 0 < N
@@ -97,9 +117,10 @@ def projRow {N : ℕ} (p : ℝ) (R : CircleTable N) (D : Fin N → Fin N → ℝ
     (b μ1 μ0 : ℝ) (J : Finset (Fin N)) (i : Fin N) (z : Assignment N) : ℝ :=
   ∑ k ∈ ball D i b, projEps p R μ1 μ0 J i z * projEps p R μ1 μ0 J k z * K (D i k / b)
 
-/-- For bounded outcomes and fits, the epsilon magnitude is bounded by
-`(B+M)/(qN)`, where `q = min p (1-p)`. For every conditioning set `J` containing `i`,
-the epsilon projection error is at most the outcome projection error divided by `qN`. -/
+/-- E1 (paper proof: "For every assignment |e_i|≤A/N ... The assumed NED bound implies
+||e_i−E_{B(i,t)}e_i||₂≤(H/N)ψ(t)"; with both referees' completed hypotheses): the magnitude
+bound `(B+M)/(qN)` and the projection-error transfer for every `J ∋ i`. Uses FC8
+(`α a = (if a then 1/p else -1/(1-p))/N`, `β a = -(if a then μ1/p else -μ0/(1-p))/N`). -/
 def E1 : Prop :=
   ∀ {N : ℕ} (p : ℝ) (R : CircleTable N) (B M μ1 μ0 : ℝ), 0 < N → 0 < p ∧ p < 1 →
     (∀ i z, |R i z| ≤ B) → |μ1| ≤ M → |μ0| ≤ M →
@@ -110,10 +131,11 @@ def E1 : Prop :=
         l2Norm (fun _ => p) (fun z => R i z - conditionOn (fun _ => p) J (R i) z) /
           (min p (1-p) * N))
 
-/-- Under `FarSetting` and bounded fits, projection onto `B(i,T)` for `T > b`
-has L² error at most `2LAH S_i/N²`, where `q = min p (1-p)`, `A = (B+M)/q`,
-`H = |G|/q`, and `S_i = ∑ k ∈ B(i,b), ψ(T-D i k)`. Both rows have pointwise
-magnitude at most `LA² |B(i,b)|/N²`; the projected row depends only on `B(i,T)`. -/
+/-- E2 (paper proof: "For k∈B(i,b), put t_k=T−d_ik>0. The triangle inequality gives
+B(k,t_k)⊆B(i,T); hence ||e_k−E_{B(i,T)}e_k||₂≤(H/N)ψ(t_k) ... ||v_i−ṽ_i||₂≤LAH/N²·(m_i ψ(T)+
+S_i)≤2LAH S_i/N² ... ||v_i||₂,||ṽ_i||₂≤LA²m_i/N²"), for one row and any `T > b`, with
+`A = (B+M)/q`, `H = |G|/q`. Also records that `ṽ_i` depends only on the coordinates in
+`B(i,T)`. Uses E1, FC1, FC2, FC5, FC6, FC7. -/
 def E2 : Prop :=
   ∀ {N : ℕ} (p : ℝ) (R : CircleTable N) (D : Fin N → Fin N → ℝ) (K ψ : ℝ → ℝ)
     (B M G L b μ1 μ0 : ℝ) (i : Fin N) (T : ℝ),
@@ -128,8 +150,12 @@ def E2 : Prop :=
       L * ((B + M) / min p (1-p))^2 * ((ball D i b).card : ℝ) / (N : ℝ)^2) ∧
     DependsOn (projRow p R D K b μ1 μ0 (ball D i T) i) (↑(ball D i T) : Set (Fin N))
 
-/-- Under `FarSetting` and bounded fits, the far-pair covariance bound for
-`D i j > 3b` uses the actual `b`-ball counts and the NED-error sums at radius `D i j/3`. -/
+/-- E3 (paper proof: "The two projected rows are functions of disjoint assignment sets, so
+Cov(ṽ_i,ṽ_j)=0 ... Bilinearity gives Cov(v_i,v_j)=Cov(v_i−ṽ_i,v_j)+Cov(ṽ_i,v_j−ṽ_j).
+Consequently |Cov(v_i,v_j)|≤2L²A³H(m_j S_i+m_i S_j)/N⁴"): the far-pair bound with the actual
+ball counts `m_i = |B(i,b)|`, at `T = d_ij/3`. Uses E2 (at `T = d_ij/3` for `i` and for `j`),
+FC7, `GraphCompletion.expect_mul_of_disjoint_depends`, and disjointness of the two `T`-balls
+from `hDtri`, `hDsymm` and `d_ij = 3T > 2T`. -/
 def E3 : Prop :=
   ∀ {N : ℕ} (p : ℝ) (R : CircleTable N) (D : Fin N → Fin N → ℝ) (K ψ : ℝ → ℝ)
     (B M G L b μ1 μ0 : ℝ),
@@ -140,7 +166,7 @@ def E3 : Prop :=
           (((ball D j b).card : ℝ) * (∑ k ∈ ball D i b, ψ (D i j / 3 - D i k)) +
             ((ball D i b).card : ℝ) * (∑ l ∈ ball D j b, ψ (D i j / 3 - D j l))) / (N : ℝ)^4
 
-/-- Elementary bound on a population arm mean. -/
+/-- Elementary bound on a population arm mean (proved). -/
 theorem barMu_abs_le {N : ℕ} (p : ℝ) (hp : 0 < p ∧ p < 1) (R : CircleTable N) (B : ℝ)
     (hB0 : 0 ≤ B) (hR : ∀ i z, |R i z| ≤ B) (a : Bool) : |barMu (fun _ => p) R a| ≤ B := by
   unfold barMu
@@ -155,7 +181,7 @@ theorem barMu_abs_le {N : ℕ} (p : ℝ) (hp : 0 < p ∧ p < 1) (R : CircleTable
           ComponentCompletion.marginal_abs_le (fun _ => p) (fun _ => hp) R B hR i a
       _ = B * N := by simp [mul_comm]
 
-/-- Constants from the quadratic ball-count bound: `m ≤ 2C_b b²` and
+/-- The constant algebra of the last paper-proof step (proved): `m ≤ 2C_b b²` and
 `m_j S_i + m_i S_j ≤ 4 C_b b² max(S_i,S_j)`. -/
 theorem far_algebra (X mi mj Si Sj Cb b : ℝ) (hX : 0 ≤ X) (hSi : 0 ≤ Si) (hSj : 0 ≤ Sj)
     (hmi0 : 0 ≤ mi) (hmj0 : 0 ≤ mj) (hmi : mi ≤ 2 * Cb * b^2) (hmj : mj ≤ 2 * Cb * b^2) :
@@ -167,7 +193,7 @@ theorem far_algebra (X mi mj Si Sj Cb b : ℝ) (hX : 0 ≤ X) (hSi : 0 ≤ Si) (
   have := mul_le_mul_of_nonneg_left (add_le_add h1 h2) hX
   linarith
 
-/-- The component bounds imply the result: eventual bounds from the sequence hypotheses to
+/-- The nodes suffice (proved): eventual bookkeeping from the sequence hypotheses to
 `FarSetting`, the finite bound E3, and the constant `C = 8 C_b L² A³ H`; then the `barMu`
 clause from the bounded-fit clause with `M = B + 1`. -/
 theorem assemble (hE3 : E3) : Target.{u} := by

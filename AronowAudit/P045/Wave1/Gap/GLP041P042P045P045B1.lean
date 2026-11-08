@@ -5,9 +5,9 @@ import AronowAudit.P045.Wave1.ClusterSampler.N6
 import AronowAudit.P045.Wave1.ClusterSampler.N7
 import AronowAudit.P045.Wave1.ClusterSampler.N8
 
-/-!
-Exact four-path terminal and treatment laws for P045-T10.
--/
+/-! Exact four-path terminal and treatment laws for P045-T10.
+The initial trace reductions extend the earlier worker draft in
+`lw-GLP041P042P045P045B1`; all declarations below are kernel checked here. -/
 
 set_option autoImplicit false
 
@@ -240,6 +240,7 @@ private theorem p045t10_repaired_classify (cs : List (Fin 4))
       norm_num [centreDraw,hR] at hd'
 
 
+
 private theorem p045t10_repaired_trace_masses :
     traceMass (pathDistance (n := 4)) 3 false [1] = 1/4 ∧
     traceMass (pathDistance (n := 4)) 3 false [2] = 1/4 ∧
@@ -334,7 +335,7 @@ private theorem p045t10_repaired_weighted (F : Finset (Fin 4) → ℝ) :
   simp_rw [p045t10_repaired_table, add_mul, ite_mul, zero_mul]
   simp only [Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
 
-/-- The list representation of `{0, a}` is `[0, a]` or `[a, 0]` when `a ≠ 0`. -/
+/-- Both possible enumerations of a pair give the same nearest-centre tie rule. -/
 private theorem p045t10_pair_toList (a : Fin 4) (ha : a ≠ 0) :
     ({0,a} : Finset (Fin 4)).toList = [0,a] ∨
     ({0,a} : Finset (Fin 4)).toList = [a,0] := by
@@ -545,6 +546,8 @@ theorem cluster_sampler_counterexample_proof :
   all_goals
     norm_num [p045t10_coded_treatment, p045t10_repaired_table, p045t10_repaired_treatment] <;>
       simp +decide
+
+example : type_of% @AronowAudit.P045.cluster_sampler_counterexample := cluster_sampler_counterexample_proof
 
 end
 

@@ -6,7 +6,7 @@ import AronowAudit.P002.Wave1.Lib.FinitePopulationCLT
 
 /-!
 P002-T7: corrected Lemma 20, Supplement p. 42, in the positive residual-variance
-scope.
+scope chosen in AUTHOR-DECISIONS.md on 20 October 2026.
 
 Scalar sampling fourth moments and first Borel--Cantelli give sampled residual
 scores and second moments. Together with sampled Gram control these yield an
@@ -1739,6 +1739,8 @@ theorem corrected_lemma20_proof {Ω : Type*} [MeasurableSpace Ω] (μ : Measure 
     exact (tendsto_add_atTop_iff_nat J).mp (hadjusted x hx)
   · intro κ hκ
     exact (tendsto_add_atTop_iff_nat J).mp (hfeasible.2 κ hκ)
+
+example : type_of% @AronowAudit.P002.corrected_lemma20 := corrected_lemma20_proof
 
 end
 end AronowAudit.P002.Wave1

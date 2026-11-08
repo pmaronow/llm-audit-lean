@@ -1,0 +1,67 @@
+import SAP.P029a.Defs
+
+open SAP.P029a
+open scoped BigOperators Classical
+
+set_option maxRecDepth 8192
+set_option maxHeartbeats 2000000
+
+-- T13: all four specified points really maximize the Bernoulli likelihood.
+example : ∀ d, twoReceiptFit d ∈ closedReceiptTriangle ∧
+    ∀ v ∈ closedReceiptTriangle, twoReceiptLikelihood d v.1 v.2 ≤
+      twoReceiptLikelihood d (twoReceiptFit d).1 (twoReceiptFit d).2 := by
+  rintro ⟨d1,d0⟩
+  cases d1 <;> cases d0 <;>
+    refine ⟨by norm_num [twoReceiptFit, closedReceiptTriangle], ?_⟩
+  all_goals
+    rintro ⟨p,q⟩ hv
+    change 0 ≤ q ∧ q ≤ p ∧ p ≤ 1 at hv
+    rcases hv with ⟨hq0,hqp,hp1⟩
+    have hp0 : 0 ≤ p := hq0.trans hqp
+    have hq1 : q ≤ 1 := hqp.trans hp1
+    have hprod1 := mul_nonneg (sub_nonneg.mpr hp1) hq0
+    have hprod2 := mul_nonneg (sub_nonneg.mpr hp1) (sub_nonneg.mpr hqp)
+    have hprod3 := mul_nonneg hp0 hq0
+    have hprod4 := mul_nonneg hp0 (sub_nonneg.mpr hq1)
+    norm_num [twoReceiptLikelihood, bernoulliContribution, twoReceiptFit]
+    nlinarith [sq_nonneg (p - 1/2)]
+
+example : ClosedLikelihoodCertificates := by
+  intro p q
+  constructor
+  · ring
+  constructor
+  · ring
+  constructor <;> ring
+
+example : ClosedFitValues := by
+  norm_num [ClosedFitValues, twoReceiptFit, twoReceiptLikelihood, bernoulliContribution,
+    twoReceiptMass]
+
+example : finiteExpectation twoReceiptMass
+    (fun d => (twoReceiptFit d).1 - (twoReceiptFit d).2) = 9/16 ∧
+    finiteExpectation twoReceiptMass (fun d => indicatorValue d.1 - indicatorValue d.2) = 1/2 ∧
+    (9/16 : ℝ) - 1/2 = 1/16 := by
+  norm_num [finiteExpectation, twoReceiptMass, twoReceiptFit, indicatorValue,
+    Fintype.sum_prod_type, Fintype.sum_bool]
+
+-- T13: the five-per-arm law is normalized and has no signed/junk masses.
+example : IsFiniteLaw (independentArmCountMass 5 5 (1/2) (3/10)) := by
+  constructor
+  · intro k
+    unfold independentArmCountMass binomialCountMass
+    positivity
+  · norm_num [independentArmCountMass, binomialCountMass,
+      Fintype.sum_prod_type, Fin.sum_univ_succ, Nat.choose]
+
+-- Independent exact enumeration of all 36 pairs of counts.
+example : FivePerArmBiasFacts := by
+  norm_num [FivePerArmBiasFacts, finiteExpectation, finiteProbability,
+    independentArmCountMass, binomialCountMass, empiricalPositiveScore,
+    positiveComplianceDifference, Fintype.sum_prod_type, Fin.sum_univ_succ, Nat.choose]
+
+example : (0 : ℝ)^0 = 1 ∧ (0 : ℝ) < 5 ∧
+    (∀ k : Fin 6, k.val ≤ 5) := by
+  norm_num
+  intro k
+  exact Nat.le_of_lt_succ k.isLt

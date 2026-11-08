@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -64,6 +63,20 @@ theorem steinIntegrand_continuous (h : ℝ → ℝ) (hh : Continuous h) :
   unfold steinIntegrand
   fun_prop
 
+/-- The absolute value of the standard-normal expectation of a uniformly bounded function is at
+most the same bound. This is useful throughout Stein-method estimates. -/
+theorem abs_gExpect_le {h : ℝ → ℝ} {C : ℝ} (hb : ∀ x, |h x| ≤ C) :
+    |gExpect h| ≤ C := by
+  unfold gExpect
+  calc |∫ x, h x ∂(gaussianReal 0 1)| ≤ ∫ x, |h x| ∂(gaussianReal 0 1) :=
+        MeasureTheory.abs_integral_le_integral_abs
+    _ ≤ ∫ _x, C ∂(gaussianReal 0 1) := by
+        apply MeasureTheory.integral_mono_of_nonneg
+        · filter_upwards with x using abs_nonneg _
+        · exact MeasureTheory.integrable_const C
+        · filter_upwards with x using hb x
+    _ = C := by
+        rw [MeasureTheory.integral_const]; simp
 
 /-- The integrand is globally integrable: it is dominated by a Gaussian. -/
 private theorem steinIntegrand_integrable {h : ℝ → ℝ} (hh : Continuous h) {C : ℝ}

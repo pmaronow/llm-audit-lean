@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P023-T1",
+    "theorem": "SAP.P023.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional concrete witness on Fin 6. Independently checked the rank-three Gram matrix, exact model, all six OLS weights, coefficient change, nonempty close sides, RD values and bin assignments in scratch/audit_exact.py. scratch/Check.lean compiles proofs of TwoParty, Condition1, FullRank, the close set {2,3}, both positive counts, and existence of coarsened solutions for every outcome vector. The outcomes y and y' both lie strictly in (0,1); a bounded independent mean-zero error law admits both realizations of the exact baseline model.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T2",
+    "theorem": "SAP.P023.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional witness on Fin 16. Exact rational Gaussian elimination independently verifies full rank nine, the stated fitted vector and all sixteen nonzero residual weights. The distant perturbation changes the polynomial coefficient by 7/6428. The close observations at -1/8 and 1/8 give one loser and one winner, so both RD denominators are one. Coarsened normal equations are soluble and their party coefficient is identified by this central bin; every outcome is in (0,1).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T3",
+    "theorem": "SAP.P023.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six-point linear design satisfies the full-rank, both-party and positive-close-count hypotheses. It also has four distinct nonzero distant margins, exceeding 2J at J=1, so the existential nonlocality conclusion is active. For conditional moments, use independent errors taking +/-1/10 with equal probabilities and mean 1/2+d/10+x/20. For shared consistency use IID uniform margins, this bounded exactly specified mean and independent noise, J=1, and k_N=1/sqrt(N+1); both estimators converge to 1/10 and the design-admissibility events have probabilities tending to one. The restriction in the docstring and record accurately lists the omitted finite epsilon/2 inequality, added close counts for the whole nonlocality component, and shared-consistency guards.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P023-T4",
+    "theorem": "SAP.P023.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the displayed a=1/20, eta=1/10000, uniform margins and independent +/-1/10 noise; Y is in [7/20,13/20]. The family parameters have genuine positive values, variances v_1 and v_7 are positive, and fitted risks are at least 1/100. On the standard IID sequence space use k_N=1/sqrt(N+1). Each RD side has expected count Nk_N/2 tending to infinity. Distinct uniform draws with at least J+1 negative margins and one positive margin give full rank, an event with probability tending to one for J=1,7. The conditional mean itself is a measurable predictor with finite squared error, so the guarded risk comparison has content. The exact population coefficients and residual constants were independently checked. The docstring and record completely disclose the sampling and predictor-domain restrictions.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P023-T5",
+    "theorem": "SAP.P023.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For d=1/1000 the triangular half-width is 1/2000, the mixture weight d^4 is strictly between zero and one, and the density integrates to one and is everywhere positive on [-1,1]. The function clusterSmooth is continuous, odd and 1-Lipschitz. The normal-equation denominator EX^2-1/4=(1-d^4)d^2/24+d^4/12 is positive for every 0<d<=1/2. Exact piecewise integration independently checks the displayed moments, coefficient and risk bound at d=1/1000, 1/4 and 1/2. The conditional mean and constant predictor satisfy the measurable, integrable-error comparison domain. The predictor restriction is accurately and completely disclosed; no other canonical family clause is dropped.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T6",
+    "theorem": "SAP.P023.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional existence statement, not an implication whose assumptions might be inconsistent. The fixed law is the actual uniform probability on [-1,1]; at every finite J its polynomial-plus-party moment matrix is positive definite and v_J>0. The continuous-function supremum contains h=0 and is bounded by the finite amplification A_J. Unbounded operator norms on continuous functions vanishing at zero support a single fixed continuous witness by uniform boundedness or the stated gliding-hump construction. The degree sequence is strictly increasing and its coefficients are unbounded above; the theorem uses explicit tail bounds and a subsequence rather than an unbounded real limsup. The deterministic response 1/2+h(X) is bounded in [5/12,7/12]. This referee did not independently reprove the full logarithmic asymptotic in Lean.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P023-T7",
+    "theorem": "SAP.P023.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the population part use uniform X, D=1_{X>=0}, Y=1/2+D/10+X/20+e with independent equiprobable e=+/-1/10, alpha=1/2, beta=1/10, h(x)=x/20, and any J>=1. All moment matrices are positive definite and all required integrals are finite. For the finite part use the six-point linear full-rank design and the same bounded noise model. Every supError set is nonempty and bounded above; the approximation-error infima are over nonempty nonnegative sets. Exact rational integration checks both explicit projections, residual variances, A_1, and the strict rational bounds on A_7 using isolated residual roots. The record's whole decision is correct; unused helper rows introduce no missing conclusion.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P023-T8",
+    "theorem": "SAP.P023.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use IID uniform X, Y=1/2+D/10+X/20+e with independent equiprobable e=+/-1/10, c=1/2, delta=1, L=1/20, sigma2=1/100 and k_N=1/sqrt(N+1). This satisfies RepairedRegularity, has bounded second moments and both expected RD side counts tending to infinity. Uniform samples are distinct almost surely; J+1 negative observations and one positive observation suffice for full rank. The Rayleigh minimum lambda_J is positive and at most one. Thus the stated growing-degree rate implies J_N^2/N->0, so binomial concentration gives the required OLS-admissibility guard for every rate-qualified schedule; fixed-degree guards follow as well. Diagonal scheduling with N_j chosen sufficiently large for each positive lambda_j supplies an actual rate-qualified growing sequence. The docstring and record accurately disclose all extra design-admissibility assumptions. All population and sampling conclusions remain present.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P023-T9",
+    "theorem": "SAP.P023.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles an instance on S={(0,0),(0,1)}, k=1/2, x=(-1/4,1/4), d=(0,1), y=(0,0), beta=0 and zero bin intercepts. Both observations are central, the demeaned party values are -1/2 and 1/2, and the central squared norm is 1/2. Empty peripheral bins are allowed, but every evaluated binMean is at an observed pair's own bin and hence has positive cardinality. The subtype sums preserve the intended pair index. The auxiliary bin parametrization is linked to the printed regression by its genuine normal-equation equivalence.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T10",
+    "theorem": "SAP.P023.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six-point linear witness has k=1/200, Condition1, full rank and an exact in-range polynomial mean with coefficients (1/2,1/10,1/20). Its y,y' agree on all close elections and differ only at x=3/4, but their polynomial coefficients differ by -20299/13920200. Both are realizations of one correctly specified model with bounded mean-zero errors. Hence the negated universal genuinely refutes the printed data-use reading, including adequate polynomial controls. Coarsened localization is separately substantive on the same design with both close counts equal to one. The record's refuted decision correctly distinguishes the false universal from the true coarsened possibility.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T11",
+    "theorem": "SAP.P023.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The linear six-point design satisfies the standing assumptions and Condition1; both close-window denominators are one. scratch/Check.lean explicitly verifies a solution of the printed coarsened normal equations for zero outcomes and also constructs bin-OLS solutions for arbitrary outcomes. More generally every finite real least-squares problem has a normal-equation solution. Empty peripheral bins can make nuisance coefficients nonunique but cannot make the party coefficient unidentifiable when the central bin contains both parties. Thus the all-solutions formulation introduces no hidden full-rank assumption or vacuous solution domain.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T12",
+    "theorem": "SAP.P023.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the single continuous h and uniform margin law of T6, with deterministic Y=1/2+h(X), and realize IID draws on the standard countable product probability space. Choose a measurable extension of h outside [-1,1], g=f=1/2+h and alpha=1/2, and k_N=1/sqrt(N+1). Outcomes are bounded, every finite moment matrix is positive definite, the support condition holds with k0=1/2, both expected RD counts diverge, and the local conditional noise variance is zero. All hypotheses inside the negated universal therefore hold. Its conclusion would force b_J->0, contradicted by the increasing-degree subsequence with b_(J_m)>=m/4. The failure addresses the fixed-law polynomial conclusion rather than exploiting a failed RD condition. The record's refuted decision is correct; separate proofs of the printed algebraic helpers are not required to refute the final assertion.",
+    "confidence": 0.95
+  }
+]

@@ -27,8 +27,7 @@ theorem tc04_density_integral_domination (μ : Measure ℝ) (c δ : ℝ) (hc : 0
     (Filter.Eventually.of_forall hn) hf
   simpa only [integral_smul_measure, ENNReal.toReal_ofReal hc, smul_eq_mul] using hi
 
-/-- Local density domination bounds the squared error of every polynomial
-approximation to the party indicator. -/
+/-- The entire first conjunct of the frozen density theorem. -/
 theorem tc04_density_polynomial_domination (ν : Measure (ℝ × ℝ)) (α β : ℝ)
     (h : ℝ → ℝ) (c δ L σ2 : ℝ) (hr : RepairedRegularity ν α β h c δ L σ2)
     (p : Polynomial ℝ) :
@@ -173,6 +172,8 @@ theorem density_residual_comparison_proof (ν : Measure (ℝ × ℝ)) (α β : �
       _ ≤ _ := hdom _
   · rw [(uniform_projection_variance J hJ).2.2.1]
     ring
+
+example : type_of% @AronowAudit.P023.density_residual_comparison := density_residual_comparison_proof
 
 end
 end AronowAudit.P023.Wave1

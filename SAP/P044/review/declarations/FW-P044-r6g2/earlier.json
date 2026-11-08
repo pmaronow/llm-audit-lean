@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P044.T9",
+  "target_id": "P044-T9",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P044/Challenge/Part1.lean:69: The joint subject \"no-interference and interference definitions\" is described as \"complementary and equivalent to invariance at fixed own treatment\" (continued on line 70). Only no interference is equivalent to that invariance; interference is equivalent to its failure. The formal statement correctly distinguishes them in SAP/P044/Defs/WholeW1.lean:274 and SAP/P044/Defs/WholeW1.lean:275. This is a docstring misdescription, not a defect in the formal statement or the whole decision.",
+   "SAP/P044/Defs/WholeW1.lean:260: The same misleading equivalence for both definitions is repeated in the T9WholeStatement docstring (continued on line 261). The correct invariant property belongs to w1OrderedNoInterference, whereas w1OrderedInterference is its negation."
+  ]
+ }
+]

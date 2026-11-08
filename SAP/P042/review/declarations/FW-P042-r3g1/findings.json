@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P042-T1",
+    "theorem": "SAP.P042.T1",
+    "fingerprint": "e727308c1eea17dc9166446ab2817b09d8378c295cc5df9498917bbe9a0e5e27",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:36 constructs the actual nonempty 90-allocation support; :39 checks all six-voter contrast moments independently by native_decide; :49 verifies the Binomial(100,1/2) arm normalization, mean and variance. The triple expectation is the product of these normalized nonnegative masses. scratch/numerical_checks.py independently enumerates the allocations, checks the binomial convolution, exact coverage fraction, both strict coverage bounds and multiplier thresholds. This is a closed assertion with no external hypotheses. The actual Gaussian CDF and quantile-set certificate are conclusions, not assumed premises or default quantile values.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P042-T2",
+    "theorem": "SAP.P042.T2",
+    "fingerprint": "6ab4e2de013891438b93f08ece6619d782feea9d6c46b1c1508f3aec0459d4e4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:59 constructs three independent N(0,1) coordinates with L2 membership, positive variance, zero off-diagonal covariance and precision weights 1/3, supplying admissible data for laws 1,2,3,6,7. The following examples supply nonempty disjoint pools and the identity three-index embedding (block covariances all zero). :80 uses the exact nested-sum observation index with all arm sizes one and common variance one, checking pairwise independence for law 4. :89 supplies a common centered unit-variance factor for the equality case of law 5; choose all nonnegative coefficients and all standard deviations equal to one. :100 constructs a feasible nonempty complete three-arm allocation support with N=3 and every arm size one for law 8; the potential-outcome schedule is arbitrary. All eight retained laws have genuine models. Historical applications and numerical/editorial repairs are accurately disclosed as omitted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P042-T3",
+    "theorem": "SAP.P042.T3",
+    "fingerprint": "a1938a01fa23f302e14358abb786815549a087b2b7842a02b463b60221bd66f7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The numerical portion is unconditional on the two explicitly stipulated exact rational inputs. scratch/Check.lean:106 proves all input variances, total weight, C, tau-squared, adjusted variances and both calculated variances strictly positive. :119 checks the multiplier interval is inhabited and gives an instance of the square-law hypotheses (mu=1,L=0,U=2,z=1,V=1). scratch/numerical_checks.py independently checks every exact fixed/DL identity and the squared endpoint inequalities at both multiplier endpoints. The genuine standard Gaussian defines the actual quantile; nonemptiness, boundedness and enclosure are asserted conclusions, not hypotheses that could make the theorem vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P042-T4",
+    "theorem": "SAP.P042.T4",
+    "fingerprint": "4b2df05a69e2e327d8b6945b5688ac45b97bd5205676208b492f2761d66d2a0f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:125 constructs D_j=s_j Z_j from independent standard Gaussian coordinates and checks every L2, exact marginal-variance and zero-covariance hypothesis of RoboStochasticVariance. :106 proves all concrete denominators and variances positive; :119 checks the multiplier range is nonempty. scratch/numerical_checks.py verifies the fixed/DL rational calculations, endpoint bins at both extremes, their squared equivalents, and the positive lower endpoint at z=1.96. The absent actual-normal-quantile certificate and editorial/program changes are explicitly disclosed restrictions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P042-T5",
+    "theorem": "SAP.P042.T5",
+    "fingerprint": "a9f0bba5b3cc1dad863d75bbd6bd0e3c615bbf1ea635e7ca7cfac1395f6cd878",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Reading checked: under canonical H1/H2, without a condition on covariances, a precision pool is asserted to have variance 1/W and a difference of disjoint precision pools is asserted to have variance 1/W_N+1/W_A. scratch/Check.lean:143 checks D0=D1=Z, Z~N(0,1): J=2>0, every function is Borel/L2, both marginal variances are 1>0, fixed normalized weights are 1/2, actual pooled variance is 1 and 1/W=1/2. :162 checks the same functions with nonempty disjoint singleton index pools N={0}, A={1}: each within-pool weight is 1, difference variance is 0 and the proposed diagonal sum is 2. All hypotheses of each negated universal formula are satisfied. Neither the canonical formula nor the Lean formula requires independent estimates or independent replicate assignments. The restricted decision and docstring correctly limit the result to these two variance-formula failures and do not reject historical empirical assertions.",
+    "confidence": 0.99
+  }
+]

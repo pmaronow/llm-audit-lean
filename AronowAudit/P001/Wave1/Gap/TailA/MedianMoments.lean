@@ -80,35 +80,16 @@ theorem medianMoments_of_square_tails {Ω : Type*} [MeasurableSpace Ω]
   have hv := hh.1.mp htails
   exact ⟨by simpa only [he] using hv, hh.2 hv⟩
 
-/-- The all-size local-density moment condition. -/
+/-- The exact all-size local-density record. -/
 theorem bootstrap_median_primitive_moment_condition_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (X : ℕ → Ω → ℝ)
-      (hiid : IID μ X)
-      (m : ℝ)
-      (f : ℝ → ℝ)
-      (δ : ℝ)
-      (hδ : 0 < δ)
-      (hf : (μ.map (X 0)).restrict (Metric.ball m δ) = (volume.restrict (Metric.ball m δ)).withDensity (fun x => ENNReal.ofReal (f x)))
-      (hfn : ∀ x ∈ Metric.ball m δ, 0 ≤ f x)
-      (hfm : AEMeasurable f (volume.restrict (Metric.ball m δ)))
-      (hcont : ContinuousAt f m)
-      (hpos : 0 < f m)
-      (hmed : cdf μ (X 0) m=1/2 ∧ (∀ x, x < m → cdf μ (X 0) x < 1/2) ∧ (∀ x, m < x → 1/2 < cdf μ (X 0) x))
-      (η : ℝ)
-      (hη : 0 < η)
-      (hmoment : Integrable (fun ω => |X 0 ω|^η) μ),
-      CP μ (fun n ω => (n : ℝ)*bootVar sampleMedian (firstSample X n ω)) (1/(4*(f m)^2)) ∧
-  CP μ (fun n ω => Real.sqrt n*Real.sqrt (bootVar sampleMedian (firstSample X n ω)))
-    (1/(2*f m))) := by
+    type_of% @AronowAudit.P001.bootstrap_median_primitive_moment_condition := by
   intro Ω mΩ μ hμ X hiid m f δ hδ hf hfn hfm hcont hpos hmed η hη hmoment
   let hlocal : LocalMedianData μ X m f :=
     ⟨δ, hδ, hf, hfn, hfm, hcont, hpos, hmed.1, hmed.2⟩
   exact medianMoments_of_square_tails μ X hiid m f hlocal
     (local_median_square_tails μ X hiid m f hlocal η hη hmoment)
+
+example : type_of% @AronowAudit.P001.bootstrap_median_primitive_moment_condition := AronowAudit.P001.Wave1.TailA.bootstrap_median_primitive_moment_condition_final
 
 /-- The global density supplies the required local data on any positive ball. -/
 theorem medianMoments_local_of_pdf {Ω : Type*} [MeasurableSpace Ω]
@@ -121,27 +102,9 @@ theorem medianMoments_local_of_pdf {Ω : Type*} [MeasurableSpace Ω]
     hcont, hpos, hmed.1, hmed.2⟩
   rw [hf.2.2.2, restrict_withDensity measurableSet_ball]
 
-/-- The odd-size global-density moment condition. -/
+/-- The exact odd-size global-density supporting record. -/
 theorem bootstrap_median_primitive_moment_condition_supporting_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (X : ℕ → Ω → ℝ)
-      (hiid : IID μ X)
-      (m : ℝ)
-      (f : ℝ → ℝ)
-      (hf : HasPDF (μ.map (X 0)) f)
-      (hcont : ContinuousAt f m)
-      (hpos : 0 < f m)
-      (hmed : cdf μ (X 0) m=1/2 ∧ (∀ x,x < m → cdf μ (X 0) x < 1/2) ∧ (∀ x,m < x → 1/2 < cdf μ (X 0) x))
-      (η : ℝ)
-      (hη : 0 < η)
-      (hmoment : Integrable (fun ω => |X 0 ω|^η) μ),
-      CP μ (fun k ω => ((2*k+1 : ℕ) : ℝ)*bootVar sampleMedian (firstSample X (2*k+1) ω))
-     (1/(4*(f m)^2)) ∧
-   CP μ (fun k ω => Real.sqrt (2*k+1)*Real.sqrt (bootVar sampleMedian (firstSample X (2*k+1) ω)))
-     (1/(2*f m))) := by
+    type_of% @AronowAudit.P001.bootstrap_median_primitive_moment_condition_supporting := by
   intro Ω mΩ μ hμ X hiid m f hf hcont hpos hmed η hη hmoment
   have hlocal := medianMoments_local_of_pdf μ X m f hf hcont hpos hmed
   have hh := medianMoments_of_square_tails μ X hiid m f hlocal
@@ -154,5 +117,7 @@ theorem bootstrap_median_primitive_moment_condition_supporting_final :
   · intro ε hε
     simpa only [Function.comp_def, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one]
       using (hh.2 ε hε).comp hs
+
+example : type_of% @AronowAudit.P001.bootstrap_median_primitive_moment_condition_supporting := AronowAudit.P001.Wave1.TailA.bootstrap_median_primitive_moment_condition_supporting_final
 
 end AronowAudit.P001.Wave1.TailA

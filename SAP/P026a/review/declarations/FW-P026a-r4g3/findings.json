@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P026-T11",
+    "theorem": "SAP.P026a.T11",
+    "fingerprint": "2e4a05274dd4de0f9df734f39a80ed40c3d6d0c7f5af3570acede23d7837ded5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean successfully with /home/ubuntu/sap/tools/sap-lean. Review.asymmetricLaw gives weight 1/3 to each of 00,01,11 and zero to 10. Review.clustered partitions Fin 3 into clusters {0,1} and {2}. The compiled existential constructs this ClusterLaw and proves separation of distinct cluster indicators and strictly positive off-diagonal same-arm joints for both arms, satisfying all hypotheses including the full-support clause. Unit outcomes (1,-3,4) and (2,1,-1) have cluster totals (-2,4) and (3,-1). Review.complementaryLaw assigns weight 1/2 to each of 01,10; it also satisfies the general hypotheses, has zero off-diagonal same-arm joints, and the compiled treatment-arm check gives true HT-total variance 36 and expected conservative estimate 40. These examples use Defs only, without assuming the Challenge theorem.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T12",
+    "theorem": "SAP.P026a.T12",
+    "fingerprint": "8eeaca18de7b83332c6ff1ed19233023630b2a4323276877d232263abbe905f3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean successfully with /home/ubuntu/sap/tools/sap-lean. Review.asymmetricLaw is a UnitLaw on Fin 2 with weight 1/3 on 00,01,11 and zero on 10. Its constructor proves nonnegative weights, normalization, and positive treatment and control marginals, supplying every T12 hypothesis on an inhabited finite unit type. The compiled checks show pi_10(0,1)=0 while both off-diagonal same-arm joints are 1/3. For fixed potential outcomes x=(1,3) and z=(2,-1), direct design covariance and splitPopulationCovariance both equal 1/2, and the HT contrast variance equals 21/8. Thus the zero-directed-joint terms are exercised, including an unavailable off-diagonal pair. The checks import Defs only.",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,194 @@
+[
+ {
+  "target_id": "P014-T2",
+  "decision": "whole",
+  "theorem": "SAP.P014.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P014.armCounts_add",
+   "AronowAudit.P014.armMass_as_prob",
+   "AronowAudit.P014.armMasses_add",
+   "AronowAudit.P014.expectation_fixed_counts",
+   "AronowAudit.P014.moment_identity",
+   "AronowAudit.P014.weighted_unbiasedness",
+   "AronowAudit.P014.corrected_local_randomization",
+   "AronowAudit.P014.outside_function_gives_discrete_full_law"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P014.expect_map",
+    "reason": "Narrower row used nowhere: it supplies pushforward change of variables, not standalone linearity; expectation_fixed_counts already exports the required assignment-law linearity calculation."
+   },
+   {
+    "lean_name": "AronowAudit.P014.mem_map_support_iff",
+    "reason": "Not separately invoked; the retained assignment-law statement does not construct a law from running scores."
+   },
+   {
+    "lean_name": "AronowAudit.P014.prob_map",
+    "reason": "Not separately invoked; the score-to-assignment application is omitted from T2."
+   }
+  ],
+  "statement_definition": "SAP.P014.T2WholeStatement",
+  "bridge": "SAP.P014.Bridge.T2_proof",
+  "cross_target_rows_used": []
+ },
+ {
+  "target_id": "P014-T8",
+  "decision": "whole",
+  "theorem": "SAP.P014.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P014.bracketed_contrast"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P014.T8Statement",
+  "bridge": "SAP.P014.Bridge.T8_proof",
+  "cross_target_rows_used": []
+ },
+ {
+  "target_id": "P014-T3",
+  "decision": "whole",
+  "theorem": "SAP.P014.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P014.arm_nonempty_of_mass_ne_zero",
+   "AronowAudit.P014.conditional_uniform_necessary",
+   "AronowAudit.P014.conditional_uniform_of_full_uniform",
+   "AronowAudit.P014.constant_arm_means",
+   "AronowAudit.P014.fixed_outside_uniform_assignments",
+   "AronowAudit.P014.means_equal_of_conditional_uniform",
+   "AronowAudit.P014.printed_unbiasedness_no_interference",
+   "AronowAudit.P014.printed_unbiasedness_under_U",
+   "AronowAudit.P014.bracketed_contrast",
+   "AronowAudit.P014.armMasses_add"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P014.assignment_matching_iff",
+    "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P014.assignment_permutation_count",
+    "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P014.assignment_permutation_fiber_count",
+    "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P014.assignment_permutation_mass",
+    "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P014.assignment_permutation_propensity",
+    "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P014.assignment_with_count_obtainable",
+    "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P014.map_mass_zero_off_support",
+    "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P014.matching_permutation_count",
+    "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P014.means_equal_without_interference",
+    "reason": "Not separately invoked; constant_arm_means supplies the stronger equality to the common value required in T3(d)."
+   }
+  ],
+  "statement_definition": "SAP.P014.T3Statement",
+  "bridge": "SAP.P014.Bridge.T3_proof",
+  "declaration_review_round_1": {
+   "status": "fixed",
+   "finding": "The docstring misnamed the fixed-count assignment law.",
+   "change": "Describes the uniform law on choose(n,m) full assignments with exactly m treated window subjects; statement, definitions, proof and whole decision unchanged."
+  },
+  "cross_target_rows_used": [
+   {
+    "lean_name": "AronowAudit.P014.bracketed_contrast",
+    "credited_to": "P014-T8"
+   },
+   {
+    "lean_name": "AronowAudit.P014.armMasses_add",
+    "credited_to": "P014-T2"
+   }
+  ]
+ },
+ {
+  "target_id": "P014-T7",
+  "decision": "whole",
+  "theorem": "SAP.P014.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P014.no_ties_diagonal_general",
+   "AronowAudit.P014.no_ties_quantifier_decomposition",
+   "AronowAudit.P014.corrected_no_ties_witnesses",
+   "AronowAudit.P014.corrected_local_randomization"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P014.printed_no_ties_iff_empty",
+    "reason": "Narrower finite-law version is redundant here because no_ties_diagonal_general supplies the unrestricted probability-law equivalence."
+   }
+  ],
+  "statement_definition": "SAP.P014.T7Statement",
+  "bridge": "SAP.P014.Bridge.T7_proof",
+  "cross_target_rows_used": [
+   {
+    "lean_name": "AronowAudit.P014.corrected_local_randomization",
+    "credited_to": "P014-T6"
+   }
+  ]
+ },
+ {
+  "target_id": "P014-T4",
+  "decision": "refuted",
+  "theorem": "SAP.P014.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P014.t1_counterexample",
+   "AronowAudit.P014.all_local_permutations_equiprobable",
+   "AronowAudit.P014.witness_threshold",
+   "AronowAudit.P014.witness_counts_propensities",
+   "AronowAudit.P014.armMasses_add"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P014.Refutations.printed_unbiasedness_intended_local_refuted",
+    "reason": "This row negates the universal printed assertion; the package instead states its explicit positive-arm counterexample, using the same six-row witness exported for T1."
+   },
+   {
+    "lean_name": "AronowAudit.P014.Refutations.printed_unbiasedness_refuted",
+    "reason": "This row negates the universal printed assertion; the package instead states its explicit positive-arm counterexample, using the same six-row witness exported for T1."
+   }
+  ],
+  "statement_definition": "SAP.P014.T4Statement",
+  "bridge": "SAP.P014.Bridge.T4_proof",
+  "cross_target_rows_used": [
+   {
+    "lean_name": "AronowAudit.P014.t1_counterexample",
+    "credited_to": "P014-T1"
+   },
+   {
+    "lean_name": "AronowAudit.P014.all_local_permutations_equiprobable",
+    "credited_to": "P014-T1"
+   },
+   {
+    "lean_name": "AronowAudit.P014.witness_threshold",
+    "credited_to": "P014-T9"
+   },
+   {
+    "lean_name": "AronowAudit.P014.witness_counts_propensities",
+    "credited_to": "P014-T1"
+   },
+   {
+    "lean_name": "AronowAudit.P014.armMasses_add",
+    "credited_to": "P014-T2"
+   }
+  ]
+ }
+]

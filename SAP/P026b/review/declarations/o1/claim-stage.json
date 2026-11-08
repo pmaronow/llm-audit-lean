@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P026b.T13",
+    "target_id": "P026-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part3.lean:38 states, for every finite nonempty unit set, every law on {0,1}^N with positive marginals (UnitExperiment), all potential outcomes and every assignment-dependent prediction f, (a) E[Y1*] = Y1^T - sum Cov(T_i, f_i/pi_1i), (b) E[Y0*] = Y0^T - sum Cov(1-T_i, f_i/pi_0i) (the a : Bool conjunct, indicator false = 1-T_i), and (c) eq. [19] with the 1/N factor. generalizedTotal (Part1:49) is eqs. [13]-[14] with one f for both arms as printed; ate is eq. [3]. No extra hypotheses (Nonempty I only rules out N = 0); no junk (pi > 0 built in, N >= 1)."
+  },
+  {
+    "theorem": "SAP.P026b.T14",
+    "target_id": "P026-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "logitCoreFacts (Defs/Part4.lean:34) gives (a) unique maximizers of both block likelihoods with the stated coefficients (logitCoefficients true = block-2 fit, used for block-1 units by tableLogitPrediction, Part2:104, as the claim specifies) and (b) E = 0, SD in [0.247090,0.247093], Var in [0.0605,0.0615), E Vhat = Var, SD(Vhat) in [0.0125,0.0135); T14Statement adds (c) all ten rounded entries and the failure of the six printed ones (indices 3,4,5,6,8,9 = SE, RMSE, Var, E[Vhat], SE, RMSE). printedVariance (Part1:80) is eq. [35] with the epsilon convention, applied to residual cluster totals with N=16, M=10; the design is the 90 equiprobable assignments (2 of 4 clusters, 2 of 6 clusters). My independent float recomputation from the Lean data reproduces the claim's 0.0610543 and 0.0125667 and the coefficients. Extra conjuncts (maximizer property, two linear non-separation certificates) are true and harmless."
+  },
+  {
+    "theorem": "SAP.P026b.T15",
+    "target_id": "P026-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical claim is the counterexample to the validator's reading of the package help. Defs/Part3.lean:78 states every clause: design (one of three treated, pi_1 = 1/3, pi_0 = 2/3), Y1 = 1, Y0 = 0, X = (0,1,2), the fitted-value table and that each row is the unique OLS fit on intercept and X (packageLeastSquares), estimator values 1/4, 1, 1/4 (generalized with the same f in both arms equals the package's residual contrast pointwise), Cov = (1/6,0,1/6), E = 1/2, ATE = 1, bias -1/2, the eq. [19] arithmetic, HT = 1 on every assignment. The eq. [19] check is pure arithmetic, not linked to the definitions, but the claim states it only as numeric agreement."
+  },
+  {
+    "theorem": "SAP.P026b.T16",
+    "target_id": "P026-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part3.lean:96: (a) fixed g: generalized = residual contrast of Y - g at every assignment, and unbiased; (b) f = orthogonal projection of the observed outcomes onto col([1,X]) (asserted to be a least-squares fit for every assignment), residual contrast identity, and bias = -(1/N) sum Cov(T_i, f_i)(1/pi_1i + 1/pi_0i); (c) the T15 example (biased, E = 1/2 vs Delta = 1), zero covariance implies unbiasedness for any f, and sharp-null unbiasedness for any f that is a function of the observed outcomes (covers the OLS fit). All clauses present; no extra hypotheses; the Ypre+X case in the note is obtained by substituting y - g."
+  },
+  {
+    "theorem": "SAP.P026b.T17",
+    "target_id": "P026-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "Refutation. Printed reading: (i) positive disagreement for all distinct clusters implies pi_1k0l > 0, (iii)/(v) Var_C of eq. [35] is conservative for any design, (iii)/(iv) with pi_1k1l, pi_0k0l > 0 and the sharp null it is exactly unbiased. Conjunct 1 of Defs/Part4.lean:60 negates 'for every 3-allocation 2-unit probability design with positive marginals and positive disagreement and all outcomes: cross support AND Var(HT) <= E Var_C', contradicting the conjunction (i) and (iii)/(v). It can be witnessed by the failure of support alone, so it does not show that conservativeness fails on its own (it does fail: I compiled E Vhat = 2.875 < 3.375 = Var for realAsymmetricTwo in scratch/T17.lean). Conjunct 2 is a genuine witness against footnote 9 (and (iii)'s second sentence). Its conditions: a probability design on {0,1}^2 with positive marginals and positive disagreement; pi_11, pi_00 > 0 for every ordered pair (diagonal = marginals); sharp null Y1 = Y0 = 1; constant f = 0, so U = Y. The witness satisfies each condition, and E Var_C != Var(Delta_G) for it."
+  }
+]

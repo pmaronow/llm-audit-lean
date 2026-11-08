@@ -4,7 +4,7 @@ import Mathlib.Probability.Distributions.Uniform
 import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.Data.Fintype.BigOperators
 
-/-! Restriction to the first `m` coordinates has the uniform law on
+/-! Node 8: restriction to the first `m` coordinates has the uniform law on
 `Fin m → Fin 2`. The equality of the finite product and uniform laws is
 checked on singletons; it includes `m = 0`. -/
 

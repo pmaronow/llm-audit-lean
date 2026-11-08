@@ -1,0 +1,5 @@
+The exact advertised EVIDENCE-MAP636f bytes are recovered as EVIDENCE-MAP-636f.json (52,041 bytes; SHA636fdb3138e7656c4388f92bc6fd7bf7aa8ffc151af1bb58fb7436c24107a505). This is an exact content-hash match, not an approximate reconstruction. The final sealed map remains339bc1af and the completed report remainsf1703ab3. No file in the sealed completion packet is changed.
+
+The exact map delta has two JSON paths under records.FINAL_DECISIONS_PENDING: completed_trust_report changes from null to the actual report path/bytes/SHA; scope changes from the earlier pending-report sentence to the completed-factual-report/external-final-decisions sentence. Every other value, including all actual evidence refs and source pins, is identical. METADATA-DIFF.json and DIFF.patch preserve both changes explicitly.
+
+The parent reports that Opus exec78130 launched once at04:38:12 against the advertised f170 report/636f map and may have read the later339b map. This supplement lets the parent retain that exact binding history. It supplies no new review outcome or approval, requests no second launch and does not modify the active review.

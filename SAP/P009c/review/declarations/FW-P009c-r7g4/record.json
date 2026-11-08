@@ -1,0 +1,40 @@
+[
+ {
+  "target_id": "P009-T50",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T50",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.spectral_inflation_conservative_proof",
+   "AronowAudit.P009.Wave1.spectral_inflation_finite_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009c.T50Statement",
+  "bridge": "SAP.P009c.Bridge.spectral_bounds",
+  "supporting_declarations": [
+   "AronowAudit.P009.SparseCompletion.fair_BER",
+   "AronowAudit.P009.fairExperiment"
+  ]
+ },
+ {
+  "target_id": "P009-T51",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T51",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.chebyshev_asymptotic_sharpness_proof",
+   "AronowAudit.P009.chebyshev_three_point_sharp"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.Wave1.chebyshev_asymptotic_sharpness",
+    "reason": "Duplicate asymptotic statement; use its directly credited proof declaration."
+   },
+   {
+    "lean_name": "AronowAudit.P009.sharpness_HT_construction",
+    "reason": "Supporting construction identity; the existential asymptotic theorem already exports the claim."
+   }
+  ],
+  "statement_definition": "SAP.P009c.T51Statement"
+ }
+]

@@ -5,9 +5,9 @@ import Mathlib.Algebra.Polynomial.Degree.Support
 /-!
 # SieveRate N6: every full-rank least-squares polynomial is OLS
 
-The normal-equation/Pythagoras argument is given by
-`AronowAudit.P001.ols_correct_rows_solution_residuals`. Its coefficient criterion is
-identified with the exact range-indexed polynomial criterion.
+The normal-equation/Pythagoras argument is already proved in
+`AronowAudit.P001.ols_correct_rows_solution_residuals`.  We identify its
+coefficient criterion with the exact range-indexed polynomial criterion.
 -/
 
 set_option autoImplicit false

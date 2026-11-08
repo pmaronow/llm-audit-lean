@@ -1,9 +1,9 @@
 import AronowAudit.P022.Wave1.PrintedLemma2Blueprint
 
 /-!
-# P022-T18: refutation of Lemma 2 as printed
+# P022-T18, node N1 (trivial; written by the blueprint architect)
 
-Specialize the universal printed statement to the reciprocal witness and contradict
+Specialize the universal printed contract to the proved reciprocal witness and contradict
 the final conjunct of `AronowAudit.P022.lemma2_counterexample`.
 -/
 

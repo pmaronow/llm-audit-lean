@@ -2,8 +2,8 @@ import AronowAudit.P045.P045_Spillover
 import AronowAudit.P002.Wave1.Gap.GLP0021B1
 
 /-! Exact finite moments for the corrected two-stage direct-effect variance.
-The complete-randomization contrast identity is from P002. The identities below
-use the actual finite laws and centered variances. -/
+The complete-randomization contrast identity is reused from the proved P002
+module; all bridges preserve the actual finite laws and centered variances. -/
 
 namespace AronowAudit.P045.Wave1
 
@@ -65,6 +65,18 @@ lemma dvc_subset_bridge {N s : ℕ} (hs : s ≤ N) (f : Finset (Fin N) → ℝ) 
     ← Finset.mul_sum, one_div]
   ring
 
+lemma dvc_subset_mean {N s : ℕ} (hs0 : 0 < s) (hs : s ≤ N) (x : Fin N → ℝ) :
+    average (firstStageSets N s) (fun S => average S x) = mean x := by
+  have hf : (fun S : {S : Finset (Fin N) // S.card = s} => average S.val x) =
+      Causalean.Experimentation.FinitePopulationMoments.sampleMean s x := by
+    funext S
+    simp [average, S.property,
+      Causalean.Experimentation.FinitePopulationMoments.sampleMean,
+      ← Finset.sum_filter, Finset.filter_mem_eq_inter]
+  rw [dvc_subset_bridge hs, hf,
+    Causalean.Experimentation.FinitePopulationMoments.E_sampleMean s
+      (by simpa using hs) hs0]
+  rfl
 
 lemma dvc_subset_mean_square {N s : ℕ} (hs0 : 0 < s) (hs : s ≤ N) (hN : 2 ≤ N)
     (x : Fin N → ℝ) :
@@ -175,7 +187,7 @@ lemma dvc_treated_subset {N : ℕ} (S : Finset (Fin N)) :
   ext i
   simp [treatedSet, subsetAssignment]
 
-/-- The generic Neyman contrast variance from P002.
+/-- Reuse of the proved generic Neyman contrast variance from P002.
 Its population has arbitrary auxiliary schedules; only its fixed treated count matters. -/
 lemma dvc_local_variance {N s : ℕ} (hs0 : 0 < s) (hs : s < N)
     (a b : Fin N → ℝ) :
@@ -580,6 +592,8 @@ theorem direct_variance_correction_proof {G C : ℕ} (hC : 2 ≤ C) (hCG : C ≤
       rw [hbias]
       simp only [hz, zero_div, Finset.sum_const_zero]
     exact sub_eq_zero.mp hb
+
+example : type_of% @AronowAudit.P045.direct_variance_correction := direct_variance_correction_proof
 
 end
 end AronowAudit.P045.Wave1

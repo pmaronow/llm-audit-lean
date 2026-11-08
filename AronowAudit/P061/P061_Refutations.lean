@@ -1,6 +1,6 @@
 import AronowAudit.P061.P061_PrintedClaims
 
-/-! Refutations of the two false printed general assertions.
+/-! Full-contract refutations of the two false printed general assertions.
 The actual design retains every feasible real assignment, has positive exposure
 probabilities, and has a nonsummable targeted signed response. -/
 namespace AronowAudit.P061.Refutations
@@ -36,6 +36,9 @@ theorem printed_general_ht_unbiased_refuted : ¬PrintedClaims.printed_general_ht
   have ht := h realGeometricDesign divergentExposure divergentOutcome 1 0
     (by norm_num) divergent_exposure_one_positive divergent_exposure_zero_positive
   exact missing_moment_counterexample.2.2.2.2 ht.1
+
+#print axioms printed_well_defined_claim_refuted
+#print axioms printed_general_ht_unbiased_refuted
 
 end
 end AronowAudit.P061.Refutations

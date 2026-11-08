@@ -1,0 +1,162 @@
+import SAP.P023.Defs
+import SAP.P023.Defs.WholeW1
+set_option autoImplicit false
+set_option maxHeartbeats 1600000
+open SAP.P023 MeasureTheory Set Filter
+open scoped BigOperators ENNReal Topology
+
+namespace Audit
+
+theorem linear_twoParty : TwoParty linearX linearD := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  all_goals intro i; fin_cases i <;> norm_num [linearX, linearD]
+
+theorem linear_condition1 : Condition1 (1 / 200 : ℝ) linearX := by
+  constructor
+  · exact ⟨3, by norm_num [linearX]⟩
+  · exact ⟨2, by norm_num [linearX]⟩
+
+theorem linear_fullRank : FullRank (polynomialDesign 1 linearX linearD) := by
+  intro c h
+  have h0 := h 0
+  have h1 := h 1
+  have h3 := h 3
+  norm_num [predict, polynomialDesign, linearX, linearD, Fin.sum_univ_succ] at h0 h1 h3
+  funext j
+  fin_cases j
+  · change c (0 : Fin (1+2)) = 0
+    linear_combination (-1 / 2 : ℝ) * h0 + (3 / 2 : ℝ) * h1
+  · change c (1 : Fin (1+2)) = 0
+    linear_combination (101 / 200 : ℝ) * h0 + (-301 / 200 : ℝ) * h1 + 1 * h3
+  · change c (2 : Fin (1+2)) = 0
+    linear_combination -2 * h0 + 2 * h1
+
+example : linearY = predict (polynomialDesign 1 linearX linearD) linearExact := by
+  funext i
+  fin_cases i <;> norm_num [linearY, predict, polynomialDesign, linearExact,
+    linearX, linearD, Fin.sum_univ_succ]
+
+theorem linear_counts : (0 < ∑ i ∈ close (1 / 200 : ℝ) linearX, linearD i) ∧
+    (0 < ∑ i ∈ close (1 / 200 : ℝ) linearX, (1 - linearD i)) := by
+  have hc : close (1 / 200 : ℝ) linearX = {2, 3} := by
+    ext i
+    fin_cases i <;> norm_num [close, linearX]
+  rw [hc]
+  norm_num [linearD]
+
+example : ∀ i, 0 < linearY i ∧ linearY i < 1 ∧
+    0 < linearYprime i ∧ linearYprime i < 1 := by
+  intro i
+  fin_cases i <;> norm_num [linearY, linearYprime]
+
+example : ∀ i, (binLabel (1 / 200 : ℝ) (linearX i)).val =
+    ![25, 75, 100, 100, 125, 175] i := by
+  intro i
+  fin_cases i <;> norm_num [binLabel, binCount, linearX]
+
+theorem degree7_twoParty : TwoParty degree7X degree7D := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  all_goals intro i; fin_cases i <;> norm_num [degree7X, degree7D]
+
+theorem degree7_condition1 : Condition1 (1 / 5 : ℝ) degree7X := by
+  constructor
+  · exact ⟨8, by norm_num [degree7X]⟩
+  · exact ⟨7, by norm_num [degree7X]⟩
+
+theorem degree7_fullRank : FullRank (polynomialDesign 7 degree7X degree7D) := by
+  intro c h
+  have h0 := h 0
+  have h1 := h 1
+  have h2 := h 2
+  have h3 := h 3
+  have h4 := h 4
+  have h5 := h 5
+  have h6 := h 6
+  have h7 := h 7
+  have h8 := h 8
+  norm_num [predict, polynomialDesign, degree7X, degree7D, Fin.sum_univ_succ] at h0 h1 h2 h3 h4 h5 h6 h7 h8
+  funext j
+  fin_cases j
+  · change c (0 : Fin (7+2)) = 0
+    linear_combination -1 * h0 + 8 * h1 + -28 * h2 + 56 * h3 + -70 * h4 + 56 * h5 + -28 * h6 + 8 * h7
+  · change c (1 : Fin (7+2)) = 0
+    linear_combination 8 * h0 + -63 * h1 + 216 * h2 + -420 * h3 + 504 * h4 + -378 * h5 + 168 * h6 + -36 * h7 + 1 * h8
+  · change c (2 : Fin (7+2)) = 0
+    linear_combination (-726 / 35 : ℝ) * h0 + (824 / 5 : ℝ) * h1 + (-8572 / 15 : ℝ) * h2 + 1128 * h3 + -1382 * h4 + (16024 / 15 : ℝ) * h5 + (-2484 / 5 : ℝ) * h6 + (3848 / 35 : ℝ) * h7
+  · change c (3 : Fin (7+2)) = 0
+    linear_combination (-7504 / 45 : ℝ) * h0 + (59024 / 45 : ℝ) * h1 + -4488 * h2 + (78256 / 9 : ℝ) * h3 + (-93248 / 9 : ℝ) * h4 + (38256 / 5 : ℝ) * h5 + (-146824 / 45 : ℝ) * h6 + (5584 / 9 : ℝ) * h7
+  · change c (4 : Fin (7+2)) = 0
+    linear_combination (-30944 / 45 : ℝ) * h0 + (240128 / 45 : ℝ) * h1 + (-89696 / 5 : ℝ) * h2 + (305408 / 9 : ℝ) * h3 + (-351776 / 9 : ℝ) * h4 + (137216 / 5 : ℝ) * h5 + (-489248 / 45 : ℝ) * h6 + (84224 / 45 : ℝ) * h7
+  · change c (5 : Fin (7+2)) = 0
+    linear_combination (-14336 / 9 : ℝ) * h0 + (109312 / 9 : ℝ) * h1 + -39936 * h2 + (660736 / 9 : ℝ) * h3 + (-733184 / 9 : ℝ) * h4 + 54528 * h5 + (-183296 / 9 : ℝ) * h6 + (29440 / 9 : ℝ) * h7
+  · change c (6 : Fin (7+2)) = 0
+    linear_combination (-94208 / 45 : ℝ) * h0 + (702464 / 45 : ℝ) * h1 + (-249856 / 5 : ℝ) * h2 + (800768 / 9 : ℝ) * h3 + (-856064 / 9 : ℝ) * h4 + (305152 / 5 : ℝ) * h5 + (-978944 / 45 : ℝ) * h6 + (149504 / 45 : ℝ) * h7
+  · change c (7 : Fin (7+2)) = 0
+    linear_combination (-65536 / 45 : ℝ) * h0 + (475136 / 45 : ℝ) * h1 + -32768 * h2 + (507904 / 9 : ℝ) * h3 + (-524288 / 9 : ℝ) * h4 + (180224 / 5 : ℝ) * h5 + (-557056 / 45 : ℝ) * h6 + (16384 / 9 : ℝ) * h7
+  · change c (8 : Fin (7+2)) = 0
+    linear_combination (-131072 / 315 : ℝ) * h0 + (131072 / 45 : ℝ) * h1 + (-131072 / 15 : ℝ) * h2 + (131072 / 9 : ℝ) * h3 + (-131072 / 9 : ℝ) * h4 + (131072 / 15 : ℝ) * h5 + (-131072 / 45 : ℝ) * h6 + (131072 / 315 : ℝ) * h7
+
+example : degree7Y = predict (polynomialDesign 7 degree7X degree7D) degree7Exact := by
+  funext i
+  fin_cases i <;> norm_num [degree7Y, predict, polynomialDesign, degree7Exact,
+    degree7X, degree7D, Fin.sum_univ_succ]
+
+theorem degree7_counts : (0 < ∑ i ∈ close (1 / 5 : ℝ) degree7X, degree7D i) ∧
+    (0 < ∑ i ∈ close (1 / 5 : ℝ) degree7X, (1 - degree7D i)) := by
+  have hc : close (1 / 5 : ℝ) degree7X = {7, 8} := by
+    ext i
+    fin_cases i <;> norm_num [close, degree7X]
+  rw [hc]
+  norm_num [degree7D]
+
+example : ∀ i, 0 < degree7Y i ∧ degree7Y i < 1 ∧
+    0 < degree7Yprime i ∧ degree7Yprime i < 1 := by
+  intro i
+  fin_cases i <;> norm_num [degree7Y, degree7Yprime]
+
+example : ∀ i, (binLabel (1 / 5 : ℝ) (degree7X i)).val =
+    ![0, 0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4] i := by
+  intro i
+  fin_cases i <;> norm_num [binLabel, binCount, degree7X]
+
+-- A genuine finite-design conditional-mean instance for T3, with all its guards.
+example : ∃ (P : Measure ℝ) (Y : Fin 6 → ℝ → ℝ),
+    P univ = 1 ∧ (∀ i, Integrable (Y i) P) ∧
+    (∀ i, (∫ ω, Y i ω ∂P) = (1/2 : ℝ) + (1/10)*linearD i + linearX i/20) ∧
+    (∀ i, Integrable (fun ω => (Y i ω - linearY i)^2) P) ∧
+    (∀ i l, i ≠ l → (∫ ω, (Y i ω-linearY i)*(Y l ω-linearY l) ∂P) = 0) := by
+  refine ⟨Measure.dirac 0, (fun i _ => linearY i), ?_, ?_, ?_, ?_, ?_⟩
+  · simp
+  · intro i; exact integrable_const _
+  · intro i; fin_cases i <;> norm_num [linearY, linearD, linearX]
+  · intro i; simp
+  · intro i l hil; simp
+
+example : ∃ a η : ℝ, 0 < a ∧ 0 < η ∧ η ≤ 1 := by
+  exact ⟨1/20, 1/10000, by norm_num⟩
+
+example : ∃ d : ℝ, 0 < d ∧ d ≤ 1/2 ∧
+    0 < (1-d^4)*(d/2)^2/6+d^4/12 := by
+  exact ⟨1/1000, by norm_num⟩
+
+-- All the design/count/agreement/coarsened-fit guards of T3 are satisfiable together.
+example : TwoParty linearX linearD ∧
+    FullRank (polynomialDesign 1 linearX linearD) ∧
+    Condition1 (1/200 : ℝ) linearX ∧
+    (0 < ∑ i ∈ close (1/200 : ℝ) linearX, linearD i) ∧
+    (0 < ∑ i ∈ close (1/200 : ℝ) linearX, (1-linearD i)) ∧
+    (∀ i ∈ close (1/200 : ℝ) linearX, (fun _ : Fin 6 => (0 : ℝ)) i = 0) ∧
+    CoarsenedOLS (1/200 : ℝ) linearX linearD (fun _ => 0) 0 := by
+  refine ⟨linear_twoParty, linear_fullRank, linear_condition1,
+    linear_counts.1, linear_counts.2, ?_, ?_⟩
+  · intro i hi; rfl
+  · refine ⟨fun _ => 0, ?_⟩
+    simp [IsBinOLS]
+
+-- The clustered mean is nonzero and the numerical law has positive background density.
+example : clusterSmooth (1/1000) (1001/2000) = (1/2000 : ℝ) ∧
+    clusterSmooth (1/1000) 0 = 0 ∧
+    clusterDensity (1/1000) 0 = (1/1000 : ℝ)^4/2 := by
+  norm_num [clusterSmooth, clusterPositive, clusterDensity, triangular, abs_of_neg]
+
+end Audit

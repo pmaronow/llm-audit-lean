@@ -1,0 +1,232 @@
+import SAP.P003a.Challenge
+
+open scoped BigOperators
+open SAP.P003a
+
+namespace Review
+
+lemma supportedMass (s : Finset ℤ) (f : ℤ → ℝ)
+    (hz : ∀ j ∉ s, f j = 0) (hn : ∀ j, 0 ≤ f j)
+    (hs : ∑ j ∈ s, f j = 1) : IsMass f := by
+  refine ⟨hn, summable_of_ne_finset_zero hz, ?_, ?_⟩
+  · rw [tsum_eq_sum hz]
+    exact hs
+  · apply summable_of_ne_finset_zero (s := s)
+    intro j hj
+    simp [hz j hj]
+
+lemma fairSupported : ∀ j ∉ ({0,1} : Finset ℤ), fairMass j = 0 := by
+  intro j hj
+  simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hj
+  simp [fairMass, hj.1, hj.2]
+
+lemma fairMean : (∑' j : ℤ, (j : ℝ)*fairMass j) = 1/2 := by
+  rw [tsum_eq_sum (s := ({0,1} : Finset ℤ)) (by
+    intro j hj
+    simp [fairSupported j hj])]
+  norm_num [fairMass]
+
+lemma fairShape : SDShape fairMass 1 := by
+  constructor
+  · intro i
+    simp only [fairMass]
+    split_ifs <;> norm_num at * <;> omega
+  · intro i j hi hij
+    simp only [fairMass]
+    split_ifs <;> norm_num at * <;> omega
+
+lemma fairSD : IsSD fairMass := by
+  refine ⟨supportedMass {0,1} fairMass fairSupported ?_ ?_, 1, ?_, fairShape⟩
+  · intro j
+    unfold fairMass
+    positivity
+  · norm_num [fairMass]
+  · simpa using fairMean
+
+-- T9: an actual uniform two-atom coupling, with an admissible SD marginal.
+example : IsSD fairMass ∧
+    (∀ j : ℤ,
+      (∑ b : Bool, if (if b then (1 : ℤ) else 0) = j then (1/2 : ℝ) else 0) = fairMass j) ∧
+    dependentSumMass 1 < dependentSumMass 2 := by
+  refine ⟨fairSD, ?_, ?_⟩
+  · intro j
+    simp [fairMass, eq_comm, add_comm]
+  · norm_num [dependentSumMass]
+
+lemma dependentMean : (∑' j : ℤ, (j : ℝ)*dependentSumMass j) = 1 := by
+  rw [tsum_eq_sum (s := ({0,2} : Finset ℤ)) (by
+    intro j hj
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hj
+    simp [dependentSumMass, hj.1, hj.2])]
+  norm_num [dependentSumMass]
+
+example : ¬ IsSD dependentSumMass := by
+  rintro ⟨_, c, hc, hshape⟩
+  have hcr : (c : ℝ) = 2 := by rw [dependentMean] at hc; linarith
+  have hcz : c = 2 := by exact_mod_cast hcr
+  subst c
+  have h := hshape.2 1 2 (by norm_num) (by norm_num)
+  norm_num [dependentSumMass] at h
+
+-- T9: the second joint witness has positive probabilities and is not independent.
+example : (∀ i : Fin 4, 0 < w2BW i) ∧ (∑ i, w2BW i) = 1 ∧
+    (∑ i : Fin 4, if w2BX i = -1 ∧ w2BY i = 0 then w2BW i else 0) = 1/3 ∧
+    w2ThreeMass (-1) * fairMass 0 = 1/6 := by
+  constructor
+  · intro i
+    fin_cases i <;> norm_num [w2BW]
+  norm_num [Fin.sum_univ_succ, w2BW, w2BX, w2BY, w2ThreeMass, fairMass]
+
+lemma threeSupported : ∀ j ∉ ({-1,0,1} : Finset ℤ), w2ThreeMass j = 0 := by
+  intro j hj
+  simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hj
+  simp [w2ThreeMass, hj.1, hj.2.1, hj.2.2]
+
+lemma threeMean : (∑' j : ℤ, (j : ℝ)*w2ThreeMass j) = 0 := by
+  rw [tsum_eq_sum (s := ({-1,0,1} : Finset ℤ)) (by
+    intro j hj
+    simp [threeSupported j hj])]
+  norm_num [w2ThreeMass]
+
+example : IsSD w2ThreeMass := by
+  refine ⟨supportedMass {-1,0,1} w2ThreeMass threeSupported ?_ ?_, 0, ?_, ?_⟩
+  · intro j
+    unfold w2ThreeMass
+    positivity
+  · norm_num [w2ThreeMass]
+  · simpa using threeMean
+  · constructor
+    · intro i
+      simp only [w2ThreeMass]
+      split_ifs <;> norm_num at * <;> omega
+    · intro i j hi hij
+      simp only [w2ThreeMass]
+      split_ifs <;> norm_num at * <;> omega
+
+lemma secondMean : (∑' j : ℤ, (j : ℝ)*w2BSumMass j) = 1/2 := by
+  rw [tsum_eq_sum (s := ({-1,0,1,2} : Finset ℤ)) (by
+    intro j hj
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hj
+    simp [w2BSumMass, hj.1, hj.2.1, hj.2.2.1, hj.2.2.2])]
+  norm_num [w2BSumMass]
+
+example : ¬ IsSD w2BSumMass := by
+  rintro ⟨_, c, hc, hshape⟩
+  have hcr : (c : ℝ) = 1 := by rw [secondMean] at hc; linarith
+  have hcz : c = 1 := by exact_mod_cast hcr
+  subst c
+  have h := hshape.2 1 2 (by norm_num) (by norm_num)
+  norm_num [w2BSumMass] at h
+
+example (j : ℤ) :
+    (∑ i : Fin 4, if w2BX i = j then w2BW i else 0) = w2ThreeMass j ∧
+    (∑ i : Fin 4, if w2BY i = j then w2BW i else 0) = fairMass j ∧
+    (∑ i : Fin 4, if w2BX i+w2BY i = j then w2BW i else 0) = w2BSumMass j := by
+  by_cases hn : j = -1
+  · subst j; norm_num [Fin.sum_univ_succ, w2BX, w2BY, w2BW, w2ThreeMass, fairMass, w2BSumMass]
+  by_cases hz : j = 0
+  · subst j; norm_num [Fin.sum_univ_succ, w2BX, w2BY, w2BW, w2ThreeMass, fairMass, w2BSumMass]
+  by_cases ho : j = 1
+  · subst j; norm_num [Fin.sum_univ_succ, w2BX, w2BY, w2BW, w2ThreeMass, fairMass, w2BSumMass]
+  by_cases ht : j = 2
+  · subst j; norm_num [Fin.sum_univ_succ, w2BX, w2BY, w2BW, w2ThreeMass, fairMass, w2BSumMass]
+  simp [Fin.sum_univ_succ, w2BX, w2BY, w2BW, w2ThreeMass, fairMass, w2BSumMass,
+    hn, hz, ho, ht, eq_comm]
+
+-- T10: the SD and shape hypotheses occur at a genuine half-integer center,
+-- and both allowed parity representatives are available.
+example : ∃ f : ℤ → ℝ, IsSD f ∧ SDShape f 1 ∧
+    ((0 : ℤ) = 0 ∨ (0 : ℤ) = 1) ∧ ((1 : ℤ) = 0 ∨ (1 : ℤ) = 1) :=
+  ⟨fairMass, fairSD, fairShape, Or.inl rfl, Or.inr rfl⟩
+
+example : smoothMass fairMass 0 = 1/4 ∧ smoothMass fairMass 1 = 1/2 ∧
+    smoothMass fairMass 2 = 1/4 ∧ paritySmooth fairMass 0 3 = 1/4 ∧
+    paritySmooth fairMass 1 (-1) = 0 := by
+  norm_num [smoothMass, paritySmooth, fairMass]
+
+-- T15: every conditional block has concrete legal data, including nonempty
+-- base, d=1, d=2, and d>=3 residual cases and each finite witness list.
+example : ∃ v : Counts, ∃ m : ℕ, 0 < m ∧ v.total = 2*m ∧ 1 ≤ v.b+v.c := by
+  exact ⟨⟨1,1,0,0⟩, 1, by decide⟩
+
+example : ∃ v : Counts, ∃ m : ℕ, 0 < m ∧ v.total = 2*m ∧ v.b+v.c = 2 := by
+  exact ⟨⟨0,2,0,0⟩, 1, by decide⟩
+
+example : ∃ v : Counts, ∃ m : ℕ, ∃ a : Counts,
+    0 < m ∧ v.total = 2*m ∧ 3 ≤ v.b+v.c ∧
+    (a ∈ wholeRemovals10 ∨ a ∈ wholeRemovals01) ∧ wholeCountsLE a v ∧
+    wholeCountsSub v a = ⟨0,2,0,0⟩ := by
+  refine ⟨⟨0,4,0,0⟩, 2, ⟨0,2,0,0⟩, ?_⟩
+  norm_num [Counts.total, wholeRemovals10, wholeRemovals01, wholeCountsLE, wholeCountsSub]
+
+example : wholeBaseRows.length = 7 ∧ wholeWitnessRows.length = 4 ∧
+    (randomStates ⟨1,1,0,0⟩ 1).length = 2 ∧
+    (randomStates ⟨0,4,0,0⟩ 2).length = 1 ∧
+    SAP.P003a.multiplicity ⟨0,4,0,0⟩ ⟨0,2,0,0⟩ = 6 ∧
+    estimateQ (observed ⟨0,4,0,0⟩ ⟨0,2,0,0⟩) = 1 := by
+  refine ⟨by decide, by decide, by decide, by decide, by decide, ?_⟩
+  norm_num [estimateQ, observed]
+
+-- T16: a source atom for m=1, genuine partners and opposite assignments.
+def zTwo : Assignment 2 1 := ⟨{0}, by decide⟩
+def partnerTwo : WholePartner 2 0 := ⟨1, by decide⟩
+def residualTwo : WholeResidualAssignment 2 1 0 1 := ⟨∅, by decide⟩
+def sourceTwo : WholePairSource 2 1 0 := ⟨partnerTwo, true, residualTwo⟩
+
+example : Nonempty (WholePairSource 2 1 0) := ⟨sourceTwo⟩
+example : (wholePairSample sourceTwo).card = 1 ∧
+    ((0 : Fin 2) ∈ zTwo.val ↔ partnerTwo.val ∉ zTwo.val) := by decide
+
+def zFour : Assignment 4 2 := ⟨{0,2}, by decide⟩
+def partnerFour : WholePartner 4 0 := ⟨1, by decide⟩
+def residualFour : WholeResidualAssignment 4 2 0 1 := ⟨{2}, by decide⟩
+def sourceFour : WholePairSource 4 2 0 := ⟨partnerFour, false, residualFour⟩
+
+noncomputable def eTwo : Fin (2-2) ≃ WholeRemaining 2 0 1 :=
+  Fintype.equivOfCardEq (by decide)
+noncomputable def eFour : Fin (4-2) ≃ WholeRemaining 4 0 1 :=
+  Fintype.equivOfCardEq (by decide)
+
+example : Nonempty (Fin (2-2) ≃ WholeRemaining 2 0 1) ∧
+    Nonempty (Fin (4-2) ≃ WholeRemaining 4 0 1) := ⟨⟨eTwo⟩, ⟨eFour⟩⟩
+
+example : Fintype.card (WholePairSource 2 1 0) = 2 ∧
+    Fintype.card (WholePairSource 4 2 0) = 12 := by decide
+
+example : Nonempty (WholePairSource 4 2 0) := ⟨sourceFour⟩
+example : (wholePairSample sourceFour).card = 2 ∧
+    ((0 : Fin 4) ∈ zFour.val ↔ partnerFour.val ∉ zFour.val) := by decide
+
+example : pairContribution (true,true) (false,false) true = 1 ∧
+    pairContribution (true,true) (false,false) false = -1 ∧
+    wholePrintedPair (true,true) (false,false) true = 1 ∧
+    wholePrintedPair (true,true) (false,false) false = 1 := by decide
+
+-- T17: legal positive-arm observations with both zero and positive variances.
+def zFive : Assignment 5 2 := ⟨{0,1}, by decide⟩
+def noZeroFive : Assignment 5 2 := ⟨{1,2}, by decide⟩
+
+example : unitObserved (unitOutcomes wholeOneControlTable zFive.val) zFive.val = ⟨0,2,0,3⟩ ∧
+    unitObserved (unitOutcomes wholeOneControlTable noZeroFive.val) noZeroFive.val = ⟨0,2,1,2⟩ := by decide
+
+example : 0 < (⟨0,2,0,3⟩ : Counts).a+(⟨0,2,0,3⟩ : Counts).b ∧
+    0 < (⟨0,2,0,3⟩ : Counts).c+(⟨0,2,0,3⟩ : Counts).d ∧
+    standardError ⟨0,2,0,3⟩ = 0 ∧
+    estimate ⟨0,2,0,3⟩ - tau ⟨0,0,1,4⟩ = 1/5 ∧
+    varianceEstimate ⟨0,2,1,2⟩ = 2/27 ∧ 0 < standardError ⟨0,2,1,2⟩ := by
+  norm_num [standardError, varianceEstimate, estimate, estimateQ, tau, tauQ,
+    Counts.effect, Counts.total]
+
+example (C : ℝ) : studentized C ⟨0,2,0,3⟩ ⟨0,0,1,4⟩ = C := by
+  norm_num [studentized, standardError, varianceEstimate]
+
+-- The validity hypothesis has a nonempty *product* sample space, with
+-- distinct observed and simulated coordinates allowed; K=1 and alpha=1/2.
+example : ∃ (n m K : ℕ) (_w : PotentialTable n) (_C α : ℝ),
+    0 < m ∧ m < n ∧ 0 < K ∧ 0 ≤ α ∧ α ≤ 1 ∧
+    Nonempty (Fin (K+1) → Assignment n m) := by
+  refine ⟨5,2,1,wholeOneControlTable,0,1/2,by norm_num,by norm_num,
+    by norm_num,by norm_num,by norm_num,?_⟩
+  exact ⟨fun _ => zFive⟩
+
+end Review

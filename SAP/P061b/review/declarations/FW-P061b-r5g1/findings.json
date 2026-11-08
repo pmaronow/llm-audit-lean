@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P061-T12",
+    "theorem": "SAP.P061b.T12",
+    "fingerprint": "53d710ae9e5b17d875eb6c4b63b57df6292bb76a68439a7d8076ba621448b5be",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:19: N=2, g=y=housemateAssignment, h(i,d)=d, D=bothOrNeither, D'=independentHousehold, d=1, e=0. The compiled example proves factorization, global stability, positive exposure margins under both designs, and both AEEDs equal to 1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T13",
+    "theorem": "SAP.P061b.T13",
+    "fingerprint": "e645f6f0c22b9ea63634e19a64d90dc098aed2f9a197f2b95a7072b6e901961d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:65: N=2, D=oneTreated, g=ownAssignment, y=housemateAssignment. The compiled example proves support stability, failure of global stability, and both positive exposure margins, and constructs y'(i,z)=1-ownAssignment(i,z), proving its global stability, support agreement, and equality of every observed-data event probability. Its observed law supplies a genuine realizable L for the law-set equivalence.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T14",
+    "theorem": "SAP.P061b.T14",
+    "fingerprint": "ec59f4e323608da6eafdedfc7edbc0b8974643c8bddcc728b4000381b4c49d39",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:92 independently proves the entire T14Statement from Defs alone by finite calculation, including the original AEPOs, three AEEDs, support stability, failure of global stability, the exact witness values, and zero mass at (1,1). This closed assertion has no hypotheses requiring a separate satisfiability witness.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T15",
+    "theorem": "SAP.P061b.T15",
+    "fingerprint": "b3daeb1d32c9721117d2859c1329083c599e86d32cdd1fcf29c89283793c7a60",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:114 proves all ten binary-example conjuncts; scratch/Check.lean:152 proves all hidden-version conjuncts. These compiled examples independently check all six contrasts, support stability under every stated design, all three failures of global stability, the hidden-version exposure margins, and no interference with raw versions fixed. All designs are normalized finite probability distributions; there are no free hypotheses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T16",
+    "theorem": "SAP.P061b.T16",
+    "fingerprint": "b9bf33e60072b8d99a1f74221d7e50b9d17251b36416e012ee7f052b7274f29b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:176 constructs the normalized full-support household design with masses p(00)=p(01)=1/8, p(10)=1/4, p(11)=1/2. The compiled example at :182 uses N=2, g=ownAssignment, y=housemateAssignment, d=1, e=0; proves every positivity and moment hypothesis and failure of support stability; and computes both the ordinary HT mean expectation and AEPO as 11/15, and both the ordinary HT contrast expectation and AEED as 3/20.",
+    "confidence": 0.99
+  }
+]

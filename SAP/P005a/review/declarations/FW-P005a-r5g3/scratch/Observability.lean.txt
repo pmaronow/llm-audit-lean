@@ -1,0 +1,60 @@
+import SAP.P005a.Defs
+
+open SAP.P005a Finset
+open scoped BigOperators Matrix
+noncomputable section
+
+lemma mean_congr_on {n : ℕ} {A : Finset (Fin n)} {u v : Fin n → ℝ}
+    (h : ∀ i ∈ A, u i = v i) : mean A u = mean A v := by
+  unfold mean
+  congr 1
+  exact Finset.sum_congr rfl h
+
+lemma observed_armN_T {n d : ℕ} (P : Population n d) (S : Finset (Fin n)) :
+    armN P S (observedOutcome P S) = armN P S P.yT := by
+  funext k
+  unfold armN
+  have hy : mean S (observedOutcome P S) = mean S P.yT :=
+    mean_congr_on (by intro i hi; simp [observedOutcome, observedResidual, hi])
+  have hxy : mean S (fun i => observedOutcome P S i * P.x i k) =
+      mean S (fun i => P.yT i * P.x i k) :=
+    mean_congr_on (by intro i hi; simp [observedOutcome, observedResidual, hi])
+  rw [hy, hxy]
+
+lemma observed_armN_C {n d : ℕ} (P : Population n d) (S : Finset (Fin n)) :
+    armN P (SAP.P005a.control S) (observedOutcome P S) =
+      armN P (SAP.P005a.control S) P.yC := by
+  funext k
+  unfold armN
+  have hy : mean (SAP.P005a.control S) (observedOutcome P S) =
+      mean (SAP.P005a.control S) P.yC := mean_congr_on (by
+        intro i hi
+        have hiS : i ∉ S := (Finset.mem_sdiff.mp hi).2
+        simp [observedOutcome, observedResidual, hiS])
+  have hxy : mean (SAP.P005a.control S) (fun i => observedOutcome P S i * P.x i k) =
+      mean (SAP.P005a.control S) (fun i => P.yC i * P.x i k) := mean_congr_on (by
+        intro i hi
+        have hiS : i ∉ S := (Finset.mem_sdiff.mp hi).2
+        simp [observedOutcome, observedResidual, hiS])
+  rw [hy, hxy]
+
+-- F takes only the supplied x and observed outcome array Y. It is fixed before P.
+-- The algebraic equality even holds without regularity/standardization.
+example (n d m : ℕ) :
+    ∃ F : Finset (Fin n) → (Fin n → Fin d → ℝ) → (Fin n → ℝ) → ℝ,
+      ∀ (P : Population n d) (S : Finset (Fin n)),
+        dot (xMean P (SAP.P005a.control S) - xMean P S) (nu2 P m S) =
+          F S P.x (observedOutcome P S) := by
+  refine ⟨fun S x Y =>
+    let R : Population n d := ⟨x, Y, Y⟩
+    dot (xMean R (SAP.P005a.control S) - xMean R S)
+      (((Lhat R m S)⁻¹ - 1) *ᵥ Nhat R m S), ?_⟩
+  intro P S
+  change dot (xMean P (SAP.P005a.control S) - xMean P S)
+      (((Lhat P m S)⁻¹ - 1) *ᵥ Nhat P m S) =
+    dot (xMean P (SAP.P005a.control S) - xMean P S)
+      (((Lhat P m S)⁻¹ - 1) *ᵥ
+        (pT n m • armN P S (observedOutcome P S) +
+          pC n m • armN P (SAP.P005a.control S) (observedOutcome P S)))
+  rw [observed_armN_T, observed_armN_C]
+  rfl

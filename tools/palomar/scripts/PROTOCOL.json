@@ -1,0 +1,246 @@
+{
+  "admission_pin_fields": [
+    "a1_receipt_sha256",
+    "a1_source_snapshot_sha256",
+    "a2_source_attestation_sha256",
+    "admission_helper_sha256",
+    "bootstrap_helper_sha256",
+    "candidate_content_sha256",
+    "collection_input_archive_sha256",
+    "collection_input_closure_after_sha256",
+    "collection_input_closure_before_sha256",
+    "collection_inputs_after_sha256",
+    "collection_inputs_sha256",
+    "collection_inventory_sha256",
+    "collection_log_sha256",
+    "collection_receipt_sha256",
+    "collection_source_after_sha256",
+    "collection_source_sha256",
+    "collection_wrapper_sha256",
+    "collector_sha256",
+    "contract_inventory_sha256",
+    "evidence",
+    "fw_common_sha256",
+    "inventory_helper_sha256",
+    "reviewed_tool_lock_sha256",
+    "reviewer",
+    "runner_content_sha256",
+    "schema",
+    "verdict"
+  ],
+  "admission_pin_schema": "a3-reviewed-collection-admission-v3",
+  "admission_result_closure_fields": [
+    "collection_input_archive_sha256",
+    "collection_input_closure_before_sha256",
+    "collection_input_closure_after_sha256"
+  ],
+  "admission_result_schema": "a3-collection-admission-result-v3",
+  "archive_hash_fields": {
+    "a1": "a1_receipt_sha256",
+    "a2": "a2_source_attestation_sha256",
+    "admission_helper": "admission_helper_sha256",
+    "bootstrap_helper": "bootstrap_helper_sha256",
+    "closure_after": "collection_input_closure_after_sha256",
+    "closure_before": "collection_input_closure_before_sha256",
+    "collector": "collector_sha256",
+    "fw_common": "fw_common_sha256",
+    "inputs": "collection_inputs_sha256",
+    "inputs_after": "collection_inputs_after_sha256",
+    "inventory": "collection_inventory_sha256",
+    "inventory_helper": "inventory_helper_sha256",
+    "log": "collection_log_sha256",
+    "receipt": "collection_receipt_sha256",
+    "snapshot": "a1_source_snapshot_sha256",
+    "source": "collection_source_sha256",
+    "source_after": "collection_source_after_sha256",
+    "tool_lock": "reviewed_tool_lock_sha256",
+    "wrapper": "collection_wrapper_sha256"
+  },
+  "archived_admission_names": {
+    "a1": "a1-receipt.json",
+    "a2": "a2-source-attestation.json",
+    "admission_helper": "admission-helper.py",
+    "bootstrap_helper": "bootstrap-helper.py",
+    "closure_after": "collector-input-closure-after.json",
+    "closure_before": "collector-input-closure-before.json",
+    "collector": "collector.py",
+    "fw_common": "fw-common.py",
+    "inputs": "collection-inputs-before.json",
+    "inputs_after": "collection-inputs-after.json",
+    "inventory": "collection-inventory.json",
+    "inventory_helper": "inventory-helper.py",
+    "log": "collection-log.txt",
+    "pin": "reviewed-admission-lock.json",
+    "receipt": "collection-receipt.json",
+    "snapshot": "a1-source-snapshot.json",
+    "source": "collection-source-before.json",
+    "source_after": "collection-source-after.json",
+    "tool_lock": "reviewed-tool-lock.json",
+    "wrapper": "collection-wrapper.py"
+  },
+  "candidate_overlay_policy": "exact original full candidate only; no SAP/Works exception",
+  "closure_archive_digest": "SHA256(compact sorted file_rows including path/mode/sha256/bytes)",
+  "closure_archive_directory": "collector-inputs",
+  "collection_receipt_schema": "sap-review-collection-v4",
+  "compatibility_delta": "data-v1 is not reinterpreted; consumers must explicitly recognize data-v2 and newly independently reviewed runner identities",
+  "consumer_migration_required": true,
+  "copied_review_file_rule": "canonical findings.json and packet in the first copied basename destination must independently revalidate",
+  "data_read_model": "collect_final+fw_common/data-v2",
+  "directory_membership": "null if absent; otherwise exact name-to-file/directory map",
+  "entry_invocation": "python3 -I -S -B ENTRY --reviewed-tool-lock PATH --expected-tool-lock-sha256 EXTERNALLY_REVIEWED_SHA plus prior required flags",
+  "final_publication": "complete read-only archive/lock validation of staged data, then atomic os.replace last",
+  "frozen_input_schema": "a3-frozen-inputs-v4",
+  "generation_overlap_checks": [
+    "both lexical ancestor directions after canonical/symlink checks",
+    "physical filesystem identities for existing output/source ancestors",
+    "all explicit input-file parents and directories",
+    "repositories, packages, toolchains, runtime/tool/scope roots, recorded before-input origins",
+    "new closure archive/inventory inputs and raw closure roots"
+  ],
+  "input_closure_fields": [
+    "schema",
+    "read_model",
+    "sap_root",
+    "units",
+    "code_hashes",
+    "files",
+    "directories",
+    "selectors",
+    "review_references",
+    "roots"
+  ],
+  "input_closure_file_fields": [
+    "sha256",
+    "bytes",
+    "mode"
+  ],
+  "input_closure_schema": "sap-collector-data-closure-v1",
+  "is_approval": false,
+  "never_ready_markers": [
+    "frozen-inputs.pending.json",
+    "frozen-inputs.failed.json"
+  ],
+  "new_error_reporting_requirement": "3.11 (BaseExceptionGroup used to retain publication and cleanup errors)",
+  "new_freeze_flags": [
+    "--collection-input-closure-before",
+    "--collection-input-closure-after",
+    "--collection-input-archive"
+  ],
+  "producer_package": "collection-admission-fix-v4",
+  "ready_marker": "frozen-inputs.json",
+  "receipt_added_fields": [
+    "collection_input_closure_before_sha256",
+    "collection_input_closure_after_sha256",
+    "collection_input_archive_sha256",
+    "collector_input_archive_path",
+    "stability_scope"
+  ],
+  "recorded_origins": {
+    "a1": "a1_receipt_sha256",
+    "a2": "a2_source_attestation_sha256",
+    "admission_helper": "admission_helper_sha256",
+    "bootstrap_helper": "bootstrap_helper_sha256",
+    "collector": "collector_sha256",
+    "fw_common": "fw_common_sha256",
+    "inventory_helper": "inventory_helper_sha256",
+    "snapshot": "a1_source_snapshot_sha256",
+    "tool_lock": "reviewed_tool_lock_sha256",
+    "wrapper": "collection_wrapper_sha256"
+  },
+  "review_layout_rules": {
+    "assure_exact_by_unit": {
+      "P001c": [
+        "assure/independent-fw-20261105/P001c"
+      ],
+      "P001f": [
+        "assure/independent-fw-20261105/P001f/declarations",
+        "assure/independent-fw-20261105/P001f/omissions"
+      ],
+      "P004c": [
+        "assure/doc-repairs-2026-11-05/fw-tasks/P004c-declarations"
+      ],
+      "P006b": [
+        "assure/p006-t26-repair-2026-11-05/fresh-fw-2/P006b-declarations",
+        "assure/p006-t26-repair-2026-11-05/fresh-fw-2/P006b-omissions"
+      ],
+      "P009b": [
+        "assure/p009b-repair-2026-11-05/fresh-fw-2/P009b-declarations"
+      ],
+      "P025a": [
+        "assure/independent-fw-20261105/P025a-doc-v2"
+      ],
+      "P031": [
+        "assure/p031-repair-2026-11-05/integration/fw-tasks/P031-declarations"
+      ]
+    },
+    "opusrev": "opusrev/<exact-unit>/o<positive>",
+    "tasks": "tasks/FW-<exact-unit>-r<positive>(g<positive>)?"
+  },
+  "review_selection": {
+    "filter": "r.fp == current.fp",
+    "given_fp": "separate later binding check, not selection filter",
+    "historical_unselected_task_payloads": "not read/archived merely for matching given_fp",
+    "passing": "only if every latest row is clean",
+    "round": "all rows at max round after fp filtering"
+  },
+  "review_unit_binding": [
+    "exact supported root for current unit",
+    "actual Defs/Challenge file set and source digest",
+    "actual selected target belongs to current unit manifest",
+    "actual claims/record packet equals current ARCH/prep packet",
+    "row base equals prep/certificate base",
+    "row fp and given_fp equal current fp",
+    "actual selected/canonical copied findings identity"
+  ],
+  "runner_file_set": [
+    "Inspect.lean.tmpl",
+    "assurance.py",
+    "collect_review_snapshot_v2.py",
+    "collection_admission.py",
+    "collection_inputs.py",
+    "controls.py",
+    "dependency_lock.py",
+    "freeze.py",
+    "inventory.py",
+    "replay.py",
+    "runner_bootstrap.py",
+    "verify_dependency_lock.py"
+  ],
+  "runtime_compatibility": "Existing baseline/runtime pin requirements still apply; tests use Python 3.14.7, no version matrix is certified.",
+  "schema": "a3-admission-protocol-description-v3",
+  "selected_review_file_rule": "safe direct regular file registered as r.file in an allowed task root; source/packet/base/fingerprints and actual findings identity must bind",
+  "stability_scope": {
+    "model": "collect_final+fw_common/data-v2",
+    "observed": "selected-file-bytes-and-examined-directory-membership",
+    "unobserved": [
+      "unselected-file-contents",
+      "tmux-and-process-session-state",
+      "OS-and-standard-library-runtime",
+      "restored-transient-mutations"
+    ]
+  },
+  "status": "AUTHOR_COMPATIBILITY_CORRECTION_PENDING_INDEPENDENT_REVIEW",
+  "tool_lock_fields": [
+    "collector_sha256",
+    "evidence",
+    "fw_common_sha256",
+    "reviewer",
+    "runner_files_sha256",
+    "schema",
+    "verdict"
+  ],
+  "tool_lock_schema": "a3-reviewed-collection-tools-v2",
+  "unchanged_from_frozen_v3": {
+    "admission_files": 20,
+    "flags_and_field_sets": "unchanged",
+    "runner_files": 12,
+    "schemas": [
+      "a3-reviewed-collection-tools-v2",
+      "sap-review-collection-v4",
+      "a3-reviewed-collection-admission-v3",
+      "a3-collection-admission-result-v3",
+      "a3-frozen-inputs-v4",
+      "sap-collector-data-closure-v1"
+    ]
+  }
+}

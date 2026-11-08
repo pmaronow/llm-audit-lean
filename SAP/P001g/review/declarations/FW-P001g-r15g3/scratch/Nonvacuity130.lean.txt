@@ -1,0 +1,61 @@
+import SAP.P001g.Defs
+open MeasureTheory ProbabilityTheory Filter
+open scoped Topology ENNReal NNReal BigOperators
+noncomputable section
+namespace Audit130
+open SAP.P001g
+local instance : MeasurableSpace Bool := ⊤
+
+def ν : Measure Bool := (1/2 : ℝ≥0∞) • Measure.dirac false + (1/2 : ℝ≥0∞) • Measure.dirac true
+instance : IsProbabilityMeasure ν := by
+  constructor
+  simpa [ν] using ENNReal.inv_two_add_inv_two
+
+def μ : Measure (ℕ → Bool) := Measure.infinitePi (fun _ : ℕ => ν)
+instance : IsProbabilityMeasure μ := by unfold μ; infer_instance
+
+def r (b : Bool) : ℝ := if b then 1 else 0
+def Y (_i : ℕ) (_ω : ℕ → Bool) : ℝ := 1/2
+def R (i : ℕ) (ω : ℕ → Bool) : ℝ := r (ω i)
+def obs (b : Bool) : ℝ × ℝ := (censored (1/2) (r b), r b)
+
+lemma meas_r : Measurable r := measurable_of_countable r
+lemma meas_obs : Measurable obs := measurable_of_countable obs
+lemma coord_law (i : ℕ) : μ.map (fun ω => obs (ω i)) = ν.map obs := by
+  rw [show (fun ω => obs (ω i)) = obs ∘ (fun ω : ℕ → Bool => ω i) from rfl,
+    ← Measure.map_map meas_obs (measurable_pi_apply i), μ,
+    Measure.infinitePi_map_eval]
+
+lemma iid : IID μ (fun i ω => (censored (Y i ω) (R i ω), R i ω)) := by
+  change IID μ (fun i ω => obs (ω i))
+  refine ⟨fun i => meas_obs.comp (measurable_pi_apply i), ?_, ?_⟩
+  · exact iIndepFun_infinitePi (P := fun _ : ℕ => ν) (X := fun _ => obs) (fun _ => meas_obs)
+  · intro i
+    exact ⟨(meas_obs.comp (measurable_pi_apply i)).aemeasurable,
+      (meas_obs.comp (measurable_pi_apply 0)).aemeasurable, by rw [coord_law, coord_law]⟩
+
+lemma response_prob (b : Bool) : prob μ {ω | R 0 ω = r b} = 1/2 := by
+  have hs : {ω | R 0 ω = r b} = (fun ω : ℕ → Bool => ω 0) ⁻¹' {b} := by
+    ext ω
+    simp only [Set.mem_setOf_eq, Set.mem_preimage, Set.mem_singleton_iff, R]
+    cases b <;> cases h : ω 0 <;> simp [r, h]
+  rw [prob, hs, ← Measure.map_apply (measurable_pi_apply 0) (measurableSet_singleton b), μ,
+    Measure.infinitePi_map_eval]
+  cases b <;> norm_num [ν, Measure.add_apply, Measure.smul_apply]
+
+-- All hypotheses, with genuinely independent fair response indicators.
+example : (∀ i, Measurable (Y i)) ∧ (∀ i, Measurable (R i)) ∧
+    (0 : ℝ) ≤ 1 ∧
+    (∀ i, ∀ᵐ ω ∂μ, Y i ω ∈ Set.Icc (0 : ℝ) 1) ∧
+    (∀ i, ∀ᵐ ω ∂μ, R i ω = 0 ∨ R i ω = 1) ∧
+    (0 < prob μ {ω | R 0 ω = 0} ∧ 0 < prob μ {ω | R 0 ω = 1}) ∧
+    IID μ (fun i ω => (censored (Y i ω) (R i ω), R i ω)) := by
+  refine ⟨fun _ => measurable_const, fun i => meas_r.comp (measurable_pi_apply i), by norm_num,
+    ?_, ?_, ?_, iid⟩
+  · intro i; exact ae_of_all _ (fun ω => by norm_num [Y])
+  · intro i; apply ae_of_all; intro ω; cases h : ω i <;> simp [R, r, h]
+  · have h0 := response_prob false
+    have h1 := response_prob true
+    simp only [r, Bool.false_eq_true, ↓reduceIte] at h0 h1
+    constructor <;> linarith
+end Audit130

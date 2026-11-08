@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P006a.T1",
+    "target_id": "P006-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "Covers the entire canonical counterexample, parts (a)-(e): the printed positive-maximizer rule, both benchmark rewards and their strict comparison, the proof-display population conditional average 1 versus actual reward 3/4, the reward polynomial and nonnegative-gap identity, unique optimum (17/18,1) with value 1369/1440, welfare optimum, and both regret gaps. The finite sums use actual SUTVA outcomes, independent fair covariates, and independent Bernoulli treatments conditional on their own covariates. ATT uses the nonrandom zero baseline, so the equality of both rewards and every required unbiasedness property hold. The theorem proves the canonical counterexample; it does not contradict the canonical assertion."
+  },
+  {
+    "theorem": "SAP.P006a.T2",
+    "target_id": "P006-T2",
+    "my_reading_vs_claim": "broader",
+    "reason": "Every canonical clause (i)-(iv) is present, including the fixed-unit and nonempty-sample conditional means, best-response equivalences, oracle and independent-estimation implementations, attained finite-support fixed-mass frontiers and scalar maximum, fractional-threshold optimum, nonmaximal-score example, population conditional-average rule, and n=1 identity. The general probability identities quantify arbitrary measurable covariate spaces rather than only discrete supported covariates, and the ATT result is stated on any specified class of admissible policies; these are correct extensions that include the full canonical scope. OutcomeStanding matches the standing iid/randomization/ignorability setting. Evaluated-estimator L1 is the existence condition for the very conditional expectations used by the claim, not an added substantive unbiasedness assumption. No unguarded event-mean division or unbounded/empty supremum is used."
+  },
+  {
+    "theorem": "SAP.P006a.T3",
+    "target_id": "P006-T3",
+    "my_reading_vs_claim": "broader",
+    "reason": "States the corrected welfare identity, positive-factor reward identity, zero-policy facts, and nonnegative reward/welfare and regret bound for every reward maximizer in every feasible class containing zero. It also includes the actual 1/40 versus printed 9/20 finite-example comparison. It extends the inherited discrete-covariate setting to arbitrary measurable spaces and extends the attained-maximum convention to a finite real supremum: nonempty bounded welfare image is proved, and when a welfare maximizer exists the exact canonical maximum and regret formulas are explicitly asserted. No maximizer is needed for the per-policy identities. Evaluated estimator integrability and vector unbiasedness are confined to the feasible class and are precisely the conditional-mean domain and substantive condition of the canonical correction."
+  },
+  {
+    "theorem": "SAP.P006a.T4",
+    "target_id": "P006-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "Includes both canonical witnesses A and B, their fixed-query unbiasedness and evaluated biases, the actual ATT/TT objectives, unique reward optima, welfare optima and positive regrets, the failure of reward-welfare equality away from the zero policy, and the all-treated conditional-mean failure. The zero-baseline Boolean heterogeneity calculation realizes the constant-private-covariate extension and its violated bound. Taking the weighted-TT weight equal to one recovers the claimed Theorem 1 counterexample. Estimator randomness is the observed covariate, exactly as in the canonical witnesses; neither the canonical assertion nor Assumption 1 imposes auxiliary-data independence. The finite treatment coin still has the prescribed conditional law and the policies are preselected functions."
+  },
+  {
+    "theorem": "SAP.P006a.T5",
+    "target_id": "P006-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "Covers C1-C4 for the exact shared estimator: pointwise mean zero, both own-covariate conditional evaluated means, both complete score formulas, attained maxima 0 and 5/8 and their reversed order, and strictly positive ordered constant treatment effects. The uniform common covariate/reference law gives representing density and normalized weight identically one, exactly the wTT specialization in the definitions. Constant effects make both the pointwise-dominance and reference-average premises reduce to the stated rational inequalities. Both agents have one unit, common zero untreated outcomes, all binary policies, and independent fair covariates. The shared estimator is allowed under pointwise Assumption 1 alone; dependence after evaluation is the asserted counterexample mechanism."
+  }
+]

@@ -2,8 +2,9 @@ import Mathlib
 
 /-!
 P046: Nonparametric identification is not enough, but randomized controlled trials are.
-Definitions, finite-sample identities, concentration bounds, asymptotic results,
-and counterexample constructions for the paper.
+Source mathematics checked against staged PDF page images 4--7 and 14--15.
+Every `sorry` below is an explicit unproved obligation, including the false printed claim.
+No new mathematical axioms or native-decide oracle are used.
 -/
 namespace AronowAudit.P046
 
@@ -104,7 +105,7 @@ It is a random statistic of the covariates, not a deterministic population bound
 def xi (M : Study) {n : ℕ} (a : Sample n) : ℝ :=
   (∑ i, (M.pi (W (a i)))⁻¹ ^ 2) / n
 
-/-- mu_W = n^{-1} sum_i m(W_i), the conditional centre of the
+/-- Validators' mu_W = n^{-1} sum_i m(W_i), the conditional centre of the
 printed estimator; Appendix A, p. 16, corrected by target T3. -/
 def muW (M : Study) {n : ℕ} (a : Sample n) : ℝ := (∑ i, M.m (W (a i))) / n
 
@@ -113,7 +114,7 @@ def muW (M : Study) {n : ℕ} (a : Sample n) : ℝ := (∑ i, M.m (W (a i))) / n
 def printedRadius (M : Study) {n : ℕ} (alpha : ℝ) (a : Sample n) : ℝ :=
   Real.sqrt (xi M a * Real.log (2 / alpha) / (2 * n))
 
-/-- Corrected radius, target T3:
+/-- Corrected radius, target T3, validator E001 section 7:
 "(sqrt(xi)+1) sqrt(log(4/alpha)/(2n))". -/
 def correctedRadius (M : Study) {n : ℕ} (alpha : ℝ) (a : Sample n) : ℝ :=
   (Real.sqrt (xi M a) + 1) * Real.sqrt (Real.log (4 / alpha) / (2 * n))
@@ -155,20 +156,20 @@ def Balanced (F : ∀ n, CrossFit n) : Prop := ∀ j : Bool,
   Tendsto (fun n => ((Finset.univ.filter (fun i => (F n).fold i = j)).card : ℝ) / n)
     atTop (nhds (1 / 2))
 
-/-- q(w)=(1-pi(w))/pi(w), T5, not a separately printed object. -/
+/-- Validators' q(w)=(1-pi(w))/pi(w), T5, not a separately printed object. -/
 def q (M : Study) (w : ℝ) : ℝ := (1 - M.pi w) / M.pi w
 
-/-- Population weighted risk, T5:
+/-- Population weighted risk, T5, validator E002 section 5:
 "R(g)=E[q(W)(Y(1)-g(W))^2]". -/
 def risk (M : Study) (g : ℝ → ℝ) : ℝ := ∫ o, q M (W o) * (Y1 o - g (W o))^2 ∂M.law
 
-/-- Target T5 weighted squared norm "E[q(W)g(W)^2]". -/
+/-- Target T5 weighted squared norm "E[q(W)g(W)^2]", E002 section 6. -/
 def weightedNormSq (M : Study) (g : ℝ → ℝ) : ℝ := ∫ o, q M (W o) * (g (W o))^2 ∂M.law
 
-/-- Squared L2(F_W) prediction norm, targets T5/T9. -/
+/-- Squared L2(F_W) prediction norm, targets T5/T9, E003 doubt section 3. -/
 def l2Sq (M : Study) (g : ℝ → ℝ) : ℝ := ∫ o, (g (W o))^2 ∂M.law
 
-/-- V(g)=Var(Y(1))+R(g), exact variance identity used in T5. -/
+/-- Validator's V(g)=Var(Y(1))+R(g), exact variance identity used in T5. -/
 def V (M : Study) (g : ℝ → ℝ) : ℝ := variance Y1 M.law + risk M g
 
 /-- Hahn benchmark for the single potential-outcome mean, target T9:
@@ -212,7 +213,8 @@ def L2InMeanSquare (M : Study) (F : ∀ n, CrossFit n) (j : Bool) (g : ℝ → �
   (∀ n, Integrable (fun a => l2Sq M (fun w => (F n).g j a w - g w)) (sampleLaw M n))
 
 /-- Uniform root-n consistency, T7: for a common positivity constant delta,
-the tails are uniformly small over n>=1 and all valid laws with that constant. -/
+the tails are uniformly small over n>=1 and all valid laws with that constant.
+This uses quantifiers equivalent to the double supremum in targets.json. -/
 def UniformRootN (delta : ℝ) : Prop := ∀ eps > 0, ∃ C > 0,
   ∀ (M : Study), ValidStudy M → M.delta = delta → ∀ n : ℕ, 0 < n →
     (sampleLaw M n {a | C < Real.sqrt n * |ht M a - mu M|}).toReal ≤ eps
@@ -223,11 +225,137 @@ def ZeroBenchmark (M : Study) (G : Set (ℝ → ℝ)) : Prop :=
   (fun _ => (0 : ℝ)) ∈ G ∨ ∃ h : ℕ → ℝ → ℝ,
     (∀ k, h k ∈ G) ∧ Tendsto (fun k => weightedNormSq M (h k)) atTop (nhds 0)
 
+/-- Proposition 3 AS PRINTED, p. 7, restated in Appendix A p. 15 (T6).
+This is deliberately drafted without a proof: T1 contradicts the claim.
+Its centre remains the paper's population mu and xi remains random. -/
+theorem proposition3_printed (M : Study) (hM : ValidStudy M)
+    (n : ℕ) (hn : 0 < n) (alpha : ℝ) (ha : 0 < alpha ∧ alpha < 1) :
+    tailProb M (ht M) (printedRadius M alpha (n := n)) ≤ alpha := by
+  sorry
+
+/-- Corrected Proposition 3, target T3, validator E001 section 7: population
+coverage with the two-error radius, under the original standing assumptions. -/
+theorem proposition3_corrected (M : Study) (hM : ValidStudy M)
+    (n : ℕ) (hn : 0 < n) (alpha : ℝ) (ha : 0 < alpha ∧ alpha < 1) :
+    tailProb M (ht M) (correctedRadius M alpha (n := n)) ≤ alpha := by
+  sorry
+
+/-- T3(i): the correctly centred conditional expectation is mu_W,
+not the population mu. Corrected Appendix A calculation, printed p. 16. -/
+theorem ht_conditional_centre (M : Study) (hM : ValidStudy M) (n : ℕ) (hn : 0 < n) :
+    condExp (sampleCovariateSigma n) (sampleLaw M n) (ht M) =ᵐ[sampleLaw M n] muW M := by
+  sorry
+
+/-- T3(ii): conditional Hoeffding centred at mu_W, for every t>=0.
+The conditional probability is the conditional expectation of the event indicator. -/
+theorem conditional_hoeffding (M : Study) (hM : ValidStudy M)
+    (n : ℕ) (hn : 0 < n) (t : ℝ) (ht0 : 0 ≤ t) :
+    ∀ᵐ a ∂sampleLaw M n,
+      condExp (sampleCovariateSigma n) (sampleLaw M n)
+        (fun b => if t ≤ |ht M b - muW M b| then (1 : ℝ) else 0) a ≤
+          2 * Real.exp (-2 * n * t^2 / xi M a) := by
+  sorry
+
+
+
+
+
+
+
+/-- Proposition 4(a), p. 8 and Appendix A p. 16 (T8): exact unbiasedness of
+opposite-fold regression adjustment, including misspecified models. Integrability
+is the implicit condition needed for the paper's expectations to exist. -/
+theorem proposition4a (M : Study) (hM : ValidStudy M) (n : ℕ) (hn : 0 < n)
+    (F : CrossFit n)
+    (hint : ∀ i, Integrable (fun a => F.g (F.fold i) a (W (a i))) (sampleLaw M n)) :
+    (∫ a, adjusted M F a ∂sampleLaw M n) = mu M := by
+  sorry
+
+/-- T5(a), T9(a): exact variance identity for a fixed square-integrable prediction. -/
+theorem fixed_adjusted_variance (M : Study) (hM : ValidStudy M)
+    (g : ℝ → ℝ) (hg : MemLp (fun o => g (W o)) 2 M.law) :
+    variance (fun o => adjustedTerm (M.pi (W o)) (X o) (Y o) (g (W o))) M.law = V M g ∧
+    V M g = hahnBound M + (∫ o, q M (W o) * (M.m (W o) - g (W o))^2 ∂M.law) := by
+  sorry
+
+/-- T5(c): the treated-case weighting criterion has population expectation R(g). -/
+theorem population_weighted_criterion (M : Study) (hM : ValidStudy M)
+    (g : ℝ → ℝ) (hg : MemLp (fun o => g (W o)) 2 M.law) :
+    (∫ o, X o * (1 - M.pi (W o)) / (M.pi (W o))^2 * (Y o - g (W o))^2 ∂M.law) =
+      risk M g := by
+  sorry
+
+/-- T5(d): a population risk minimizer is no worse than zero, including when
+zero is only in weighted L2 closure. This is the added benchmark condition. -/
+theorem zero_benchmark_risk (M : Study) (hM : ValidStudy M) (G : Set (ℝ → ℝ))
+    (hG : ∀ g ∈ G, MemLp (fun o => g (W o)) 2 M.law)
+    (hzero : ZeroBenchmark M G) (gstar : ℝ → ℝ) (hstar : gstar ∈ G)
+    (hmin : ∀ g ∈ G, risk M gstar ≤ risk M g) : risk M gstar ≤ risk M (fun _ => 0) := by
+  sorry
+
+/-- Corrected Proposition 4(c), T5: a fixed finite-parameter family, empirical
+weighted fits, zero benchmark and convergence to a deterministic population
+minimizer give normal limits with V(gstar)<=V(0). -/
+theorem proposition4c_corrected (M : Study) (hM : ValidStudy M)
+    (d : ℕ) (family : (Fin d → ℝ) → ℝ → ℝ) (F : ∀ n, CrossFit n) (hbal : Balanced F)
+    (hG : ∀ theta, MemLp (fun o => family theta (W o)) 2 M.law)
+    (hzero : ZeroBenchmark M (Set.range family))
+    (hfit : ∀ n j, ∀ᵐ a ∂sampleLaw M n, ∃ theta,
+      (F n).g j a = family theta ∧ ∀ eta,
+      empiricalRisk M (Finset.univ.filter (fun i => (F n).fold i ≠ j)) a (family theta) ≤
+      empiricalRisk M (Finset.univ.filter (fun i => (F n).fold i ≠ j)) a (family eta))
+    (gstar : ℝ → ℝ) (hstar : gstar ∈ Set.range family)
+    (hmin : ∀ theta, risk M gstar ≤ risk M (family theta))
+    (hconv : ∀ j, L2InProbability M F j gstar)
+    (hfitsL2 : ∀ n j, ∀ᵐ a ∂sampleLaw M n, MemLp (fun o => (F n).g j a (W o)) 2 M.law) :
+    NormalLimit M (fun n => adjusted M (F n)) (V M gstar) ∧
+    NormalLimit M (fun _ => ht M) (V M (fun _ => 0)) ∧ V M gstar ≤ V M (fun _ => 0) := by
+  sorry
+
+/-- T5's weaker direct repair: only R(gstar)<=R(0) is needed for a particular law;
+no zero-in-family or empirical-minimization premise is needed for this implication. -/
+theorem proposition4c_direct (M : Study) (hM : ValidStudy M)
+    (F : ∀ n, CrossFit n) (hbal : Balanced F) (gstar : ℝ → ℝ)
+    (hg : MemLp (fun o => gstar (W o)) 2 M.law)
+    (hconv : ∀ j, L2InProbability M F j gstar)
+    (hfitsL2 : ∀ n j, ∀ᵐ a ∂sampleLaw M n, MemLp (fun o => (F n).g j a (W o)) 2 M.law)
+    (hbetter : risk M gstar ≤ risk M (fun _ => 0)) :
+    NormalLimit M (fun n => adjusted M (F n)) (V M gstar) ∧
+    NormalLimit M (fun _ => ht M) (V M (fun _ => 0)) ∧ V M gstar ≤ V M (fun _ => 0) := by
+  sorry
+
+/-- Proposition 4(b), p. 8 (T9): the two folds may converge to different
+fixed L2 functions. Mean-square convergence implies root-n consistency. -/
+theorem proposition4b (M : Study) (hM : ValidStudy M) (F : ∀ n, CrossFit n)
+    (hbal : Balanced F) (g : Bool → ℝ → ℝ)
+    (hg : ∀ j, MemLp (fun o => g j (W o)) 2 M.law)
+    (hconv : ∀ j, L2InMeanSquare M F j (g j))
+    (hfitsL2 : ∀ n j, ∀ᵐ a ∂sampleLaw M n, MemLp (fun o => (F n).g j a (W o)) 2 M.law) :
+    RootN M (fun n => adjusted M (F n)) := by
+  sorry
+
+/-- Proposition 4(d), p. 8 (T9): L2-consistent cross-fitting gives the
+N(0,B_H) limit, where B_H is the Hahn bound identified by the paper's citation.
+The tangent-space identification of that benchmark is not proved here. -/
+theorem proposition4d (M : Study) (hM : ValidStudy M) (F : ∀ n, CrossFit n)
+    (hbal : Balanced F) (hconv : ∀ j, L2InProbability M F j M.m)
+    (hfitsL2 : ∀ n j, ∀ᵐ a ∂sampleLaw M n, MemLp (fun o => (F n).g j a (W o)) 2 M.law) :
+    NormalLimit M (fun n => adjusted M (F n)) (hahnBound M) := by
+  sorry
 
 /-- Proposition 1's estimator is a measurable function of observed samples only;
 the same functions are used under every population, without the unknown pi. -/
 abbrev ObservationalEstimator := ∀ n : ℕ, (Fin n → Observed) → ℝ
 
+/-- Proposition 1, p. 6 (T10): for every observed-data estimator sequence,
+some positive error threshold has a probability bounded away from zero along
+arbitrarily large n and adversarial valid laws. This is the limsup-of-suprema
+reading in targets.json, expressed without a real supremum. -/
+theorem proposition1 (est : ObservationalEstimator) (hmeas : ∀ n, Measurable (est n)) :
+    ∃ eps > 0, ∃ c > 0, ∀ N : ℕ, ∃ n ≥ N, 0 < n ∧ ∃ M : Study,
+      ValidStudy M ∧ (sampleLaw M n
+        {a | eps < |est n (fun i => observe (a i)) - mu M|}).toReal ≥ c := by
+  sorry
 
 /-- Consistency identity XY=XY(1), used in Appendix A's proof of 4(a), p. 16. -/
 theorem consistency_treated (o : Unit) : X o * Y o = X o * Y1 o := by
@@ -365,7 +493,7 @@ theorem iid_mean_variance {A : Type*} [MeasurableSpace A]
   <;> ring
 
 /-- Uniform(0,1) covariate/auxiliary randomization law for the concrete
-counterexamples T1, T2 and T4. Endpoints have probability zero. -/
+validator counterexamples T1, T2 and T4. Endpoints have probability zero. -/
 def unitUniform : Measure ℝ := volume.restrict (Set.Icc (0 : ℝ) 1)
 
 /-- Lebesgue measure of [0,1] is one. This witnesses the corrected
@@ -376,7 +504,7 @@ instance unitUniform_probability : IsProbabilityMeasure unitUniform where
 
 namespace IntervalExample
 
-/-- T1's known score is 13/20 below 3/5 and 99/100 above it. -/
+/-- T1's known score is 13/20 below 3/5 and 99/100 above it (E001 v1 section 2). -/
 def score (w : ℝ) : ℝ := if w ≤ 3/5 then 13/20 else 99/100
 
 def generate (z : ℝ × ℝ) : Unit :=
@@ -393,7 +521,7 @@ theorem score_positivity (w : ℝ) : 1/200 < score w ∧ score w < 1 - 1/200 := 
   unfold score
   split <;> norm_num
 
-/-- T1's exact count-state statistic xi_k. -/
+/-- T1's exact count-state statistic xi_k, E001 v1 section 4. -/
 def xiK (k : ℕ) : ℝ := (400 * k / 169 + 10000 * (100 - (k : ℝ)) / 9801) / 100
 
 /-- T1's integer multinomial numerator of P(K=k,S=s), denominator 100^100. -/
@@ -431,6 +559,13 @@ theorem lower_mass_exceeds_alpha : 10000000 * lowerNumerator > 100^100 := by
   simp only [lowerNumerator, massNumerator, Nat.choose_eq_fast_choose]
   decide
 
+/-- T1 missing bridge, explicitly stated: the count-state lower bound is a
+lower bound for the continuous-law noncoverage probability. This requires the
+multinomial pushforward and the radius comparison, not merely numeric arithmetic. -/
+theorem count_mass_bridge :
+    (lowerNumerator : ℝ) / (100 : ℝ)^100 ≤
+      (sampleLaw study 100 {a | printedRadius study (1/10000000) a < |ht study a - mu study|}).toReal := by
+  sorry
 
 end IntervalExample
 
@@ -443,7 +578,7 @@ def generate (z : ℝ × ℝ) : Unit :=
 def study : Study := ⟨Measure.map generate (unitUniform.prod unitUniform), (fun _ => 9/10),
   (fun w => if 1/2 ≤ w then 1 else 0), 1/20⟩
 
-/-- The covariate event E={all W_i<1/2}, T2. -/
+/-- The covariate event E={all W_i<1/2}, T2, E001 v2 section 3. -/
 def E : Set (Sample 100) := {a | ∀ i, W (a i) < 1/2}
 
 
@@ -495,21 +630,22 @@ def study : Study :=
   ⟨Measure.map generate ((unitUniform.prod unitUniform).prod unitUniform), score,
     (fun w => if w ≤ 1/2 then 1/10 else 0), 1/8⟩
 
-/-- Exact eight-atom expectation of (L,Z,X). The covariate
-W remains continuous; only the statistics constant on its two halves are reduced. -/
+/-- Exact eight-atom expectation of (L,Z,X), E002 section 2. The covariate
+W remains continuous; only the statistics constant on its two halves are reduced.
+The equality of this sum with the pushforward of study.law is a separate obligation. -/
 def atomE (f : Bool → Bool → Bool → ℝ) : ℝ :=
   (1/2) * bernE (1/10) (fun z => bernE (1/4) (fun x => f true z x)) +
   (1/2) * bernE (1/10) (fun z => bernE (3/4) (fun x => f false z x))
 
-/-- T4 potential and observed outcome "LZ". -/
+/-- T4 potential and observed outcome "LZ", E002 section 2. -/
 def outcomeL (l z : Bool) : ℝ := bit l * bit z
 
-/-- T4 "H=XY/pi(W)". -/
+/-- T4 "H=XY/pi(W)", E002 section 4. -/
 def H (l z x : Bool) : ℝ := htTerm (scoreL l) (bit x) (outcomeL l z)
-/-- T4 "A=X[Y-g_*(W)]/pi(W)+g_*(W)". -/
+/-- T4 "A=X[Y-g_*(W)]/pi(W)+g_*(W)", E002 section 4. -/
 def A (l z x : Bool) : ℝ := adjustedTerm (scoreL l) (bit x) (outcomeL l z) (predictionL 0 l)
 
-/-- T4 treated-case training loss, p. 8 weights. -/
+/-- T4 treated-case training loss, p. 8 weights; E002 section 3. -/
 def loss (theta : ℝ) (l z x : Bool) : ℝ :=
   bit x * (1 - scoreL l) / (scoreL l)^2 * (outcomeL l z - predictionL theta l)^2
 
@@ -705,7 +841,47 @@ def trainingSigma {n : ℕ} (F : CrossFit n) (j : Bool) : MeasurableSpace (Sampl
   MeasurableSpace.comap (fun a i => if F.fold i ≠ j then observe (a i) else (0, (0, 0)))
     (inferInstance : MeasurableSpace (Fin n → Observed))
 
+/-- T9(c), T5(e): conditional mean zero and exact conditional second moment
+of sqrt(n) R_j, followed by the positivity bound. The second moment is the
+conditional variance because the first displayed conditional mean is zero. -/
+theorem remainder_conditional_moments (M : Study) (hM : ValidStudy M)
+    (n : ℕ) (hn : 0 < n) (F : CrossFit n) (j : Bool) (g : ℝ → ℝ)
+    (hg : MemLp (fun o => g (W o)) 2 M.law)
+    (hfits : ∀ᵐ a ∂sampleLaw M n, MemLp (fun o => F.g j a (W o)) 2 M.law) :
+    letI := hM.probability
+    ∀ᵐ a ∂sampleLaw M n,
+      (∫ b, foldRemainder M F j g b ∂condExpKernel (sampleLaw M n) (trainingSigma F j) a) = 0 ∧
+      (∫ b, (Real.sqrt n * foldRemainder M F j g b)^2
+        ∂condExpKernel (sampleLaw M n) (trainingSigma F j) a) =
+          ((Finset.univ.filter (fun i => F.fold i = j)).card : ℝ) / n *
+            weightedNormSq M (fun w => F.g j a w - g w) ∧
+      ((Finset.univ.filter (fun i => F.fold i = j)).card : ℝ) / n *
+        weightedNormSq M (fun w => F.g j a w - g w) ≤
+      ((Finset.univ.filter (fun i => F.fold i = j)).card : ℝ) / (n * M.delta) *
+        l2Sq M (fun w => F.g j a w - g w) := by
+  sorry
 
+/-- T9(d): conditional Chebyshev with a random training error. No
+independence between the two fitted functions is required. -/
+theorem remainder_chebyshev (M : Study) (hM : ValidStudy M)
+    (n : ℕ) (hn : 0 < n) (F : CrossFit n) (j : Bool) (g : ℝ → ℝ)
+    (hg : MemLp (fun o => g (W o)) 2 M.law)
+    (hfits : ∀ᵐ a ∂sampleLaw M n, MemLp (fun o => F.g j a (W o)) 2 M.law)
+    (eps eta : ℝ) (heps : 0 < eps) (heta : 0 < eta) :
+    (sampleLaw M n {a | eps < |Real.sqrt n * foldRemainder M F j g a|}).toReal ≤
+      (sampleLaw M n {a | eta < l2Sq M (fun w => F.g j a w - g w)}).toReal +
+        eta / (M.delta * eps^2) := by
+  sorry
+
+/-- T5(d): weighted-risk expansion and weighted Cauchy--Schwarz, the
+finite identities used to extend the zero benchmark to weighted L2 closure. -/
+theorem risk_expansion_cauchy (M : Study) (hM : ValidStudy M)
+    (g : ℝ → ℝ) (hg : MemLp (fun o => g (W o)) 2 M.law) :
+    risk M g - risk M (fun _ => 0) =
+      -2 * (∫ o, q M (W o) * Y1 o * g (W o) ∂M.law) + weightedNormSq M g ∧
+    |∫ o, q M (W o) * Y1 o * g (W o) ∂M.law| ≤
+      Real.sqrt ((∫ o, q M (W o) * (Y1 o)^2 ∂M.law) * weightedNormSq M g) := by
+  sorry
 /-- T3(i): iterating the chosen conditional regression gives E[m(W)]=mu.
 This is an actual continuous-law integral identity, not an eight-atom calculation. -/
 theorem regression_mean (M : Study) (hM : ValidStudy M) :
@@ -791,6 +967,27 @@ def prior (K : ℕ) : Measure (Fin K → Bool) := Measure.pi (fun _ => uniformOn
 /-- Mixture of B_tau sample laws in the lower-bound argument, T10(c). -/
 def mixture {K : ℕ} (hK : 0 < K) (n : ℕ) : Measure (Sample n) :=
   (prior K).bind (fun tau => sampleLaw (lawB hK tau) n)
+
+/-- T10: the lower-bound laws satisfy the original standing assumptions and
+have the stated distinct population targets. -/
+theorem rr_laws_valid (K : ℕ) (hK : 0 < K) :
+    ValidStudy lawA ∧ mu lawA = 1/2 ∧
+    ∀ tau : Fin K → Bool, ValidStudy (lawB hK tau) ∧
+      mu (lawB hK tau) = (∑ j : Fin K, if tau j then (1 : ℝ) else 1/3) / K := by
+  sorry
+
+/-- T10(c): the observed-sample law under A equals the prior mixture of B_tau
+on the no-collision event; consequently every measurable event's probability
+difference is bounded by the birthday collision probability. -/
+theorem rr_indistinguishability (K n : ℕ) (hK : 0 < K) :
+    let obs := fun a : Sample n => fun i => observe (a i)
+    let D : Set (Fin n → Observed) := {a | Function.Injective (fun i => bin K hK (a i).1)}
+    (Measure.map obs (sampleLaw lawA n)).restrict D =
+      (Measure.map obs (mixture hK n)).restrict D ∧
+    ∀ S : Set (Fin n → Observed), MeasurableSet S →
+      |(Measure.map obs (sampleLaw lawA n)).real S -
+        (Measure.map obs (mixture hK n)).real S| ≤ (n : ℝ)*(n-1)/(2*K) := by
+  sorry
 
 
 end RobinsRitov
@@ -972,7 +1169,7 @@ theorem unitUniform_bernE (p : ℝ) (h0 : 0 ≤ p) (h1 : p ≤ 1) (f : Bool → 
 
 namespace IntervalExample
 
-/-- T1: rigorous logarithm bounds from Mathlib's positive series and remainder. This coarser enclosure still separates every count state. -/
+/-- T1: rigorous logarithm bounds from Mathlib's positive series and remainder, E001 v1 section 5. This coarser enclosure still separates every count state. -/
 theorem log_certified_bounds : (1681/100 : ℝ) < Real.log 20000000 ∧
     Real.log 20000000 < (3363/200 : ℝ) := by
   have hl1 := Real.sum_range_le_log_div (x := (1/3 : ℝ)) (by norm_num) (by norm_num) 6
@@ -992,11 +1189,11 @@ def certifiedCut (k s : ℕ) : Bool := decide
   (200 * 7840800 * (if s ≤ 39 then 39-s else s-39)^2 >
     3363 * (3920400*k + 1690000*(100-k)))
 
-/-- T1 exact integer sum of all 1946 failing multinomial count-state masses, denominator 100^100. -/
+/-- T1 exact integer sum of all 1946 failing multinomial count-state masses, denominator 100^100, E001 v1 section 6. -/
 def certifiedNumerator : ℕ := ∑ k ∈ Finset.range 101, ∑ s ∈ Finset.range (k+1),
   if certifiedCut k s then massNumerator k s else 0
 
-/-- T1: the certified rational cutoff classifies exactly 1946 failing states. -/
+/-- T1: the certified rational cutoff classifies exactly 1946 failing states, E001 v1 section 6. -/
 theorem certified_state_count :
     (∑ k ∈ Finset.range 101, ∑ s ∈ Finset.range (k+1), if certifiedCut k s then (1 : ℕ) else 0)
       = 1946 := by decide
@@ -1007,14 +1204,13 @@ theorem certified_partition : ∀ k : Fin 101, ∀ s : Fin (k.val+1),
       100 * 7840800 * (if s.val ≤ 39 then 39-s.val else s.val-39)^2 <
         1681 * (3920400*k.val + 1690000*(100-k.val)) := by decide
 
-/-- T1: the exact failure-mass numerator is computed by kernel arithmetic
-on the finite multinomial sum. -/
+/-- T1: the exact failure-mass numerator from E001 v1 certificate.json is checked by kernel arithmetic on the finite multinomial sum. -/
 theorem certified_mass_exact : certifiedNumerator =
   11979291069795625472576722625601454579193931030581441019247695948117336197717708252113744670235734049700195915329948439938976976688794607547282140972800735873954434550061258658968400997158933003 := by
   simp only [certifiedNumerator, massNumerator, Nat.choose_eq_fast_choose]
   decide
 
-/-- T1: the exact multinomial failure mass exceeds 119/10^9 and hence alpha=10^-7. -/
+/-- T1: the exact multinomial failure mass exceeds 119/10^9 and hence alpha=10^-7, E001 v1 section 6. -/
 theorem certified_mass_gt : (119 : ℕ) * 100^100 < 10^9 * certifiedNumerator := by
   rw [certified_mass_exact]
   norm_num
@@ -1082,7 +1278,7 @@ theorem certified_cut_iff_exclusion (k s : ℕ) (hk : k ≤ 100) (hs : s ≤ k) 
     exact iff_of_false hc hno
 
 /-- T1: exactly 1946 of the 5151 count states strictly exclude the mean
-using the actual natural logarithm. -/
+using the actual natural logarithm, E001 v1 section 6. -/
 theorem exact_failure_state_count :
     (∑ k ∈ Finset.range 101, ∑ s ∈ Finset.range (k+1),
       if xiK k * Real.log 20000000 / 200 < ((s : ℝ)-39)^2 / 65^2 then (1 : ℕ) else 0) =
@@ -1099,6 +1295,29 @@ theorem exact_failure_state_count :
         (Nat.le_of_lt_succ (Finset.mem_range.1 hs))]
     _ = 1946 := certified_state_count
 
+/-- T1: exact continuous-law noncoverage mass from the exhaustive count-state
+certificate, E001 v1 section 6. The multinomial pushforward is still unproved. -/
+theorem exact_noncoverage :
+    (sampleLaw study 100 {a | printedRadius study (1/10000000) a < |ht study a - mu study|}).toReal =
+      (certifiedNumerator : ℝ) / (100 : ℝ)^100 := by
+  sorry
+
+/-- T1 full counterexample, including every quantitative target detail:
+the actual continuous population satisfies the standing assumptions, has
+mu=3/5, and its strict n=100 noncoverage probability is the exact certified
+multinomial mass, greater than 119/10^9 and alpha=10^-7. Exactly 1946 count
+states fail. E001 v1 sections 2-6. The continuous-law bridge remains admitted. -/
+theorem counterexample : ValidStudy study ∧ mu study = 3/5 ∧
+    (sampleLaw study 100 {a | printedRadius study (1/10000000) a < |ht study a - mu study|}).toReal =
+      (certifiedNumerator : ℝ) / (100 : ℝ)^100 ∧
+    (119/1000000000 : ℝ) <
+      (sampleLaw study 100 {a | printedRadius study (1/10000000) a < |ht study a - mu study|}).toReal ∧
+    (1/10000000 : ℝ) <
+      (sampleLaw study 100 {a | printedRadius study (1/10000000) a < |ht study a - mu study|}).toReal ∧
+    (∑ k ∈ Finset.range 101, ∑ s ∈ Finset.range (k+1),
+      if xiK k * Real.log 20000000 / 200 < ((s : ℝ)-39)^2 / 65^2 then (1 : ℕ) else 0) =
+        1946 := by
+  sorry
 
 end IntervalExample
 
@@ -1117,7 +1336,7 @@ theorem unitUniform_Ici (t : ℝ) (h0 : 0 ≤ t) (h1 : t ≤ 1) :
   rw [hi, Real.volume_Icc]
 
 /-- Thresholding measurable real variables produces a measurable binary
-variable, as in all three counterexample generators. -/
+variable, as in all three validator counterexample generators. -/
 theorem measurable_threshold {A : Type*} [MeasurableSpace A]
     (f g : A → ℝ) (hf : Measurable f) (hg : Measurable g) :
     Measurable (fun a => decide (f a ≤ g a)) := by
@@ -1137,7 +1356,7 @@ theorem atomless_of_uniform_marginal (nu : Measure Unit)
 
 namespace IntervalExample
 
-/-- T1's actual continuous generating map is measurable. -/
+/-- T1's actual continuous generating map is measurable, E001 v1 section 2. -/
 theorem measurable_generate : Measurable generate := by
   have ms : Measurable score := by
     unfold score
@@ -1148,15 +1367,16 @@ theorem measurable_generate : Measurable generate := by
     measurable_fst measurable_const
   exact measurable_fst.prodMk (mx.prodMk (measurable_const.prodMk my))
 
-/-- T1's full-data law has covariate marginal Uniform(0,1). -/
+/-- T1's full-data law has covariate marginal Uniform(0,1), E001 v1 section 2. -/
 theorem covariate_law : Measure.map W study.law = unitUniform := by
   change Measure.map W (Measure.map generate (unitUniform.prod unitUniform)) = unitUniform
   rw [Measure.map_map (show Measurable W from measurable_fst) measurable_generate]
   change Measure.map Prod.fst (unitUniform.prod unitUniform) = unitUniform
   simp
 
-/-- T1: the concrete law is a probability law with continuous W
-and population mean 3/5. -/
+/-- T1: the repaired concrete law is a probability law with continuous W
+and the actual population mean 3/5. Conditional independence and propensity
+identification are separate remaining obligations for the full counterexample. -/
 theorem probability_continuity_mean : IsProbabilityMeasure study.law ∧
     (∀ w : ℝ, study.law {o | W o = w} = 0) ∧ mu study = 3/5 := by
   have hp : IsProbabilityMeasure study.law := by dsimp [study]; infer_instance
@@ -1176,7 +1396,7 @@ end IntervalExample
 
 namespace ConditionalExample
 
-/-- T2's continuous generating map is measurable. -/
+/-- T2's continuous generating map is measurable, E001 v2 section 3. -/
 theorem measurable_generate : Measurable generate := by
   have mx := measurable_threshold (fun z : ℝ × ℝ => z.2) (fun _ => (9/10 : ℝ))
     measurable_snd measurable_const
@@ -1184,15 +1404,15 @@ theorem measurable_generate : Measurable generate := by
     measurable_const measurable_fst
   exact measurable_fst.prodMk (mx.prodMk (measurable_const.prodMk my))
 
-/-- T2's covariate is uniform on the real unit interval. -/
+/-- T2's covariate is uniform on the real unit interval, E001 v2 section 3. -/
 theorem covariate_law : Measure.map W study.law = unitUniform := by
   change Measure.map W (Measure.map generate (unitUniform.prod unitUniform)) = unitUniform
   rw [Measure.map_map (show Measurable W from measurable_fst) measurable_generate]
   change Measure.map Prod.fst (unitUniform.prod unitUniform) = unitUniform
   simp
 
-/-- T2: the law has total mass one, continuous covariate,
-and population mean 1/2. -/
+/-- T2: the actual repaired law has total mass one, continuous covariate,
+and population mean 1/2, E001 v2 section 3. -/
 theorem probability_continuity_mean : IsProbabilityMeasure study.law ∧
     (∀ w : ℝ, study.law {o | W o = w} = 0) ∧ mu study = 1/2 := by
   have hp : IsProbabilityMeasure study.law := by dsimp [study]; infer_instance
@@ -1217,7 +1437,7 @@ end ConditionalExample
 
 namespace RegressionExample
 
-/-- T4's continuous full-data map is measurable. -/
+/-- T4's continuous full-data map is measurable, E002 v1 section 2. -/
 theorem measurable_generate : Measurable generate := by
   have ml := measurable_threshold (fun z : (ℝ × ℝ) × ℝ => z.1.1) (fun _ => (1/2 : ℝ))
     measurable_fst.fst measurable_const
@@ -1234,7 +1454,7 @@ theorem measurable_generate : Measurable generate := by
   exact measurable_fst.fst.prodMk (mx.prodMk (mb.prodMk mb))
 
 /-- T4's covariate remains genuinely continuous; the eight-atom moments
-do not replace its full-data population law. -/
+do not replace its full-data population law, E002 v1 section 2. -/
 theorem covariate_law : Measure.map W study.law = unitUniform := by
   change Measure.map W (Measure.map generate ((unitUniform.prod unitUniform).prod unitUniform)) = unitUniform
   rw [Measure.map_map (show Measurable W from measurable_fst) measurable_generate]
@@ -1242,7 +1462,7 @@ theorem covariate_law : Measure.map W study.law = unitUniform := by
   rw [← Measure.map_map measurable_fst measurable_fst]
   simp
 
-/-- T4: the law has mass one, continuous W and mean 1/20;
+/-- T4: the actual repaired law has mass one, continuous W and mean 1/20;
 these are continuous-law facts rather than calculations on a disconnected table. -/
 theorem probability_continuity_mean : IsProbabilityMeasure study.law ∧
     (∀ w : ℝ, study.law {o | W o = w} = 0) ∧ mu study = 1/20 := by
@@ -1272,7 +1492,7 @@ end RegressionExample
 namespace RegressionExample
 
 /-- T4 actual fitted functions: the tie-breaking empirical rule always
-selects theta=0 on both training folds. Evaluation folds
+selects theta=0 on both training folds (E002 v1 section 3). Evaluation folds
 are the first floor(n/2) observations and the remainder, as on printed p. 7. -/
 def fits (n : ℕ) : CrossFit n where
   fold i := decide (n/2 ≤ i.val)
@@ -1293,12 +1513,12 @@ def fits (n : ℕ) : CrossFit n where
   opposite_fold _ _ _ _ := rfl
 
 /-- T4's actual cross-fitted estimator equals the fixed-prediction sample
-mean for every sample. -/
+mean for every sample, E002 v1 section 4. -/
 theorem fits_adjusted (n : ℕ) (a : Sample n) :
     adjusted study (fits n) a = fixedAdjusted study (prediction 0) a := rfl
 
 /-- T4: both fitted regressions have zero L2 prediction error at every n,
-hence converge in L2 in probability to g_*. -/
+hence converge in L2 in probability to g_*, E002 v1 section 3. -/
 theorem fits_l2_convergence (j : Bool) : L2InProbability study fits j (prediction 0) := by
   intro eps heps
   have hf : (fun n => (sampleLaw study n
@@ -1354,6 +1574,45 @@ theorem fits_balanced : Balanced fits := by
       field_simp [ne_of_gt hnR]
       nlinarith
 
+/-- T4 full counterexample, including actual balanced cross-fitted empirical
+fits, unbiasedness, finite variances and normal limits; E002 v1 sections 2-6.
+The original counterexample name now states the actual fitted estimator
+and every listed hypothesis. The remaining probabilistic proof is explicit. -/
+theorem counterexample : ValidStudy study ∧ mu study = 1/20 ∧
+    Balanced fits ∧ (∀ j, L2InProbability study fits j (prediction 0)) ∧
+    (∀ n j, ∀ᵐ a ∂sampleLaw study n, ∀ theta,
+      empiricalRisk study (Finset.univ.filter (fun i => (fits n).fold i ≠ j)) a (prediction 0) ≤
+      empiricalRisk study (Finset.univ.filter (fun i => (fits n).fold i ≠ j)) a (prediction theta)) ∧
+    (∀ n : ℕ, 0 < n →
+      (∫ a, ht study a ∂sampleLaw study n) = mu study ∧
+      (∫ a, adjusted study (fits n) a ∂sampleLaw study n) = mu study ∧
+      variance (ht study (n := n)) (sampleLaw study n) = 79/(400*n) ∧
+      variance (adjusted study (fits n)) (sampleLaw study n) = 169/(400*n)) ∧
+    NormalLimit study (fun _ => ht study) (79/400) ∧
+    NormalLimit study (fun n => adjusted study (fits n)) (169/400) ∧
+    (79/400 : ℝ) < 169/400 ∧
+    (∀ theta, weightedNormSq study (prediction theta) = 3/8 + theta^2/6) ∧
+    risk study (fun _ => 0) = 3/20 ∧ risk study (prediction 0) = 3/8 := by
+  sorry
+
+/-- T4: the complete repaired counterexample under its supplementary name;
+this is an equivalent statement, retained to expose the actual cross-fitted estimator. -/
+theorem crossfit_counterexample : ValidStudy study ∧ mu study = 1/20 ∧
+    Balanced fits ∧ (∀ j, L2InProbability study fits j (prediction 0)) ∧
+    (∀ n j, ∀ᵐ a ∂sampleLaw study n, ∀ theta,
+      empiricalRisk study (Finset.univ.filter (fun i => (fits n).fold i ≠ j)) a (prediction 0) ≤
+      empiricalRisk study (Finset.univ.filter (fun i => (fits n).fold i ≠ j)) a (prediction theta)) ∧
+    (∀ n : ℕ, 0 < n →
+      (∫ a, ht study a ∂sampleLaw study n) = mu study ∧
+      (∫ a, adjusted study (fits n) a ∂sampleLaw study n) = mu study ∧
+      variance (ht study (n := n)) (sampleLaw study n) = 79/(400*n) ∧
+      variance (adjusted study (fits n)) (sampleLaw study n) = 169/(400*n)) ∧
+    NormalLimit study (fun _ => ht study) (79/400) ∧
+    NormalLimit study (fun n => adjusted study (fits n)) (169/400) ∧
+    (79/400 : ℝ) < 169/400 ∧
+    (∀ theta, weightedNormSq study (prediction theta) = 3/8 + theta^2/6) ∧
+    risk study (fun _ => 0) = 3/20 ∧ risk study (prediction 0) = 3/8 := by
+  exact counterexample
 
 end RegressionExample
 
@@ -1374,7 +1633,7 @@ theorem unitUniform_Iio (t : ℝ) (h0 : 0 ≤ t) (h1 : t ≤ 1) :
 namespace ConditionalExample
 
 /-- T2: the exceptional covariate event has exactly probability 2^-100
-under the actual continuous sample law. -/
+under the actual continuous sample law, E001 v2 section 3. -/
 theorem covariate_event_mass : sampleLaw study 100 E = ENNReal.ofReal ((1/2 : ℝ)^100) := by
   letI := probability_continuity_mean.1
   have hh : study.law {o | W o < (1/2 : ℝ)} = ENNReal.ofReal (1/2) := by
@@ -1394,7 +1653,7 @@ theorem covariate_event_positive : 0 < sampleLaw study 100 E := by
   rw [covariate_event_mass]
   exact ENNReal.ofReal_pos.2 event_positive
 
-/-- T2: xi is identically 100/81 on samples of size 100. -/
+/-- T2: xi is identically 100/81 on samples of size 100, E001 v2 section 3. -/
 theorem xi_value (a : Sample 100) : xi study a = 100/81 := by
   norm_num [xi, study]
 
@@ -1403,7 +1662,7 @@ end ConditionalExample
 namespace RegressionExample
 
 /-- T4: on actual sampled observations, the observed outcome is zero in
-the upper covariate half. -/
+the upper covariate half, E002 v1 section 2. -/
 theorem upper_outcome_zero : ∀ᵐ o ∂study.law, (1/2 : ℝ) < W o → Y o = 0 := by
   change ∀ᵐ o ∂Measure.map generate ((unitUniform.prod unitUniform).prod unitUniform),
     (1/2 : ℝ) < W o → Y o = 0
@@ -1425,7 +1684,7 @@ theorem upper_outcome_zero : ∀ᵐ o ∂study.law, (1/2 : ℝ) < W o → Y o = 
 
 /-- T4: the concrete zero-parameter fits minimize the actual empirical
 criterion on both training folds almost surely, including empty treatment
-folds. -/
+folds, E002 v1 section 3. -/
 theorem fits_empirical_minimizer (n : ℕ) (j : Bool) :
     ∀ᵐ a ∂sampleLaw study n, ∀ theta,
       empiricalRisk study (Finset.univ.filter (fun i => (fits n).fold i ≠ j)) a (prediction 0) ≤
@@ -1470,7 +1729,7 @@ end RegressionExample
 namespace ConditionalExample
 
 /-- T2: the generated treated outcome agrees almost surely with its
-covariate threshold. -/
+covariate threshold, E001 v2 section 2. -/
 theorem potential_outcome_version : ∀ᵐ o ∂study.law,
     Y1 o = bit (decide ((1/2 : ℝ) ≤ W o)) := by
   have mb : Measurable bit := measurable_of_countable _
@@ -1496,8 +1755,8 @@ theorem covariate_event_measurable : MeasurableSet[sampleCovariateSigma 100] E :
   exact h hs
 
 /-- T2: on E the conditional probability of the printed population-centred
-tail event is one. This proves the failed centring step on
-the continuous law. -/
+tail event is one, E001 v2 section 3. This proves the failed centring step on
+the actual continuous law; full ValidStudy validation is a separate obligation. -/
 theorem conditional_event_tail :
     ∀ᵐ a ∂(sampleLaw study 100).restrict E,
       condExp (sampleCovariateSigma 100) (sampleLaw study 100)
@@ -1570,7 +1829,7 @@ end ConditionalExample
 
 /-- Independence transfers through a measurable generating map. This
 supporting probability-law bridge is used for T2's independent uniform
-covariate and assignment draw. -/
+covariate and assignment draw, E001 v2 section 2. -/
 theorem indepFun_map_iff {A B C D : Type*} [MeasurableSpace A] [MeasurableSpace B]
     [MeasurableSpace C] [MeasurableSpace D] (nu : Measure A) [IsProbabilityMeasure nu]
     (gen : A → B) (f : B → C) (g : B → D)
@@ -1615,7 +1874,8 @@ theorem condIndepFun_congr_left {A : Type*} (s : MeasurableSpace A)
 
 namespace ConditionalExample
 
-/-- T2: Y(0) is zero almost surely under the generated population law. -/
+/-- T2: Y(0) is zero almost surely under the generated population law,
+E001 v2 section 2. -/
 theorem zero_potential_version : Y0 =ᵐ[study.law] fun _ => (0 : ℝ) := by
   have mb : Measurable bit := measurable_of_countable _
   have my : Measurable Y0 := mb.comp measurable_snd.snd.fst
@@ -1855,7 +2115,7 @@ theorem ht_uniform_root_n (delta : ℝ) (hd : 0 < delta) : UniformRootN delta :=
   exact h.trans_eq hr
 
 /-- The i.i.d. sample-mean CLT, used for Proposition 2 and the T4 concrete
-asymptotic variance comparison. The finite-product sample spaces vary with n; their
+asymptotic variance comparison. The finite sample spaces vary with n; their
 laws are identified with takePrefixes of the infinite i.i.d. product. -/
 theorem iid_mean_normal {A : Type*} [MeasurableSpace A]
     (nu : Measure A) [IsProbabilityMeasure nu] (f : A → ℝ)
@@ -1912,8 +2172,8 @@ theorem iid_mean_normal {A : Type*} [MeasurableSpace A]
   · exact (((Finset.measurable_sum Finset.univ (fun i _ => hf.comp (measurable_pi_apply i))).div_const (n : ℝ)).sub_const (∫ x, f x ∂nu)).const_mul (Real.sqrt n) |>.aemeasurable
   · exact hclt.tendsto.congr' (Filter.Eventually.of_forall (fun n => Subtype.ext (hmaps n).symm))
 
-/-- Proposition 2, p. 6 (T7), asymptotic parts. Uniformity uses a
-common delta. Normality is for each fixed law. -/
+/-- Proposition 2, p. 6 (T7), asymptotic parts. Uniformity is read with a
+common delta, as explained in targets.json. Normality is for each fixed law. -/
 theorem proposition2_asymptotic :
     (∀ delta : ℝ, 0 < delta → UniformRootN delta) ∧
     (∀ M : Study, ValidStudy M → NormalLimit M (fun _ => ht M)
@@ -1939,7 +2199,7 @@ theorem proposition2_asymptotic :
 
 /-- Two-sided Hoeffding for a finite i.i.d. sample mean of variables in
 [0,b]. This is the unconditional finite lemma used by corrected Proposition 3
-(T3) and its known-bound alternative. -/
+(T3) and its known-bound alternative, E001 v1 sections 1 and 7. -/
 theorem iid_mean_hoeffding {A : Type*} [MeasurableSpace A]
     (nu : Measure A) [IsProbabilityMeasure nu] (f : A → ℝ) (hf : Measurable f)
     (b : ℝ) (hb : 0 < b) (hrange : ∀ᵐ x ∂nu, f x ∈ Set.Icc 0 b)
@@ -2104,9 +2364,9 @@ theorem rr_prior_target (K : ℕ) (hK : 0 < K) :
 end RobinsRitov
 
 /-- T10(b): the finite i.i.d. uniform-bin collision bound n(n-1)/(2K),
-the union bound used in the Robins--Ritov lower-bound construction.
-This lemma concerns the bin-index law; transferring continuous
-uniform covariates to their bin indices is a separate mathematical step. -/
+the union bound used in the Robins--Ritov lower-bound construction given in
+targets.json. This lemma concerns the bin-index law; transferring continuous
+uniform covariates to their bin indices is a separate obligation. -/
 theorem robins_ritov_collision (K n : ℕ) (hK : 0 < K) :
     (binLaw K n {b | ∃ i j, i ≠ j ∧ b i = b j}).toReal ≤
       (n : ℝ) * (n-1) / (2*K) := by
@@ -2195,9 +2455,10 @@ theorem robins_ritov_collision (K n : ℕ) (hK : 0 < K) :
   exact (measureReal_mono (h₂ := measure_ne_top _ _) hsub).trans
     ((measureReal_biUnion_finset_le pairs _).trans_eq hsum)
 
-/-- T5: almost-sure membership in an L2 working family
-supplies the fitted-L2 premise in corrected Proposition 4(c).
-Thus that premise is redundant. -/
+/-- T5 fidelity check: almost-sure membership in an L2 working family
+already supplies the fitted-L2 premise retained in corrected Proposition 4(c).
+Thus that premise is redundant, not a substantive strengthening of the repair,
+validator E002 sections 5-6 and the independent fidelity report's T5 note. -/
 theorem fitted_L2_from_membership (M : Study) (d : ℕ)
     (family : (Fin d → ℝ) → ℝ → ℝ) (F : ∀ n, CrossFit n)
     (hG : ∀ theta, MemLp (fun o => family theta (W o)) 2 M.law)
@@ -2212,3 +2473,127 @@ theorem fitted_L2_from_membership (M : Study) (d : ℕ)
 end
 end AronowAudit.P046
 
+#print axioms AronowAudit.P046.proposition3_printed
+#print axioms AronowAudit.P046.proposition3_corrected
+#print axioms AronowAudit.P046.ht_conditional_centre
+#print axioms AronowAudit.P046.conditional_hoeffding
+#print axioms AronowAudit.P046.covariate_hoeffding
+#print axioms AronowAudit.P046.proposition3_known_bound
+#print axioms AronowAudit.P046.ht_second_moment
+#print axioms AronowAudit.P046.ht_variance
+#print axioms AronowAudit.P046.ht_chebyshev
+#print axioms AronowAudit.P046.proposition2_asymptotic
+#print axioms AronowAudit.P046.proposition4a
+#print axioms AronowAudit.P046.fixed_adjusted_variance
+#print axioms AronowAudit.P046.population_weighted_criterion
+#print axioms AronowAudit.P046.zero_benchmark_risk
+#print axioms AronowAudit.P046.proposition4c_corrected
+#print axioms AronowAudit.P046.proposition4c_direct
+#print axioms AronowAudit.P046.proposition4b
+#print axioms AronowAudit.P046.proposition4d
+#print axioms AronowAudit.P046.proposition1
+#print axioms AronowAudit.P046.consistency_treated
+#print axioms AronowAudit.P046.ht_binary_range
+#print axioms AronowAudit.P046.adjusted_decomposition
+#print axioms AronowAudit.P046.adjusted_increment
+#print axioms AronowAudit.P046.bern_normalization
+#print axioms AronowAudit.P046.bern_adjusted_mean
+#print axioms AronowAudit.P046.bern_adjusted_variance
+#print axioms AronowAudit.P046.bern_multiplier_mean
+#print axioms AronowAudit.P046.bern_multiplier_second
+#print axioms AronowAudit.P046.bern_ht_mean
+#print axioms AronowAudit.P046.bern_ht_second
+#print axioms AronowAudit.P046.bern_conditional_variance
+#print axioms AronowAudit.P046.two_error_union_bound
+#print axioms AronowAudit.P046.risk_minimizer_zero
+#print axioms AronowAudit.P046.iid_mean_variance
+#print axioms AronowAudit.P046.IntervalExample.counterexample
+#print axioms AronowAudit.P046.IntervalExample.score_positivity
+#print axioms AronowAudit.P046.IntervalExample.log_lt_seventeen
+#print axioms AronowAudit.P046.IntervalExample.lower_mass_exceeds_alpha
+#print axioms AronowAudit.P046.IntervalExample.count_mass_bridge
+#print axioms AronowAudit.P046.ConditionalExample.counterexample
+#print axioms AronowAudit.P046.ConditionalExample.score_positivity
+#print axioms AronowAudit.P046.ConditionalExample.radius_sq_lt
+#print axioms AronowAudit.P046.ConditionalExample.radius_lt_half
+#print axioms AronowAudit.P046.ConditionalExample.event_positive
+#print axioms AronowAudit.P046.ConditionalExample.printed_rhs
+#print axioms AronowAudit.P046.RegressionExample.atom_normalization
+#print axioms AronowAudit.P046.RegressionExample.score_positivity
+#print axioms AronowAudit.P046.RegressionExample.loss_increase
+#print axioms AronowAudit.P046.RegressionExample.empirical_minimizer
+#print axioms AronowAudit.P046.RegressionExample.population_loss
+#print axioms AronowAudit.P046.RegressionExample.population_unique_minimum
+#print axioms AronowAudit.P046.RegressionExample.atom_moments
+#print axioms AronowAudit.P046.RegressionExample.atom_variances
+#print axioms AronowAudit.P046.RegressionExample.zero_not_in_closure
+#print axioms AronowAudit.P046.RegressionExample.counterexample
+#print axioms AronowAudit.P046.robins_ritov_single_bin
+#print axioms AronowAudit.P046.robins_ritov_collision
+#print axioms AronowAudit.P046.robins_ritov_prior_moments
+#print axioms AronowAudit.P046.sqrt_mean_inverse_sq_lt
+#print axioms AronowAudit.P046.corrected_width
+#print axioms AronowAudit.P046.crossfit_decomposition
+#print axioms AronowAudit.P046.remainder_conditional_moments
+#print axioms AronowAudit.P046.remainder_chebyshev
+#print axioms AronowAudit.P046.risk_expansion_cauchy
+#print axioms AronowAudit.P046.regression_mean
+#print axioms AronowAudit.P046.iid_mean_integral
+#print axioms AronowAudit.P046.muW_unbiased
+#print axioms AronowAudit.P046.RobinsRitov.rr_laws_valid
+#print axioms AronowAudit.P046.RobinsRitov.rr_indistinguishability
+#print axioms AronowAudit.P046.RobinsRitov.rr_prior_target
+#print axioms AronowAudit.P046.IntervalExample.cutoff_implies_squared_exclusion
+#print axioms AronowAudit.P046.IntervalExample.cutoff_state_count
+#print axioms AronowAudit.P046.conditional_xy_factorization
+#print axioms AronowAudit.P046.ht_unit_facts
+#print axioms AronowAudit.P046.ht_unbiased
+
+#print axioms AronowAudit.P046.unitUniform_Iic
+#print axioms AronowAudit.P046.unitUniform_singleton
+#print axioms AronowAudit.P046.unitUniform_bernE
+#print axioms AronowAudit.P046.IntervalExample.log_certified_bounds
+#print axioms AronowAudit.P046.IntervalExample.certified_state_count
+#print axioms AronowAudit.P046.IntervalExample.certified_partition
+#print axioms AronowAudit.P046.IntervalExample.certified_mass_exact
+#print axioms AronowAudit.P046.IntervalExample.certified_mass_gt
+#print axioms AronowAudit.P046.ht_unit_memLp
+#print axioms AronowAudit.P046.ht_sample_memLp
+#print axioms AronowAudit.P046.ht_uniform_root_n
+#print axioms AronowAudit.P046.iid_mean_normal
+#print axioms AronowAudit.P046.IntervalExample.count_deviation_sq
+#print axioms AronowAudit.P046.IntervalExample.certified_cut_iff_exclusion
+#print axioms AronowAudit.P046.IntervalExample.exact_failure_state_count
+#print axioms AronowAudit.P046.IntervalExample.exact_noncoverage
+#print axioms AronowAudit.P046.unitUniform_probability
+#print axioms AronowAudit.P046.unitUniform_Ici
+#print axioms AronowAudit.P046.measurable_threshold
+#print axioms AronowAudit.P046.atomless_of_uniform_marginal
+#print axioms AronowAudit.P046.IntervalExample.measurable_generate
+#print axioms AronowAudit.P046.IntervalExample.covariate_law
+#print axioms AronowAudit.P046.IntervalExample.probability_continuity_mean
+#print axioms AronowAudit.P046.ConditionalExample.measurable_generate
+#print axioms AronowAudit.P046.ConditionalExample.covariate_law
+#print axioms AronowAudit.P046.ConditionalExample.probability_continuity_mean
+#print axioms AronowAudit.P046.RegressionExample.measurable_generate
+#print axioms AronowAudit.P046.RegressionExample.covariate_law
+#print axioms AronowAudit.P046.RegressionExample.probability_continuity_mean
+#print axioms AronowAudit.P046.RegressionExample.fits_adjusted
+#print axioms AronowAudit.P046.RegressionExample.fits_l2_convergence
+#print axioms AronowAudit.P046.RegressionExample.fits_balanced
+#print axioms AronowAudit.P046.RegressionExample.crossfit_counterexample
+#print axioms AronowAudit.P046.iid_mean_hoeffding
+#print axioms AronowAudit.P046.unitUniform_Iio
+#print axioms AronowAudit.P046.ConditionalExample.covariate_event_mass
+#print axioms AronowAudit.P046.ConditionalExample.covariate_event_positive
+#print axioms AronowAudit.P046.ConditionalExample.xi_value
+#print axioms AronowAudit.P046.RegressionExample.upper_outcome_zero
+#print axioms AronowAudit.P046.RegressionExample.fits_empirical_minimizer
+#print axioms AronowAudit.P046.ConditionalExample.potential_outcome_version
+#print axioms AronowAudit.P046.ConditionalExample.covariate_event_measurable
+#print axioms AronowAudit.P046.ConditionalExample.conditional_event_tail
+#print axioms AronowAudit.P046.indepFun_map_iff
+#print axioms AronowAudit.P046.condIndepFun_congr_left
+#print axioms AronowAudit.P046.ConditionalExample.zero_potential_version
+#print axioms AronowAudit.P046.ConditionalExample.study_valid
+#print axioms AronowAudit.P046.fitted_L2_from_membership

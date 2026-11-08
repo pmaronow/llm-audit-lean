@@ -1,0 +1,48 @@
+import SAP.P027a.Defs
+
+open scoped BigOperators ENNReal
+open MeasureTheory
+open SAP.P027a
+
+noncomputable section
+
+lemma audit_nbMass_pos (j : ℕ) : 0 < nbMass j := by
+  unfold nbMass
+  apply mul_pos
+  · apply mul_pos
+    · apply div_pos
+      · apply Finset.prod_pos
+        intro i hi
+        positivity
+      · exact_mod_cast Nat.factorial_pos j
+    · positivity
+  · positivity
+
+-- Directly from the product-Dirac definition, every full count vector has mass.
+-- This does not use any Challenge theorem.
+example (N : ℕ) (v : Fin N → ℕ) :
+    0 < nbProductLawN N {v} := by
+  classical
+  have hp : 0 < (∏ k, nbMass (v k)) :=
+    Finset.prod_pos (fun k _ => audit_nbMass_pos (v k))
+  have hle := Measure.le_sum
+    (fun w : Fin N → ℕ =>
+      ENNReal.ofReal (∏ k, nbMass (w k)) • Measure.dirac w) v
+  have hmass : ENNReal.ofReal (∏ k, nbMass (v k)) ≤ nbProductLawN N {v} := by
+    simpa [nbProductLawN] using hle {v}
+  exact lt_of_lt_of_le (ENNReal.ofReal_pos.mpr hp) hmass
+
+-- The eight-unit vector itself has a positive product of genuine NB masses.
+example : 0 < nbMass 29 * nbMass 0^7 := by
+  exact mul_pos (audit_nbMass_pos _) (pow_pos (audit_nbMass_pos _) _)
+
+-- Six row computations use floor division, not real division or zero defaults.
+example : ∀ row : Fin 6,
+    let N := ppsConfigurationN row
+    let m := ppsConfigurationM row
+    let L := ppsConfigurationL row
+    2 ≤ N ∧ 2 ≤ m ∧ 1 ≤ L ∧ L = (N-1)/(m-1)+1 ∧
+      1 < (m:ℝ)*L/((L:ℝ)+N-1) := by
+  intro row
+  fin_cases row <;>
+    norm_num [ppsConfigurationN, ppsConfigurationM, ppsConfigurationL]

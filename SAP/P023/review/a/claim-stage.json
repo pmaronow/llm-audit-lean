@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P023.T1",
+    "target_id": "P023-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "T1Statement expands to the complete six-election witness, including full rank, the exact conditional-mean vector, all outcome weights, both exact coefficient values, the nonzero distant perturbation, close-window RD values, bin labels, coarsened coefficient existence and uniqueness, outcome bounds, and localization conclusions. Lean uses zero-based indices. The bin-intercept formulation is equivalent to the printed omitted-reference-dummy regression; empty nuisance bins do not identify a different party coefficient. Exact rational matrix checks and a definitions-only Lean nonvacuity check pass."
+  },
+  {
+    "theorem": "SAP.P023.T2",
+    "target_id": "P023-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "T2Statement contains the complete sixteen-election degree-seven construction, every listed nonzero weight, exact fitted model, coefficient change, RD value, and bin assignment. Coarsened existence and uniqueness cover the intended coefficient. Its additional explicit nonlocalization and outcome-bound assertions are true consequences. Exact rational normal-equation and rank checks pass; no denominator is zero."
+  },
+  {
+    "theorem": "SAP.P023.T3",
+    "target_id": "P023-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The canonical finite epsilon/2 event-probability inequality in clause (f) is absent: SharedConsistency gives only its convergence consequence. FiniteNonlocality (Defs/Part3.lean:116-117) requires positive close-window winner and loser counts for its entire statement, whereas canonical clause (c) needs them only for the concluding comparison of coarsened estimates. SharedConsistency (Part3:143-145) adds a probability law, J>=1, positive bandwidths and OLS/RD admissibility guards to its implication. Other finite formulas, conditional moments, population examples and the actual-estimator convergence implication match; hypotheses are satisfiable."
+  },
+  {
+    "theorem": "SAP.P023.T4",
+    "target_id": "P023-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The full clipped-linear population family, residual formulas, exact coefficients, fit bounds and limiting sample separation are present. SigmoidSampling (Defs/Part3.lean:196-198) adds vanishing probabilities of singular degree-one/seven designs and empty RD sides. SigmoidFit (Part3:184) quantifies only over measurable predictors with integrable squared error, rather than the canonical unrestricted wording about additional functions. These guards avoid Mathlib's zero-valued Bochner integral for nonintegrable errors. The uniform-law sample model satisfies the guards; exact displayed values check."
+  },
+  {
+    "theorem": "SAP.P023.T5",
+    "target_id": "P023-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "ClusteredPopulation and T5Statement retain the density and smooth-part constructions, exact moments and coefficient, zero local RD values, small zero-polynomial error at every degree, and changing-law limiting family. ClusteredFit (Defs/Part4.lean:51,54) restricts comparisons to measurable predictors with integrable squared error. This is the only lost scope of the canonical 'no predictor' wording. Positive d and widths ensure genuine normalized densities and positive population-regression denominators; rational integrations at d=1/1000, 1/4 and 1/2 check."
+  },
+  {
+    "theorem": "SAP.P023.T6",
+    "target_id": "P023-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "ContinuityWitness states the logarithmic amplification rate, the continuous-function operator norm, and existence of one fixed bounded continuous mean and increasing degrees with coefficients at least m/4. Its explicit arbitrarily-large tail coefficients and subsequential divergence faithfully render the extended limsup assertion without applying a real limsup to an unbounded sequence. The same fixed mean has RD limit zero and no Lipschitz bound. Uniform margins give positive definite moments and positive residual variances at every finite degree."
+  },
+  {
+    "theorem": "SAP.P023.T7",
+    "target_id": "P023-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "PopulationBias covers the positive-definite moment assumption, all residual identities, both approximation bounds, amplification>=2, exact specification, and both infimum-based fixed-tolerance criteria. Replacing E[rY] by E[r E(Y|X)] is equivalent under the explicitly assumed ConditionalMean and square integrability. FinitePolynomialWeights and FiniteConditionalBias cover the finite-design identities, with the target's party convention at ties. UniformConstants includes the complete variance formula and numerical bounds. All extrema are over nonempty bounded sets in their used direction; required integrals are finite. Exact uniform constants and both finite matrices check independently."
+  },
+  {
+    "theorem": "SAP.P023.T8",
+    "target_id": "P023-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "CorrectedAsymptotics retains every canonical population, Jackson-approximation, fixed-degree, RD, growing-degree and schedule-existence conclusion with the stated constants and rate. RepairedRegularity correctly renders the primitive support, no-atom, local-density, Lipschitz, second-moment and bounded local conditional-variance assumptions. Part4:141-146 additionally assumes RD admissibility and OLS admissibility at every fixed degree and every growing-degree schedule satisfying the rate. These added assumptions precede the full conjunction. A uniform-margin IID model with bounded independent noise satisfies them, so this is a restriction rather than vacuity."
+  },
+  {
+    "theorem": "SAP.P023.T9",
+    "target_id": "P023-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "PairIndexedAppendix uses a finite set of natural-number pairs and sums over precisely its observed-pair subtype. It asserts the bin partition, central-bin/window equality, vanishing residuals outside, positive central squared norm and the corrected demeaned OLS ratio. Demeaning evaluates a bin mean only at an observed pair's own nonempty bin, so empty peripheral bins do not invoke division-by-zero semantics. A definitions-only Lean check gives an actual two-pair instance with both party sides and a coarsened solution."
+  },
+  {
+    "theorem": "SAP.P023.T10",
+    "target_id": "P023-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The target explicitly calls for refuting the polynomial data-dependence reading while proving it for coarsening. T10Statement does both. The polynomial universal being negated requires a full-rank design, Condition 1 and an admitted in-range exact polynomial mean. The T1 design supplies this mean and two in-range outcomes that agree in the window but change its polynomial coefficient. Both outcomes can be realizations of a correctly specified model with mean-zero noise, so the refutation reaches the printed 'well-specified' reading rather than exploiting misspecification. Positive-count coarsened localization includes the canonical Condition-1 setting."
+  },
+  {
+    "theorem": "SAP.P023.T11",
+    "target_id": "P023-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "PropositionOne quantifies arbitrary finite data, 0<k<1, the standing two-party support/sign assumptions, Condition 1, and every solution of exactly the printed coarsened normal equations. Its party coefficient equals the rectangular degree-zero RD difference. Condition 1 makes both RD counts positive; full rank of all dummy columns is correctly not assumed. Normal-equation solutions exist for real finite least squares, including empty peripheral bins. A concrete zero-outcome solution and the nondegenerate linear design are checked in Lean."
+  },
+  {
+    "theorem": "SAP.P023.T12",
+    "target_id": "P023-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "The target expressly requests a refutation of its stated fixed-law interpretation. PrintedPropositionTwo fixes one law and mean before quantifying every tolerance and all sufficiently large fixed degrees, and includes the printed one-sided continuity, finite left limit, IID sampling, support, moment and usual RD conditions. T12 negates this universal. T6's uniform-law fixed continuous mean gives a counterexample with bounded outcomes, all finite moment matrices positive definite, and valid shrinking-window sampling; it violates the population tolerance conclusion. The added explicit regularity conditions in the negated universal make this a stronger refutation, not one obtained from an ill-defined RD estimator."
+  }
+]

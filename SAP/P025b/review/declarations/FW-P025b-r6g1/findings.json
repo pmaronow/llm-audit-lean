@@ -1,0 +1,61 @@
+[
+  {
+    "target_id": "P025-T12",
+    "theorem": "SAP.P025b.T12",
+    "fingerprint": "826212c80307963a809eeb7587b4b618609acd7aa2a163f27aeb41a8ac235349",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:17 without importing Challenge or Solution: the two-unit census has pi_i=1, valid alpha=beta=1 bounds, ordered outcomes (0,1), feasible weights (1,1), a nonpositive threshold increment, and a false threshold conclusion. Its denominator is 2, and the finite law has total probability 1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P025-T13",
+    "theorem": "SAP.P025b.T13",
+    "fingerprint": "1ac456655d8e3bf2fe1133aa0997711551d916cbfdf3838fd80e4de1ee9ce548",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:49: N=J=2, cls=id, y=(0,1), a one-of-two uniform sampling design, alpha=1/4, beta=1/2, inclusion probabilities 1/2, and separation all satisfy every premise. Finite measurable-singleton instances are checked at line 66. Lines 69-81 prove from Mathlib that the replication construction has iid coordinates with the prescribed marginals and is a probability measure.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P025-T14",
+    "theorem": "SAP.P025b.T14",
+    "fingerprint": "2ade4aeedd2bf1714996b98ec2be34906a9404db89a4513a8572b797906fc6dc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:87: the given six-unit uniform pair design has pi_i=1/2, valid bounds alpha=1/4 and beta=1/2, strictly ordered class outcomes (0,2,3), and the two upper threshold values both equal 2. Lines 69-84 independently prove the required iid replication from Mathlib. The product of three fair choices has all eight outcomes of probability 1/8; every sample contains exactly one unit per class. All positive-h ratios therefore have positive denominators.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P025-T15",
+    "theorem": "SAP.P025b.T15",
+    "fingerprint": "4d50c8dac62187a37745ba39b0ceb860e05605608bf1ffe4f3e426f4b9a65aa4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:104: J=2, y=(0,1), q=(1/3,2/3), alpha=1/2, beta=3/4 and counts m=(1,2), with positive scale T=2, satisfy every main-block hypothesis. Line 118 also realizes the equal-bound case alpha=beta=1 using T=3. The omit-one design checked at line 124 realizes the corresponding class totals (2/3,4/3) with all unit probabilities 2/3, so compatibility is substantive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P025-T16",
+    "theorem": "SAP.P025b.T16",
+    "fingerprint": "2ea041bcd7395e420ea21fcaf1db6ca8e9da21ce9e862ca874122b5f4f64247c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:124 and :142: the omit-one design has probabilities 2/3 and compatible counts (1,2), mean 2/3, and separation; both known-size endpoint count vectors (500,500) and (250,750) satisfy all calibration and size constraints and give means 1/2 and 3/4. Lines 69-84 independently verify iid replication. Lines 156-163 construct actual quota subsets even at the smallest class sizes (250 choose 50 and 500 choose 100). For any 500<=k<=750, 1000-k>=250 and k>=500 ensure nonempty uniform quota laws; symmetry gives inclusion probabilities 50/(1000-k) and 100/k, and their product gives the required independent class draws. No Challenge or Solution theorem is used in these checks.",
+    "confidence": 0.99,
+    "resolved": [
+      "Fixed: the earlier issue at SAP/P025b/Challenge/Part1.lean:47. The current lines 47-48 say that the examples refute the reading retaining absolute totals, and size in the second example; lines 56-57 expressly preserve outer bounds and shares-only sharpness. The unqualified opening is gone.",
+      "Fixed: the earlier issue at SAP/P025b/Defs/WholeW1.lean:239. The duplicate docstring now makes the same reading-specific qualification at lines 239-240 and retains the preservation clause at lines 248-249. The whole decision in record.json matches the canonical counterexample assertion."
+    ]
+  }
+]

@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.Probability.Independence.Basic
@@ -33,7 +29,10 @@ simple function, hence integrable), via `integral_dirac` +
 `radLaw_ae_pm` / `signVec_ae_pm`. The `2^N` finite-average representation of
 `signVec` is deliberately not provided: contraction uses coordinate-convexity
 induction and the symmetrization flip uses measure-preserving maps, so only
-the pushforward API below is ever consumed.
+the pushforward API below is ever consumed. Named-sorry fallback of this work
+item: `signVec_map_mul_pm` (the vertex change of variables of Theorem 6.6.1),
+via `Measure.pi_map_pi` + `radLaw_map_mul_pm`; all scalar `radLaw` lemmas are
+provable directly from `integral_dirac` / `Measure.map_dirac`.
 
 **Bibliographic comments.** Rademacher functions originate with H. Rademacher,
 "Einige Sätze über Reihen von allgemeinen Orthogonalfunktionen," *Math. Ann.*
@@ -87,6 +86,17 @@ theorem radLaw_ae_pm : ∀ᵐ x ∂radLaw, x = 1 ∨ x = -1 := by
 theorem radLaw_integral_id : ∫ x, x ∂radLaw = 0 := by
   rw [radLaw_integral (fun x => x)]; norm_num
 
+/-- `E|ε| = 1` for a Rademacher sign (HDP §6.3). -/
+theorem radLaw_integral_abs : ∫ x, |x| ∂radLaw = 1 := by
+  rw [radLaw_integral (fun x => |x|)]; norm_num
+
+/-- The Rademacher law is symmetric: `(-ε) =ᵈ ε` (HDP §6.3). -/
+theorem radLaw_map_neg : radLaw.map (fun x => -x) = radLaw := by
+  rw [radLaw, Measure.map_add _ _ measurable_neg, Measure.map_smul, Measure.map_smul,
+      Measure.map_dirac, Measure.map_dirac]
+  all_goals try fun_prop
+  simp only [neg_neg]
+  rw [add_comm]
 
 /-- Multiplying a Rademacher sign by a fixed sign `c ∈ {±1}` preserves the law
 (HDP §6.3). -/
@@ -133,7 +143,7 @@ theorem measurePreserving_eval_signVec (N : ℕ) (i : Fin N) :
 
 /-- Flipping the coordinates of the sign vector by any fixed sign pattern
 `c ∈ {±1}^N` preserves the law: `(cᵢεᵢ)ᵢ =ᵈ (εᵢ)ᵢ` (HDP §6.6, Theorem 6.6.1
-vertex step), via
+vertex step). Named-sorry debt candidate of this work item; via
 `Measure.pi_map_pi` + `radLaw_map_mul_pm`. -/
 theorem signVec_map_mul_pm {N : ℕ} {c : Fin N → ℝ}
     -- USER-INPUT: c is a fixed deterministic sign pattern; HDP §6.6 Thm 6.6.1

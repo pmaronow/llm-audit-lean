@@ -12,7 +12,8 @@ set_option maxHeartbeats 1000000
 set_option maxRecDepth 4000
 attribute [local instance] Classical.propDecidable
 
-/- Atomic integration calculations for the signed Monte Carlo witness. -/
+/- The atomic integration calculations follow the proved signed witness in
+`Wave1/Gap/GP0041B1.lean`, with distinct helper names. -/
 private theorem mc_level_point_injective : Function.Injective eightNodeNullPoint := by
   intro i j hij
   have hcoord := congrArg (fun x : EuclideanSpace ℝ (Fin 2) => x 0) hij
@@ -366,7 +367,10 @@ theorem mc_level_spatial_counterexample_proof :
   · rw [mc_level_average]
     exact mc_level_size_identity
 
-/- Rectangle integration and range calculations for a family of witnesses. -/
+example : type_of% @AronowAudit.P004.mc_level_spatial_counterexample := mc_level_spatial_counterexample_proof
+
+/- The rectangle integration and range calculations generalize the fixed
+witness proved in `Wave1/Gap/GP0041B1.lean`. -/
 private theorem no_polygon_rectangle_closed (a b c d : ℝ) :
     IsClosed (rectangle a b c d) := by
   change IsClosed ({x : EuclideanSpace ℝ (Fin 2) | a ≤ x 0} ∩
@@ -650,6 +654,8 @@ theorem no_polygon_cutoff_from_range_alone_proof :
     no_polygon_separation, ?_, no_polygon_shared_source, no_polygon_covariance⟩
   rw [no_polygon_separation]
   linarith
+
+example : type_of% @AronowAudit.P004.no_polygon_cutoff_from_range_alone := no_polygon_cutoff_from_range_alone_proof
 
 end
 end AronowAudit.P004.Wave1

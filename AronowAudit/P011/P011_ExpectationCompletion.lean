@@ -1,4 +1,4 @@
-/- P011 T3(ii): finite expectation bound with exact constant 3(1+c2)^2*c1^2/n. The proof derives weighted covariance bounds and true-graph support without a common-mean premise. -/
+/- Original P011 T3(ii) finite expectation bound, with unchanged hypotheses and exact constant 3(1+c2)^2*c1^2/n. The proof derives weighted covariance bounds and true-graph support without a common-mean premise. -/
 import AronowAudit.P011.P011_OracleCompletion
 
 namespace AronowAudit.P011.ExpectationCompletion
@@ -188,3 +188,4 @@ theorem revised_oracle_expectation (F : Family) (c1 c2 c3 c4 : ℝ)
   exact ExpectationCompletion.revised_oracle_expectation_completed F c1 c2 c3 c4 h k
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.revised_oracle_expectation

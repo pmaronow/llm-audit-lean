@@ -1,0 +1,48 @@
+import SAP.P008b.Challenge
+
+open SAP.P008b
+
+#check @SAP.P008b.T20
+#check @SAP.P008b.T21
+#check @SAP.P008b.T22
+#check @SAP.P008b.T23
+#check @SAP.P008b.T25
+#print SAP.P008b.T22WholeStatement
+#print SAP.P008b.MetricSpatialModel
+#print SAP.P008b.SpatialModel.validCircle
+#print axioms SAP.P008b.T20
+
+-- T21 / T22 printed comparisons are true numerals
+example : (-321 / 10000 : ℝ) < -19 / 625 := by norm_num
+example : (797 / 100 : ℝ) < 619 / 50 := by norm_num
+example : ¬ ((619 / 50 : ℝ) < -797 / 100) := by norm_num
+
+-- T20 (c): the nonempty-frontier hypothesis is needed (frontier univ = ∅, infDist to ∅ is 0)
+example : frontier (Set.univ : Set Plane) = ∅ := frontier_univ
+example (x : Plane) : Metric.infDist x (∅ : Set Plane) = 0 := Metric.infDist_empty
+
+-- T20 (a) nonvacuity: a 3x3 square raster has nonempty raster boundary
+example : (rasterBoundary ((Finset.range 3 ×ˢ Finset.range 3).image
+    (fun p : ℕ × ℕ => ((p.1 : ℤ), (p.2 : ℤ))))).Nonempty := by
+  refine ⟨(0, 0), ?_⟩
+  unfold rasterBoundary
+  simp only [Finset.mem_filter]
+  refine ⟨by decide, ⟨0, 0, by decide, by decide⟩⟩
+
+-- T20 (c) nonvacuity: closed unit ball has nonempty frontier
+example : (frontier (Metric.closedBall (0 : Plane) 1)).Nonempty := by
+  have : frontier (Metric.closedBall (0 : Plane) 1) = Metric.sphere 0 1 :=
+    frontier_closedBall (0 : Plane) one_ne_zero
+  rw [this]
+  exact (NormedSpace.sphere_nonempty).2 zero_le_one
+
+-- T23 nonvacuity: a genuine (nonzero covariance) instance on Fin 2
+noncomputable def lawF2 : FiniteLaw (Fin 2) := uniformLaw (Fin 2)
+example : lawF2.var (fun z => if z = 0 then 1 else 0) = 1 / 4 := by
+  simp [lawF2, FiniteLaw.var, FiniteLaw.cov, FiniteLaw.expect, uniformLaw, Fin.sum_univ_two]
+  norm_num
+
+-- T25 (3): check value of uniform marginal with N = 4 on a simple Y
+example : marginal (uniformLaw (Assignment 4)) (fun z => bit (z 0)) 0 true = 1 := by
+  unfold marginal FiniteLaw.expect uniformLaw
+  simp [bit, Function.update]

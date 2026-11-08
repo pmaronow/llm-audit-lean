@@ -1,0 +1,52 @@
+[
+  {
+    "target_id": "P034-T1",
+    "theorem": "SAP.P034.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional concrete construction. Exact enumeration in scratch/audit_checks.py verifies 32 positive normalized world-A masses (minimum 169/20000), 64 positive normalized world-B masses (minimum 169/40000), and equality of all 12 observed-cell probabilities. In A, treatment-arm probabilities are 1/2, every (T,X,Y) stratum has probability 1/8, completed-arm probabilities are 1/4 and completion probability is 1/2. Thus every conditioning denominator is positive. The population Gram determinant is 1/16; the completed-sample Gram determinant is 500000. The 400-unit multiset has 200 completed records, four table counts and expected counts equal to 100, and Pearson statistic zero. The Gaussian-square p-value at zero was checked independently in scratch/Algebra.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P034-T2",
+    "theorem": "SAP.P034.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles a proof of every antecedent, importing only Defs: Ω=Bool×Bool with independent fair coordinates T and X, k=1, Y(0)=X, Y(1)=1+X, and R(0)=R(1)=true. Each atom has mass 1/4; X varies and the treatment effect is 1. All variables are measurable and bounded, the required joint independence holds, treatment overlap is 1/2, and both potential completion probabilities are 1. Exact arithmetic also gives the Gram determinant 1/16, so even the nonsingular uniqueness clause has an applicable instance. The compiled hypotheses proof has no sorryAx dependency. The fixed equal-completion failure is the positive world-A construction checked for T1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P034-T3",
+    "theorem": "SAP.P034.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional four-cell witness (0,0,0,2), with exactly the interpolating coefficients (0,0,0,2). Both factor domains have two elements. Fin 0 removes only the absent covariates in this explicitly specified witness; it does not empty the cell quantifiers. Both reference contrasts are 0 and both equal-weight averages are 1. scratch/Algebra.lean proves the entire T3Statement from Defs without sorryAx.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P034-T4",
+    "theorem": "SAP.P034.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The coefficient and covariate quantifiers have inhabited real domains and no antecedents. For example take k=1, a=b=c=0, d=2, γ=0, z=0 and p=q=1/2: both main coefficients are 0 and both averaged contrasts are 1. Positive-weight implications therefore have nonempty antecedents, and arbitrary d is not forced to zero. scratch/Algebra.lean proves the entire T4Statement from Defs without sorryAx. Its extension of the two conditional identities from binary to arbitrary real factor values is true and preserves the complete canonical claim.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P034-T5",
+    "theorem": "SAP.P034.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional arithmetic over the 13×3 concrete table. The three divisors are 2898, 2877 and 5775, all positive. Independent exact rational arithmetic verifies all 39 rounding intervals, all 13 row sums and all three column sums, with no rounding ties. The two repaired values are 712/77 percent and 28/33 percent, rounding to 9.2 and 0.8. scratch/Algebra.lean proves the entire T5Statement with kernel reduction and no sorryAx dependency.",
+    "confidence": 0.99
+  }
+]

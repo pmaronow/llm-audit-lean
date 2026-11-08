@@ -118,7 +118,7 @@ noncomputable def RowsIndependent {n h : ℕ} (L : FiniteLaw (IndicatorArray n h
       ∏ i, eventProbability L (fun x => E i (x i))
 
 /-- Section 2, p. 150: the event "M_ij = 0" in bold denotes all first j indicators
-being observed. Write this event as C_ij; C_i0 is sure. -/
+being observed. The corrected proof names this C_ij (E003 derivation). C_i0 is sure. -/
 noncomputable def observedPrefix {h : ℕ} (r : IndicatorRow h) (j : ℕ) : Prop :=
   ∀ t : Fin h, t.val < j → r t = false
 
@@ -354,8 +354,8 @@ noncomputable def Superlogarithmic (h : ℕ → ℕ) : Prop :=
   Tendsto (fun n : ℕ => (h n : ℝ) / Real.log (n : ℝ)) atTop atTop
 
 /-- Finite-sequence analytic lemma underlying Propositions 5 and 10: with one
-fixed q∈[0,1), n q^(h_n)→0 for superlogarithmic h_n.
-This includes the endpoint q=0 instead of evaluating a logarithm there. -/
+fixed q∈[0,1), n q^(h_n)→0 for superlogarithmic h_n. Adapted from N002/check.lean;
+this includes the endpoint q=0 instead of evaluating a logarithm there. -/
 theorem uniform_decay {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1)
     {k : ℕ → ℕ} (hk : Superlogarithmic k) :
     Tendsto (fun n : ℕ => (n : ℝ) * q ^ k n) atTop (𝓝 0) := by
@@ -524,7 +524,7 @@ theorem independentProduct_rowsIndependent {n h : ℕ}
   intro i _
   exact (independentProduct_marginal L i (E i)).symm
 
-/-- P007-E003 witnesses A, B, D in P007-T3,T4 (proof of Lemma 3, p. 154; Lemma 8, Supplement p. 4): a one-atom law with explicitly unit mass. -/
+/-- E003 witnesses A, B, D in P007-T3,T4 (proof of Lemma 3, p. 154; Lemma 8, Supplement p. 4): a one-atom law with explicitly unit mass. -/
 noncomputable def pointMass {α : Type*} [Fintype α] (a : α) : FiniteLaw α where
   weight b := by classical exact if b=a then 1 else 0
   nonneg b := by classical split_ifs <;> norm_num
@@ -541,7 +541,7 @@ theorem pointMass_probability {α : Type*} [Fintype α] (a : α) (P : α → Pro
   · intro b _ hba; simp [hba]
   · simp
 
-/-- P007-E003 witness C in P007-T4 (proof of Lemma 3, p. 154; Lemma 8, Supplement p. 4): a convex mixture of two finite laws. -/
+/-- E003 witness C in P007-T4 (proof of Lemma 3, p. 154; Lemma 8, Supplement p. 4): a convex mixture of two finite laws. -/
 noncomputable def mixtureLaw {α : Type*} [Fintype α] (p : ℝ) (hp0 : 0≤p) (hp1 : p≤1)
     (A B : FiniteLaw α) : FiniteLaw α where
   weight a := p*A.weight a + (1-p)*B.weight a
@@ -561,12 +561,12 @@ theorem mixtureLaw_probability {α : Type*} [Fintype α] (p : ℝ) (hp0 : 0≤p)
   intro a _
   split_ifs <;> ring
 
-/-- P007-T3 and T4, P007-E003 witness A/B: one row (M_11,M_12)=(1,0) surely.
+/-- P007-T3 and T4, E003 witness A/B: one row (M_11,M_12)=(1,0) surely.
 Read as two singleton groups, it is the same law in the grouped setting. -/
 noncomputable def nullFirstLaw : FiniteLaw (IndicatorArray 1 2) :=
   independentProduct (fun _ => pointMass (fun j : Fin 2 => decide (j.val = 0)))
 
-/-- Prefix probabilities of the explicit one-row null-first witness. Supporting finite calculation for P007-E003 witnesses A/B against Lemma 3/8 proof sentences (p. 154; Supplement p. 4). -/
+/-- Prefix probabilities of the explicit one-row null-first witness. Supporting finite calculation for E003 witnesses A/B against Lemma 3/8 proof sentences (p. 154; Supplement p. 4). -/
 theorem nullFirst_prefixes :
     prefixSurvival nullFirstLaw 0 1 = 0 ∧ prefixSurvival nullFirstLaw 0 2 = 0 ∧
     eventProbability nullFirstLaw (fun x => x 0 1 = false) = 1 ∧
@@ -596,7 +596,7 @@ theorem zero_bound_counterexample :
   have hp := zero_bound_all_deleted nullFirstLaw (by norm_num) hb
   exact ⟨hi, hb, nullFirst_prefixes.2.2.1, nullFirst_prefixes.2.2.2, hp.1, hp.2⟩
 
-/-- P007-T3(v), P007-E003 witness D: one all-missing row; q_* is still allowed to be 1/2. -/
+/-- P007-T3(v), E003 witness D: one all-missing row; q_* is still allowed to be 1/2. -/
 noncomputable def fullyMissingLaw : FiniteLaw (IndicatorArray 1 2) :=
   independentProduct (fun _ => pointMass (fun _ : Fin 2 => true))
 
@@ -624,7 +624,7 @@ theorem fully_missing_all_bounds {q : ℝ} (hq0 : 0≤q) (hq1 : q<1) :
 
 /-- P007-T4 witness B: at q_*=1/2, null conditional probabilities are not determined
 by the law. All v∈[0,1] solve s_12=v s_11; v=1 violates the alleged bound, while v=0
-preserves it. This relation is retained rather than Mathlib's totalized 0/0 convention. -/
+preserves it. We retain this relation rather than Mathlib's totalized 0/0 convention. -/
 theorem null_prefix_counterexample :
     RowsIndependent nullFirstLaw ∧ ConditionalObservationBound nullFirstLaw (1/2) ∧
     prefixSurvival nullFirstLaw 0 1 = 0 ∧ prefixSurvival nullFirstLaw 0 2 = 0 ∧
@@ -692,7 +692,7 @@ theorem observationBernoulli_false (q : ℝ) (hq0 : 0≤q) (hq1 : q≤1) :
     eventProbability (observationBernoulli q hq0 hq1) (fun b => b=false) = q := by
   simp [eventProbability, observationBernoulli, Fintype.sum_bool]
 
-/-- P007-T8(iv), equality witness for the sharp lower bound of Supplement p. 1: "all n*k indicators independent", generalized to observation probabilities a_ij. The two nested product
+/-- P007-T8(iv), equality witness for the sharp lower bound of Supplement p. 1: "all n*k indicators independent", generalized to observation probabilities a_ij for validator witnesses. The two nested product
 laws mean independence of every cell, and automatically independence of entire row vectors. -/
 noncomputable def independentCells {n h : ℕ} (a : Fin n → Fin h → ℝ)
     (ha0 : ∀ i j, 0≤a i j) (ha1 : ∀ i j, a i j≤1) : FiniteLaw (IndicatorArray n h) :=
@@ -752,7 +752,7 @@ theorem equalProbability_prefix (n h : ℕ) (q : ℝ) (hq0 : 0≤q) (hq1 : q≤1
   simp [Fin.card_filter_val_lt, Nat.min_eq_right hj]
 
 /-- The equality model satisfies the paper's Assumption 2/7, including q=0. 
-Supporting finite lemma for attainment of the supplement sharp lower bound (Supplement p. 1). -/
+Supporting finite lemma for attainment of the supplement sharp lower bound (Supplement p. 1). Supporting finite lemma for the supplement sharpness model (Supplement p. 1). -/
 theorem equalProbability_assumption (n h : ℕ) (q : ℝ) (hq0 : 0≤q) (hq1 : q<1) :
     ConditionalObservationBound (equalProbabilityLaw n h q hq0 hq1.le) q := by
   refine ⟨hq0, hq1, ?_⟩
@@ -858,7 +858,7 @@ theorem fraction_bound_vs_all_bound {n h : ℕ} {q : ℝ}
   simpa using pow_right_strictAnti₀ hb0 hb1 (show 1<n by omega)
 
 /-- Prefix multiplication in an independent-cell model; j is the new zero-based column. 
-Supporting finite lemma for the supplement equality model and Figure 4/5 witnesses (Supplement pp. 1-3). -/
+Supporting finite lemma for the supplement equality model and Figure 4/5 witnesses (Supplement pp. 1-3). Supporting finite lemma for the supplement sharpness model (Supplement p. 1). -/
 theorem independentCells_prefix_step {n h : ℕ} (a : Fin n → Fin h → ℝ)
     (ha0 : ∀ i j, 0≤a i j) (ha1 : ∀ i j, a i j≤1) (i : Fin n)
     {j : ℕ} (hj : j<h) :
@@ -884,7 +884,7 @@ theorem independentCells_prefix_step {n h : ℕ} (a : Fin n → Fin h → ℝ)
 
 /-- Independent-cell laws with every observation chance ≤q obey the printed
 conditional bound, even when an earlier prefix is null. 
-Supporting finite lemma for Assumption 2 in the explicit equality and Figure 4/5 models (p. 150; Supplement pp. 1-3). -/
+Supporting finite lemma for Assumption 2 in the explicit equality and Figure 4/5 models (p. 150; Supplement pp. 1-3). Supporting finite lemma for the admissible laws in P007-T7,T9 and the sharpness model (Supplement pp. 1-3). -/
 theorem independentCells_assumption {n h : ℕ} (a : Fin n → Fin h → ℝ)
     (ha0 : ∀ i j, 0≤a i j) (ha1 : ∀ i j, a i j≤1) {q : ℝ}
     (hq0 : 0≤q) (hq1 : q<1) (haq : ∀ i j, a i j≤q) :
@@ -899,7 +899,7 @@ theorem independentCells_assumption {n h : ℕ} (a : Fin n → Fin h → ℝ)
     rw [independentCells_prefix_step a ha0 ha1 i hj, mul_div_cancel_left₀ _ (ne_of_gt hs)]
     exact haq i ⟨j,hj⟩
 
-/-- P007-T9, P007-E006 witness: two rows, two columns; observation chances 3/4 and 1/2.
+/-- P007-T9, E006 witness: two rows, two columns; observation chances 3/4 and 1/2.
 All four indicators are independent and the chosen q_*=3/4 is the least allowed bound. -/
 noncomputable def figure5Witness : FiniteLaw (IndicatorArray 2 2) :=
   independentCells (fun _ => ![(3/4 : ℝ),1/2])
@@ -951,7 +951,7 @@ noncomputable def RowsIdenticallyDistributed {n h : ℕ} (L : FiniteLaw (Indicat
   ∀ (i j : Fin n) (E : IndicatorRow h → Prop),
     eventProbability L (fun x => E (x i)) = eventProbability L (fun x => E (x j))
 
-/-- P007-T11(ii), P007-E004 witness: independent one-column rows with observed chances
+/-- P007-T11(ii), E004 witness: independent one-column rows with observed chances
 1/4 and 1/2. The row laws differ. -/
 noncomputable def nonidenticalRowsWitness : FiniteLaw (IndicatorArray 2 1) :=
   independentCells (fun i _ => ![(1/4 : ℝ),1/2] i)
@@ -959,7 +959,7 @@ noncomputable def nonidenticalRowsWitness : FiniteLaw (IndicatorArray 2 1) :=
     (by intro i j; fin_cases i <;> norm_num)
 
 /-- P007-T11(i)-(ii): Assumptions 1 and 2 do not entail identical row distribution.
-The two-row witness still satisfies the lower bound of Lemma 3. -/
+The validator's two-row witness still satisfies the lower bound of Lemma 3. -/
 theorem mutually_independent_need_not_be_iid :
     RowsIndependent nonidenticalRowsWitness ∧
     ConditionalObservationBound nonidenticalRowsWitness (1/2) ∧
@@ -1281,7 +1281,7 @@ theorem product_interval {x y xl xu yl yu lo hi : ℝ}
 
 /-- P007-T7(b), T8(v): the exact lower bound at n=10000,k=33,q=3/4.
 The proof uses outward rational intervals and repeated squaring, avoiding enormous
-expanded rational powers. -/
+expanded rational powers. Every arithmetic comparison is checked by Lean. -/
 theorem figure4_numeric_33 :
     (0.47075 : ℝ) ≤ bestCaseBound 10000 (3/4) 33 ∧ bestCaseBound 10000 (3/4) 33 < 0.47085 ∧ bestCaseBound 10000 (3/4) 33 < 1/2 := by
   have hqbase : (3 : ℝ)/4 ≤ (3 : ℝ)/4 ∧ (3 : ℝ)/4 ≤ (3 : ℝ)/4 := ⟨le_rfl,le_rfl⟩
@@ -1380,7 +1380,7 @@ theorem figure4_numeric_33 :
 
 /-- P007-T7(b), T8(v): the exact lower bound at n=10000,k=34,q=3/4.
 The proof uses outward rational intervals and repeated squaring, avoiding enormous
-expanded rational powers. -/
+expanded rational powers. Every arithmetic comparison is checked by Lean. -/
 theorem figure4_numeric_34 :
     (1/2 : ℝ) < bestCaseBound 10000 (3/4) 34 := by
   have hqbase : (3 : ℝ)/4 ≤ (3 : ℝ)/4 ∧ (3 : ℝ)/4 ≤ (3 : ℝ)/4 := ⟨le_rfl,le_rfl⟩
@@ -1472,7 +1472,7 @@ theorem figure4_numeric_34 :
 
 /-- P007-T7(b), T8(v): the exact lower bound at n=10000,k=952,q=99/100.
 The proof uses outward rational intervals and repeated squaring, avoiding enormous
-expanded rational powers. -/
+expanded rational powers. Every arithmetic comparison is checked by Lean. -/
 theorem figure4_numeric_952 :
     (0.49685 : ℝ) ≤ bestCaseBound 10000 (99/100) 952 ∧ bestCaseBound 10000 (99/100) 952 < 0.49695 ∧ bestCaseBound 10000 (99/100) 952 < 1/2 := by
   have hqbase : (99 : ℝ)/100 ≤ (99 : ℝ)/100 ∧ (99 : ℝ)/100 ≤ (99 : ℝ)/100 := ⟨le_rfl,le_rfl⟩
@@ -1595,7 +1595,7 @@ theorem figure4_numeric_952 :
 
 /-- P007-T7(b), T8(v): the exact lower bound at n=10000,k=953,q=99/100.
 The proof uses outward rational intervals and repeated squaring, avoiding enormous
-expanded rational powers. -/
+expanded rational powers. Every arithmetic comparison is checked by Lean. -/
 theorem figure4_numeric_953 :
     (1/2 : ℝ) < bestCaseBound 10000 (99/100) 953 := by
   have hqbase : (99 : ℝ)/100 ≤ (99 : ℝ)/100 ∧ (99 : ℝ)/100 ≤ (99 : ℝ)/100 := ⟨le_rfl,le_rfl⟩
@@ -1714,7 +1714,7 @@ theorem figure4_numeric_953 :
 
 /-- An adjacent integer bracket B(k)<a<B(k+1) determines the corrected floor and
 ceiling, without approximating logarithms. 
-Supporting finite lemma for the corrected Figure 4 inverse and worked floors and ceilings (Supplement p. 2; P007-T8). -/
+Supporting finite lemma for the corrected inverse and worked Figure 4 values (Supplement p. 2). Supporting finite lemma for the corrected worked floors and ceilings of Figure 4 (Supplement p. 2; P007-T8). -/
 theorem adjacent_bracket_rounding {n : ℕ} (hn : 0<n) {q a : ℝ}
     (hq0 : 0<q) (hq1 : q<1) (ha0 : 0<a) (ha1 : a<1) (k : ℕ)
     (hl : bestCaseBound n q k<a) (hu : a<bestCaseBound n q (k+1)) :
@@ -1779,3 +1779,82 @@ theorem figure4_printed_lower_bound_not_upper :
 
 end AronowAudit.P007
 
+#print axioms AronowAudit.P007.probability_true
+#print axioms AronowAudit.P007.probability_nonneg
+#print axioms AronowAudit.P007.probability_mono
+#print axioms AronowAudit.P007.probability_le_one
+#print axioms AronowAudit.P007.probability_compl
+#print axioms AronowAudit.P007.probability_congr
+#print axioms AronowAudit.P007.probability_exists_le_sum
+#print axioms AronowAudit.P007.prefix_zero
+#print axioms AronowAudit.P007.prefix_antitone
+#print axioms AronowAudit.P007.prefix_step
+#print axioms AronowAudit.P007.prefix_survival_bound
+#print axioms AronowAudit.P007.independent_rows_product
+#print axioms AronowAudit.P007.lemma3
+#print axioms AronowAudit.P007.lemma8
+#print axioms AronowAudit.P007.zero_bound_all_deleted
+#print axioms AronowAudit.P007.first_prefix_event
+#print axioms AronowAudit.P007.zero_bound_first_missing
+#print axioms AronowAudit.P007.repaired_chain_step
+#print axioms AronowAudit.P007.repairedConditional_bounds
+#print axioms AronowAudit.P007.repaired_chain_product
+#print axioms AronowAudit.P007.bernoulli_sandwich
+#print axioms AronowAudit.P007.deletion_probability_sandwich
+#print axioms AronowAudit.P007.logarithm_decay_identity
+#print axioms AronowAudit.P007.groups_are_not_variables
+#print axioms AronowAudit.P007.uniform_decay
+#print axioms AronowAudit.P007.limit_from_finite_bound
+#print axioms AronowAudit.P007.proposition5
+#print axioms AronowAudit.P007.proposition10
+#print axioms AronowAudit.P007.independentProduct_events
+#print axioms AronowAudit.P007.independentProduct_marginal
+#print axioms AronowAudit.P007.product_row_prefix
+#print axioms AronowAudit.P007.product_row_entry
+#print axioms AronowAudit.P007.independentProduct_rowsIndependent
+#print axioms AronowAudit.P007.pointMass_probability
+#print axioms AronowAudit.P007.mixtureLaw_probability
+#print axioms AronowAudit.P007.nullFirst_prefixes
+#print axioms AronowAudit.P007.zero_bound_counterexample
+#print axioms AronowAudit.P007.fully_missing_all_bounds
+#print axioms AronowAudit.P007.null_prefix_counterexample
+#print axioms AronowAudit.P007.later_null_counterexample
+#print axioms AronowAudit.P007.observationBernoulli_false
+#print axioms AronowAudit.P007.independentCells_rows
+#print axioms AronowAudit.P007.independentCells_prefix
+#print axioms AronowAudit.P007.equalProbability_prefix
+#print axioms AronowAudit.P007.equalProbability_assumption
+#print axioms AronowAudit.P007.bestCase_attained
+#print axioms AronowAudit.P007.expected_removed_row
+#print axioms AronowAudit.P007.expected_removed_fraction
+#print axioms AronowAudit.P007.expected_deletion_lower_bound
+#print axioms AronowAudit.P007.expected_deletion_bound_attained
+#print axioms AronowAudit.P007.fraction_bound_vs_all_bound
+#print axioms AronowAudit.P007.independentCells_prefix_step
+#print axioms AronowAudit.P007.independentCells_assumption
+#print axioms AronowAudit.P007.figure5Witness_prefixes
+#print axioms AronowAudit.P007.figure5_upper_bound_counterexample
+#print axioms AronowAudit.P007.mutually_independent_need_not_be_iid
+#print axioms AronowAudit.P007.unequalProbability_assumptions
+#print axioms AronowAudit.P007.unequalProbability_full_prefix
+#print axioms AronowAudit.P007.unequalProbability_all
+#print axioms AronowAudit.P007.lower_bound_is_not_upper_guarantee
+#print axioms AronowAudit.P007.printed_parameters_actual_deletion_high
+#print axioms AronowAudit.P007.bestCase_increasing
+#print axioms AronowAudit.P007.threshold_root
+#print axioms AronowAudit.P007.threshold_real_inversion
+#print axioms AronowAudit.P007.threshold_unique_solution
+#print axioms AronowAudit.P007.threshold_integer_inversion
+#print axioms AronowAudit.P007.threshold_floor_ceiling
+#print axioms AronowAudit.P007.threshold_rounding_gap
+#print axioms AronowAudit.P007.threshold_probability_guarantee
+#print axioms AronowAudit.P007.floor_is_not_first_crossing
+#print axioms AronowAudit.P007.product_interval
+#print axioms AronowAudit.P007.figure4_numeric_33
+#print axioms AronowAudit.P007.figure4_numeric_34
+#print axioms AronowAudit.P007.figure4_numeric_952
+#print axioms AronowAudit.P007.figure4_numeric_953
+#print axioms AronowAudit.P007.adjacent_bracket_rounding
+#print axioms AronowAudit.P007.figure4_corrected_worked_values
+#print axioms AronowAudit.P007.figure4_printed_worked_counterexamples
+#print axioms AronowAudit.P007.figure4_printed_lower_bound_not_upper

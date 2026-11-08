@@ -2,7 +2,10 @@ import AronowAudit.P029.P029_Audit
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 
 /-!
-# P029: grouped covariance and finite binomial scores
+# P029 gap drafts: grouped covariance and finite binomial scores
+
+This file is a source-reviewed draft; the drafter has not run Lean.
+The three held declarations are used only in the `type_of%` checks.
 -/
 
 namespace AronowAudit.P029.Wave1
@@ -16,7 +19,7 @@ set_option maxRecDepth 4096
 set_option maxHeartbeats 2000000
 set_option backward.isDefEq.respectTransparency false
 
-/-! ## Fiber centering and covariance -/
+/-! ## Record 0: fiber centering and covariance -/
 
 private lemma GP029T10_event_pos {L : Type*} [Fintype L]
     (p : L → ℝ) (hp : ∀ i, 0 < p i) (E : L → Prop)
@@ -193,7 +196,10 @@ theorem grouped_covariance_decomposition_proof {n : ℕ} {G : Type*} [Fintype G]
         (GP029T10_mass_mul_ce p _ hp _).symm
       _ = _ := by rw [hmass]
 
-/-! ## Marginal binomial moments and the zero-control case -/
+example : type_of% @AronowAudit.P029.grouped_covariance_decomposition :=
+  grouped_covariance_decomposition_proof
+
+/-! ## Record 1: the marginal binomial moments and zero-control case -/
 
 private lemma GP029T14One_mass_nonneg (n : ℕ) (p : ℝ)
     (hp : p ∈ Icc (0 : ℝ) 1) (k : Fin (n+1)) :
@@ -231,7 +237,7 @@ private lemma GP029T14One_rate_mean (n : ℕ) (hn : 0 < n) (p : ℝ) :
       ring
     _ = p := by rw [GP029T14One_count_mean]; field_simp [hnr]
 
-/-- The second binomial moment. -/
+/-- Shared second moment, needed by record 2 below. -/
 private lemma GP029T14One_rate_variance (n : ℕ) (hn : 0 < n) (p : ℝ)
     (hp : p ∈ Icc (0 : ℝ) 1) :
     (∑ k : Fin (n+1), binomialMass n p k * (((k.val : ℝ) / n) - p)^2) =
@@ -304,7 +310,10 @@ theorem one_sided_saturated_unbiasedness_proof (n1 n0 : ℕ) (hn1 : 0 < n1) (hn0
     simp only [hs0]
     exact GP029T14One_rate_mean n1 hn1 p1
 
-/-! ## Product moments, strict bias, and a finite square-tail bound -/
+example : type_of% @AronowAudit.P029.one_sided_saturated_unbiasedness :=
+  one_sided_saturated_unbiasedness_proof
+
+/-! ## Record 2: product moments, strict bias, and a finite square-tail bound -/
 
 private lemma GP029T14Bias_E_add {L : Type*} [Fintype L] (p u v : L → ℝ) :
     fE p (fun i => u i + v i) = fE p u + fE p v := by
@@ -505,6 +514,9 @@ theorem saturated_binomial_bias_bound_proof (n1 n0 : ℕ) (hn1 : 0 < n1) (hn0 : 
     have ht := GP029T14Bias_square_tail q T S c δ hvalid.1 hδ hcontract
     rw [hvariance] at ht
     exact ht
+
+example : type_of% @AronowAudit.P029.saturated_binomial_bias_bound :=
+  saturated_binomial_bias_bound_proof
 
 end
 

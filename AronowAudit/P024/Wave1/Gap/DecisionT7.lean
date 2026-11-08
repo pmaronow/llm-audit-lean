@@ -1,6 +1,6 @@
 import AronowAudit.P024.P024_IndependentCompletion
 
-/-! P024-T7 under the nonempty-arm conditional interpretation. -/
+/-! P024-T7 under the author-selected nonempty-arm conditional reading. -/
 noncomputable section
 open scoped BigOperators
 open Filter

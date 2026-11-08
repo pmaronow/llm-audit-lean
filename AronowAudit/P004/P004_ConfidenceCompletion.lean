@@ -10,7 +10,7 @@ set_option maxHeartbeats 2000000
 
 namespace AronowAudit.P004.ConfidenceFollowup02
 
-/-- The exact unweighted aggregation claim is contradicted by the
+/-- The exact unweighted aggregation claim is contradicted by the existing
 finite positive-area binary-outcome construction. -/
 theorem printed_area_sum_refuted :
     ¬ (∀ {N m : ℕ} (p : Fin N → ℝ) (R : Fin m → CircleTable N)
@@ -34,7 +34,8 @@ theorem printed_area_sum_refuted :
   rw [hsum,hweighted] at hh
   norm_num at hh
 
-/-- Residual-maker idempotence expresses the adjustment trace as a double sum. -/
+/-- Use residual-maker idempotence to reduce the actual adjustment trace
+to a double sum, avoiding a cubic finite matrix expansion. -/
 theorem adjustmentMu_trace_reduced {N : ℕ} (z : Assignment N)
     (Q : Matrix (Fin N) (Fin N) ℝ)
     (h1 : 0 < armCount z true) (h0 : 0 < armCount z false) :
@@ -47,8 +48,8 @@ theorem adjustmentMu_trace_reduced {N : ℕ} (z : Assignment N)
   congr 1
   rw [Matrix.trace_mul_comm,← Matrix.mul_assoc,hm]
 
-/-- Exact finite N=20 PD-adjustment counterexample.
-The residual maker and trace are evaluated explicitly. -/
+/-- Complete exact original finite N=20 PD-adjustment counterexample.
+The actual residual maker and trace are evaluated, not assumed constants. -/
 theorem adjusted_pd_finite_counterexample :
     armCount starAssignment20 true = 10 ∧ armCount starAssignment20 false = 10 ∧
     armMean (starBlockTable 4) starAssignment20 true = 0 ∧
@@ -100,10 +101,9 @@ end AronowAudit.P004.ConfidenceFollowup02
 
 namespace AronowAudit.P004
 
-/-- P004-T7 finite witness: every matrix and residual in the N=20 construction
-is explicit. Both arm means vanish and both unadjusted variance estimates are
-4/25. Their adjustment factors are 41/50 and 101/100, giving adjusted values
-8/41 and 16/101, respectively, with 16/101 < 8/41. -/
+/-- T7 witness 2: every matrix and residual in the N=20 construction is
+explicit. Both arm means vanish, unadjusted variances are 4/25, but
+the PD adjustment reverses the ordering, 16/101<8/41. -/
 theorem adjusted_pd_finite_counterexample :
     armCount starAssignment20 true = 10 ∧ armCount starAssignment20 false = 10 ∧
     armMean (starBlockTable 4) starAssignment20 true = 0 ∧
@@ -116,3 +116,5 @@ theorem adjusted_pd_finite_counterexample :
 
 end AronowAudit.P004
 
+#print axioms AronowAudit.P004.ConfidenceFollowup02.printed_area_sum_refuted
+#print axioms AronowAudit.P004.adjusted_pd_finite_counterexample

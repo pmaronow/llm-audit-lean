@@ -1,4 +1,4 @@
-/- Exact full-interference design bias and a uniform-subset finite witness. -/
+/- Exact full-interference design bias and a uniform-subset finite witness. The statement about random continuous baselines is separate and remains unproved. -/
 import AronowAudit.P009.P009_CompleteConditional
 import AronowAudit.P009.P009_PairedCompletion
 import Mathlib.Data.Fintype.Powerset
@@ -186,8 +186,10 @@ theorem absolute_bias_population_completed {n : ℕ} (hn : 0 < n) (heven : Even 
   · rw [hh.2.2.2.2.2.1];norm_num
 
 
-/- The finite-law construction uses uniform m-subsets and an injective pushforward,
-avoiding enumeration of 2^n Boolean assignments. -/
+/- The next finite-law construction is extracted from this repository's existing
+fidelity/WitnessSupport.lean (uniformLaw through complete_certificate). It uses
+uniform actual m-subsets and an injective pushforward, avoiding enumeration of
+2^n Boolean assignments. No unfinished declaration is imported. -/
 def uniformLaw (Ω : Type*) [Fintype Ω] [Nonempty Ω] : Law Ω where
   mass := fun _ => 1/(Fintype.card Ω:ℝ)
   nonneg := by intro a; positivity
@@ -289,6 +291,10 @@ theorem simulation_bias_counterexample_completed :
   rw [hh.2.2.2.2.2.2.1,hvar]
   norm_num
 
+#print axioms full_interference_bias_completed
+#print axioms absolute_bias_population_completed
+#print axioms simulation_bias_counterexample_completed
+#print axioms CompleteConditional.complete_conditional_mean_bound
 end
 end AronowAudit.P009.FullBiasCompletion
 
@@ -313,8 +319,12 @@ theorem full_interference_bias {n : ℕ} (hn : 0 < n) (heven : Even n)
     mean E.design (fun z => (hajek E z-eate E)^2) = var E.design (hajek E)+1 := by
   exact FullBiasCompletion.full_interference_bias_completed hn heven E b hy hDesign
 
+#print axioms full_interference_bias
+
 /-- T25 part (ii), the corrected interpretation of the full-interference rows:
-the population signed error is -1 and its reported magnitude is 1. -/
+the population signed error is -1 and its reported magnitude is 1. This
+separate statement does not treat the proved caption arithmetic as a proof
+of the unfinished design-based simulation identity. -/
 theorem absolute_bias_population {n : ℕ} (hn : 0 < n) (heven : Even n)
     (E : Experiment n) (b : Fin n → ℝ) (hy : E.outcome = fullOutcome b)
     (hDesign : Complete E (n/2) ∨ ∃ ρ : Pairing n, Paired E ρ) :
@@ -322,11 +332,14 @@ theorem absolute_bias_population {n : ℕ} (hn : 0 < n) (heven : Even n)
     |mean E.design (ht E)-eate E| = 1 ∧ |mean E.design (hajek E)-eate E| = 1 := by
   exact FullBiasCompletion.absolute_bias_population_completed hn heven E b hy hDesign
 
+#print axioms absolute_bias_population
+
 /-- T23 finite illustration (Supplement B pp. 2–3): a concrete 100-unit
 complete-interference, complete-randomization population has both estimators
 exactly zero and EATE one. Its signed bias is -1, squared bias one, and true
-variance zero. This is a single zero-baseline population, rather than a
-sampling-averaged counterexample. -/
+variance zero. This single zero-baseline population does not certify the
+sampling-averaged counterexample; those formulas are stated separately in
+simulation_sampling_variance. -/
 theorem simulation_bias_counterexample :
     ∃ E : Experiment 100, E.outcome = fullOutcome (fun _ => 0) ∧
       Complete E 50 ∧ eate E = 1 ∧
@@ -336,6 +349,8 @@ theorem simulation_bias_counterexample :
       var E.design (ht E) = 0 ∧
       mean E.design (fun z => (ht E z-eate E)^2) = 1 := by
   exact FullBiasCompletion.simulation_bias_counterexample_completed
+
+#print axioms simulation_bias_counterexample
 
 end
 end AronowAudit.P009

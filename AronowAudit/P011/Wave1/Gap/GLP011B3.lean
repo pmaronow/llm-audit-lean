@@ -6,6 +6,7 @@ import Mathlib.Data.Rat.Lemmas
 /-!
 Finite reduction of the degree-constrained graph program to weighted matching.
 The `mr_` prefix identifies the helpers for `matching_reduction_proof`.
+The held declaration is used only for the final type check.
 -/
 
 namespace AronowAudit.P011.Wave1
@@ -675,6 +676,8 @@ theorem matching_reduction_proof {n : ℕ} (hn : 0 < n) (P : DegreeProblem n) :
   refine ⟨mr_feasible_iff P,?_,(mr_size_bounds hn P).1,(mr_size_bounds hn P).2⟩
   intro hP
   exact ⟨mr_feasible_split P hP,fun J hJ hmax => mr_maximum_decodes P hP J hJ hmax⟩
+
+example : type_of% @AronowAudit.P011.matching_reduction := matching_reduction_proof
 
 end
 end AronowAudit.P011.Wave1

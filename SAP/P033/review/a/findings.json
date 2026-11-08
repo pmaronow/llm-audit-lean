@@ -1,0 +1,182 @@
+[
+  {
+    "target_id": "P033-T1",
+    "theorem": "SAP.P033.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No external hypotheses. The specified eight-dimensional law is a product of eight genuine N(mean,1) probability measures, with full support and finite moments of every order. The estimator variances are positive: 83/25 and 82/5. scratch/Check.lean checks both Gaussian product probability instances; exact rational checks verify the WLS rows and observed array.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P033-T2",
+    "theorem": "SAP.P033.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general normal-law clause take Omega=R, mu=N(0,1), A=B=id, tau=0, sigmaA=sigmaB=1, c=1. This law premise is checked in scratch/Check.lean. For the study clause N=1 admits S=empty and S={0}; both laws are the same nonzero probability measure and the claimed counts are 0 versus 1. The fixed M2 treated mean is a smooth polynomial; its smoothness is also checked in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P033-T3",
+    "theorem": "SAP.P033.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The original sample space is the 1024 equally weighted ten-bit arrays; the noisy space is the 2^60 equally weighted sixty-bit arrays. Both are nonempty. True variances are 62/25 and 10, or 372/125 and 12 with record noise. Exact enumeration independently confirms 112 and 56 zero-estimator arrays. Taking f=1 already gives the claimed zero estimated variances with positive true variances.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P033-T4",
+    "theorem": "SAP.P033.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the nested-cell implication use C=G=1, m(0)=5, owner(0)=0, ell(0)=1, and y_i=i. For the sequence n=3 has a positive Gram determinant and V_3=5, or noisy variance 6. For the independent-cluster theorem take G=2, independent N(0,1) coordinates, mean=0, varZ=1 and weights (1,-1), giving true variance 2; the probability, L2, independence, mean and variance premises are checked in scratch/Check.lean. The ten-sign model supplies the auxiliary finite-population centered moment 9/10. No empty index type is needed.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P033-T5",
+    "theorem": "SAP.P033.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two cells contain 100 individuals each, with the actual binary potential outcomes and treatment assignments defined in Defs. First-stage count difference is 50, individual baseline variance is 3/16, and eligible count variance is 800. For the general scaling clause take (yE,yI,dE,dI,sd,scale)=(30,25,50,0,sqrt(800),2); every added denominator condition holds. The sample scaling clause has n=2 and y=(10,50).",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P033-T6",
+    "theorem": "SAP.P033.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A Bernoulli(1/2) variable on two equiprobable outcomes satisfies the population hypotheses and has variance 1/4. The binary sample (0,1) has sample variance 1/2, checked in scratch/Check.lean. Balanced binary samples of size 31732 satisfy the large-sample premise. The stored SE is strictly positive; choosing |tau|=1/20 gives power approximately 0.897261912061943, strictly within the asserted enclosure. The three positive power roots are independently checked numerically.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P033-T7",
+    "theorem": "SAP.P033.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take f(x)=x/8 on [0,4], M=19 and h=49/125. The window mass is 2401/12500>0, so P(N_h=19)=(2401/12500)^19>0 under the explicit product law. Integrability, normalization, nonnegativity, support and this window mass are checked in scratch/Check.lean. The polynomial family also has positive mass at every finite m; the Gaussian example uses N(7/2,1), a genuine nondegenerate law.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P033-T8",
+    "theorem": "SAP.P033.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For all density and conditioning premises take f(x)=x/8 on [0,4], h=49/125, M=n=19; the conditioning probability is (2401/12500)^19>0. Locally f is differentiable with derivative 1/8, is increasing, is Lipschitz with L=1/8, and has positive lower bound a=(49/25-49/125)/8. For the symmetry and nonincreasing branches use f=1/4 on [0,4], zero elsewhere: it is locally constant, with a=1/4, L=0, and window mass h/2>0. Thus these branches are not vacuous either. The linear-density global and window premises compile in scratch/Check.lean.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P033-T9",
+    "theorem": "SAP.P033.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Omega=R, mu=N(1,1), T=id and tau=s=1 for the test-law hypothesis. Take both cluster-label sets to be {0}; they are nonempty and rho=1/2, checked in scratch/Check.lean. With tau=s=1 and rho=1/2 the strict power-comparison hypotheses hold. Each of the four stated count triples also has a feasible positive overlap no larger than either side count, so none uses truncated subtraction or an impossible cluster configuration.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P033-T10",
+    "theorem": "SAP.P033.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no external hypotheses: the explicit point (1/2,1/2), three-element sample (0,2,4), SE=1/2 and divisors 2 and 4 are all genuine nondegenerate instances.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T11",
+    "theorem": "SAP.P033.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the algebraic clauses take s=SE=y=zeta=1; the required denominators are nonzero and the positive-sided version also applies. For the binary variance clause take n=568 and the array with exactly 82 ones and 486 zeros, giving the positive variance 123/994. The exact critical value is approximately 1.959963984540054, so its reciprocal is well-defined.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T12",
+    "theorem": "SAP.P033.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use theta=0, b=B=1 and T distributed N(1,1), with H_1 approximately 2.646145548215311. The smaller example uses b=B=1/2 and H_(1/2) approximately 2.181477442328154. The defining half-length sets are nonempty (sufficiently large H gives coverage above 19/20) and bounded below by zero, with unique positive coverage roots. The two 20% rejection probabilities are approximately 0.235791967270992 and 0.204149056327712, independently checked.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P033-T13",
+    "theorem": "SAP.P033.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "B=0 gives the ordinary nondegenerate standard-normal null and H_0=z>0. B=1, b=1 and H_1 approximately 2.646145548215311 instantiate the biased clauses; levels 1/20 and 1/5 lie in (0,1). For any fixed finite B>=0 the coverage function increases continuously from 0 to 1 as H increases, so its defining half-length set is nonempty and bounded below. The specified tail functions are continuous and take values in [0,1].",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P033-T14",
+    "theorem": "SAP.P033.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use q=49/25 and the two recorded triples. The first upper-endpoint and width SEs are respectively 1/40 and 1/35, both positive. The second triple has U-beta=53/1000>0 and U-L=105/1000>0. The bins have positive width q/18.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T15",
+    "theorem": "SAP.P033.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the quantile-based clause take alpha=1/20, beta=0, L=-z and U=z, where z=Q(39/40)>0. For the centered interval clause take beta=0, q=z and s=1. Both reconstruction rules then yield 1. The fixed numerical row has positive width and q=49/25>0. All general width denominators are guarded by L<U and q>0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T16",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to a theorem: this target is the printed empirical diagnosis of the surveyed studies, with no definition of accuracy or complete stochastic model of their original procedures in the supplied files. The pointwise M1/M2 examples establish mathematical non-identification; they do not determine the truth of that empirical diagnosis or refute the conditional bias warning. Omission is justified on the supplied evidence.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P033-T17",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to a theorem: this target reports the package workflow and the empirical weighted power tables. The supplied files do not contain the fitted data, bandwidths, native variances and all analysis weights needed to certify those entries. T3/T4 and T9 state conditional mathematical calculations and specified arithmetic corrections; they do not certify the complete printed tables or a general asymptotic validity claim. Omission is justified.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P033-T18",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to a theorem: the target combines the empirical implementation of outcome standardization with published table entries and plot positions. The intended individual baseline/control SD and the data needed to verify the full workflow are unavailable in the supplied package. T5/T6 and T10/T11 cover the explicit mathematical witnesses, bounds and algebra; certifying the actual empirical standardization and all its summaries would require additional evidence. Omission is justified.",
+    "confidence": 0.96
+  }
+]

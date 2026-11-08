@@ -26,7 +26,7 @@ theorem tc04_iterate_comp_affine (p : Polynomial ℝ) (a b : ℝ) (k : ℕ) :
     rw [Function.iterate_succ_apply', pow_succ, C_mul]
     ring
 
-/-- The shifted Mathlib convention and the Rodrigues convention agree. -/
+/-- The shifted Mathlib convention and the restored Rodrigues convention agree. -/
 theorem tc04_legendre_shift (n : ℕ) (x : ℝ) :
     (AronowAudit.Literature.legendreRodrigues n).eval x =
       Polynomial.aeval ((1-x)/2) (Polynomial.shiftedLegendre n) := by
@@ -218,6 +218,20 @@ theorem tc04_legendre_span (J : ℕ) :
     isUnit_iff_ne_zero.mpr (Polynomial.leadingCoeff_ne_zero.mpr
       (tc04_legendre_sequence.ne_zero i)))
 
+/-- The corresponding strict-degree span. -/
+theorem tc04_legendre_span_lt (J : ℕ) :
+    Submodule.span ℝ (legendreRodrigues '' Iio J) = Polynomial.degreeLT ℝ J := by
+  exact tc04_legendre_sequence.span_degreeLT (fun i _ =>
+    isUnit_iff_ne_zero.mpr (Polynomial.leadingCoeff_ne_zero.mpr
+      (tc04_legendre_sequence.ne_zero i)))
+
+/-- The normalized uniform expectation in interval-integral notation. -/
+theorem tc04_uniform_expectation (f : ℝ → ℝ) :
+    expectation uniformMargins f = (1/2:ℝ) * ∫ x in (-1:ℝ)..1, f x := by
+  unfold expectation uniformMargins
+  rw [integral_smul_measure, integral_Icc_eq_integral_Ioc,
+    ← intervalIntegral.integral_of_le (show (-1:ℝ) ≤ 1 by norm_num)]
+  norm_num
 
 /-- Orthogonality for the normalized uniform probability law. -/
 theorem tc04_legendre_inner (m n : ℕ) :

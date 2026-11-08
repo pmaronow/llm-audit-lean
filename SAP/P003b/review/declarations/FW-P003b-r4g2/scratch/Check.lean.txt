@@ -1,0 +1,165 @@
+import SAP.P003b.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+namespace PalomarReview
+open SAP.P003b
+
+lemma accepted_member (o v : Counts) (α : ℝ)
+    (hv : v ∈ possibleTables o) (hp : α ≤ (pValue v o : ℝ)) :
+    tau v ∈ accepted α o := by
+  classical
+  apply Finset.mem_image.mpr
+  refine ⟨v, ?_, rfl⟩
+  simpa only [List.mem_toFinset, List.mem_filter, decide_eq_true_eq] using And.intro hv hp
+
+lemma nonempty_from_rational_filter (o : Counts) (α : ℚ)
+    (h : ((possibleTables o).filter (fun v => decide (α ≤ pValue v o))) ≠ []) :
+    (accepted (α : ℝ) o).Nonempty := by
+  obtain ⟨v, hv⟩ := List.exists_mem_of_ne_nil _ h
+  obtain ⟨hv, hp⟩ := List.mem_filter.mp hv
+  have hp' : α ≤ pValue v o := of_decide_eq_true hp
+  exact ⟨tau v, accepted_member o v (α : ℝ) hv (by exact_mod_cast hp')⟩
+
+-- T26: the exact fixed population, finite design, level, and legal masks.
+example : badPopulation.total = 20 ∧ 0 < (3 : ℕ) ∧ 3 < badPopulation.total ∧
+    (0 : ℝ) < 109/500 ∧ (109/500 : ℝ) < 1 ∧ tauQ badPopulation = -3/20 := by
+  norm_num [badPopulation, Counts.total, tauQ, Counts.effect]
+
+example : ∀ q ∈ randomStates badPopulation 3,
+    badMask q ∈ missingMasks (observed badPopulation q) := by
+  native_decide
+
+theorem t26_finite_filters : ∀ q ∈ randomStates badPopulation 3,
+    ((possibleTables (minusCompletion (observed badPopulation q) (badMask q))).filter
+      (fun v => decide ((109/500 : ℚ) ≤
+        pValue v (minusCompletion (observed badPopulation q) (badMask q))))) ≠ [] ∧
+    ((possibleTables (plusCompletion (observed badPopulation q) (badMask q))).filter
+      (fun v => decide ((109/500 : ℚ) ≤
+        pValue v (plusCompletion (observed badPopulation q) (badMask q))))) ≠ [] := by
+  native_decide
+
+example : ∀ q ∈ randomStates badPopulation 3,
+    (accepted (109/500) (minusCompletion (observed badPopulation q) (badMask q))).Nonempty ∧
+    (accepted (109/500) (plusCompletion (observed badPopulation q) (badMask q))).Nonempty := by
+  intro q hq
+  obtain ⟨hm, hp⟩ := t26_finite_filters q hq
+  have hcast : ((109/500 : ℚ) : ℝ) = 109/500 := by norm_num
+  simpa only [hcast] using And.intro (nonempty_from_rational_filter _ _ hm)
+    (nonempty_from_rational_filter _ _ hp)
+
+-- T27: a legal monotone function on the printed two-point domain.
+example : (0 < (1 : ℤ) ∧ 1 < (2 : ℤ)) ∧
+    ((1 : ℤ)-1 ≤ 2 ∧ (2 : ℤ) ≤ 2) ∧
+    (∀ x : ℤ, 1 ≤ x → x ≤ 2 → ((fun _ : ℤ => false) x = false ↔ x ≤ 2)) := by
+  refine ⟨by norm_num, by norm_num, ?_⟩
+  intro x _ hx
+  simp [hx]
+
+example (fuel : ℕ) : printedExecution fuel 1 2 (fun _ => false) 1 2 ≠
+    some (2, 2) := by
+  cases fuel <;> simp [printedExecution, searchStep]
+
+example (fuel : ℕ) : printedExecution (fuel+1) 1 2 (fun _ => false) 1 2 =
+    some (1, 2) := by
+  simp [printedExecution, searchStep]
+
+lemma collapsed_execution (fuel : ℕ) :
+    printedExecution fuel 1 2 (fun _ => true) 1 1 = none := by
+  induction fuel with
+  | zero => rfl
+  | succ t ih => simp [printedExecution, searchStep, ih]
+
+example (fuel : ℕ) : printedExecution fuel 1 2 (fun _ => true) 1 2 = none := by
+  cases fuel with
+  | zero => rfl
+  | succ t => simp [printedExecution, searchStep, collapsed_execution]
+
+-- T30: both positive balanced arms and a genuine possible p=1 vector.
+def o30 : Counts := ⟨0,1,0,1⟩
+def v30 : Counts := ⟨0,1,1,0⟩
+
+example : (0 < o30.a+o30.b ∧ o30.a+o30.b = o30.c+o30.d) ∧
+    (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) := by
+  norm_num [o30]
+
+example : Possible o30 v30 ∧ wholeBalancedVector o30 = v30 ∧
+    pValue v30 o30 = 1 := by
+  native_decide
+
+example : tau v30 = estimate o30 := by
+  norm_num [tau, tauQ, Counts.effect, Counts.total, v30, estimate, estimateQ, o30]
+
+def z30 : Assignment 2 1 := ⟨{0}, by decide⟩
+def Y30 : Fin 2 → Bool := fun _ => false
+def w30 : PotentialTable 2 := wholeBalancedWitness Y30 z30.val
+
+example : wholeAgrees w30 Y30 z30.val ∧
+    wholeObservedCounts Y30 z30.val = o30 ∧ tableCounts w30 = v30 := by
+  constructor
+  · intro i
+    fin_cases i <;> decide
+  · native_decide
+
+example : Nonempty (Assignment 2 1) := ⟨z30⟩
+
+-- T31: use a genuinely unbalanced design and construct an accepted member.
+def o31 : Counts := ⟨1,0,0,2⟩
+
+example : Possible o31 o31 ∧ pValue o31 o31 = 1/3 := by
+  native_decide
+
+example : (0 < o31.a+o31.b ∧ 0 < o31.c+o31.d) ∧
+    (0 < (1/4 : ℝ) ∧ (1/4 : ℝ) < 1) ∧
+    (accepted (1/4) o31).Nonempty := by
+  refine ⟨by norm_num [o31], by norm_num, ?_⟩
+  refine ⟨tau o31, accepted_member o31 o31 (1/4) ?_ ?_⟩
+  · change Possible o31 o31
+    native_decide
+  · have h : pValue o31 o31 = 1/3 := by native_decide
+    rw [h]
+    norm_num
+
+-- T33: all hypotheses hold; the increase is strict. Possibility of the
+-- updated vector is deliberately not a hypothesis of the printed lemma.
+def o33 : Counts := ⟨0,3,0,3⟩
+def v33 : Counts := ⟨0,1,3,2⟩
+def vp33 : Counts := ⟨1,0,2,3⟩
+
+example : (0 < o33.a+o33.b ∧ o33.a+o33.b = o33.c+o33.d) ∧
+    v33.total = o33.total ∧ 1 ≤ min v33.b v33.c ∧ 2 ≤ max v33.b v33.c ∧
+    vp33 = ⟨v33.a+1,v33.b-1,v33.c-1,v33.d+1⟩ ∧
+    Possible o33 v33 ∧ pValue v33 o33 = 2/5 ∧ pValue vp33 o33 = 7/10 ∧
+    pValue v33 o33 < pValue vp33 o33 := by
+  native_decide
+
+-- A rational computation of T26's complete finite event. The endpoint
+-- lists use the exact pValue comparison, without any real sInf/sSup.
+def rationalExtrema (α : ℚ) (o : Counts) : Option (ℚ × ℚ) :=
+  let vals := ((possibleTables o).filter (fun v => decide (α ≤ pValue v o))).map tauQ
+  match vals with
+  | [] => none
+  | t :: ts => some (ts.foldl min t, ts.foldl max t)
+
+def rationalMissingInterval (o r : Counts) : Option (ℚ × ℚ) :=
+  let lo := minusCompletion o r
+  let hi := plusCompletion o r
+  match rationalExtrema (109/500) lo, rationalExtrema (109/500) hi with
+  | some (l, _), some (_, u) => some (min l (estimateQ lo), max u (estimateQ hi))
+  | _, _ => none
+
+def t26CoverageNumerator : ℕ :=
+  ((randomStates badPopulation 3).map fun q =>
+    match rationalMissingInterval (observed badPopulation q) (badMask q) with
+    | none => 0
+    | some (l, u) => if l ≤ tauQ badPopulation ∧ tauQ badPopulation ≤ u
+        then multiplicity badPopulation q else 0).sum
+
+example : t26CoverageNumerator = 891 ∧ binomial badPopulation.total 3 = 1140 ∧
+    (t26CoverageNumerator : ℚ) / binomial badPopulation.total 3 = 297/380 ∧
+    (297/380 : ℚ) < 1-109/500 := by
+  native_decide
+
+end PalomarReview

@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P015a.T1",
+    "target_id": "P015-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "T1Statement and rareWitness state all clauses (a)-(e): the specified four-atom law and potential outcomes; affine effects, conditional independence and linear propensity; all four strictly positive endpoint probabilities; both conditional variances, nominal mass and exact effective mass; positivity and arbitrarily small effective mass throughout 0<epsilon<1/2; the observed-outcome IPW vector, target, exact first and second moments and variance; unbiasedness, exact variance and Chebyshev bound for every n>=1 under the independent product law; convergence in probability for each fixed delta>0 at epsilon=10^-6; and the actual nonsingular population OLS coefficient equal to the effective causal mean, unequal to the nominal mean. Neither the canonical statement nor the Lean theorem promises estimator consistency uniformly in epsilon. The definitions are the ordinary finite conditional means, residual-square weights, reweighted probability law and matrix OLS formula, with all denominators and the Gram determinant valid on the data used. The counterexample addresses a positive threshold interpretation of approximately zero weight, as disclosed, and is itself fully asserted rather than assumed. No canonical clause is dropped. Independent compiled checks are in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P015a.T2",
+    "target_id": "P015-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem states the exact uniform four-atom multivalued-treatment example, linear conditional mean, individual and conditional weights, positive normalizer, effective atom and profile masses, and absent treatment 1 at profile 1 under both laws. The common-positive-support iff d=0 clauses imply that no distinct endpoint pair works at both profiles. Both arbitrary-potential-outcome worlds, their conditional independence, pointwise identical observed triples, and all four nominal/effective effect means are included. The universal impossibility of simultaneous consistency uses measurable, independent uniform draws and the same observed-data statistic sequence, and covers both target pairs (1,2) and (1,13/5). Dropping affine potential outcomes is expressly part of the relevant section's setting in the standing assumptions, so world B is admissible. Quantifying over all statistics on real sample tuples is harmless: on these finite observed-data supports every resulting statistic is measurable. The example refutes fixed-distinct-endpoint positivity while retaining positive treatment variation, exactly as the canonical assertion and docstring distinguish. An actual infinite-product probability law satisfying every sampling hypothesis is constructed in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P015a.T3",
+    "target_id": "P015-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "The finite uniform law gives precisely independent Bernoulli(1/2) X and D, all four conditional endpoint probabilities 1/2, and both population conditional variances 1/4. The sample is explicitly the ordered atom tuple (0,0,2,3), evaluated under the independent product law to probability 1/256; the repeated realized atom does not change independence of the draws. The population-to-sample row identities, controls normal equations and nonsingularity, actual inverse-Gram least-squares solution, residual vector and fitted squared weights are all asserted. The full (1,D,X) design has exactly the canonical Gram matrix and determinant 2. Its zero fitted weights coexist with positive population overlap, and the docstring identifies this sample-to-population implication rather than making a false claim about exactly zero population weights. No outcome assumptions are needed for this design-only counterexample; it can be embedded in the paper's causal setting with deterministic affine potential outcomes. The independent-draw atom and both Gram determinants were checked in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P015a.T13",
+    "target_id": "P015-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "For every 0<p<1 the statement includes all formal clauses (i)-(iv): the derivative at every real argument; sigmoid(logit(p))=p; both corrected formulas for its derivative at the center; both centered and affine forms of the first Taylor polynomial; and evaluation of the erroneous printed fraction to 1 at p=1/2 versus the true derivative 1/4. The sigmoid, log odds and Taylor definitions are exactly the canonical functions and first derivative polynomial. Positive p and 1-p protect logarithm and division domains; the derivative is accompanied by HasDerivAt and cannot be a default nondifferentiable value. The discrepancy at 1/2 has a nonzero denominator. A concrete admissible p=1/2 and its center were checked in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P015a.T12",
+    "target_id": "P015-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "T12WholeStatement includes every formal clause of the canonical correction, without using the note's suggestion that clause (i) alone could suffice. It asserts the exact first Taylor polynomial and a genuine neighborhood quadratic remainder for every 0<p<1; a complex power-series germ with exact finite radius sqrt(logit(p)^2+pi^2); and, for every 0<=r<rho<R, nonempty bounded circle and error images, an attained circle maximum, the stated supremum Cauchy error bound for every degree, and convergence of that bound to zero. Nonemptiness and boundedness are conclusions, so there is no empty-supremum or unbounded-supremum antecedent. Its explicit two-group, 200-observation binary data certify full rank, a unique finite global logistic MLE, empirical outcome mean 1/2, both predictors outside the convergence disk and, more strongly, actual probability errors at least 49/100 at every degree. The Taylor polynomial uses ordinary Mathlib derivatives through degree N; the complex extension is the canonical formula and its arbitrary pole values are outside the disks used. It asserts no coefficient or weight accuracy. The interior parameters p=1/2,r=1,rho=2 and the full-rank witness design were checked in scratch/Check.lean."
+  }
+]

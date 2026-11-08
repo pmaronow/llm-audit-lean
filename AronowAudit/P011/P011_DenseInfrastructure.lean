@@ -195,3 +195,7 @@ theorem frobenius_sq_le_size_operatorNorm_sq {n : ℕ} (M : Matrix (Fin n) (Fin 
 end
 end AronowAudit.P011.DenseCompletion
 
+#print axioms AronowAudit.P011.DenseCompletion.centering_sandwich_norm
+#print axioms AronowAudit.P011.DenseCompletion.finite_expectation_error
+#print axioms AronowAudit.P011.DenseCompletion.entry_le_operatorNorm
+#print axioms AronowAudit.P011.DenseCompletion.frobenius_sq_le_size_operatorNorm_sq

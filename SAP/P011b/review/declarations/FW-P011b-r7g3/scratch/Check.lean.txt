@@ -1,0 +1,115 @@
+import SAP.P011b.Defs
+
+open SAP.P011b MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators Topology Classical ENNReal
+
+namespace Review
+
+-- T25: positive sample size with nonconstant data; its hypotheses are inhabited.
+example : ∃ (n : ℕ) (hn : 1 < n) (R : Graph n)
+    (d : Fin n → ℕ) (x : Fin n → ℝ),
+    Compatible R d R ∧ 0 < ∑ i, centered x i ^ 2 := by
+  refine ⟨3, by decide, emptyGraph 3, fun _ => 0, ![0, 1, 2], ?_, ?_⟩
+  · constructor
+    · simp [emptyGraph]
+    · intro i; simp [degree, emptyGraph]
+  · norm_num [centered, SAP.P011b.average, Fin.sum_univ_succ]
+
+-- T26: check the finite numerical witnesses without the Challenge theorem.
+example : helperExamples ∧ helperDetails := by
+  simp only [helperExamples, helperDetails, Compatible, emptyGraph, edge12,
+    completeGraph, degree, SAP.P011b.average, centered, quadratic, adjacency, sampleVariance,
+    V1, V2, V2prime, V1R, V2R, V2primeR, truncatedDegree,
+    Fin.sum_univ_succ, Fin.forall_fin_succ]
+  norm_num
+  funext i
+  fin_cases i <;> norm_num [centered, SAP.P011b.average, Fin.sum_univ_succ]
+
+-- T26: the explicit source draw has the claimed positive mass under the actual law.
+example : probability (threePointModel 3)
+    {y | y = (![0, 1, 2] : Fin 3 → ℝ)} = 1 / 27 := by
+  classical
+  let f : (Fin 3 → Fin 3) → (Fin 3 → ℝ) := fun u i => ((u i).val : ℝ)
+  let a : Fin 3 → Fin 3 := ![0, 1, 2]
+  have hf : Measurable f := measurable_of_countable _
+  have hinj : Function.Injective f := by
+    intro u v huv
+    funext i
+    apply Fin.ext
+    have hi : ((u i).val : ℝ) = ((v i).val : ℝ) := congrFun huv i
+    exact_mod_cast hi
+  have ha : f a = (![0, 1, 2] : Fin 3 → ℝ) := by
+    funext i
+    fin_cases i <;> norm_num [f, a]
+  have hpre : f ⁻¹' {y | y = (![0, 1, 2] : Fin 3 → ℝ)} = {a} := by
+    ext u
+    change f u = _ ↔ u = a
+    rw [← ha]
+    exact hinj.eq_iff
+  change (((PMF.uniformOfFintype (Fin 3 → Fin 3)).map f).toMeasure
+    {y | y = (![0, 1, 2] : Fin 3 → ℝ)}).toReal = _
+  rw [PMF.toMeasure_map_apply f _ _ hf (by measurability), hpre]
+  norm_num [PMF.toMeasure_apply_singleton, PMF.uniformOfFintype_apply]
+
+-- T27: a valid instance with a genuine edge and several feasible graphs.
+example : ∃ (n : ℕ) (hn : 0 < n) (R G : Graph n)
+    (d : Fin n → ℕ) (x : Fin n → ℝ),
+    Compatible R d G ∧ 0 < ∑ i, centered x i ^ 2 ∧ R ≠ G := by
+  refine ⟨3, by decide, emptyGraph 3, edge12, fun _ => 1, ![0, 0, 3], ?_, ?_, ?_⟩
+  · constructor
+    · simp [emptyGraph]
+    · intro i
+      fin_cases i <;> simp only [degree, Fin.sum_univ_succ] <;> norm_num [edge12]
+  · norm_num [centered, SAP.P011b.average, Fin.sum_univ_succ]
+  · intro h
+    have hh := congrArg (fun B : Graph 3 => B.val 0 1) h
+    simp [emptyGraph, edge12] at hh
+
+def onePositiveCap : Fin 3 → ℕ := ![2, 0, 0]
+
+lemma only_empty (B : Graph 3)
+    (hB : Compatible (emptyGraph 3) onePositiveCap B) : B = emptyGraph 3 := by
+  have h1 : degree B 1 ≤ 0 := by simpa [onePositiveCap] using hB.2 1
+  have h2 : degree B 2 ≤ 0 := by simpa [onePositiveCap] using hB.2 2
+  have h10 : B.val 1 0 = false := by
+    cases h : B.val 1 0
+    · rfl
+    · simp [degree] at h1
+      simpa [h] using h1 (x := 0)
+  have h12 : B.val 1 2 = false := by
+    cases h : B.val 1 2
+    · rfl
+    · simp [degree] at h1
+      simpa [h] using h1 (x := 2)
+  have h20 : B.val 2 0 = false := by
+    cases h : B.val 2 0
+    · rfl
+    · simp [degree] at h2
+      simpa [h] using h2 (x := 0)
+  apply Subtype.ext
+  funext i j
+  have h01 : B.val 0 1 = false := (B.property.1 0 1).trans h10
+  have h02 : B.val 0 2 = false := (B.property.1 0 2).trans h20
+  have h21 : B.val 2 1 = false := (B.property.1 2 1).trans h12
+  fin_cases i <;> fin_cases j <;>
+    simp [emptyGraph, B.property.2, h10, h12, h20, h01, h02, h21]
+
+lemma empty_maximizes : Maximizes (emptyGraph 3) onePositiveCap
+    (fun B => V2 B (![0, 1, 2] : Fin 3 → ℝ)) (emptyGraph 3) := by
+  constructor
+  · constructor
+    · simp [emptyGraph]
+    · intro i; simp [degree, emptyGraph]
+  · intro B hB
+    rw [only_empty B hB]
+
+-- T28: all hypotheses hold even when the upper bound is strictly greater.
+example : ∃ (R G A : Graph 3) (d : Fin 3 → ℕ) (x : Fin 3 → ℝ),
+    0 < (3 : ℕ) ∧ Compatible R d G ∧
+    Maximizes R d (fun B => V2 B x) A ∧ V2 A x < V2prime d x := by
+  refine ⟨emptyGraph 3, emptyGraph 3, emptyGraph 3,
+    onePositiveCap, ![0, 1, 2], by decide, empty_maximizes.1, empty_maximizes, ?_⟩
+  norm_num [V2, V2prime, sampleVariance, centered, SAP.P011b.average, adjacency,
+    emptyGraph, truncatedDegree, onePositiveCap, Fin.sum_univ_succ]
+
+end Review

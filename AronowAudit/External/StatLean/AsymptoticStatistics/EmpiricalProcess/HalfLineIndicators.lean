@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -97,5 +96,31 @@ lemma integral_halfLineIndicator_mul (P : Measure ℝ) [IsProbabilityMeasure P]
   simp_rw [halfLineIndicator_mul]
   exact integral_halfLineIndicator P (min s t)
 
+/-- Right-rational approximation makes the half-line class pointwise dense in
+the sense needed for empirical-process suprema. The common envelope is `1`.
+No continuity or nonatomicity assumption on `P` is used. -/
+theorem halfLine_empProcPointwiseDense (P : Measure ℝ) [IsProbabilityMeasure P] :
+    EmpProcPointwiseDense halfLineIndicatorClass P := by
+  refine ⟨Set.range (fun q : ℚ => halfLineIndicator (q : ℝ)), ?_,
+    Set.countable_range _, ?_, ?_⟩
+  · rintro f ⟨q, rfl⟩
+    exact ⟨q, rfl⟩
+  · intro f hf
+    rcases hf with ⟨t, rfl⟩
+    obtain ⟨q, -, htq, hq⟩ := Real.exists_seq_rat_strictAnti_tendsto t
+    refine ⟨fun n => halfLineIndicator (q n : ℝ), fun n => ⟨q n, rfl⟩, ?_⟩
+    intro x
+    by_cases hxt : x ≤ t
+    · have heq : (fun n => halfLineIndicator (q n : ℝ) x) = fun _ => (1 : ℝ) := by
+        funext n
+        simp [halfLineIndicator, hxt.trans (le_of_lt (htq n))]
+      rw [heq]
+      simp [halfLineIndicator, hxt]
+    · refine (tendsto_congr' ?_).2 tendsto_const_nhds
+      filter_upwards [hq.eventually_lt_const (lt_of_not_ge hxt)] with n hn
+      simp [halfLineIndicator, hxt, not_le_of_gt hn]
+  · refine ⟨fun _ => (1 : ℝ), integrable_const 1, ?_⟩
+    rintro g ⟨t, rfl⟩ x
+    by_cases hxt : x ≤ t <;> simp [halfLineIndicator, hxt]
 
 end AsymptoticStatistics.EmpiricalProcess

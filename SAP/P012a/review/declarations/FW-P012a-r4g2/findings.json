@@ -1,0 +1,71 @@
+[
+  {
+    "target_id": "P012-T6",
+    "theorem": "SAP.P012a.T6",
+    "fingerprint": "ec2832ca38bdba826a400b86064bf159b4a263bf6517769d21bc5764e9d3333a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:26 and :30 with proofStepData: sampled={1,2,3}, seeds={1}, recruitment 1→2→3, times=id, degrees=(3,2,3), traits=(0,0,1). The data are admissible and the two sampled trait-degree totals are 5 and 3. Line 34 supplies vertex order [3,1,2] and child order [3,2]. Compiled scratch/Algorithms.lean:13 independently evaluates the exact rational scan to (-5/7,23/35); :18 verifies the sufficient statistics and five visits/additions. No audited theorem is used in these proofs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T7",
+    "theorem": "SAP.P012a.T7",
+    "fingerprint": "6c5f04d1c2184595e3c79c5676c15b0176cc15bb77f7e8bfb53d41e0a5dfa87c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:26 and :34 for the same proofStepData: admissible, one seed and three sampled vertices, with chronological list [1,2,3]. Compatible starting graphs are independently checked at :40 and :46, so the compatible class is nonempty. Compiled scratch/Algorithms.lean:25 and :30 directly evaluate the streaming program to endpoints (0,1/3), two events, three reads, two reciprocals and 76 charged operations including the final four. The two endpoint values differ, confirming why separate trait assignments are needed. No audited theorem is used.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P012a/Challenge/Part1.lean:91 and SAP/P012a/Defs/WholeW1.lean:163: “Private degree-one neighbours attain both endpoints simultaneously” overstates attainment. The proposition uses distinct same-trait and opposite-trait assignments for the two endpoints. The compiled datum has p_min=0 and p_max=1/3, so no single compatible graph/trait pair attains both simultaneously. What is simultaneous is attainment of all event bounds within each endpoint construction. The formal statement and the record’s whole decision otherwise match the canonical claim.",
+        "status": "fixed",
+        "reason": "Fixed. Both current docstrings, SAP/P012a/Challenge/Part1.lean:91 and SAP/P012a/Defs/WholeW1.lean:163, now assign p_min to same-trait private leaves and p_max to opposite-trait private leaves. They do not assert that one graph/trait pair attains both endpoints. The separate constructions agree with the canonical claim and with the compiled distinct endpoints 0 and 1/3."
+      }
+    ]
+  },
+  {
+    "target_id": "P012-T8",
+    "theorem": "SAP.P012a.T8",
+    "fingerprint": "faed0852fcc50b422229c17fc47575576b5a3a05e91189ded0544009beaea6d7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:26, :40, :53 and :63 independently verify admissibility, compatibility of result1BadStart, the selected vertices/time/nonrecruitment/spare hypotheses, incompatibility of result1BadEnd, and equality of the induced edge sets. The explicit starting graph has edges {12,23,13,14,34}, with vertex 4 unsampled and trait 0; the printed replacement returns {12,23,13}, reducing sampled degrees from (3,2,3) to (2,2,2). The pre-existing edge 13 is permitted by the printed hypotheses; absence from the recruitment graph is not absence from the starting augmented graph.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T9",
+    "theorem": "SAP.P012a.T9",
+    "fingerprint": "0c21d70eaee6fea99f0945c1a559aefc7aa3f8fcdb16abe6ba6c72b5b97bfed4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:26, :46, :53 and :71 independently verify the admissible datum, compatible result2BadStart, positive spares at vertices 1 and 3, incompatible result2BadEnd, and denominator values 35/12 and 15/8. The starting edge set is {12,23,14,35,15,34}; unsampled 4 and 5 have traits 0 and 1. The two cross edges are already present, which the printed hypotheses allow. The output is {12,23,15,34}, with sampled degrees (2,2,2). Both denominator values are strictly positive ordinary real numbers.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T10",
+    "theorem": "SAP.P012a.T10",
+    "fingerprint": "f4998b73ddb489b9d5f880d9c5c150ec138bc01448ce512abbff8723665a0434",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:53 constructs all antecedents jointly for proofStepData, i=1, j=3, and τ=result1BadStart.trait. Thus both selected spares equal 2 and an extending Boolean assignment exists. The explicit construction has shared U(1,0), private U(1,1) and U(3,1), recruitment edges 12 and 23, and exactly their four added incident edges. Removing the shared vertex and its two edges and inserting 13 preserves sampled degrees (3,2,3), leaves all remaining nonsampled vertices private of degree one, and changes the induced edges from {12,23} to {12,23,13}. The two augmented graphs have six versus five vertices, so no relabeling can identify them. This last description is a direct finite verification of the displayed definitions; the compiled example establishes all hypotheses without invoking T10.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P012a/Challenge/Part1.lean:116 and SAP/P012a/Defs/WholeW1.lean:230: “sampled nonrecruitment neighbours” incorrectly calls the selected vertices neighbours. The hypotheses require sampled vertices not joined by a recruitment edge; adjacency is not a hypothesis, and the first constructed graph explicitly omits their edge. This wording understates/misdescribes the domain of the otherwise whole formal statement.",
+        "status": "fixed",
+        "reason": "Fixed. SAP/P012a/Challenge/Part1.lean:117 and SAP/P012a/Defs/WholeW1.lean:231 now describe time-ordered sampled vertices not joined by a recruitment edge, each with positive spare degree. Neither calls them neighbours or assumes adjacency. This matches the antecedents and the first constructed graph, which omits their edge."
+      }
+    ]
+  }
+]

@@ -10,7 +10,9 @@ import Mathlib.Analysis.Convex.Hull
 
 /-!
 P004: Wang, Samii, Chang and Aronow (2025), pp. 744–768, and Supplement A.
-All randomness below is the assignment design.
+All randomness below is the assignment design. Drafts use `sorry`, never a
+named axiom. A target with several clauses has separate declarations where
+their proof statuses differ. See lean.json for scope and remaining work.
 -/
 
 namespace AronowAudit.P004
@@ -55,11 +57,10 @@ def variance {N : ℕ} (p : Fin N → ℝ) (X : Assignment N → ℝ) : ℝ := c
 at a fixed band. SpatialPopulation below supplies the spatial realization. -/
 abbrev CircleTable (N : ℕ) := Fin N → Assignment N → ℝ
 
-/-- “μᵢ(z;d,η)=E_{Z_{−i}}[μᵢ(Y(z,Z_{−i});d)]” (eq. (5), p. 749).
-Under independent Bernoulli coins with 0 < pⱼ < 1, this equals
-E[μᵢ(Y;d) | Zᵢ=a]. The expression is defined for arbitrary real weights; some
-algebraic identities below need weaker assumptions and do not assert a
-conditional-probability interpretation. -/
+/-- “μᵢ(z;d,η)=E_{Z_{−i}}[μᵢ(Y(z,Z_{−i});d)]” (eq. (5), p. 749),
+in its equivalent conditional form under independent
+coins: E[μᵢ(Y;d) | Zᵢ=a]. Positivity of both coin probabilities is required
+by every theorem that uses this conditional expectation. -/
 def marginal {N : ℕ} (p : Fin N → ℝ) (R : CircleTable N) (i : Fin N)
     (a : Bool) : ℝ :=
   expect p (fun z => if z i = a then R i z else 0) / coin (p i) a
@@ -186,14 +187,12 @@ def WellDefined {N : ℕ} {X : Type*} [MetricSpace X] [MeasurableSpace X]
 def InProb (p : ∀ N, Fin N → ℝ) (U : ∀ N, Assignment N → ℝ) : Prop :=
   ∀ ε : ℝ, 0 < ε → Tendsto (fun N => prob (p N) (fun z => ε < |U N z|)) atTop (nhds 0)
 
-/-- U_N=O_p(r_N) as N tends to infinity, using eventual tightness bounds. -/
+/-- U_N=O_p(r_N), uniformly in N in the usual tightness definition. -/
 def BigOp (p : ∀ N, Fin N → ℝ) (U : ∀ N, Assignment N → ℝ) (r : ℕ → ℝ) : Prop :=
   ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 < C ∧
     ∀ᶠ N in atTop, prob (p N) (fun z => C * |r N| < |U N z|) < ε
 
-/-- Convergence of U_N/r_N to zero in probability. This expresses U_N=o_p(r_N)
-when r_N is eventually nonzero. At zero rate values, Lean division returns zero
-and imposes no condition on U_N. -/
+/-- U_N=o_p(r_N). -/
 def LittleOp (p : ∀ N, Fin N → ℝ) (U : ∀ N, Assignment N → ℝ) (r : ℕ → ℝ) : Prop :=
   InProb p (fun N z => U N z / r N)
 
@@ -446,7 +445,7 @@ theorem corrected_score_identity (z : Bool) (p μ δ L : ℝ)
 
 /- Corrected observational objects, defined once. -/
 
-/-- Euclidean dot product of two finite real vectors. -/
+/-- Logistic propensity exp(Oᵢ'θ)/(1+exp(Oᵢ'θ)), Supplement A p. 14. -/
 def dot {k : ℕ} (u v : Fin k → ℝ) : ℝ := ∑ j, u j * v j
 /-- “p(Oᵢ|θ)=exp(Oᵢ′θ)/(1+exp(Oᵢ′θ))”, Supplement A p. 14;
 the scalar logistic function applied to Oᵢ′θ. -/
@@ -481,7 +480,7 @@ def beta {N k : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
   (information p O)⁻¹ *ᵥ (fun j =>
     (∑ i, marginal p R i a * p i * (1-p i) * O i j) / N)
 
-/-- Corrected D_N and γ_N=H_N⁻¹D_N, T2. -/
+/-- Corrected D_N and γ_N=H_N⁻¹D_N, T2, validator E001 §2. -/
 def scoreGamma {N k : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
     (O : Fin N → Fin k → ℝ) : Fin k → ℝ :=
   (information p O)⁻¹ *ᵥ (fun j =>
@@ -492,7 +491,7 @@ def printedFits {N k : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
     (O : Fin N → Fin k → ℝ) (i : Fin N) (a : Bool) : ℝ := dot (O i) (beta p R O a)
 
 /-- Corrected fits fᵢ₁=pᵢδᵢ+pᵢ(1−pᵢ)Lᵢ and
-fᵢ₀=−(1−pᵢ)δᵢ+pᵢ(1−pᵢ)Lᵢ, T2. -/
+fᵢ₀=−(1−pᵢ)δᵢ+pᵢ(1−pᵢ)Lᵢ, T2 (E001 §4). -/
 def scoreFits {N k : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
     (O : Fin N → Fin k → ℝ) (i : Fin N) (a : Bool) : ℝ :=
   let δ := printedFits p R O i true - printedFits p R O i false
@@ -904,7 +903,7 @@ theorem sah_weighting_identity {N : ℕ} (phat : Fin N → ℝ) (R : CircleTable
         zero_div, div_eq_mul_inv, ← inv_pow] <;> ring
 
 /-- T2(b), the corrected first-order form is exactly true HT minus the
-logistic score correction, and has expectation AME. -/
+logistic score correction, and has expectation AME (E001 §§4–5). -/
 theorem corrected_ipw_finite {N k : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
     (O : Fin N → Fin k → ℝ) (hp : ∀ i, 0 < p i ∧ p i < 1) :
     (∀ z, augmented p R (scoreFits p R O) z = ht p R z -
@@ -986,17 +985,18 @@ def areaWitnessMass (j : Fin 6) (x : Fin 3) : ℝ :=
   (2*(j : ℝ)+1) * (if j = 0 then (![1/50, 2/25, 9/10] : Fin 3 → ℝ) x
     else (![1/10, 23/2500, 2227/2500] : Fin 3 → ℝ) x)
 /-- Binary atom outcomes realizing q₀=.1 and q₁=.02 or .1092,
-T5 case B; the support has three atoms per bin. -/
+T5 case B, validator E008; the support has three atoms per bin. -/
 def areaWitnessOutcome (j : Fin 6) (a : Bool) (x : Fin 3) : ℝ :=
   if j = 0 then if a then (if x = 0 then 1 else 0)
     else (if x = 0 ∨ x = 1 then 1 else 0)
   else if a then (if x = 0 ∨ x = 1 then 1 else 0)
     else (if x = 0 then 1 else 0)
 /-- Circle-bin averages of the binary atoms with their actual masses,
-T5 case B, eq. (2), p. 747. -/
+T5 case B, eq. (2) p. 747 and validator E008. -/
 def areaWitnessTable (j : Fin 6) : CircleTable 2 :=
   fun i z => finiteAverage (areaWitnessMass j) (areaWitnessOutcome j (z i))
-/-- The explicit treated/control assignment z=(1,0), T5 case B. -/
+/-- The explicit treated/control assignment z=(1,0),
+T5 case B, validator E008. -/
 def areaWitnessAssignment : Assignment 2 := ![true, false]
 
 /-- Explicit enumeration of the four assignments for finite witness checks;
@@ -1040,8 +1040,10 @@ theorem area_witness_realized :
   norm_num [hajek, armMean, armCount, areaWitnessTable, finiteAverage,
     areaWitnessMass, areaWitnessOutcome, areaWitnessAssignment, Fin.sum_univ_succ]
 
-
-
+/- T37, the population reading of the p. 763 parenthesis, AS PRINTED.
+This statement is false in general and is deliberately left unproved. -/
+/- Historical false affirmative draft retired after exact full-contract refutation.
+   Full original source is archived in confidence-followup/batch02-small/source-integration/original-declarations.json. -/
 
 /-- Marginalized point effect τᵢₓ, eq. (7), p. 750. -/
 def pointEffect {N : ℕ} {A : Type*} [MetricSpace A] [MeasurableSpace A]
@@ -1131,27 +1133,38 @@ theorem shell_mass_identity {A : Type*} [Fintype A] {m N : ℕ}
     rw [← Finset.mul_sum, mul_div_assoc]
 
 
+/-- T15(d), full Euclidean annuli under area measure have normalized
+radial density 2r/(b²−a²), retaining the actual spatial pushforward measure. -/
+theorem annulus_radial_measure (center : EuclideanSpace ℝ (Fin 2)) (a b : ℝ)
+    (ha : 0 ≤ a) (hab : a < b) :
+    (ENNReal.ofReal (1 / (Real.pi * (b^2-a^2)))) •
+      Measure.map (fun x : EuclideanSpace ℝ (Fin 2) => dist x center)
+        (volume.restrict {x | a ≤ dist x center ∧ dist x center ≤ b}) =
+      volume.withDensity (fun r : ℝ => ENNReal.ofReal
+        (if a ≤ r ∧ r ≤ b then 2*r/(b^2-a^2) else 0)) := by
+  sorry
+
 /-- T14 witness 2, the actual three-atom spatial distance pattern is
 (4,5,5) at node 1 and (5,4,4) at node 2; effects are (0,1,1) and (−1,0,0).
 The two circle AMEs vanish while the disk/donut AME is 1/6. -/
 def shellWitnessDistance (i : Fin 2) (x : Fin 3) : ℝ :=
   if i = 0 then (if x = 0 then 4 else 5) else (if x = 0 then 5 else 4)
 /-- The effects at the three atoms are (0,1,1) for node 0 and
-(−1,0,0) for node 1, T14. -/
+(−1,0,0) for node 1, T14, validator E006. -/
 def shellWitnessEffect (i : Fin 2) (x : Fin 3) : ℝ :=
   if i = 0 then (if x = 0 then 0 else 1) else (if x = 0 then -1 else 0)
-/-- “Yₓ(z)=1+∑ᵢzᵢgᵢ(x)” in the T14 three-atom witness;
-it is a fixed full potential-outcome schedule. -/
+/-- “Yₓ(z)=1+∑ᵢzᵢgᵢ(x)” in the T14 three-atom witness,
+validator E006; it is a fixed full potential-outcome schedule. -/
 def shellWitnessOutcome (x : Fin 3) (z : Assignment 2) : ℝ :=
   1 + ∑ i, bit (z i) * shellWitnessEffect i x
 /-- The finite distance-table shell averages with equal atom masses,
-T14, eq. (2), p. 747. -/
+T14, eq. (2) p. 747 and validator E006. -/
 def shellWitnessTable (band : ℝ → Prop) : CircleTable 2 :=
   fun i z => (∑ x : Fin 3, if band (shellWitnessDistance i x) then shellWitnessOutcome x z else 0) /
     (∑ x : Fin 3, if band (shellWitnessDistance i x) then (1 : ℝ) else 0)
 
 /-- T14, no common radial smoothing recovers the band AME in the
-finite three-atom, two-node construction (p. 757). -/
+finite three-atom, two-node construction (p. 757 and E006 witness 2). -/
 theorem finite_shell_certificate :
     ame (fun _ => 1/2) (shellWitnessTable (fun r => r = 4)) = 0 ∧
     ame (fun _ => 1/2) (shellWitnessTable (fun r => r = 5)) = 0 ∧
@@ -1169,13 +1182,13 @@ i.i.d. from the same finite design. Arbitrary fixed-outcome statistics
 are allowed, so no no-ties restriction enters. -/
 def mcDrawWeight {N : ℕ} (p : Fin N → ℝ) {P : ℕ}
     (draws : Fin (P+1) → Assignment N) : ℝ := ∏ r, designWeight p (draws r)
-/-- “B ... |T(d)|” comparisons, Section 6.3, p. 758: counts the
-P resamples whose absolute statistic is at least the absolute observed statistic. -/
+/-- “B ... |T(d)|” comparisons, Section 6.3 p. 758: counts the
+P resamples whose statistic is at least the observed statistic. -/
 def mcExceedances {N P : ℕ} (T : Assignment N → ℝ)
     (draws : Fin (P+1) → Assignment N) : ℕ :=
   (Finset.univ.filter (fun r : Fin (P+1) => r ≠ 0 ∧ |T (draws 0)| ≤ |T (draws r)|)).card
 /-- The corrected “(1+B)/(P+1)” finite-resample p-value,
-T13; ties are included in B. -/
+T13, validator E005; ties are included in B. -/
 def mcPlusPvalue {N P : ℕ} (T : Assignment N → ℝ)
     (draws : Fin (P+1) → Assignment N) : ℝ := (1 + mcExceedances T draws : ℝ) / (P+1)
 
@@ -1208,13 +1221,14 @@ P=100, α=1/20. The rank m is uniform on 1,...,128. -/
 def eightNodeMCNumerator : ℕ :=
   ∑ m ∈ Finset.range 128, ∑ b ∈ Finset.range 6,
     Nat.choose 100 b * (m+1)^b * (128-(m+1))^(100-b)
-/-- The exact rational rejection sum for P=100 and α=1/20, T12B. -/
+/-- The exact rational rejection sum for P=100 and α=1/20,
+T12B, validator E005; its spatial-law identification is a separate draft. -/
 def eightNodeMCSize : ℝ :=
   (eightNodeMCNumerator : ℝ) / (128 : ℝ)^101
 
 set_option maxRecDepth 10000 in
-/-- T12B, the binomial-rank calculation exceeds 1/20.
-This is the numerical component of the sharp-null rejection calculation. -/
+/-- T12B, the binomial-rank calculation exceeds 1/20. This is a numerical
+component; the link to the actual sharp-null design is stated separately. -/
 theorem mc_size_counterexample : eightNodeMCSize > (1/20 : ℝ) := by
   have hn : (128 : ℕ)^101 < 20*eightNodeMCNumerator := by
     unfold eightNodeMCNumerator
@@ -1354,7 +1368,7 @@ encoded in designWeight, and ε<pᵢ<1−ε, p. 758. -/
 def Overlap (p : ∀ N, Fin N → ℝ) : Prop :=
   ∃ ε : ℝ, 0 < ε ∧ ε < 1/2 ∧ ∀ N i, ε < p N i ∧ p N i < 1-ε
 
-/-- The sequence of circle tables from the spatial integral. -/
+/-- The sequence of audited circle tables, from the actual spatial integral. -/
 def circleSequence (P : PopulationSequence Space) (d : ℝ) (N : ℕ) : CircleTable N :=
   circleAverage (P N) d
 
@@ -1368,7 +1382,7 @@ def fittedBeta {N k : ℕ} (phat : Fin N → ℝ) (R : CircleTable N)
   (information phat O)⁻¹ *ᵥ (fun j =>
     (∑ i, (if z i = a then R i z * coin (phat i) (!a) * O i j else 0)) / N)
 
-/-- γ̂=Ĥ⁻¹D̂, corrected T2(e). -/
+/-- γ̂=Ĥ⁻¹D̂, corrected T2(e), E001 §5. -/
 def fittedGamma {N k : ℕ} (phat : Fin N → ℝ) (R : CircleTable N)
     (O : Fin N → Fin k → ℝ) (z : Assignment N) : Fin k → ℝ :=
   (information phat O)⁻¹ *ᵥ (fun j =>
@@ -1389,11 +1403,84 @@ def fittedIPW {N k : ℕ} (R : CircleTable N) (O : Fin N → Fin k → ℝ)
     (θhat : Assignment N → Fin k → ℝ) (z : Assignment N) : ℝ :=
   ht (propensities O (θhat z)) R z
 
+/-- T2(a,e), the FULL corrected asymptotic expansion, standard normal
+limit and raw-residual SAH/HAC intervals. The true parameter is interior,
+the variance condition concerns the corrected form, and HAC uses intended
+homophily. No CLT or consistency conclusion is included as a hypothesis. -/
+theorem corrected_ipw_asymptotics {k : ℕ} (P : PopulationSequence Space)
+    (O : ∀ N, Fin N → Fin k → ℝ) (θ₀ : Fin k → ℝ) (Θ : Set (Fin k → ℝ))
+    (θhat : ∀ N, Assignment N → Fin k → ℝ) (d h : ℝ)
+    (hd : 0 ≤ d) (hh : 0 ≤ h) (hP : SpatialLocalConditions P)
+    (hWD : ∀ᶠ N in atTop, WellDefined (P N) d)
+    (hloc : ∀ᶠ N in atTop, LocalAt (circleAverage (P N) d) (nodeSeparation (P N)) h)
+    (hlog : LogisticConditions O θ₀ Θ θhat) (hinterior : θ₀ ∈ interior Θ)
+    (hoverlap : Overlap (fun N => propensities (O N) θ₀)) :
+    let p := fun N => propensities (O N) θ₀
+    let R := circleSequence P d
+    let B := spatialNeighborhoods P h
+    let V := fun N => variance (p N) (augmented (p N) (R N) (scoreFits (p N) (R N) (O N)))
+    BigOp p (fun N z => fittedIPW (R N) (O N) (θhat N) z -
+      (ht (p N) (R N) z - (∑ i, (bit (z i)-p N i)*dot (O N i) (scoreGamma (p N) (R N) (O N)))/N))
+      (fun N => (N : ℝ)⁻¹) ∧
+    LittleOp p (fun N z => augmented (p N) (R N) (scoreFits (p N) (R N) (O N)) z -
+      fittedIPW (R N) (O N) (θhat N) z) (fun N => (Real.sqrt N)⁻¹) ∧
+    (Nondegenerate V →
+      NormalLimit p (fun N z => (fittedIPW (R N) (O N) (θhat N) z-ame (p N) (R N))/Real.sqrt (V N)) ∧
+      ∀ α : ℝ, 0 < α → α < 1 →
+        Conservative (fun N => prob (p N) (fun z =>
+          let phat := propensities (O N) (θhat N z)
+          |fittedIPW (R N) (O N) (θhat N) z-ame (p N) (R N)| ≤ normalQuantile (1-α/2) *
+            Real.sqrt (rawSAH phat (R N) (B N) (fittedScoreFits phat (R N) (O N) z) z))) α ∧
+        ((∀ N, 0 ≤ homophilyQ (p N) (R N) (B N) (printedFits (p N) (R N) (O N))) →
+          Conservative (fun N => prob (p N) (fun z =>
+            let phat := propensities (O N) (θhat N z)
+            |fittedIPW (R N) (O N) (θhat N) z-ame (p N) (R N)| ≤ normalQuantile (1-α/2) *
+              Real.sqrt (max (oracleHAC phat (R N) (B N) (fittedScoreFits phat (R N) (O N) z) z) 0))) α)) := by
+  sorry
 
 /-- Score g_N=N⁻¹∑(Zᵢ−pᵢ)Oᵢ, Lemma A.6, Supplement A p. 14. -/
 def logisticScore {N k : ℕ} (p : Fin N → ℝ) (O : Fin N → Fin k → ℝ)
     (z : Assignment N) : Fin k → ℝ := fun j => (∑ i, (bit (z i)-p i)*O i j) / N
 
+/-- T10(a–b), corrected logistic MLE: membership suffices for consistency
+and the root-N rate; interiority supplies the score expansion with O_p(N⁻¹). -/
+theorem corrected_mle {k : ℕ} (O : ∀ N, Fin N → Fin k → ℝ)
+    (θ₀ : Fin k → ℝ) (Θ : Set (Fin k → ℝ))
+    (θhat : ∀ N, Assignment N → Fin k → ℝ)
+    (hlog : LogisticConditions O θ₀ Θ θhat)
+    (hoverlap : Overlap (fun N => propensities (O N) θ₀)) :
+    let p := fun N => propensities (O N) θ₀
+    InProb p (fun N z => ‖θhat N z - θ₀‖) ∧
+    BigOp p (fun N z => ‖θhat N z - θ₀‖) (fun N => (Real.sqrt N)⁻¹) ∧
+    (θ₀ ∈ interior Θ →
+      BigOp p (fun N z => ‖θhat N z-θ₀-(information (p N) (O N))⁻¹ *ᵥ logisticScore (p N) (O N) z‖)
+        (fun N => (N : ℝ)⁻¹) ∧
+      LittleOp p (fun N z => ‖θhat N z-θ₀-(information (p N) (O N))⁻¹ *ᵥ logisticScore (p N) (O N) z‖)
+        (fun N => (Real.sqrt N)⁻¹)) := by
+  sorry
+
+/-- T18, corrected Lemma A.3: control weight N(1−p), root-N negligible
+remainder, and the more precise O_p(N⁻¹) rate under C1–C4. -/
+theorem hajek_linearization (P : PopulationSequence Space) (p d : ℝ)
+    (hp : 0 < p ∧ p < 1) (hd : 0 ≤ d) (hP : SpatialLocalConditions P)
+    (hWD : ∀ᶠ N in atTop, WellDefined (P N) d) :
+    let R := circleSequence P d
+    let π := fun N (_ : Fin N) => p
+    InProb π (fun N z => Real.sqrt N*(linearHajek (π N) (R N) z-hajek (R N) z)) ∧
+    BigOp π (fun N z => hajek (R N) z-linearHajek (π N) (R N) z) (fun N => (N : ℝ)⁻¹) := by
+  sorry
+
+
+/-- T42, Proposition 3, eq. (17), p. 754: Hajek normality standardized
+by Var(τ̂_HA^L), with the corrected A.3 control denominator. -/
+theorem hajek_central_limit (P : PopulationSequence Space) (p d : ℝ)
+    (hp : 0 < p ∧ p < 1) (hd : 0 ≤ d) (hP : SpatialLocalConditions P)
+    (hWD : ∀ᶠ N in atTop, WellDefined (P N) d)
+    (hv : Nondegenerate (fun N => variance (fun _ => p) (linearHajek (fun _ => p) (circleAverage (P N) d)))) :
+    NormalLimit (fun _ _ => p) (fun N z =>
+      (hajek (circleAverage (P N) d) z-ame (fun _ => p) (circleAverage (P N) d)) /
+        Real.sqrt (variance (fun _ => p) (linearHajek (fun _ => p) (circleAverage (P N) d)))) := by
+  sorry
 
 /-- Uniform kernel I(x∈[0,1]), p. 755 footnote 12. -/
 def uniformKernel (t : ℝ) : ℝ := if 0 ≤ t ∧ t ≤ 1 then 1 else 0
@@ -1402,6 +1489,27 @@ def uniformKernel (t : ℝ) : ℝ := if 0 ≤ t ∧ t ≤ 1 then 1 else 0
 def distanceKernel {N : ℕ} (D : Fin N → Fin N → ℝ) (K : ℝ → ℝ) (b : ℝ) : Matrix (Fin N) (Fin N) ℝ :=
   fun i j => K (D i j/b)
 
+/-- T43, Proposition 4 AS PRINTED: coverage limits exist and are at
+least 1−α. The hypotheses are C1–C4, the variance lower bound, and C5
+for HAC only. Quantiles are meaningful for 0<α<1. -/
+theorem experimental_wald_coverage (P : PopulationSequence Space) (p d h : ℝ)
+    (hp : 0 < p ∧ p < 1) (hd : 0 ≤ d) (hh : 0 ≤ h)
+    (hP : SpatialLocalConditions P) (hWD : ∀ᶠ N in atTop, WellDefined (P N) d)
+    (hloc : ∀ᶠ N in atTop, LocalAt (circleAverage (P N) d) (nodeSeparation (P N)) h)
+    (hv : Nondegenerate (fun N => variance (fun _ => p) (linearHajek (fun _ => p) (circleAverage (P N) d)))) :
+    let R := circleSequence P d
+    let B := spatialNeighborhoods P h
+    ∀ α : ℝ, 0 < α → α < 1 →
+      PrintedCoverage (fun N => prob (fun _ => p) (fun z =>
+        let V := rawSAH (fun _ => p) (R N) (B N) (fun _ a => armMean (R N) z a) z
+        normalQuantile (α/2) ≤ (hajek (R N) z-ame (fun _ => p) (R N))/Real.sqrt V ∧
+          (hajek (R N) z-ame (fun _ => p) (R N))/Real.sqrt V ≤ normalQuantile (1-α/2))) α ∧
+      ((∀ᶠ N in atTop, 0 ≤ homophilyQ (fun _ => p) (R N) (B N) (fun _ a => barMu (fun _ => p) (R N) a)) →
+        PrintedCoverage (fun N => prob (fun _ => p) (fun z =>
+          let V := kernelVariance z (residual (R N) z) (Matrix.of (fun i j => if nodeSeparation (P N) i j ≤ h then 1 else 0))
+          normalQuantile (α/2) ≤ (hajek (R N) z-ame (fun _ => p) (R N))/Real.sqrt V ∧
+            (hajek (R N) z-ame (fun _ => p) (R N))/Real.sqrt V ≤ normalQuantile (1-α/2))) α) := by
+  sorry
 
 /- Geometry and regression corrections. -/
 
@@ -1412,6 +1520,17 @@ def FiniteSourceRange {N : ℕ} {A : Type*} [MetricSpace A] [MeasurableSpace A]
   ∀ l x z z', (∀ k, k ≠ l → z k = z' k) → dbar < nodeDistance P l x →
     P.outcome x z = P.outcome x z'
 
+/-- T17(a), corrected sufficient local-interference cutoff for nonempty
+compact metric nodes of diameter ≤D: 2d̄+2d+D. Singleton nodes give D=0. -/
+theorem diameter_interference_cutoff {N : ℕ} {A : Type*} [MetricSpace A] [MeasurableSpace A]
+    (P : SpatialPopulation N A) (hcompact : ∀ i, IsCompact (P.node i))
+    (d dbar D : ℝ) (hd : 0 ≤ d) (hb : 0 ≤ dbar) (hD : 0 ≤ D)
+    (hband : P.bands d ⊆ Set.Icc 0 d) (hWD : WellDefined P d)
+    (hrange : FiniteSourceRange P dbar)
+    (hdiam : ∀ i, ∀ x ∈ P.node i, ∀ y ∈ P.node i, dist x y ≤ D) :
+    ∀ i j, i ≠ j → sharesSource (circleAverage P d) i j →
+      nodeSeparation P i j ≤ 2*dbar+2*d+D := by
+  sorry
 
 /-- T17(a), the triangle-inequality chain used in the geometric proof.
 The middle source node contributes its diameter D. -/
@@ -1431,8 +1550,18 @@ def Polygonal (A : Set (EuclideanSpace ℝ (Fin 2))) : Prop :=
   ∃ m : ℕ, ∃ v : Fin m → Fin 3 → EuclideanSpace ℝ (Fin 2),
     A = ⋃ i, convexHull ℝ (Set.range (v i))
 
+/-- T17(c), disjoint polygon interiors, area≥a>0 and diameter≤D imply
+the stated count bound π(r+2D)²/a, uniformly in sample size. -/
+theorem polygon_count_bound {N : ℕ} (P : SpatialPopulation N (EuclideanSpace ℝ (Fin 2)))
+    (a D r : ℝ) (ha : 0 < a) (hD : 0 ≤ D) (hr : 0 ≤ r)
+    (hpoly : ∀ i, Polygonal (P.node i))
+    (hdis : Pairwise (fun i j => Disjoint (interior (P.node i)) (interior (P.node j))))
+    (harea : ∀ i, ENNReal.ofReal a ≤ volume (P.node i))
+    (hdiam : ∀ i, ∀ x ∈ P.node i, ∀ y ∈ P.node i, dist x y ≤ D) :
+    ∀ i, ((ball (nodeSeparation P) i r).card : ℝ) ≤ Real.pi*(r+2*D)^2/a := by
+  sorry
 
-/-- Euclidean rectangles used in T16. -/
+/-- Euclidean rectangles used in T16; rational coordinates from E007. -/
 def rectangle (a b c d : ℝ) : Set (EuclideanSpace ℝ (Fin 2)) :=
   {x | a ≤ x 0 ∧ x 0 ≤ b ∧ c ≤ x 1 ∧ x 1 ≤ d}
 
@@ -1450,12 +1579,41 @@ def rectangleWitness : SpatialPopulation 3 (EuclideanSpace ℝ (Fin 2)) where
   outcome := fun x z => if x ∈ rectangle 0 1 0 1 ∪ rectangle 10 11 0 1 then bit (z 2) else 0
   bands := fun d => {d}
 
+/-- T16A, every affected point is within range 2 of its source, yet
+the two radius-0 averages share Z_C across distance 9>4=2d̄+2d.
+The construction uses actual area averages, never a zero measure. -/
+theorem polygon_range_counterexample :
+    WellDefined rectangleWitness 0 ∧ FiniteSourceRange rectangleWitness 2 ∧
+    (∀ x z, |rectangleWitness.outcome x z| < 2) ∧
+    (∀ z, circleAverage rectangleWitness 0 0 z = bit (z 2) ∧
+      circleAverage rectangleWitness 0 1 z = bit (z 2) ∧ circleAverage rectangleWitness 0 2 z = 0) ∧
+    sharesSource (circleAverage rectangleWitness 0) 0 1 ∧
+    nodeSeparation rectangleWitness 0 1 = 9 ∧ (4 : ℝ) < 9 ∧
+    cov (fun _ => 1/2) (circleAverage rectangleWitness 0 0) (circleAverage rectangleWitness 0 1) = 1/4 := by
+  sorry
 
 /-- T16B thin rectangles of area one cluster next to a unit square;
 the index n controls both their number and their aspect ratio. -/
 def thinPolygon (n : ℕ) (i : Fin (n+1)) : Set (EuclideanSpace ℝ (Fin 2)) :=
   if i = 0 then rectangle 0 1 0 1
   else rectangle 2 (2+n) (2*((i : ℝ)-1)/n) ((2*((i : ℝ)-1)+1)/n)
+
+/-- T16B, pairwise disjoint area-one polygons all meet the fixed
+distance-2 neighborhood of P₀, so area alone supplies no C4 bound. -/
+theorem polygon_spacing_counterexample :
+    (∀ n : ℕ, 0 < n →
+      (∀ i, volume (thinPolygon n i) = 1) ∧
+      Pairwise (fun i j => Disjoint (thinPolygon n i) (thinPolygon n j)) ∧
+      (∀ i : Fin (n+1), sInf {r : ℝ | ∃ x ∈ thinPolygon n 0, ∃ y ∈ thinPolygon n i, dist x y = r} < 2)) ∧
+    (∀ C : ℝ, ∃ n : ℕ, 0 < n ∧ C < (n+1 : ℝ)) := by
+  sorry
+
+
+
+
+
+
+
 
 
 /- Dependency graphs and the near-epoch-dependence extension. -/
@@ -1483,6 +1641,24 @@ def FiniteDependencyGraph {N : ℕ} (p : Fin N → ℝ) (V : CircleTable N)
       prob p (fun z => A (fun i => V i z) ∧ C (fun j => V j z)) =
         prob p (fun z => A (fun i => V i z)) * prob p (fun z => C (fun j => V j z))
 
+/-- T19, counterexample to printed Lemma A.5: independent bounded
+zero-mean summands and singleton neighborhoods, standardized sum always
+Rademacher, and a CDF discrepancy at −1/2 precluding the normal limit. -/
+theorem dependency_clt_counterexample :
+    (∀ N : ℕ, 0 < N →
+      (∀ i z, |loneRademacher N i z| ≤ 1) ∧
+      (∀ i, expect (fun _ => 1/2) (loneRademacher N i) = 0) ∧
+      (∀ i, expect (fun _ => 1/2) (fun z => (loneRademacher N i z)^4) ≤ 1) ∧
+      FiniteDependencyGraph (fun _ => 1/2) (loneRademacher N) (fun i => {i}) ∧
+      (∀ i : Fin N, ({i} : Finset (Fin N)).card = 1) ∧
+      variance (fun _ => 1/2) (fun z => ∑ i, loneRademacher N i z) = 1 ∧
+      prob (fun _ => 1/2) (fun z => (∑ i, loneRademacher N i z) ≤ -(1/2 : ℝ)) = 1/2) ∧
+    Tendsto (fun N : ℕ => (1 : ℝ)/N) atTop (nhds 0) ∧
+    normalCDF (-(1/2 : ℝ)) < 1/2 ∧
+    ¬ NormalLimit (fun _ _ => 1/2) (fun N z =>
+      (∑ i, loneRademacher N i z) / Real.sqrt
+        (variance (fun _ => 1/2) (fun z' => ∑ i, loneRademacher N i z'))) := by
+  sorry
 
 /-- E[X|σ(Z_j:j∈J)] evaluated at z, finite weighted conditional
 expectation; Appendix C p. 25. Overlap guarantees positive conditioning mass. -/
@@ -1509,7 +1685,7 @@ def NEDConditions (P : PopulationSequence Space) (p d : ℝ) : Prop :=
       (fun z => circleAverage (P N) d i z -
         conditionOn (fun _ => p) (ball (nodeSeparation (P N)) i s) (circleAverage (P N) d i) z) ≤ g N i*ψ s)
 
-/-- Appendix C “C 4”, with the nonvacuous reading:
+/-- Appendix C “C 4”, with the explicitly requested nonvacuous reading:
 the quadratic count bound is C_b(1+s²), including the centre at s=0. -/
 def QuadraticSpacing (P : PopulationSequence Space) : Prop :=
   ∃ Cb : ℝ, 0 < Cb ∧ ∀ᶠ N in atTop, ∀ i s, 0 ≤ s →
@@ -1519,8 +1695,8 @@ def QuadraticSpacing (P : PopulationSequence Space) : Prop :=
 def BoundedOutcomes (P : PopulationSequence Space) : Prop :=
   ∃ b : ℝ, 0 < b ∧ ∀ᶠ N in atTop, ∀ x z, |(P N).outcome x z| < b
 
-/-- Appendix C “C 5”, p. 32: unit value at zero, vanishing for t>1,
-boundedness on nonnegative arguments, and local Lipschitz control to the right of zero. -/
+/-- Appendix C “C 5”, p. 32: unit value at zero, support [0,1],
+boundedness, and local Lipschitz continuity at zero. -/
 def KernelConditions (K : ℝ → ℝ) : Prop :=
   K 0 = 1 ∧ (∀ t, 1 < t → K t = 0) ∧
   (∃ Kmax : ℝ, ∀ t, 0 ≤ t → |K t| < Kmax) ∧
@@ -1555,12 +1731,72 @@ def nedV2 {N : ℕ} (p : ℝ) (R : CircleTable N) (D : Fin N → Fin N → ℝ)
     (K : ℝ → ℝ) (b : ℝ) (z : Assignment N) : ℝ :=
   ∑ i, nedVRow p R D K b (barMu (fun _ => p) R true) (barMu (fun _ => p) R false) i z
 
+/-- T44, Lemma C.4 and Proposition 5, Appendix C pp. 28–29: unbiased HT,
+variance O(1/N), root-N negligible Hajek remainder, and the full NED CLT.
+The target's corrected small-radius spacing and τᵢ/N centering are used. -/
+theorem ned_headline_results (P : PopulationSequence Space) (p d : ℝ)
+    (hp : 0 < p ∧ p < 1) (hd : 0 ≤ d) (hb : BoundedOutcomes P)
+    (hWD : ∀ N, WellDefined (P N) d) (hNED : NEDConditions P p d)
+    (hmetric : MetricNodeDistances P) (hspacing : QuadraticSpacing P) :
+    (∀ N, expect (fun _ => p) (ht (fun _ => p) (circleAverage (P N) d)) =
+      ame (fun _ => p) (circleAverage (P N) d)) ∧
+    Asymptotics.IsBigO atTop (fun N => variance (fun _ => p) (ht (fun _ => p) (circleAverage (P N) d)))
+      (fun N => (N : ℝ)⁻¹) ∧
+    InProb (fun _ _ => p) (fun N z => Real.sqrt N *
+      (linearHajek (fun _ => p) (circleAverage (P N) d) z-hajek (circleAverage (P N) d) z)) ∧
+    (Nondegenerate (fun N => variance (fun _ => p) (linearHajek (fun _ => p) (circleAverage (P N) d))) →
+      NormalLimit (fun _ _ => p) (fun N z =>
+        (hajek (circleAverage (P N) d) z-ame (fun _ => p) (circleAverage (P N) d)) /
+          Real.sqrt (variance (fun _ => p) (linearHajek (fun _ => p) (circleAverage (P N) d))))) := by
+  sorry
+
+/-- T28, corrected Proposition 6, Appendix C p. 35. Items (i)–(iv)
+are retained; item (v) adds nondegeneracy and asserts liminf coverage. -/
+theorem ned_hac_correction (P : PopulationSequence Space) (p d : ℝ)
+    (K : ℝ → ℝ) (bandwidth : ℕ → ℝ) (hp : 0 < p ∧ p < 1) (hd : 0 ≤ d)
+    (hb : BoundedOutcomes P) (hWD : ∀ N, WellDefined (P N) d)
+    (hNED : NEDConditions P p d) (hmetric : MetricNodeDistances P) (hspacing : QuadraticSpacing P) (hK : KernelConditions K)
+    (hbpos : ∀ N, 0 < bandwidth N) (hbdiv : Tendsto bandwidth atTop atTop)
+    (hbrate : Asymptotics.IsLittleO atTop bandwidth (fun N => (N : ℝ)^(1/6 : ℝ)))
+    (hhom : LiminfAtLeast (kernelHomophily P p d K bandwidth) 0) :
+    let R := circleSequence P d
+    let D := fun N => nodeSeparation (P N)
+    let Vhac := fun N z => kernelVariance z (residual (R N) z) (distanceKernel (D N) K (bandwidth N))
+    InProb (fun _ _ => p) (fun N z => N*(Vhac N z-nedV1 p (R N) (D N) K (bandwidth N) z)) ∧
+    InProb (fun _ _ => p) (fun N z => N*(nedV1 p (R N) (D N) K (bandwidth N) z-
+      nedV2 p (R N) (D N) K (bandwidth N) z)) ∧
+    InProb (fun _ _ => p) (fun N z => N*(nedV2 p (R N) (D N) K (bandwidth N) z-
+      expect (fun _ => p) (nedV2 p (R N) (D N) K (bandwidth N)))) ∧
+    LiminfAtLeast (fun N => (N : ℝ)*(expect (fun _ => p) (nedV2 p (R N) (D N) K (bandwidth N))-
+      variance (fun _ => p) (linearHajek (fun _ => p) (R N)))) 0 ∧
+    (Nondegenerate (fun N => variance (fun _ => p) (linearHajek (fun _ => p) (R N))) →
+      ∀ α : ℝ, 0 < α → α < 1 → Conservative (fun N => prob (fun _ => p) (fun z =>
+        normalQuantile (α/2) ≤ (hajek (R N) z-ame (fun _ => p) (R N))/Real.sqrt (Vhac N z) ∧
+          (hajek (R N) z-ame (fun _ => p) (R N))/Real.sqrt (Vhac N z) ≤ normalQuantile (1-α/2))) α) := by
+  sorry
 
 /-- Tail envelope in corrected Lemma C.10, T26: the sum is OUTSIDE
 the expanding ball, not inside it (Appendix C p. 35). -/
 def tailEnvelope (P : PopulationSequence Space) (φ : ℝ → ℝ) (r : ℕ → ℝ) (N : ℕ) : ℝ :=
   sSup (Set.range (fun i : Fin N => ∑ j ∈ (ball (nodeSeparation (P N)) i (r N))ᶜ,
     φ (nodeSeparation (P N) i j)))
+
+/-- T26, corrected tail condition implies convergence to zero of the
+centered-effect kernel quadratic form, not merely a liminf statement. -/
+theorem tail_homophily_correction (P : PopulationSequence Space) (p d : ℝ)
+    (K φ : ℝ → ℝ) (bandwidth : ℕ → ℝ) (hp : 0 < p ∧ p < 1)
+    (hb : BoundedOutcomes P) (hWD : ∀ N, WellDefined (P N) d)
+    (hmetric : MetricNodeDistances P) (hspacing : QuadraticSpacing P) (hK : KernelConditions K)
+    (hdiv : Tendsto bandwidth atTop atTop) (hpos : ∀ N, 0 < bandwidth N)
+    (hφ : ∀ s, 0 ≤ s → 0 ≤ φ s)
+    (henvelope : ∀ᶠ N in atTop, ∀ i j,
+      |nodeEffect (fun _ => p) (circleAverage (P N) d) i-ame (fun _ => p) (circleAverage (P N) d)| *
+      |nodeEffect (fun _ => p) (circleAverage (P N) d) j-ame (fun _ => p) (circleAverage (P N) d)| ≤
+        φ (nodeSeparation (P N) i j))
+    (htail : ∀ r : ℕ → ℝ, Tendsto r atTop atTop →
+      Tendsto (tailEnvelope P φ r) atTop (nhds 0)) :
+    Tendsto (kernelHomophily P p d K bandwidth) atTop (nhds 0) := by
+  sorry
 
 
 /-- T29(5), eqs. (146)–(148) need the factor 1/N² in the mean products. -/
@@ -1600,7 +1836,7 @@ theorem ned_epsilon_means {N : ℕ} (p : ℝ) (R : CircleTable N)
   simp only [div_eq_mul_inv, ← inv_pow]
   ring
 
-/- Explicit finding witnesses and printed statements. -/
+/- Explicit serious-finding witnesses and printed statements. -/
 
 /-- Euclidean coordinates for the explicit spatial witnesses;
 Section 2 p. 747: “x=(x₁,x₂)”. -/
@@ -1616,22 +1852,49 @@ def linePopulation {N : ℕ} (R : CircleTable N) : SpatialPopulation N (Euclidea
   outcome := fun x z => ∑ i : Fin N, if x = planePoint (10*(i : ℝ)) 0 then R i z else 0
   bands := fun d => Set.Icc 0 d
 
-/-- Fixed noninterfering outcomes (1,21/20,1) by type, T1,
-realizing the potential-outcome schedule of Section 2, p. 747. -/
+/-- E001 T1 witness: cyclic types −1,0,1, fixed equal-arm outcomes
+(1,21/20,1), regressors (1,t), true coefficient (0,log 2). -/
+def threeTypeO (N : ℕ) (i : Fin N) : Fin 2 → ℝ := ![1, (i.val % 3 : ℝ)-1]
+/-- Fixed noninterfering outcomes (1,21/20,1) by type, T1
+validator E001, realizing the potential-outcome schedule of Section 2 p. 747. -/
 def threeTypeTable (N : ℕ) : CircleTable N := fun i _ => if i.val % 3 = 1 then 21/20 else 1
-/-- The true logistic coefficient vector (0,log 2), T1;
-the three types have propensities 1/3,1/2,2/3. -/
+/-- The true logistic coefficient vector (0,log 2), T1
+validator E001; the three types have propensities 1/3,1/2,2/3. -/
 def threeTypeTheta : Fin 2 → ℝ := ![0, Real.log 2]
 /-- The fixed compact square [−2,2]² containing the truth in
-its interior, T1 and Supplement A, p. 14. -/
+its interior, T1 validator E001 and Supplement A p. 14. -/
 def threeTypeParameterSet : Set (Fin 2 → ℝ) := {θ | ∀ j, -2 ≤ θ j ∧ θ j ≤ 2}
 /-- Counting-measure point-node realization of the three-type
-fixed outcome table, T1; all nodes lie on the Euclidean plane’s x-axis. -/
+fixed outcome table, T1 validator E001; all nodes lie on the Euclidean plane’s x-axis. -/
 def threeTypePopulation (N : ℕ) : SpatialPopulation N (EuclideanSpace ℝ (Fin 2)) := linePopulation (threeTypeTable N)
 
+/-- T1, a complete design sequence satisfying the printed logistic,
+spatial, overlap, interiority, homophily and nondegeneracy hypotheses,
+but for which the actual fitted IPW and printed linearization differ
+at root-N order. The MLE is existentially selected over the actual compact set. -/
+theorem ipw_linearization_counterexample :
+    ∃ θhat : ∀ N, Assignment N → Fin 2 → ℝ,
+      LogisticConditions threeTypeO threeTypeTheta threeTypeParameterSet θhat ∧
+      threeTypeTheta ∈ interior threeTypeParameterSet ∧
+      SpatialLocalConditions threeTypePopulation ∧
+      Overlap (fun N => propensities (threeTypeO N) threeTypeTheta) ∧
+      (∀ N : ℕ, 0 < N → WellDefined (threeTypePopulation N) 0) ∧
+      (∀ N, homophilyQ (propensities (threeTypeO N) threeTypeTheta)
+        (circleAverage (threeTypePopulation N) 0) (fun i => {i})
+        (printedFits (propensities (threeTypeO N) threeTypeTheta)
+          (circleAverage (threeTypePopulation N) 0) (threeTypeO N)) = 0) ∧
+      Nondegenerate (fun N => variance (propensities (threeTypeO N) threeTypeTheta)
+        (augmented (propensities (threeTypeO N) threeTypeTheta) (circleAverage (threeTypePopulation N) 0)
+          (printedFits (propensities (threeTypeO N) threeTypeTheta) (circleAverage (threeTypePopulation N) 0) (threeTypeO N)))) ∧
+      ¬ LittleOp (fun N => propensities (threeTypeO N) threeTypeTheta)
+        (fun N z => augmented (propensities (threeTypeO N) threeTypeTheta) (circleAverage (threeTypePopulation N) 0)
+          (printedFits (propensities (threeTypeO N) threeTypeTheta) (circleAverage (threeTypePopulation N) 0) (threeTypeO N)) z -
+            fittedIPW (circleAverage (threeTypePopulation N) 0) (threeTypeO N) (θhat N) z)
+        (fun N => (Real.sqrt N)⁻¹) := by
+  sorry
 
-/-- T1, exact three-type score coefficients and N-scaled variances.
-This verifies the constants, separately from the MLE remainder. -/
+/-- T1(W4), exact three-type score coefficients and N-scaled variances,
+E001 §§3–3a. This verifies the constants, separately from the MLE remainder. -/
 theorem ipw_witness_variance_constants :
     let w : Fin 3 → ℝ := ![2/9,1/4,2/9]
     let a : Fin 3 → ℝ := ![27/250,-24/125,27/250]
@@ -1642,29 +1905,50 @@ theorem ipw_witness_variance_constants :
     (0 : ℝ) < 10369/750000 := by
   norm_num [Fin.sum_univ_succ]
 
-/-- T3 active-group witness: two H nodes per eight, with signs
+/-- T3 active-group witness, E002: two H nodes per eight, with signs
 +1,−1; six L nodes have zero outcome. O consists of the two group indicators. -/
 def activeGroup (N : ℕ) (i : Fin N) : Prop := i.val % 8 < 2
 /-- Two group-indicator regressors, H=(1,0) and L=(0,1), T3
-and Supplement A, p. 14. -/
+validator E002 and Supplement A p. 14. -/
 def activeO (N : ℕ) (i : Fin N) : Fin 2 → ℝ :=
   if activeGroup N i then ![1,0] else ![0,1]
 /-- Two signed active outcomes per eight nodes, aᵢZᵢ with aᵢ=±1;
-other outcomes are zero, T3. -/
+other outcomes are zero, T3 validator E002. -/
 def activeTable (N : ℕ) : CircleTable N :=
   fun i z => (if i.val % 8 = 0 then 1 else if i.val % 8 = 1 then -1 else 0) * bit (z i)
 /-- The true group coefficients (0,−log 9), giving p_H=1/2 and
-p_L=1/10, T3. -/
+p_L=1/10, T3 validator E002. -/
 def activeTheta : Fin 2 → ℝ := ![0, -Real.log 9]
 /-- The fixed compact coefficient square [−log 19,log 19]²,
-T3 and Supplement A, p. 14. -/
+T3 validator E002 and Supplement A p. 14. -/
 def activeParameterSet : Set (Fin 2 → ℝ) := {θ | ∀ j, -Real.log 19 ≤ θ j ∧ θ j ≤ Real.log 19}
 /-- Counting-measure point-node realization of the actual
-active-group outcome table, T3; eq. (2), p. 747. -/
+active-group outcome table, T3 validator E002; eq. (2), p. 747. -/
 def activePopulation (N : ℕ) : SpatialPopulation N (EuclideanSpace ℝ (Fin 2)) := linePopulation (activeTable N)
 
+/-- T3, full observational SAH counterexample. The actual MLE and
+footnote-9 fitted residuals are used. The printed variance/true variance
+ratio tends in probability to 8/25, despite the standing hypotheses. -/
+theorem observational_sah_counterexample :
+    ∃ θhat : ∀ N, Assignment N → Fin 2 → ℝ,
+      LogisticConditions activeO activeTheta activeParameterSet θhat ∧
+      activeTheta ∈ interior activeParameterSet ∧ SpatialLocalConditions activePopulation ∧
+      (∀ N, 0 ≤ homophilyQ (propensities (activeO N) activeTheta) (circleAverage (activePopulation N) 0)
+        (fun i => {i}) (printedFits (propensities (activeO N) activeTheta) (circleAverage (activePopulation N) 0) (activeO N))) ∧
+      Overlap (fun N => propensities (activeO N) activeTheta) ∧
+      (∀ N : ℕ, 0 < N → WellDefined (activePopulation N) 0) ∧
+      Nondegenerate (fun N => variance (propensities (activeO N) activeTheta)
+        (augmented (propensities (activeO N) activeTheta) (circleAverage (activePopulation N) 0)
+          (printedFits (propensities (activeO N) activeTheta) (circleAverage (activePopulation N) 0) (activeO N)))) ∧
+      InProb (fun N => propensities (activeO N) activeTheta) (fun N z =>
+        let R := circleAverage (activePopulation N) 0
+        let phat := propensities (activeO N) (θhat N z)
+        let g := fun i a => dot (activeO N i) (fittedBeta phat R (activeO N) a z)
+        printedSAH phat R (fun i => {i}) g z /
+          variance (propensities (activeO N) activeTheta) (fittedIPW R (activeO N) (θhat N)) - 8/25) := by
+  sorry
 
-/-- T4(c), exact finite values at N=32, and corrected limit 1/2
+/-- T4(c), exact finite values at N=32 in E002, and corrected limit 1/2
 versus true N-scaled variance 1/4. The arithmetic comparisons are exact. -/
 theorem sah_witness_constants :
     (493725989/38038425600 : ℝ) > 18239/1505280 ∧
@@ -1678,9 +1962,21 @@ def boundaryMLE {N : ℕ} (z : Assignment N) : ℝ :=
   let q := armCount z true / N
   if q ≤ 1/2 then 0 else if logistic 1 ≤ q then 1 else Real.log (q/(1-q))
 
+/-- T9, explicit boundary witness Θ=[0,1], θ₀=0, Oᵢ=1, p=1/2.
+The actual constrained maximizer has a score-expansion remainder whose
+root-N absolute value exceeds one with probability ≥3/32 for every N≥1. -/
+theorem boundary_mle_counterexample :
+    LogisticConditions (fun N (_ : Fin N) (_ : Fin 1) => 1)
+      (fun _ => 0) {θ : Fin 1 → ℝ | 0 ≤ θ 0 ∧ θ 0 ≤ 1}
+      (fun _ z _ => boundaryMLE z) ∧
+    (∀ N : ℕ, 0 < N → prob (fun _ : Fin N => 1/2)
+      (fun z => 1 < Real.sqrt N * |boundaryMLE z - 4*(armCount z true/N-1/2)|) ≥ 3/32) ∧
+    ¬ LittleOp (fun _ _ => 1/2) (fun N z => boundaryMLE z-4*(armCount z true/N-1/2))
+      (fun N => (Real.sqrt N)⁻¹) := by
+  sorry
 
-/-- Printed (37)–(40), T35: the pair term is unsigned. Both the j residual
-in the pair term and the second marginal-mean factor use the i-indexed fit. -/
+/-- Printed (37)–(40), T35: omitted pair signs and the literal i-index
+in the j residual are preserved here, rather than repaired silently. -/
 def printedVarianceFormula {N : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
     (B : Fin N → Finset (Fin N)) (g : Fin N → Bool → ℝ) : ℝ :=
   ((∑ i, (marginal p (fun i z => (R i z-g i true)^2) i true/p i +
@@ -1690,6 +1986,52 @@ def printedVarianceFormula {N : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
     (∑ i, ∑ j ∈ (B i).erase i, ∑ a : Bool, ∑ b : Bool, armSign a*armSign b *
       (marginal p R i a-g i a)*(marginal p R j b-g i b))) / (N : ℝ)^2
 
+/-- T35, printed Appendix A.6 proposition's erroneous expansion and
+variance equation. These assertions are retained as drafts next to T1/T2.
+Boundary truth is allowed, as printed; homophily is the literal i-index version. -/
+theorem printed_ipw_proposition {k : ℕ} (P : PopulationSequence Space)
+    (O : ∀ N, Fin N → Fin k → ℝ) (θ₀ : Fin k → ℝ) (Θ : Set (Fin k → ℝ))
+    (θhat : ∀ N, Assignment N → Fin k → ℝ) (d h : ℝ)
+    (hd : 0 ≤ d) (hh : 0 ≤ h) (hP : SpatialLocalConditions P)
+    (hWD : ∀ᶠ N in atTop, WellDefined (P N) d)
+    (hloc : ∀ᶠ N in atTop, LocalAt (circleAverage (P N) d) (nodeSeparation (P N)) h)
+    (hlog : LogisticConditions O θ₀ Θ θhat)
+    (hoverlap : Overlap (fun N => propensities (O N) θ₀)) :
+    let p := fun N => propensities (O N) θ₀
+    let R := circleSequence P d
+    let B := spatialNeighborhoods P h
+    let g := fun N => printedFits (p N) (R N) (O N)
+    LittleOp p (fun N z => augmented (p N) (R N) (g N) z-fittedIPW (R N) (O N) (θhat N) z)
+      (fun N => (Real.sqrt N)⁻¹) ∧
+    (∀ᶠ N in atTop, variance (p N) (augmented (p N) (R N) (g N)) =
+      printedVarianceFormula (p N) (R N) (B N) (g N)) ∧
+    (Nondegenerate (fun N => variance (p N) (augmented (p N) (R N) (g N))) →
+      NormalLimit p (fun N z => (fittedIPW (R N) (O N) (θhat N) z-ame (p N) (R N)) /
+        Real.sqrt (variance (p N) (augmented (p N) (R N) (g N))))) := by
+  sorry
+
+/-- T36, the validators' formal reading of printed item (i), using the
+IPW numerator and the actual double-weighted SAH statistic. It is false
+in general and has not been proved. (T35 retains the printed core displays.) -/
+theorem printed_observational_coverage {k : ℕ} (P : PopulationSequence Space)
+    (O : ∀ N, Fin N → Fin k → ℝ) (θ₀ : Fin k → ℝ) (Θ : Set (Fin k → ℝ))
+    (θhat : ∀ N, Assignment N → Fin k → ℝ) (d h : ℝ)
+    (hd : 0 ≤ d) (hh : 0 ≤ h) (hP : SpatialLocalConditions P)
+    (hWD : ∀ᶠ N in atTop, WellDefined (P N) d)
+    (hloc : ∀ᶠ N in atTop, LocalAt (circleAverage (P N) d) (nodeSeparation (P N)) h)
+    (hlog : LogisticConditions O θ₀ Θ θhat)
+    (hoverlap : Overlap (fun N => propensities (O N) θ₀))
+    (hv : Nondegenerate (fun N => variance (propensities (O N) θ₀)
+      (augmented (propensities (O N) θ₀) (circleAverage (P N) d)
+        (printedFits (propensities (O N) θ₀) (circleAverage (P N) d) (O N))))) :
+    ∀ α : ℝ, 0 < α → α < 1/2 → PrintedCoverage (fun N =>
+      prob (propensities (O N) θ₀) (fun z =>
+        let R := circleAverage (P N) d
+        let phat := propensities (O N) (θhat N z)
+        let g := fun i a => dot (O N i) (fittedBeta phat R (O N) a z)
+        |fittedIPW R (O N) (θhat N) z-ame (propensities (O N) θ₀) R| ≤
+          normalQuantile (1-α/2)*Real.sqrt (printedSAH phat R (spatialNeighborhoods P h N) g z))) α := by
+  sorry
 
 /- Remaining target clauses and finite bases. -/
 
@@ -1746,6 +2088,8 @@ theorem printed_obs_ht_expectation {N : ℕ} (p : Fin N → ℝ) (R : CircleTabl
   constructor <;> intro h <;> linarith
 
 
+
+
 /-- T29(4), corrected cross-arm prefactors N²p(1−p), in the exact
 product difference underlying eqs. (133)–(136), Appendix C pp. 36–37. -/
 theorem epsilon_product_difference (z w : Bool) (N p yi yj h1 h0 b1 b0 : ℝ)
@@ -1760,22 +2104,64 @@ theorem epsilon_product_difference (z w : Bool) (N p yi yj h1 h0 b1 b0 : ℝ)
   field_simp
   <;> ring
 
+/-- T29(1), corrected far-pair condition dᵢⱼ>3b, with the actual random
+v̂_i rows and a uniform NED coefficient, not the free symbol s. -/
+theorem ned_far_covariance (P : PopulationSequence Space) (p d : ℝ) (K ψ : ℝ → ℝ)
+    (bandwidth : ℕ → ℝ) (hp : 0 < p ∧ p < 1) (hb : BoundedOutcomes P)
+    (hmetric : MetricNodeDistances P) (hspacing : QuadraticSpacing P) (hK : KernelConditions K)
+    (hψ : ∀ s, 0 ≤ s → 0 ≤ ψ s) (hψanti : AntitoneOn ψ (Set.Ici 0))
+    (hNED : ∃ G : ℝ, ∀ N i s, 0 ≤ s → l2Norm (fun _ => p)
+      (fun z => circleAverage (P N) d i z-conditionOn (fun _ => p)
+        (ball (nodeSeparation (P N)) i s) (circleAverage (P N) d i) z) ≤ G*ψ s)
+    (hWD : ∀ N, WellDefined (P N) d) (hband : ∀ N, 1 ≤ bandwidth N) :
+    ∃ C : ℝ, ∀ᶠ N in atTop, ∀ i j, 3*bandwidth N < nodeSeparation (P N) i j →
+      |cov (fun _ => p)
+        (nedVRow p (circleAverage (P N) d) (nodeSeparation (P N)) K (bandwidth N)
+          (barMu (fun _ => p) (circleAverage (P N) d) true)
+          (barMu (fun _ => p) (circleAverage (P N) d) false) i)
+        (nedVRow p (circleAverage (P N) d) (nodeSeparation (P N)) K (bandwidth N)
+          (barMu (fun _ => p) (circleAverage (P N) d) true)
+          (barMu (fun _ => p) (circleAverage (P N) d) false) j)| ≤
+      C*(bandwidth N)^2/(N : ℝ)^4 * max
+        (∑ k ∈ ball (nodeSeparation (P N)) i (bandwidth N), ψ (nodeSeparation (P N) i j/3-nodeSeparation (P N) i k))
+        (∑ l ∈ ball (nodeSeparation (P N)) j (bandwidth N), ψ (nodeSeparation (P N) i j/3-nodeSeparation (P N) j l)) := by
+  sorry
 
 /-- T27 sparse own-treatment outcomes: only node 1 has Y=1/4+3Z₁/4. -/
 def sparseTable (N : ℕ) : CircleTable N :=
   fun i z => if i.val = 0 then 1/4+3/4*bit (z i) else 0
 /-- Point nodes at (i+1)N² on the x-axis with counting measure and
-the sparse first-node outcome, T27. -/
+the sparse first-node outcome; T27, validator E020. -/
 def sparsePopulation (N : ℕ) : SpatialPopulation N (EuclideanSpace ℝ (Fin 2)) where
   node := fun i => {planePoint (((i : ℝ)+1)*N^2) 0}
   node_nonempty := fun _ => Set.singleton_nonempty _
   zeta := ∑ i : Fin N, Measure.dirac (planePoint (((i : ℝ)+1)*N^2) 0)
   outcome := fun x z => ∑ i : Fin N, if x = planePoint (((i : ℝ)+1)*N^2) 0 then sparseTable N i z else 0
   bands := fun d => Set.Icc 0 d
-/-- “b_N=⌊N^(1/12)⌋”, the bandwidth of the T27 sparse counterexample;
-it diverges and is o(N^(1/6)). -/
+/-- “b_N=⌊N^(1/12)⌋”, the bandwidth of the T27 sparse counterexample,
+validator E020; it diverges and is o(N^(1/6)). -/
 def sparseBandwidth (N : ℕ) : ℝ := (⌊(N : ℝ)^(1/12 : ℝ)⌋₊ : ℝ)
 
+/-- T27, the full nonvacuous Appendix C counterexample. All printed
+conditions of Proposition 6 hold, but N·AVar→0 and the interval with
+critical values ±2 has coverage→1/2 at a nominal level of at least 3/4. -/
+theorem ned_coverage_counterexample :
+    BoundedOutcomes sparsePopulation ∧ QuadraticSpacing sparsePopulation ∧
+    NEDConditions sparsePopulation (1/2) 1 ∧ KernelConditions uniformKernel ∧
+    Tendsto sparseBandwidth atTop atTop ∧
+    Asymptotics.IsLittleO atTop sparseBandwidth (fun N => (N : ℝ)^(1/6 : ℝ)) ∧
+    (∀ N : ℕ, 3 ≤ N → WellDefined (sparsePopulation N) 1) ∧
+    LiminfAtLeast (kernelHomophily sparsePopulation (1/2) 1 uniformKernel sparseBandwidth) 0 ∧
+    Tendsto (fun N : ℕ => (N : ℝ)*variance (fun _ => 1/2)
+      (linearHajek (fun _ => 1/2) (circleAverage (sparsePopulation N) 1))) atTop (nhds 0) ∧
+    Tendsto (fun N : ℕ => prob (fun _ => 1/2) (fun z =>
+      let R := circleAverage (sparsePopulation N) 1
+      let V := kernelVariance z (residual R z) (distanceKernel (nodeSeparation (sparsePopulation N)) uniformKernel (sparseBandwidth N))
+      (-2 : ℝ) ≤ (hajek R z-ame (fun _ => 1/2) R)/Real.sqrt V ∧
+        (hajek R z-ame (fun _ => 1/2) R)/Real.sqrt V ≤ 2)) atTop (nhds (1/2)) ∧
+    0 < 2*(1-normalCDF 2) ∧ 2*(1-normalCDF 2) < 1 ∧
+    (3/4 : ℝ) ≤ 1-2*(1-normalCDF 2) := by
+  sorry
 
 /-- T40: arbitrary marginal law of other assignments, represented by a
 probability on full vectors whose unused own coordinate is overwritten.
@@ -1888,26 +2274,27 @@ the negative eigenvector is (2,−1,−1,−1,−1) with eigenvalue −1. -/
 def starKernel : Matrix (Fin 5) (Fin 5) ℝ :=
   Matrix.of (fun i j => if i = j ∨ i = 0 ∨ j = 0 then 1 else 0)
 /-- “v=(2,−1,−1,−1,−1)”, eigenvector for the star kernel’s
-negative eigenvalue −1, T7. -/
+negative eigenvalue −1, T7 validator N004. -/
 def starNegativeVector : Fin 5 → ℝ := ![2,-1,-1,-1,-1]
 /-- “K^PD=K+vv′/8”, the genuine spectral trim of the five-node
-star kernel, T7; cf. eq. (22), p. 756. -/
+star kernel, T7 validator N004; cf. eq. (22), p. 756. -/
 def starPD : Matrix (Fin 5) (Fin 5) ℝ :=
   Matrix.of (fun i j => starKernel i j+starNegativeVector i*starNegativeVector j/8)
-/-- “Y=(0,1,1,−1,−1)”, fixed sharp-null outcomes on each star, T7. -/
+/-- “Y=(0,1,1,−1,−1)”, fixed sharp-null outcomes on each star,
+T7 validator N004. -/
 def starY : Fin 5 → ℝ := ![0,1,1,-1,-1]
 /-- Block-diagonal repetitions of the actual five-node star kernel
-or its spectral trim, T7. -/
+or its spectral trim, T7 validator N004. -/
 def starBlockKernel (m : ℕ) (pd : Bool) : Matrix (Fin (5*m)) (Fin (5*m)) ℝ :=
   Matrix.of (fun i j => if i.val/5 = j.val/5 then
     (if pd then starPD else starKernel) ⟨i.val%5, Nat.mod_lt _ (by omega)⟩
       ⟨j.val%5, Nat.mod_lt _ (by omega)⟩ else 0)
 /-- Assignment-invariant outcome tables repeating the star’s
-fixed vector (0,1,1,−1,−1), T7. -/
+fixed vector (0,1,1,−1,−1), T7 validator N004. -/
 def starBlockTable (m : ℕ) : CircleTable (5*m) :=
   fun i _ => starY ⟨i.val%5, Nat.mod_lt _ (by omega)⟩
 /-- The explicit twenty-node treated/control assignment of
-T7’s finite variance-order reversal. -/
+T7’s finite variance-order reversal, validator N004. -/
 def starAssignment20 : Assignment 20 :=
   ![true,true,false,true,false, false,true,false,true,false,
     true,true,false,true,false, false,true,false,true,false]
@@ -1919,7 +2306,7 @@ def starPoint {N : ℕ} (i : Fin N) : EuclideanSpace ℝ (Fin 2) :=
     (if i.val%5 = 1 then 1 else if i.val%5 = 3 then -1 else 0),
     if i.val%5 = 2 then 1 else if i.val%5 = 4 then -1 else 0] : Fin 2 → ℝ)
 /-- Actual point-node spatial realization with counting measure of
-the repeated star outcomes, T7 and Section 2, p. 747. -/
+the repeated star outcomes; T7 validator N004 and Section 2 p. 747. -/
 def starPopulation (N : ℕ) : SpatialPopulation N (EuclideanSpace ℝ (Fin 2)) where
   node := fun i => {starPoint i}
   node_nonempty := fun _ => Set.singleton_nonempty _
@@ -1928,18 +2315,96 @@ def starPopulation (N : ℕ) : SpatialPopulation N (EuclideanSpace ℝ (Fin 2)) 
     starY ⟨i.val%5, Nat.mod_lt _ (by omega)⟩ else 0
   bands := fun d => Set.Icc 0 d
 
+/- T7 witness 2: every matrix and residual in the N=20 construction is
+explicit. Both arm means vanish, unadjusted variances are 4/25, but
+the PD adjustment reverses the ordering, 16/101<8/41. -/
+/- Original true contract relocated intact to the checked companion under its original fully qualified name.
+   Full original source is archived in confidence-followup/batch02-small/source-integration/original-declarations.json. -/
 
-
-
+/-- T7 witness 1: raw PD is conservative, but its actual empirical
+adjustment converges to 6/5 and the adjusted variance ratio to 15/16.
+The source's five-node star blocks are used, not scalar surrogate variances. -/
+theorem adjusted_pd_asymptotic_counterexample :
+    SpatialLocalConditions starPopulation ∧
+    (∀ N : ℕ, 0 < N → WellDefined (starPopulation N) 0) ∧
+    (∀ N, homophilyQ (fun _ => 1/2) (circleAverage (starPopulation N) 0)
+      (spatialNeighborhoods starPopulation (6/5) N)
+      (fun _ a => barMu (fun _ => 1/2) (circleAverage (starPopulation N) 0) a) = 0) ∧
+    Nondegenerate (fun N => variance (fun _ => 1/2)
+      (linearHajek (fun _ => 1/2) (circleAverage (starPopulation N) 0))) ∧
+    (∀ m, uniformDistanceKernel (nodeSeparation (starPopulation (5*m))) (6/5) = starBlockKernel m false) ∧
+    (∀ m : ℕ, 0 < m → (5*m : ℝ) * variance (fun _ => 1/2)
+      (linearHajek (fun _ => 1/2) (starBlockTable m)) = 16/5) ∧
+    (∀ ε : ℝ, 0 < ε → Tendsto (fun m => prob (fun _ => 1/2) (fun z : Assignment (5*m) =>
+      ε < |(5*m : ℝ)*kernelVariance z (residual (starBlockTable m) z) (starBlockKernel m false)-16/5|)) atTop (nhds 0)) ∧
+    (∀ ε : ℝ, 0 < ε → Tendsto (fun m => prob (fun _ => 1/2) (fun z : Assignment (5*m) =>
+      ε < |(5*m : ℝ)*kernelVariance z (residual (starBlockTable m) z) (starBlockKernel m true)-18/5|)) atTop (nhds 0)) ∧
+    (∀ ε : ℝ, 0 < ε → Tendsto (fun m => prob (fun _ => 1/2) (fun z : Assignment (5*m) =>
+      ε < |adjustmentMu z (starBlockKernel m true)-6/5|)) atTop (nhds 0)) ∧
+    (∀ ε : ℝ, 0 < ε → Tendsto (fun m => prob (fun _ => 1/2) (fun z : Assignment (5*m) =>
+      ε < |(kernelVariance z (residual (starBlockTable m) z) (starBlockKernel m true) /
+        adjustmentMu z (starBlockKernel m true)) /
+          variance (fun _ => 1/2) (linearHajek (fun _ => 1/2) (starBlockTable m))-15/16|)) atTop (nhds 0)) ∧
+    Tendsto (fun m => prob (fun _ => 1/2) (fun z : Assignment (5*m) =>
+      let Q := starBlockKernel m true
+      let μ := adjustmentMu z Q
+      let ν := adjustmentNu z Q
+      |hajek (starBlockTable m) z| ≤ studentQuantile (2*μ^2/ν) (39/40) *
+        Real.sqrt (kernelVariance z (residual (starBlockTable m) z) Q/μ))) atTop
+      (nhds (2*normalCDF (normalQuantile (39/40)*Real.sqrt (15/16))-1)) ∧
+    2*normalCDF (normalQuantile (39/40)*Real.sqrt (15/16))-1 < 19/20 := by
+  sorry
 
 /-- T7 exact adjustment arithmetic, separately from the spatial matrix
-and asymptotic calculations. -/
+and asymptotic calculations. It alone is not marked a proved counterexample. -/
 theorem adjusted_pd_constants :
     ((4/25 : ℝ)/(101/100)) = 16/101 ∧ ((4/25 : ℝ)/(41/50)) = 8/41 ∧
     (16/101 : ℝ) < 8/41 ∧ ((18/5 : ℝ)/(6/5))/(16/5) = 15/16 ∧ (15/16 : ℝ) < 1 := by norm_num
 
+/-- T8(c), capped PD inherits the article's conservative guarantee.
+The c_N may depend on the assignment but must be at least the normal
+critical value; all original spatial and variance hypotheses are retained. -/
+theorem capped_pd_coverage (P : PopulationSequence Space) (p d h α : ℝ)
+    (hp : 0 < p ∧ p < 1) (hd : 0 ≤ d) (hh : 0 ≤ h) (hα : 0 < α ∧ α < 1)
+    (hP : SpatialLocalConditions P) (hWD : ∀ᶠ N in atTop, WellDefined (P N) d)
+    (hloc : ∀ᶠ N in atTop, LocalAt (circleAverage (P N) d) (nodeSeparation (P N)) h)
+    (hv : Nondegenerate (fun N => variance (fun _ => p) (linearHajek (fun _ => p) (circleAverage (P N) d))))
+    (values : ∀ N, Fin N → ℝ) (vectors : ∀ N, Matrix (Fin N) (Fin N) ℝ)
+    (horth : ∀ N, (vectors N).transpose * vectors N = 1)
+    (heigen : ∀ N, spectralKernel (values N) (vectors N) false = uniformDistanceKernel (nodeSeparation (P N)) h)
+    (hhom : ∀ᶠ N in atTop, 0 ≤ homophilyQ (fun _ => p) (circleAverage (P N) d) (spatialNeighborhoods P h N)
+      (fun _ a => barMu (fun _ => p) (circleAverage (P N) d) a))
+    (c : ∀ N, Assignment N → ℝ) (hc : ∀ N z, normalQuantile (1-α/2) ≤ c N z) :
+    Conservative (fun N => prob (fun _ => p) (fun z =>
+      let R := circleAverage (P N) d
+      let Q := spectralKernel (values N) (vectors N) true
+      |hajek R z-ame (fun _ => p) R| ≤ c N z *
+        Real.sqrt (cappedVariance (kernelVariance z (residual R z) Q) (adjustmentMu z Q)))) α := by
+  sorry
 
-/- Finite lemmas for the asymptotic statements. -/
+/-- T38, natural mathematical reading of the Section 7 recommendation,
+with the uncapped V_PD/μ_PD and the actual Student-t critical value.
+This is not a printed theorem and is refuted by T7; it remains a draft. -/
+theorem printed_pd_recommendation (P : PopulationSequence Space) (p d h α : ℝ)
+    (hp : 0 < p ∧ p < 1) (hd : 0 ≤ d) (hh : 0 ≤ h) (hα : 0 < α ∧ α < 1)
+    (hP : SpatialLocalConditions P) (hWD : ∀ᶠ N in atTop, WellDefined (P N) d)
+    (hloc : ∀ᶠ N in atTop, LocalAt (circleAverage (P N) d) (nodeSeparation (P N)) h)
+    (hv : Nondegenerate (fun N => variance (fun _ => p) (linearHajek (fun _ => p) (circleAverage (P N) d))))
+    (values : ∀ N, Fin N → ℝ) (vectors : ∀ N, Matrix (Fin N) (Fin N) ℝ)
+    (horth : ∀ N, (vectors N).transpose * vectors N = 1)
+    (heigen : ∀ N, spectralKernel (values N) (vectors N) false = uniformDistanceKernel (nodeSeparation (P N)) h)
+    (hhom : ∀ᶠ N in atTop, 0 ≤ homophilyQ (fun _ => p) (circleAverage (P N) d) (spatialNeighborhoods P h N)
+      (fun _ a => barMu (fun _ => p) (circleAverage (P N) d) a)) :
+    Conservative (fun N => prob (fun _ => p) (fun z =>
+      let R := circleAverage (P N) d
+      let Q := spectralKernel (values N) (vectors N) true
+      let μ := adjustmentMu z Q
+      let ν := adjustmentNu z Q
+      |hajek R z-ame (fun _ => p) R| ≤ studentQuantile (2*μ^2/ν) (1-α/2) *
+        Real.sqrt (kernelVariance z (residual R z) Q/μ))) α := by
+  sorry
+
+/- Additional finite lemmas requested by the asymptotic targets. -/
 
 
 /-- T18/T42 finite ratio identity underlying the Hajek linearization,
@@ -2004,6 +2469,7 @@ theorem hajek_ratio_identity {N : ℕ} (p : ℝ) (R : CircleTable N) (z : Assign
     rw [← barMu_difference]
     field_simp
     ring
+
 
 
 /-- Under C1, a selected off-diagonal product has the signed conditional
@@ -2103,6 +2569,14 @@ theorem ned_exact_linear_variance {N : ℕ} (p : ℝ) (R : CircleTable N)
   exact residual_pair_moment (fun _ => p) R g i j (Finset.ne_of_mem_erase hj).symm (fun _ => hp)
 
 
+
+/-- T34(c), under C1 the absolute denominator replacement is O_p(N⁻¹/²),
+the order used by eq. (124); empty arms receive Lean's total division convention. -/
+theorem bernoulli_denominator_rate (p : ℝ) (hp : 0 < p ∧ p < 1) :
+    BigOp (fun _ _ => p) (fun N z => |(N : ℝ)^2/(armCount z true)^2-1/p^2|)
+      (fun N => (Real.sqrt N)⁻¹) := by
+  sorry
+
 /-- T6(a), marginalized node effects obey the same actual bin-mass
 aggregation as realized averages. Node-specific bin masses are retained. -/
 theorem marginal_bin_average {N m : ℕ} (p : Fin N → ℝ)
@@ -2186,6 +2660,7 @@ theorem additive_spatial_design_invariance {N : ℕ} {A : Type*}
   simp_rw [hcircle]
 
 
+
 /-- Literal unsigned second-moment upper bound in printed Proposition 4,
 Supplement A p. 16. The j residual deliberately retains the printed i fit. -/
 def printedSecondMomentBound {N : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
@@ -2194,6 +2669,44 @@ def printedSecondMomentBound {N : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
       marginal p (fun i z => (R i z-g i false)^2) i false/(1-p i))) +
     ∑ i, ∑ j ∈ (B i).erase i, ∑ a : Bool, ∑ b : Bool,
       pairMarginal p (fun z => (R i z-g i a)*(R j z-g i b)) i j a b)/(N : ℝ)^2
+
+/-- T35, the remaining clauses of printed Supplement A Proposition 4:
+the unsigned variance bound and the literal HA-numerator SAH/HAC coverage
+claims with the printed absolute-value event and existence of a limit.
+These are retained as unproved statements, not corrected silently. -/
+theorem printed_ipw_bound_and_literal_coverage {k : ℕ} (P : PopulationSequence Space)
+    (O : ∀ N, Fin N → Fin k → ℝ) (θ₀ : Fin k → ℝ) (Θ : Set (Fin k → ℝ))
+    (θhat : ∀ N, Assignment N → Fin k → ℝ) (d h : ℝ)
+    (hd : 0 ≤ d) (hh : 0 ≤ h) (hP : SpatialLocalConditions P)
+    (hWD : ∀ᶠ N in atTop, WellDefined (P N) d)
+    (hloc : ∀ᶠ N in atTop, LocalAt (circleAverage (P N) d) (nodeSeparation (P N)) h)
+    (hlog : LogisticConditions O θ₀ Θ θhat)
+    (hoverlap : Overlap (fun N => propensities (O N) θ₀)) :
+    let p := fun N => propensities (O N) θ₀
+    let R := circleSequence P d
+    let B := spatialNeighborhoods P h
+    let g := fun N => printedFits (p N) (R N) (O N)
+    ((∀ N, 0 ≤ printedHomophilyQ (p N) (R N) (B N) (g N)) →
+      ∀ᶠ N in atTop, variance (p N) (augmented (p N) (R N) (g N)) ≤
+        printedSecondMomentBound (p N) (R N) (B N) (g N)) ∧
+    (Nondegenerate (fun N => variance (p N) (augmented (p N) (R N) (g N))) →
+      ∀ α : ℝ, 0 < α → α < 1/2 →
+      PrintedCoverage (fun N => prob (p N) (fun z =>
+        let phat := propensities (O N) (θhat N z)
+        let ghat := fun i a => dot (O N i) (fittedBeta phat (R N) (O N) a z)
+        normalQuantile (α/2) ≤ |(hajek (R N) z-ame (p N) (R N))/
+          Real.sqrt (printedSAH phat (R N) (B N) ghat z)| ∧
+        |(hajek (R N) z-ame (p N) (R N))/Real.sqrt (printedSAH phat (R N) (B N) ghat z)| ≤
+          normalQuantile (1-α/2))) α ∧
+      ((∀ N, 0 ≤ printedHomophilyQ (p N) (R N) (B N) (g N)) →
+        PrintedCoverage (fun N => prob (p N) (fun z =>
+          let phat := propensities (O N) (θhat N z)
+          let ghat := fun i a => dot (O N i) (fittedBeta phat (R N) (O N) a z)
+          let V := (sandwich z (weightedEpsilon phat (R N) ghat z)
+            (uniformDistanceKernel (nodeSeparation (P N)) h)) 1 1
+          normalQuantile (α/2) ≤ |(hajek (R N) z-ame (p N) (R N))/Real.sqrt V| ∧
+            |(hajek (R N) z-ame (p N) (R N))/Real.sqrt V| ≤ normalQuantile (1-α/2))) α)) := by
+  sorry
 
 
 /-- T15(b–c) with node-dependent supported radii, including empty shells.
@@ -2217,11 +2730,12 @@ theorem supported_shell_identity {A : Type*} [Fintype A] {m N : ℕ}
 atoms (0,4),(3,4),(3,−4), with the paper's ordinary Euclidean distance. -/
 def shellNodePoint (i : Fin 2) : EuclideanSpace ℝ (Fin 2) :=
   planePoint (3*(i : ℝ)) 0
-/-- The three Euclidean outcome points (0,4),(3,4),(3,−4), T14. -/
+/-- The three Euclidean outcome points (0,4),(3,4),(3,−4),
+T14 validator E006. -/
 def shellAtomPoint (x : Fin 3) : EuclideanSpace ℝ (Fin 2) :=
   if x = 0 then planePoint 0 4 else if x = 1 then planePoint 3 4 else planePoint 3 (-4)
 /-- Two point nodes (0,0),(3,0), counting measure on the three
-outcome atoms and the fixed additive outcome schedule, T14. -/
+outcome atoms and the fixed additive outcome schedule, T14 validator E006. -/
 def shellSpatialPopulation (D : Set ℝ) : SpatialPopulation 2 (EuclideanSpace ℝ (Fin 2)) where
   node := fun i => {shellNodePoint i}
   node_nonempty := fun _ => Set.singleton_nonempty _
@@ -2460,19 +2974,20 @@ theorem shell_counterexample :
         ame (fun _ => 1/2) (circleAverage (shellSpatialPopulation (Set.Icc 4 5)) 0)) := by
   exact spatial_shell_counterexample
 
-/-- T5 case B: normalized angular coordinate about a disk’s center,
-giving binary outcomes 1{θ/(2π)<q_j(z_i)}. -/
+/-- T5 case B: normalized angular coordinate about a disk's center,
+giving binary outcomes 1{θ/(2π)<q_j(z_i)} as in validator E008. -/
 def angularFraction (c x : EuclideanSpace ℝ (Fin 2)) : ℝ :=
   let θ := Complex.arg ((x 0-c 0 : ℝ) + (x 1-c 1 : ℝ)*Complex.I)
   (if θ < 0 then θ+2*Real.pi else θ)/(2*Real.pi)
-/-- Disk centers (0,0),(100,0) in the actual Euclidean plane, T5 case B. -/
+/-- Disk centers (0,0),(100,0) in the actual Euclidean plane,
+T5 case B, validator E008. -/
 def areaBinaryCenter (i : Fin 2) : EuclideanSpace ℝ (Fin 2) := planePoint (100*(i : ℝ)) 0
 /-- The binary angular-sector shares q₀=.1, q₁=.02 in the node
-and .1092 outside it, T5 case B. -/
+and .1092 outside it, T5 case B validator E008. -/
 def areaBinaryShare (c x : EuclideanSpace ℝ (Fin 2)) (a : Bool) : ℝ :=
   if a then (if dist x c ≤ 1 then 1/50 else 273/2500) else 1/10
 /-- Actual radius-one disk nodes with planar area measure and
-binary angular-sector outcomes, T5 case B; eq. (2), p. 747. -/
+binary angular-sector outcomes, T5 case B validator E008; eq. (2), p. 747. -/
 def areaBinaryPopulation : SpatialPopulation 2 (EuclideanSpace ℝ (Fin 2)) where
   node := fun i => Metric.closedBall (areaBinaryCenter i) 1
   node_nonempty := fun i => ⟨areaBinaryCenter i, Metric.mem_closedBall_self (by norm_num)⟩
@@ -2485,33 +3000,89 @@ def areaBinaryPopulation : SpatialPopulation 2 (EuclideanSpace ℝ (Fin 2)) wher
     else 0
   bands := fun d => if d = 0 then {0} else if d = 6 then Set.Icc 0 5 else Set.Ioc (d-1) d
 
+/-- T5, full area-measure case B on radius-one disk nodes at (0,0),
+(100,0), with binary angular-sector outcomes and independent half coins.
+The observed six-bin sum is −.034, but the actual whole-region share
+effect is +121/18000. Finite weighted-bin calculations do not prove
+the Euclidean area integrals in this declaration. -/
+theorem spatial_area_sum_counterexample :
+    (∀ x z, areaBinaryPopulation.outcome x z = 0 ∨ areaBinaryPopulation.outcome x z = 1) ∧
+    (∀ j : Fin 6, WellDefined areaBinaryPopulation j) ∧
+    WellDefined areaBinaryPopulation 6 ∧
+    (∀ i (j : Fin 6), (volume (region areaBinaryPopulation i j)).toReal =
+      Real.pi*(2*(j : ℝ)+1)) ∧
+    (∑ j : Fin 6, hajek (circleAverage areaBinaryPopulation j) areaWitnessAssignment) = -(17/500 : ℝ) ∧
+    (∑ j : Fin 6, ame (fun _ => 1/2) (circleAverage areaBinaryPopulation j)) = -(17/500 : ℝ) ∧
+    ame (fun _ => 1/2) (circleAverage areaBinaryPopulation 6) = (121/18000 : ℝ) ∧
+    (0 : ℝ) < 121/18000 ∧ -(17/500 : ℝ) ≠ 121/18000 := by
+  sorry
+
+/-- T5: full case-B area-measure counterexample of Section 8.1, p. 763.
+The actual Euclidean circle integrals, binary outcomes, positive shell masses
+and observed and design contrasts are all part of this declaration. -/
+theorem area_sum_counterexample :
+    (∀ x z, areaBinaryPopulation.outcome x z = 0 ∨ areaBinaryPopulation.outcome x z = 1) ∧
+    (∀ j : Fin 6, WellDefined areaBinaryPopulation j) ∧
+    WellDefined areaBinaryPopulation 6 ∧
+    (∀ i (j : Fin 6), (volume (region areaBinaryPopulation i j)).toReal =
+      Real.pi*(2*(j : ℝ)+1)) ∧
+    (∑ j : Fin 6, hajek (circleAverage areaBinaryPopulation j) areaWitnessAssignment) = -(17/500 : ℝ) ∧
+    (∑ j : Fin 6, ame (fun _ => 1/2) (circleAverage areaBinaryPopulation j)) = -(17/500 : ℝ) ∧
+    ame (fun _ => 1/2) (circleAverage areaBinaryPopulation 6) = (121/18000 : ℝ) ∧
+    (0 : ℝ) < 121/18000 ∧ -(17/500 : ℝ) ≠ 121/18000 := by
+  exact spatial_area_sum_counterexample
 
 /-- T12: fixed outcomes under the sharp null at eight nodes. Node i+1
 has y_i=2^i/128 for every assignment, exactly the stated witness. -/
 def eightNodeNullTable : CircleTable 8 := fun i _ => (2 : ℝ)^i.val/128
-/-- Eight Euclidean point nodes at (3(i+1),0) for zero-based i, T12B. -/
+/-- Eight Euclidean point nodes at (3i,0), T12B validator E005. -/
 def eightNodeNullPoint (i : Fin 8) : EuclideanSpace ℝ (Fin 2) := planePoint (3*((i : ℝ)+1)) 0
 /-- Eight point nodes with counting measure and fixed
-sharp-null outcomes 2^i/128 for zero-based i, T12B. -/
+sharp-null outcomes 2^(i−1)/128, T12B validator E005. -/
 def eightNodeNullPopulation : SpatialPopulation 8 (EuclideanSpace ℝ (Fin 2)) where
   node := fun i => {eightNodeNullPoint i}
   node_nonempty := fun _ => Set.singleton_nonempty _
   zeta := ∑ i : Fin 8, Measure.dirac (eightNodeNullPoint i)
   outcome := fun x z => ∑ i : Fin 8, if x = eightNodeNullPoint i then eightNodeNullTable i z else 0
   bands := fun d => Set.Icc 0 d
-/-- The explicit all-control observed assignment, T12A;
-it has positive probability under independent half coins. -/
+/-- The explicit all-control observed assignment, T12A validator
+E005; it has positive probability under independent half coins. -/
 def eightNodeObserved : Assignment 8 := fun _ => false
-/-- The explicit seven-treated resampled assignment, T12A;
-it has positive probability under independent half coins. -/
+/-- The explicit one-treated resampled assignment, T12A validator
+E005; it also has positive probability under the design. -/
 def eightNodeResampled : Assignment 8 := fun i => decide (i.val < 7)
 /-- The observed all-control vector and the stipulated resample
-vectors for the missing-absolute-value witness, T12A. -/
+vectors for the missing-absolute-value witness, T12A validator E005. -/
 def eightNodeMCDraws : Fin 101 → Assignment 8 :=
   fun r => if r = 0 then eightNodeObserved else eightNodeResampled
 
+/-- T12A, a full positive-probability sharp-null tuple for P=100:
+the printed proportion is one, its two-sided repair is zero, and the
+plus-one p-value is 1/101. Actual counting-measure circle averages are used. -/
+theorem mc_signed_spatial_counterexample :
+    SharpNull eightNodeNullPopulation ∧ WellDefined eightNodeNullPopulation 0 ∧
+    ht (fun _ => 1/2) (circleAverage eightNodeNullPopulation 0) eightNodeObserved = -255/512 ∧
+    ht (fun _ => 1/2) (circleAverage eightNodeNullPopulation 0) eightNodeResampled = -1/512 ∧
+    mcDrawWeight (fun _ => 1/2) eightNodeMCDraws = (256 : ℝ)^(-101 : ℤ) ∧
+    0 < mcDrawWeight (fun _ => 1/2) eightNodeMCDraws ∧
+    ((Finset.univ.filter (fun r : Fin 101 => r ≠ 0 ∧
+      ht (fun _ => 1/2) (circleAverage eightNodeNullPopulation 0) (eightNodeMCDraws 0) ≤
+        |ht (fun _ => 1/2) (circleAverage eightNodeNullPopulation 0) (eightNodeMCDraws r)|)).card : ℝ)/100 = 1 ∧
+    mcExceedances (ht (fun _ => 1/2) (circleAverage eightNodeNullPopulation 0)) eightNodeMCDraws = 0 ∧
+    mcPlusPvalue (ht (fun _ => 1/2) (circleAverage eightNodeNullPopulation 0)) eightNodeMCDraws = 1/101 := by
+  sorry
 
-/-- T16A/T17(b): the rectangle construction with arbitrary separation
+/-- T12B, the exact iid resampling rejection probability for the
+nonnegative |HT| statistic exceeds level 1/20 at P=100. This includes
+the link from the spatial null design to the binomial-rank sum. -/
+theorem mc_level_spatial_counterexample :
+    SharpNull eightNodeNullPopulation ∧ WellDefined eightNodeNullPopulation 0 ∧
+    (∑ draws : Fin 101 → Assignment 8, mcDrawWeight (fun _ => 1/2) draws *
+      (if (mcExceedances (ht (fun _ => 1/2) (circleAverage eightNodeNullPopulation 0)) draws : ℝ)/100 ≤ 1/20
+        then 1 else 0)) = eightNodeMCSize ∧ eightNodeMCSize > 1/20 := by
+  sorry
+
+/-- T16A/T17(b): the E007 rectangle construction with arbitrary separation
 L≥2, keeping the effect radius exactly 2. This parametrization shows why
 no universal cutoff can follow from the effect radius alone. -/
 def polygonRangeFamily (L : ℝ) (hL : 2 ≤ L) :
@@ -2528,7 +3099,142 @@ def polygonRangeFamily (L : ℝ) (hL : 2 ≤ L) :
   outcome := fun x z => if x ∈ rectangle 0 1 0 1 ∪ rectangle L (L+1) 0 1 then bit (z 2) else 0
   bands := fun d => Set.Icc 0 d
 
+/-- T17(b), full failure of every proposed universal finite cutoff
+without a diameter restriction. For each h≥0, explicit rectangles at
+separation L−1>h share the source C, whose effects all have range 2.
+This is a statement of the whole family, beyond the fixed L=10 witness. -/
+theorem no_polygon_cutoff_from_range_alone :
+    ∀ h : ℝ, 0 ≤ h → ∃ L : ℝ, ∃ hL : 2 ≤ L,
+      h+1 < L ∧ WellDefined (polygonRangeFamily L hL) 0 ∧
+      FiniteSourceRange (polygonRangeFamily L hL) 2 ∧
+      (∀ x z, |(polygonRangeFamily L hL).outcome x z| < 2) ∧
+      (∀ i : Fin 3, Polygonal ((polygonRangeFamily L hL).node i)) ∧
+      Pairwise (fun i j => Disjoint ((polygonRangeFamily L hL).node i) ((polygonRangeFamily L hL).node j)) ∧
+      nodeSeparation (polygonRangeFamily L hL) 0 1 = L-1 ∧
+      h < nodeSeparation (polygonRangeFamily L hL) 0 1 ∧
+      sharesSource (circleAverage (polygonRangeFamily L hL) 0) 0 1 ∧
+      cov (fun _ => 1/2) (circleAverage (polygonRangeFamily L hL) 0 0)
+        (circleAverage (polygonRangeFamily L hL) 0 1) = 1/4 := by
+  sorry
 
 end
 end AronowAudit.P004
 
+#print axioms AronowAudit.P004.design_normalized
+#print axioms AronowAudit.P004.expect_sub
+#print axioms AronowAudit.P004.expect_sum
+#print axioms AronowAudit.P004.expect_div
+#print axioms AronowAudit.P004.expect_const
+#print axioms AronowAudit.P004.expect_mul
+#print axioms AronowAudit.P004.bernoulli_selection
+#print axioms AronowAudit.P004.ht_unbiased
+#print axioms AronowAudit.P004.randomization_scaling
+#print axioms AronowAudit.P004.corrected_fits
+#print axioms AronowAudit.P004.corrected_score_identity
+#print axioms AronowAudit.P004.capped_variance_ge
+#print axioms AronowAudit.P004.raw_sah_bound
+#print axioms AronowAudit.P004.sah_weighting_identity
+#print axioms AronowAudit.P004.corrected_ipw_finite
+#print axioms AronowAudit.P004.weighted_effect_bounds
+#print axioms AronowAudit.P004.assignment_two_univ
+#print axioms AronowAudit.P004.area_sum_counterexample
+#print axioms AronowAudit.P004.area_witness_realized
+#print axioms AronowAudit.P004.shell_mass_identity
+#print axioms AronowAudit.P004.annulus_radial_measure
+#print axioms AronowAudit.P004.shell_counterexample
+#print axioms AronowAudit.P004.mc_plus_one_identity
+#print axioms AronowAudit.P004.negative_observed_comparison
+#print axioms AronowAudit.P004.mc_size_counterexample
+#print axioms AronowAudit.P004.symmetric_critical_event
+#print axioms AronowAudit.P004.denominator_absolute_identity
+#print axioms AronowAudit.P004.missing_absolute_witness
+#print axioms AronowAudit.P004.centered_summand_identity
+#print axioms AronowAudit.P004.linear_hajek_class_identity
+#print axioms AronowAudit.P004.node_variance_identity
+#print axioms AronowAudit.P004.corrected_ipw_asymptotics
+#print axioms AronowAudit.P004.corrected_mle
+#print axioms AronowAudit.P004.hajek_linearization
+#print axioms AronowAudit.P004.hajek_central_limit
+#print axioms AronowAudit.P004.experimental_wald_coverage
+#print axioms AronowAudit.P004.diameter_interference_cutoff
+#print axioms AronowAudit.P004.diameter_chain
+#print axioms AronowAudit.P004.polygon_count_bound
+#print axioms AronowAudit.P004.polygon_range_counterexample
+#print axioms AronowAudit.P004.polygon_spacing_counterexample
+#print axioms AronowAudit.P004.dependency_clt_counterexample
+#print axioms AronowAudit.P004.ned_headline_results
+#print axioms AronowAudit.P004.ned_hac_correction
+#print axioms AronowAudit.P004.tail_homophily_correction
+#print axioms AronowAudit.P004.ned_epsilon_means
+#print axioms AronowAudit.P004.ipw_linearization_counterexample
+#print axioms AronowAudit.P004.ipw_witness_variance_constants
+#print axioms AronowAudit.P004.observational_sah_counterexample
+#print axioms AronowAudit.P004.sah_witness_constants
+#print axioms AronowAudit.P004.boundary_mle_counterexample
+#print axioms AronowAudit.P004.printed_ipw_proposition
+#print axioms AronowAudit.P004.printed_observational_coverage
+#print axioms AronowAudit.P004.printed_obs_ht_expectation
+#print axioms AronowAudit.P004.epsilon_product_difference
+#print axioms AronowAudit.P004.ned_far_covariance
+#print axioms AronowAudit.P004.ned_coverage_counterexample
+#print axioms AronowAudit.P004.additive_potential_shift
+#print axioms AronowAudit.P004.marginal_law_shift
+#print axioms AronowAudit.P004.additive_design_invariance
+#print axioms AronowAudit.P004.adjusted_pd_asymptotic_counterexample
+#print axioms AronowAudit.P004.adjusted_pd_constants
+#print axioms AronowAudit.P004.capped_pd_coverage
+#print axioms AronowAudit.P004.printed_pd_recommendation
+#print axioms AronowAudit.P004.join_design_weight
+#print axioms AronowAudit.P004.expect_split
+#print axioms AronowAudit.P004.marginal_is_marginalization
+#print axioms AronowAudit.P004.hajek_ratio_identity
+#print axioms AronowAudit.P004.ned_exact_linear_variance
+#print axioms AronowAudit.P004.bernoulli_denominator_rate
+#print axioms AronowAudit.P004.marginal_bin_average
+#print axioms AronowAudit.P004.bin_effect_aggregation
+#print axioms AronowAudit.P004.additive_spatial_design_invariance
+#print axioms AronowAudit.P004.printed_ipw_bound_and_literal_coverage
+#print axioms AronowAudit.P004.supported_shell_identity
+#print axioms AronowAudit.P004.spatial_shell_counterexample
+#print axioms AronowAudit.P004.spatial_area_sum_counterexample
+#print axioms AronowAudit.P004.mc_signed_spatial_counterexample
+#print axioms AronowAudit.P004.mc_level_spatial_counterexample
+#print axioms AronowAudit.P004.no_polygon_cutoff_from_range_alone
+#print axioms AronowAudit.P004.expect_add
+#print axioms AronowAudit.P004.residualContrast_mean
+#print axioms AronowAudit.P004.augmented_unbiased
+#print axioms AronowAudit.P004.barMu_difference
+#print axioms AronowAudit.P004.bernoulli_positive_power
+#print axioms AronowAudit.P004.bernoulli_pair_positive_powers
+
+#print axioms AronowAudit.P004.finite_area_sum_certificate
+
+#print axioms AronowAudit.P004.finite_shell_certificate
+
+#print axioms AronowAudit.P004.shell_partition_sum
+#print axioms AronowAudit.P004.shell_zero_numerator
+
+#print axioms AronowAudit.P004.design_weight_nonneg
+#print axioms AronowAudit.P004.expect_mono
+#print axioms AronowAudit.P004.cov_centered
+#print axioms AronowAudit.P004.variance_nonneg
+#print axioms AronowAudit.P004.cov_young
+#print axioms AronowAudit.P004.variance_le_second
+#print axioms AronowAudit.P004.variance_sum
+#print axioms AronowAudit.P004.variance_div
+#print axioms AronowAudit.P004.symmetric_neighbor_sum
+#print axioms AronowAudit.P004.finite_covariance_degree_bound
+#print axioms AronowAudit.P004.residual_square_moment
+#print axioms AronowAudit.P004.raw_sah_squares
+
+#print axioms AronowAudit.P004.shell_atom_distances
+#print axioms AronowAudit.P004.shell_atom_injective
+#print axioms AronowAudit.P004.shell_outcome_at_atom
+#print axioms AronowAudit.P004.shell_spatial_table
+#print axioms AronowAudit.P004.shell_region_measurable
+#print axioms AronowAudit.P004.shell_spatial_mass
+#print axioms AronowAudit.P004.shell_wellDefined
+#print axioms AronowAudit.P004.shell_outcome_bound
+
+#print axioms AronowAudit.P004.residual_pair_moment
+#print axioms AronowAudit.P004.linear_hajek_total_mean

@@ -8,10 +8,10 @@ open Finset Filter
 set_option maxRecDepth 3000
 set_option maxHeartbeats 2000000
 
-/-!
-P005-T7: grid moments, standardization, all-assignment regularity,
-a divergent remainder and the leverage limit for the spike population.
--/
+/-! P005-T7. The existing InteractedExpansion nodes prove the grid moments,
+standardization, all-assignment regularity and the divergent remainder for the
+same specified population. We reuse those proofs and supply the leverage limit.
+The held endpoint declaration is used only by the final type check. -/
 
 lemma t7_standardized (n : ℕ) (hn : 3 ≤ n) : standardized (spikePopulation n) :=
   InteractedExpansion.n2_proof InteractedExpansion.n1_proof n hn
@@ -138,6 +138,8 @@ theorem univariate_endpoint_counterexample_proof :
   simpa only [stochasticO, InteractedExpansion.R, Nat.cast_one, mul_one] using
     InteractedExpansion.n11_proof h10 (fun n hn =>
       (kappa_bounds (spikePopulation n) (by omega) (h2 n (by omega)).2).2)
+
+example : type_of% @AronowAudit.P005.univariate_endpoint_counterexample := univariate_endpoint_counterexample_proof
 
 end
 end AronowAudit.P005.Wave1

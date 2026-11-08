@@ -1,5 +1,3 @@
-
-
 import Mathlib.MeasureTheory.Measure.Portmanteau
 import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.Contiguity
@@ -9,8 +7,7 @@ import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.Contiguity
 
 Slutsky's theorem in the "close-in-probability" form, stated at the project's
 pushforward-measure level (`WeakConverges`). Given two sequences of random variables
-`X n, Y n : Ω n → E`, probability measures `P n` on the possibly varying spaces
-`Ω n`, and a probability measure `ν`, if
+`X n, Y n : Ω n → E` (base measures `P n` varying in both space and total mass), if
 
 * the push-forward laws `(P n).map (X n)` weakly converge to `ν`, and
 * the pair `dist (X n) (Y n)` converges to `0` in `P n`-probability,
@@ -19,8 +16,8 @@ then `(P n).map (Y n)` weakly converges to `ν` as well. This is the "varying ba
 version — Mathlib's `tendstoInDistribution_of_tendstoInMeasure_sub` only covers a
 single fixed base measure on a single space.
 
-In Theorem 7.10 Step 3, an `o_P(1)` residual under `P^n_{θ₀}` is absorbed
-into the joint weak convergence of `(T_n, log-likelihood)`.
+Used by Theorem 7.10 Step 3 to absorb the `LAN_expansion_iii` residual (an `o_P(1)`
+under `P^n_{θ₀}`) into the joint weak convergence of `(T_n, log-likelihood)`.
 
 The proof mirrors Mathlib's: reduce to Lipschitz test functions via
 `tendsto_iff_forall_lipschitz_integral_tendsto`, then split `|F(Y) − F(X)|` on
@@ -35,8 +32,7 @@ namespace AsymptoticStatistics
 /-- **Slutsky-by-distance for `WeakConverges`**: if `(P n).map (X n) ⇝ ν` and
 `dist (X n) (Y n) →_P 0` under `P n`, then `(P n).map (Y n) ⇝ ν`.
 
-Varying-base version: each `P n` lives on its own space `Ω n`, and all source and limit
-measures have total mass one. Adapted from
+Varying-base version (each `P n` lives on its own space `Ω n`). Adapted from
 `MeasureTheory.tendstoInDistribution_of_tendstoInMeasure_sub`, which is stated for a
 single base `μ''` on a normed additive group. The three-piece estimate
 `|∫F Y − ∫F ν| ≤ L·(ε/2) + 2·‖F‖∞ · P{dist ≥ ε/2} + |∫F X − ∫F ν|` carries over

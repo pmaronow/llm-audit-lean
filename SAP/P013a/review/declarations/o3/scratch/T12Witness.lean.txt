@@ -1,0 +1,24 @@
+import SAP.P013a.Challenge
+open SAP.P013a Finset
+
+-- R = 1 witness: signedReplicationPopulation 2, exposure d = 1
+example :
+    let F := signedReplicationPopulation 2
+    expectation (independentProduct signedReplicationDesign (replicateDesign signedReplicationDesign 1))
+      (simulatedHTTotal F 1 1) = 2/9 ∧ potentialTotal F 1 = 1 ∧
+    SAP.P013a.pi F 0 1 = 1/3 ∧ SAP.P013a.pi F 1 1 = 2/3 ∧
+    SAP.P013a.pi F 0 0 = 2/3 ∧ SAP.P013a.pi F 1 0 = 1/3 := by
+  intro F
+  have hsum : ∀ g : (Fin 1 → Fin 4) → ℝ, ∑ zs, g zs = ∑ a : Fin 4, g (fun _ => a) := by
+    intro g
+    exact (Fintype.sum_equiv (Equiv.funUnique (Fin 1) (Fin 4)) _ _ (fun zs => by
+      simp [Equiv.funUnique]; congr 1; funext r; fin_cases r; rfl))
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simp only [expectation, independentProduct, replicateDesign, Fintype.sum_prod_type]
+    simp only [hsum]
+    simp [Fin.sum_univ_four, simulatedHTTotal, simulatedPi, replicateCount, indicator, observed, F,
+      signedReplicationPopulation, signedReplicationDesign, Fin.sum_univ_two]
+    norm_num
+  all_goals simp [potentialTotal, SAP.P013a.pi, expectation, indicator, F, signedReplicationPopulation,
+      signedReplicationDesign, Fin.sum_univ_four, Fin.sum_univ_two]
+  all_goals norm_num

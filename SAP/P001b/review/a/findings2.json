@@ -1,0 +1,192 @@
+[
+  {
+    "target_id": "P001-T20",
+    "theorem": "SAP.P001b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: E=Fin 1, t=c=1/2, nonempty finite positive support, and the strict bound epsilon=1/4. This is a nonzero overlapping instance, so empty types or zero arrays are not doing the work.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T21",
+    "theorem": "SAP.P001b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed four atoms have weights (3/8,1/8,1/8,3/8) and potential-outcome pairs (20,25),(20,25),(60,65),(60,65). The scratch file checks normalization, both gender masses 1/2, and the observed conditional means 55 and 30. The specified vote thresholds count exactly 20,25,60,65 voters out of 100. No antecedents are assumed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T22",
+    "theorem": "SAP.P001b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exactly the same explicit, normalized, positive-mass four-atom witness as T21. All potential outcomes are bounded, all required expectations exist, and conditional independence fails on the conditioning cell of mass one.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T23",
+    "theorem": "SAP.P001b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The scratch file constructs a fair-coin probability measure on Fin 2. Take A={0}, B=univ with the discrete measurable space; A is a proper subset of B, so the reversed-gloss clause has a genuine instance. Both event probabilities are finite.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T24",
+    "theorem": "SAP.P001b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The scratch file constructs coinLaw on Fin 2 and checks every partition antecedent for the singleton cells: measurability, nonemptiness, pairwise disjointness, coverage, and strictly positive real probabilities. Thus the conditional ratio clause has two real positive-mass cells. The empty event separately witnesses nonnegative mass without positive mass.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T25",
+    "theorem": "SAP.P001b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fin 1 is inhabited, its sole weight is definitionally one, and the random variable is identically the integer zero. Thus it is a normalized probability law supported on integers; the lower tail is one and the sum of masses at 1,2,3 is genuinely zero.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T26",
+    "theorem": "SAP.P001b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: q(k)=1 if k=0 and 0 otherwise is everywhere nonnegative, summable over the integers, and has total sum one. It also witnesses the substantive missing mass: F(3)=F(0)=1 while the finite printed sum is zero.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T27",
+    "theorem": "SAP.P001b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The index type contains (m,k)=(0,0), at location 1/2 with weight 1/2. At level m there are 2^m positive weights 2^(-2m-1), with total 2^(-m-1); the geometric sum over levels is one. The resulting countable atomic law is genuine. One third is not a dyadic location, yet every subinterval of (0,1) receives positive mass.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T28",
+    "theorem": "SAP.P001b.T28",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: dieMass is nonnegative and normalized, and dieValue(i)=i+1 is strictly increasing on Fin 6. With the discrete measurable space these weights give a measurable finite-range variable, satisfying both the general countable-range clause and the finite ordered clauses. Gap intervals with no values give nonvacuous instances.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T29",
+    "theorem": "SAP.P001b.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The scratch file constructs unitLaw=Lebesgue measure restricted to [0,1], proves it is a probability measure, and proves closedUniformDensity is its Density. The open and modified versions change it only on finitely many null points. All three functions are bounded and integrable, and the one-sided quotient denominators are nonzero.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T30",
+    "theorem": "SAP.P001b.T30",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: unitLaw with f=g=closedUniformDensity satisfies the two-density univariate antecedents. Also compiled: squareLaw, Lebesgue measure restricted to [0,1]^2, is a probability measure with squareDensity as JointDensity and closedUniformDensity as both marginal densities. Taking y=1/2 realizes the mixed-derivative boundary example. No density hypothesis assumes uniqueness or differentiation.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T31",
+    "theorem": "SAP.P001b.T31",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed construction retains 0 and 1 at every stage. Its common stage-n component length is L_n=2^(-n-1)+2^(-2n-1), by L_0=1 and L_n=(L_(n-1)-4^(-n))/2. Thus the stage measures are 1/2+2^(-n-1), decreasing to 1/2. Doubling the restricted measure gives a nonzero probability measure on an inhabited subtype. Closedness makes the inclusion a measurable embedding, so comap does not use its zero fallback.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P001-T32",
+    "theorem": "SAP.P001b.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: unitLaw with the identity variable has the displayed genuine density after pushforward. For the existential clause, C=[0,1/2] minus the rational numbers has measure 1/2 because the rationals are countable and null; for example sqrt(2)/4 belongs to C. Twice restricted Lebesgue measure on C gives the required probability law, with no interval in its literal range.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T33",
+    "theorem": "SAP.P001b.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. An inhabited example is Omega=Fin 1, X=0, and g=h the identity; both sides hold. With g identically zero and h identically one both sides fail. Functions on a smaller domain containing the range can be extended off that domain without changing either side.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T34",
+    "theorem": "SAP.P001b.T34",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The density is the indicator of the unit-area rectangle (0,1) times (-1,0), so it is measurable, integrable and normalized. Its associated density measure is a genuine probability law. Its full support lies in the printed event, while its intersection with every integrated slice 0<=y<=x is empty. These are ordinary finite integrals.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T35",
+    "theorem": "SAP.P001b.T35",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled squareLaw/squareDensity instance satisfies the probability and JointDensity antecedents; its negative-Y portion has mass zero and the triangular integral is 1/2. The negative-rectangle density gives the other substantive case, with omitted mass one and triangular integral zero. Joint integrability justifies Fubini even if some sections of an arbitrary density are exceptional.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T36",
+    "theorem": "SAP.P001b.T36",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. All formula denominators are strictly positive, and f(0,0)=1/(4*pi)>0. Integrating in y gives exp(x)/(1+exp(x))^2, whose real integral is one; at y=0 the integrand tends to 1/pi, so its nonnegative integral diverges. For y nonzero the substitution t=exp(x) gives an integrable positive function on (0,infinity). The scratch file independently proves real analyticity and passed again against the refreshed definitions; the revised scope now explicitly discloses this true stronger conclusion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T37",
+    "theorem": "SAP.P001b.T37",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: squareDensity is Borel measurable, pointwise nonnegative, and its slice at x=1/2 is integrable with integral one. squareLaw is a genuine probability measure with this joint density and uniform marginal densities. Its marginal nonnegative slice integral is closedUniformDensity at every y, giving an explicit g satisfying the version premise.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T38",
+    "theorem": "SAP.P001b.T38",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The scratch file checks that gaussianReal 0 1 is a probability measure and separately verifies the endpoint zero denominators. Its measurable constant-zero pushforward is the actual law of 0 times a standard normal, namely a unit Dirac mass. The endpoint parameters m_x=m_y=0, sigma_x=sigma_y=1, rho=+1 or -1 satisfy the printed parameter restrictions. The refutation uses zero denominators, not an inferred classical value for division by zero.",
+    "confidence": 0.98
+  }
+]

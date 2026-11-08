@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P041-T1",
+    "theorem": "SAP.P041.T1",
+    "fingerprint": "2b865243b8467dd5fc85d5237d0b1a9095a0e3cbd1cfbc0f2ff67aed6d4d3424",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:39 realizes qA=4/5, qF=99/100 and t=12, including positive hazards; :57 proves positivity of all four actual binomial masses. The definitions-only lemmas at :12 and :26 establish the common hazard ratio and ordinary survival contrast. Independent exponential removal times with these positive rates exist on a finite product probability space, so the binomial interpretation is genuine and all four observed counts lie in support.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T2",
+    "theorem": "SAP.P041.T2",
+    "fingerprint": "4708aec5e1da3db65b712af9bd860e7191f198911f4f7f5771251fa80e41af25",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:69 constructs all four rounding-rectangle hypotheses simultaneously at (0.691,0.318,0.629,0.091), with a positive comparison denominator. The example at :83 constructs qA=4/5 and qF=99/100 and proves every condition of the existential, including non-null common ratio, positive former contrast, and the greater-than-thirteen comparison, using only Defs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T3",
+    "theorem": "SAP.P041.T3",
+    "fingerprint": "323641226c463bd370b01911b92c84891d452eea1206ffd77ea229d4be173fcf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:100 constructs a=75,b=52 satisfying all universal hypotheses 0<b<a. The example at :103 verifies the three directional increases and the first separate failed and corrected roundings from definitions. All remaining closed comparisons have positive denominators; the general gap is the ordinary identity 100(a-b)/b - 200(a-b)/(a+b) = 100(a-b)^2/(b(a+b)) with positive right-hand side.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T4",
+    "theorem": "SAP.P041.T4",
+    "fingerprint": "2e74dd5079eaf2868a6de2aec3574410475e5a75e53b3f0f040788977ce4067f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The proposition has no hypotheses or free data. scratch/Check.lean:150 proves the complete T4Statement from its numerical definitions, including the hypothetical 76-count variant and every symmetric rounding, without importing Challenge. No implication can become vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T5",
+    "theorem": "SAP.P041.T5",
+    "fingerprint": "43e6567cfd90d9e07c6eba034b597ab60524054096c33b00f40b2c27e2494cb7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:114 proves that balancedSequences m has positive cardinality for every m, including 50. The example at :121 constructs a positive-size balanced member and genuine own-treatment switch with the same past. The example at :132 computes the balanced m=2 mean 1/6, a fixed-pattern mean zero, and the independent fair-assignment mean zero directly from definitions. A uniform permutation independent of any balanced page assignment induces the stated subset law because each rank subset has exactly m!^2 labelled permutations. scratch/Enumeration.log independently checks all orders for m=1 through 7 and the exact K-law and moments at m=50.",
+    "confidence": 0.99
+  }
+]

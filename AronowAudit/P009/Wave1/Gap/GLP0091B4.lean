@@ -506,7 +506,7 @@ lemma t18_bracket (p R T : ℝ) (hp : 0 < p ∧ p < 1) (hR : 0 < R)
   cases b <;> simp only [bit, Bool.false_eq_true, ite_false, ite_true, zero_mul, one_mul,
     sub_self, sub_zero, zero_div] <;> constructor <;> linarith
 
-/-- P009-T18: corrected hypergeometric count laws and likelihood ratios. -/
+/-- P009-T18, with the exact held statement and no additional hypotheses. -/
 theorem corrected_hypergeometric_proof {n : ℕ} (E : Experiment n) (m : ℕ)
     (hCR : Complete E m) (i : Fin n)
     (hc : incoming E i ≤ min m (n-m)) :
@@ -639,6 +639,8 @@ theorem corrected_hypergeometric_proof {n : ℕ} (E : Experiment n) (m : ℕ)
           (r:ℝ)/(marginal E i b*((n:ℝ)-r)) := by
       convert hh using 1 <;> (try simp only [hcard]) <;> congr!
     exact hh'.trans ((hcompare b).1.trans (hcompare b).2)
+
+example : type_of% @AronowAudit.P009.corrected_hypergeometric := corrected_hypergeometric_proof
 
 end
 end AronowAudit.P009.Wave1

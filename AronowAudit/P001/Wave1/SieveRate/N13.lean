@@ -4,7 +4,8 @@ import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Independence
 import Mathlib.Probability.Moments.Variance
 
 /-! A deterministic-design Gaussian law.  All integrals below are with respect
-to the finite response product; no random inverse Gram matrix is integrated. -/
+to the finite response product; no random inverse Gram matrix is integrated.
+Draft only: no Lean process has been run on this file. -/
 
 set_option autoImplicit false
 

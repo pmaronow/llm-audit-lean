@@ -80,8 +80,9 @@ theorem residual_weight_expansion {Ω : Type*} {K : ℕ}
       (fun i : Fin n => dotProduct (controlRow (X i s)) (omegaHat D X n s-ω))
       (fun i : Fin n => Z i s))
 
-/- T8(iv): the exact first Taylor polynomial replaces the unjustified
-quadratic remainder under mere twice differentiability. -/
+/- The validator expressly permits the exact first Taylor polynomial for
+T8(iv). This repairs the unjustified quadratic remainder under mere twice
+differentiability; it does not claim that the old stronger draft was proved. -/
 theorem full_score_firstTaylor_repair (N K : ℕ)
     (W : Matrix (Fin N) (Fin (K+2)) ℝ) (Y : Fin N → ℝ)
     (hY : ∀ i, Y i=0 ∨ Y i=1) (hW : ∀ i, W i 0=1)
@@ -102,6 +103,16 @@ theorem full_score_firstTaylor_repair (N K : ℕ)
         h₀ • r+((-h₀*f₀) • A+h₁ • B).mulVec δ := by
   exact AronowAudit.P015.full_score_firstTaylor (N := N) (K := K) (W := W) (Y := Y) (hY := hY) (hW := hW) (I := I) (hI := hI) (m := m) (hm := hm) (hprob := hprob) (η₀ := η₀) (p₀ := p₀) (hη := hη) (hp := hp) (hu := hu) (hmean := hmean) (hm₂ := hm₂)
 
+theorem affine_predictor (N K : ℕ) (W : Matrix (Fin N) (Fin (K+2)) ℝ)
+    (Y : Fin N → ℝ) (hY : ∀ i, Y i=0 ∨ Y i=1) (hW : ∀ i, W i 0=1)
+    (hQ : (W.transpose*W).det ≠ 0) (b c : ℝ) (hc : c ≠ 0) :
+    (∀ θ v : Fin (K+2) → ℝ,
+      HasDerivAt (fun t => groupedLikelihood W (fun _ => 1) Y logistic (fun j => θ j+t*v j))
+        (∑ i, (Y i-logistic (W.mulVec θ i))*W.mulVec v i) 0) ∧
+    (∃! θ : Fin (K+2) → ℝ, groupedResidual W (fun _ => 1) Y (fun a => b+c*a) θ = 0) ∧
+    (∀ θ, groupedResidual W (fun _ => 1) Y (fun a => b+c*a) θ = 0 →
+      affineTheta 0 b c θ = ols W Y ∧ ols W Y 1 = c*θ 1) := by
+  exact AronowAudit.P015.logistic_linearization (N := N) (K := K) (W := W) (Y := Y) (hY := hY) (hW := hW) (hQ := hQ) (b := b) (c := c) (hc := hc)
 
 theorem likelihood_directional_derivative_calculus (N K : ℕ)
     (W : Matrix (Fin N) (Fin (K+2)) ℝ) (Y : Fin N → ℝ)
@@ -117,5 +128,12 @@ theorem likelihood_directional_derivative_calculus (N K : ℕ)
     (fun i => (hprob _ (hθ i)).1) (fun i => (hprob _ (hθ i)).2)
 
 
+#print axioms likelihood_directional_derivative_calculus
+#print axioms full_score_firstTaylor_repair
+#print axioms affine_predictor
+#print axioms likelihood_directional_derivative
+#print axioms logistic_ML_score_zero
+#print axioms logistic_exact_remainder
+#print axioms residual_weight_expansion
 end
 end AronowAudit.P015.PaperDomains

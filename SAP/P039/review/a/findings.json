@@ -1,0 +1,72 @@
+[
+  {
+    "target_id": "P039-T1",
+    "theorem": "SAP.P039.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The series h(q)=1 if q=1 and 0 otherwise, at decay 1/2 and 9/10, gives both canonical witnesses. Exact rational checks reproduce the stated numerators, positive denominators, and distinct growth values. CheckNonvacuity.lean independently verifies positivity of both denominators at 1/2. The reverse quarter indices never use truncated subtraction, and arbitrary sixteen-tuples extend to the Lean series type.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T2",
+    "theorem": "SAP.P039.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Any sixteen real growth rates extend to QuarterGrowth; decay 0, 1/2, 9/10, and 1 all satisfy the nonnegative-decay premise. Each denominator is at least 1/3 by its nonnegative summands. The endpoint formulas and exact difference/equality characterization follow by ordinary real algebra with strictly positive denominators; the scratch rational checks include both endpoints.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T3",
+    "theorem": "SAP.P039.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed six-observation designs all have invertible Gram matrices; independent rational normal-equation calculations reproduce every displayed fit, residual, SSE, tested variance, and squared t. The tested variances are 1/4, 1/3, 17/64, and 1/3, with residual degrees of freedom 4 or 3. For the Gaussian clause choose sigma=1 and gamma=(0,0): six independent standard normals give a nondegenerate probability measure. Orthogonal Gaussian projections yield independent U~N(0,1) and V~chi-square(3); E[1/V]=1 gives the retained second moment 4. The Student laws have positive degrees of freedom and finite stated second moments. The zero-denominator set has probability zero, and all pushforward maps are Borel measurable.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T4",
+    "theorem": "SAP.P039.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=6, k=2, Z=[1,u] with u=(1,-1,0,0,0,0), and x=(0,0,1,-1,0,0). CheckNonvacuity.lean proves full column rank, containment of the constant vector, x outside the control span, and k+1<n, without importing Challenge. The canonical witness y=u+(3/2)x+w has full-model SSE=2, so the guarded t conclusions also apply. For the covariance clause use the 64 equally likely sign vectors in {-1,1}^6, epsilon the identity, sigma=1, and any fixed gamma, e.g. (2,-3). Every coordinate and pairwise product is integrable; exact enumeration gives mean zero and covariance I, and residual covariance M of rank 4. Finite moments prevent any use of the nonintegrable-integral convention.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T5",
+    "theorem": "SAP.P039.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are five actual finite samples with sizes 17,11,17,11,8. All 64 exact rational scores match the canonical definitions_needed table. Exhaustive rational enumeration confirms both positive voter-centered gaps, all five unique positive signed maxima, and the negative worked product. No optimization uses the zero placeholders outside the samples. The theorem establishes the canonical counterexample, distinguishing the 1980-selection assertion from the signed-order reading of 'largest value'; the record correctly calls it whole rather than refuted.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T6",
+    "theorem": "SAP.P039.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exact enumeration of the five nonempty samples confirms winners (1980,1972,1980,1972,1964), their negative scores, and every claimed positive attained margin. The same winners remain in both model samples; sample sizes are 17/16,11,17/16,11,8, so every natural-number degrees-of-freedom subtraction is untruncated. The fitted-contribution statements quantify arbitrary real beta and nuisance value g, and the worked rounded product is exactly 1.3826.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T7",
+    "theorem": "SAP.P039.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All 85 fixed input cells match the canonical exact decimals. Independent rational normal equations show all three designs have full column rank and unique least-squares fits and reproduce the three exact income coefficients and A1 squared SE. For the nested assertions take q=income, Z1=[1,tenure], Z2=[1,tenure,fatalities] on those same 17 observations. Both augmented designs have full column rank, both SSEs are positive, and 0<R2<R1. Their residual scales are approximately 4.623853535 and 4.702717045, with A2 income SE approximately .957092630, so the three neighboring bounds are jointly satisfiable. The four-bin antecedent including A1 SE at least 1.35 is intentionally impossible; this is the asserted nonexistence result, not vacuity from unrelated hypotheses. The corrected A1 SE is approximately .940597014 and A3 SE approximately 1.006877166.",
+    "confidence": "high"
+  }
+]

@@ -8,9 +8,7 @@ import AronowAudit.P045.Wave1.ClusterSampler.N6
 import AronowAudit.P045.Wave1.ClusterSampler.N7
 import AronowAudit.P045.Wave1.ClusterSampler.N8
 
-/-!
-P045-T29: a counterexample to the documented cluster-sampler law.
--/
+/-! Refutation of the exact frozen documented cluster-sampler contract (P045-T29). -/
 
 set_option autoImplicit false
 
@@ -36,6 +34,8 @@ theorem cluster_sampler_as_documented_refuted :
     AronowAudit.P045.Wave1.ClusterSampler.n6_proof
     AronowAudit.P045.Wave1.ClusterSampler.n7_proof
     AronowAudit.P045.Wave1.ClusterSampler.n8_proof
+
+example : AronowAudit.P045.Wave1.ClusterSampler.Target := cluster_sampler_as_documented_refuted
 
 end
 

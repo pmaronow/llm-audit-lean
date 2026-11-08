@@ -212,15 +212,7 @@ theorem hotdeck_product_l2_of_fourth {n : ℕ} (hn : 0 < n) {C : ℝ}
 
 /-- The scaled bootstrap variance has a uniform population second moment. -/
 theorem hot_deck_bootstrap_uniform_second_moment_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (Z : ℕ → Ω → ℝ × Bool × Bool)
-      (hiid : IID μ Z)
-      (hlaw : μ.map (Z 0)=matchingUnitLaw),
-      ∃ C : ℝ,0 ≤ C ∧ ∀ n : ℕ,
-     mean μ (fun ω => ((n : ℝ)*bootVar hotDeck (firstSample Z n ω))^2) ≤ C) := by
+    type_of% @AronowAudit.P001.hot_deck_bootstrap_uniform_second_moment := by
   intro Ω _ μ _ Z hiid hlaw
   obtain ⟨C,hC,hMom,_hPinned⟩ := uniform_reuse_fourth_moments
   refine ⟨3*C,by positivity,?_⟩
@@ -234,5 +226,7 @@ theorem hot_deck_bootstrap_uniform_second_moment_final :
     subst n
     simp only [Nat.cast_zero,zero_mul,zero_pow (by decide : 2 ≠ 0),mean,integral_zero]
     positivity
+
+example : type_of% @AronowAudit.P001.hot_deck_bootstrap_uniform_second_moment := AronowAudit.P001.Wave1.TailA.hot_deck_bootstrap_uniform_second_moment_final
 
 end AronowAudit.P001.Wave1.TailA

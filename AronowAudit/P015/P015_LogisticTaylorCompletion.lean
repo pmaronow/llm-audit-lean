@@ -1,5 +1,7 @@
 /-
+Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
+Authors: P. M. Aronow audit contributors
 -/
 /- Actual all-order sigmoid derivatives, finite signed Taylor remainders,
 and all-degree error lower bounds. No additional theorem hypotheses.
@@ -128,6 +130,17 @@ lemma derivative_sum (m : ℕ) (x : ℝ) : HasDerivAt (fun y : ℝ=>∑' n,realD
   intro n y
   exact (Complex.abs_re_le_norm _).trans (termD_bound (m+1) (by omega) y n)
 
+lemma iterated_sigmoid_sub (m : ℕ) :
+    iteratedDeriv m (fun x : ℝ=>Real.sigmoid x-1/2) = (fun x=>∑' n,realD m x n) := by
+  induction m with
+  | zero =>
+    funext x
+    simp only [iteratedDeriv_zero,realD_zero]
+    exact (hasSum_partial_fractions x).tsum_eq.symm
+  | succ m ih =>
+    rw [iteratedDeriv_succ,ih]
+    funext x
+    exact (derivative_sum m x).deriv
 
 lemma iterated_sigmoid_succ (m : ℕ) :
     iteratedDeriv (m+1) Real.sigmoid = (fun x=>∑' n,realD (m+1) x n) := by
@@ -352,5 +365,18 @@ lemma all_degree_negative_error {x : ℝ} (hx : 9/2≤x) (hfit : Real.sigmoid x=
   rw [he,abs_neg]
   exact all_degree_error hx hfit N
 
+#print axioms all_degree_error
+#print axioms all_degree_negative_error
+
+#print axioms error_ge_first_pole
+#print axioms taylor_sigmoid_neg
+
+#print axioms evenPoly_remainder
+#print axioms atomTaylor_hasSum
+
+#print axioms realD_odd
+#print axioms iterated_sigmoid_succ
+
+#print axioms termD_bound
 end
 end AronowAudit.P015.LogisticTaylorCompletion

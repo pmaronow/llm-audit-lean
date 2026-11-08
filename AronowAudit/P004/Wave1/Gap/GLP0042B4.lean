@@ -1,6 +1,7 @@
 import AronowAudit.P004.Wave1.AreaSum
 
-/-! P004-T5: the spatial counterexample using Euclidean area integrals for all assignments. -/
+/-! P004-T5: the held spatial counterexample, obtained from the proved
+all-assignment Euclidean area-integral bridge. -/
 
 namespace AronowAudit.P004.Wave1
 
@@ -10,7 +11,7 @@ open AronowAudit.P004 MeasureTheory Filter
 open scoped BigOperators
 
 /-- The actual disk/annulus area averages give the negative six-bin sum
-and the positive whole-region effect. -/
+and the positive whole-region effect in the frozen spatial statement. -/
 theorem spatial_area_sum_counterexample_proof :
     (∀ x z, areaBinaryPopulation.outcome x z = 0 ∨ areaBinaryPopulation.outcome x z = 1) ∧
     (∀ j : Fin 6, WellDefined areaBinaryPopulation j) ∧
@@ -22,6 +23,8 @@ theorem spatial_area_sum_counterexample_proof :
     ame (fun _ => 1/2) (circleAverage areaBinaryPopulation 6) = (121/18000 : ℝ) ∧
     (0 : ℝ) < 121/18000 ∧ -(17/500 : ℝ) ≠ 121/18000 := by
   exact area_sum_spatial_caseB.2.2.2
+
+example : type_of% @AronowAudit.P004.spatial_area_sum_counterexample := spatial_area_sum_counterexample_proof
 
 end
 end AronowAudit.P004.Wave1

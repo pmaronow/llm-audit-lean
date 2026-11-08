@@ -1,8 +1,11 @@
 import AronowAudit.P008.P008_Audit
 import AronowAudit.P012.P012_Identification
 
-/-! P008-T23: equality of toy HAC expressions at cutoffs 2/5 and zero.
-P012-T20: refutation of the printed table intervals, including rounding tolerance. -/
+/-!
+Drafts for P008-T23 and P012-T20, in the order assigned by the mapper.
+These proofs reuse the existing geometry and compatible-completion theorems.
+This file has not been checked by Lean: its author is a drafter.
+-/
 
 namespace AronowAudit.P008.Wave1
 
@@ -78,7 +81,7 @@ theorem T20_printed_sex_lower_impossible (D : Data) (hD : Admissible D)
     norm_num
   linarith only [hlower, hround_lower, hgap]
 
-/-- P012-T20: refutation of the printed pointwise predicate, including its rounding tolerance. -/
+/-- P012-T20: negate the frozen pointwise predicate, including its rounding tolerance. -/
 theorem printed_table_intervals_refuted
     (Dsex Dcrack Dhome : Data) :
     ¬ printed_table_intervals Dsex Dcrack Dhome := by
@@ -93,6 +96,12 @@ theorem printed_table_intervals_refuted
       _hcrackregion, _hhomeregion, hsexround, _hremaining⟩
   exact T20_printed_sex_lower_impossible Dsex hD hn hM hd Ls Us
     hsexregion hsexround
+
+-- The held record is unnamed and has no theorem constant whose type can be read.
+-- Check the inferred pointwise theorem type against the exact frozen predicate.
+example (Dsex Dcrack Dhome : Data) :
+    (type_of% (printed_table_intervals_refuted Dsex Dcrack Dhome)) ↔
+      ¬ printed_table_intervals Dsex Dcrack Dhome := Iff.rfl
 
 end
 

@@ -260,25 +260,12 @@ theorem tb09_rare_gaussian_limit : ∃ ν : Measure (Vec 2),
     rw [smul_smul,div_eq_mul_inv]
   rw [hx,Matrix.mulVec_smul,tb09_rare_OLS_normalized hN]
 
-/-- P018-T19, with its original sample law and totalized estimators. -/
-theorem TailB_infinite_moments_counterexample : (IsProbabilityMeasure rareLaw ∧ RepeatedStanding rareRepeated ∧
-    (∀ N : ℕ, 2 ≤ N → ∀ ω : Fin N → RareUnit, (repeatedGram rareRepeated ω).det > 0 ∧
-      (∀ d : Dyad N, ∀ t : Fin 2, |repeatedY rareRepeated ω d t -
-        dot (repeatedX rareRepeated ω d t) (repeatedOLS rareRepeated ω)| ≤ 8)) ∧
-    (∀ N : ℕ, 3 ≤ N →
-      (∫⁻ ω, ENNReal.ofReal ((repeatedOLS rareRepeated ω 1)^2) ∂ repeatedLaw rareRepeated N) = ∞ ∧
-      (∫⁻ ω, ENNReal.ofReal |repeatedOLS rareRepeated ω 1| ∂ repeatedLaw rareRepeated N) = ∞) ∧
-    (∀ N : ℕ, 4 ≤ N →
-      (∫⁻ ω, ENNReal.ofReal (max ((repeatedVariance rareRepeated ω) 1 1) 0) ∂ repeatedLaw rareRepeated N) = ∞ ∧
-      (∫⁻ ω, ENNReal.ofReal (max (-((repeatedVariance rareRepeated ω) 1 1)) 0) ∂ repeatedLaw rareRepeated N) < ∞) ∧
-    (0 < rareLimitSlopeVariance ∧
-      inProbability (repeatedLaw rareRepeated) (fun N ω =>
-        (N : ℝ) • repeatedVariance rareRepeated ω - (!![4+rareLimitSlopeVariance,-rareLimitSlopeVariance;-rareLimitSlopeVariance,rareLimitSlopeVariance] : Mat 2)) ∧
-      ∃ ν : Measure (Vec 2), centeredNormalLaw ν (!![4+rareLimitSlopeVariance,-rareLimitSlopeVariance;-rareLimitSlopeVariance,rareLimitSlopeVariance]) ∧
-        weakLimit (repeatedLaw rareRepeated)
-          (fun N ω => Real.sqrt N • (repeatedOLS rareRepeated ω - repeatedBeta rareRepeated N)) ν)) := by
+/-- Exact held record P018-T19, with its original sample law and totalized estimators. -/
+theorem TailB_infinite_moments_counterexample : type_of% @AronowAudit.P018.infinite_moments_counterexample := by
   obtain ⟨hp,hS,hfinite,hcoef,hsand⟩ := TailB_rare_finite_pathologies
   exact ⟨hp,hS,hfinite,hcoef,hsand,tb09_rare_limit_variance_pos,
     tb09_rare_variance_limit,tb09_rare_gaussian_limit⟩
+
+example : type_of% @AronowAudit.P018.infinite_moments_counterexample := AronowAudit.P018.Wave1.TailB_infinite_moments_counterexample
 
 end AronowAudit.P018.Wave1

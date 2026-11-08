@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P019b.T14",
+  "target_id": "P019-T14",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P019b/Defs/Part4.lean:31: T14Statement requires a Fintype underlying sample space and a finite-mass Study. The canonical general calculation quantifies over random variables without restricting the underlying probability space to be finite. Consequently the declaration states only the finite-space case. Its conclusions (i)–(v) are otherwise correctly rendered. A finite pushforward can represent the bounded observables, but the statement and its closure contain no arbitrary-space conclusion or transport assertion.",
+   "SAP/P019b/Challenge/Part1.lean:25: The T14 docstring presents the general truthful-question interpretation without disclosing the finite-space scope. record.json:37 marks the item whole and record.json:39 declares no restriction, so this narrowing is not an accurately disclosed restricted result."
+  ]
+ }
+]

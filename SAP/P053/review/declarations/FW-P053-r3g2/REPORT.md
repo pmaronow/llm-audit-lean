@@ -1,0 +1,20 @@
+All three declarations are faithful to their recorded scope. T6 is correctly labelled **restricted**; T8 and T7 correctly cover their canonical variance claims in full. No definition, hypothesis, or docstring defect was found.
+
+The blind expansion of every closure declaration was saved in `reading.md` before opening `claims.json`. The comparison in `claim-stage.json` was saved before opening `record.json`. No claim-stage conclusion changed after reading the record. Generated constructors and numeral-instance proofs were inspected with Lean as well as reading the source definitions.
+
+For **T6**, the statement retains the local variance difference, the conditional variance ratio, both constant-effect approximations, and sharp-null normality and nominal size. It adds eventual positivity of OLS variance at every supported assignment only to the ratio and studentized conclusions, and omits local FRT/Wald test equivalence. Both restrictions are accurately disclosed in `SAP/P053/Challenge/Part1.lean:41` and `record.json`. The positive limiting coefficient and positive sharp-null variance are already canonical assumptions. This is a narrower theorem with an accurate restriction, not an undisclosed whole-claim assertion.
+
+For **T7**, every formal-reading clause (a)–(d) is retained. The local Fisher branch has the same two deterministic limiting coefficients, so the unconditional identity and necessary conditions also give the local versions. Nonnegative standard deviations correctly represent the canonical parameters.
+
+For **T8**, the general bound, constant-effect equalities, agreement, and complete specified witness are retained. The witness's Neyman probability limit follows from the universal bound conjunct applied to its regularity certificate. The canonical target expressly concerns variances; rejection-probability consequences are outside that target. The witness is an example supporting the claim, not a refutation.
+
+The finite-sum definitions agree with S4, and regularity reproduces S5. Randomization supports are always nonempty. Potential zero arm or residual divisors at early indices cannot affect the limits; regularity excludes them eventually. T6's studentized conclusions additionally exclude zero estimated variances eventually. Gaussian probabilities are finite, and the normal quantile's infimum is over a nonempty, bounded-below set for the stated significance levels. No conclusion relies on a junk value or an encoded statistical conclusion.
+
+Independent Lean checks importing only `SAP.P053.Defs` compiled successfully:
+
+- `scratch/Check.lean`: a nondegenerate family with `m=k+2`, `N=4m`, treatment/control sizes `m,3m`, and identical binary potential outcomes with `2m` ones and `2m` zeros. It satisfies every regularity field with `(p,v1,v0,vt,t)=(1/4,1/4,1/4,0,0)`, sharp null, constant effects, local effects, both positive coefficient conditions, and `PositiveOLS`. Each control sample contains both outcome values because its size `3m` exceeds either class size `2m`. The same file instantiates T7 with standard deviations `1/2` and constructs T8's universal/constant-effect hypotheses. It also checks a zero-variance regular family.
+- `scratch/Finite.lean`: T8's witness at `m=1` has the stated mean and all three population variances, its randomization support has 45 assignments, and its effects are nonconstant at every index.
+
+For T8's entire witness sequence, direct finite arithmetic gives mean zero, variances `N/(N-1),4N/(N-1),N/(N-1)`, and raw fourth-moment average **17**. Allocation is exactly `1/5`, size diverges, and these formulas give every S5 limit. Thus it also supplies a nonvacuous unequal-limit local example for T7, with standard deviations `2,1`. Complete enumeration using exact rational arithmetic independently verifies the finite variance formulas for `m=1,2` (45 and 4,845 assignments); code and results are in `scratch/enumerate_witness.py` and `scratch/enumeration.json`.
+
+`findings.json` contains exactly the three requested declarations with fingerprints copied from `closure.json`; its JSON and schema constraints were checked with Python.

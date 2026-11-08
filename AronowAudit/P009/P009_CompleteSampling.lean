@@ -3,12 +3,15 @@ import AronowAudit.P009.P009_Audit
 /-!
 # Independent labels and the collision comparison
 
-The law below is the independent uniform label distribution on `Fin k → Fin n`.
+The law below is the actual independent uniform label distribution on `Fin k → Fin n`.
 A finite union bound over position pairs gives its repeated-label probability.
 A [0,1]-valued test constant on injective samples changes by at most that probability.
+These are finite sampling helpers; permutation invariance and the complete-randomization
+block-event bridge are separate obligations.
 
-The mathematical collision coupling is standard, e.g. Jayram–Vondrák (2014),
-Proposition 1.
+New direct proofs from finite sums and Mathlib cardinality equivalences. The mathematical
+collision coupling is standard, e.g. Jayram–Vondrák (2014), Proposition 1; no donor Lean
+source is copied.
 -/
 
 namespace AronowAudit.P009.CompleteSampling
@@ -145,5 +148,9 @@ theorem bounded_test_comparison (n k : ℕ) (hn : 0 < n)
         rw [abs_le]
         constructor <;> linarith [(hF a).1, (hF a).2, hc.1, hc.2]
 
+#print axioms labelLaw
+#print axioms pair_collision_probability
+#print axioms noninjective_probability_le
+#print axioms bounded_test_comparison
 end
 end AronowAudit.P009.CompleteSampling

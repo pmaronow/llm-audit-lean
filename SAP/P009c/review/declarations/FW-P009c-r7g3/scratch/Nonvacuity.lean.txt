@@ -1,0 +1,378 @@
+import SAP.P009c.Defs
+
+open scoped BigOperators Topology
+open Filter SAP.P009c
+
+set_option autoImplicit false
+set_option maxRecDepth 2000
+
+noncomputable section
+namespace Audit
+
+def fair (n : ℕ) : Law (Assignment n) where
+  mass := fun _ => ∏ _ : Fin n, (1 / 2 : ℝ)
+  nonneg := by intro z; positivity
+  total := by
+    have h := (Fintype.prod_sum (fun (_ : Fin n) (_ : Bool) => (1 / 2 : ℝ))).symm
+    simpa using h
+
+lemma fair_mean_prod (n : ℕ) (f : Fin n → Bool → ℝ) :
+    mean (fair n) (fun z => ∏ i, f i (z i)) =
+      ∏ i, ((f i false + f i true) / 2) := by
+  unfold mean fair
+  simp only [← Finset.prod_mul_distrib]
+  rw [← Fintype.prod_sum (fun i b => (1 / 2 : ℝ) * f i b)]
+  congr 1
+  funext i
+  simp
+  ring
+
+lemma fair_mean_one {n : ℕ} (i : Fin n) (f : Bool → ℝ) :
+    mean (fair n) (fun z => f (z i)) = (f false + f true) / 2 := by
+  classical
+  have h := fair_mean_prod n (fun j b => if j = i then f b else 1)
+  simp only [Fintype.prod_ite_eq'] at h
+  rw [h]
+  have he : (fun j : Fin n =>
+      ((if j = i then f false else 1) + (if j = i then f true else 1)) / 2) =
+      (fun j => if j = i then (f false + f true) / 2 else 1) := by
+    funext j
+    by_cases hj : j = i <;> simp [hj]
+  rw [he, Fintype.prod_ite_eq']
+
+lemma fair_mean_two {n : ℕ} (i j : Fin n) (hij : i ≠ j) (f g : Bool → ℝ) :
+    mean (fair n) (fun z => f (z i) * g (z j)) =
+      ((f false + f true) / 2) * ((g false + g true) / 2) := by
+  have h := fair_mean_prod n (fun l b =>
+    (if l = i then f b else 1) * (if l = j then g b else 1))
+  simp only [Finset.prod_mul_distrib, Fintype.prod_ite_eq'] at h
+  rw [h]
+  have he : (fun l : Fin n =>
+      (((if l = i then f false else 1) * (if l = j then g false else 1) +
+        (if l = i then f true else 1) * (if l = j then g true else 1)) / 2)) =
+      (fun l => (if l = i then (f false + f true) / 2 else 1) *
+        (if l = j then (g false + g true) / 2 else 1)) := by
+    funext l
+    by_cases hi : l = i
+    · subst l; simp [hij]
+    · by_cases hj : l = j
+      · subst l; simp [hi]
+      · simp [hi, hj]
+  rw [he]
+  rw [Finset.prod_mul_distrib, Fintype.prod_ite_eq', Fintype.prod_ite_eq']
+
+abbrev zeroExperiment (n : ℕ) : Experiment n := ⟨fair n, fun _ _ => 0⟩
+
+lemma fair_marginal {n : ℕ} (i : Fin n) (b : Bool) :
+    marginal (zeroExperiment n) i b = 1 / 2 := by
+  classical
+  unfold marginal prob
+  have h := fair_mean_one i (fun a => if a = b then (1 : ℝ) else 0)
+  calc
+    _ = mean (fair n) (fun z => if z i = b then (1 : ℝ) else 0) := by
+      congr 1
+      funext z
+      split_ifs <;> simp_all
+    _ = 1 / 2 := by cases b <;> simpa using h
+
+lemma fair_bernoulli (n : ℕ) : Bernoulli (zeroExperiment n) := by
+  constructor
+  · intro i; rw [fair_marginal]; norm_num
+  · intro z
+    change (∏ _ : Fin n, (1 / 2 : ℝ)) = _
+    apply Finset.prod_congr rfl
+    intro i hi
+    rw [fair_marginal]
+    cases z i <;> norm_num
+
+lemma zero_interferes {n : ℕ} (i j : Fin n) :
+    Interferes (zeroExperiment n) i j ↔ i = j := by
+  simp [Interferes, zeroExperiment]
+
+lemma zero_d {n : ℕ} (i j : Fin n) :
+    d (zeroExperiment n) i j = if i = j then 1 else 0 := by
+  simp [d, Dependent, zero_interferes]
+
+lemma zero_degree {n : ℕ} (i : Fin n) : degree (zeroExperiment n) i = 1 := by
+  simp [degree, zero_d]
+
+lemma zero_dAvg {n : ℕ} (hn : 0 < n) : dAvg (zeroExperiment n) = 1 := by
+  simp [dAvg, zero_degree, ne_of_gt hn]
+
+lemma zero_dMax {n : ℕ} (hn : 0 < n) : dMax (zeroExperiment n) = 1 := by
+  letI : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  have he : degree (zeroExperiment n) = fun _ => (1 : ℝ) := funext zero_degree
+  rw [dMax, he, Set.range_const, csSup_singleton]
+
+lemma zero_mask {n : ℕ} (i : Fin n) (z : Assignment n) :
+    masked (zeroExperiment n) i z = Function.update (fun _ => false) i (z i) := by
+  funext j
+  by_cases h : j = i <;> simp [masked, zero_interferes, Function.update, h]
+
+lemma zero_maskOthers {n : ℕ} (i : Fin n) (z : Assignment n) :
+    maskedOthers (zeroExperiment n) i z = fun _ => false := by
+  rw [maskedOthers, zero_mask, Function.update_idem]
+  exact Function.update_eq_self i (fun _ => false)
+
+lemma alpha_of_independent {Ω A B : Type*} [Fintype Ω] (P : Law Ω)
+    (X : Ω → A) (Y : Ω → B)
+    (h : ∀ U : Set A, ∀ V : Set B,
+      prob P (fun z => X z ∈ U ∧ Y z ∈ V) =
+        prob P (fun z => X z ∈ U) * prob P (fun z => Y z ∈ V)) :
+    alpha P X Y = 0 := by
+  have hs : {r : ℝ | ∃ U : Set A, ∃ V : Set B,
+      r = |prob P (fun z => X z ∈ U ∧ Y z ∈ V) -
+        prob P (fun z => X z ∈ U) * prob P (fun z => Y z ∈ V)|} = {0} := by
+    ext r
+    constructor
+    · rintro ⟨U,V,hr⟩; simp [h] at hr; simpa using hr
+    · intro hr
+      have hr0 : r = 0 := by simpa using hr
+      subst r
+      exact ⟨∅,∅,by rw [h]; simp⟩
+  unfold alpha
+  rw [hs, csSup_singleton]
+
+lemma zero_alphaExt (n : ℕ) (e : ℝ) : alphaExt (zeroExperiment n) e = 0 := by
+  classical
+  have ha : ∀ i j : Fin n, i ≠ j →
+      alpha (fair n) (masked (zeroExperiment n) i) (masked (zeroExperiment n) j) = 0 := by
+    intro i j hij
+    apply alpha_of_independent
+    intro U V
+    simp only [prob, zero_mask]
+    let f : Bool → ℝ := fun b => if Function.update (fun _ => false) i b ∈ U then 1 else 0
+    let g : Bool → ℝ := fun b => if Function.update (fun _ => false) j b ∈ V then 1 else 0
+    have he : (fun z : Assignment n =>
+        if Function.update (fun _ => false) i (z i) ∈ U ∧
+           Function.update (fun _ => false) j (z j) ∈ V then (1 : ℝ) else 0) =
+        (fun z => f (z i) * g (z j)) := by
+      funext z
+      dsimp [f,g]
+      split_ifs <;> norm_num <;> tauto
+    rw [he, fair_mean_two i j hij]
+    change ((f false + f true) / 2) * ((g false + g true) / 2) =
+      mean (fair n) (fun z => f (z i)) * mean (fair n) (fun z => g (z j))
+    rw [fair_mean_one, fair_mean_one]
+  unfold alphaExt
+  have hz : ∀ i j : Fin n,
+      (1 - d (zeroExperiment n) i j) *
+      mixPower (alpha (zeroExperiment n).design
+        (masked (zeroExperiment n) i) (masked (zeroExperiment n) j)) e = 0 := by
+    intro i j
+    by_cases hij : i = j
+    · simp [zero_d, hij]
+    · change (1 - d (zeroExperiment n) i j) *
+        mixPower (alpha (fair n) (masked (zeroExperiment n) i)
+          (masked (zeroExperiment n) j)) e = 0
+      rw [ha i j hij]
+      simp [mixPower]
+  simp_rw [hz]
+  simp
+
+lemma zero_alphaInt (n : ℕ) (e : ℝ) : alphaInt (zeroExperiment n) e = 0 := by
+  classical
+  have ha : ∀ i : Fin n,
+      alpha (fair n) (fun z => z i) (maskedOthers (zeroExperiment n) i) = 0 := by
+    intro i
+    apply alpha_of_independent
+    intro U V
+    simp only [zero_maskOthers]
+    by_cases h : (fun _ : Fin n => false) ∈ V
+    · simp [prob, mean, h, (fair n).total]
+    · simp [prob, mean, h]
+  change (∑ i : Fin n, mixPower (alpha (fair n) (fun z => z i)
+    (maskedOthers (zeroExperiment n) i)) e) = 0
+  simp only [ha, mixPower, ite_true, Finset.sum_const_zero]
+
+abbrev S0 : Study where
+  N := fun t => t + 1
+  positive := by intro t; omega
+  grows := tendsto_atTop_mono (fun t => Nat.le_succ t) tendsto_id
+  experiment := fun t => zeroExperiment (t + 1)
+
+lemma S0_regular : RegularSequence S0 2 4 1 := by
+  intro t
+  change Regular (zeroExperiment (t+1)) 2 4 1
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro i
+    rw [fair_marginal]; norm_num
+  · intro i
+    norm_num [S0, zeroExperiment, mean]
+  · intro i b
+    norm_num [S0, zeroExperiment, potential, mean]
+
+lemma S0_regularMix : RegularMix S0 2 ⊤ ⊤ := by
+  refine ⟨by norm_num, by simp, by simp, ?_, ?_, ?_⟩
+  · intro t i
+    rw [fair_marginal]; norm_num
+  · intro t i
+    simp [MomentBound, S0, zeroExperiment]
+  · intro t i b
+    simp [MomentBound, S0, zeroExperiment, potential]
+
+lemma S0_bernoulli : ∀ t, Bernoulli (S0.experiment t) := fun t => fair_bernoulli (t+1)
+
+lemma S0_restricted : Restricted S0 := by
+  unfold Restricted
+  simp only [S0, zero_dAvg (Nat.succ_pos _), size]
+  exact tendsto_one_div_atTop_nhds_zero_nat.comp S0.grows
+
+lemma S0_external (e : ℝ) :
+    LittleO (fun t => alphaExt (S0.experiment t) e) (size S0) := by
+  unfold LittleO
+  simp only [S0, zero_alphaExt, zero_div]
+  exact tendsto_const_nhds
+
+lemma S0_internal (e : ℝ) :
+    LittleO (fun t => alphaInt (S0.experiment t) e) (size S0) := by
+  unfold LittleO
+  simp only [S0, zero_alphaInt, zero_div]
+  exact tendsto_const_nhds
+
+lemma S0_extension : HajekExtension S0 (fun _ _ => 0) := by
+  intro t z hz
+  simp [S0, muHat, zeroExperiment]
+
+lemma S0_heterogeneity :
+    LittleO (fun t => sdSigmaSq (S0.experiment t))
+      (fun t => dAvg (S0.experiment t) / dRMS (S0.experiment t)) := by
+  unfold LittleO
+  have hz : ∀ t, sdSigmaSq (S0.experiment t) = 0 := by
+    intro t
+    simp [sdSigmaSq, sigmaSq, var, cov, mean, S0, zeroExperiment]
+  simp only [hz, zero_div]
+  exact tendsto_const_nhds
+
+lemma S0_max_rate :
+    LittleO (fun t => dMax (S0.experiment t))
+      (fun t => Real.sqrt (size S0 t) * Real.sqrt (dAvg (S0.experiment t))) := by
+  unfold LittleO
+  simp only [S0, zero_dMax (Nat.succ_pos _), zero_dAvg (Nat.succ_pos _),
+    Real.sqrt_one, mul_one]
+  exact tendsto_const_nhds.div_atTop
+    (Real.tendsto_sqrt_atTop.comp (tendsto_natCast_atTop_atTop.comp S0.grows))
+
+-- Each example constructs one growing study satisfying EVERY antecedent of
+-- the indicated target. No target theorem or solution proof is used.
+example : ∃ S : Study, RegularMix S 2 ⊤ ⊤ ∧ Restricted S ∧
+    LittleO (fun t => alphaExt (S.experiment t) (extExponent ⊤)) (size S) ∧
+    LittleO (fun t => alphaInt (S.experiment t) (intExponent ⊤)) (size S) ∧
+    HajekExtension S (fun _ _ => 0) :=
+  ⟨S0, S0_regularMix, S0_restricted, S0_external _, S0_internal _, S0_extension⟩
+
+example : ∃ S : Study, RegularMix S 2 ⊤ ⊤ ∧ Restricted S ∧
+    LittleO (fun t => alphaExt (S.experiment t) (extExponent ⊤)) (size S) ∧
+    HajekExtension S (fun _ _ => 0) :=
+  ⟨S0, S0_regularMix, S0_restricted, S0_external _, S0_extension⟩
+
+example : ∃ S : Study, RegularSequence S 2 4 1 ∧ (4 : ℝ) ≤ 4 ∧
+    (∀ t, Bernoulli (S.experiment t)) ∧ (∀ t, NoInterference (S.experiment t)) := by
+  refine ⟨S0, S0_regular, le_refl _, S0_bernoulli, ?_⟩
+  intro t i z z' hi
+  rfl
+
+example : ∃ S : Study, RegularSequence S 2 4 1 ∧ (4 : ℝ) ≤ 4 ∧
+    (∀ t, Bernoulli (S.experiment t)) ∧ Restricted S ∧
+    LittleO (fun t => sdSigmaSq (S.experiment t))
+      (fun t => dAvg (S.experiment t) / dRMS (S.experiment t)) :=
+  ⟨S0, S0_regular, le_refl _, S0_bernoulli, S0_restricted, S0_heterogeneity⟩
+
+example : ∃ S : Study, RegularSequence S 2 4 1 ∧ (4 : ℝ) ≤ 4 ∧
+    (∀ t, Bernoulli (S.experiment t)) ∧
+    LittleO (fun t => dMax (S.experiment t))
+      (fun t => Real.sqrt (size S t) * Real.sqrt (dAvg (S.experiment t))) :=
+  ⟨S0, S0_regular, le_refl _, S0_bernoulli, S0_max_rate⟩
+
+example : mixPower 0 0 = 0 := by simp [mixPower]
+example : extExponent ⊤ = 1 ∧ intExponent ⊤ = 1 := by simp [extExponent, intExponent]
+
+-- A positive-effect witness for the second, logically separate T49 branch.
+abbrev effectExperiment (n : ℕ) : Experiment n := ⟨fair n, fun i z => bit (z i)⟩
+
+lemma effect_marginal {n : ℕ} (i : Fin n) (b : Bool) :
+    marginal (effectExperiment n) i b = 1 / 2 := fair_marginal i b
+
+lemma mean_le_constant {Ω : Type*} [Fintype Ω] (P : Law Ω) (X : Ω → ℝ)
+    (c : ℝ) (h : ∀ z, X z ≤ c) : mean P X ≤ c := by
+  calc
+    _ ≤ ∑ z, P.mass z * c := Finset.sum_le_sum (fun z _ =>
+      mul_le_mul_of_nonneg_left (h z) (P.nonneg z))
+    _ = c := by rw [← Finset.sum_mul, P.total, one_mul]
+
+lemma effect_regular (n : ℕ) : Regular (effectExperiment n) 2 4 1 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro i; rw [effect_marginal]; norm_num
+  · intro i
+    apply le_trans (mean_le_constant _ _ 1 ?_) (by norm_num)
+    intro z
+    cases h : z i <;> norm_num [effectExperiment, bit, h]
+  · intro i b
+    apply le_trans (mean_le_constant _ _ 1 ?_) (by norm_num)
+    intro z
+    cases b <;> norm_num [potential, effectExperiment, bit]
+
+lemma effect_bernoulli (n : ℕ) : Bernoulli (effectExperiment n) := fair_bernoulli n
+
+lemma effect_interferes {n : ℕ} (i j : Fin n) :
+    Interferes (effectExperiment n) i j ↔ i = j := by
+  constructor
+  · rintro (h | ⟨z, z', hz, hne⟩)
+    · exact h
+    · by_contra hij
+      apply hne
+      change bit (z j) = bit (z' j)
+      rw [hz j (Ne.symm hij)]
+  · exact Or.inl
+
+lemma effect_d {n : ℕ} (i j : Fin n) :
+    d (effectExperiment n) i j = if i = j then 1 else 0 := by
+  simp [d, Dependent, effect_interferes]
+
+lemma effect_dAvg {n : ℕ} (hn : 0 < n) : dAvg (effectExperiment n) = 1 := by
+  simp [dAvg, degree, effect_d, ne_of_gt hn]
+
+lemma effect_effect {n : ℕ} (i : Fin n) (z : Assignment n) :
+    effect (effectExperiment n) i z = 1 := by
+  simp [effect, potential, bit]
+
+lemma effect_mean {n : ℕ} (i : Fin n) :
+    mean (effectExperiment n).design (effect (effectExperiment n) i) = 1 := by
+  simp only [mean, effect_effect, mul_one]
+  exact (fair n).total
+
+lemma effect_msq {n : ℕ} (hn : 0 < n) : msq (effectExperiment n) = 1 := by
+  unfold msq
+  have he : (∑ i : Fin n, mean (effectExperiment n).design
+      (effect (effectExperiment n) i) ^ 2) = (n : ℝ) := by
+    calc
+      _ = ∑ _ : Fin n, (1 : ℝ) ^ 2 :=
+        Finset.sum_congr rfl (fun i _ => congrArg (fun x : ℝ => x ^ 2) (effect_mean i))
+      _ = (n : ℝ) := by simp
+  rw [he]
+  exact div_self (Nat.cast_ne_zero.mpr (ne_of_gt hn))
+
+abbrev S1 : Study where
+  N := fun t => t + 1
+  positive := by intro t; omega
+  grows := tendsto_atTop_mono (fun t => Nat.le_succ t) tendsto_id
+  experiment := fun t => effectExperiment (t + 1)
+
+lemma S1_restricted : Restricted S1 := by
+  unfold Restricted
+  simp only [S1, effect_dAvg (Nat.succ_pos _), size]
+  exact tendsto_one_div_atTop_nhds_zero_nat.comp S1.grows
+
+lemma S1_positive : PositiveLiminf (fun t => msq (S1.experiment t)) := by
+  refine ⟨1, by norm_num, Filter.Eventually.of_forall ?_⟩
+  intro t
+  change 1 ≤ msq (effectExperiment (t+1))
+  rw [effect_msq (Nat.succ_pos _)]
+
+example : ∃ S : Study, RegularSequence S 2 4 1 ∧ (4 : ℝ) ≤ 4 ∧
+    (∀ t, Bernoulli (S.experiment t)) ∧ Restricted S ∧
+    PositiveLiminf (fun t => msq (S.experiment t)) :=
+  ⟨S1, (fun t => effect_regular (t+1)), le_refl _,
+    (fun t => effect_bernoulli (t+1)), S1_restricted, S1_positive⟩
+
+end Audit

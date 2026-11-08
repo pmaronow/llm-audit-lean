@@ -1,15 +1,7 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
--/
-
-/-
-Local scope clarification: sampleVariance_tendstoInProb proves absolute consistency under
-growing sample size, convergence of population variance, and popMaxSqDev/n → 0. It does not
-formalize Li and Ding (2017), Proposition 1, or its original ratio-consistency conclusion under
-their CLT condition.
 -/
 
 module

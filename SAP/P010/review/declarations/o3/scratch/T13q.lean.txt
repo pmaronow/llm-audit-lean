@@ -1,0 +1,47 @@
+import SAP.P010.Challenge
+open SAP.P010 MeasureTheory ProbabilityTheory Set
+open scoped ENNReal NNReal
+
+namespace NV13
+
+lemma resp_meas : Measurable (response : Population 2 0 → ℝ) := by
+  have h : Measurable (fun p : (Fin 2 → ℝ) × Fin 2 => p.1 p.2) :=
+    measurable_from_prod_countable_left (fun y => measurable_pi_apply y)
+  exact h.comp (measurable_fst.prodMk (measurable_fst.comp (measurable_snd.comp measurable_snd)))
+
+noncomputable def g (s : Bool) (ω : ℝ × Fin 2) : Population 2 0 := (![ω.1,ω.1], ![s,s], ω.2, fun _ => 0)
+
+lemma g_meas (s : Bool) : Measurable (g s) := by
+  unfold g
+  refine Measurable.prodMk ?_ (Measurable.prodMk measurable_const (Measurable.prodMk measurable_snd measurable_const))
+  refine measurable_pi_iff.mpr (fun i => ?_)
+  fin_cases i <;> simpa using measurable_fst
+
+instance : IsFiniteMeasure fairArmDistribution := by
+  unfold fairArmDistribution
+  constructor
+  simp
+
+lemma integ_C (s : Bool) : Integrable response (commonOutcomePopulation s (gaussianReal 0 1)) := by
+  have : commonOutcomePopulation s (gaussianReal 0 1) = ((gaussianReal 0 1).prod fairArmDistribution).map (g s) := rfl
+  rw [this, integrable_map_measure resp_meas.aestronglyMeasurable (g_meas s).aemeasurable]
+  have h2 : response ∘ g s = fun ω : ℝ × Fin 2 => ω.1 := by
+    funext ω; obtain ⟨y, z⟩ := ω; simp only [Function.comp, g, response, arm]
+    fin_cases z <;> simp
+  rw [h2]
+  exact ((memLp_id_gaussianReal (μ := 0) (v := 1) 1).integrable le_rfl).comp_fst _
+
+lemma integ : Integrable response normalCommonPopulation := by
+  unfold normalCommonPopulation
+  exact ((integ_C true).smul_measure (by simp [ENNReal.div_eq_top])).add_measure ((integ_C false).smul_measure (by simp [ENNReal.div_eq_top]))
+
+/-- Using the (certified) T13 and T15 statements: the printed quantile Q_{Y(1)|S(1)=1} of the witness is the
+standard normal quantile, so T13's `q` is Q_{Y(1)|S(1)=1}(1 - r). -/
+example : conditionalLaw normalCommonPopulation (potentialOutcome 0) (wouldPass 0) = gaussianReal 0 1 ∧
+    (1:ℝ) - potentialTrimShare normalCommonPopulation 0 = 3/4 := by
+  obtain ⟨h, hA, hc, _, hpr, hpts, -⟩ := SAP.P010.T13
+  obtain ⟨h1, -, -, -⟩ := SAP.P010.T15 normalCommonPopulation h 0 (by rw [hA]; norm_num) hc integ.restrict
+  refine ⟨h1.trans (hpr 0).2, ?_⟩
+  rw [hpts]; norm_num
+
+end NV13

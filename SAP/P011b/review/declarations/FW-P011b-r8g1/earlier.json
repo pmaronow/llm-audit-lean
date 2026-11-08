@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P011b.T16",
+  "target_id": "P011-T16",
+  "round": 7,
+  "verdict": "restriction_inaccurate",
+  "severity": "minor",
+  "issues": [
+   "record.json:84 says the fixed-b domain is retained and that no generalized coefficient-sequence result is asserted. This is an inaccurate declared scope restriction: SAP/P011b/Defs/WholeW2.lean:185 explicitly quantifies b : ℕ → Fin p → ℝ, and SAP/P011b/Challenge/Part1.lean:41 correctly says coefficients and targets may vary with sample size. The formal statement, its docstring, and the whole decision do cover the canonical claim; only this record note is inaccurate."
+  ]
+ }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "theorem": "SAP.P014.T2",
+    "target_id": "P014-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Includes the complete assignment-law statement under A1 and A2, positive arm denominators, and all four required derivation steps. Valid finite Boolean assignment laws cover every law of a finite-population assignment vector; requiring fixed counts at every positive atom is equivalent to almost surely, and natural m loses no positive integer case. However, the final canonical paragraph transferring corrected running-variable randomization to A1/A2 and applying unbiasedness for arbitrary outside allocation has no corresponding quantified implication: T2Statement contains no X or measure at all. The Challenge docstring explicitly discloses that omission. The remaining premises are satisfiable: N=3, S={0,1}, m=1, assignments (0,1,0) and (1,0,0) each of mass 1/2. This model and nonzero estimator/targets for own-treatment outcomes compile in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P014.T8",
+    "target_id": "P014-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is exactly finite-sum linearity for the bracketed mean of differences, for arbitrary real values and nonempty S. Fin N indexing loses no finite-set case by relabeling and extending the two lists off S. S.Nonempty makes its real cardinal denominator strictly positive. A simple instance is N=1, S={0}, f(0,true)=1 and f(0,false)=0; both sides are 1. The sum identity also compiles for the nonempty two-subject S in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P014.T3",
+    "target_id": "P014-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "All five canonical components are present: conditional-uniformity sufficiency and nonempty arm supports, full-uniform-law sufficiency, the fixed-outside-treatment binomial law including permutation multiplicities and all eligible assignments, the no-interference alternative, and necessity of conditional uniformity when averages agree for every outcome. Quantifying over full arrays in necessity is equivalent to quantifying over the one subject outcome function, since every such function extends to an array. Its standalone necessity result is valid even without the other design assumptions. The measure/finite-law identification in the fixed-outside part is a representation of the automatically finite Boolean pushforward, not a design restriction; measurability and window membership render the canonical random-vector/window setting. In the fair two-point score model (-1,1,-2)/(1,-1,-2), b=1, S={0,1}, n=2, m=1, v=(-1,1), the corrected score premises, fixed outside treatment, binomial conclusion, conditional uniformity and no-interference alternative are all satisfiable. The corresponding assignment-law premises and every-outcome equality for a nonempty own arm compile in scratch/Check.lean. Necessity is the intended implication, not a circular sufficiency assumption."
+  },
+  {
+    "theorem": "SAP.P014.T7",
+    "target_id": "P014-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "The literal no-ties clause is not an assumption used to prove an unrelated result: its impossibility for every nonempty S, equivalence with S empty, diagonal probability one, diagonal/off-diagonal decomposition, and incompatibility with 0<m<n are conclusions. The corrected distinct-subject clause is proved under corrected local randomization and checked in all three canonical concrete laws. The general diagonal/decomposition identities are valid even for arbitrary X under Mathlib outer measure; no measurability trick changes their ordinary random-vector applications. A nonempty model is the fair two-point permutation of (-1,1) with an outside score -2, b=1; distinct local subjects never tie but each diagonal event has probability one. The three six-row examples are also checked exactly. Thus the theorem itself is not vacuous despite proving that the literal printed hypothesis is impossible."
+  },
+  {
+    "theorem": "SAP.P014.T4",
+    "target_id": "P014-T4",
+    "my_reading_vs_claim": "different",
+    "reason": "The canonical claim is the positive printed unbiasedness assertion. T4Statement instead supplies a concrete counterexample to that assertion, exactly as its Challenge docstring says; it does not assert the positive formula. This is a mathematically valid, nonvacuous refutation of the actual printed reading, not of an altered estimator or target: uniformSix/scores1 has the formal clauses with R6 distinct-subject no-ties AND equiprobable local permutations, common propensities and positive arms, but E[D]=0 while the printed support-uniform target is -1/18. Independent exact enumeration verifies this. This stage records the change of proposition without assuming anything about the as-yet-unread architect decision."
+  },
+  {
+    "theorem": "SAP.P014.T1",
+    "target_id": "P014-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "The six-row score law, threshold map, full distinct assignment support and masses, every printed local clause (with distinct-subject no-ties per standing R6), all local permutations, positive individual arms, every displayed unweighted and weighted average, estimator value, targets and bias match the canonical witness, with subjects relabeled from 1..4 to 0..3. The exact Fraction audit verifies all numbers and equal local multisets (hence the CDF identity at every real t). The real outcomes are fixed on all 16 full assignments. The law is explicitly nonempty and valid; local arm sizes are 1 and 2 and each conditional arm has positive mass, so no zero-division convention is used."
+  },
+  {
+    "theorem": "SAP.P014.T9",
+    "target_id": "P014-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical score rows, masses, fixed-window and local-randomization properties, support-uniform and probability-weighted arm averages, both effect signs, estimator values and bias are retained. removeOwn and insertOwn really restrict and reconstruct the other N-1 Boolean coordinates (the reconstruction identity is checked in Lean), and otherSubjectsAverage uses the conditional probability of those other assignments, not an independent or support-uniform law. Its control-minus-treatment directEffect is exactly the sign specified by the supplied canonical claim. Exact enumeration gives printed target -1/9, weighted target and estimator expectation -1/12, direct-effect average 1/12, and bias 1/36; both sign comparisons fail as claimed. The six-point valid law has local count 1, control count 2, and positive own-arm probabilities. Attribution of the comparison definition is supplied by claims.json; no second-paper web lookup was made."
+  },
+  {
+    "theorem": "SAP.P014.T5",
+    "target_id": "P014-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "The stated six full score vectors, each with mass 1/6, satisfy exactly the formal printed conditions read with R6, yet local permutation masses are 1/6, 1/6, 2/3, 0, 0, 0 and local propensities 1/6, 1/6, 2/3. The threshold pushforward, positive arms, no-interference potential outcomes, equality of both versions of individual averages, E[D]=1/6 and target 1/3 match all canonical parts. Independent exact enumeration checks those values and all memberships and ties; the common local multiset checks the CDF for every t. No hypothesis is imposed and neither local estimator arm is empty."
+  },
+  {
+    "theorem": "SAP.P014.T10",
+    "target_id": "P014-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every canonical part (a)-(d) is included: the sum over all other-subject assignments equals the conditional sum over distinct supported full vectors, then the weighted arm mean; the target uses the negative of the defined control-minus-treatment direct-effect average; the estimator identity follows under A1/A2; and the canonical example separates the printed averages and target from both signs. Validity and 0<p_i1<1 also imply positive control probabilities, while S.Nonempty makes the window denominator positive. No missing integrability hypothesis is needed because all assignment and outcome sums are finite. The fair two-point assignment law (0,1,0)/(1,0,0), S={0,1}, own-treatment outcomes satisfies all main and estimator premises and yields corrected target and estimator expectation 1, direct-effect average -1. Exact enumeration checks the nonzero concrete failures in T10FailurePart."
+  },
+  {
+    "theorem": "SAP.P014.T6",
+    "target_id": "P014-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The measurable probability-space statement includes canonical (a), (b), (c), the converse half of (d), and every property of the independent-outside example (e). CorrectedLocalConditions is genuinely the local-subvector uniform arrangement law plus fixed membership; the n! events are disjoint by injectivity and exhaust probability one. It places no independence, finite full-score support, or deterministic outside restriction on (a)-(c). All eventProbability uses have probability-measure premises, so ENNReal.toReal does not collapse infinite measures; all factorial subtractions have n>=2 and m<n. The forward half of canonical (d), from adding the discrete uniform full-vector mass clause to one full vector over each local arrangement and deterministic outside scores, is absent. This is exactly the omission described in the Challenge docstring. Nonvacuity: the fair two-point score law (-1,1,-2)/(1,-1,-2) satisfies the general premises and the deterministic-outside premise; the specified twelve-point law independently demonstrates unrestricted independent outside variation, and its cardinality, masses and independence pass exact enumeration."
+  }
+]

@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.MultipleTesting.ForMathlib.GammaMoments
 import AronowAudit.External.StatLean.MultipleTesting.ForMathlib.GaussianSquareMGF
 import Mathlib.Probability.Distributions.Gaussian.Real

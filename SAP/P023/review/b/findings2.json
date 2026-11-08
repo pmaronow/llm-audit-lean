@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P023-T1",
+    "theorem": "SAP.P023.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed concrete six-election assertion. scratch/Nonvacuity.lean, importing only Defs, compiles proofs of TwoParty, Condition1, full rank and the positive close counts. scratch/exact_checks.py independently solves the rational normal equations and checks both outcomes, all weights, RD values and bin labels; counts are (1,1).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T2",
+    "theorem": "SAP.P023.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed concrete sixteen-election assertion. Exact rational Gaussian elimination in scratch/exact_checks.py gives rank 9, exactly the displayed weights, all weights nonzero, baseline and perturbed polynomial coefficients, RD values and labels. The close counts are (1,1). No antecedent can make this witness vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T3",
+    "theorem": "SAP.P023.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the finite components use J=1, the six-election linearX/linearD design and k=1/200: both close counts are 1, rank is 3, and four distinct nonzero margins lie outside the window, exceeding 2J. These hypotheses compile in scratch/Nonvacuity.lean. Deterministic or independent bounded-noise outcomes with the given linear mean satisfy the moment premises. For SharedConsistency use a one-point probability space and a deterministic sample cycling through linearX, with every outcome 0, J=1 and constant bandwidth 1/200: eventually full rank and two nonempty sides hold, both estimators are zero, and both admissibility predicates hold. The separate population component uses the genuine uniform law.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P023-T4",
+    "theorem": "SAP.P023.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the specified a=1/20, eta=1/10000, X uniform on [-1,1], independent noise +/-1/10, and its countable product probability space for IID sampling. Take k_N=1/sqrt(N+1). The two window masses are k_N/2, so empty-side probabilities tend to zero. Atomlessness and growing counts on both sign sides give full rank with probability tending to one at degrees 1 and 7. Thus the extra sampling guards are satisfiable. All displayed risks are genuine integrals since X and Y are bounded; exact rational population coefficients are checked independently in scratch/exact_checks.json.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P023-T5",
+    "theorem": "SAP.P023.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use d=1/1000 and the specified triangular mixture with independent noise +/-1/10. Its positive density integrates to 1, h is continuous and bounded by 1/2000, and Y is bounded. Exact piecewise polynomial integration in scratch/exact_checks.py checks normalization, moments, squared smooth-part norm and the rational coefficient; d=1/4 and the endpoint d=1/2 are also checked. Bounded measurable predictors, including the conditional mean and the constant half, satisfy the risk-comparison guards.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P023-T6",
+    "theorem": "SAP.P023.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed existence assertion rather than an implication with potentially contradictory premises. Uniform probability on [-1,1] is atomless and has a positive-definite moment matrix in each degree. The domain of the functionals is the nontrivial Banach space of continuous functions vanishing at 0. Unbounded functional norms allow the stated gliding-hump construction: sum zero-at-zero polynomial humps with coefficients 4^(-m), then scale by 1/4. Orthogonality kills earlier humps and the geometric tail bounds give the simultaneous m/4 inequalities. No real-valued limsup of an unbounded set is used. The full infinite construction was reviewed mathematically, not independently compiled.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P023-T7",
+    "theorem": "SAP.P023.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the population premises take nu=witnessLaw(uniformMargins,0), alpha=1/2, beta=0, h=0, J=1. Then X is supported uniform, Y is bounded in [2/5,3/5], and the Gram matrix of (1,D,X) is positive definite. For the finite premises use the compiled full-rank six-election design, whose indicators agree with party, and deterministic outcomes with the displayed linear mean. Compact support makes all polynomial integrands integrable and the sup/inf sets nonempty and bounded in the required direction. The degree-1 and degree-7 constants are independently checked in scratch/exact_checks.json, including an 80-digit numerical evaluation of the latter amplification.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P023-T8",
+    "theorem": "SAP.P023.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take X uniform on [-1,1], h=0, alpha=1/2, beta=0, independent noise +/-1/10, c=1/2, delta=1, L=0, sigma2=1/100, an IID product sample, and k_N=1/sqrt(N+1). All primitive regularity conditions hold. Empty-window probabilities vanish since N*k_N/2 tends to infinity. Atomlessness and binomial sign counts give fixed-degree admissibility. For growing degrees, 0<lambda_J<=1, so the rate implies J_N=o(sqrt(N)); with probability tending to one there are at least J_N+1 distinct positive margins and one negative margin, forcing full rank. This verifies the uniform growing-schedule guard as well. A diagonal sequence gives a rate-admissible degree schedule. This probability-space instance is a mathematical verification, not a compiled full analytic proof.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P023-T9",
+    "theorem": "SAP.P023.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take S={(0,0),(0,1)}, margins (-1/4,1/4), indicators (0,1), outcomes 0 and k=1/2. Both observations belong to the central bin, their demeaned indicators are (-1/2,1/2), the central sum of squares is 1/2, and beta=0 satisfies all bin normal equations. Empty outer bins cause no division to be evaluated at an observation. The corresponding two-point hypotheses and normal equations compile in scratch/Nonvacuity.lean; relabeling by the two displayed pairs changes no sums.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T10",
+    "theorem": "SAP.P023.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The revised negated universal requires 1 <= J, excluding the earlier degree-zero witness. A concrete positive-degree counterinstance is n=6, J=1, x=linearX, d=linearD, k=1/200, with y=linearY and yprime=linearYprime. The design has rank 3, Condition1 holds, the close set is {2,3}, and both close counts equal 1. The exact fitted vector (1/2,1/10,1/20) gives y with every fitted value strictly between 0 and 1. The outcomes agree in the close window and differ only at margin 3/4, while their unique OLS party coefficients are 1/10 and 1371721/13920200. scratch/DeltaT10.lean proves the entire revised PolynomialLocalizationRefutation from this J=1 instance using only Defs; its axiom audit lists propext, Classical.choice and Quot.sound and no sorryAx. Thus neither singular-choice values nor empty-window division is involved. The unchanged coarsened-localization half has the positive-count two-election instances described in the original review. The earlier T10 scope finding is fully fixed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T11",
+    "theorem": "SAP.P023.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the two-election margins (-1/4,1/4), indicators (0,1), zero outcomes and k=1/2. Condition1 holds, the printed coarsened normal equations are satisfied by the zero coefficient vector, and both RD counts are 1. These facts compile in scratch/Nonvacuity.lean. This example has empty nuisance bins and demonstrates that the all-solutions formulation does not rely on full rank of the full coarsened design.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T12",
+    "theorem": "SAP.P023.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For satisfiability of the proposition being refuted, take nu=witnessLaw(uniformMargins,0), g=f=1/2, alpha=1/2, an IID product sample and k_N=1/sqrt(N+1). Every continuity, moment, support and usual-RD premise holds. For failure of its conclusion use the bounded continuous h from T6 with deterministic Y=1/2+h(X), g=f equal to this mean on their domains, alpha=1/2 and the same uniform-margin IID construction and bandwidth. Conditional noise variance is zero, both expected side counts diverge, all moment matrices are positive definite, but b_J fails the all-large-J tolerance because a subsequence tends to positive infinity. Thus the negation refutes the population part of the printed fixed-law reading without depending on singular or empty-window conventions.",
+    "confidence": 0.93
+  }
+]

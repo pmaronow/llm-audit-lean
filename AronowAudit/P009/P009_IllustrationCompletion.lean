@@ -1,6 +1,6 @@
 import AronowAudit.P009.P009_OneSourceCompletion
 
-/-! Exact finite-law computations for the six-unit illustration. -/
+/-! Exact actual-law finite computations completing the original six-unit illustration. -/
 namespace AronowAudit.P009.IllustrationConfidence
 open scoped BigOperators
 noncomputable section
@@ -153,6 +153,15 @@ theorem one_source_pair_count_counterexample :
   rw [illustration_davg, illustration_vBER_mean, illustration_ht_variance]
   norm_num
 
+#print axioms illustration_davg
+#print axioms illustration_B1
+#print axioms illustration_msq
+#print axioms illustration_vBER_mean
+#print axioms illustration_ht_mean
+#print axioms illustration_ht_variance
+#print axioms illustration_ccov
+#print axioms illustration_B2
+#print axioms one_source_pair_count_counterexample
 end
 end AronowAudit.P009.IllustrationConfidence
 
@@ -172,5 +181,7 @@ theorem one_source_pair_count_counterexample :
         var illustrationExperiment.design (ht illustrationExperiment)) = -1/6 ∧
     (-1/6:ℝ) ≠ (6-3-12)/18 := by
   exact IllustrationConfidence.one_source_pair_count_counterexample
+
+#print axioms one_source_pair_count_counterexample
 
 end AronowAudit.P009

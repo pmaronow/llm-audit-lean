@@ -493,6 +493,61 @@ lemma DecideE_Y_measurable : Measurable DecideE_Y :=
 lemma DecideE_Y_integrable : Integrable DecideE_Y DecideE_law :=
   DecideE_tag_integrable.comp_fst DecideE_uniform
 
+lemma DecideE_Y_conditional :
+    DecideE_law[DecideE_Y | MeasurableSpace.comap DecideE_C inferInstance] =ᵐ[DecideE_law]
+      (fun ω => DecideE_m (DecideE_C ω)) := by
+  have hs : StronglyMeasurable[MeasurableSpace.comap DecideE_C inferInstance] DecideE_Y :=
+    (DecideE_tag_measurable.comp (measurable_snd.comp (comap_measurable DecideE_C))).stronglyMeasurable
+  rw [condExp_of_stronglyMeasurable DecideE_C_measurable.comap_le hs DecideE_Y_integrable]
+  exact Eventually.of_forall (fun ω => (DecideE_m_graph ω.1).symm)
+
+lemma DecideE_ignorability {π : (ℝ × DecideE_U) → ℝ} (hπ : Admissible π)
+    (B : Set (ℝ × ℝ)) (hB : MeasurableSet B) :
+    DecideE_law[(fun ω => bit (DecideE_treatment π ω) *
+      B.indicator (fun _ => (1 : ℝ)) (DecideE_Y ω, DecideE_Y ω)) |
+      MeasurableSpace.comap DecideE_C inferInstance] =ᵐ[DecideE_law]
+      (fun ω => π (DecideE_C ω) * DecideE_law[(fun η =>
+        B.indicator (fun _ => (1 : ℝ)) (DecideE_Y η, DecideE_Y η)) |
+        MeasurableSpace.comap DecideE_C inferInstance] ω) := by
+  let v : DecideE_U → ℝ := fun u => B.indicator (fun _ => (1 : ℝ)) (DecideE_tag u, DecideE_tag u)
+  have hv : Measurable v := (measurable_const.indicator hB).comp
+    (DecideE_tag_measurable.prodMk DecideE_tag_measurable)
+  have hvb (u) : ‖v u‖ ≤ 1 := by
+    by_cases hu : (DecideE_tag u, DecideE_tag u) ∈ B <;> simp [v, hu]
+  have hvstrong : StronglyMeasurable[MeasurableSpace.comap DecideE_C inferInstance]
+      (fun ω => v ω.1) :=
+    (hv.comp (measurable_snd.comp (comap_measurable DecideE_C))).stronglyMeasurable
+  have hvi : Integrable (fun ω : DecideE_Omega => v ω.1) DecideE_law :=
+    DecideE_bounded_integrable _ (hv.comp measurable_fst) 1 (fun ω => hvb ω.1)
+  have hbi : Integrable (fun ω => bit (DecideE_treatment π ω)) DecideE_law :=
+    DecideE_bounded_integrable _ (DecideE_bit_treatment hπ) 1 (fun _ => DecideE_bit_bound _)
+  have hprod : Integrable ((fun ω => bit (DecideE_treatment π ω)) * (fun ω => v ω.1))
+      DecideE_law := by
+    apply DecideE_bounded_integrable _ ((DecideE_bit_treatment hπ).mul (hv.comp measurable_fst)) 1
+    intro ω
+    rw [Pi.mul_apply, norm_mul]
+    exact mul_le_one₀ (DecideE_bit_bound _) (norm_nonneg _) (hvb ω.1)
+  have hpull := condExp_mul_of_stronglyMeasurable_right hvstrong hprod hbi
+  have hvCE := condExp_of_stronglyMeasurable DecideE_C_measurable.comap_le hvstrong hvi
+  change DecideE_law[((fun ω => bit (DecideE_treatment π ω)) * (fun ω => v ω.1)) |
+    MeasurableSpace.comap DecideE_C inferInstance] =ᵐ[DecideE_law]
+      (fun ω => π (DecideE_C ω) * DecideE_law[(fun η => v η.1) |
+        MeasurableSpace.comap DecideE_C inferInstance] ω)
+  rw [hvCE]
+  filter_upwards [hpull, DecideE_bernoulli hπ] with ω hp hb
+  simpa only [Pi.mul_apply, hb] using hp
+
+def DecideE_experiment : Experiment DecideE_Omega (ℝ × DecideE_U) 1 where
+  hn := by decide
+  PX := DecideE_PX
+  μ0 := DecideE_m
+  μ1 := DecideE_m
+  law := fun _ => DecideE_law
+  X := fun _ => DecideE_C
+  Y0 := fun _ => DecideE_Y
+  Y1 := fun _ => DecideE_Y
+  T := fun π _ => DecideE_treatment π
+  μhat := fun _ _ _ => 0
 
 lemma DecideE_C_law : IdentDistrib DecideE_C (fun c : ℝ × DecideE_U => c)
     DecideE_law DecideE_PX := by
@@ -503,6 +558,34 @@ lemma DecideE_C_law : IdentDistrib DecideE_C (fun c : ℝ × DecideE_U => c)
     DecideE_law, Measure.map_fst_prod, measure_univ, one_smul]
   rfl
 
+lemma DecideE_standing : Standing DecideE_experiment := by
+  have hmi : Integrable DecideE_m DecideE_PX :=
+    DecideE_bounded_integrable _ DecideE_m_measurable 2 (by
+      intro c; rcases DecideE_m_values c with h | h <;> norm_num [h])
+  refine {
+    px_probability := DecideE_PX_probability
+    means_measurable := ⟨DecideE_m_measurable, DecideE_m_measurable⟩
+    means_integrable := ⟨hmi, hmi⟩
+    law_probability := fun _ _ => DecideE_law_probability
+    measurable_units := fun π hπ _ => ⟨DecideE_C_measurable, DecideE_Y_measurable,
+      DecideE_Y_measurable, DecideE_treatment_measurable hπ⟩
+    integrable_units := fun _ _ _ => ⟨DecideE_Y_integrable, DecideE_Y_integrable,
+      (show Integrable (fun _ : DecideE_Omega => (0 : ℝ)) DecideE_law from integrable_const 0)⟩
+    covariate_law := fun _ _ _ => DecideE_C_law
+    potential_law_fixed := ?_
+    iid_independent := fun π _ => (show iIndepFun (fun _ : Fin 1 => fun ω =>
+      (DecideE_C ω, DecideE_Y ω, DecideE_Y ω, DecideE_treatment π ω)) DecideE_law from
+        iIndepFun.of_subsingleton)
+    iid_identical := ?_
+    conditional_means := fun _ _ _ => ⟨DecideE_Y_conditional, DecideE_Y_conditional⟩
+    bernoulli := fun _ hπ _ => DecideE_bernoulli hπ
+    ignorability := fun _ hπ _ B hB => DecideE_ignorability hπ B hB }
+  · intro π π' hπ hπ' i
+    exact IdentDistrib.refl
+      (DecideE_C_measurable.prodMk (DecideE_Y_measurable.prodMk DecideE_Y_measurable)).aemeasurable
+  · intro π hπ i j
+    exact IdentDistrib.refl (DecideE_C_measurable.prodMk (DecideE_Y_measurable.prodMk
+      (DecideE_Y_measurable.prodMk (DecideE_treatment_measurable hπ)))).aemeasurable
 
 lemma DecideE_tag_setIntegral (H : Set ℝ) (hH : MeasurableSet H) :
     (∫ u in DecideE_j ⁻¹' H, DecideE_tag u ∂DecideE_eta) =
@@ -569,6 +652,10 @@ lemma DecideE_marginal_conditional :
     rfl
   rw [he, smul_eq_mul, mul_comm]
 
+lemma DecideE_marginal_baseline : MarginalBaseline DecideE_experiment (fun _ => (1 / 2 : ℝ)) :=
+  ⟨measurable_const,
+    (show Integrable (fun _ : ℝ × DecideE_U => (1 / 2 : ℝ)) DecideE_PX from integrable_const _),
+    fun _ _ _ => DecideE_marginal_conditional⟩
 
 /-- Conditional moments are unchanged by a measurable equivalence of sample spaces. -/
 lemma DecideE_condExp_transport {α β γ : Type*} [MeasurableSpace α] [MeasurableSpace β]
@@ -853,6 +940,8 @@ theorem T17_maximum_dominates_marginal_printed_false :
   change (3 / 4 : ℝ) ≤ ∫ c, maximumDeviation (DecideE_upMean eX eU) c ∂DecideE_upPX eX eU at hbad
   rw [DecideE_upMaximum_integral eX eU] at hbad
   norm_num at hbad
+
+example : ¬ type_of% @AronowAudit.P006.T17_maximum_dominates_marginal.{0} := T17_maximum_dominates_marginal_printed_false
 
 end
 end AronowAudit.P006.Wave1

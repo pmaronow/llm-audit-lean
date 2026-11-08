@@ -1,0 +1,167 @@
+import SAP.P025b.Defs
+import SAP.P025b.Defs.WholeW1
+
+open scoped BigOperators
+open MeasureTheory ProbabilityTheory Filter
+open SAP.P025b
+
+noncomputable section
+
+-- No Challenge theorem or Solution result is used by these checks.
+
+private theorem binary_strict : StrictMono binaryTwo := by
+  intro a b hab
+  fin_cases a <;> fin_cases b <;> norm_num [binaryTwo] at *
+
+-- T12: the printed-reading hypotheses and the actual failure at k=0.
+example : (∀ i : Fin 2, (0 : ℝ) < 1 ∧ 1 ≤ inclusion censusDesign i ∧
+      inclusion censusDesign i ≤ 1 ∧ (1 : ℝ) ≤ 1) ∧
+    Monotone binaryTwo ∧
+    weightBox 1 1 (![1,1] : Fin 2 → ℝ) ∧
+    upperValue binaryTwo (fun _ => 1) 1 1 -
+      upperValue binaryTwo (fun _ => 1) 1 0 ≤ 0 ∧
+    ¬ upperValue binaryTwo (fun _ => 1) 1 0 ≤ binaryTwo 0 := by
+  constructor
+  · intro i
+    norm_num [inclusion, designExpectation, censusDesign]
+  constructor
+  · exact binary_strict.monotone
+  constructor
+  · intro i
+    fin_cases i <;> norm_num [weightBox]
+  norm_num [upperValue, ratio, upperWeights, binaryTwo, Fin.sum_univ_two]
+
+private def oneChoice : FiniteDesign (Fin 2) (Fin 2) where
+  sample := fun i => {i}
+  probability := fun _ => 1/2
+  nonnegative := fun _ => by norm_num
+  total := by norm_num [Fin.sum_univ_two]
+
+private theorem oneChoice_inclusion (i : Fin 2) : inclusion oneChoice i = 1/2 := by
+  fin_cases i <;> norm_num [inclusion, designExpectation, oneChoice, Fin.sum_univ_two]
+
+private theorem oneChoice_class (j : Fin 2) : classTotal oneChoice id j = 1/2 := by
+  unfold classTotal
+  rw [Finset.sum_filter]
+  fin_cases j <;> norm_num [Fin.sum_univ_two, oneChoice_inclusion]
+
+-- T13: every antecedent, including its separated branch, is jointly realizable.
+example : (0 : ℕ) < 2 ∧ (0 : ℕ) < 2 ∧
+    Function.Surjective (id : Fin 2 → Fin 2) ∧ StrictMono binaryTwo ∧
+    (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) ≤ 1/2 ∧ (1/2 : ℝ) ≤ 1 ∧
+    (∀ i, (1/4 : ℝ) ≤ inclusion oneChoice i ∧ inclusion oneChoice i ≤ 1/2) ∧
+    separation binaryTwo (classTotal oneChoice id) ((1/2)/(1/4)) := by
+  refine ⟨by norm_num, by norm_num, Function.surjective_id, binary_strict,
+    by norm_num, by norm_num, by norm_num, ?_, ?_⟩
+  · intro i
+    rw [oneChoice_inclusion]
+    norm_num
+  · intro k
+    fin_cases k <;>
+      norm_num [oneChoice_class,
+        Fin.sum_univ_two, upperValue, lowerValue, ratio,
+        upperWeights, lowerWeights, binaryTwo]
+
+-- All required finite measurable-space instances in T13 exist.
+example : MeasurableSingletonClass (Fin 2) := inferInstance
+
+-- The replication law is a nonzero probability law with independent coordinates.
+private theorem genuine_iid {I K : Type*} [Fintype K] [MeasurableSpace K]
+    (d : FiniteDesign I K) : ReplicationsIID d := by
+  constructor
+  · exact iIndepFun_infinitePi
+      (P := fun _ : ℕ => (designPMF d).toMeasure)
+      (X := fun _ x => x) (by fun_prop)
+  · intro r
+    exact (measurePreserving_eval_infinitePi
+      (fun _ : ℕ => (designPMF d).toMeasure) r).map_eq
+
+example : IsProbabilityMeasure (jointLaw oneChoice) := by
+  unfold jointLaw
+  infer_instance
+
+example : ReplicationsIID pairDesign ∧ ReplicationsIID omitOneDesign :=
+  ⟨genuine_iid _, genuine_iid _⟩
+
+-- T14: the witness's probabilities and failure of the finite-range separation.
+example : (∀ i : Fin 3 × Fin 2, inclusion pairDesign i = 1/2) ∧
+    (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) ≤ 1/2 ∧ (1/2 : ℝ) ≤ 1 ∧
+    StrictMono threeOutcomes ∧
+    upperValue threeOutcomes (fun _ => 1) 2 1 = 2 ∧
+    upperValue threeOutcomes (fun _ => 1) 2 2 = 2 := by
+  constructor
+  · intro i
+    rcases i with ⟨j,b⟩
+    fin_cases j <;> fin_cases b <;>
+      norm_num [inclusion, designExpectation, pairDesign, pairChoice,
+        Fintype.sum_prod_type, Fin.sum_univ_two, Fin.sum_univ_three]
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro a b hab
+    fin_cases a <;> fin_cases b <;> norm_num [threeOutcomes] at *
+  all_goals norm_num [upperValue, ratio, upperWeights, threeOutcomes, Fin.sum_univ_three]
+
+-- T15: every main-block premise, including existence, on nonconstant outcomes.
+example : (0 : ℕ) < 2 ∧ StrictMono binaryTwo ∧
+    (∀ j : Fin 2, (0 : ℝ) < (![1/3,2/3] : Fin 2 → ℝ) j) ∧
+    (∑ j : Fin 2, (![1/3,2/3] : Fin 2 → ℝ) j) = 1 ∧
+    (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) ≤ 3/4 ∧ (3/4 : ℝ) ≤ 1 ∧
+    (∃ m : Fin 2 → ℕ, sharesCompatible (1/2) (3/4) ![1/3,2/3] m) := by
+  refine ⟨by norm_num, binary_strict, ?_, by norm_num [Fin.sum_univ_two],
+    by norm_num, by norm_num, by norm_num, ?_⟩
+  · intro j
+    fin_cases j <;> norm_num
+  · refine ⟨![1,2], 2, by norm_num, ?_⟩
+    intro j
+    fin_cases j <;> norm_num
+
+-- T15: the equal-bound compatibility case is also realizable.
+example : sharesCompatible 1 1 (![1/3,2/3] : Fin 2 → ℝ) ![1,2] := by
+  refine ⟨3, by norm_num, ?_⟩
+  intro j
+  fin_cases j <;> norm_num
+
+-- T16 A: the displayed real design and compatible counts are genuine.
+example : (∀ i : Fin 3, inclusion omitOneDesign i = 2/3) ∧
+    absoluteCompatible (1/2) (3/4) (![2/3,4/3] : Fin 2 → ℝ) ![1,2] ∧
+    classMean binaryTwo ![1,2] = 2/3 ∧
+    separation binaryTwo ![2/3,4/3] (3/2) := by
+  constructor
+  · intro i
+    fin_cases i <;> norm_num [inclusion, designExpectation, omitOneDesign, Fin.sum_univ_three]
+  constructor
+  · intro j
+    fin_cases j <;> norm_num
+  constructor
+  · norm_num [classMean, binaryTwo, Fin.sum_univ_two]
+  · intro k
+    fin_cases k <;>
+      norm_num [upperValue, lowerValue, ratio, upperWeights, lowerWeights,
+        binaryTwo, Fin.sum_univ_two]
+
+-- T16 B: both extreme compatible integer vectors, all count constraints and means.
+example : absoluteCompatible (1/10) (1/5) (![50,100] : Fin 2 → ℝ) ![500,500] ∧
+    absoluteCompatible (1/10) (1/5) (![50,100] : Fin 2 → ℝ) ![250,750] ∧
+    (∑ j : Fin 2, (![500,500] : Fin 2 → ℕ) j) = 1000 ∧
+    (∑ j : Fin 2, (![250,750] : Fin 2 → ℕ) j) = 1000 ∧
+    classMean binaryTwo ![500,500] = 1/2 ∧
+    classMean binaryTwo ![250,750] = 3/4 := by
+  refine ⟨?_, ?_, by norm_num [Fin.sum_univ_two], by norm_num [Fin.sum_univ_two], ?_, ?_⟩
+  · intro j
+    fin_cases j <;> norm_num
+  · intro j
+    fin_cases j <;> norm_num
+  all_goals norm_num [classMean, binaryTwo, Fin.sum_univ_two]
+
+-- Nonempty quota types, so the witness does not rely on reciprocal zero cardinalities.
+example : Nonempty (QuotaDraw 250 50) ∧ Nonempty (QuotaDraw 500 100) := by
+  constructor
+  · obtain ⟨t, _, ht⟩ := Finset.exists_subset_card_eq
+      (by simp : 50 ≤ (Finset.univ : Finset (Fin 250)).card)
+    exact ⟨⟨t, ht⟩⟩
+  · obtain ⟨t, _, ht⟩ := Finset.exists_subset_card_eq
+      (by simp : 100 ≤ (Finset.univ : Finset (Fin 500)).card)
+    exact ⟨⟨t, ht⟩⟩
+
+-- The real totalized endpoint convention, independently of all theorem stubs.
+example : sInf (∅ : Set ℝ) = 0 ∧ sSup (∅ : Set ℝ) = 0 := by
+  simp

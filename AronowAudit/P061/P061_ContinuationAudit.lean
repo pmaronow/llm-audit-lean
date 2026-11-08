@@ -1,0 +1,28 @@
+import AronowAudit.P061.P061_PaperInstances
+import AronowAudit.P061.P061_Refutations
+
+#print axioms AronowAudit.P061.Refutations.printed_well_defined_claim_refuted
+#print axioms AronowAudit.P061.Refutations.printed_general_ht_unbiased_refuted
+#print axioms AronowAudit.P061.PaperDomains.covariate_adjustment_T20
+#print axioms AronowAudit.P061.PaperDomains.ht_unbiased_T16_resolved
+#print axioms AronowAudit.P061.PaperDomains.finite_support_ht_T16_resolved
+#print axioms AronowAudit.P061.PaperDomains.finite_support_targets_T11_resolved
+#print axioms AronowAudit.P061.PaperDomains.sample_mean_SRS_general_T17
+#print axioms AronowAudit.P061.PaperDomains.difference_in_means_CR_general_T17
+#print axioms AronowAudit.P061.PaperDomains.variance_mul_T18
+#print axioms AronowAudit.P061.PaperDomains.expectation_mul_T8
+#print axioms AronowAudit.P061.PaperDomains.expectation_div_T8
+#print axioms AronowAudit.P061.PaperDomains.aeed_average_eed_T6
+#print axioms AronowAudit.P061.PaperDomains.finite_support_targeted_moment_T8
+#print axioms AronowAudit.P061.PaperDomains.targeted_nurva_moment_T8
+#print axioms AronowAudit.P061.PaperDomains.extended_expectation_T7
+#print axioms AronowAudit.P061.PaperDomains.expectation_support_congr_T8
+#print axioms AronowAudit.P061.PaperDomains.centered_ht_on_support_T18
+#print axioms AronowAudit.P061.PaperDomains.centered_ht_product_T18
+#print axioms AronowAudit.P061.PaperDomains.nurva_second_moment_T18
+#print axioms AronowAudit.P061.PaperDomains.nurva_covariance_formula_T18
+#print axioms AronowAudit.P061.PaperDomains.variance_eq_covariance_T18
+#print axioms AronowAudit.P061.PaperInstances.twoUnitSRS_complete
+#print axioms AronowAudit.P061.PaperInstances.actual_SRS_and_CR_application
+#print axioms AronowAudit.P061.PaperInstances.actual_general_SRS_application
+#print axioms AronowAudit.P061.PaperInstances.actual_adjustment_and_moment_application

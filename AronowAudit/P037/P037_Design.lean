@@ -17,8 +17,8 @@ two treated per block. A school is indexed by (block,within-block position). -/
 def blockedSchoolSupport (B : ℕ) : Finset (Finset (Fin B × Fin 4)) :=
   Finset.univ.powerset.filter (fun s => ∀ b, (s.filter (fun i => i.1=b)).card=2)
 
-/-- Released script 1 line 58: support for uniform selection of m of n
-schools, without the block restriction of `blockedSchoolSupport`. -/
+/-- Released script 1 line 58 (N031 v1 derivation): uniform selection
+of m of n schools, with the block argument omitted. This is not P_B. -/
 def unblockedSchoolSupport (n m : ℕ) : Finset (Finset (Fin n)) :=
   Finset.univ.powersetCard m
 
@@ -33,6 +33,17 @@ noncomputable def uniformSchoolProbability (n m : ℕ)
     (E : Finset (Fin n) → Prop) : ℝ :=
   (((unblockedSchoolSupport n m).filter E).card:ℝ)/(Nat.choose n m:ℝ)
 
+/-- T32(a),(b): complete support count/normalization and exact m-of-n
+one- and two-school probabilities. n≥2 and m≤n avoid impossible designs. -/
+theorem school_randomization_laws (B n m : ℕ) (hn : 2≤n) (hm : m≤n) :
+    (blockedSchoolSupport B).card=6^B ∧
+    (∑ s ∈ blockedSchoolSupport B, blockedSchoolMass s)=1 ∧
+    (unblockedSchoolSupport n m).card=Nat.choose n m ∧
+    (∀ h : Fin n, uniformSchoolProbability n m (fun s => h∈s)=(m:ℝ)/n) ∧
+    (∀ h j : Fin n, h≠j →
+      uniformSchoolProbability n m (fun s => h∈s ∧ j∈s)=
+        ((m:ℝ)*(m-1))/(n*(n-1))) := by
+  sorry
 
 /-- T31(i),(iv): efficient factorial certificate for C(56,28), avoiding
 exponential unfolding of the recursive binomial coefficient definition. -/
@@ -57,6 +68,19 @@ theorem school_pair_probability_arithmetic :
     (4*3/(8*7):ℝ)=3/14 ∧ (1/6:ℝ)≠27/110 ∧ (1/4:ℝ)≠27/110 := by
   norm_num
 
+/-- T31(v): sharp-null difference in means variance from joint school
+indicators. The expectation and variance below are actual finite sums over
+the chosen support; the formula is not substituted for their definition. -/
+theorem school_statistic_variance {Ω : Type*} [Fintype Ω] {n : ℕ}
+    (p : Ω → ℝ) (hp : ∀ z, 0≤p z) (htotal : ∑ z, p z=1)
+    (S : Ω → Fin n → Bool) (half : ∀ i, (∑ z, p z*(if S z i then 1 else 0))=1/2)
+    (y : Fin n → ℝ) (m : ℕ) (hm : 0<m) :
+    let T := fun z => (∑ i, ((if S z i then (1:ℝ) else -1)*y i))/(m:ℝ)
+    (∑ z, p z*T z)=0 ∧
+    (∑ z, p z*(T z)^2)=
+      (∑ i, ∑ j, y i*y j*(if i=j then 1 else
+        4*(∑ z, p z*(if S z i=true ∧ S z j=true then 1 else 0))-1))/(m:ℝ)^2 := by
+  sorry
 
 /-- T31(v): short variance certificates for the two 56-school outcomes
 and their eight-school analogues. Removing blocks moves the variance
@@ -70,6 +94,28 @@ theorem school_variance_moves_both_ways :
     ((2+2*(-1)*(-1/3:ℝ))/4^2)=1/6 ∧ (1/7:ℝ)<1/6 := by
   norm_num
 
+/-- T31 full finite counterexample: the two supports and pair laws differ,
+including the impossible blocked assignment (11110000); the two sharp-null
+variance orderings use the actual distributions, not numerical placeholders. -/
+theorem school_sampler_counterexample :
+    (blockedSchoolSupport 14).card=78364164096 ∧
+    (unblockedSchoolSupport 56 28).card=7648690600760440 ∧
+    (unblockedSchoolSupport 8 4).card=70 ∧ (blockedSchoolSupport 2).card=36 ∧
+    ({0,1,2,3} : Finset (Fin 8))∈unblockedSchoolSupport 8 4 ∧
+    ({(0,0),(0,1),(0,2),(0,3)} : Finset (Fin 2 × Fin 4))∉blockedSchoolSupport 2 ∧
+    uniformSchoolProbability 56 28 (fun s => (0 : Fin 56)∈s ∧ 1∈s)=27/110 ∧
+    uniformSchoolProbability 4 2 (fun s => (0 : Fin 4)∈s ∧ 1∈s)=1/6 ∧
+    (let varianceU := fun y : Fin 8 → ℝ =>
+      (∑ s ∈ unblockedSchoolSupport 8 4,
+        ((∑ i, (if i∈s then (1:ℝ) else -1)*y i)/4)^2)/70
+     let varianceB := fun y : (Fin 2 × Fin 4) → ℝ =>
+      (∑ s ∈ blockedSchoolSupport 2,
+        ((∑ i, (if i∈s then (1:ℝ) else -1)*y i)/4)^2)/36
+     varianceU ![1,1,1,1,0,0,0,0]=1/7 ∧
+     varianceB (fun i => if i.1=0 then 1 else 0)=0 ∧
+     varianceU ![2,0,1,1,1,1,1,1]=1/7 ∧
+     varianceB (fun i => if i=(0,0) then 2 else if i=(0,1) then 0 else 1)=1/6) := by
+  sorry
 
 /-- T32(c): school-local exposure probabilities depend only on the 1/2
 school marginal and independent within-school seed law. Thus any two school
@@ -110,3 +156,10 @@ theorem school_local_exposure_invariance {Ω U K : Type*}
 
 end AronowAudit.P037
 
+#print axioms AronowAudit.P037.school_randomization_laws
+#print axioms AronowAudit.P037.school_support_count_arithmetic
+#print axioms AronowAudit.P037.school_pair_probability_arithmetic
+#print axioms AronowAudit.P037.school_statistic_variance
+#print axioms AronowAudit.P037.school_variance_moves_both_ways
+#print axioms AronowAudit.P037.school_sampler_counterexample
+#print axioms AronowAudit.P037.school_local_exposure_invariance

@@ -132,6 +132,8 @@ lemma bpm_binom_eq_zero (n : ℕ) (k : ℤ) (h : k < 0 ∨ (n : ℤ) < k) :
       simp [bpm_binom, hk, Nat.choose_eq_zero_of_lt hkn]
     · simp [bpm_binom, hk]
 
+lemma bpm_binom_nat (n k : ℕ) : bpm_binom n k = n.choose k := by
+  simp [bpm_binom]
 
 lemma bpm_binom_symm (n : ℕ) (k : ℤ) : bpm_binom n ((n : ℤ)-k) = bpm_binom n k := by
   by_cases hk : 0 ≤ k ∧ k ≤ n
@@ -953,5 +955,7 @@ theorem balanced_pvalue_monotonicity_proof (o v : Counts)
   have htotal : v'.total = v.total := by omega
   simp only [pValue,htotal]
   exact div_le_div_of_nonneg_right (by exact_mod_cast hcounts) (by positivity)
+
+example : type_of% @AronowAudit.P003.balanced_pvalue_monotonicity := balanced_pvalue_monotonicity_proof
 
 end AronowAudit.P003.Wave1

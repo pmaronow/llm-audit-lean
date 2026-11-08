@@ -1,0 +1,259 @@
+[
+  {
+    "target_id": "P016-T12",
+    "decision": "whole",
+    "theorem": "SAP.P016b.T12",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P016.t12_ks_p_table",
+      "AronowAudit.P016.t12_ks_size",
+      "AronowAudit.P016.t12_lower_valid",
+      "AronowAudit.P016.t12_mean_effect_increasing",
+      "AronowAudit.P016.t12_two_tail_valid",
+      "AronowAudit.P016.t12_upper_valid",
+      "AronowAudit.P016.t1_design_tables",
+      "SAP.P016b.WH.W1.T12_whole"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P016.t12_ks_not_effect_increasing",
+        "reason": "Its conclusion uses the total extension of KS to empty groups. The solution instead instantiates its existing exported four-unit witness to state failure on nonempty groups."
+      }
+    ],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T12WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P016.t11_ks_witness",
+      "AronowAudit.P016.mass_mono"
+    ]
+  },
+  {
+    "target_id": "P016-T13",
+    "decision": "whole",
+    "theorem": "SAP.P016b.T13",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P016.Wave1.t13_finite_rejection_proof",
+      "AronowAudit.P016.t13_finite_design",
+      "AronowAudit.P016.t13_no_ties",
+      "AronowAudit.P016.t13_numeric_certificates",
+      "AronowAudit.P016.Wave1.t13b_ssr_fibers",
+      "AronowAudit.P016.Wave1.t13b_concrete_mixture",
+      "AronowAudit.P016.Wave1.t13b_uniform_congr",
+      "AronowAudit.P016.weak_integer_tail",
+      "SAP.P016b.WH.W1.T13_whole"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P016.t13_rss_identity",
+        "reason": "The finite-design declaration already includes the same moment and RSS identity on the balanced design used in this claim."
+      }
+    ],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T13WholeStatement",
+    "supporting_declarations": []
+  },
+  {
+    "target_id": "P016-T14",
+    "decision": "whole",
+    "theorem": "SAP.P016b.T14",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P016.t12_lower_valid",
+      "AronowAudit.P016.t12_two_tail_valid",
+      "AronowAudit.P016.t12_upper_valid",
+      "AronowAudit.P016.t14_corrected_valid",
+      "AronowAudit.P016.t14_iid_exchangeable",
+      "AronowAudit.P016.t14_printed_bounds",
+      "AronowAudit.P016.t14_rank_bound",
+      "AronowAudit.P016.t14_strict_bound"
+    ],
+    "rows_not_used": [],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T14Statement",
+    "supporting_declarations": [
+      "AronowAudit.P016.mass_mono"
+    ],
+    "scope_note": "Exact-tail clause (e) explicitly references canonical T12(iii), including its strictly positive finite-law domain. The iid exchangeability clause permits zero-weight points."
+  },
+  {
+    "target_id": "P016-T15",
+    "decision": "whole",
+    "theorem": "SAP.P016b.T15",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P016.t15_adjustment_witness",
+      "AronowAudit.P016.t15_diagonal_witness",
+      "AronowAudit.P016.t15_ecdf_witness"
+    ],
+    "rows_not_used": [],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T15Statement",
+    "supporting_declarations": []
+  },
+  {
+    "target_id": "P016-T16",
+    "decision": "whole",
+    "theorem": "SAP.P016b.T16",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P016.t16_control_ecdf",
+      "AronowAudit.P016.t16_ecdf_argument",
+      "AronowAudit.P016.t16_group_adjustments",
+      "AronowAudit.P016.t16_joint_hypothesis",
+      "SAP.P016b.WH.W1.T16_whole"
+    ],
+    "rows_not_used": [],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T16WholeStatement",
+    "supporting_declarations": []
+  },
+  {
+    "target_id": "P016-T17",
+    "decision": "whole",
+    "theorem": "SAP.P016b.T17",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P016.t17_adjusted_comparison",
+      "AronowAudit.P016.t17_comparison_witness"
+    ],
+    "rows_not_used": [],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T17Statement",
+    "supporting_declarations": []
+  },
+  {
+    "target_id": "P016-T18",
+    "decision": "whole",
+    "theorem": "SAP.P016b.T18",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P016.t18_calibration_witness"
+    ],
+    "rows_not_used": [],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T18Statement",
+    "supporting_declarations": [
+      "AronowAudit.P016.t19_median_nonneg"
+    ]
+  },
+  {
+    "target_id": "P016-T19",
+    "decision": "restricted",
+    "theorem": "SAP.P016b.T19",
+    "restriction": "Retain mathematical clauses (a)-(f). Omit the empirical Normal-versus-Jittered-Geometric power ordering and all simulation-specific numerical powers (including the four quoted in the repair), the assertion that the actual simulation's two hypotheses have unequal expected adjusted mean shifts, its sample-mean approximation 10.069, and its matched-parameter approximation 1.035312 in the canonical statement and definitions_needed. The constructed witness in (f) asserts no property of that simulated dataset.",
+    "rows_used": [
+      "AronowAudit.P016.t18_calibration_witness",
+      "AronowAudit.P016.t19_calibration_roots",
+      "AronowAudit.P016.t19_discrepancy_formula",
+      "AronowAudit.P016.t19_expected_reductions",
+      "AronowAudit.P016.t19_matched_parameter",
+      "AronowAudit.P016.t19_mean_reductions",
+      "AronowAudit.P016.t19_median_identity",
+      "AronowAudit.P016.t19_mismatch_numbers",
+      "AronowAudit.P016.t19_root_discrepancies"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P016.t19_median_nonneg",
+        "reason": "The calibration-roots declaration already includes global nonnegativity for clause (c); this row is used separately to certify the minimum in T18."
+      }
+    ],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T19Statement",
+    "supporting_declarations": [],
+    "scope_note": "The governing claim is the canonical statement with definitions_needed and standing assumptions; the note adds no clauses and removes none (revision 2, What the claim is; revise-ref2.md:23). The nonzero multiplier in inverse-adjustment comparisons (d)-(e) is their existing domain condition. Positive half-size excludes undefined medians and empty treated minima. Recomputed powers and a revised calibration objective are recommendations, not conclusions asserted here."
+  },
+  {
+    "target_id": "P016-T20",
+    "decision": "whole",
+    "theorem": "SAP.P016b.T20",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P016.t20_additive_identity",
+      "AronowAudit.P016.t20_model_composition",
+      "AronowAudit.P016.t20_model_positive",
+      "AronowAudit.P016.t20_model_uniformity",
+      "AronowAudit.P016.t20_zero_assignment",
+      "AronowAudit.P016.t8_additive_mapping"
+    ],
+    "rows_not_used": [],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T20Statement",
+    "supporting_declarations": []
+  },
+  {
+    "target_id": "P016-T21",
+    "decision": "whole",
+    "theorem": "SAP.P016b.T21",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P016.t21_exact_level",
+      "AronowAudit.P016.t21_sampled_level"
+    ],
+    "rows_not_used": [],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P016b.T21Statement",
+    "supporting_declarations": []
+  }
+]

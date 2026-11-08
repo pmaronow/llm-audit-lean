@@ -1,0 +1,171 @@
+import SAP.P024.Defs
+import SAP.P024.Defs.WholeW1
+import SAP.P024.Defs.WholeW2
+
+open SAP.P024 Filter
+open scoped BigOperators
+
+noncomputable section
+namespace Review
+
+-- T1: the actual trend and overlap estimator, computed without Challenge theorems.
+example : calendarBaseline 0 ≠ calendarBaseline 1 ∧
+    calendarHT 0 = 69/4 ∧ calendarHT 1 = 21/4 ∧ calendarHT 2 = -33/2 ∧
+    expectation (uniformDesign (Fin 3)) calendarHT = 2 := by
+  norm_num [calendarHT, htEstimate, calendarEligible, calendarBaseline,
+    calendarTreated, onsetExposure, exposureProbability, expectation,
+    uniformDesign, indicator, Fin.sum_univ_succ]
+
+-- T2: its nonempty-overlap hypothesis is realized by the actual timing witness.
+example : (overlap (uniformDesign (Fin 3)) onsetExposure).Nonempty := by
+  refine ⟨1, ?_⟩
+  norm_num [overlap, exposureProbability, expectation, uniformDesign,
+    onsetExposure, indicator, Fin.sum_univ_succ]
+
+-- T2: both null and observed raw before-after contrasts are genuinely biased.
+example : expectation (uniformDesign (Fin 3)) calendarBeforeAfter = 10 ∧
+    expectation (uniformDesign (Fin 3)) calendarObservedBeforeAfter = 12 := by
+  norm_num [expectation, uniformDesign, calendarBeforeAfter,
+    calendarObservedBeforeAfter, observed, calendarBaseline, calendarTreated,
+    onsetExposure, Fin.sum_univ_succ]
+
+-- T4: independent common-probability assignment is the actual joint law.
+example : independentClusterLaw (uniformDesign (Finset (Fin 2))) (1/2) := by
+  intro s
+  fin_cases s <;> norm_num [uniformDesign, bernoulliMass, Finset.univ_fin2,
+    Finset.sdiff_eq_filter, Finset.filter_insert, Finset.filter_singleton]
+
+-- T4: every individual in every witness population meets the printed bounds.
+example : ∀ k j i, 0 < (dominantPopulation k).y0 j i ∧
+    (dominantPopulation k).y0 j i < 1 ∧
+    0 < (dominantPopulation k).y1 j i ∧
+    (dominantPopulation k).y1 j i < 1 ∧
+    (dominantPopulation k).y1 j i - (dominantPopulation k).y0 j i = 1/4 := by
+  intro k j i
+  dsimp [dominantPopulation]
+  split_ifs <;> norm_num
+
+-- T4: a proper nonempty six-cluster allocation attains the claimed minimum error.
+example : ∃ s : Finset (Fin 6), s ≠ ∅ ∧ s ≠ Finset.univ ∧
+    |populationEstimator (dominantPopulation 4) (fun _ => 0) s - 1/4| = 9/40 := by
+  refine ⟨{1}, by simp, ?_, ?_⟩
+  · intro h
+    have hc := congrArg Finset.card h
+    norm_num at hc
+  · dsimp [populationEstimator, clusterDIM, clusterMean0, clusterMean1,
+      dominantPopulation, subsetExposure]
+    norm_num [Fin.sum_univ_succ]
+
+def balancedPopulation (k : ℕ) : ClusterPopulation (k+2) where
+  size := fun _ => 1
+  positive := fun _ => by norm_num
+  y0 := fun _ _ => 0
+  y1 := fun _ _ => 1
+
+def fairDesign (k : ℕ) : Design (Finset (Fin (k+2))) :=
+  bernoulliDesign (k+2) (1/2) (by norm_num) (by norm_num)
+
+lemma balanced_max (k : ℕ) : maxClusterWeight (balancedPopulation k) =
+    1 / ((k : ℝ)+2) := by
+  unfold maxClusterWeight
+  apply Finset.sup'_eq_of_forall
+  intro j hj
+  simp [clusterWeight, balancedPopulation]
+
+-- T5: all hypotheses of the infinite-sequence consistency branch jointly hold.
+example : (0 : ℝ) ≤ 1 ∧ (0 : ℝ) < 1/4 ∧
+    (∀ k j i, |(balancedPopulation k).y0 j i| ≤ 1 ∧
+      |(balancedPopulation k).y1 j i| ≤ 1) ∧
+    (∀ k, independentClusterLaw (fairDesign k) (1/2) ∨
+      ∃ m : ℕ, 0 < m ∧ m < k+2 ∧ (1/2 : ℝ) = (m : ℝ)/(k+2) ∧
+        completeClusterLaw (fairDesign k) m) ∧
+    (∀ _k : ℕ, (1/4 : ℝ) ≤ 1/2 ∧ (1/2 : ℝ) ≤ 1-1/4) ∧
+    Tendsto (fun k => maxClusterWeight (balancedPopulation k)) atTop (nhds 0) := by
+  refine ⟨by norm_num, by norm_num, ?_, ?_, ?_, ?_⟩
+  · intro k j i
+    dsimp [balancedPopulation]
+    norm_num
+  · intro k
+    exact Or.inl (fun _ => rfl)
+  · intro k
+    norm_num
+  · simp_rw [balanced_max]
+    simpa only [Function.comp_def, Nat.cast_add, Nat.cast_ofNat] using
+      (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ)).comp
+        (tendsto_add_atTop_nat 2)
+
+-- T5: the finite bias example has genuine bounded individual outcomes and effect.
+example : (∀ j i, 0 ≤ fewDozenPopulation.y0 j i ∧
+    fewDozenPopulation.y0 j i ≤ 1 ∧ 0 ≤ fewDozenPopulation.y1 j i ∧
+    fewDozenPopulation.y1 j i ≤ 1) ∧
+    populationEffect fewDozenPopulation = 2/3 := by
+  constructor
+  · intro j i
+    dsimp [fewDozenPopulation]
+    split_ifs <;> norm_num
+  · dsimp [populationEffect, clusterEffect, clusterMean0, clusterMean1,
+      fewDozenPopulation]
+    norm_num [Fin.sum_univ_succ]
+
+def twoExposure (ω j : Fin 2) : Bool := decide (ω = j)
+
+-- T6 branch 1: fixed support count and every actual marginal are compatible.
+example : (0 < (1 : ℕ) ∧ 1 < Fintype.card (Fin 2)) ∧
+    (∀ ω, (uniformDesign (Fin 2)).mass ω ≠ 0 →
+      treatedCount (twoExposure ω) = 1) ∧
+    (∀ j, exposureProbability (uniformDesign (Fin 2)) twoExposure j =
+      (1 : ℝ)/Fintype.card (Fin 2)) := by
+  refine ⟨by norm_num, ?_, ?_⟩
+  · intro ω hω
+    unfold treatedCount twoExposure
+    rw [show Finset.univ.filter (fun j => decide (ω = j) = true) = {ω} by
+      ext j
+      simp [eq_comm]]
+    simp
+  · intro j
+    fin_cases j <;> norm_num [exposureProbability, expectation, uniformDesign,
+      indicator, twoExposure, Fin.sum_univ_succ]
+
+-- T6 branch 3: a genuine independent parent and positive conditioning event.
+example : (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1 ∧
+    independentClusterLaw (fairDesign 0) (1/2) ∧
+    0 < bernoulliNonemptyMass 0 (1/2) := by
+  refine ⟨by norm_num, by norm_num, (fun _ => rfl), ?_⟩
+  unfold bernoulliNonemptyMass
+  apply Finset.sum_pos'
+  · intro s hs
+    unfold bernoulliMass
+    positivity
+  · refine ⟨⟨{0}, by decide⟩, Finset.mem_univ _, ?_⟩
+    unfold bernoulliMass
+    positivity
+
+def completePair : Design (Finset (Fin 2)) where
+  mass := fun s => if s.card = 1 then 1/2 else 0
+  nonneg := fun s => by split_ifs <;> norm_num
+  total := by
+    have hU : (Finset.univ : Finset (Finset (Fin 2))) = {∅, {0}, {1}, {0,1}} := by
+      decide
+    rw [hU]
+    rw [Finset.sum_insert (by decide : (∅ : Finset (Fin 2)) ∉
+      ({{0}, {1}, {0,1}} : Finset (Finset (Fin 2))))]
+    rw [Finset.sum_insert (by decide : ({0} : Finset (Fin 2)) ∉
+      ({{1}, {0,1}} : Finset (Finset (Fin 2))))]
+    rw [Finset.sum_insert (by decide : ({1} : Finset (Fin 2)) ∉
+      ({{0,1}} : Finset (Finset (Fin 2))))]
+    norm_num
+
+-- T6 branch 2: a complete law really exists at an admissible quota.
+example : (0 < (1 : ℕ) ∧ 1 < 2) ∧ completeClusterLaw completePair 1 := by
+  constructor
+  · norm_num
+  · intro s
+    norm_num [completePair]
+
+-- T6 branch 4: the uniform proper-subset law satisfies count-stratum symmetry.
+example : ∀ s t : NonemptyAllocations 0, s.val.card = t.val.card →
+    (conditionalNonemptyDesign 0).mass s = (conditionalNonemptyDesign 0).mass t := by
+  intro s t h
+  rfl
+
+end Review

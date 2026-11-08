@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P019-T12",
+    "theorem": "SAP.P019b.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit cnnWitness on Fin 12 satisfies standing (compiled as AuditP019b.cnn_standing in scratch/Check.lean). Its two Y=1 cells each have probability 1/8. All identity hypotheses are simultaneously satisfied without requiring positive V variances as an extra premise.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T13",
+    "theorem": "SAP.P019b.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The proposition is a concrete, inhabited twelve-atom construction: masses are 1/16 on atoms 0–7 and 1/8 on atoms 8–11. scratch/Check.lean independently compiles standing, both latent labelings and their watching/misreport rates, and combined=mu=1/2, beta=1, delta=0. The common observable law is literally shared.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T14",
+    "theorem": "SAP.P019b.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use cnnWitness, R=cnnReading false and Q=cnnWatching false. AuditP019b.cnn_truthful_latent_hypotheses compiles the pointwise identities, full triple independence, gamma=1/2 and P(Q=1)=1/4; cnn_design supplies the response equation. Here the reader-only share is 1/4, so the interpretation is nontrivial.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T15",
+    "theorem": "SAP.P019b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=50, p1=p2=1/2 and alpha=1/20. Then planningS=planningV=1/2>0 and every premise holds. A nonnull instance is n=50, p1=3/4, p2=1/4 and alpha=1/20, with S=3/8 and V=1/2. The normal quantile is taken strictly inside (0,1); its positivity is a conclusion, not an assumed hypothesis.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T16",
+    "theorem": "SAP.P019b.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed five-atom Binomial(4,2/5) law has positive masses summing to one. rho=1/5 is admissible and yields contrast 3109/3125. AuditP019b.ceiling_identity compiles the universally quantified retained contrast directly from Defs, without importing the Challenge.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T17",
+    "theorem": "SAP.P019b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the first implication use cnnWitness.standing. For the second use AuditP019b.falseConfessionStudy on uniform Fin 16: independent fair W-1,X,Y,Z, with V=W+XZ. scratch/Check.lean compiles Assumptions 2–4 and false-confession probability 1/4, mu=1/2 and combined=3/4. Every cell has probability 1/4; conditional V variances are 1/4 on controls and 1/2 on treated cells. Thus the strict branch is not made vacuous by accidentally retaining monotonicity.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T18",
+    "theorem": "SAP.P019b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cnnWitness.standing is compiled in scratch/Check.lean. It gives a bounded-count IID population with all four positive cells and variances; AuditP019b.cnn_quantities compiles sigmaSq=7/6. Fixed completions c1=c0=0 give a concrete instance, and arbitrary fixed real completions are also legitimate.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T19",
+    "theorem": "SAP.P019b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled cnnWitness.standing and completions c1=c0=cV=0. The compiled variance limit is sigmaSq=7/6>0, and gamma=1/2 and P(Y=1)=1/4 keep all population denominators positive. Any alpha in (0,1), for example 1/20, gives a legitimate Gaussian quantile.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T20",
+    "theorem": "SAP.P019b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cnnWitness.standing is compiled, with sigmaSq=7/6 and standardSigmaSq=3/2 compiled in AuditP019b.cnn_quantities. Their strict gap is 1/3. Choosing all four fixed completions zero gives a concrete instance of both sampling-variance limits.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T21",
+    "theorem": "SAP.P019b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cnnWitness.standing is compiled. Both confessor cells have probability 1/8 and conditional V variance 1/4, and beta=1 is compiled. Taking c1=c0=cV=0 supplies a concrete nondegenerate placebo-I setting; the positive asymptotic variance of sqrt(n)*(betaHat-1) is 4.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T22",
+    "theorem": "SAP.P019b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cnnWitness.treatmentIndependent and cnnWitness.nondegenerate are independently compiled in scratch/Check.lean. Both arms have probability 1/2 and direct-response probability P(Y=1)=1/4, so the direct-response variance is 3/16 in each arm and the studentized null is nondegenerate. Choose c1=c0=cV=0.",
+    "confidence": "high"
+  }
+]

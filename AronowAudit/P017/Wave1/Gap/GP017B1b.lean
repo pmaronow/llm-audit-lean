@@ -9,6 +9,8 @@ import Mathlib.Probability.Independence.InfinitePi
 /-!
 The logarithmic rare-outlier counterexample. The fractional sum of uniform
 coordinates is handled through Haar measure on the unit additive circle.
+Only the companion construction's facts needed by the frozen target are proved
+here; its held theorem body is never used.
 -/
 
 namespace AronowAudit.P017.Wave1
@@ -202,7 +204,7 @@ private theorem GP017B1b_mean_measurable (n : ℕ) : Measurable (smallNormalMean
   unfold smallNormalMean sampleMean
   fun_prop
 
-/-- Exact finite Gaussian law of the sample mean for every positive sample size. -/
+/-- Exact finite Gaussian law, including zero for the unnormalized empty sum. -/
 private theorem GP017B1b_mean_law (n : ℕ) (hn : 1 ≤ n) :
     (iidSamples slowPopulation).map (smallNormalMean n) =
       gaussianReal 0 (1 / (n : ℝ≥0)) := by
@@ -608,6 +610,8 @@ theorem slow_outlier_counterexample_proof :
   obtain ⟨p, hp', hplim, hratio⟩ := GP017B1b_slower_rate r hr hrlim
   exact ⟨p, hp', hplim, GP017B1b_rootN p hp' hplim,
     (fun n hn => GP017B1b_failure_probability p n hn (hp' n hn)), hratio⟩
+
+example : type_of% @AronowAudit.P017.slow_outlier_counterexample := slow_outlier_counterexample_proof
 
 end
 end AronowAudit.P017.Wave1

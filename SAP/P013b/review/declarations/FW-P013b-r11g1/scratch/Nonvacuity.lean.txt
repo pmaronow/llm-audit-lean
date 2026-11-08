@@ -1,0 +1,69 @@
+import SAP.P013b.Defs
+
+open SAP.P013b Finset
+open scoped BigOperators Topology
+noncomputable section
+
+def auditDesign : Design (Fin 2 × Fin 2) where
+  weight _ := 1 / 4
+  positive _ := by norm_num
+  total := by norm_num [Fintype.sum_prod_type, Fin.sum_univ_two]
+
+def auditPopulation : Population auditDesign 2 2 where
+  exposure z i := if i = 0 then z.1 else z.2
+  outcome i _ := if i = 0 then 2 else -3
+
+lemma auditPositive (d : Fin 2) : Positivity auditPopulation d := by
+  intro i
+  fin_cases i <;> fin_cases d <;>
+    norm_num [SAP.P013b.pi, expectation, indicator, auditPopulation, auditDesign,
+      Fintype.sum_prod_type, Fin.sum_univ_two]
+
+-- All common hypotheses, both off-diagonal antecedents, and the equality case of T15.
+example : 0 < (2 : ℕ) ∧ (0 : Fin 2) ≠ 1 ∧
+    Positivity auditPopulation 0 ∧ Positivity auditPopulation 1 ∧
+    (∀ i j : Fin 2, i ≠ j → 0 < jointPi auditPopulation i j 0 1) ∧
+    (∀ i, auditPopulation.outcome i 0 = auditPopulation.outcome i 1) := by
+  refine ⟨by decide, by decide, auditPositive 0, auditPositive 1, ?_, ?_⟩
+  · intro i j hij
+    fin_cases i <;> fin_cases j <;>
+      norm_num [jointPi, expectation, indicator, auditPopulation, auditDesign,
+        Fintype.sum_prod_type, Fin.sum_univ_two] at *
+  · intro i; rfl
+
+-- T16: a fixed prediction vector, with a genuine zero-count assignment.
+example : ∃ g : Fin 2 → ℝ, 0 < (2 : ℕ) ∧ Positivity auditPopulation 1 ∧
+    htCount auditPopulation 1 (0, 0) = 0 ∧
+    hajek auditPopulation 1 (0, 0) = 0 ∧ g 0 = 7 ∧ g 1 = -2 := by
+  refine ⟨(fun i => if i = 0 then 7 else -2), by decide, auditPositive 1, ?_⟩
+  norm_num [htCount, hajek, htTotal, SAP.P013b.pi, expectation, indicator,
+    auditPopulation, auditDesign, Fintype.sum_prod_type, Fin.sum_univ_two]
+
+-- The zero convention is exercised in a case with a nonzero ratio bias.
+example : expectation auditDesign (hajek auditPopulation 1) = -3/8 ∧
+    potentialMean auditPopulation 1 = -1/2 := by
+  norm_num [hajek, htCount, htTotal, potentialMean, potentialTotal,
+    SAP.P013b.pi, expectation, indicator, auditPopulation, auditDesign,
+    Fintype.sum_prod_type, Fin.sum_univ_two]
+
+def auditRandomOutcome (i : Fin 2) (z : Fin 2 × Fin 2) : ℝ :=
+  if i = 0 then (z.2.val : ℝ) else (z.1.val : ℝ)
+
+-- T17: two supported assignments give the same exposure and different outcomes.
+example : 0 < (2 : ℕ) ∧ (0 : Fin 2) ≠ 1 ∧
+    Misspecified auditPopulation auditRandomOutcome ∧
+    Positivity auditPopulation 0 ∧ Positivity auditPopulation 1 := by
+  refine ⟨by decide, by decide, ?_, auditPositive 0, auditPositive 1⟩
+  refine ⟨0, (0, 0), (0, 1), ?_, ?_⟩
+  · rfl
+  · norm_num [auditRandomOutcome]
+
+-- An independently evaluated nonzero misspecified total/contrast expectation.
+example : expectation auditDesign (htRandomizationTotal auditPopulation auditRandomOutcome 0) = 1 ∧
+    conditionalPotentialTotal auditPopulation auditRandomOutcome 0 = 1 ∧
+    expectation auditDesign (fun z =>
+      (htRandomizationTotal auditPopulation auditRandomOutcome 0 z -
+       htRandomizationTotal auditPopulation auditRandomOutcome 1 z) / 2) = 0 := by
+  norm_num [htRandomizationTotal, conditionalPotentialTotal, randomizationWeight,
+    auditRandomOutcome, SAP.P013b.pi, expectation, indicator, auditPopulation, auditDesign,
+    Fintype.sum_prod_type, Fin.sum_univ_two]

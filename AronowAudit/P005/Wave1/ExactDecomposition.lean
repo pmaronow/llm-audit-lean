@@ -16,8 +16,8 @@ open scoped BigOperators
 
 noncomputable section
 
-/-- P005-T24: the finite-sample exact decomposition in Theorem 4.1.
-This result is separate from the sign-identity and asymptotic-expansion counterexamples. -/
+/-- The unchanged finite-sample exact decomposition (T24 content of the T20 registry record).
+This result is separate from the sign-identity and asymptotic-expansion refutations. -/
 theorem interacted_exact_decomposition_completion :
     ∀ {n d m : ℕ} (P : Population n d), 2 ≤ n → 0 < m → m < n → standardized P →
       interactedRegular P m →
@@ -42,6 +42,9 @@ theorem interacted_exact_decomposition_completion :
   ExactDecomposition.assemble ExactDecomposition.n1_proof ExactDecomposition.n2_proof
     ExactDecomposition.n3_proof ExactDecomposition.n4_proof ExactDecomposition.n5_proof
     ExactDecomposition.n6_proof ExactDecomposition.n7_proof
+
+example : AronowAudit.P005.Wave1.ExactDecomposition.Target :=
+  interacted_exact_decomposition_completion
 
 end
 

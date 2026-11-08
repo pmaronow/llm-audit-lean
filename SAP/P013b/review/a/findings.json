@@ -1,0 +1,138 @@
+[
+  {
+    "target_id": "P013-T15",
+    "theorem": "SAP.P013b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Two independently assigned fair binary units, with exposure equal to own assignment, have all marginals 1/2 and every off-diagonal cross joint 1/4. scratch/Check.lean compiles these premises. Choosing equal exposure potentials gives the no-effect clause a witness too. The general covariance and variance inequalities also survive the zero-joint laws and signed outcomes in the 243 exact finite instances checked by scratch/verification.py. The definitions use the paper's ordered-pair corrections and its zero-joint convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T16",
+    "theorem": "SAP.P013b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independent fair two-unit law has strictly positive nonunit marginals and includes an assignment with no exposed units, so it exercises the expressly canonical zero-ratio case. Predictions can be any fixed real vector. On the zero-count event the HT numerator is zero too; the count-times-ratio identity is valid, and the bias bound follows from the covariance identity and Cauchy-Schwarz. Positive marginals are compiled in scratch/Check.lean; exact checks include this law and signed outcomes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T17",
+    "theorem": "SAP.P013b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the two independent fair treatment bits and two-unit exposure population from twoWearPopulation 0, but take r_i(z)=z.2.val. For unit 0, assignments (0,0) and (0,1) have the same exposure and different r values. This misspecification witness and positivity compile in scratch/Check.lean. The auxiliary Population.outcome array does not constrain r, and the weight denominator changes correctly with the induced exposure.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T18",
+    "theorem": "SAP.P013b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The record's decision is correctly 'refuted': this verdict means a refutation of the whole printed claim, not a proof of positive coverage. The step-2 'different' polarity classification is unchanged. An independent mathematical witness has N=n+1 units, a common fair exposure bit B, fixed y_i(1)=sqrt(i+1)-sqrt(i), y_i(0)=0 for zero-based i, and fixed exposure labels 1 and 0. Then the treatment total is sqrt(N), all marginals are 1/2, outcomes lie in [0,1], and N Var(HT contrast)=1. Set h_ij=1 iff i=j: the literal printed dependency predicate holds for every exposure law, with row bound 1; both facts compile in scratch/Check.lean. At B=0, the HT contrast and estimated variance are zero (also compiled for this family), but the target sqrt(N)/N is positive. Thus coverage is at most 1/2 for every N, violating the asserted lower limit at alpha=1/4. Nestedness and all standing assumptions hold. This uses the printed Condition 5, as the canonical target requires; no claim about the corrected dependency condition is needed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T19",
+    "theorem": "SAP.P013b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For each N=n+1, take the uniform law on all N fair binary exposure assignments, fixed zero potentials for both labels, and g_ij=1 iff i=j. Labels and potentials are nested; all marginals are 1/2; Condition 3 uses c1=0,c2=2; off-diagonal exposures are independent and the dependency count is N, so its N-squared normalized value is 1/N tending to zero. This is a direct mathematical instance, not a compiled infinite sequence. For general admissible sequences the bounded summand covariance estimate followed by Chebyshev gives the exact convergence-in-probability conclusion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T20",
+    "theorem": null,
+    "verdict": "omission_questionable",
+    "severity": "major",
+    "issues": [
+      "record.json, P013-T20.restriction, rejects the almost-sure-limit rows because they 'require mutual independence of the infinite sequence, absent from the canonical sampling hypotheses'. claims.json, P013-T20.canonical_claim.note, explicitly instructs: 'Formalize with an infinite sequence of independent replicates, each distributed as the design, and almost-sure convergence of each matrix entry'. The same note reiterates that the mathematical results use independent whole-design replicate draws. Independence is therefore part of the supplied canonical reading, not an added restriction. The stated exclusion reason does not justify omitting this entire target.",
+      "The supplied files do not expose the excluded rows' theorem types, so I cannot certify their other hypotheses or guarantee that they suffice. Their actual compatibility must be reassessed against the canonical independent-replicate statement; the record's wrong_credit label alone does not resolve its explicit contradiction with claims.json."
+    ],
+    "fix": "Reassess replicate_joint_strong_law and simulation_matrices_almost_sure with independent replicates treated as canonical. The target statement is: for a fixed finite population and a mutually independent sequence Z_r, each with the design law, almost surely for every unit pair i,j the quantities (sum_{r<R} 1{D_i(Z_r)=d}1{D_j(Z_r)=d}+1{i=j})/(R+1) converge to pi_ij(d,d), and (sum_{r<R} 1{D_i(Z_r)=d}1{D_j(Z_r)=e})/R converge to pi_ij(d,e). If either required row has another genuine mismatch, give that specific reason for omission instead of claiming independence is absent.",
+    "nonvacuity": "A fixed one-unit population with exposure equal to a fair binary assignment and an infinite sequence of independent fair assignment replicates satisfies the canonical sampling assumptions. Indicator entries are bounded iid Bernoulli variables, so the strong law applies, and adding the diagonal smoothing term and replacing R by R+1 do not change the limit. This is a mathematical instance; no omitted theorem was compiled or silently supplied.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T22",
+    "theorem": "SAP.P013b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The named fair two-unit calibration population has one treated unit on every assignment, marginals 1/2 and m=1, so the count-calibration premise is satisfied and fixed predictions suffice for equivariance. The count and marginal facts compile in scratch/Check.lean. The general clauses use arbitrary fixed predictions/increments and positive marginals, and the stated algebra includes every canonical part (a)-(f). The calibration example also witnesses that shifting predictions is sufficient but not necessary.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T21",
+    "theorem": "SAP.P013b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit three-point law has positive weights 1/4,1/4,1/2, and all six unit/exposure marginals lie strictly between zero and one. Potentials and baseline predictions equal (2,3,5). Exact enumeration in scratch/verification.py verifies the shifted totals 14,14,12 and 40/3,40/3,38/3, contrasts 2/9,2/9,-2/9, expectations and variances. The changes refute precisely the canonical reading with predictions numerically fixed; shifting both predictions and outcomes restores the required property.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T24",
+    "theorem": "SAP.P013b.T24",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "SAP/P013b/Challenge/Part1.lean:49-51 says that the 342 item and 151 survey nonrespondents 'and their containment' are hypotheses in the scaling clause, and record.json repeats that 'containment' is an explicit hypothesis. In the canonical reconstruction, the relevant containment is that the 151 survey nonrespondents are among the 342 item nonrespondents. With the theorem's respondent-set notation, this is item subset survey. SAP/P013b/Defs/Part8.lean:116-126 requires only item subset S and survey subset S, the three cardinalities, positive weights, and retention of every nonzero score in both sets. It neither assumes nor asserts item subset survey. This canonical nesting is omitted, rather than turned into a hypothesis, and the restriction disclosure does not say so.",
+      "The missing nesting is not implied by the declared hypotheses. In Fin 2050, let S be all units, item={0,...,1707}, survey={1,...,1898} union {2049}, weights all 1, and G_i=1 exactly at i=1. All scaling hypotheses hold, but unit 0 is a survey nonrespondent who is not an item nonrespondent. scratch/verification.py checks the cardinalities and set relations. This is a disclosure defect; it does not falsify either conditional scaling identity."
+    ],
+    "fix": "Replace the restriction text with: 'Restricted: the scaling clause assumes |S|=2050, |item|=1708, |survey|=1899, item subset S, survey subset S, positive weights on S, and that both retained sets contain every nonzero recorded score. It does not impose item subset survey; the containment of the 151 survey nonrespondents among the 342 item nonrespondents is omitted. The reconstruction's actual counts and zero coding, the link to the released orange-wristband indicator, and reproduction of the twelve rounded Table 2 estimates are not verified. Strictness of the sufficient versus necessary loss condition is not separately asserted.' Alternatively, add the explicit hypothesis item subset survey and state accurately that it is assumed, not verified from data.",
+    "nonvacuity": "The nonzero-score 2050-unit construction in the issues satisfies every numeric-scaling hypothesis and shows that absent nesting is a real distinction. Nested respondent-set examples also exist, e.g. item={0,...,1707}, survey={0,...,1898}. General expectation/loss clauses have the positive two-unit fair-design witnesses; taking recording true everywhere satisfies the nonnegative zero-loss sufficient premise. The fixed three-unit Hajek example has positive denominators and full-set contrast -1/2 versus retained-set contrast zero, so its no-common-scalar conclusion is substantive. The mathematical restriction is otherwise accurate: empirical verification and strictness are expressly dropped.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P013-T23",
+    "theorem": "SAP.P013b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four assignments each have probability 1/4 and every unit has both exposure probabilities 1/2. All three worlds have binary potentials and identical entire assignment-indexed recorded data, but wearing contrasts 1/2,1,0. Exact checks verify the common recorded estimator, expectation 1/2 and variance 1/4. The identifying function is allowed to inspect all recorded data, making the nonidentification conclusion sufficient for the canonical claim. The docstring correctly qualifies the counterexample by the additional zero-scoring rule; it makes no unsupported empirical claim about the original outcome file.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T27",
+    "theorem": "SAP.P013b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs one analyzed student in a two-student, one-school universe, with a symmetric single neighbor edge and independent fair bits for hosting, own assignment and peer assignment. All five analyzed exposure marginals are positive: 1/2 for nonhosting and 1/8 for each hosted combination. The analysis embedding is injective, the graph is loopless and within school, and potentials 0 at label 0 and 1 at the other labels are binary. The paper explicitly describes an undirected within-school adjacency graph, so graph symmetry is justified (https://arxiv.org/pdf/1305.6156, Section 10, PDF p.25). Observed outcomes are consistent by construction, exactly as the canonical formal reading assumes. No claim about missing observed wearing outcomes or reproducing Table 2 is added.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T26",
+    "theorem": "SAP.P013b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A blocked assignment can choose schools 0 and 1 within every block; the complete support also contains it and the explicit exceptional assignment choosing all four schools in the first seven blocks. Thus both named supports are nonempty and support inclusion is strict. Their exact sizes and every one- and two-school fraction are checked in scratch/verification.py. For the student clauses take a singleton Xi, Q=1, at least one student and any school/code map; the product-law assumptions are satisfiable. General four-valued codes encompass all the Section 10 hosted own/peer combinations without adding student-independence assumptions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T25",
+    "theorem": "SAP.P013b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both full-size school supports have the explicit assignments described for T26. Distinct schools (0,0),(0,1) and (0,0),(1,0) give the same-block and different-block witnesses, respectively, with binary potentials 1 only for those schools when hosting. Exact arithmetic confirms all displayed expectations, variances and biases, including 160/81-4/3=52/81 and 53/27-2=-1/27. The abstract-support moment hypotheses force nonempty support via marginal probability 1/2; no empty-support convention drives them. The claim refutes identifying the specified laws or using wrong joints, not the paper's correct block-randomization sentence or a particular Table 2 estimate.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,584 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.empirical_cdf_bounds",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.origin_cdf",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.origin_cdf_continuous_off_atom",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.reciprocal_allocation_limit",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.reciprocal_atom_values",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.reciprocal_below_threshold",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.reciprocal_conditions123",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.reciprocal_finite_errors",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.reciprocal_outcome_limit",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.reciprocal_tail_diverges",
+        "reason": "Used only through the aggregate counterexample: its exact statement is the infinite limsup, without a standalone probability-one conclusion."
+      },
+      {
+        "lean_name": "AronowAudit.P022.reciprocal_weak_limit",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.zero_atom_distance",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.lemma2_counterexample",
+      "SAP.P022.WH.W1.T1_whole",
+      "SAP.P022.WH.W1.T1_assembly",
+      "SAP.P022.WH.W1.T1_L1_proof",
+      "SAP.P022.WH.W1.T1_L2_proof",
+      "SAP.P022.WH.W1.T1_L3_proof",
+      "SAP.P022.WH.W1.T1_L4_proof",
+      "AronowAudit.P022.Wave1.proposition2_printed_counterexample_proof",
+      "AronowAudit.P022.design_constant",
+      "AronowAudit.P022.origin_cdf",
+      "AronowAudit.P022.reciprocal_atom_values",
+      "AronowAudit.P022.reciprocal_below_threshold",
+      "AronowAudit.P022.empirical_cdf_bounds"
+    ],
+    "statement_definition": "SAP.P022.T1WholeStatement",
+    "target_id": "P022-T1",
+    "theorem": "SAP.P022.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.PaperDomains.cdf_partition_bracket",
+        "reason": "The explicit corrected-lemma row supplies the target; this scalar bracketing helper is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.Wave1.TailA.lemma2_corrected_final",
+        "reason": "The explicit corrected-lemma row also fixes the universal positive nonincreasing integer function."
+      },
+      {
+        "lean_name": "AronowAudit.P022.corrected_partition_integer_properties",
+        "reason": "Its positivity and monotonicity conclusions are already in the explicit corrected-lemma row."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.lemma2_corrected_explicit_proof"
+    ],
+    "target_id": "P022-T2",
+    "theorem": "SAP.P022.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.finite_squared_markov",
+        "reason": "The finite and asymptotic bounded-outcome rows already supply the requested probability bounds."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.bounded_direct_finite_proof",
+      "AronowAudit.P022.Wave1.TailA.bounded_direct_asymptotic_final"
+    ],
+    "target_id": "P022-T3",
+    "theorem": "SAP.P022.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.bernoulli_variance_bound",
+        "reason": "The corrected CDF-variance row already supplies both quarter-factor upper bounds."
+      },
+      {
+        "lean_name": "AronowAudit.P022.finite_variance_second_moment",
+        "reason": "The indicator-variance row supplies the relevant population-variance identity directly."
+      },
+      {
+        "lean_name": "AronowAudit.P022.sampled_cdfs_unbiased",
+        "reason": "Both unbiasedness identities are already in the corrected CDF-variance row."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.cdf_variance_corrected_proof",
+      "AronowAudit.P022.indicator_population_variance"
+    ],
+    "target_id": "P022-T4",
+    "theorem": "SAP.P022.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.design_constant",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.finiteMean_const",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.equation11_counterexample",
+      "AronowAudit.P022.Wave1.cdf_variance_corrected_proof"
+    ],
+    "target_id": "P022-T5",
+    "theorem": "SAP.P022.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.seven_total_abs_le",
+        "reason": "The event-inclusion glue invokes seven_term_budget, which already incorporates this triangle bound."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.proposition2_corrected_finite_proof",
+      "AronowAudit.P022.seven_term_budget",
+      "AronowAudit.P022.corrected_allocation_sum",
+      "AronowAudit.P022.Wave1.proposition2_corrected_limit_proof",
+      "SAP.P022.WH.W1.T6_whole",
+      "SAP.P022.WH.W1.T6_assembly",
+      "SAP.P022.WH.W1.T6_L1_proof",
+      "SAP.P022.WH.W1.T6_L2_proof",
+      "SAP.P022.WH.W1.T6_L3_proof",
+      "SAP.P022.WH.W1.T6_L4_proof",
+      "SAP.P022.WH.W1.T6_L5_proof",
+      "SAP.P022.WH.W1.T6_L6_proof",
+      "SAP.P022.WH.W1.T6_L7_proof",
+      "AronowAudit.P022.Wave1.lemma2_corrected_explicit_proof",
+      "AronowAudit.P022.Wave1.TailA.atom_empiricalLaw",
+      "AronowAudit.P022.Wave1.TailA.atom_empirical_Iic",
+      "AronowAudit.P022.Wave1.TailA.atom_empirical_Iio",
+      "AronowAudit.P022.Wave1.TailA.atom_marginalLaw",
+      "AronowAudit.P022.Wave1.TailA.atom_marginal_Iic",
+      "AronowAudit.P022.Wave1.TailA.atom_marginal_Iio",
+      "AronowAudit.P022.empirical_cdf_bounds",
+      "AronowAudit.P022.Wave1.GP022B2b_common_cell",
+      "AronowAudit.P022.Wave1.GP022B2b_lift_mean",
+      "AronowAudit.P022.Wave1.GP022B2b_pair_integral",
+      "AronowAudit.P022.Wave1.SharpBounds.n2_proof",
+      "AronowAudit.P022.Wave1.SharpBounds.n4_proof",
+      "AronowAudit.P022.Wave1.GP022B2b_proposition2_corrected_finite_cdfDistance_pointwise",
+      "AronowAudit.P022.Wave1.GP022B2b_proposition2_corrected_finite_empiricalCDF_mono",
+      "AronowAudit.P022.Wave1.GP022B2b_proposition2_corrected_finite_marginal_as_variance",
+      "AronowAudit.P022.finite_variance_second_moment"
+    ],
+    "statement_definition": "SAP.P022.T6WholeStatement",
+    "target_id": "P022-T6",
+    "theorem": "SAP.P022.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.equation23_counterexample",
+        "reason": "The selected four-corner witness handles both displays; this supplementary zero-population witness handles only equation (23)."
+      },
+      {
+        "lean_name": "AronowAudit.P022.zero_tolerance_tail",
+        "reason": "The four-corner counterexample supplies both refutations directly; this general mechanism is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.proposition2_printed_counterexample_proof",
+      "SAP.P022.WH.W1.T7_whole",
+      "SAP.P022.WH.W1.T7_assembly",
+      "SAP.P022.WH.W1.T7_L1_proof",
+      "SAP.P022.WH.W1.T7_L2_proof",
+      "SAP.P022.WH.W1.T7_L3_proof",
+      "SAP.P022.WH.W1.T7_L4_proof",
+      "AronowAudit.P022.design_constant",
+      "AronowAudit.P022.Wave1.SharpBounds.n1_proof",
+      "AronowAudit.P022.Wave1.SharpBounds.n2_proof",
+      "AronowAudit.P022.Wave1.SharpBounds.n3_proof",
+      "AronowAudit.P022.Wave1.SharpBounds.n4_proof",
+      "AronowAudit.P022.Wave1.SharpBounds.sortedValues_ofFn",
+      "AronowAudit.P022.Wave1.sharp_bounds_variance_and_all_couplings",
+      "AronowAudit.P022.Wave1.bounded_direct_finite_proof",
+      "AronowAudit.P022.Wave1.TailA.bounded_direct_asymptotic_final"
+    ],
+    "statement_definition": "SAP.P022.T7WholeStatement",
+    "target_id": "P022-T7",
+    "theorem": "SAP.P022.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.centered_quadrature",
+        "reason": "The corrected Appendix B row already supplies the centered covariance and variance substitution identities."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.appendixB_corrected_proof"
+    ],
+    "target_id": "P022-T8",
+    "theorem": "SAP.P022.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.partition_two",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.quantile_two_ones",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.sharp_covariance_two_ones",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.appendixB_counterexample",
+      "AronowAudit.P022.Wave1.appendixB_general_discrepancy_proof",
+      "SAP.P022.WH.W1.T9_whole",
+      "SAP.P022.WH.W1.T9_assembly",
+      "SAP.P022.WH.W1.T9_L1_proof",
+      "SAP.P022.WH.W1.T9_L2_proof",
+      "AronowAudit.P022.Wave1.appendixB_corrected_proof",
+      "AronowAudit.P022.partition_two",
+      "AronowAudit.P022.quantile_two_ones",
+      "AronowAudit.P022.sharp_covariance_two_ones",
+      "AronowAudit.P022.finiteMean_const"
+    ],
+    "statement_definition": "SAP.P022.T9WholeStatement",
+    "target_id": "P022-T9",
+    "theorem": "SAP.P022.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the fixed-observed-sample identity and limit, and the actual-variance limit under uniformly bounded marginal variances and eventual fixed arm sizes. Drops the exact finite-N remainder identity for actual randomization variance, the (0,1) sample formulas and numerical examples, and any assertion about execution of the R branch.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.independent_means_remainder",
+        "reason": "This is algebra for varianceExpression; the restricted theorem does not assert its exact identity for actual variance."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.fixed_sample_identity",
+      "AronowAudit.P022.fixed_sample_infinite_limit",
+      "AronowAudit.P022.Wave1.fixed_arm_variance_limit_eventually"
+    ],
+    "target_id": "P022-T10",
+    "theorem": "SAP.P022.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P022.half_width_rounding",
+      "AronowAudit.P022.table1_ratio_lower_bound",
+      "AronowAudit.P022.table1_corrected_reduction",
+      "AronowAudit.P022.displayed_variance_reduction"
+    ],
+    "target_id": "P022-T11",
+    "theorem": "SAP.P022.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.finite_sqrt_mean_squared_le_mean",
+        "reason": "The finite Wald-width row directly supplies part (b); its square-root helper is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.sharp_null_neyman_bias_proof",
+      "AronowAudit.P022.finite_wald_mean_width_squared_le",
+      "AronowAudit.P022.table1_multiplier_bound",
+      "AronowAudit.P022.reported_numbers_incompatible",
+      "AronowAudit.P022.fixed_multiplier_mean_lower"
+    ],
+    "target_id": "P022-T12",
+    "theorem": "SAP.P022.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.difference_in_means_unbiased",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.finite_covariance_cauchy",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.observed_means_unbiased",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P022.permutation_eval_mean",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.sharp_bounds_variance_and_all_couplings"
+    ],
+    "target_id": "P022-T13",
+    "theorem": "SAP.P022.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.sqrt_product_le_arithmetic",
+        "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.estimated_bound_ordering_proof"
+    ],
+    "target_id": "P022-T14",
+    "theorem": "SAP.P022.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.TailB_proposition1"
+    ],
+    "target_id": "P022-T15",
+    "theorem": "SAP.P022.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.proposition2_proof"
+    ],
+    "target_id": "P022-T16",
+    "theorem": "SAP.P022.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P022.allocation_coefficient_product",
+        "reason": "The exact narrowed corollary row supplies the CLT and coverage conclusions directly."
+      },
+      {
+        "lean_name": "AronowAudit.P022.third_moment_tail_bound",
+        "reason": "The exact narrowed corollary row supplies the CLT and coverage conclusions directly."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.TailB_corollary1_and_coverage",
+      "SAP.P022.WH.W1.T17_whole",
+      "SAP.P022.WH.W1.T17_assembly",
+      "SAP.P022.WH.W1.T17_L1_proof",
+      "SAP.P022.WH.W1.T17_L2_proof",
+      "SAP.P022.WH.W1.T17_L3_proof",
+      "SAP.P022.WH.W1.T17_L4_proof",
+      "SAP.P022.WH.W1.T17_L5_proof",
+      "SAP.P022.WH.W1.T17_L6_proof",
+      "SAP.P022.WH.W1.T17_L7_proof",
+      "AronowAudit.P022.Wave1.TailB_proposition1",
+      "AronowAudit.P022.Wave1.TailB_lawVariance_eq_second",
+      "AronowAudit.P022.Wave1.tb13_limiting_variance_pos",
+      "AronowAudit.P022.Wave1.tb13_square_integrability",
+      "AronowAudit.P022.Wave1.tb13_true_le_bound",
+      "AronowAudit.P022.Wave1.tb13_actual_variance_clt",
+      "AronowAudit.P022.Wave1.tb13_normal_mass",
+      "AronowAudit.P022.Wave1.tb13_true_variance_limit",
+      "TailB_compatibleLaws_iff_marginals",
+      "TailB_lawMean_eq_of_compatible",
+      "TailB_frechet_covariance_L2",
+      "AronowAudit.P053.NormalCompletion.cdf_continuousAt",
+      "AronowAudit.P053.NormalCompletion.normalCritical_pos",
+      "AronowAudit.P053.NormalCompletion.normal_cdf_zero",
+      "AronowAudit.P053.NormalCompletion.exists_cdf_eq",
+      "AronowAudit.P053.NormalCompletion.standardNormalCDF_eq_cdf",
+      "AronowAudit.P053.NormalCompletion.strictMono_normal_cdf",
+      "AronowAudit.P061.completion_probability_mono",
+      "AronowAudit.P061.probability_nonneg",
+      "AronowAudit.P061.weakConverges_abs_le",
+      "AronowAudit.P061.weakConverges_div_consistent",
+      "AronowAudit.P061.weakConverges_scaled_interval"
+    ],
+    "statement_definition": "SAP.P022.T17WholeStatement",
+    "target_id": "P022-T17",
+    "theorem": "SAP.P022.T17"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P022.Wave1.lemma2_as_printed_refuted"
+    ],
+    "target_id": "P022-T18",
+    "theorem": "SAP.P022.T18"
+  }
+]

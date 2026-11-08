@@ -1,0 +1,28 @@
+import SAP.P032.Defs
+import SAP.P032.Defs.WholeW1
+
+open scoped BigOperators
+open MeasureTheory ProbabilityTheory Matrix Filter
+open SAP.P032
+
+noncomputable section
+set_option maxRecDepth 4096
+set_option maxHeartbeats 800000
+set_option backward.isDefEq.respectTransparency false
+
+-- These checks use definitions and Mathlib only, never the Challenge stubs.
+
+-- T6: an actual OLS data set with full rank and a negative covariance contrast.
+example : (tenDesignMatrix.transpose * tenDesignMatrix).det = 416 ∧
+    (∀ i : Fin 2, 0 < tenCovariance i i) ∧
+    quadForm tenCovariance ![1,6] = -237755/3655808 := by
+  have hm : tenDyadicMeat = (1/169 : ℝ) • !![1984,-1108;-1108,50] := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [tenDyadicMeat, scoreCovariance, tenScoreValues,
+        tenResidualValues, tenDesignMatrix, tenCovariate, dyadicMask,
+        tenDyadData, Fin.sum_univ_succ]
+  norm_num [tenCovariance, hm, tenBreadMatrix, tenDesignMatrix, tenCovariate,
+    Matrix.det_fin_two, Matrix.mul_apply, Matrix.transpose_apply, quadForm,
+    Fin.sum_univ_succ, Matrix.vecMul, dotProduct]
+

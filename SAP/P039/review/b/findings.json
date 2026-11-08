@@ -1,0 +1,72 @@
+[
+  {
+    "target_id": "P039-T1",
+    "theorem": "SAP.P039.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses. The defined firstQuarterOnly function and decays 1/2 and 9/10 are explicit witnesses with positive denominators; both exact rational computations were independently checked. scratch/Check.lean additionally proves a nonnegative-decay, quarter-1-only instance from Defs alone.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T2",
+    "theorem": "SAP.P039.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take decay=0, 1/2, or 1 and any real quarter-growth function (for example firstQuarterOnly). Both normalizers are positive; at 0 the denominator is 1/3 and at 1 the implemented denominator is 43/3. The domain is nonempty, as checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T3",
+    "theorem": "SAP.P039.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The deterministic conjuncts have no premises and use the explicit six-row designs. Exact arithmetic verifies their ranks 2 or 3, SSEs 2 or 17/4, positive residual degrees of freedom 4 or 3, and positive slope variances. For the probabilistic clause take sigma=1 and gamma=(0,0), with the product of six standard normal probability measures. Lean proves that a positive NNReal noise scale exists; every statistic is Borel, and zero residual SSE occurs only on a Gaussian null set.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T4",
+    "theorem": "SAP.P039.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=6, k=2, Z=[1,(1,-1,0,0,0,0)], x=(0,0,1,-1,0,0), y=(0,0,0,0,1,-1). Lean proves Z has full column rank, contains the intercept, x lies outside its column space, and k+1<n. The positive-SSE branch is realized by y=w (full-model SSE 2). For covariance use the 64 equally likely sign vectors in {-1,+1}^6, epsilon the coordinate vector, sigma=1, gamma=0, and the same Z,x. All variables and products are integrable; exact enumeration verifies mean zero, covariance I6, and residual covariance M_Z of rank 4.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T5",
+    "theorem": "SAP.P039.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses to satisfy. The five election sets have cardinalities 17,11,17,11,8; the 64 exact scores and all signed maxima were independently enumerated. In particular the claimed competitor and winner years belong to their specified domains, so neither an empty maximum nor the outside-domain zero placeholders do any work.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T6",
+    "theorem": "SAP.P039.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses. All five score domains are nonempty. Exact enumeration verifies the unique magnitude maximizers and attained positive gaps in both samples. For the universal coefficient identities take any beta,g, including beta=0 or beta=-2.23; no sign hypothesis is imposed. Lean proves all five sample sizes strictly exceed 5 for musical chairs and 6 for bread and peace, so natural-number degree-of-freedom subtraction does not truncate.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T7",
+    "theorem": "SAP.P039.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the 17 supplied regression rows with Z1=[1,tenure], Z2=[1,tenure,war], q=income, and y=outcome. The augmented designs are column permutations of A1 and A2; exact Gaussian elimination verifies ranks 3 and 4, nesting, and positive residual SSEs. RSEs are approximately 4.623853535 and 4.702717045 and A2 income SE is approximately 0.957092630, satisfying the numerical-bound premises. A3 has rank 5 and positive SSE. The printed-bin impossibility is intentionally a denial that all four printed bins can coexist, not a positive claim with empty hypotheses.",
+    "confidence": "high"
+  }
+]

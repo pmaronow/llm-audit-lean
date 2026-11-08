@@ -1,0 +1,32 @@
+import SAP.P026b.Challenge
+
+open SAP.P026b
+open Finset
+
+set_option autoImplicit false
+
+/-- The witness design lacks cross support: unit 0 is never treated while unit 1 is in control. -/
+example : ¬ crossSupport realAsymmetricTwo := by
+  intro h
+  have := h 0 1 (by decide)
+  simp [joint, expectation, indicator, realAsymmetricTwo, Fin.sum_univ_three] at this
+
+/-- Its variance estimator is in fact anticonservative at x = z = 1 (not stated by T17). -/
+example : expectation realAsymmetricTwo (printedVariance realAsymmetricTwo 2 (fun _ => 1) (fun _ => 1)) <
+    variance realAsymmetricTwo (ht realAsymmetricTwo 2 (fun _ => 1) (fun _ => 1)) := by
+  have h0 : (univ : Finset (Fin 2)).erase 0 = {1} := by decide
+  have h1 : (univ : Finset (Fin 2)).erase 1 = {0} := by decide
+  simp [h0, h1, printedVariance, variance, covariance, ht, htTotal, expectation, indicator, marginal, joint,
+    observed, offSum, zeroSum, estimatedPair, epsilon, realAsymmetricTwo, Fin.sum_univ_three,
+    Fin.sum_univ_two]
+  norm_num
+
+/-- Nonvacuity of the hypotheses of T17's first conjunct (by the fixed witness). -/
+example : probabilityDesign realAsymmetricTwo ∧ positiveMarginals realAsymmetricTwo ∧
+    (∀ i j : Fin 2, i ≠ j → 0 < disagreement realAsymmetricTwo i j) := by
+  refine ⟨?_, ?_, ?_⟩
+  · simp [probabilityDesign, realAsymmetricTwo]
+  · intro i; fin_cases i <;>
+      simp [marginal, expectation, indicator, realAsymmetricTwo, Fin.sum_univ_three] <;> norm_num
+  · intro i j hij; fin_cases i <;> fin_cases j <;>
+      simp_all [disagreement, expectation, realAsymmetricTwo, Fin.sum_univ_three] <;> norm_num

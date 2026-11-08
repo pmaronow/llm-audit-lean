@@ -1,22 +1,30 @@
 import AronowAudit.P004.Wave1.PairedWitnessBlueprint
 
-/-! # Refutation of the printed IPW bound and coverage assertion (P004-T35)
+/-! # Blueprint: refutation of `AronowAudit.P004.printed_ipw_bound_and_literal_coverage` (P004-T35)
 
-Supplement A Proposition 4 asserts, for every spatial population sequence and logistic
-design satisfying its hypotheses, the unsigned printed second-moment bound under the
-literal printed homophily antecedent, together with two literal Hájek-numerator coverage
-clauses.
+Dossier group P004, record 3. The frozen contract (`AronowAudit/P004/P004_Spatial.lean`,
+a `sorry` draft) asserts, for every spatial population sequence and every logistic design
+satisfying the printed guards of Supplement A Proposition 4, the conjunction of the unsigned
+printed second-moment bound (under the literal printed homophily antecedent) and the two
+literal Hájek-numerator coverage clauses. Resolution: `refute` (map-P004, both referees).
 
-The target negates the full universal closure, with the `Space` binder and its two instance
-binders inside the negation. The universe of `Space` is fixed to `0` (`Type`): refuting one
-universe instance suffices to refute a universe-polymorphic assertion, and the Euclidean
-witness lies in `Type`.
+Referee fix applied (referee 2, both T35 records; also required by the orchestrator): the
+target negates the FULL universal closure of the frozen contract, with the `Space` binder and
+its two instance binders inside the negation. The universe of `Space` is fixed to `0`
+(`Type`): a universe-polymorphic theorem is refuted by refuting one universe instance, and
+the Euclidean witness lives in `Type`; the fidelity check below is against
+`printed_ipw_bound_and_literal_coverage.{0}`.
 
-The paired spatial blocks, with `d = 0` and `h = 10`, satisfy every outer hypothesis.
-Printed homophily is zero for every `N`, so the first conjunct gives an eventual upper
-bound. At every positive even `N`, however, the true variance is `2/N` while the printed
-bound is `1/N`. A cofinal set of even `N` contradicts the eventual bound. The coverage
-conjuncts are not needed.
+Paper proof (map-P004 REPORT, record 3): the paired spatial blocks of `PairedWitness`
+(with `d = 0`, `h = 10`) satisfy every outer guard; printed homophily is zero for every `N`, so
+the first conjunct gives an eventual upper bound; but at every positive even `N` the true
+variance is `2/N` while the printed bound is `1/N`. A cofinal set of even `N` contradicts the
+eventual bound. The coverage conjuncts are never used.
+
+The final declaration (writer) is
+`AronowAudit.P004.Wave1.printed_ipw_bound_and_literal_coverage_refuted` in
+`AronowAudit/P004/Wave1/IpwBoundCoverage.lean`. All nodes are shared: `LinePopulation.N3`-`N7`
+and `PairedWitness.PW1`-`PW10` (`PW11` is used only by the sibling record).
 -/
 
 namespace AronowAudit.P004.Wave1.IpwBoundCoverage
@@ -27,8 +35,8 @@ open AronowAudit.P004 MeasureTheory Filter
 open AronowAudit.P004.Wave1.PairedWitness
 open scoped BigOperators
 
-/-- Negation of the full universal closure (universe `0`) of the printed
-IPW second-moment bound and coverage assertion (P004-T35). -/
+/-- Frozen target: the negation of the full universal closure (universe `0`) of the exact
+recorded contract `AronowAudit.P004.printed_ipw_bound_and_literal_coverage`. -/
 def Target : Prop :=
   ¬ (∀ {Space : ℕ → Type} [∀ N, MetricSpace (Space N)] [∀ N, MeasurableSpace (Space N)]
       {k : ℕ} (P : PopulationSequence Space)
@@ -64,7 +72,12 @@ def Target : Prop :=
             normalQuantile (α/2) ≤ |(hajek (R N) z-ame (p N) (R N))/Real.sqrt V| ∧
               |(hajek (R N) z-ame (p N) (R N))/Real.sqrt V| ≤ normalQuantile (1-α/2))) α)))
 
-/-- The component bounds imply the result. Instantiate the assumed universal assertion at the paired
+/-- Fidelity check: `Target` is literally the negation of the frozen contract at universe 0,
+with every binder (including `Space` and its instances) inside the negation. -/
+example : Target ↔ ¬ (type_of% @AronowAudit.P004.printed_ipw_bound_and_literal_coverage.{0}) :=
+  Iff.rfl
+
+/-- The nodes suffice (proved). Instantiate the assumed universal contract at the paired
 witness, feed it the all-`N` zero printed homophily, and contradict its eventual bound at a
 positive even `N`: `2/N ≤ 1/N` is false. -/
 theorem assemble (l3 : LinePopulation.N3) (l4 : LinePopulation.N4) (l5 : LinePopulation.N5)

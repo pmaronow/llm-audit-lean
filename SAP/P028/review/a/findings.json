@@ -1,0 +1,102 @@
+[
+  {
+    "target_id": "P028-T1",
+    "theorem": "SAP.P028.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional concrete witnesses. Independently rebuilt both 17-atom laws from the canonical completion and conditional-Bernoulli formulas using exact rational arithmetic: every table atom and mass agrees, every mass is positive, total mass is 1, assignment-arm masses are 99/200 and 101/200, p=2047/9999, all used conditional-mean events have positive mass, and the entire observed laws agree. Complier pairs are (1423/10235,6749/10235) and (7633/10235,7642/10235). See scratch/verify.py and scratch/exact-results.json. The disclosed omission of the construction formulas and separately asserted A/N probabilities is accepted; the nonidentification argument is about the application reading, not the correctness of its printed numerical estimates.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P028-T2",
+    "theorem": "SAP.P028.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take independent uniform S in {A,N,C} and fair Z, Y0=0,Y1=1, and R=1. All four treatment-assignment cells have positive mass, p=1/3, q=r=1/3, respondent and full means agree, response is independent of (Y,D) within either arm, and the cellwise mean-ignorability premises all hold. The underlying bounded CausalModel and positivity of all four cells compile in scratch/Check.lean. Arbitrary response is also allowed for the joint-moment and sensitivity clauses. The omitted cellwise-versus-arm counterexample and source-law endpoint attainment/sharpness are accurately disclosed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P028-T3",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to an omitted empirical application passage. Its conditional population-identification content is represented by T9; the insufficiency of an unrestricted missing-outcome observed law is exhibited by T1, and the response-condition repairs by T2. The supplied material does not justify deterministic theorems asserting the printed experimental estimates as exact population values. Omitting this separate passage does not falsely label its numerical estimates refuted.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P028-T4",
+    "theorem": "SAP.P028.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For p=1/2,e0=e1=3/4,x0=x1=1,n=1/2 both mixture equations and all bounds hold. The distinct candidate x0=x1=0 satisfies the printed system and fails the mixture and corrected systems, giving the asserted strict non-equivalence. The universal algebra assumes only 0<p<1, which makes every p and 1-p denominator nonzero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P028-T5",
+    "theorem": "SAP.P028.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use a population of half compliers with Y0=Y1=1 and half never-takers with Y0=Y1=1/2, independently assigned by a fair coin. This is a four-point bounded randomized model with p=1/2,e0=e1=3/4,c0=c1=1, realizing the existential input triple. The separate rejected candidate c0=c1=0 would require n=3/2. Its four interval endpoints were checked exactly. The theorem's omission of E5 and of the specified E6 construction, while retaining model existence, is precisely disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P028-T6",
+    "theorem": "SAP.P028.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair two-point model with S=C,Y0=0,Y1=1 has p=1 and contribution 0; the independent uniform-three-stratum/fair-assignment model with the same potentials has p=1/3 and noncomplier mass 2/3. Both are constructed as CausalModel instances with bounded outcomes in scratch/Check.lean. The ordinary noncomplier conditional mean is needed only in the p<1 branch. The missing p=1 existence assertion, positive-cell product-times-mean expression, and separate empty-cell zero-moment assertion are all disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P028-T7",
+    "theorem": "SAP.P028.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The stated two-point law gives probability 1/2 to each assignment, with constant potential tuple (D0,D1,Y0,Y1)=(0,1,0,1). Hence randomization holds, p=1, arm and complier means are (0,1), the noncomplier and pure noncomplier cells are null, both proof denominators vanish, and the mixture equations hold for every proposed noncomplier mean. The [0,0] and [1,1] intervals are correct. A corresponding measure-theoretic CausalModel with p=1 compiles in scratch/Check.lean; no use is made of the value of 0/0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P028-T8",
+    "theorem": "SAP.P028.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For any compatible 0<p<1,e0,e1 and treated interval point x1, put delta=(e1-e0)/p, give compliers mass p and potentials (x1-delta,x1), and never-takers mass 1-p and both potentials (e1-p*x1)/(1-p); assign by an independent fair coin. The interval inequalities put every potential in [0,1]. For p=1 use only compliers with potentials (e0,e1). These constructions live on Bool×Bool even with zero-mass points. Exact checks covered 480 compatible rational triples and both endpoints and the midpoint of each interval. The theorem quantifies attainment independently of the arbitrary ambient type, so an empty ambient type does not supply sharpness vacuously.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P028-T9",
+    "theorem": "SAP.P028.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six-point model with independent uniform S in {A,N,C}, fair Z, Y0=0,Y1=1 satisfies the added global integrability and all four positive-cell premises. It compiles in scratch/Check.lean. Its cell probabilities within arms are w10=w01=1/3,w00=w11=2/3; every ordinary mean and ratio is well defined. The declared global-potential integrability restriction is substantive: replacing Y1 on never-takers by an independent heavy-tailed variable with infinite expectation preserves all observed and complier means, but leaves the CausalModel domain.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P028-T10",
+    "theorem": "SAP.P028.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled full-compliance and mixed-stratum models satisfy the universal identity hypotheses. For existential nonidentification, independently fairly assign a population with half compliers of constant potentials (t,t) and half never-takers of constant potentials (3/2-t,3/2-t). At t=1/2 and t=1 both models are bounded, have p=1/2,e0=e1=3/4 and CACE=0, and their complier levels differ in both coordinates. The universal identities' extra global integrability of both potentials is accurately disclosed; unused heavy-tailed potentials can violate it while observed-arm and complier means remain finite.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P037-T1",
+    "theorem": "SAP.P037a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional finite construction. Independent exact rational enumeration in scratch/audit_checks.py finds 1014 ambient states, exactly 454 positive-mass states, total mass 1, all claimed moments, det(G)=31/60000 and the stated unique coefficients. Thus the regression distinction is realized by a genuine probability law and nonsingular expected Gram matrix. Revision 2 changes only the docstring. scratch/DeltaCheck.lean independently verifies that the displayed expected normal equations admit no coefficient vector (tau,gamma,0), for any real tau,gamma; this substantiates the new explanation that the witness violates the qualified response-moment restriction while challenging the weaker identification reading.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P037-T2",
+    "theorem": "SAP.P037a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For seed moments take one stratum N=2,n=1,refs={0}: two equiprobable subsets give mean 1/2 and variance 1/4, with every feasibility and nonzero-total premise satisfied. For the response lemma take the correctly specified witness outcome 3/10-D/5-q/2+C/5 and zero error; its expected Gram is nonsingular. For centered/augmented identification use the canonical witness law with b=0 or 1/5. Exact enumeration verifies zero innovation mean conditional on each of the six complete treatment vectors and E[R'MR]=1/160>0, and all six regression comparisons. W may include Dq, satisfying the augmentation premise.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T3",
+    "theorem": "SAP.P037a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take c=39/20 in [19/10,2]. Both canonical estimate/SE pairs satisfy the strict bins; their ratios are 57/28 and 57/34. scratch/Check.lean compiles the bins and c premises. Positive SEs exclude division by zero; the asserted interval is nonempty.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T4",
+    "theorem": "SAP.P037a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "At the smallest allowed dimension, n=0 means two schools: the uniform law is ordinary area on (0,1)^2 and the simplex law is the pushforward of length on (0,1). Their event masses are 1/6 and 1/4. In every dimension the simplex source is bounded and its factorial density is finite, so no infinite-measure toReal convention intervenes. For WLS choose a two-row single intercept column and weights (1,2); it has full column rank and positive total weight. scratch/Check.lean verifies injectivity for this nonempty column space.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T5",
+    "theorem": "SAP.P037a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The source uniform law has total mass 1 on (0,1); its logarithmic image is a genuine nondegenerate Exp(1) law. At m=0 the gamma integral is integral_0^infinity exp(-t) dt=1=0!. The two-school law comparison and positive full-rank WLS instance from T4 apply. The stated exponential/gamma integrands are integrable, so Bochner zero-on-nonintegrability is irrelevant.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T6",
+    "theorem": "SAP.P037a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A=2695 and B=2012 lie in the total-rounding intervals; e=3/50 and m=1/5 lie in the mixed-basis intervals. Every reduction denominator is strictly positive. The only natural subtraction is 2695-2012, with the smaller subtrahend.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T7",
+    "theorem": "SAP.P037a.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both explicit witnesses (school,seed,peers,referentPeers)=(1,0,0,0) and (1,1,0,0) are feasible, as compiled in scratch/Check.lean. They can occur with 20 seeds among 40 eligibles and all of a student's at most ten named peers outside the seed set. Thus the overlaps do not rely on impossible seed or peer counts.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T8",
+    "theorem": "SAP.P037a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Every corrected case has a feasible instance: control (0,0,0,0), school (1,0,0,0), nonreferent (1,0,1,0), referent (1,0,1,1), direct (1,1,0,0). The partition is asserted over a nonempty configuration domain and all five labels occur.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T9",
+    "theorem": "SAP.P037a.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use blockDesign on Fin 6 and the event that school 0 is treated: pi=1/2 and Bernoulli variance=1/4. Two independent draws give 36 positive-mass outcomes and a genuinely varying frequency; J=2 is positive. The concrete frequency example equals 1/2, whereas the printed alternatives equal 1 and 0.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T10",
+    "theorem": "SAP.P037a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "blockDesign assigns 1/6 to each of the six actual two-school subsets and satisfies the general binary, fixed-count and half-marginal premises. The product has 36 positive-mass states. Exact finite calculations give covariance -1/12 for distinct schools in a block; this is not an empty or degenerate instance.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T11",
+    "theorem": "SAP.P037a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles a row for every number of blocks with four retained students per block, uniform six-pair assignment, exposed iff the student's school is selected, outcomes (1,0,0,0), g=1/4 and pi=1/2. It proves BlockBounds with m=4,c=4,eta=1/2,K=1, each block total=2D_0, each block variance=1 and total variance B for B blocks. Thus sigmaSquared=1 meets the nondegenerate CLT premises for every positive B. With one intercept covariate x=1, Q_B=Q=[1], v_B=v=[1/4], betaStar=1/4, L=1, and pHat=pi, all fitted premises hold simultaneously with simulation error identically zero. For a nondegenerate contrast use the complementary exposure, piPrime=1/2 and yPrime=gPrime=0; its block totals are the same as the first row's. Exact arithmetic is also recorded in scratch/arithmetic-results.json. The singular-sample inverse convention agrees with the canonical betaHat=0 convention. The same scratch/Check.lean nonvacuity file was recompiled successfully against the refreshed revision-2 Defs, with no errors or warnings.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P037-T12",
+    "theorem": "SAP.P037a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The assertions include actual positive school sizes 100,200,375,550,715. On the interpolation branch n>200 so natural subtraction equals integer subtraction; its divisor is 350. Parity excludes ties for every integer n. Supplementary exact checking for n=0 through 10000 confirms interpolation, monotonicity, divisibility and the 521 cap threshold. All asserted eligible-share denominators are positive. Revision 2 changes only the docstring. scratch/DeltaCheck.lean compiles the three positive-size witnesses and their inequality to 64, proves eligibleCount n<=64 for every n<550, and checks e(520)=60, e(521)=64, e(550)=64. Thus those witnesses contradict the exactly-64 reading and satisfy the literal printed upper bound. No new hypothesis, zero denominator or empty index type is introduced.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T13",
+    "theorem": "SAP.P037a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "t=4/100,b=-85/100,m=89/400 satisfy every coefficient/control-level interval, as compiled in scratch/Check.lean. This yields effect -13/100 and predicted treated level 37/400=0.0925, outside the 0.08 rounding bin. The control denominator is positive. The conclusion only bounds predictions and places 0.57 and 0.60 in the reduction envelope.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T14",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem to instantiate. Omission is justified: this target is the qualified empirical Methods interpretation. T1 challenges a weaker reading and T2 supplies sufficient response conditions, but neither establishes those conditions for the application. On the supplied evidence the empirical interpretation cannot be certified or refuted wholesale.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T15",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem to instantiate. Omission is justified: the supplied statements do not identify the unrounded test or decide which individual significance report is wrong. T3 already proves their incompatibility for one p value; its disclosed rational restriction does not recover the actual test.",
+    "confidence": 0.98
+  }
+]

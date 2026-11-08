@@ -1,7 +1,7 @@
 import AronowAudit.P031.Wave1.LargeSampleRefutationBlueprint
 
 /-!
-Compare the two-draw design with uniform draws with replacement.
+Node 4: compare the two-draw design with uniform draws with replacement.
 The only error is the diagonal, whose mass is `1 / N`.
 -/
 

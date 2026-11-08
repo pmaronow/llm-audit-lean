@@ -1,0 +1,59 @@
+{
+ "work_id": "P010",
+ "citation": {
+  "arxiv_id": "",
+  "authors": [
+   "P. M. Aronow",
+   "Jonathon Baron",
+   "Lauren Pinson"
+  ],
+  "doi": "10.1017/pan.2019.5",
+  "title": "A Note on Dropping Experimental Subjects who Fail a Manipulation Check",
+  "type": "Journal article",
+  "venue": "Political Analysis",
+  "year": "2019"
+ },
+ "standing_assumptions": "[Setting: Section 2, p. 573 (PDF p. 2)] “Suppose we have an i.i.d. sample from $(Y, S, Z)$, where $Y$ denotes the subject's response, $S$ denotes the result of a manipulation check (1 if the subject passed, 0 if the subject failed), and $Z$ denotes the subject's treatment assignment (1 for treatment 1, 2 for treatment 2, . . .). Without loss of generality, assume that the support of $Z$ is $\\{1, \\ldots, K\\}$, where $K$ is finite. We make three assumptions to proceed. First, we assume that both potential responses and potential results from the manipulation check are stable, by invoking SUTVA (Rubin 1980), which implies both no interference between units and no multiple unobserved versions of the treatment.” [p. 573] ASSUMPTION 1 (SUTVA). $Y = \\sum_{z=1}^{K} Y(z)\\mathbf{I}(Z = z)$ and $S = \\sum_{z=1}^{K} S(z)\\mathbf{I}(Z = z)$. [p. 573] “Second, we assume that the treatment is not systematically related to potential outcomes or potential manipulation check results, as would be ensured by random assignment of the treatment.” [p. 574 (PDF p. 3)] ASSUMPTION 2 (Ignorability). For all $z \\in \\{1, \\ldots, K\\}$, $(Y(z), S(z)) \\perp\\!\\!\\!\\perp Z$, with $\\Pr(Z = z) > 0$. “Assumption 2 can be ensured at the design stage by randomizing treatment assignment across subjects.” [p. 574] “Finally, we require that at least some subjects pass the manipulation check in both treatment and control.” ASSUMPTION 3 (Nonzero Passing Rates). For all $z \\in \\{1, \\ldots, K\\}$, $\\Pr[S|Z = z] > 0$. “Note that Assumption 3 is verifiable from the experimental data.” [As printed the event is missing; $\\Pr[S = 1|Z = z] > 0$ is meant (finding P010-N002, corrected in P010-T17). Every target uses the corrected form.] [Regularity: Section 2.1, p. 574] “As we proceed, plug-in estimators will be consistent given suitable regularity conditions (e.g., finite third moments, continuity), with the bootstrap providing a basis for asymptotic inference.” [The paper puts no moment condition inside its numbered results. Each conditional mean written in a target is taken to exist; finite first moments of $Y(1), \\ldots, Y(K)$ ensure this.] [Target parameter: Section 2.1, p. 574] “Here we consider one possible target that seems natural: $\\mathrm{E}[Y(z) - Y(z')|S(1) = S(2) = \\cdots = S(K) = 1]$, or the average treatment effect among subjects who would pass under all treatment conditions.” [Covariates: Section 2.3, p. 576 (PDF p. 5)] “Suppose that we had a vector of covariates $\\mathbf{X}$ associated with each unit, so that we now have an i.i.d. sample from $(Y, S, Z, \\mathbf{X})$. We can now write an assumption analogous to Assumption 2.” ASSUMPTION 4 (Ignorability with Covariates). For all $z \\in \\{1, \\ldots, K\\}$, $(Y(z), S(z), \\mathbf{X}) \\perp\\!\\!\\!\\perp Z$, with $\\Pr(Z = z) > 0$. [Notation] $Y(z)$ and $S(z)$ are the potential response and the potential result of the manipulation check under treatment $z$; the paper introduces them only through Assumption 1. $\\mathrm{E}$ and $\\Pr$ refer to the joint law of one draw $(Y(1), \\ldots, Y(K), S(1), \\ldots, S(K), Z)$ (with $\\mathbf{X}$ in Section 2.3), of which $(Y, S, Z)$ is the observed part. $\\perp\\!\\!\\!\\perp$ is independence, and $\\mathbf{X} \\perp\\!\\!\\!\\perp Z|S$ is conditional independence given $S$. $z$ and $z'$ range over $\\{1, \\ldots, K\\}$. Every numbered result is a statement about this population law; no target is asymptotic. The paper does not define ‘sharp bounds’. The targets use the usual meaning: the infimum and supremum of the target parameter over all joint laws of the potential variables and $Z$ that satisfy the assumptions and induce the given law of the observables $(Y, S, Z)$.",
+ "targets": [
+  {
+   "target_id": "P010-T21",
+   "canonical_claim": {
+    "target_id": "P010-T21",
+    "kind": "headline_result",
+    "name_in_paper": "Corollary 3",
+    "location": "p. 575 (PDF p. 4); proof in Appendix A, p. 580 (PDF p. 9)",
+    "statement": "[p. 575 (PDF p. 4)] “However, the converse does not generally hold. In order to justify discarding subjects, it is not sufficient to show that $Z$ and $S$ are unrelated.” COROLLARY 3. $S \\perp\\!\\!\\!\\perp Z$ does not imply that $\\mathrm{E}[Y|S = 1, Z = z] - \\mathrm{E}[Y|S = 1, Z = z'] = \\mathrm{E}[Y(z) - Y(z')|S(1) = S(2) = \\cdots = S(K) = 1]$. [Formal reading: there exist a finite $K$, a joint law of $(Y(1), \\ldots, Y(K), S(1), \\ldots, S(K), Z)$ that satisfies Assumptions 1–3, with $S \\perp\\!\\!\\!\\perp Z$ and $\\Pr[S(1) = \\cdots = S(K) = 1] > 0$, and $z, z' \\in \\{1, \\ldots, K\\}$, for which the displayed equality fails. The paper proves it by the example of Appendix A, p. 580, transcribed and corrected in P010-T16: there $K = 2$, and for $z = 2$, $z' = 1$ the left-hand side is $1/2$ and the right-hand side is $0$.]",
+    "definitions_needed": "[$Y$, $S$, $Z$, $Y(z)$, $S(z)$ and Assumptions 1–3: standing assumptions, pp. 573–574 (PDF pp. 2–3).] [After the Corollary, p. 575] “Corollary 3 reinforces an important point: even if the failure rates are identical across treatments, conditioning on a manipulation check may still induce bias. This is because the types of subjects who fail the manipulation check under one treatment may not be the same as those who fail under a different treatment.” [The example and its law $f$: Appendix A, p. 580, in P010-T16.]",
+    "note": "The headline negative result (P010-H1): equal failure rates do not make dropping safe. It is a non-implication, so the Lean statement is an existence statement whose witness is the corrected example of P010-T16; the printed proof gives the selected contrast as $0 - 1/2 = -1/2$ where it is $1/2 - 0 = 1/2$ (P010-E010, Minor), which does not affect the Corollary. In the example every type has zero effect, so the contrast after dropping is pure selection.",
+    "asymptotic": false,
+    "related_finding": "P010-E010"
+   }
+  },
+  {
+   "target_id": "P010-T22",
+   "canonical_claim": {
+    "target_id": "P010-T22",
+    "kind": "headline_result",
+    "name_in_paper": "Corollary 4",
+    "location": "p. 576 (PDF p. 5)",
+    "statement": "[p. 576 (PDF p. 5)] “These covariates can shed light on the plausibility of the condition for Corollary 1, $\\Pr[S(1) = S(2) = \\cdots = S(K)] = 1$.” COROLLARY 4. If $\\Pr[S(1) = S(2) = \\cdots = S(K)] = 1$, then $\\mathbf{X} \\perp\\!\\!\\!\\perp Z|S$. “A proof directly follows from Assumptions 1 and 4. One practical implication is that the plausibility of the conditions for Corollary 1 can be verified using a balance test. That is, if $\\mathbf{X} \\not\\perp\\!\\!\\!\\perp Z|S$, then it must be the case that $\\Pr[S(1) = S(2) = \\cdots = S(K)] \\ne 1$.” [Hypotheses attached: Assumptions 1 and 4.]",
+    "definitions_needed": "[$\\mathbf{X}$ and Assumption 4: Section 2.3, p. 576 (PDF p. 5), in the standing assumptions.] “Note that if $Z$ is randomized and $\\mathbf{X}$ is measured prior to administration of the treatment, then Assumption 4 holds by construction. However, if $\\mathbf{X}$ is measured posttreatment and $\\mathbf{Z}$ has causal effects on $\\mathbf{X}$, then Assumption 4 may be violated.” [$\\mathbf{X} \\perp\\!\\!\\!\\perp Z|S$: conditional independence of $\\mathbf{X}$ and $Z$ given $S$, that is, given each value of $S$ that has positive probability.]",
+    "note": "An exact population statement; no finding touches it. Under the premise, $S = S(1)$ almost surely by Assumption 1, and Assumption 4 gives $(S(1), \\mathbf{X}) \\perp\\!\\!\\!\\perp Z$ (marginalising $(Y(1), S(1), \\mathbf{X})$), hence $(S, \\mathbf{X}) \\perp\\!\\!\\!\\perp Z$, which implies $\\mathbf{X} \\perp\\!\\!\\!\\perp Z|S$. The last quoted sentence is the contrapositive.",
+    "asymptotic": false
+   }
+  },
+  {
+   "target_id": "P010-T23",
+   "canonical_claim": {
+    "target_id": "P010-T23",
+    "kind": "headline_result",
+    "name_in_paper": "Corollary 5",
+    "location": "p. 576 (PDF p. 5)",
+    "statement": "[p. 576 (PDF p. 5)] “Again, however, the converse does not hold. In order to justify discarding subjects, it is not sufficient to have balance on the observed covariates.” COROLLARY 5. $\\mathbf{X} \\perp\\!\\!\\!\\perp Z|S$ does not imply that $\\mathrm{E}[Y|S = 1, Z = z, \\mathbf{X} = \\mathbf{x}] - \\mathrm{E}[Y|S = 1, Z = z', \\mathbf{X} = \\mathbf{x}] = \\mathrm{E}[Y(z) - Y(z')|S(1) = S(2) = \\cdots = S(K) = 1, \\mathbf{X} = \\mathbf{x}]$. “A proof directly follows from that of Corollary 3.” [Formal reading: there exist a finite $K$, a joint law of $(Y(1), \\ldots, Y(K), S(1), \\ldots, S(K), Z, \\mathbf{X})$ that satisfies Assumptions 1, 3 and 4, with $\\mathbf{X} \\perp\\!\\!\\!\\perp Z|S$, and $z, z', \\mathbf{x}$ with $\\Pr[S(1) = \\cdots = S(K) = 1, \\mathbf{X} = \\mathbf{x}] > 0$, for which the displayed equality fails. Witness: the example of Corollary 3 (P010-T16) with $\\mathbf{X}$ constant; then both conditioning events on the left reduce to those of Corollary 3 and the two sides are $1/2$ and $0$ for $z = 2$, $z' = 1$.]",
+    "definitions_needed": "[$\\mathbf{X}$ and Assumption 4: Section 2.3, p. 576 (PDF p. 5), in the standing assumptions.] [Corollary 3 and its proof: P010-T21 and P010-T16.] [After the Corollary, p. 576] “So while covariates can help in testing a particular identification condition that justifies dropping subjects, failure to reject the null hypothesis of $\\mathbf{X} \\perp\\!\\!\\!\\perp Z|S$ (or even accepting said null hypothesis) need not imply that dropping subjects is unproblematic.”",
+    "note": "The second half of headline claim P010-H1: covariate balance among passers does not make dropping safe. Both fresh readers checked it by taking the covariate constant in the Corollary 3 example; with $\\mathbf{X}$ constant, Assumption 4 reduces to Assumption 2 and $\\mathbf{X} \\perp\\!\\!\\!\\perp Z|S$ holds trivially. The paper gives no separate proof.",
+    "asymptotic": false
+   }
+  }
+ ]
+}

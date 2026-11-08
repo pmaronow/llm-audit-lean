@@ -1,7 +1,7 @@
 import AronowAudit.P018.Wave1.Gap.TailBSignSample
 import AronowAudit.P018.Wave1.Gap.TailBSignRemainder
 
-/-! The normalized second-order formula equals N² times the fitted sandwich variance estimate for the slope. -/
+/-! The normalized second-order formula equals the actual slope estimator. -/
 noncomputable section
 namespace AronowAudit.P018.Wave1.TailBSign
 open Finset Matrix
@@ -103,8 +103,7 @@ theorem tb05_scalar_rescaling (q s u r : ℝ) (hq : q ≠ 0) (hq1 : q^2-1 ≠ 0)
   field_simp [hq,hq1,hden]
   <;> ring
 
-/-- Exact formula for N² times the fitted sandwich variance estimate for the slope,
-in normalized sign sums. -/
+/-- The complete fitted-OLS second-order slope formula, in normalized sign sums. -/
 theorem tb05_sample_normalized_identity {N : ℕ} (z w : Fin N → ℝ)
     (hz : ∀ i,(z i)^2=1) (hw : ∀ i,(w i)^2=1) (hN : 2 ≤ N)
     (hgram : (Dreal N)^2-(tb05_T z)^2 ≠ 0) :
@@ -129,8 +128,7 @@ theorem tb05_sample_normalized_identity {N : ℕ} (z w : Fin N → ℝ)
   simp only [tb05_fitA,tb05_fitB,hD,hT,← hq2]
   convert h using 1 <;> ring
 
-/-- A deterministic remainder bound for N² times the fitted sandwich variance estimate
-for the slope, on a bounded normalized-sums event. -/
+/-- A deterministic bounded-normalized-sums bound for the actual slope estimator. -/
 theorem tb05_sample_second_order_remainder (R : ℝ) (hR : 0 ≤ R) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (z w : Fin N → ℝ),
       (∀ i,(z i)^2=1) → (∀ i,(w i)^2=1) → 2 ≤ N →
@@ -184,8 +182,7 @@ theorem tb05_gram_nonsingular_on_box {N : ℕ} (z : Fin N → ℝ)
   field_simp [hD]
   nlinarith [hG]
 
-/-- A deterministic second-order remainder bound for N² times the fitted sandwich
-variance estimate for the slope, on a bounded normalized-sign-sums event,
+/-- The deterministic second-order remainder on a bounded normalized-sign-sums event,
 with no separate rank assumption. -/
 theorem tb05_slope_second_order_bounded_sums (R : ℝ) (hR : 0 ≤ R) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (z w : Fin N → ℝ),

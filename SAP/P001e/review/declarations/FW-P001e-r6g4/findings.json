@@ -1,0 +1,46 @@
+[
+  {
+    "target_id": "P001-T92",
+    "theorem": "SAP.P001e.T92",
+    "fingerprint": "2e317c6193f3e75e16ab26c913db8dce7b1fe813a834623850ab8f364ddd36f6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently compiles the two literal imputation values, their nonzero difference and inequality, and the displayed coefficient vector satisfying the original design normal equations. Exact rational elimination independently gives det(A^T A)=7311 and the stated coefficients. This is a closed fixed-data assertion with no unsatisfiable antecedent: fit X1_3=10 and predict X1_3=9 exactly as the canonical printed reading specifies. The finite table is realizable under i.i.d. sampling and strong ignorability: give its six distinct covariates positive mass, randomize treatment with propensity 1/2, and choose independent mean-zero finite residuals around each linear arm mean so the displayed observations have positive probability.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T93",
+    "theorem": "SAP.P001e.T93",
+    "fingerprint": "7e64cbafa9197703e509f654fa6a1376d491ae86542099a09fd9013912fc019e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles every finite-sample hypothesis at n=2,K=1: D=(0,1), Y=(2,5), X=0 and an RSS-minimizing coefficient triple (a,b,c)=(2,3,0), with both arms nonempty. It also compiles every population hypothesis on a fair two-point probability law with D=(0,1), X=0, Y0=2, Y1=5, p=1/2, overlap bound 1/4, conditional independence and exact observed linear CEF 2+3D. The corrected six-unit estimates are separately evaluated. Named witness proofs use no sorryAx or target theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T94",
+    "theorem": "SAP.P001e.T94",
+    "fingerprint": "4f3d0b1d4fca15e3f54f993acba666e491aef9e6a682676e6556352669ab8ecd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles a complete WholePotentialModel and WholeCorrectModel on the product of a fair treatment coin and uniform[0,1]. X=0, Y0=Y1 is the independent continuous second coordinate, p=1/2, and the true conditional density is the indicator of [0,1]. Measurability, integrability, uniform overlap and conditional independence are proved, as is the conditional-distribution density equality. The same model on both sides satisfies every equal-observable-law identification premise. A positive two-unit sample, the same actual density family, a singleton parameter space, an attained ML maximizer and all inner-integrability hypotheses are also constructed. Named witness proofs use no sorryAx or target theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T95",
+    "theorem": "SAP.P001e.T95",
+    "fingerprint": "7cffb8af1db151ac61ce2931e80a24ac0426afbdcea7dbfd13c33cd27d419456",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently proves the entire closed T95Statement by unfolding all definitions and finite real arithmetic, including every distance, unique donor, completed outcome and mean. All candidate sets are nonempty and all literal donor indices are in range. The known scores can be actual propensities: put positive probability on the six distinct covariates, draw D conditionally Bernoulli with the listed score and choose potential outcomes deterministically given X to realize the observed outcomes. Strong ignorability holds, uniform overlap holds with epsilon=0.1, and this table has positive probability under i.i.d. sampling.",
+    "confidence": 0.99
+  }
+]

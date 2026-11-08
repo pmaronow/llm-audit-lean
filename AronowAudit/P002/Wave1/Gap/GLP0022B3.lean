@@ -1074,5 +1074,7 @@ theorem feasible_variance_counterexample_proof :
     funext j
     simpa only [FV_model_y] using FV_error_probability (j+4) (by omega)
 
+example : type_of% @AronowAudit.P002.feasible_variance_counterexample := feasible_variance_counterexample_proof
+
 end
 end AronowAudit.P002.Wave1

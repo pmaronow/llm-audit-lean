@@ -1,0 +1,93 @@
+[
+ {
+  "target_id": "P011-T11",
+  "decision": "whole",
+  "theorem": "SAP.P011a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.Wave1.alternating_counterexample_proof",
+   "AronowAudit.P011.Wave1.alternating_finite_moments_proof",
+   "AronowAudit.P011.auxiliary_empty_identity"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011a.T11Statement",
+  "supporting_declarations": []
+ },
+ {
+  "target_id": "P011-T12",
+  "decision": "whole",
+  "theorem": "SAP.P011a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.homoskedastic_repair",
+   "AronowAudit.P011.one_sided_algebra",
+   "SAP.P011a.WH.W1.T12_whole",
+   "SAP.P011a.WH.W1.T12_assembly",
+   "SAP.P011a.WH.W1.T12_L1_proof",
+   "AronowAudit.P011.CorrelationCompletion.common_variance",
+   "AronowAudit.P011.CorrelationCompletion.meanVariance_nonneg",
+   "AronowAudit.P011.ProbabilityCompletion.weighted_memLp",
+   "AronowAudit.P011.QuadraticCompletion.beta_variance",
+   "AronowAudit.P011.degree_row_sum",
+   "AronowAudit.P011.HomoskedasticCompletion.remainder_memLp_two",
+   "AronowAudit.P011.HomoskedasticCompletion.remainder_second_bound",
+   "AronowAudit.P011.HomoskedasticCompletion.beta_fourth_bound",
+   "AronowAudit.P011.HomoskedasticCompletion.second_moment_tail",
+   "AronowAudit.P011.SampleCompletion.sample_center_identity",
+   "AronowAudit.P011.SampleCompletion.U_mean",
+   "AronowAudit.P011.SampleCompletion.U_variance_bound",
+   "AronowAudit.P011.ExpectationCompletion.beta_variance_bound"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P011.centered_sum_zero",
+    "reason": "Not invoked separately: its helper or component is already supplied by the complete component rows used here."
+   },
+   {
+    "lean_name": "AronowAudit.P011.sample_variance_centering",
+    "reason": "Not invoked separately: its helper or component is already supplied by the complete component rows used here."
+   }
+  ],
+  "statement_definition": "SAP.P011a.T12WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P011.ProbabilityCompletion.weighted_memLp",
+   "AronowAudit.P011.QuadraticCompletion.beta_variance"
+  ]
+ },
+ {
+  "target_id": "P011-T13",
+  "decision": "restricted",
+  "theorem": "SAP.P011a.T13",
+  "restriction": "Retains the finite feasibility test, existential mandatory/optional decomposition, optimal decoding and objective recovery for every supplied maximum matching, exact gadget counts and combinatorial size bounds, and both exact attained instances. Drops (a)'s equivalence with the paper's programs, (b)'s explicit uniqueness and separate optional-optimum identity, a general existence assertion for maximum matchings and an independently defined optimum-value identity in (c), and all runtime and complexity-class conclusions of (e). No encoded-bit-length conclusion is stated.",
+  "rows_used": [
+   "AronowAudit.P011.Wave1.matching_reduction_proof",
+   "AronowAudit.P011.matching_gadget_exact_counts",
+   "AronowAudit.P011.Wave1.matching_exact_instances_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P011.Wave1.corrected_polynomial_size_matching_reduction",
+    "reason": "Excluded: final_status is wrong_credit; no independent target credit is taken."
+   }
+  ],
+  "statement_definition": "SAP.P011a.T13Statement",
+  "supporting_declarations": [
+   "AronowAudit.P011.gadgetEdgeEquiv"
+  ]
+ },
+ {
+  "target_id": "P011-T14",
+  "decision": "whole",
+  "theorem": "SAP.P011a.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.relaxation_gaps",
+   "AronowAudit.P011.relaxation_upper_bound"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011a.T14Statement",
+  "supporting_declarations": [
+   "AronowAudit.P011.GapCompletion.six_witness"
+  ]
+ }
+]

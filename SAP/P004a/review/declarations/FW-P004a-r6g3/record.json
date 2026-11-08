@@ -1,0 +1,120 @@
+[
+ {
+  "target_id": "P004-T11",
+  "decision": "whole",
+  "theorem": "SAP.P004a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.ht_unbiased",
+   "AronowAudit.P004.printed_obs_ht_expectation"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P004-T12",
+  "decision": "restricted",
+  "theorem": "SAP.P004a.T12",
+  "restriction": "Retain the specific eight-node sharp-null Witness A and its exact positive-probability draw array, printed proportion, absolute exceedance count and corrected p-value, and Witness B with its exact rejection sum greater than 1/20. Omit the separate universal negative-observation rule, the signed-statistic size s/2 and decimal size approximations, and all of the seventeen-node, P=10000 Witness C and its exact lower bound. Witness B uses the permitted nonnegative statistic absolute HT; no failure for every finite P or for all sufficiently large P on one fixed design is asserted.",
+  "rows_used": [
+   "AronowAudit.P004.Wave1.mc_level_spatial_counterexample_proof",
+   "AronowAudit.P004.Wave1.mc_signed_spatial_counterexample_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.mc_size_counterexample",
+    "reason": "The actual spatial rejection-size row already includes this exact size inequality."
+   },
+   {
+    "lean_name": "AronowAudit.P004.negative_observed_comparison",
+    "reason": "The retained explicit draw-array witness already demonstrates the signed-comparison defect; the separate universal assertion is not included."
+   }
+  ]
+ },
+ {
+  "target_id": "P004-T13",
+  "decision": "whole",
+  "theorem": "SAP.P004a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.Wave1.mc_exact_level",
+   "AronowAudit.P004.mc_plus_one_identity"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P004-T14",
+  "decision": "whole",
+  "theorem": "SAP.P004a.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.spatial_shell_counterexample",
+   "SAP.P004a.WH.W2.T14_whole",
+   "SAP.P004a.WH.W2.T14_assembly",
+   "SAP.P004a.WH.W2.T14_L1_proof",
+   "SAP.P004a.WH.W2.T14_L2_proof",
+   "SAP.P004a.WH.W2.T14_L3_proof",
+   "AronowAudit.P004.Wave1.annulus_radial_measure_proof",
+   "AronowAudit.P004.areaWitnessOutcome._proof_1",
+   "AronowAudit.P004.assignment_two_univ",
+   "AronowAudit.P004.band_effect_identity",
+   "AronowAudit.P004.designMatrix._proof_1",
+   "AronowAudit.P004.shellWitnessDistance._proof_1",
+   "AronowAudit.P004.shellWitnessDistance._proof_2",
+   "AronowAudit.P004.shell_atom_distances",
+   "AronowAudit.P004.shell_spatial_mass",
+   "AronowAudit.P004.shell_spatial_table"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.shell_counterexample",
+    "reason": "The two names have the same exact spatial Witness 2 statement; only spatial_shell_counterexample is invoked."
+   }
+  ],
+  "statement_definition": "SAP.P004a.T14WholeStatement"
+ },
+ {
+  "target_id": "P004-T15",
+  "decision": "whole",
+  "theorem": "SAP.P004a.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.Wave1.annulus_radial_measure_proof",
+   "AronowAudit.P004.Wave1.supported_shell_identity",
+   "AronowAudit.P004.band_effect_identity",
+   "SAP.P004a.WH.W1.T15_whole",
+   "SAP.P004a.WH.W1.T15_assembly",
+   "SAP.P004a.WH.W1.T15_L1_proof",
+   "SAP.P004a.WH.W1.T15_L2_proof",
+   "SAP.P004a.WH.W1.T15_L3_proof",
+   "AronowAudit.P004.AlgebraCompletion.expect_integral",
+   "AronowAudit.P004.areaWitnessOutcome._proof_1",
+   "AronowAudit.P004.designMatrix._proof_1",
+   "AronowAudit.P004.expect_div",
+   "AronowAudit.P004.marginal_is_marginalization",
+   "AronowAudit.P004.shellWitnessDistance._proof_1",
+   "AronowAudit.P004.shellWitnessDistance._proof_2",
+   "AronowAudit.P004.shell_spatial_mass",
+   "AronowAudit.P004.spatial_shell_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.Wave1.shell_mass_identity",
+    "reason": "This is a duplicate of supported_shell_identity with the same node-specific contract."
+   }
+  ],
+  "statement_definition": "SAP.P004a.T15WholeStatement",
+  "statement_universe_parameters": [
+   "u",
+   "v"
+  ],
+  "declaration_review_round2": {
+   "reviewer": "r4g3",
+   "status": "addressed",
+   "change_kind": "docstring_only",
+   "finding": "Both summaries omitted acknowledgment of the usual measure-theoretic conditions already explicit in the statement.",
+   "resolution": "Both docstrings now state that the usual measure-theoretic conditions are assumed; the whole decision and existing hypotheses are unchanged.",
+   "theorem_statement_changed": false,
+   "definition_expressions_changed": false
+  }
+ }
+]

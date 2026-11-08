@@ -87,9 +87,10 @@ end
 end AronowAudit.P009.OutcomeCompletion
 
 namespace AronowAudit.P009
-/-- T8's finite basis for the q≥2 correction: every
+/-- T8's finite basis for retaining q≥2 in the final correction: every
 incoming-mask atom under regular Bernoulli assignment has mass at least
-k^(-incoming(i)), so moment bounds and bounded local degree bound all outcomes. -/
+k^(-incoming(i)), so moment bounds and bounded local degree bound all outcomes.
+This supports the final target version, rather than the older artifact's q>2 repair. -/
 theorem bounded_degree_outcome_bound {n : ℕ} (E : Experiment n) (k q s : ℝ)
     (hReg : Regular E k q s) (hBER : Bernoulli E) (D : ℕ)
     (hDegree : ∀ i, degree E i ≤ D) :
@@ -98,3 +99,4 @@ theorem bounded_degree_outcome_bound {n : ℕ} (E : Experiment n) (k q s : ℝ)
   exact OutcomeCompletion.bounded_degree_outcome_bound_completed E k q s hReg hBER D hDegree
 end AronowAudit.P009
 
+#print axioms AronowAudit.P009.bounded_degree_outcome_bound

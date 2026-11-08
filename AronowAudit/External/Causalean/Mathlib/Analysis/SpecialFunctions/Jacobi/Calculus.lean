@@ -1,7 +1,3 @@
-/-
-Upstream project: Causalean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 module
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
@@ -156,5 +152,34 @@ theorem integral_mul_iterated_deriv_eq (k : ℕ) (a b : ℝ) (p f : ℝ → ℝ)
   simpa only [hsum, zero_add] using
     (integral_mul_iterated_deriv_with_boundary k a b p f hp hf hab)
 
+/-- A [real integrand](hyp:f), when [it is interval-integrable on the unit interval](hyp:hf), gives [convergence of integrals truncated away from zero to the full integral](goal).
+
+An interval-integrable function on `[0,1]` has the same integral as the
+limit of its integrals over `[1/(n+1),1]`. -/
+theorem tendsto_integral_one_div_nat (f : ℝ → ℝ)
+    (hf : IntervalIntegrable f volume 0 1) :
+    Tendsto (fun n : ℕ => ∫ x in (1 / ((n + 1 : ℕ) : ℝ))..1, f x)
+      atTop (nhds (∫ x in (0 : ℝ)..1, f x)) := by
+  have hcont : ContinuousOn (fun x : ℝ => ∫ t in x..(1 : ℝ), f t)
+      (Set.Icc (0 : ℝ) 1) := by
+    have hi : IntegrableOn f (Set.uIcc (0 : ℝ) 1) volume := by
+      simpa only [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using
+        ((intervalIntegrable_iff_integrableOn_Icc_of_le
+          (by norm_num : (0 : ℝ) ≤ 1)).mp hf)
+    simpa only [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using
+      (intervalIntegral.continuousOn_primitive_interval_left hi)
+  have hseq : Tendsto (fun n : ℕ => (1 / ((n + 1 : ℕ) : ℝ)))
+      atTop (nhds (0 : ℝ)) := by
+    simpa only [Nat.cast_add, Nat.cast_one] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  have hmem : ∀ n : ℕ, (1 / ((n + 1 : ℕ) : ℝ)) ∈ Set.Icc (0 : ℝ) 1 := by
+    intro n
+    have hn : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
+    constructor
+    · positivity
+    · apply (div_le_iff₀ (by positivity : (0 : ℝ) < ((n + 1 : ℕ) : ℝ))).2
+      simpa only [one_mul] using hn
+  exact (hcont.continuousWithinAt (by norm_num : (0 : ℝ) ∈ Set.Icc 0 1)).tendsto.comp
+    (tendsto_nhdsWithin_iff.mpr ⟨hseq, Filter.Eventually.of_forall hmem⟩)
 
 end Causalean.Mathlib.Analysis.SpecialFunctions.Jacobi

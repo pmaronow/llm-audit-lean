@@ -1,0 +1,240 @@
+import SAP.P001a.Defs
+import SAP.P001a.Defs.WholeW1
+
+open MeasureTheory ProbabilityTheory Filter SAP.P001a
+open scoped ENNReal NNReal BigOperators Topology Classical
+noncomputable section
+
+namespace FidelityCheck
+
+lemma iid_coords {E : Type*} [MeasurableSpace E]
+    (ν : Measure E) [IsProbabilityMeasure ν] :
+    IID (Measure.infinitePi (fun _ : ℕ => ν)) (fun i ω => ω i) := by
+  refine ⟨fun i => measurable_pi_apply i, ?_, ?_⟩
+  · exact iIndepFun_infinitePi (X := fun _ x => x) (fun _ => measurable_id)
+  · intro i
+    refine ⟨(measurable_pi_apply i).aemeasurable,
+      (measurable_pi_apply 0).aemeasurable, ?_⟩
+    simp only [Measure.infinitePi_map_eval]
+
+-- T7: an actual infinite iid experiment with precisely the four printed masses.
+def fourAtom : Measure (ℝ × ℝ) :=
+  (3/8 : ℝ≥0∞) • Measure.dirac (0,0) + (1/8 : ℝ≥0∞) • Measure.dirac (0,1) +
+    (1/8 : ℝ≥0∞) • Measure.dirac (1,0) + (3/8 : ℝ≥0∞) • Measure.dirac (1,1)
+
+instance : IsProbabilityMeasure fourAtom := by
+  apply isProbabilityMeasure_iff.mpr
+  norm_num [fourAtom, Measure.add_apply, Measure.smul_apply]
+  apply (ENNReal.toReal_eq_toReal_iff' (by finiteness) (by finiteness)).mp
+  simp (disch := finiteness) only [ENNReal.toReal_add, ENNReal.toReal_div, ENNReal.toReal_inv]
+  norm_num
+
+example : ∃ (μ : Measure (ℕ → ℝ × ℝ)) (_ : IsProbabilityMeasure μ)
+    (X Y : ℕ → (ℕ → ℝ × ℝ) → ℝ),
+    IID μ (fun i ω => (X i ω,Y i ω)) ∧
+      μ.map (fun ω => (X 0 ω,Y 0 ω)) = fourAtom := by
+  refine ⟨Measure.infinitePi (fun _ : ℕ => fourAtom), inferInstance,
+    (fun i ω => (ω i).1), (fun i ω => (ω i).2), ?_, ?_⟩
+  · simpa only [Prod.mk.eta] using iid_coords fourAtom
+  · simpa only [Prod.mk.eta] using Measure.infinitePi_map_eval (fun _ : ℕ => fourAtom) 0
+
+-- The changed-covariate-marginal law is also a probability for every stated q.
+def shiftedAtom (q : ℝ) : Measure (ℝ × ℝ) :=
+    ENNReal.ofReal ((1-q)*3/4) • Measure.dirac (0,0) +
+    ENNReal.ofReal ((1-q)/4) • Measure.dirac (0,1) +
+    ENNReal.ofReal (q/4) • Measure.dirac (1,0) +
+    ENNReal.ofReal (q*3/4) • Measure.dirac (1,1)
+
+example : IsProbabilityMeasure (shiftedAtom (1/4)) := by
+  apply isProbabilityMeasure_iff.mpr
+  norm_num [shiftedAtom, Measure.add_apply, Measure.smul_apply]
+  apply (ENNReal.toReal_eq_toReal_iff' (by finiteness) (by finiteness)).mp
+  norm_num [ENNReal.toReal_add]
+
+-- T6: the iid/support/CEF/variance data are simultaneously satisfiable.
+lemma uniform01 : uniformLaw 0 1 = volume.restrict (Set.Icc (0 : ℝ) 1) := by
+  unfold uniformLaw
+  have hf : (fun x : ℝ => ENNReal.ofReal
+      (if x ∈ Set.Icc (0 : ℝ) 1 then ((1:ℝ)-0)⁻¹ else 0)) =
+      (Set.Icc (0 : ℝ) 1).indicator (fun _ => (1 : ℝ≥0∞)) := by
+    funext x
+    by_cases h : x ∈ Set.Icc (0 : ℝ) 1 <;> simp [h]
+  rw [hf]
+  convert (withDensity_indicator_one (μ := (volume : Measure ℝ))
+    (s := Set.Icc (0 : ℝ) 1) measurableSet_Icc) using 1
+
+instance : IsProbabilityMeasure (uniformLaw 0 1) := by
+  apply isProbabilityMeasure_iff.mpr
+  simp [uniform01, Real.volume_Icc]
+
+abbrev uniformExperiment := Measure.infinitePi (fun _ : ℕ => uniformLaw 0 1)
+
+lemma uniform_data : WholeSieveData uniformExperiment (fun i ω => ω i)
+    (fun _ _ => 0) 0 1 0 (fun _ => 0) := by
+  refine ⟨?_, by norm_num, ?_, continuous_const.continuousOn, ?_, ?_, ?_⟩
+  · refine ⟨fun i => (measurable_pi_apply i).prodMk measurable_const, ?_, ?_⟩
+    · exact iIndepFun_infinitePi (X := fun _ (x : ℝ) => (x,(0:ℝ)))
+        (fun _ => measurable_id.prodMk measurable_const)
+    · intro i
+      exact ((iid_coords (uniformLaw 0 1)).2.2 i).comp
+        (measurable_id.prodMk measurable_const)
+  · have h : (uniformLaw 0 1) (Set.Icc (0 : ℝ) 1) = 1 := by
+      simp [uniform01, Real.volume_Icc]
+    have heval := Measure.infinitePi_map_eval (fun _ : ℕ => uniformLaw 0 1) 0
+    rw [ae_iff]
+    change uniformExperiment ((fun ω : ℕ → ℝ => ω 0) ⁻¹'
+      (Set.Icc (0 : ℝ) 1)ᶜ) = 0
+    rw [← Measure.map_apply (measurable_pi_apply 0) measurableSet_Icc.compl,
+      heval, measure_compl measurableSet_Icc (by simp), h]
+    simp
+  · exact ⟨integrable_zero _ _ _, by simp⟩
+  · simpa using integrable_zero (ℕ → ℝ) ℝ uniformExperiment
+  · intro A hA
+    simp [prob]
+
+example (J : ℕ → ℕ) : IsSieveLS (fun i (ω : ℕ → ℝ) => ω i)
+    (fun _ _ => 0) J (fun _ _ => 0) := by
+  intro n ω
+  refine ⟨by simp, ?_⟩
+  intro p hp
+  simp only [Polynomial.eval_zero, sub_self, zero_pow (by decide : 2 ≠ 0), Finset.sum_const_zero]
+  exact Finset.sum_nonneg (fun _ _ => sq_nonneg _)
+
+-- T8: an honest normalized conditional probability model, with finite logs.
+def diracDensity (A : Type*) [MeasurableSpace A] : WholeDensity A (Measure.dirac (0 : ℝ)) where
+  kernel := Kernel.const A (Measure.dirac (0 : ℝ))
+  markov := inferInstance
+  density := fun _ _ => 1
+  measurable := measurable_const
+  nonnegative := fun _ _ => by norm_num
+  law := fun x => by simp [Kernel.const_apply]
+
+example : WholeFiniteLog (Measure.dirac ()) (diracDensity Unit) (diracDensity Unit) := by
+  constructor
+  · filter_upwards [] with xy
+    norm_num [diracDensity]
+  · simpa [diracDensity] using integrable_zero (Unit × ℝ) ℝ
+      ((Measure.dirac ()) ⊗ₘ (diracDensity Unit).kernel)
+
+example : (∀ᵐ x ∂(Measure.dirac ()), Integrable (fun y =>
+      (diracDensity Unit).density x y * Real.log ((diracDensity Unit).density x y))
+      (Measure.dirac (0 : ℝ))) ∧
+    Integrable (wholeSectionEntropy (diracDensity Unit)) (Measure.dirac ()) := by
+  constructor
+  · filter_upwards [] with x
+    simpa [diracDensity] using integrable_zero ℝ ℝ (Measure.dirac (0 : ℝ))
+  · simpa [wholeSectionEntropy, diracDensity] using integrable_zero Unit ℝ (Measure.dirac ())
+
+example : wholeAverageKL (Measure.dirac ()) (diracDensity Unit) (diracDensity Unit) = 0 := by
+  simp [wholeAverageKL]
+
+-- T9/T10: collapse-path admissibility is genuine; the compact restriction is nonempty.
+lemma path_admissible (σ : ℝ) (hσ : 0 < σ) :
+    MixtureAdmissible ![1/2,1/4,1,σ,0,1,1] := by
+  norm_num [MixtureAdmissible, hσ]
+
+example : (mixtureRestriction 2 2 (1/2) (1/2) 2).Nonempty := by
+  refine ⟨![1/2,1/4,1,1,0,1,1], ?_⟩
+  norm_num [mixtureRestriction, MixtureAdmissible]
+
+example : ∀ i : Fin 3, (0 : ℝ) < (![1,2,3] : Fin 3 → ℝ) i := by
+  intro i
+  fin_cases i <;> norm_num
+
+example : (0 : ℝ) < normalDensity 1 1 1 := by
+  exact div_pos (Real.exp_pos _) (mul_pos (by norm_num) (Real.sqrt_pos.2
+    (mul_pos (by norm_num) Real.pi_pos)))
+
+
+-- Full simultaneous hypotheses for T8's consistency implication.
+abbrev Cov := Fin 1 → ℝ
+abbrev paramSet : Set Cov := {0}
+def pzero : paramSet := ⟨0, rfl⟩
+abbrev covLaw : Measure Cov := Measure.dirac 0
+abbrev jointLaw : Measure (Cov × ℝ) := covLaw.prod (Measure.dirac 0)
+abbrev logExperiment := Measure.infinitePi (fun _ : ℕ => jointLaw)
+def logX (i : ℕ) (ω : ℕ → Cov × ℝ) : Cov := (ω i).1
+def logY (i : ℕ) (ω : ℕ → Cov × ℝ) : ℝ := (ω i).2
+def logFamily (_ : paramSet) : WholeDensity Cov (Measure.dirac (0 : ℝ)) := diracDensity Cov
+
+def logM (t : paramSet) : ℝ := ∫ xy,
+  Real.log ((logFamily t).density xy.1 xy.2) ∂(covLaw ⊗ₘ (diracDensity Cov).kernel)
+
+lemma logM_zero (t : paramSet) : logM t = 0 := by
+  simp [logM, logFamily, diracDensity]
+
+lemma constant_CP {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) :
+    CP μ (fun _ _ => (0 : ℝ)) 0 := by
+  intro ε hε
+  simpa [prob, not_le.mpr hε] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
+
+lemma log_iid : IID logExperiment (fun i ω => (logX i ω, logY i ω)) := by
+  simpa only [logX, logY, Prod.mk.eta] using iid_coords jointLaw
+
+lemma log_law : logExperiment.map (fun ω => (logX 0 ω, logY 0 ω)) =
+    covLaw ⊗ₘ (diracDensity Cov).kernel := by
+  simpa [logX, logY, diracDensity] using
+    Measure.infinitePi_map_eval (fun _ : ℕ => jointLaw) 0
+
+lemma log_finite : ∀ t, WholeFiniteLog covLaw (diracDensity Cov) (logFamily t) := by
+  intro t
+  constructor
+  · filter_upwards [] with xy
+    norm_num [logFamily, diracDensity]
+  · simp [logFamily, diracDensity]
+
+lemma log_measurable : ∀ n : ℕ,
+    Measurable (fun _ : ℕ → Cov × ℝ => pzero) := fun _ => measurable_const
+
+lemma log_separation : ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧
+    ∀ t : paramSet, ε ≤ dist t pzero → logM t ≤ logM pzero - δ := by
+  intro ε hε
+  refine ⟨1, by norm_num, ?_⟩
+  intro t ht
+  have heq : t = pzero := by
+    apply Subtype.ext
+    exact Set.mem_singleton_iff.mp t.property
+  subst t
+  exact (not_le_of_gt hε (by simpa using ht)).elim
+
+lemma log_discrepancy_zero (n : ℕ) (ω : ℕ → Cov × ℝ) :
+    wholeLogDiscrepancy logX logY logFamily logM n ω = 0 := by
+  simp [wholeLogDiscrepancy, logM_zero, logFamily, diracDensity]
+
+lemma log_uniform : ∀ ε : ℝ, 0 < ε → Tendsto (fun n => prob logExperiment
+    {ω | ENNReal.ofReal ε ≤ wholeLogDiscrepancy logX logY logFamily logM n ω})
+      atTop (nhds 0) := by
+  intro ε hε
+  simpa [log_discrepancy_zero, prob, not_le.mpr (ENNReal.ofReal_pos.mpr hε)] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
+
+lemma log_exact_max : ∀ n : ℕ, 0 < n → ∀ᵐ ω ∂logExperiment, ∀ t : paramSet,
+    (∏ i ∈ Finset.range n, (logFamily t).density (logX i ω) (logY i ω)) ≤
+      ∏ i ∈ Finset.range n, (logFamily pzero).density (logX i ω) (logY i ω) := by
+  intro n hn
+  filter_upwards [] with ω
+  intro t
+  simp [logFamily, diracDensity]
+
+example :
+    IID logExperiment (fun i ω => (logX i ω, logY i ω)) ∧
+    logExperiment.map (fun ω => (logX 0 ω, logY 0 ω)) =
+      covLaw ⊗ₘ (diracDensity Cov).kernel ∧
+    (∀ t, WholeFiniteLog covLaw (diracDensity Cov) (logFamily t)) ∧
+    (∀ n : ℕ, Measurable (fun _ : ℕ → Cov × ℝ => pzero)) ∧
+    (∀ n : ℕ, 0 < n → ∀ᵐ _ω ∂logExperiment, (0 : ℝ) ≤ 0) ∧
+    CP logExperiment (fun _ _ => (0 : ℝ)) 0 ∧
+    (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : paramSet,
+      ε ≤ dist t pzero → logM t ≤ logM pzero - δ) ∧
+    (∀ ε : ℝ, 0 < ε → Tendsto (fun n => prob logExperiment
+      {ω | ENNReal.ofReal ε ≤ wholeLogDiscrepancy logX logY logFamily logM n ω})
+        atTop (nhds 0)) ∧
+    (∀ n : ℕ, 0 < n → ∀ᵐ ω ∂logExperiment, ∀ t : paramSet,
+      (∏ i ∈ Finset.range n, (logFamily t).density (logX i ω) (logY i ω)) ≤
+        ∏ i ∈ Finset.range n, (logFamily pzero).density (logX i ω) (logY i ω)) := by
+  exact ⟨log_iid, log_law, log_finite, log_measurable,
+    fun _ _ => Filter.Eventually.of_forall (fun _ => le_rfl), constant_CP logExperiment,
+    log_separation, log_uniform, log_exact_max⟩
+
+end FidelityCheck

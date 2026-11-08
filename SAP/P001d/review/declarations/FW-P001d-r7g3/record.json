@@ -1,0 +1,77 @@
+[
+ {
+  "target_id": "P001-T68",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T68",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.additive_independent_noise_cef",
+   "SAP.P001d.WH.W1.T68_whole",
+   "SAP.P001d.WH.W1.T68_assembly",
+   "AronowAudit.P001.isCEF_condExp"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001d.T68WholeStatement"
+ },
+ {
+  "target_id": "P001-T69",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T69",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.apd_pda_different_correct_coordinate",
+   "SAP.P001d.WH.W1.T69_whole",
+   "SAP.P001d.WH.W1.T69_assembly",
+   "AronowAudit.P001.uniformLaw_zero_one_eq_restrict"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.uniform_apd_pda_actual_example",
+    "reason": "The quantified population declaration covers every admissible outcome with the specified CEF; a separate concrete construction is not needed for this conditional assertion."
+   }
+  ],
+  "statement_definition": "SAP.P001d.T69WholeStatement"
+ },
+ {
+  "target_id": "P001-T70",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T70",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.polynomial_squared_criterion_ols",
+   "AronowAudit.P001.unsquared_sieve_no_minimum",
+   "SAP.P001d.WH.W2.T70_whole",
+   "SAP.P001d.WH.W2.T70_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001d.T70WholeStatement"
+ },
+ {
+  "target_id": "P001-T71",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T71",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.lasso_convex",
+   "AronowAudit.P001.lasso_zero_penalty_ols",
+   "AronowAudit.P001.slope_penalty_seminorm_and_unpenalized_intercept"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T72",
+  "decision": "restricted",
+  "theorem": "SAP.P001d.T72",
+  "restriction": "Only positive-scale normal-density normalization and its fixed-covariate first moment, together with the totalized zero-scale diagnostic; the implication from the classical conditional-normal model for arbitrary random X,Y to its linear CEF is omitted.",
+  "rows_used": [
+   "AronowAudit.P001.classical_linear_positive_scale_cef"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P001.normalDensity_eq_gaussianPDFReal",
+   "ProbabilityTheory.memLp_id_gaussianReal",
+   "ProbabilityTheory.integrable_gaussianPDFReal",
+   "MeasureTheory.integrable_withDensity_iff_integrable_smul₀'"
+  ]
+ }
+]

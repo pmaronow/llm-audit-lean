@@ -1,7 +1,8 @@
 import AronowAudit.P001.Wave1.SieveRateBlueprint
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
-/-! The two printed degree-rate conditions and the exact fourth-power subsequence. -/
+/-! The two printed degree-rate conditions and the exact fourth-power subsequence.
+Drafted by source inspection only; Lean has not been run on this file. -/
 
 set_option autoImplicit false
 

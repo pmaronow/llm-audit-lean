@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.LpSeminorm
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.RnDerivSqrt
 import AronowAudit.External.StatLean.AsymptoticStatistics.Core.Hilbert
@@ -110,6 +106,46 @@ private lemma eLpNorm_sqrt_rnDeriv_mul_eq
       fun hmeas => hh ((RnDerivSqrt.aestronglyMeasurable_sqrt_rnDeriv_mul_iff hνξ h).1 hmeas)
     rw [eLpNorm_of_not_aestronglyMeasurable hw, eLpNorm_of_not_aestronglyMeasurable hh]
 
+/-- Pairwise square-root residual norms do not depend on the chosen common
+dominator.
+
+Proof idea: rewrite both RN derivatives through `μ`, split where the
+canonical density vanishes, and apply the with-density `eLpNorm` identity.
+
+Joint witness: `P=Q=μ` and `g=0`. -/
+theorem eLpNorm_residualAgainst_change_dominator
+    (P Q μ : Measure Ω) [IsProbabilityMeasure P] [IsProbabilityMeasure Q]
+    [SigmaFinite μ] (hP : P ≪ μ) (hQ : Q ≪ μ)
+    (g : Ω → ℝ) (t : ℝ) :
+    eLpNorm (residualAgainst P Q (canonicalDominator P Q) g t)
+        2 (canonicalDominator P Q) =
+      eLpNorm (residualAgainst P Q μ g t) 2 μ := by
+  let ν := canonicalDominator P Q
+  let : IsFiniteMeasure ν := by
+    dsimp [ν, canonicalDominator]
+    infer_instance
+  have hνμ : ν ≪ μ := Measure.AbsolutelyContinuous.add_left hP hQ
+  have hPν : P ≪ ν :=
+    Measure.absolutelyContinuous_of_le (Measure.le_add_right le_rfl)
+  have hQν : Q ≪ ν :=
+    Measure.absolutelyContinuous_of_le (Measure.le_add_left le_rfl)
+  have hfac : residualAgainst P Q μ g t =ᵐ[μ] fun ω =>
+      Real.sqrt (ν.rnDeriv μ ω).toReal * residualAgainst P Q ν g t ω := by
+    have hPchain := Measure.rnDeriv_mul_rnDeriv hPν (κ := μ)
+    have hQchain := Measure.rnDeriv_mul_rnDeriv hQν (κ := μ)
+    filter_upwards [hPchain, hQchain] with ω hPω hQω
+    have hsP : Real.sqrt (P.rnDeriv μ ω).toReal =
+        Real.sqrt (P.rnDeriv ν ω).toReal * Real.sqrt (ν.rnDeriv μ ω).toReal := by
+      rw [← hPω, Pi.mul_apply, ENNReal.toReal_mul,
+        Real.sqrt_mul ENNReal.toReal_nonneg]
+    have hsQ : Real.sqrt (Q.rnDeriv μ ω).toReal =
+        Real.sqrt (Q.rnDeriv ν ω).toReal * Real.sqrt (ν.rnDeriv μ ω).toReal := by
+      rw [← hQω, Pi.mul_apply, ENNReal.toReal_mul,
+        Real.sqrt_mul ENNReal.toReal_nonneg]
+    simp only [residualAgainst, hsP, hsQ]
+    ring
+  rw [eLpNorm_congr_ae hfac]
+  exact (eLpNorm_sqrt_rnDeriv_mul_eq hνμ _).symm
 
 /-- A right-QMD remainder already forces square-integrability of the score. -/
 private lemma memLp_score_of_rightQMD

@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P015b.T9",
+    "target_id": "P015-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The closed conjunction gives the specified full-rank binary-treatment groups, exact precision matrices and inverse, pooled vector, raw-data GLS equality, impossibility of any scalar combination of the two zero slopes, and the arbitrary-vector treatment-row formula. These are precisely the canonical counterexample's mathematical obligations. Independent rational checks agree; no singular inverse or empty group is used. The canonical note's probabilistic realization and warnings about consistency are context, not additional counterexample obligations."
+  },
+  {
+    "theorem": "SAP.P015b.T10",
+    "target_id": "P015-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "MatrixPooling and ScalarPoolingCriterion cover every expressly enumerated finite obligation (i)-(iv), with the exact quantifiers, positive variances, positive semidefinite S and nonsingular group Gram matrices. The criterion concerns rows of H^{-1}P_g and arbitrary group vectors, as required. The canonical note explicitly makes the limiting approximation optional; the surrounding within-group causal and consistency discussion is not part of those four formal obligations. If the surrounding prose is included in scope, only that broader scope is omitted. G=q=n_0=1, Z_0=[1], S=[0], sigma_0^2=1 is a nonvacuous instance, also checked in Lean."
+  },
+  {
+    "theorem": "SAP.P015b.T20",
+    "target_id": "P015-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The definitions use the canonical population interpretation of scaled leverage, not an expectation over random finite sample inverses. The exact cell weights, moment matrix and inverse, four leverages, profile averages, ratio, reduction, and every distinct printed rounding are asserted. The two opposite comparisons follow directly from the exact rationals. All cell masses and the population Gram determinant are positive; independent rational calculations verify the values and strict rounding tolerances."
+  },
+  {
+    "theorem": "SAP.P015b.T14",
+    "target_id": "P015-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "T14Statement formalizes only injectivity of the logistic mean as the impossibility of the printed unconditional probability at two distinct treatments with fixed controls and nonzero slope. It contains no conditional probability, binary-outcome probability model, coefficient-existence statement, or corrected model definition used by T21. The Challenge docstring explicitly discloses the omitted corrected conditional model and its existence assertion. Inputs beta=1,d=0,d'=1 satisfy the antecedent."
+  },
+  {
+    "theorem": "SAP.P015b.T21",
+    "target_id": "P015-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The observation predictor and residual-vector identities cover (ii), and the unique affine root and OLS scaling cover (iii). The directional logistic derivative for every direction represents the gradient in (i), but is inside the full-rank implication: det(W^T W) != 0 is an additional hypothesis for (i). This restriction is stated exactly in the docstring. The affine identity is even quantified over arbitrary outcomes and c, which includes the claimed cases. The exact-ML remainder identity in finite_lemmas is not a challenged conclusion; it is supplementary to the canonical expressly selected exact content (i)-(iii). A nonempty full-rank two-column design with binary outcomes is checked in Lean."
+  },
+  {
+    "theorem": "SAP.P015b.T11",
+    "target_id": "P015-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "The two binomial rows with counts 100 faithfully aggregate the specified 200 binary observations. The conjunction asserts the unique ML fit, actual fitted predictors, mean and center, full rank and mixed outcomes, the exact analytic radius pi, both error bounds for every natural degree, the exact treatment-score identity and bound, and exact score zero. No degree cutoff or divergent-limsup convention replaces the required uniform-in-degree bound. The given coefficient pairing argument supports the all-degree statement; independent Taylor diagnostics through degree 80 agree but are not treated as its proof."
+  },
+  {
+    "theorem": "SAP.P015b.T15",
+    "target_id": "P015-T15",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The actual OLS estimator, residual-squared population weight, conditional unconfoundedness, affine treatment mean, i.i.d. sampling, and eight regularity families render the corrected main limit faithfully. Extra hypotheses are a standard Borel ambient space, eventual deterministic-threshold almost-sure sample nonsingularity, integrable treatment, and integrable weighted effect. The independently quantified moment conjunct has seven explicit integrability assumptions and gives the DY0 conditional factorization and residual-effect zero conditional moment, but not the intervening conditional-product factorization. These scope differences are disclosed. No finite partial-regression/decomposition or auxiliary fitted-coefficient limit is a conclusion of this stub. A continuous uniform treatment and independent continuous control, Y0=0 and tau=1, satisfy all hypotheses."
+  },
+  {
+    "theorem": "SAP.P015b.T22",
+    "target_id": "P015-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The principal conclusion is exactly Theorem A.1 under the stated eight-family sufficient regularity reading, but with standard Borel ambient space, eventual deterministic-threshold almost-sure sample nonsingularity, integrable treatment, and integrable weighted effect added. The finite partial-regression, decomposition, conditional-variance identity, and auxiliary limits listed as proof lemmas in the brief are not statements of T22. The docstring accurately describes the added hypotheses and asserts the main limit only. The continuous uniform-treatment/control construction satisfies all of them; the positivity assumptions are not circular assumptions of the estimator limit."
+  },
+  {
+    "theorem": "SAP.P015b.T23",
+    "target_id": "P015-T23",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The actual fitted-residual weighted covariate mean and population conditional-residual ratio match (9), with all seven prescribed moment/convergence families. Added hypotheses require eventual deterministic-threshold almost-sure nonsingularity of the control fit and positive sample residual sum, plus explicit integrability of D, the population weight and weighted covariate and positive population weight. These are disclosed in the docstring. It assumes convergence of component moments rather than the target fitted ratio. Independent continuous uniform D and X, and Z=X, satisfy the assumptions and have limit 1/2."
+  },
+  {
+    "theorem": "SAP.P015b.T24",
+    "target_id": "P015-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The main limit uses the required common-assignment joint independence and the same actual OLS estimator and regularity, with added standard Borel space, eventual deterministic-threshold almost-sure sample nonsingularity and integrable effect. The population identities are separately quantified under measurable D,Y0,tau,X, L2 treatment, integrable effect and positive variance, and include mean, weight, product and cancellation identities. Explicit weight/effect independence and the printed intermediate fitted-weight-effect ratio convergence are absent, as the docstring states. Independent continuous uniform D,X, Y0=0,tau=1 are a joint nonvacuity witness for both conjuncts."
+  },
+  {
+    "theorem": "SAP.P015b.T18",
+    "target_id": "P015-T18",
+    "my_reading_vs_claim": "different",
+    "reason": "The stub proves the true finite logistic ML stationarity implication (A), and constructs actual population square-link ML maximizer branches refuting the universal mean-only first-order scaling assertion (C); it does not assert the false printed conjunction or assess (B) for the specifically listed other families. Its docstring announces that orientation and scope. The square example has a real binary-outcome causal probability model with conditional independence and affine propensity. The two branches have the same mean 1/4, OLS treatment derivative 1 and ML derivatives 1 versus 120/119. Strict concavity and the score Jacobian justify that these are genuine local branches of unique admissible global maximizers, not just artificial estimating-equation roots. This refutes universal any-GLM scaling, but is not a separate counterexample to each listed family."
+  },
+  {
+    "theorem": "SAP.P015b.T17",
+    "target_id": "P015-T17",
+    "my_reading_vs_claim": "different",
+    "reason": "The stub proves (A) only for countable measurable-singleton profiles and globally L2 treatment, then refutes the approximately-zero and fitted-exact-zero readings of (B), and pair-specific positivity in (C), rather than asserting the printed conjunction. The four-point examples use positive denominators; the fixed small-propensity model has an observed-data IPW estimator consistent for the exact average effect 3/2, so it refutes the no-consistent-estimator inference as well as the positivity inference. The literal effective-law example has E[w]=5/8, positive effective profile mass 4/5, globally possible endpoints 0,1, and zero effective conditional mass for endpoint 1 at profile 1. The scope and omissions are announced. It does not characterize all identification cases or state the true exact-zero-population-weight subcase as a separate implication."
+  }
+]

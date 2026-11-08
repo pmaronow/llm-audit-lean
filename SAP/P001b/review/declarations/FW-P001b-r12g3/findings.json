@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P001-T30",
+    "theorem": "SAP.P001b.T30",
+    "fingerprint": "8f3a33fba0f3966a221d909784aa8c4b0ddbabec59c31bda8654444e6f3ac796",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully using sap-lean and importing only definitions. It constructs the uniform law on [0,1] with a genuine nonnegative integrable CDF density, two equal PDF versions and an a.e.-equal nonnegative replacement; the product uniform law satisfies both joint-density premises and both marginal-density premises simultaneously. The discrete premises are instantiated by measurable constants on the one-point Dirac probability space. For the internal differentiability and mixed-derivative antecedents, interior thresholds such as 1/2 are admissible: the univariate CDF is locally the identity, and the inner derivative in the mixed example exists for all first coordinates. These last facts are also transparent from the explicit uniform CDF; see claim-checks.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T31",
+    "theorem": "SAP.P001b.T31",
+    "fingerprint": "4ebb0c71a69719fe7cd26135c8616fc9e5c813ae18dcb2979676137e83bd79f3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no external hypotheses: the theorem supplies fixed counterexample data. scratch/Cantor.lean compiled successfully without importing Challenge and independently proves the first construction stages, the exact positive component length ((1/2)^n+(1/4)^n)/2 for every Boolean word of length n, and 0,1 in the actual fatCantorSet. The remaining witness check is mathematical, not a claim of a full independent Lean proof: the 2^n disjoint components give stage measure 1/2+2^(-n-1); decreasing continuity gives measure 1/2; shrinking positive components exclude every nondegenerate interval. The Borel subtype embedding then gives the genuine normalized law, density 2 times its indicator, literal range and printed positive-density support. Every printed condition is checked in claim-checks.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T32",
+    "theorem": "SAP.P001b.T32",
+    "fingerprint": "06ed112aafea1f62c0afde0c9b9998fab81bec0232740ceae7c968fe51368435",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully without importing Challenge. The universal hypotheses are instantiated with the identity random variable under the uniform law on [0,1]. The complete existential conjunct is independently proved using C=[0,1/2] minus the real rationals and the measure 2 times Lebesgue measure pulled back to C: Borel measurability, measure 1/2, probability normalization, measurable inclusion, literal range, the stipulated Density, uncountability of the real set and subtype, and exclusion of every [a,b] with a<b are all checked.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T33",
+    "theorem": "SAP.P001b.T33",
+    "fingerprint": "ad57ecde500b3d035acf0e3fc29e985e956da8f6d74bd0aaa6d38147a02603d1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully without importing Challenge and independently proves the full arbitrary-type equivalence. It also checks a nonempty instance with Omega=R, X=id, g(x)=x^2 and h(x)=x*x. There are no hypotheses to make inconsistent; empty domains have the correctly vacuous equivalence on both sides and do not trivialize the universal assertion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T34",
+    "theorem": "SAP.P001b.T34",
+    "fingerprint": "b1290d70744ecce95b31d667a2fcf6e80b3f5b02b0c56c9811828730a5aa8494",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully without importing Challenge and independently proves every conjunct of T34Statement. It additionally constructs the genuine probability law given by planar Lebesgue measure restricted to (0,1) times (-1,0), and proves that negativeRectangleDensity satisfies JointCDFDensity for it. The coordinate projections are Borel measurable, the printed event has mass one, and every inner integral over [0,x] is genuinely zero; hence all printed conditions hold and the two finite quantities differ. See claim-checks.md for the explicit condition-by-condition refutation audit.",
+    "confidence": 0.99
+  }
+]

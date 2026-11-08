@@ -1,0 +1,22 @@
+[
+ {
+  "theorem": "SAP.P010.T7",
+  "target_id": "P010-T7",
+  "round": 6,
+  "verdict": "label_wrong",
+  "severity": "minor",
+  "issues": [
+   "record.json:21: The decision is \"refuted\", but the canonical assertion at claims.json:39 is the explicit four-state counterexample, including clauses (a)-(f). SAP/P010/Defs/Part6.lean:92 proves that same counterexample. It refutes the quoted printed joint-independence step, not the canonical counterexample assertion. Under the requested canonical-relative definition of \"refuted\", the decision must be \"whole\"."
+  ]
+ },
+ {
+  "theorem": "SAP.P010.T9",
+  "target_id": "P010-T9",
+  "round": 6,
+  "verdict": "label_wrong",
+  "severity": "minor",
+  "issues": [
+   "record.json:45: The decision is \"refuted\", but the canonical assertion at claims.json:67 is the explicit pair of simulation designs with different passer laws and strictly separated widths. SAP/P010/Defs/Part6.lean:104 proves those assertions, rather than contradicting them. The printed width-invariance sentence is refuted; the canonical counterexample is established. Under the requested labeling rule, the decision must be \"whole\"."
+  ]
+ }
+]

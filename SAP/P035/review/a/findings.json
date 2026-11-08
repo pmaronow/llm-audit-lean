@@ -1,0 +1,32 @@
+[
+  {
+    "target_id": "P035-T1",
+    "theorem": "SAP.P035.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem is unconditional. Its explicit D and C have latent supports {1,...,6555}, {1,...,41605}, and {1,...,7104}; every year and arm has strictly positive design mass. scratch/Check.lean compiles proofs of positive support sizes and masses, all reduced-denominator LCM identities, both models' calibration to all six frequencies, pointwise campaign-present equality, D's zero individual campaign effects, C's exact positive campaign means, and failure of campaign identification. In particular the calibrated model class is inhabited by two models with different effects. Independent exact rational arithmetic verifies the threshold ordering, calibration ratios, normalized independent design, and assigned-condition campaign effect 83755728/5240292055 > 0 in C against 0 in D. All means and counts range over the finite supports; no zero denominator, empty domain, or truncated threshold difference supplies the result.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P035-T2",
+    "theorem": "SAP.P035.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take U=D and V=C on the fixed independent finite design. The complete T2Statement is proved without sorry in scratch/Check.lean, importing only SAP.P035.Defs. Both models are calibrated and have equal observed laws; U has zero individual campaign effects; V has yearly campaign means 326/6555, 699/41605, and 449/7104, each strictly positive and equal to its porch contrast, and equal individual porch outcomes when the campaign is absent. Positive design masses and nonempty latent supports are also proved. No external premise is assumed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P035-T3",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: this target is printed empirical prose, marked no_lean in claims.json, and there is no associated Lean theorem. D and C exhibit different campaign effects compatible with the supplied observations; this refutes determination by the observations but settles neither the actual campaign attribution nor its negation. The formal nonidentification content is already covered by T1 and T2.",
+    "confidence": "high"
+  }
+]

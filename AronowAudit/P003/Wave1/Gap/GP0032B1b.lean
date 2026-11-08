@@ -1,6 +1,6 @@
 import AronowAudit.P003.Wave1.Gap.GLP0032B6
 
-/-! P003-T34: balanced Monte Carlo coverage and approximation. -/
+/-! Record P003-T34: balanced Monte Carlo coverage and approximation. -/
 
 namespace AronowAudit.P003.Wave1
 
@@ -9,7 +9,7 @@ attribute [local instance 0] Classical.propDecidable
 set_option maxRecDepth 100000
 set_option maxHeartbeats 6000000
 
-/-! ## Coverage arithmetic and probability helpers -/
+/-! ## Record 3: coverage arithmetic and probability helpers -/
 
 /-- Inversion of the recommended Monte Carlo sample-size inequality. -/
 theorem GP0032B1b_recommended_K_tail_inversion (C ε : ℝ) (K : ℕ)
@@ -148,7 +148,7 @@ theorem GP0032B1b_possible_of_effect (o : Counts) (x : ℤ)
     omega
 
 /-- An actual candidate is present at every query in the balanced upper domain.
-The corrected general loop supplies a candidate; no p-value theorem is used. -/
+The proved corrected general loop supplies firstOnLine; no p-value theorem is used. -/
 theorem GP0032B1b_candidates_nonempty (o : Counts)
     (ho : 0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) (x : ℤ)
     (hlo : 2*((o.a : ℤ)-o.c) ≤ x)
@@ -310,7 +310,7 @@ theorem GP0032B1b_uniformProb_inter_lower {Ω : Type*} [Fintype Ω] [Nonempty Ω
     congr 3 <;> ext ω <;> simp
 
 
-/-! Deterministic canonical observation helpers. -/
+/-! Deterministic canonical observation helpers adapted from GP0031B1. -/
 
 lemma GP0032B1b_segment_card (n a b : ℕ) (h : a+b ≤ n) :
     (Finset.univ.filter (fun i : Fin n => a ≤ i.val ∧ i.val < a+b)).card = b := by
@@ -608,5 +608,7 @@ theorem balanced_monte_coverage_proof (v : Counts) (m K : ℕ) (α ε : ℝ)
     have hlevel : α-ε-2*ε = α-3*ε := by ring
     rw [hlevel] at hout
     linarith
+
+example : type_of% @AronowAudit.P003.balanced_monte_coverage := balanced_monte_coverage_proof
 
 end AronowAudit.P003.Wave1

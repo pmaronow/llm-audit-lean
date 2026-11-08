@@ -1,0 +1,20 @@
+[
+  {
+    "theorem": "SAP.P008b.T26",
+    "target_id": "P008-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "The first conjunct states every implication in canonical part (a), for every finite design, every coordinate metric, all field points, and every circle/AMR where the quantities exist. The measurable positive finite-mass integrability guards are ordinary existence conditions, not substantive restrictions. The concrete one-node, three-point counting-measure model establishes canonical part (b): valid circles at radii 0 and 1, zero AMR at every valid radius, and a treatment-induced outcome change at coordinate (1,0). Both parts were checked independently. Replacement-based finite marginalization agrees with the unconditional marginal law of Z_-i in S3 and covers the arguments required by S9(ii). The AMR requires positive N; no undefined empty-node mean is used. Compiled scratch/SpatialChecks.lean constructs a genuine sharp-null instance and independently proves validity, zero AMRs for all valid radii, and non-nullness of the cancellation witness."
+  },
+  {
+    "theorem": "SAP.P008b.T27",
+    "target_id": "P008-T27",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both canonical additive parts are present: point effects identify every coefficient for every design, individual node effects are circle averages, and the AMR averages these coefficients; for a shared radial coefficient the point, circle, and AMR identities all hold. Quantification over arbitrary selectors includes every metric of S4 and therefore drops no permitted metric. An arbitrary base equals Y_x(0) on the field by substituting the all-false assignment into the additive hypothesis. A function on [0,infinity) can be extended to R without changing any metric-distance argument, so the real-domain radial parameter is harmless. The local positive finite-mass, concentration, and integrability guards express genuine circle-average existence and are automatic under the usual measurable setting; they do not assume the conclusions. Positive N guards every AMR assertion. Compiled scratch/SpatialChecks.lean constructs a measurable one-node field with a Dirac circle measure, baseline 2, nonzero coefficient 3, and every hypothesis of both additive and radial assertions."
+  },
+  {
+    "theorem": "SAP.P008b.T28",
+    "target_id": "P008-T28",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The statement exactly renders the canonical audit-derived sufficient consistency version: a sequence with N=n+1, fixed p in (0,1), a finite uniform outcome bound H, a fixed maximum collection-dependency degree D for the pairs (Z_i,M_i(Z)), the replacement-defined AMR target, any fixed real empty-arm completion, and convergence in probability of estimation error. The graph hypothesis is independence of separated collections, as defined canonically, not merely pairwise independence. It does not state consistency under the unspecified full conditions of the cited theorem, standardized asymptotic normality, or type-I-error conservativeness of spatial-HAC intervals. These omissions are all explicitly described in the Challenge docstring. Compiled scratch/ProbabilityChecks.lean constructs all hypotheses for every n using uniform independent fair assignment, M_n(i,z)=bit(z_i), H=1, D=0, and any fixed completion; the target AMR is independently proved to be 1."
+  }
+]

@@ -1,0 +1,369 @@
+import SAP.P002b.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 2000
+set_option maxHeartbeats 1000000
+open scoped BigOperators ENNReal Matrix
+open SAP.P002b
+
+namespace Review
+noncomputable section
+attribute [local instance] Classical.propDecidable
+
+def px : Fin 4 → Fin 1 → ℝ := fun i _ => if i.val < 2 then -1 else 1
+def signal : Fin 4 → ℝ := ![-1, 1, -1, 1]
+def P : CovPopulation 4 1 where
+  pop := {y := fun i _ => signal i, d := fun _ a => a, n1 := 2}
+  x := px
+
+lemma P_valid : ValidDesign P.pop := by norm_num [P, ValidDesign]
+lemma P_mono : MonotoneReceipt P.pop := by simp [P, MonotoneReceipt]
+lemma P_compliers : (compliers P.pop).Nonempty := by
+  exact ⟨0, by simp [P, compliers]⟩
+lemma P_late : late P.pop = 0 := by simp [late, P, groupMean]
+
+lemma population_gram : gram px Finset.univ = 1 := by
+  ext a b
+  fin_cases a <;> fin_cases b <;>
+    norm_num [gram, groupMean, augmented, px, Fin.sum_univ_succ, Matrix.one_apply]
+
+lemma population_score : score px Finset.univ signal = 0 := by
+  ext a
+  fin_cases a <;>
+    norm_num [score, groupMean, augmented, px, signal, Fin.sum_univ_succ]
+
+lemma P_residual (a : Bool) : residual P a (late P.pop) = signal := by
+  have hw : w P.pop a (late P.pop) = signal := by
+    ext i
+    rw [P_late]
+    simp [w, P]
+  have hp : psi P a (late P.pop) = 0 := by
+    change ols px Finset.univ (w P.pop a (late P.pop)) = 0
+    rw [hw]
+    simp [ols, population_gram, population_score]
+  ext i
+  simp only [SAP.P002b.residual, hp, dotProduct_zero, sub_zero]
+  exact congrFun hw i
+
+lemma signal_moments : mean (fun i => signal i ^ 4) = 1 ∧
+    popVar signal = 4/3 ∧ popCov signal signal = 4/3 := by
+  norm_num [mean, popVar, popCov, signal, Fin.sum_univ_succ]
+
+lemma P_Xi : Xi P 0 1 1 1 (1/2) := by
+  refine ⟨P_valid, P_mono, P_compliers, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [P]
+  · norm_num [P]
+  · rw [P_residual, P_residual, signal_moments.2.2]
+    norm_num
+  · intro a
+    rw [P_residual, fourthNorm, signal_moments.1, signal_moments.2.1]
+    simp only [one_mul, Real.sqrt_one]
+    nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ 4/3 by norm_num), Real.sqrt_nonneg (4/3)]
+  · intro s
+    fin_cases s
+    norm_num [P, px, Fin.sum_univ_succ]
+  · intro s
+    fin_cases s
+    norm_num [mean, P, px, Fin.sum_univ_succ]
+  · intro b
+    norm_num [mean, normSq, dotProduct, P, px, Fin.sum_univ_succ]
+
+-- T21: all constants, the model, and a strictly positive residual variance.
+theorem T21_nonvacuity : 0 < (1 : ℕ) ∧ (0 : ℝ) < 1 ∧ (0 : ℝ) < 1 ∧
+    (0 : ℝ) < 1 ∧ (0 : ℝ) < 1 ∧
+    (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) ≤ 1/2) ∧
+    (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    Xi P 0 1 1 1 (1/2) ∧ late P.pop = 0 ∧
+    0 < popVar (residual P true (late P.pop)) := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num, by norm_num,
+    ⟨by norm_num, by norm_num⟩, ⟨by norm_num, by norm_num⟩,
+    P_Xi, P_late, ?_⟩
+  rw [P_residual, signal_moments.2.1]
+  norm_num
+
+def S : Finset (Fin 4) := {0, 2}
+
+lemma S_assignment : S ∈ assignments P.pop := by
+  simp [S, assignments, P, Finset.mem_powersetCard]
+
+lemma arm_gram : gram px S = 1 ∧ gram px Sᶜ = 1 := by
+  have hc : Sᶜ = ({1, 3} : Finset (Fin 4)) := by decide
+  constructor
+  · ext a b
+    fin_cases a <;> fin_cases b <;>
+      norm_num [gram, groupMean, augmented, px, S, Fin.sum_univ_succ, Matrix.one_apply]
+  · rw [hc]
+    ext a b
+    fin_cases a <;> fin_cases b <;>
+      norm_num [gram, groupMean, augmented, px, Fin.sum_univ_succ, Matrix.one_apply]
+
+-- T24: positive dimension and full rank in both arms.
+theorem T24_nonvacuity : ValidDesign P.pop ∧ S ∈ assignments P.pop ∧
+    (gram P.x S).det ≠ 0 ∧ (gram P.x Sᶜ).det ≠ 0 := by
+  refine ⟨P_valid, S_assignment, ?_, ?_⟩
+  · change (gram px S).det ≠ 0
+    simp [arm_gram.1]
+  · change (gram px Sᶜ).det ≠ 0
+    simp [arm_gram.2]
+
+def Padd : CovPopulation 4 1 where
+  pop := {
+    y := fun i a => signal i + (if a then 2 else 0)
+    d := fun _ a => a
+    n1 := 2 }
+  x := px
+
+-- T25: all printed hypotheses with a nonzero effect and positive dimension.
+theorem T25_nonvacuity : ValidDesign Padd.pop ∧ MonotoneReceipt Padd.pop ∧
+    (compliers Padd.pop).Nonempty ∧
+    (∀ i, Padd.pop.y i true = Padd.pop.y i false + 2) := by
+  refine ⟨by norm_num [ValidDesign, Padd], by simp [MonotoneReceipt, Padd],
+    ⟨0, by simp [compliers, Padd]⟩, ?_⟩
+  intro i
+  simp [Padd]
+
+theorem T25_recovery (R : Finset (Fin 4)) : observedW Padd.pop 2 R = signal := by
+  ext i
+  by_cases hi : i ∈ R <;>
+    simp [observedW, observedY, observedD, Padd, binary, hi]
+
+def Qzero : QuadraticAR := ⟨0, 0, 0, 0, 0, 1⟩
+def Qsquare : QuadraticAR := ⟨1, 0, 0, 0, 0, 1⟩
+def Qfamily (m : Fin 2) : QuadraticAR := if m = 0 then Qsquare else Qzero
+def gs (m : Fin 2) (b : ℝ) : ℝ := if m = 0 then b^2 else 0
+
+lemma gs_eq : (fun m => arFunction (Qfamily m)) = gs := by
+  ext m b
+  fin_cases m <;> simp [gs, Qfamily, Qsquare, Qzero, arFunction]
+
+lemma Qregular : ARRegular Qsquare ∧ (∀ m, ARRegular (Qfamily m)) := by
+  have hs : ARRegular Qsquare := by
+    constructor
+    · intro b; norm_num [Qsquare]
+    · intro b; simpa [Qsquare] using sq_nonneg b
+  refine ⟨hs, ?_⟩
+  intro m
+  fin_cases m
+  · simpa [Qfamily] using hs
+  · constructor <;> intro b <;> norm_num [Qfamily, Qzero]
+
+lemma gs_crossing (b : ℝ) : crossing gs b ↔ b = 0 := by
+  constructor
+  · rintro ⟨s, t, hne, he⟩
+    fin_cases s <;> fin_cases t
+    · exact False.elim (hne rfl)
+    · simpa [gs, sq_eq_zero_iff] using he
+    · have hb2 : b ^ 2 = 0 := by simpa [gs] using he.symm
+      exact (sq_eq_zero_iff).mp hb2
+    · exact False.elim (hne rfl)
+  · intro hb
+    subst b
+    refine ⟨0, 1, ?_, by norm_num [gs]⟩
+    intro h
+    have h1 := congrFun h 1
+    norm_num [gs] at h1
+
+lemma gs_intersections : IntersectionList gs [0] := by
+  constructor
+  · simp
+  · intro b
+    simp [gs_crossing]
+
+lemma gs_quantile (b : ℝ) : mcCritical gs (1/2) b = 0 := by
+  let C := (Finset.univ.image (fun m : Fin 2 => Real.sqrt (gs m b))).filter fun q =>
+    (1-(1/2 : ℝ))*(2 : ℝ) ≤
+      ((Finset.univ.filter (fun m => Real.sqrt (gs m b) ≤ q)).card : ℝ)
+  have hz : 0 ∈ C := by
+    dsimp [C]
+    apply Finset.mem_filter.mpr
+    constructor
+    · exact Finset.mem_image.mpr ⟨1, Finset.mem_univ _, by norm_num [gs]⟩
+    · have hm : (1 : Fin 2) ∈ Finset.univ.filter (fun m => Real.sqrt (gs m b) ≤ 0) := by
+        apply Finset.mem_filter.mpr
+        exact ⟨Finset.mem_univ _, by norm_num [gs]⟩
+      have hc := Finset.card_pos.mpr ⟨1, hm⟩
+      have hc' : 1 ≤ (Finset.univ.filter (fun m : Fin 2 => Real.sqrt (gs m b) ≤ 0)).card :=
+        Nat.succ_le_of_lt hc
+      calc
+        (1-(1/2 : ℝ))*(2 : ℝ) = 1 := by norm_num
+        _ ≤ _ := by exact_mod_cast hc'
+  have hne : C.Nonempty := ⟨0, hz⟩
+  have hnonneg : ∀ q ∈ C, (0 : ℝ) ≤ q := by
+    intro q hq
+    obtain ⟨m, _, rfl⟩ := Finset.mem_image.mp (Finset.mem_filter.mp hq).1
+    exact Real.sqrt_nonneg _
+  change (if h : C.Nonempty then C.min' h else 0) = 0
+  rw [dite_eq_left hne]
+  exact le_antisymm (Finset.min'_le C 0 hz) (hnonneg _ (Finset.min'_mem C hne))
+
+lemma gs_index (b : ℝ) : (1 : Fin 2) ∈ mcIndices gs (1/2) b := by
+  apply Finset.mem_filter.mpr
+  exact ⟨Finset.mem_univ _, by rw [gs_quantile]; norm_num [gs]⟩
+
+-- T22: regular curves, a genuine nonempty crossing list and an admissible policy.
+theorem T22_nonvacuity : 0 < (2 : ℕ) ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    ARRegular Qsquare ∧ (∀ m, ARRegular (Qfamily m)) ∧
+    IntersectionList (fun m => arFunction (Qfamily m)) [0] ∧
+    ([0] : List ℝ) ≠ [] ∧
+    AdmissibleIndexPolicy (fun m => arFunction (Qfamily m)) (1/2)
+      (fun _ _ => 1) := by
+  refine ⟨by norm_num, ⟨by norm_num, by norm_num⟩, Qregular.1, Qregular.2,
+    ?_, by simp, ?_⟩
+  · rw [gs_eq]
+    exact gs_intersections
+  · rw [gs_eq]
+    intro history b
+    exact gs_index b
+
+def rawSignal : Fin 4 → ℝ := ![1, -1, -1, 1]
+def Praw : CovPopulation 4 1 where
+  pop := {y := fun i _ => rawSignal i, d := fun _ a => a, n1 := 2}
+  x := px
+def Oraw : Finset (Fin 4) := {0, 1}
+def Traw (m : Fin 2) : Finset (Fin 4) := if m = 0 then Oraw else S
+def RQ0 : QuadraticAR := ⟨1/16, 0, 0, 0, 0, 1/16⟩
+def RQ1 : QuadraticAR := ⟨0, 0, 0, 1/64, 0, 1/16⟩
+def RQg (m : Fin 2) : QuadraticAR := if m = 0 then RQ0 else RQ1
+
+lemma raw_coeff0 : RQ0 = dataCoefficients Praw false Oraw Oraw := by
+  have hc : Orawᶜ = ({2, 3} : Finset (Fin 4)) := by decide
+  have hd : (fun i => binary (observedD Praw.pop Oraw i)) = ![(1 : ℝ), 1, 0, 0] := by
+    ext i
+    fin_cases i <;> norm_num [binary, observedD, Praw, Oraw]
+  change RQ0 = rawCoefficients Praw.pop rawSignal
+    (fun i => binary (observedD Praw.pop Oraw i)) Oraw
+  rw [hd]
+  dsimp only [RQ0, rawCoefficients, rawTau, rawSigma2, rawVarianceCross,
+    fraction, controlSize, armMean, groupMean]
+  simp only [hc]
+  simp only [Fin.sum_univ_succ]
+  congr 1 <;>
+    norm_num [Praw, Oraw, rawSignal, Fin.sum_univ_succ]
+
+lemma raw_coeff1 : RQ1 = dataCoefficients Praw false Oraw S := by
+  have hc : Sᶜ = ({1, 3} : Finset (Fin 4)) := by decide
+  have hd : (fun i => binary (observedD Praw.pop Oraw i)) = ![(1 : ℝ), 1, 0, 0] := by
+    ext i
+    fin_cases i <;> norm_num [binary, observedD, Praw, Oraw]
+  change RQ1 = rawCoefficients Praw.pop rawSignal
+    (fun i => binary (observedD Praw.pop Oraw i)) S
+  rw [hd]
+  dsimp only [RQ1, rawCoefficients, rawTau, rawSigma2, rawVarianceCross,
+    fraction, controlSize, armMean, groupMean]
+  simp only [hc]
+  simp only [Fin.sum_univ_succ]
+  congr 1 <;>
+    norm_num [Praw, S, rawSignal, Fin.sum_univ_succ]
+
+lemma raw_generated : DataGeneratedCoefficients RQ0 RQg := by
+  refine ⟨4, 1, Praw, false, Oraw, Traw, ?_, ?_, ?_, ?_, ?_, ?_, raw_coeff0, ?_⟩
+  · norm_num [ValidDesign, Praw]
+  · simp [MonotoneReceipt, Praw]
+  · exact ⟨0, by simp [compliers, Praw]⟩
+  · simp [assignments, Oraw, Praw, Finset.mem_powersetCard]
+  · intro m
+    fin_cases m <;> simp [Traw, Oraw, S, assignments, Praw, Finset.mem_powersetCard]
+  · simp
+  · intro m
+    fin_cases m
+    · simpa [RQg, Traw] using raw_coeff0
+    · simpa [RQg, Traw] using raw_coeff1
+
+lemma raw_regular : ARRegular RQ0 ∧ (∀ m, ARRegular (RQg m)) := by
+  constructor
+  · constructor
+    · intro b; norm_num [RQ0]
+    · intro b
+      dsimp [RQ0]
+      nlinarith [sq_nonneg b]
+  · intro m
+    fin_cases m <;> constructor <;> intro b <;> dsimp [RQg, RQ0, RQ1]
+    · norm_num
+    · nlinarith [sq_nonneg b]
+    · nlinarith [sq_nonneg b]
+    · norm_num
+
+lemma raw_curves : (fun m => arFunction (RQg m)) = gs := by
+  ext m b
+  fin_cases m <;> dsimp [RQg, RQ0, RQ1, arFunction, gs] <;> ring
+
+def rawPieces : List (RecordedPiece 2) := [⟨⊥, 0, 1⟩, ⟨0, ⊤, 1⟩]
+
+lemma raw_algorithm1 : Algorithm1Run gs (1/2) [0] rawPieces := by
+  refine ⟨gs_intersections, ?_, ?_⟩
+  · simp [rawPieces, gapEndpoints]
+  · intro p hp
+    simp only [rawPieces, List.mem_cons, List.not_mem_nil, or_false] at hp
+    rcases hp with rfl | rfl <;> exact gs_index _
+
+lemma gs_meets (b : ℝ) : (∃ m, gs m ≠ gs 1 ∧ gs m b = gs 1 b) ↔ b = 0 := by
+  constructor
+  · rintro ⟨m, hn, he⟩
+    exact (gs_crossing b).mp ⟨m, 1, hn, he⟩
+  · intro hb
+    subst b
+    refine ⟨0, ?_, by norm_num [gs]⟩
+    intro h
+    have h1 := congrFun h 1
+    norm_num [gs] at h1
+
+lemma raw_algorithm2 : Algorithm2Run gs (1/2) [0] rawPieces := by
+  refine ⟨gs_intersections, by simp, by simp [rawPieces], ?_, ?_⟩
+  · intro p hp
+    simp only [rawPieces, List.head?_cons, Option.some.injEq] at hp
+    subst p
+    exact ⟨rfl, gs_index _⟩
+  · intro i
+    fin_cases i
+    · change Algorithm2Step gs (1/2) [0] ⟨⊥, 0, 1⟩ (some ⟨0, ⊤, 1⟩)
+      dsimp only [Algorithm2Step]
+      simp only [gs_meets]
+      simp [IsLeast, lowerBounds]
+      simpa only [one_div] using gs_index (1 : ℝ)
+    · change Algorithm2Step gs (1/2) [0] ⟨0, ⊤, 1⟩ none
+      dsimp only [Algorithm2Step]
+      simp only [gs_meets]
+      simp [Set.Nonempty]
+
+-- A completed two-iteration policy execution, not an appeal to the target theorem.
+theorem T22_completed : PolicyAlgorithm2Run gs (1/2) [0] (fun _ _ => 1) rawPieces := by
+  refine ⟨raw_algorithm2, ?_⟩
+  intro i
+  fin_cases i <;> rfl
+
+def receiptS : Fin 4 → ℝ := ![1, 0, 1, 0]
+lemma T24_denominator : adjustedTau P receiptS S = 1 := by
+  have hc : Sᶜ = ({1, 3} : Finset (Fin 4)) := by decide
+  change adjustedWith P receiptS S (ols px S receiptS) (ols px Sᶜ receiptS) = 1
+  simp only [ols, arm_gram.1, arm_gram.2, Matrix.det_one, inv_one, Matrix.one_mulVec]
+  dsimp only [adjustedWith, slopeDot, score, groupMean]
+  simp only [hc, Fin.sum_univ_succ]
+  norm_num [P, px, augmented, receiptS, S]
+
+-- T23: all generating-data, regularity, crossing-list and actual-run hypotheses.
+theorem T23_nonvacuity : 0 < (2 : ℕ) ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    DataGeneratedCoefficients RQ0 RQg ∧ ARRegular RQ0 ∧
+    (∀ m, ARRegular (RQg m)) ∧ ([0] : List ℝ) ≠ [] ∧
+    Algorithm1Run (fun m => arFunction (RQg m)) (1/2) [0] rawPieces := by
+  refine ⟨by norm_num, ⟨by norm_num, by norm_num⟩, raw_generated,
+    raw_regular.1, raw_regular.2, by simp, ?_⟩
+  rw [raw_curves]
+  exact raw_algorithm1
+
+#print axioms P_Xi
+#print axioms raw_generated
+#print axioms raw_algorithm1
+#print axioms raw_regular
+#print axioms arm_gram
+#print axioms raw_algorithm2
+#print axioms T24_denominator
+#print axioms T21_nonvacuity
+#print axioms T22_nonvacuity
+#print axioms T22_completed
+#print axioms T23_nonvacuity
+#print axioms T24_nonvacuity
+#print axioms T25_nonvacuity
+#print axioms T25_recovery
+
+end
+end Review

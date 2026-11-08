@@ -9,6 +9,8 @@ import Mathlib.Data.Nat.Choose.Sum
 
 /-!
 Corrected finite-cell results and covariance order.
+Finite pattern helpers are reused from GP019B4b; the nested-subset
+counting proof is adapted from P046/Wave1/Gap/GP046B1.
 -/
 
 namespace AronowAudit.P019.Wave1
@@ -27,6 +29,14 @@ open Classical
 
 variable {Ω : Type*} [Fintype Ω]
 
+private theorem ccl_ce_sub (P : FiniteLaw Ω) (f g : Ω → ℝ)
+    (D : Ω → Prop) [DecidablePred D] :
+    P.ce (fun s => f s - g s) D = P.ce f D - P.ce g D := by
+  unfold FiniteLaw.ce
+  have he : (fun s => if D s then f s-g s else 0) =
+      (fun s => (if D s then f s else 0)-(if D s then g s else 0)) := by
+    funext s; split_ifs <;> simp
+  rw [he, mean_sub, sub_div]
 
 private theorem ccl_ce_sum {ι : Type*} [Fintype ι] (P : FiniteLaw Ω)
     (f : ι → Ω → ℝ) (D : Ω → Prop) [DecidablePred D] :
@@ -425,7 +435,7 @@ private theorem ccl_iid_labels {Λ : Type*} [Fintype Λ] [DecidableEq Λ] (P : F
   rw [mean_const_mul, iid_mean_prod P n (fun i ω => if L ω=l i then v i ω else 0)]
 
 
-/- Nested-subset enumeration. -/
+/- Nested-subset enumeration, adapted from the proved GP046B1 module. -/
 private def ccl_lower {n : ℕ} (c : Fin n → Fin 3) : Finset (Fin n) :=
   Finset.univ.filter (fun i => c i ≠ 2)
 private def ccl_success {n : ℕ} (c : Fin n → Fin 3) : Finset (Fin n) :=
@@ -764,6 +774,8 @@ theorem corrected_cell_lemmas_proof (S : Study Ω) (hs : S.standing) (n : ℕ) (
       simp
   · intro z
     exact ccl_A_covariance S hs n hn z (if z then c1 else c0)
+
+example : type_of% @AronowAudit.P019.corrected_cell_lemmas := corrected_cell_lemmas_proof
 
 /- Covariance order: finite-product tails, L² reciprocal remainders,
    polarization, and exponentially small occupied-conditioning errors. -/
@@ -1354,6 +1366,9 @@ theorem corrected_covariance_order_proof (S : Study Ω) (hs : S.standing) :
   apply (le_div_iff₀ (sq_pos_of_pos hn0)).2
   rw [abs_mul,abs_of_nonneg (sq_nonneg (n : ℝ))] at hh
   nlinarith only [hh]
+
+
+example : type_of% @AronowAudit.P019.corrected_covariance_order := corrected_covariance_order_proof
 
 
 end

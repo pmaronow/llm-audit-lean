@@ -25,7 +25,7 @@ open AronowAudit.P004 MeasureTheory Filter
 open AronowAudit.P004.Wave1.DesignLimits
 open scoped BigOperators
 
-/-- The second-moment estimate for the localization error. -/
+/-- The exact localization error estimate in the frozen blueprint. -/
 theorem locerr_proof : LOCERR := by
   classical
   unfold LOCERR

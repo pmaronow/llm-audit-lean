@@ -1,0 +1,74 @@
+import SAP.P022.Defs
+import SAP.P022.Defs.WholeW1
+
+open SAP.P022
+open scoped BigOperators Topology
+noncomputable section
+
+lemma knots22 : partitionKnots 2 2 = [0, 1 / 2, 1] := by
+  have hn : ([0, 1 / 2, 1] : List ℝ).Nodup := by norm_num
+  have hp : ([0, 1 / 2, 1] : List ℝ).Pairwise (· ≤ ·) := by norm_num
+  have hs := (List.toFinset_sort (r := (· ≤ ·)) hn).mpr hp
+  convert hs using 2 <;> norm_num [partitionKnots, Finset.range_add_one]
+  apply congrArg (fun s : Finset ℝ => s.sort (· ≤ ·))
+  ext x
+  simp only [Finset.mem_insert, Finset.mem_singleton]
+  tauto
+
+-- The general discrepancy and translation hypotheses have a genuine instance.
+example : 2 ≤ (2 : ℕ) ∧ 2 + 2 ≤ (4 : ℕ) ∧
+    ∀ r < partitionCells 2 2, 2 * codeEpsilon < cellWidth 2 2 r := by
+  norm_num [partitionCells, cellWidth, partitionPoint, knots22, codeEpsilon]
+  intro r hr
+  interval_cases r <;> norm_num
+
+lemma ones_order (r : ℕ) (hr : r = 1 ∨ r = 2) :
+    orderStatistic (fun _ : Fin 2 => (1 : ℝ)) r = 1 := by
+  rcases hr with rfl | rfl <;>
+    norm_num [orderStatistic, sortedOutcomes, List.ofFn_succ, List.mergeSort]
+
+-- Independently reduce the actual code expression, without a Challenge theorem.
+example (B : BoundSide) : printedCodeBound 4
+    (fun _ : Fin 2 => (1 : ℝ)) (fun _ : Fin 2 => (1 : ℝ)) B =
+    -(1 / 50331648 : ℝ) := by
+  cases B <;>
+    norm_num [printedCodeBound, varianceExpression, marginalVarianceEstimate,
+      sampleVariance, finiteMean, Fintype.expect_const, partitionCells,
+      codePoint, codeEpsilon, partitionPoint, knots22, Finset.sum_range_succ,
+      empiricalQuantile, orderStatistic, sortedOutcomes, List.ofFn_succ, List.mergeSort,
+      Nat.ceil_eq_iff]
+
+lemma ones_quantile (u : ℝ) (hu : u ∈ Set.Icc (0 : ℝ) 1) :
+    empiricalQuantile (fun _ : Fin 2 => (1 : ℝ)) u = 1 := by
+  have hr : Nat.ceil ((2 : ℝ) * u) ≤ 2 := by
+    rw [Nat.ceil_le]
+    norm_num
+    linarith [hu.2]
+  unfold empiricalQuantile
+  norm_num only [Nat.cast_ofNat]
+  interval_cases h : Nat.ceil ((2 : ℝ) * u) <;>
+    norm_num [orderStatistic, sortedOutcomes, List.ofFn_succ, List.mergeSort]
+
+lemma ones_covariance (B : BoundSide) :
+    sharpCovariance (fun _ : Fin 2 => (1 : ℝ)) (fun _ : Fin 2 => (1 : ℝ)) B = 0 := by
+  have hi : (∫ u in (0 : ℝ)..1,
+      empiricalQuantile (fun _ : Fin 2 => (1 : ℝ)) u *
+      empiricalQuantile (fun _ : Fin 2 => (1 : ℝ)) (if B = .H then u else 1 - u)) = 1 := by
+    calc
+      _ = ∫ _u in (0 : ℝ)..1, (1 : ℝ) := by
+        apply intervalIntegral.integral_congr
+        intro u hu
+        have hu' : u ∈ Set.Icc (0 : ℝ) 1 := by simpa using hu
+        have hv : (if B = .H then u else 1 - u) ∈ Set.Icc (0 : ℝ) 1 := by
+          split_ifs <;> constructor <;> linarith [hu'.1, hu'.2]
+        dsimp only
+        rw [ones_quantile u hu', ones_quantile _ hv, mul_one]
+      _ = 1 := by norm_num
+  unfold sharpCovariance
+  rw [hi]
+  simp [finiteMean, Fintype.expect_const]
+
+example (B : BoundSide) : estimateBound 4
+    (fun _ : Fin 2 => (1 : ℝ)) (fun _ : Fin 2 => (1 : ℝ)) B = 0 := by
+  simp [estimateBound, varianceExpression, marginalVarianceEstimate,
+    sampleVariance, finiteMean, Fintype.expect_const, ones_covariance]

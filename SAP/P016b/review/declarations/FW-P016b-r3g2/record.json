@@ -1,0 +1,85 @@
+[
+ {
+  "target_id": "P016-T17",
+  "decision": "whole",
+  "theorem": "SAP.P016b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t17_adjusted_comparison",
+   "AronowAudit.P016.t17_comparison_witness"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016b.T17Statement",
+  "supporting_declarations": []
+ },
+ {
+  "target_id": "P016-T18",
+  "decision": "whole",
+  "theorem": "SAP.P016b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t18_calibration_witness"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016b.T18Statement",
+  "supporting_declarations": [
+   "AronowAudit.P016.t19_median_nonneg"
+  ]
+ },
+ {
+  "target_id": "P016-T19",
+  "decision": "restricted",
+  "theorem": "SAP.P016b.T19",
+  "restriction": "Retain mathematical clauses (a)-(f). Omit the empirical Normal-versus-Jittered-Geometric power ordering and all simulation-specific numerical powers (including the four quoted in the repair), the assertion that the actual simulation's two hypotheses have unequal expected adjusted mean shifts, its sample-mean approximation 10.069, and its matched-parameter approximation 1.035312 in the canonical statement and definitions_needed. The constructed witness in (f) asserts no property of that simulated dataset.",
+  "rows_used": [
+   "AronowAudit.P016.t18_calibration_witness",
+   "AronowAudit.P016.t19_calibration_roots",
+   "AronowAudit.P016.t19_discrepancy_formula",
+   "AronowAudit.P016.t19_expected_reductions",
+   "AronowAudit.P016.t19_matched_parameter",
+   "AronowAudit.P016.t19_mean_reductions",
+   "AronowAudit.P016.t19_median_identity",
+   "AronowAudit.P016.t19_mismatch_numbers",
+   "AronowAudit.P016.t19_root_discrepancies"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P016.t19_median_nonneg",
+    "reason": "The calibration-roots declaration already includes global nonnegativity for clause (c); this row is used separately to certify the minimum in T18."
+   }
+  ],
+  "statement_definition": "SAP.P016b.T19Statement",
+  "supporting_declarations": [],
+  "scope_note": "The governing claim is the canonical statement with definitions_needed and standing assumptions; the note adds no clauses and removes none (revision 2, What the claim is; revise-ref2.md:23). The nonzero multiplier in inverse-adjustment comparisons (d)-(e) is their existing domain condition. Positive half-size excludes undefined medians and empty treated minima. Recomputed powers and a revised calibration objective are recommendations, not conclusions asserted here."
+ },
+ {
+  "target_id": "P016-T20",
+  "decision": "whole",
+  "theorem": "SAP.P016b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t20_additive_identity",
+   "AronowAudit.P016.t20_model_composition",
+   "AronowAudit.P016.t20_model_positive",
+   "AronowAudit.P016.t20_model_uniformity",
+   "AronowAudit.P016.t20_zero_assignment",
+   "AronowAudit.P016.t8_additive_mapping"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016b.T20Statement",
+  "supporting_declarations": []
+ },
+ {
+  "target_id": "P016-T21",
+  "decision": "whole",
+  "theorem": "SAP.P016b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t21_exact_level",
+   "AronowAudit.P016.t21_sampled_level"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016b.T21Statement",
+  "supporting_declarations": []
+ }
+]

@@ -1,0 +1,24 @@
+import SAP.P018a.Challenge
+open Finset Matrix MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Topology Matrix.Norms.Elementwise ENNReal
+open SAP.P018a
+local instance : IsProbabilityMeasure fairLaw := by
+  unfold fairLaw
+  infer_instance
+example : (sandwich (!![28,24;24,48] : Mat 2)⁻¹ !![240,160;160,64]) 1 1 < 0 := by
+  norm_num [sandwich, Matrix.inv_def, Ring.inverse_eq_inv, Matrix.adjugate_fin_two,
+    Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_two]
+example : unitSampleLaw signPairKernel 8 {wholeDegeneracyAtom} =
+    ENNReal.ofReal ((4 : ℝ)⁻¹^8) := by
+  change (Measure.pi (fun _ : Fin 8 => fairLaw.prod fairLaw)) {wholeDegeneracyAtom} = _
+  rw [Measure.pi_singleton]
+  have hp (u : Bool × Bool) : (fairLaw.prod fairLaw) {u} = (4 : ℝ≥0∞)⁻¹ := by
+    rw [← Set.singleton_prod_singleton, Measure.prod_prod]
+    simp [fairLaw, PMF.uniformOfFintype_apply]
+    have hfour : (2 : ℝ≥0∞)*2 = 4 := by norm_num
+    simpa only [hfour] using (ENNReal.mul_inv (a := (2 : ℝ≥0∞)) (b := 2)
+      (by norm_num) (by norm_num)).symm
+  simp only [hp, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+  rw [ENNReal.ofReal_pow (by positivity), ENNReal.ofReal_inv_of_pos (by norm_num)]
+  norm_num
+

@@ -1,0 +1,69 @@
+[
+  {
+    "target_id": "P018-T20",
+    "theorem": "SAP.P018b.T20",
+    "fingerprint": "99300b19a0d42215fbf1ddfbef4ee057a8a5f06adc9cab127f3fc106a331faee",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled with Defs only: U=Unit with Dirac probability, k=1, T=1, X=1, Y=0 satisfies the fixed-size hypotheses and nonzero population determinants at N=2, every C1 premise, and every C2 premise with w=a=1 and one false orientation. H_N=1 for N>=2. A separate zero-error/Dirac-limit example constructs all weak-convergence, coordinate-L2, UI and zero-mean premises. The two rare moment-failure existentials were checked mathematically using the explicit countable atom law, positive all-sample Gram determinant, rare-event tail bounds, and independent uniform directed labels; the complete construction and checks are in scratch/WitnessAudit.md. No singular inverse or undefined integral supplies the failure.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json, issue 1: unsupported whole label and absent restriction for the substantive C1/C2 consistency premises.",
+        "status": "fixed",
+        "reason": "record.json:4 now labels T20 restricted; record.json:6 enumerates the C1 common record kernels, uniform count cap, positive limiting Gram and vanishing scaled overlap mean products, and the C2 directed kernel, injective orientations, relative weight bound and positive limiting design. This agrees with SAP/P018b/Defs/WholeW1.lean:508-530 and the restriction at SAP/P018b/Challenge/Part1.lean:79. Acceptance is confined to this declared scope, without asserting equivalence to unsupplied T10."
+      },
+      {
+        "earlier_issue": "earlier.json, issue 2: docstrings identified their displayed premises as the referenced T10 contracts without a supplied canonical T10 statement.",
+        "status": "fixed",
+        "reason": "SAP/P018b/Challenge/Part1.lean:55-59 and :79-88 and SAP/P018b/Defs/WholeW1.lean:447-451 and :471-480 expressly call the result restricted and decline equivalence with the unsupplied canonical T10 hypotheses. record.json:28-29 records the same limitation and treats the C1/C2 assumptions as substantive."
+      }
+    ]
+  },
+  {
+    "target_id": "P018-T21",
+    "theorem": "SAP.P018b.T21",
+    "fingerprint": "8a0fa372bbb2771ad6b4167a5d978cb2078af79928348481ff49119af4b8b9a6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled a positive-dimensional Standing kernel: Dirac probability on Unit, X=1, Y=0, with nonsingular population Gram. For the actual nonlinear witness, Uniform[-1,1] units give bounded symmetric measurable records, Gram [[1,2],[2,14/3]] with determinant 2/3, and beta=(2/3,0). Residuals are measurable functions of observed regressors, so their conditional centered covariances vanish. scratch/AuditArithmetic.py independently integrates the N=3 score polynomials exactly and obtains [[12/5,24/5],[24/5,4712/315]]. All witness quantities exist; details are in scratch/WitnessAudit.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T22",
+    "theorem": "SAP.P018b.T22",
+    "fingerprint": "69ea4cf7c4af28de1528dfbc4c193236960330de4441d8973c795f0576382d07",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled Z=id on the finite product of standard-normal laws, proving measurability, HasLaw for every coordinate, and mutual iIndepFun independence. The product is a probability measure. Choosing N=3,T=2 satisfies every input hypothesis and supplies nonempty dyads and records; N=4 also permits disjoint dyads. Gaussian coordinates give all moments used, and all conditioning maps are measurable.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T23",
+    "theorem": "SAP.P018b.T23",
+    "fingerprint": "7687f69f44e0c5725e914e72b7f6d12be5ea856f3d9cd4de1f41776a2c4c65bf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled the nonzero generic score (1,2) under Dirac probability on Unit, every coordinate-L2 premise, and its expected same-data product [[1,2],[2,4]]. It independently evaluates the logistic score at x=(1,2), y=1, beta=0 as (1/2,1). Thus the generic assertion has a genuine positive-dimensional integrable instance. The universal algebraic clauses have no restrictive hypotheses.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T24",
+    "theorem": "SAP.P018b.T24",
+    "fingerprint": "d46257a82953b552f3207e76a9182414e0a77b63b8331e0169d349ff24073d60",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The assertion has no global hypotheses and uses a literal nonempty nine-row rational table. scratch/Nonvacuity.lean compiled both exact ratio lists, the coefficient -11/1000 with dyadic SE 8/1000 and HC SE 2/1000 in the respective domains, and independent proofs of both full universal one-sided significance bounds. scratch/AuditArithmetic.py checked every row, ratio, endpoint bound, attained extremum and threshold exactly using fractions. All relevant denominators are positive.",
+    "confidence": "high"
+  }
+]

@@ -31,6 +31,9 @@ theorem printed_pda_local_support_contract_refuted :
   AronowAudit.P001.Wave1.PdaLocalSupport.assemble
     n1_proof n2_proof n3_proof n4_proof n5_proof
 
+example : AronowAudit.P001.Wave1.PdaLocalSupport.Target :=
+  printed_pda_local_support_contract_refuted
+
 end
 
 end AronowAudit.P001.Wave1

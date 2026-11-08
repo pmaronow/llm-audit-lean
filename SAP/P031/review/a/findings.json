@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P031-T1",
+    "theorem": "SAP.P031.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: I=Fin 4, s={0,1}, Y=(0,2,5,9) is admissible and balanced. Exact computation gives HC2=Neyman=5; both arm sizes are 2 and every leverage denominator is 1/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T2",
+    "theorem": "SAP.P031.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: N=4,M=2 satisfies every cardinal hypothesis and there are 6 assignments. With y1=y0=(0,2,5,9), exact enumeration gives true variance=E[HC2]=46/3. Heterogeneous seven-unit examples also verify the nonnegative-bias identity with nonzero bias. Population assignment spaces were proved nonempty in the scratch Lean file.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T3",
+    "theorem": "SAP.P031.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled admissible four-unit example has OLS=5 and CE=10/3, so (4-2)/(4-1)*OLS=CE. Exact computation also checks unbalanced assignments, with no assumption of constant actual effects.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T4",
+    "theorem": "SAP.P031.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled four-unit example satisfies N=2M and M=K=2. It gives (3/2)*CE=OLS=Neyman=HC2=5 with CE=10/3.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T5",
+    "theorem": "SAP.P031.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "An explicit witness has N_r=4(r+2), M_r=2, y0=0 and y1_i equal to the distinct standard-normal quantiles at (i+1/2)/N_r. Symmetry gives population effect zero, population variance tends to 1, true variance tends to 1/2, and sampling two distinct entries has the required standardized Gaussian limit. On every assignment HC2>0 and HR=HC2/2, so the relative-error event with epsilon=1/4 has probability 1. See scratch/mathematical-evidence.md. This contradicts the canonical normality-only equivalence clause; it makes no independent claim of failed coverage.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P031-T6",
+    "theorem": "SAP.P031.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the explicit sign family footnotePopulation 2 for underestimation: N*trueVariance tends to 49/3 and both N*OLS and N*CE tend in probability to 28/3. The hypergeometric normal limit gives limiting coverage q(z)=2*Phi(z*sqrt(4/7))-1, strictly below 2*Phi(z)-1 for every z>0. The family footnotePopulation (1/2) supplies overestimation, with true limit 25/12 and estimate limit 13/3. Their growth, imbalance and boundedness have scratch Lean checks, and finite formulas were verified by exact enumeration.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P031-T7",
+    "theorem": "SAP.P031.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional explicit counterexample. The compiled checks verify admissibility, the six-assignment space, the means and original population variance; exact rational computation verifies the imputed vectors and variances 5/2, original covariance 23/2, and the strict non-equality.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T8",
+    "theorem": "SAP.P031.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The admissible compiled example has N=4,M=K=2,SSE=10, imputed variance=covariance=5/2, CE=10/3 and OLS=5; every adjacent equality was checked by exact rational calculation. The same identities were also checked across balanced and unbalanced assignments. No arm-size or total-population denominator vanishes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T9",
+    "theorem": "SAP.P031.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled balanced example has M=2,SSE=10, treated SSE=2 and control SSE=8. Every term of the chain equals 5. All balance and admissibility hypotheses are active and all divisors are positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T10",
+    "theorem": "SAP.P031.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The defined families exist for every index n>=0, with k=n+2>=2. The scratch Lean checks verify growth, imbalance and the first row N=8,M=2. Exact enumeration at N=8 and N=12 confirms every retained moment and the finite formulas leading by E[r^2]=3/(N-1) to the probability limits; the true limiting variances 16/3,49/3,25/12 are positive and the ratios are 1,4/7,52/25. Shift invariance follows algebraically for arbitrary shifts and was also checked assignment by assignment at c=7,d=-5.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P031-T11",
+    "theorem": "SAP.P031.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/CheckLimits.lean constructs N_n=4(n+2),M_n=n+2, zero outcomes, proves growth, allocation fraction 1/4, all three second-moment limits equal to zero, and uniform boundedness. For an active positive-denominator ratio instance use footnotePopulation 2: p=1/4,v1=4,v0=1,c=2, bound B=4, true scaled limit=49/3>0 and OLS scaled limit=28/3. The boundedness of this family is compiled; its remaining moment and limit calculations are explained in scratch/mathematical-evidence.md.",
+    "confidence": 0.98
+  }
+]

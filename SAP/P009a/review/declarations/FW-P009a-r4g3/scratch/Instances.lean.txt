@@ -1,0 +1,238 @@
+import SAP.P009a.Challenge
+
+set_option maxHeartbeats 2000000
+
+open Filter
+open scoped BigOperators Topology Classical
+namespace Review
+open SAP.P009a
+noncomputable section
+
+lemma cons_val {n : ℕ} (b : Bool) (z : TreatmentVector n) (i : Fin (n+1)) :
+    (Fin.cons (α := fun _ : Fin (n+1) => Bool) b z) i = if h : i.val = 0 then b else z ⟨i.val-1, by omega⟩ := by
+  refine Fin.cases ?_ (fun j => ?_) i <;> simp
+
+def cubeSucc (n : ℕ) : TreatmentVector (n+1) ≃ Bool × TreatmentVector n where
+  toFun z := (z 0, fun i => z i.succ)
+  invFun w := Fin.cons w.1 w.2
+  left_inv z := by
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  right_inv w := by
+    rcases w with ⟨b,z⟩
+    simp
+
+lemma sum_cube_succ (n : ℕ) (f : TreatmentVector (n+1) → ℝ) :
+    (∑ z, f z) = ∑ b : Bool, ∑ z : TreatmentVector n, f (Fin.cons b z) := by
+  calc
+    (∑ z, f z) = ∑ w : Bool × TreatmentVector n, f (Fin.cons w.1 w.2) := by
+      apply Fintype.sum_equiv (cubeSucc n)
+      intro z
+      exact congrArg f ((cubeSucc n).symm_apply_apply z).symm
+    _ = _ := Fintype.sum_prod_type _
+
+lemma cancel_marginal (i : Fin 3) (b : Bool) :
+    armProbability cancellingPopulation i b = 1/2 := by
+  fin_cases i <;> cases b <;>
+    norm_num [armProbability, probability, expectation, cancellingPopulation,
+      fairPopulation, fairDistribution, sum_cube_succ, Fintype.sum_bool, cons_val]
+
+lemma cancel_product : ProductDesign cancellingPopulation := by
+  constructor
+  · intro i; rw [cancel_marginal]; norm_num
+  · intro z
+    change (1 / (2:ℝ)^3) = ∏ i, (if z i then armProbability cancellingPopulation i true
+      else 1 - armProbability cancellingPopulation i true)
+    norm_num [cancel_marginal]
+
+lemma cancel_bound (i : Fin 3) (z : TreatmentVector 3) :
+    |cancellingPopulation.outcome i z| ≤ 1 := by
+  fin_cases i <;> cases h0 : z 0 <;> cases h2 : z 2 <;>
+    norm_num [cancellingPopulation, fairPopulation, treatmentValue, h0, h2]
+
+lemma bounded_expectation {Ω : Type*} [Fintype Ω] (P : FiniteDistribution Ω)
+    (f : Ω → ℝ) (B : ℝ) (h : ∀ x, f x ≤ B) : expectation P f ≤ B := by
+  calc
+    expectation P f ≤ ∑ x, P.mass x * B :=
+      Finset.sum_le_sum (fun x _ => mul_le_mul_of_nonneg_left (h x) (P.nonneg x))
+    _ = B := by rw [← Finset.sum_mul, P.total, one_mul]
+
+lemma fair_marginal {n : ℕ} (y : Fin n → TreatmentVector n → ℝ)
+    (i : Fin n) (b : Bool) : armProbability (fairPopulation n y) i b = 1/2 := by
+  classical
+  let c : ℝ := 1 / 2^n
+  let W := {j : Fin n // j ≠ i} → Bool
+  have split (f : Bool → ℝ) :
+      (∑ z : TreatmentVector n, f (z i)) = ∑ b : Bool, ∑ w : W, f b := by
+    calc
+      _ = ∑ w : Bool × W, f w.1 :=
+        Fintype.sum_equiv (Equiv.piSplitAt i (fun _ => Bool)) _ _ (fun _ => rfl)
+      _ = _ := Fintype.sum_prod_type _
+  have hc : (∑ w : W, c) + (∑ w : W, c) = 1 := by
+    have ht := (fairDistribution n).total
+    change (∑ z : TreatmentVector n, c) = 1 at ht
+    simpa only [split (fun _ => c), Fintype.sum_bool] using ht
+  simp only [armProbability, probability, expectation, fairPopulation, fairDistribution]
+  change (∑ z : TreatmentVector n, c * (@ite ℝ (z i = b) (Classical.propDecidable _) 1 0)) = 1/2
+  rw [split (fun v => c * (@ite ℝ (v = b) (Classical.propDecidable _) 1 0))]
+  cases b <;> simp only [Fintype.sum_bool, Bool.false_eq_true, Bool.true_eq_false,
+    if_true, if_false, mul_one, mul_zero, Finset.sum_const_zero, zero_add, add_zero] <;> linarith
+
+lemma fair_product {n : ℕ} (y : Fin n → TreatmentVector n → ℝ) :
+    ProductDesign (fairPopulation n y) := by
+  constructor
+  · intro i; rw [fair_marginal]; norm_num
+  · intro z
+    change (1 / (2:ℝ)^n) = ∏ i, (if z i then armProbability (fairPopulation n y) i true
+      else 1 - armProbability (fairPopulation n y) i true)
+    norm_num [fair_marginal, div_pow]
+
+lemma fair_regularity {n : ℕ} (y : Fin n → TreatmentVector n → ℝ)
+    (hy : ∀ i z, |y i z| ≤ 2) (q s : ℝ) (hq : 2 ≤ q) (hs : 1 ≤ s) :
+    Regularity (fairPopulation n y) 2 q s := by
+  refine ⟨by norm_num, hq, hs, ?_, ?_, ?_⟩
+  · intro i; rw [fair_marginal]; norm_num
+  · intro i
+    exact bounded_expectation _ _ _ (fun z =>
+      Real.rpow_le_rpow (abs_nonneg _) (hy i z) (by linarith : 0 ≤ q))
+  · intro i b
+    exact bounded_expectation _ _ _ (fun z =>
+      Real.rpow_le_rpow (abs_nonneg _) (hy i (Function.update z i b)) (by linarith : 0 ≤ s))
+
+lemma star_bound (m : ℕ) (hm : 2 ≤ m) (i : Fin (m*m)) (z : TreatmentVector (m*m)) :
+    |starPopulationResponse m hm i z| ≤ 2 := by
+  have h (b c : Bool) : |treatmentValue b + treatmentValue c| ≤ 2 := by
+    cases b <;> cases c <;> norm_num [treatmentValue]
+  simp only [starPopulationResponse]
+  split_ifs <;> exact h _ _
+
+-- T11 and T12: the actual growing star family has a uniform, satisfiable
+-- q=4,s=1 regularity premise and independent nondegenerate assignment.
+example : SequenceRegularity wholeStarSequence 2 4 1 ∧
+    (∀ t, ProductDesign (wholeStarSequence.experiment t)) := by
+  constructor
+  · intro t
+    apply fair_regularity
+    · exact star_bound _ _
+    · norm_num
+    · norm_num
+  · intro t; exact fair_product _
+
+lemma identity_affects {n : ℕ} (i j : Fin n) :
+    Affects (identityPopulation n) i j ↔ i = j := by
+  constructor
+  · rintro (h | ⟨z,z',hz,hy⟩)
+    · exact h
+    · by_contra hij
+      apply hy
+      change treatmentValue (z j) = treatmentValue (z' j)
+      rw [hz j (Ne.symm hij)]
+  · exact Or.inl
+
+lemma identity_average {n : ℕ} (hn : 0 < n) :
+    averageDependence (identityPopulation n) = 1 := by
+  simp [averageDependence, dependenceDegree, dependenceIndicator, SharesCause,
+    identity_affects, Nat.ne_of_gt hn]
+
+-- T15: every size in the witness sequence is regular, with nonempty
+-- independent assignment, and its restricted-interference limit holds.
+example : SequenceRegularity identitySequence 2 4 1 ∧
+    (∀ t, ProductDesign (identitySequence.experiment t)) ∧
+    SparseDependence identitySequence := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro t
+    apply fair_regularity
+    · intro i z; cases z i <;> norm_num [treatmentValue]
+    · norm_num
+    · norm_num
+  · intro t; exact fair_product _
+  · have ht : Tendsto (fun t => (identitySequence.N t : ℝ)) atTop atTop :=
+      tendsto_natCast_atTop_atTop.comp identitySequence.grows
+    have hlim := tendsto_inv_atTop_zero.comp ht
+    unfold SparseDependence
+    have hfun : (fun t => averageDependence (identitySequence.experiment t) /
+        sampleSize identitySequence t) = (fun t => (identitySequence.N t : ℝ)⁻¹) := by
+      funext t
+      change averageDependence (identityPopulation (t+1)) / (t+1:ℕ) = ((t+1:ℕ):ℝ)⁻¹
+      rw [identity_average (by omega), one_div]
+    rw [hfun]
+    exact hlim
+
+lemma cancel_regularity (q s : ℝ) (hq : 2 ≤ q) (hs : 1 ≤ s) :
+    Regularity cancellingPopulation 2 q s := by
+  refine ⟨by norm_num, hq, hs, ?_, ?_, ?_⟩
+  · intro i; rw [cancel_marginal]; norm_num
+  · intro i
+    calc
+      expectation _ _ ≤ 1 := bounded_expectation _ _ _ (fun z => by
+        simpa using Real.rpow_le_rpow (abs_nonneg _) (cancel_bound i z) (by linarith : 0 ≤ q))
+      _ ≤ Real.rpow 2 q := Real.one_le_rpow (by norm_num) (by linarith)
+  · intro i b
+    calc
+      expectation _ _ ≤ 1 := bounded_expectation _ _ _ (fun z => by
+        simpa [potentialResponse] using Real.rpow_le_rpow
+          (abs_nonneg _) (cancel_bound i (Function.update z i b)) (by linarith : 0 ≤ s))
+      _ ≤ Real.rpow 2 s := Real.one_le_rpow (by norm_num) (by linarith)
+
+lemma cancel_expected (b : Bool) :
+    expectedSpillover cancellingPopulation 1 0 b = 0 := by
+  cases b <;>
+    norm_num [expectedSpillover, expectation, cancellingPopulation, fairPopulation,
+      fairDistribution, sum_cube_succ, Fintype.sum_bool, potentialResponse,
+      treatmentValue, Function.update_apply, cons_val]
+
+lemma cancel_affects : Affects cancellingPopulation 0 1 := by
+  right
+  refine ⟨fun _ => false, Function.update (fun _ => false) 0 true, ?_, ?_⟩
+  · intro l hl; simp [Function.update_apply, hl]
+  · norm_num [cancellingPopulation, fairPopulation, treatmentValue, Function.update_apply]
+
+-- T13's concrete witness satisfies all design and moment hypotheses, and
+-- has actual interference with vanishing expected spillovers.
+example : ProductDesign cancellingPopulation ∧
+    (∀ q s : ℝ, 2 ≤ q → 1 ≤ s → Regularity cancellingPopulation 2 q s) ∧
+    Affects cancellingPopulation 0 1 ∧
+    expectedSpillover cancellingPopulation 1 0 false = 0 ∧
+    expectedSpillover cancellingPopulation 1 0 true = 0 ∧
+    weightedSpillover cancellingPopulation 1 0 = 0 := by
+  refine ⟨cancel_product, cancel_regularity, cancel_affects,
+    cancel_expected false, cancel_expected true, ?_⟩
+  simp [weightedSpillover, cancel_expected]
+
+lemma identity4_marginal (i : Fin 4) (b : Bool) :
+    armProbability (identityPopulation 4) i b = 1/2 := by
+  fin_cases i <;> cases b <;>
+    norm_num [armProbability, probability, expectation, identityPopulation,
+      fairPopulation, fairDistribution, sum_cube_succ, Fintype.sum_bool, cons_val]
+
+-- A nonempty instance of T14's no-spillovers hypotheses, with both arms
+-- positive; no audited theorem is used.
+example : 0 < (4 : ℕ) ∧ NoSpillovers (identityPopulation 4) ∧
+    (∀ i, 0 < armProbability (identityPopulation 4) i true ∧
+      0 < armProbability (identityPopulation 4) i false) := by
+  refine ⟨by norm_num, ?_, ?_⟩
+  · intro i z z' h
+    simp only [identityPopulation, fairPopulation]
+    rw [h]
+  · intro i; rw [identity4_marginal, identity4_marginal]; norm_num
+
+example : (0 : Fin 4) ≠ 1 ∧ ¬ Affects (identityPopulation 4) 0 1 := by
+  simp [identity_affects]
+
+-- The normalized covariance sum and arm-size variance of T15's n=4
+-- witness are computed directly from its 16 assignments.
+example : fullAssignmentSum (identityPopulation 4) = 1/4 := by
+  simp only [fullAssignmentSum, assignmentCovariance, identity4_marginal]
+  norm_num [fullAssignmentSum, assignmentCovariance, probability, armProbability,
+    expectation, identityPopulation, fairPopulation, fairDistribution,
+    Fin.sum_univ_succ, sum_cube_succ, Fintype.sum_bool, cons_val]
+
+example : variance (identityPopulation 4).design
+    (fun z => estimatedArmSize (identityPopulation 4) true z / 4) = 1/4 := by
+  simp only [estimatedArmSize, identity4_marginal]
+  norm_num [variance, covariance, expectation, estimatedArmSize, identity4_marginal,
+    identityPopulation, fairPopulation, fairDistribution,
+    Fin.sum_univ_succ, sum_cube_succ, Fintype.sum_bool, cons_val]
+
+end
+end Review

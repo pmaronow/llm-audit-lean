@@ -27,6 +27,29 @@ def SimpleRandomExposure {Ω : Type} {N : ℕ} (D : Design Ω)
     (g : ExposureMapping Ω N) (d : ℝ) (n : ℕ) : Prop :=
   CompleteRandomization (maskDesign D g d) n
 
+theorem maskDesign_own {N : ℕ} (D : Design (Fin N → Fin 2)) :
+    maskDesign D (fun i z => (z i).val) 1=D := by
+  have hm : (maskDesign D (fun i z => (z i).val) 1).p=D.p := by
+    funext b
+    change probability D (fun z => exposureMask (fun i z => (z i).val) 1 z=b)=D.p b
+    have he : ∀ z : Fin N → Fin 2, exposureMask (fun i z => (z i).val) 1 z=z := by
+      intro z
+      funext i
+      change (if ((z i).val:ℝ)=1 then (1:Fin 2) else 0)=z i
+      generalize z i=v
+      fin_cases v <;> norm_num
+    simp_rw [he]
+    unfold probability
+    rw [tsum_eq_single b]
+    · simp
+    · intro z hz
+      simp [hz]
+  generalize hmask : maskDesign D (fun (i : Fin N) (z : Fin N → Fin 2) => (z i).val) 1=D'
+  rw [hmask] at hm
+  cases D
+  cases D'
+  cases hm
+  rfl
 
 theorem mask_pi {Ω : Type} {N : ℕ} (D : Design Ω)
     (g : ExposureMapping Ω N) (d : ℝ) (i : Fin N) :
@@ -147,5 +170,7 @@ theorem CR_unbiased {Ω : Type} {N : ℕ} (D : Design Ω)
     (finite_support_targeted_moment D hfin g y 1) (finite_support_targeted_moment D hfin g y 0)
     (finite_support_integrable D hfin _) (finite_support_integrable D hfin _)
 
+#print axioms SRS_unbiased
+#print axioms CR_unbiased
 end
 end AronowAudit.P061.SamplingCompletion

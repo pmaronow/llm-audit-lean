@@ -1,0 +1,28 @@
+[
+  {
+    "target_id": "P024-T7",
+    "theorem": "SAP.P024.T7",
+    "fingerprint": "ae83fa42c0cb1fd8b9ddfe9305d1f434fb1cfd554aaaf98aa37706cf0cc1b80d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean, exit 0. The equal-size instance has K=2, two individuals per cluster, p=1/3, y0(j,i)=j+i and y1(j,i)=j+i+1+j. It constructs the positive population, checks every equal-size hypothesis and the independent parent masses, computes conditioning mass 4/9 and conditional singleton masses 1/2, and proves conditional unbiasedness for every empty-arm extension. Separately it computes the actual unequalPairPopulation individual-level effect 2/3, singleton estimates 0 and 1, and conditional mean 1/2 for every extension. The fair parent is uniform on all four subsets (mass 1/4 each), exactly the product Bernoulli(1/2) law; conditioning keeps the two singleton allocations with mass 1/2 each. Thus this witness satisfies the canonical parent independence, positive sizes, own-treatment fixed outcomes, complete observation, positive conditioning probability, and individual-level estimand requirements. It establishes the canonical bias-possibility assertion rather than refuting it.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P024-T8",
+    "theorem": "SAP.P024.T8",
+    "fingerprint": "2bcd99154f7a5991dd8cbae7cbb96779ddd0f7e1899a6956b1ff2184eb7e65ff",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean, exit 0. There are two blocks of four individuals and a uniform draw omega in Fin 4. Block zero treats exactly individual omega; block one treats exactly the other three. The file proves simultaneously the quotas m=(1,3), their positive interior bounds, the count identities on every assignment, and all actual marginals (1/4 in block zero and 3/4 in block one). It uses y0(b,i)=10b+i and y1(b,i)=y0(b,i)+2b+1, verifies the actual-propensity HT expectation is 2, and verifies allocationwise equality with the population-share weighted raw block differences in means. The individual average effect is (1+3)/2=2. Assignments across blocks are dependent, as the theorem allows. Thus the restricted design hypotheses are jointly satisfiable with varying observed outcomes and block effects.",
+    "confidence": "high",
+    "resolved": [
+      "Fixed (earlier issue 1, scope label): record.json:21 now labels T8 restricted, and record.json:23 expressly adds interior quotas on every assignment and common actual within-block marginals m_b/N_b, while excluding variable counts and unequal within-block propensities. This agrees with the independent narrower classification in claim-stage.json; the historical note is not being treated as a clause of the canonical claim.",
+      "Fixed (earlier issue 2, docstring provenance): SAP/P024/Challenge/Part1.lean:82-94 and SAP/P024/Defs/WholeW3.lean:25-37 describe a fixed-quota specialization and explicitly identify the quotas and common actual marginals as additional assumptions relative to the canonical statement. They accurately disclose the excluded designs and allowance for balanced nonuniform laws and dependent assignments across blocks. The former assertion that these were supplied canonical design conditions is gone."
+    ]
+  }
+]

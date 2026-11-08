@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P015-T4",
+    "theorem": "SAP.P015a.T4",
+    "fingerprint": "8a2ae1580d9cc900367dccfd85e2257a98db95277e8d088d933eaed6f720d9fe",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using Defs only. At line 48 a uniform two-point probability space with constant covariate and treatment (0,1) satisfies all base and nondegenerate branch hypotheses together: measurable variables, L2, a positive cell, distinct endpoints with probabilities 1/2, binary treatment, integrable weight equal to 1/4, positive weight mean, and positive effective-profile mass. Line 71 supplies the zero-variance branch with constant treatment zero. Line 101 constructs independent uniform Fin 4 replicates on the infinite product probability space, satisfying UniformIndependentSampling; line 116 checks the fitted-zero ordered sample has product-law probability 1/256. Compiled scratch/WitnessChecks.lean independently verifies the rare probability vector, IPW values, unbiased mean and exact variance, and the multivalued example's positive residual weights, missing target endpoint under both laws, identical observed triples, and distinct nominal/effective causal means. The sample repetition is a possible realization of independent draws, not a construction of dependent replicates.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P015-T19",
+    "theorem": "SAP.P015a.T19",
+    "fingerprint": "1f3a2e0355317fd8ac2d12648e3533556900386952217a8828c3ba2de57a1eee",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using Defs only. The example at line 81 has uniform probability on Fin 2, constant measurable covariate, nonconstant measurable treatment (0,1), L2, and the binary almost-everywhere hypothesis. Probability and measurable-space instances are explicitly constructed above it. The generic example at line 88 additionally proves integrability of populationResidualWeight for arbitrary covariates from MemLp D 2 P, using L2 contraction of conditional expectation; hence the conditional expectation of the squared residual does not invoke the nonintegrable-input zero convention. Measurable X supplies the sub-sigma-algebra condition and probability supplies finite trimmed measure.",
+    "confidence": "high"
+  }
+]

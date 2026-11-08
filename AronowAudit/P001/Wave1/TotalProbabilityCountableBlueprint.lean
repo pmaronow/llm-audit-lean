@@ -1,16 +1,22 @@
 import AronowAudit.P001.P001_Foundations
 
-/-!
-# Total probability over finite or countable partitions (P001-T24)
+/-! # Blueprint: P001-T24 — total probability over finite or countable partitions
 
-Theorem 1.1.13 (Law of Total Probability), p. 12 (PDF p. 30), with footnote 12
-allowing finite or countably infinite partitions; the strict positivity requirement
-`P(Aᵢ) > 0`; the partition remark, p. 13 (PDF p. 31);
-and Definition 1.1.8 (conditional probability only for `P(A) > 0`), p. 10.
+Record 39 of dossier group P001c (`AronowAudit.P001.total_probability_partition_supporting`,
+resolution `bridge`). Theorem 1.1.13 (Law of Total Probability), p. 12 (PDF p. 30), with
+footnote 12 allowing finite or countably infinite partitions; the corrected proof step
+(`P(Aᵢ) > 0`, not `≥ 0`) and the corrected partition remark, p. 13 (PDF p. 31);
+Definition 1.1.8 (conditional probability only for `P(A) > 0`), p. 10.
 
-The partition may be indexed by any countable type. The conclusions include the
-binary complement decomposition and the nonemptiness criterion for `{C, Cᶜ}`.
-The weak inequality `0 ≤ P(∅)` does not supply the positivity required by Definition 1.1.8.
+The frozen helper fixes the index type to `ℕ` with all cells nonempty, which excludes every
+finite partition. The target uses an arbitrary `Countable` index type, adds the binary
+complement decomposition and the nonemptiness criterion for `{C, Cᶜ}`, and records that the
+weak inequality `0 ≤ P(∅)` does not give the positivity needed by Definition 1.1.8.
+
+Map-P001c report, record 39; both referees accepted without fixes.
+
+Final declaration (writer): `AronowAudit.P001.Wave1.total_probability_complete_correction`
+in `AronowAudit/P001/Wave1/TotalProbabilityCountable.lean`.
 -/
 
 namespace AronowAudit.P001.Wave1.TotalProbabilityCountable
@@ -23,7 +29,7 @@ local instance (p : Prop) : Decidable p := Classical.propDecidable p
 
 universe u v
 
-/-- Total probability and the complement partition: for a nonempty
+/-- Frozen target (map-P001c `total_probability_complete_correction`): for a nonempty
 measurable partition indexed by any countable type, (i) `P(B) = ∑ᵢ P(B ∩ Aᵢ)`; (ii) with
 strictly positive cell masses, `P(B) = ∑ᵢ P(B|Aᵢ)P(Aᵢ)`; (iii) for every measurable `C`,
 `{C, Cᶜ}` has two nonempty cells iff `C ≠ ∅, Ω`, and `P(B) = P(B ∩ C) + P(B ∩ Cᶜ)`;
@@ -42,23 +48,25 @@ def Target : Prop :=
       prob μ B = prob μ (B ∩ C) + prob μ (B ∩ Cᶜ)) ∧
     (0 ≤ prob μ (∅ : Set Ω) ∧ ¬ 0 < prob μ (∅ : Set Ω))
 
-/-- For measurable `C` and arbitrary `B`, measurable-set splitting gives the binary
-probability formula, including `C = ∅` and `C = Ω` (Example 1.1.11, p. 13).
-`B` need not be measurable. -/
+/-- N1 (paper-proof step "the two measurable sets `B ∩ C` and `B ∩ Cᶜ` are disjoint and
+have union `B`, so finite additivity proves the binary formula, including `C = ∅` and
+`C = Ω`"; Example 1.1.11's calculation, p. 13). `B` need not be measurable. -/
 def N1 : Prop :=
   ∀ {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
     (B C : Set Ω), MeasurableSet C →
     prob μ B = prob μ (B ∩ C) + prob μ (B ∩ Cᶜ)
 
-/-- The countable partition identity, the nonemptiness criterion, `N1`, and
-`P(∅) = 0` give the four conclusions. -/
+/-- The node suffices: clauses (i)–(ii) are the proved frozen
+`total_probability_partition` (arbitrary countable index), the nonemptiness criterion is
+the proved `two_event_partition_nonempty`, (iii)'s additivity is `N1`, and (iv) is
+`P(∅) = 0`. -/
 theorem assemble (h1 : N1.{u}) : Target.{u, v} := by
   intro Ω _ μ _ ι _ A hA hne hdis hcover B hB
   obtain ⟨hsum, hcond⟩ := total_probability_partition μ A hA hne hdis hcover B hB
   refine ⟨hsum, hcond, fun C hC => ⟨two_event_partition_nonempty C, h1 μ B C hC⟩, ?_⟩
   simp [prob]
 
-/- Satisfiable instance of the hypotheses: `Ω = Bool` with the full
+/- Satisfiable instance of the hypotheses (both referees): `Ω = Bool` with the full
 σ-algebra and mass `1/2` at each point, `ι = Bool`, `A i = {i}`, `B = {true}`; the cells are
 measurable, nonempty, disjoint, cover `Ω` and have positive mass. For a nonempty null cell:
 the unit-uniform law on `ℝ` with cells `{0}` and `ℝ \ {0}`. -/

@@ -1,0 +1,25 @@
+import SAP.P016a.Challenge
+open SAP.P016a
+#print SAP.P016a.doubledP._proof_1
+#print SAP.P016a.T1Statement._proof_1
+#print SAP.P016a.T1Statement._proof_9
+#print SAP.P016a.u4._proof_1
+#print SAP.P016a.similarity._proof_1
+#print SAP.P016a.T6Statement._proof_1
+#print SAP.P016a.T3Statement._proof_43
+#print SAP.P016a.matchedBank6._proof_1
+#print SAP.P016a.printedReject._proof_1
+#print SAP.P016a.pairedCovariance2._proof_1
+-- (c)(i) claim edge case m = n: the claim's raw identity, which Lean's (c) does not assert for m = n
+example : let s : Outcome 2 := ![0,1]
+    ∀ i, exposureSum (similarity (fun k => some (s k))) (fun _ => true) i =
+      (2:ℝ) - bit true - (1/2) * exposureSum (distance s) (fun _ => true) i := by
+  intro s i; fin_cases i <;> simp [s, exposureSum, similarity, distance, bit, Fin.sum_univ_two] <;> norm_num
+-- with m = 2 = n no bank satisfies hbank ∧ hm
+example (N : ℕ) (bank : Fin N → Assignment 2) (hm : ∀ b, groupSize (bank b) true = 2) :
+    ¬ ∀ i a, ∃ b, bank b i = a := by
+  intro h
+  obtain ⟨b, hb⟩ := h 0 false
+  have := hm b
+  simp only [groupSize, Fin.sum_univ_two, hb] at this
+  split_ifs at this <;> simp_all

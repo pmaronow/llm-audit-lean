@@ -23,15 +23,14 @@ open scoped BigOperators ENNReal NNReal Topology
 
 noncomputable section
 
-/-- The polynomial inner product on the boundary interval. -/
+/-- The polynomial inner product on the literal interval in the held statement. -/
 def tb02Region (δ : ℝ) (p q : Polynomial ℝ) : ℝ :=
   ∫ z in Set.Icc (0 : ℝ) δ, p.eval z * q.eval z
 
 def tb02Moments (δ : ℝ) (d : ℕ) (r : Polynomial ℝ) : Fin (d + 1) → ℝ :=
   fun k => tb02Region δ (X ^ (k : ℕ)) r
 
-/-- The Chebyshev polynomial `T_{t³}` composed with
-`x ↦ (2x - 1 - 1/(2t⁴)) / (1 - 1/(2t⁴))`. -/
+/-- The empty boundary strip has width half the reciprocal sample size. -/
 def tb02Cheb (t : ℕ) : Polynomial ℝ :=
   (Chebyshev.T ℝ ((t ^ 3 : ℕ) : ℤ)).comp
     (C (2 / (1 - 1 / (2 * (t : ℝ) ^ 4))) * X -
@@ -762,22 +761,9 @@ open AronowAudit.P001 MeasureTheory ProbabilityTheory Filter Polynomial
 open SieveRate TailBSieveEscape
 open scoped Topology
 
-/-- The local-L² counterexample, including its universal selection quantifier. -/
+/-- The exact held local-L² counterexample, including its universal selection quantifier. -/
 theorem TailB_sieve_degree_counterexample :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (X Y : ℕ → Ω → ℝ)
-      (hiid : IID μ (fun i ω => (X i ω, Y i ω)))
-      (hlaw : μ.map (fun ω => (X 0 ω, Y 0 ω)) = (uniformLaw 0 1).prod (gaussianReal 0 1))
-      (fit : ℕ → Ω → Polynomial ℝ)
-      (hfit : IsSieveLS X Y (fun (n : ℕ) => Nat.floor ((n : ℝ)^(3/4 : ℝ))) fit),
-      Tendsto (fun (n : ℕ) => Nat.floor ((n : ℝ)^(3/4 : ℝ))) atTop atTop ∧
-   Tendsto (fun (n : ℕ) => (Nat.floor ((n : ℝ)^(3/4 : ℝ)) : ℝ) / n) atTop (nhds 0) ∧
-   ∀ δ : ℝ, 0  <  δ → δ  ≤  1 → ∀ ε : ℝ, 0  <  ε →
-     1/2  ≤  Filter.liminf (fun t : ℕ =>
-       prob μ {ω | ε  <  ∫ x in Set.Icc 0 δ, ((fit (t^4) ω).eval x)^2}) atTop) := by
+    type_of% @AronowAudit.P001.sieve_degree_counterexample := by
   intro Ω instΩ μ instμ X Y hiid hlaw fit hfit
   refine ⟨n3_proof.1, n3_proof.2.1, ?_⟩
   intro δ hδ hδ1 ε hε
@@ -798,5 +784,8 @@ theorem TailB_sieve_degree_counterexample :
     (tb02_q_tendsto ε).eventually_lt_const (by norm_num : (0 : ℝ) < 1),
     hlim.eventually_const_lt hb] with t ht hstrip hq hb'
   exact hb'.trans_le (tb02_sample_lower μ X Y hiid hlaw fit hfit t ht δ hstrip.le ε hε.le hq.le)
+
+example : type_of% @AronowAudit.P001.sieve_degree_counterexample :=
+  AronowAudit.P001.Wave1.TailB_sieve_degree_counterexample
 
 end AronowAudit.P001.Wave1

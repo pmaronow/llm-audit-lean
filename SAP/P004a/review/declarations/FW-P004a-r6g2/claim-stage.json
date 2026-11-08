@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P004a.T6",
+    "target_id": "P004-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:169-197 covers the actual union-average identity, both conditional marginal means, individual effects, their node average, range bounds, equal-mass mean, and positive-scale comparison and exact weighted p-value equality. It omits the two negative assertions in canonical clause (b): an unweighted sum can leave the bin-effect range, and different node masses prevent determination from the bin AMEs alone. It also makes no application-number or substantive empirical assertion. These omissions are explicitly described at Challenge/Part1.lean:68-72. Arbitrary measurable disjoint bins generalize the specified distance bins without changing the retained assertions. Positive finite bin measures and integrability are the usual allowed conditions; all hypotheses are jointly satisfiable."
+  },
+  {
+    "theorem": "SAP.P004a.T7",
+    "target_id": "P004-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:200-237 retains every listed finite twenty-node value and the adjusted-order reversal, the repeated-star geometry and independent fair-coin law, spatial/locality/homophily/nondegeneracy guards, exact cutoff kernel, and exact linearized variance. It replaces canonical W3's exact coverage limit by an eventual unconditional upper bound for the event with both arms and positive trace parameters. It omits the W1 spectral certificates, W2 block moments, W3 raw-variance/trace/ratio/degree limits, and Gaussian law, as disclosed at Challenge/Part1.lean:79-85. The explicitly defined starPD is mathematically the actual positive part: its omitted spectral certificate does not misdefine it. The universal asymptotic-conservatism reading of a recommendation is distinct from a printed theorem; the docstring does not claim that the printed assertion itself is false."
+  },
+  {
+    "theorem": "SAP.P004a.T8",
+    "target_id": "P004-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/WholeW2.lean:13-120 states the cap and fallback exactly, constructs the actual spectral positive part from each symmetric kernel, identifies both slope sandwich entries with the scalar variances, proves the full ordering and normal/Student interval inclusion, and gives conservative coverage under the uniform cutoff kernel, C1-C5 and the positive asymptotic-variance floor. It permits arbitrary assignment-dependent critical values or positive Student degrees. Valid-arm coverage is an unconditional probability with the explicit guard; the excluded all-treated/all-control events have probability p^N+(1-p)^N tending to zero, so this preserves the canonical asymptotic claim. The independent repeated-star witness proves failure of an uncapped universal guarantee and separately states vanishing interval-invalidity probability. No extra spectral input or conclusion-like hypothesis is imposed."
+  },
+  {
+    "theorem": "SAP.P004a.T9",
+    "target_id": "P004-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/WholeW2.lean:122-211 includes the entire canonical one-dimensional boundary witness W1-W4: all logistic and independent-design premises, actual unique constrained maximization, information and leading term, exact second/fourth moments, symmetry and the uniform 3/32 tail bound, and failure of the little-o root-N score remainder. Its additional consistency, root-N rate, two weak limits and limiting atom agree with the canonical assertions. Printed C1(iv) requires compact membership and does not require interior truth; thus this witness contradicts the printed score expansion itself while leaving consistency and the root-N rate intact. All condition checks and domain checks are recorded in claim-audit.md."
+  },
+  {
+    "theorem": "SAP.P004a.T10",
+    "target_id": "P004-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part4.lean:25-38 gives both canonical conclusions under compact membership and the stronger order-N^-1 remainder plus little-o root-N remainder under interior truth. LogisticConditions expands to fixed dimension, uniformly bounded deterministic covariates, compact fixed parameter set and true membership, an eventual positive Gram bound, and an actual constrained MLE for every assignment; overlap and the independent logistic design are explicit in the probability definitions. The finite-dimensional supremum norm yields the same probability orders as the Euclidean norm. Interiority is correctly limited to the expansion branch; it is neither silently required for consistency nor omitted for the expansion. An independent compact-ball MLE construction checks that the full premises, including the interior branch, are satisfiable in dimension one."
+  }
+]

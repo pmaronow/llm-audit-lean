@@ -1,0 +1,81 @@
+[
+  {
+    "target_id": "P045-T22",
+    "theorem": "SAP.P045b.T22",
+    "fingerprint": "ee312730d091c9ed770b81a2dd450d8c8827e6b202cdb6ee56169e2c8a62eeee",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: the N=1 fair-sign experiment has strictly positive mass on both assignments, total mass 1, variance 1, exact mean SE 1, and mean variance estimate 5/4. The theorem has no external hypotheses. For every N=n+1, all denominators and square-root arguments are positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T23",
+    "theorem": "SAP.P045b.T23",
+    "fingerprint": "ea86224a1803bde492f03884c059725f3dd02556a96935d40b5cda7dfee38a03",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/SeqInstance.lean: fair normalized Design Bool, T_n(b)=sign(b)/(n+1), and Vhat_n(b)=1/(n+1)^2 satisfy every hypothesis of the general implication simultaneously, including strict positivity, nonnegativity, vanishing variance, and the mean-SE limit. The same file checks the positive nonvanishing witness and constructs M=2, nonnegative s=(1,2), sd=1 for the inequality domains. T22 is checked separately.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T24",
+    "theorem": "SAP.P045b.T24",
+    "fingerprint": "5cc0a21c1705f6c177faaa51d5e85e3be1d3b77617e97a900d56a91a8b092608",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: G=2, group sizes (1,2), and all baselines equal to 1 give positive group sizes and baselineMean=1>0, activating the ordering, ratio, and nonzero-baseline clauses. Arbitrary real outcome schedules on these finite groups satisfy the identity conjunct's only domain conditions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T25",
+    "theorem": "SAP.P045b.T25",
+    "fingerprint": "2455ff372420ff6481d8d701358af62a359e9a50a73b4ee251ea7f7780185bd0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean, including an independent proof of T25Statement from Defs only. Witness: n=2, p=1/2, b=true, y_i(z)=1 iff both units are treated, otherwise 0. Independent assignments each have mass 1/4; the nonempty-arm event has probability 3/4; the conditional arm mean is 1/3 while the average marginal outcome is 1/2. The schedule is within-group and can be embedded in a uniform first-stage experiment, so it satisfies the printed reading and does not use a degenerate first-stage loophole.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "T25 issue 1: the previous hierarchical conjunct ranged over arbitrary first-stage laws, making its negation broader than the printed assertion.",
+        "status": "fixed",
+        "reason": "SAP/P045b/Defs/Part5.lean:11-15 now negates only the printed within-group equality. It contains no first-stage law or hierarchical conjunct, so first-stage nonuniformity cannot supply the refutation."
+      },
+      {
+        "earlier_issue": "T25 issue 2: the previous statement was provable from a deterministic-first-stage overall-effect failure without any Bernoulli arm-mean failure.",
+        "status": "fixed",
+        "reason": "SAP/P045b/Defs/Part5.lean:12-15 has no overall-effect clause. The independently compiled two-unit witness in scratch/Nonvacuity.lean establishes the arm-mean failure itself under independent fair Bernoulli assignment and positive-probability nonempty-arm conditioning."
+      },
+      {
+        "earlier_issue": "T25 issue 3: the previous docstring claimed within-group failure that its larger negated conjunction did not establish.",
+        "status": "fixed",
+        "reason": "SAP/P045b/Challenge/Part2.lean:6-9 accurately describes the direct negation now stated at SAP/P045b/Defs/Part5.lean:11-15. The canonical claim explicitly includes this within-group assertion, so its refutation contradicts the canonical conjunction."
+      }
+    ]
+  },
+  {
+    "target_id": "P045-T26",
+    "theorem": "SAP.P045b.T26",
+    "fingerprint": "96b24ddc18f81384568e797f0f29600c042ba0122c129ac6b2dd5a59e6704483",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/T26Instance.lean, including an independent proof of T26Statement from Defs only. Witness: G=C=2, n_g=2, m_g=1, a_g=b_g=(0,1), additive effect d=0; all formal count conditions hold, E(vest)=0 and Var(point)=1/2. This is a genuine witness for the disclosed singleton-drop extension. Additionally scratch/exact_checks.py exactly enumerated the uniform six-group/three-selected, three-unit/two-treated toy design with a=b=(0,1,2): 14,580 support points, total mass 1, E(vest)=1/3, Var(point)=1/2. Singleton control arms make this inapplicable to the cited estimator's defined-domain guarantee, as the restriction states.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "T26 refutation recheck: the singleton-drop witness violates existence and estimator-identity conditions of the cited defined-domain variance guarantee, so it cannot refute that guarantee.",
+        "status": "fixed",
+        "reason": "The record now labels T26 restricted. SAP/P045b/Challenge/Part2.lean:11-14 expressly limits the result to the extension to the singleton-drop software statistic, excludes refutation of the cited estimator where each required arm has at least two units, and excludes identification of the printed direct-effect variances with that estimator. The unchanged negation is correct within this disclosed scope."
+      }
+    ]
+  }
+]

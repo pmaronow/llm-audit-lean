@@ -1,0 +1,110 @@
+[
+ {
+  "target_id": "P016-T1",
+  "decision": "whole",
+  "theorem": "SAP.P016a.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t1_design_probabilities",
+   "AronowAudit.P016.t1_design_tables",
+   "AronowAudit.P016.t1_pairing_witness"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016a.T1Statement",
+  "supporting_declarations": [
+   "AronowAudit.P016.complete4_support",
+   "AronowAudit.P016.blocked4_support"
+  ]
+ },
+ {
+  "target_id": "P016-T2",
+  "decision": "whole",
+  "theorem": "SAP.P016a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t2_decomposition",
+   "AronowAudit.P016.t2_design_dependence",
+   "AronowAudit.P016.t2_group_moments",
+   "AronowAudit.P016.t2_least_squares",
+   "AronowAudit.P016.t2_margin_invariance",
+   "AronowAudit.P016.t2_network_alignment",
+   "AronowAudit.P016.t2_scalar_ks_witness",
+   "AronowAudit.P016.t2_tail_equivalence",
+   "AronowAudit.P016.t2_tail_probability"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P016.t2_rss_margin_invariance",
+    "reason": "Redundant: the used t2_margin_invariance already gives both SSR and KS equality."
+   }
+  ],
+  "statement_definition": "SAP.P016a.T2Statement",
+  "supporting_declarations": [
+   "AronowAudit.P016.rss_groups",
+   "AronowAudit.P016.t10_general_least_squares"
+  ]
+ },
+ {
+  "target_id": "P016-T3",
+  "decision": "whole",
+  "theorem": "SAP.P016a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t3_cutoff_witness",
+   "AronowAudit.P016.t3_determinants",
+   "AronowAudit.P016.t3_four_unit_exposure",
+   "AronowAudit.P016.t3_six_unit_exposure",
+   "AronowAudit.P016.t3_table_not_affine"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016a.T3Statement"
+ },
+ {
+  "target_id": "P016-T4",
+  "decision": "restricted",
+  "theorem": "SAP.P016a.T4",
+  "restriction": "The raw similarity-versus-distance identity also requires every bank assignment to have the same treated count as the current assignment; the standardized sign identity explicitly requires positive standard deviations for both exposures. Omits identification with the complete application procedure: the 10,000-assignment saved bank, 500 reference draws, directional application tails, projected maximum-p coordinate bounds, and association of Figure 4 and its coefficient and rectangle with that procedure. Does not identify the released simulation procedure as a whole; states its doubled-tail formulas and cutoff witnesses only.",
+  "rows_used": [
+   "AronowAudit.P016.t4_application_mapping",
+   "AronowAudit.P016.t4_centering_not_rescaling",
+   "AronowAudit.P016.t4_cutoff_difference",
+   "AronowAudit.P016.t4_similarity_orientation",
+   "AronowAudit.P016.t4_standardization",
+   "AronowAudit.P016.t4_tail_coverage"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016a.T4Statement",
+  "supporting_declarations": [
+   "AronowAudit.P016.t3_four_unit_exposure",
+   "AronowAudit.P016.t3_six_unit_exposure",
+   "AronowAudit.P016.t3_determinants",
+   "AronowAudit.P016.t3_table_not_affine",
+   "AronowAudit.P016.t3_cutoff_witness"
+  ]
+ },
+ {
+  "target_id": "P016-T6",
+  "decision": "restricted",
+  "theorem": "SAP.P016a.T6",
+  "restriction": "This states only the algebraic consistency consequence of the raw-distance display. It imposes no affine-normalization requirement on the arbitrary map g and omits the printed description that the indirect effect is linear in the raw distance sums. Unit variance is restricted to across-unit sample variance with divisor n-1 on every design assignment. Omits other unit-variance conventions, identification with the complete SSR + Design regression and testing procedure, and the empirical rejection proportions reported for the simulations and figures.",
+  "rows_used": [
+   "AronowAudit.P016.t6_printed_cutoff",
+   "AronowAudit.P016.t6_printed_general_model_consistency"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P016.t6_printed_model_consistency",
+    "reason": "The used general finite-design theorem contains this single-assignment cancellation, with the same sample-variance restriction."
+   }
+  ],
+  "statement_definition": "SAP.P016a.T6Statement",
+  "declaration_review_resolution": {
+   "round": 1,
+   "reviewer": "r1g1",
+   "verdict": "restriction_inaccurate",
+   "severity": "minor",
+   "action": "Accepted both issues: explicitly disclosed arbitrary g, the absence of an affine-normalization requirement, and the omitted printed linearity clause in the Challenge docstring, manifest and REPORT.md. The statement, proof, name and restricted decision are unchanged.",
+   "finding": "fw/round1/T6/r1g1/findings.json#SAP.P016a.T6"
+  }
+ }
+]

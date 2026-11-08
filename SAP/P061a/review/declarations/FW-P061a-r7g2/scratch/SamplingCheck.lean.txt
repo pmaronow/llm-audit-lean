@@ -1,0 +1,74 @@
+import SAP.P061a.Defs
+
+open SAP.P061a
+open scoped BigOperators
+namespace ReviewSampling
+
+def computableSupport (n : ℕ) (z : Fin 4 → Fin 3) : Prop :=
+  (Finset.univ.filter (fun i => z i = 2)).card = 1 ∧
+    (Finset.univ.filter (fun i => z i ≠ 0)).card = n
+
+instance (n : ℕ) (z : Fin 4 → Fin 3) : Decidable (computableSupport n z) := by
+  unfold computableSupport; infer_instance
+
+theorem support_eq (n : ℕ) : samplingSupport n = computableSupport n := by rfl
+
+theorem count_two :
+    (Finset.univ.filter (computableSupport 2)).card = 12 := by decide
+theorem count_three :
+    (Finset.univ.filter (computableSupport 3)).card = 12 := by decide
+
+noncomputable def design (n : ℕ)
+    (hc : (Finset.univ.filter (computableSupport n)).card = 12) :
+    AtomicDesign (Fin 4 → Fin 3) where
+  mass := fun z => if computableSupport n z then 1/12 else 0
+  mass_nonnegative := by intro z; split_ifs <;> norm_num
+  mass_summable := hasSum_fintype _ |>.summable
+  mass_total := by
+    rw [tsum_fintype, ← Finset.sum_filter]
+    simp [hc]
+
+noncomputable def d2 := design 2 count_two
+noncomputable def d3 := design 3 count_three
+
+open scoped Classical in
+example : (∀ z, d2.mass z = if samplingSupport 2 z then 1/12 else 0) ∧
+    (∀ z, d3.mass z = if samplingSupport 3 z then 1/12 else 0) := by
+  constructor <;> intro z <;> simp [d2, d3, design, support_eq]
+
+theorem support_exact (n : ℕ) (hc) (z : Fin 4 → Fin 3) :
+    supported (design n hc) z ↔ samplingSupport n z := by
+  change (0 < if computableSupport n z then (1/12 : ℝ) else 0) ↔ samplingSupport n z
+  rw [support_eq]
+  split_ifs <;> simp_all
+
+-- Independent finite counts behind all four positive exposure probabilities.
+example (i : Fin 4) :
+    (Finset.univ.filter (fun z => computableSupport 2 z ∧ z i = 2)).card = 3 ∧
+    (Finset.univ.filter (fun z => computableSupport 2 z ∧ z i = 1)).card = 3 ∧
+    (Finset.univ.filter (fun z => computableSupport 3 z ∧ z i = 2)).card = 3 ∧
+    (Finset.univ.filter (fun z => computableSupport 3 z ∧ z i = 1)).card = 6 := by
+  fin_cases i <;> decide
+
+theorem stability (n : ℕ) (hc) :
+    supportStability (design n hc) (fun i z => (z i).val) samplingResponse := by
+  intro i z z' hz hz' he
+  have hs := (support_exact n hc z).mp hz
+  have hs' := (support_exact n hc z').mp hz'
+  have hzi : z i = z' i := by
+    apply Fin.ext
+    change ((z i).val : ℝ) = ((z' i).val : ℝ) at he
+    exact_mod_cast he
+  simp only [samplingSupport] at hs hs'
+  simp only [samplingResponse, hs.2, hs'.2, hzi]
+
+-- Failure of global stability, witnessed on the same full feasible cube.
+example : ¬ globalStability (fun i (z : Fin 4 → Fin 3) => (z i).val)
+    samplingResponse := by
+  intro h
+  have hh := h 0 ![2,1,0,0] ![2,1,1,0] (by norm_num)
+  have h2 : (Finset.univ.filter (fun j : Fin 4 => (![2,1,0,0] : Fin 4 → Fin 3) j ≠ 0)).card = 2 := by decide
+  have h3 : (Finset.univ.filter (fun j : Fin 4 => (![2,1,1,0] : Fin 4 → Fin 3) j ≠ 0)).card = 3 := by decide
+  norm_num [samplingResponse, h2, h3] at hh
+
+end ReviewSampling

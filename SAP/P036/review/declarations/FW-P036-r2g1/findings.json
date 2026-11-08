@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P036-T1",
+    "theorem": "SAP.P036.T1",
+    "fingerprint": "9983b80ec151b333c63bdc37d385c202f1e67728bd39437bf8936ec3bde6dd13",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean using /home/ubuntu/sap/tools/sap-lean, exit 0, importing only SAP.P036.Defs. On discrete Bool, the probability measure assigns mass 1/2 to each point, peer={true}, epsilon=0, beta0=2, beta1=5. The adjusted instance has k=1, X=1, gamma=3, Y=5+5*1_peer, and proves every adjusted-model hypothesis including integrability and the zero conditional expectation. The unadjusted instance has Y=2+5*1_peer and proves every hypothesis including both strict probability inequalities. The file also directly proves that (1,3) is the unique minimizer of the actual residual sum of squares on Fin 2 with peer={0} and outcomes (4,1), together with both nonempty-arm hypotheses. A Fin 4 subset {0,1} has both arms of size 2, satisfying the least-squares hypotheses for any real outcome function, including the explicitly defined nonconstant smallY. On Fin 189, peer={i | i.val<94}, tableY(k0,i)=1 iff i.val<10 or 94<=i.val<94+k0. Compiled examples prove both arm sizes, binary outcomes, and the exact arm sums (10,10) and (10,7). These jointly give genuine instances of every conditional branch; the remaining numerical conjuncts have no hypotheses.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P036-T2",
+    "theorem": "SAP.P036.T2",
+    "fingerprint": "741df56839f463562ad4f66b3e3084fabb1d898a919dac6c697a5d7e3881838f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean using /home/ubuntu/sap/tools/sap-lean, exit 0, importing only SAP.P036.Defs. The Fin 4 subset {0,1} has both arms of size 2, satisfying every sandwich-identity hypothesis for arbitrary real Y. For the randomization block, N=4 and n1=n0=2 satisfy all size assumptions, and the file constructs a member of assignments 2. Fixed Y1=(0,1,1,0), Y0=(0,0,1,0) give heterogeneous effects, formally proved not constant; the alternative Y1=Y0+2 has constant effect 2 under the same nonempty design. The separate binary-arm example uses {0,1}, Y1, and k=1, proving every size, binary-value, and count hypothesis. The same Fin 189 construction as for T1 proves all binary table hypotheses for both count pairs (10,10) and (10,7). Thus no branch depends on impossible data or an empty randomization average. An independent exact-rational enumeration of the six four-unit assignments gives E[HC2]=7/24, Var(effect)=11/48, and gap=1/16=S_tau^2/4; the two table fractions and their positive square roots also match.",
+    "confidence": "high"
+  }
+]

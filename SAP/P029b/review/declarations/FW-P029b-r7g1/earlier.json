@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P029b.T18",
+  "target_id": "P029-T18",
+  "round": 6,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P029b/Challenge/Part1.lean:52 and SAP/P029b/Defs/WholeW1.lean:247 misdescribe the discrepancy hypotheses as 'three specified half-probabilities'. The actual hypotheses at SAP/P029b/Defs/WholeW1.lean:269 and SAP/P029b/Defs/WholeW1.lean:270, matching canonical T18(iii), are Pr(D0=1)=0, Pr(complier|X=x)=1/2 and Pr(Z=1)=1/2. There are two half-probabilities and one zero probability. The mathematical statement and whole decision are correct; the defect is confined to both copies of the docstring."
+  ]
+ }
+]

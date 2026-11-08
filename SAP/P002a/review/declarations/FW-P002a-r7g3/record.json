@@ -1,0 +1,119 @@
+[
+ {
+  "target_id": "P002-T11",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.corrected_C17_proof",
+   "AronowAudit.P002.Wave1.corrected_C17_rate_proof",
+   "SAP.P002a.WH.W1.T11_whole",
+   "SAP.P002a.WH.W1.T11_assembly",
+   "AronowAudit.P002.expectation_div"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.Wave1.sample_mean_variance_proof",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P002.corrected_C17_identity",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P002.groupMean_congr",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P002.groupMean_sub_smul",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P002.mean_sub_smul",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P002.square_centering",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   }
+  ],
+  "statement_definition": "SAP.P002a.T11WholeStatement"
+ },
+ {
+  "target_id": "P002-T12",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.C31_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.C31_assignments",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   }
+  ],
+  "statement_definition": "SAP.P002a.T12Statement"
+ },
+ {
+  "target_id": "P002-T13",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.corrected_C31_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.Wave1.randomization_moments_proof",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P002.assignment_inclusion_count",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   }
+  ],
+  "statement_definition": "SAP.P002a.T13Statement"
+ },
+ {
+  "target_id": "P002-T14",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.missing_square_counterexample_proof",
+   "SAP.P002a.WH.W2.T14_whole",
+   "SAP.P002a.WH.W2.T14_assembly",
+   "SAP.P002a.WH.W2.T14_L1_proof",
+   "SAP.P002a.WH.W2.T14_L2_proof",
+   "SAP.P002a.WH.W2.T14_L3_proof",
+   "SAP.P002a.WH.W2.T14_L4_proof",
+   "SAP.P002a.WH.W2.restrictedT14",
+   "AronowAudit.P002.Wave1.sample_mean_variance_proof",
+   "AronowAudit.P002.square_centering",
+   "AronowAudit.P002.sum_complement_eq",
+   "AronowAudit.P002.Wave1.DecisionLemma12_markov",
+   "AronowAudit.P002.Wave1.T2C_probability_complement"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P002a.T14WholeStatement"
+ },
+ {
+  "target_id": "P002-T15",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.corrected_lemma12_proof",
+   "SAP.P002a.WH.W1.T15_whole",
+   "SAP.P002a.WH.W1.T15_assembly"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.zero_response_ratio_failure",
+    "reason": "Final status wrong_credit. Used only for what its own Lean statement says, it is a finite zero-response diagnostic whose probability-one conclusion comes from the 0/0 = 0 convention at a zero denominator; it states no clause of the T15 limit claim, and T15 already excludes zero denominators by hypothesis, so it is not used."
+   }
+  ],
+  "statement_definition": "SAP.P002a.T15WholeStatement"
+ }
+]

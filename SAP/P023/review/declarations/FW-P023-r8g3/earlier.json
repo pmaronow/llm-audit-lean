@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P023.T11",
+  "target_id": "P023-T11",
+  "round": 7,
+  "verdict": "label_wrong",
+  "severity": "minor",
+  "issues": [
+   "record.json:4 labels the result whole, with restriction null at record.json:6, although the canonical definitions_needed at claims.json:26 also asserts that Condition 1 is necessary for an RD estimate to exist. SAP/P023/Defs/WholeW2.lean:23–29 assumes Condition 1 and proves positivity and estimator equality; it omits necessity, as record.json:21 itself acknowledges. The historical note at claims.json:27 cannot remove a clause from definitions_needed. The omission preserves correct mathematics, but requires a restricted coverage label and an explicit disclosure in the docstring at SAP/P023/Challenge/Part1.lean:79."
+  ]
+ }
+]

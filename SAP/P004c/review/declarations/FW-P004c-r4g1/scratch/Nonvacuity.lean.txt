@@ -1,0 +1,49 @@
+import SAP.P004c.Defs
+
+open SAP.P004c
+open scoped BigOperators Matrix
+
+namespace T31Audit
+
+def z4 : Assignment 4 := ![false, false, true, true]
+def R4 : CircleTable 4 := fun i _ => ![0, 2, 4, 6] i
+def e4 : Fin 4 → ℝ := ![-1, 1, -1, 1]
+def values4 : Fin 4 → ℝ := ![-1, 2, 3, 4]
+def vectors4 : Matrix (Fin 4) (Fin 4) ℝ := 1
+def Y4 : Fin 4 → Assignment 4 → ℝ := R4
+
+-- Both arm hypotheses and the orthogonality hypothesis hold simultaneously.
+example : 0 < armCount z4 true ∧ 0 < armCount z4 false ∧
+    vectors4.transpose * vectors4 = 1 := by
+  simp only [armCount, Fin.sum_univ_four]
+  norm_num [z4, vectors4]
+
+-- The actual OLS residual vector is nonzero in both arms.
+example : armMean R4 z4 false = 1 ∧ armMean R4 z4 true = 5 ∧
+    hajek R4 z4 = 4 := by
+  simp only [hajek, armMean, armCount, Fin.sum_univ_four]
+  norm_num [R4, z4]
+
+example : ∀ i, e4 i = R4 i z4 - armMean R4 z4 false - hajek R4 z4 * bit (z4 i) := by
+  intro i
+  simp only [hajek, armMean, armCount, Fin.sum_univ_four]
+  fin_cases i <;> norm_num [e4, R4, z4, bit]
+
+-- The inverse is genuinely nonsingular in this instance.
+example : ((designMatrix z4).transpose * designMatrix z4).det = 4 := by
+  simp only [Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_four]
+  norm_num [designMatrix, z4, bit]
+
+-- Truncation changes a strictly negative eigenvalue, with nonzero residual there.
+example : values4 0 = -1 ∧ e4 0 = -1 ∧
+    spectralKernel values4 vectors4 false 0 0 = -1 ∧
+    spectralKernel values4 vectors4 true 0 0 = 0 := by
+  simp only [spectralKernel, Fin.sum_univ_four]
+  norm_num [values4, e4, vectors4, Matrix.one_apply]
+
+-- The corrected sharp null has a genuine nonempty outcome point domain.
+example : SharpNull Y4 := by
+  intro x z
+  rfl
+
+end T31Audit

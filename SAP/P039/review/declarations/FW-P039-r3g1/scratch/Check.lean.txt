@@ -1,0 +1,104 @@
+import SAP.P039.Defs.WholeW1
+
+open SAP.P039 MeasureTheory ProbabilityTheory
+open scoped BigOperators Matrix NNReal
+set_option autoImplicit false
+set_option maxRecDepth 2000
+set_option maxHeartbeats 1200000
+
+-- T1: both witnesses use permitted strictly interior decay and ordinary, positive denominators.
+example : (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1 ∧
+    firstQuarterOnly 1 = 1 ∧
+    (∀ q : ℕ, 2 ≤ q → q ≤ 16 → firstQuarterOnly q = 0) ∧
+    0 < incomeDenominator (1/2) ∧ 0 < describedDenominator (1/2) ∧
+    incomeGrowth (1/2) firstQuarterOnly = 0 ∧
+    describedGrowth (1/2) firstQuarterOnly = 3/131069 := by
+  norm_num [incomeGrowth, incomeNumerator, incomeDenominator, describedGrowth,
+    describedNumerator, describedDenominator, firstQuarterOnly, Finset.sum_range_succ]
+  omega
+
+example : (0 : ℝ) < 9/10 ∧ (9/10 : ℝ) < 1 ∧
+    0 < incomeDenominator (9/10) ∧ 0 < describedDenominator (9/10) ∧
+    incomeGrowth (9/10) firstQuarterOnly = 0 ∧
+    describedGrowth (9/10) firstQuarterOnly = 617673396283947/22440939433444477 := by
+  norm_num [incomeGrowth, incomeNumerator, incomeDenominator, describedGrowth,
+    describedNumerator, describedDenominator, firstQuarterOnly, Finset.sum_range_succ]
+
+-- T2: its complete input domain is inhabited, including both endpoint decays.
+example : ∃ (d : ℝ) (h : QuarterGrowth), 0 ≤ d ∧
+    (1/3 : ℝ) ≤ incomeDenominator d ∧ 0 < describedDenominator d ∧
+    incomeGrowth 0 h = h 16 ∧ incomeGrowth 1 h = 1 := by
+  refine ⟨1/2, fun _ => 1, ?_⟩
+  norm_num [incomeGrowth, incomeNumerator, incomeDenominator,
+    describedDenominator, Finset.sum_range_succ]
+
+-- Independent injectivity checks on the fixed matrices used by T3 and T4.
+lemma witnessZ_rank : FullColumnRank witnessZ := by
+  intro a b hab
+  have h0 := congrFun hab 0
+  have h1 := congrFun hab 1
+  norm_num [witnessZ, witnessU, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h0 h1
+  funext j
+  fin_cases j <;> dsimp <;> linarith
+
+lemma witnessV_outside : ¬ ∃ c, witnessZ *ᵥ c = witnessV := by
+  rintro ⟨c, hc⟩
+  have h2 := congrFun hc 2
+  have h3 := congrFun hc 3
+  norm_num [witnessZ, witnessU, witnessV, Matrix.mulVec, dotProduct,
+    Fin.sum_univ_succ] at h2 h3
+  linarith
+
+lemma witnessZ_intercept : ∃ c, witnessZ *ᵥ c = fun _ => 1 := by
+  refine ⟨![1,0], ?_⟩
+  funext i
+  fin_cases i <;>
+    norm_num [witnessZ, witnessU, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+
+example : FullColumnRank witnessZ ∧ (∃ c, witnessZ *ᵥ c = fun _ => 1) ∧
+    (¬ ∃ c, witnessZ *ᵥ c = witnessV) ∧ 2+1 < 6 :=
+  ⟨witnessZ_rank, witnessZ_intercept, witnessV_outside, by decide⟩
+
+example : FullColumnRank (residualLine witnessV) ∧
+    FullColumnRank (fullDesign witnessZ witnessV) ∧
+    FullColumnRank (residualLine (witnessU + witnessV)) ∧
+    FullColumnRank (fullDesign witnessZ (witnessU + witnessV)) := by
+  repeat' constructor
+  all_goals
+    intro a b hab
+    have h0 := congrFun hab 0
+    have h1 := congrFun hab 1
+    have h2 := congrFun hab 2
+    norm_num [residualLine, fullDesign, witnessZ, witnessU, witnessV,
+      Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h0 h1 h2
+    funext j
+    fin_cases j <;> dsimp <;> linarith
+
+-- T3: independently check the residuals, positive SSEs, slopes, SEs, and squared t statistics.
+lemma witness_residual : olsResidual witnessZ witnessY = (3/2 : ℝ) • witnessV + witnessW := by
+  ext i
+  fin_cases i <;>
+    norm_num [olsResidual, ols, witnessZ, witnessY, witnessU, witnessV, witnessW,
+      Matrix.inv_def, Matrix.adjugate_fin_two, Matrix.det_fin_two, Ring.inverse_eq_inv,
+      Matrix.mul_apply, Matrix.mulVec, Matrix.vecMul, Matrix.vecHead, Matrix.vecTail, dotProduct, Fin.sum_univ_succ]
+
+-- T4 Gaussian: the entire probabilistic hypothesis list is inhabited by identity noise.
+noncomputable def auditGaussian : Measure (Fin 6 → ℝ) :=
+  Measure.pi (fun _ : Fin 6 => gaussianReal 0 1)
+
+example : IsProbabilityMeasure auditGaussian ∧
+    (0 : ℝ≥0) < 1 ∧ FullColumnRank witnessZ ∧
+    (∃ c, witnessZ *ᵥ c = fun _ => 1) ∧
+    (¬ ∃ c, witnessZ *ᵥ c = witnessV) ∧ 2+1 < 6 ∧
+    Measurable (fun e : Fin 6 → ℝ => e) ∧
+    auditGaussian.map (fun e => e) =
+      Measure.pi (fun _ : Fin 6 => gaussianReal 0 ((1 : ℝ≥0)^2)) := by
+  refine ⟨by unfold auditGaussian; infer_instance, by norm_num, witnessZ_rank,
+    witnessZ_intercept, witnessV_outside, by decide, measurable_id, ?_⟩
+  simp [auditGaussian]
+
+-- T5 is a closed finite claim: verify it directly without using a Challenge theorem.
+example : T5Statement := by
+  norm_num [T5Statement, ExtremismMeasure, extremismElections, depositedExtremism,
+    signedWinner, signedMaximumScore, Fin.forall_fin_succ]
+

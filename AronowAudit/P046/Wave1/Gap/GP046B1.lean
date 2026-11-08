@@ -198,6 +198,7 @@ private theorem rr_laws_valid_mean (p m : ℝ → ℝ) (hp : Measurable p) (hm :
   simp
 
 
+
 private def exact_noncoverage_lower {n : ℕ} (c : Fin n → Fin 3) : Finset (Fin n) :=
   Finset.univ.filter (fun i => c i ≠ 2)
 private def exact_noncoverage_success {n : ℕ} (c : Fin n → Fin 3) : Finset (Fin n) :=
@@ -562,11 +563,16 @@ theorem counterexample_proof : ValidStudy study ∧ mu study = 3/5 ∧
     lt_trans (by norm_num : (1/10000000 : ℝ) < 119/1000000000) hgt,
     exact_failure_state_count⟩
 
+example : type_of% @AronowAudit.P046.IntervalExample.counterexample := counterexample_proof
+
 open IntervalExample in
 theorem exact_noncoverage_proof :
     (sampleLaw study 100 {a | printedRadius study (1/10000000) a < |ht study a - mu study|}).toReal =
       (certifiedNumerator : ℝ) / (100 : ℝ)^100 := by
   exact exact_noncoverage_exact_mass
+
+example : type_of% @AronowAudit.P046.IntervalExample.exact_noncoverage := exact_noncoverage_proof
+
 
 private theorem rr_laws_valid_bin_meas (K : ℕ) (hK : 0 < K) : Measurable (RobinsRitov.bin K hK) := by
   exact (measurable_of_countable (fun n : ℕ => (⟨n % K, Nat.mod_lt n hK⟩ : Fin K))).comp
@@ -649,6 +655,8 @@ open RobinsRitov in
     rw [rr_laws_valid_mean _ _ mp mm (fun w => ⟨by linarith [(hp w).1], by linarith [(hp w).2]⟩) hm]
     exact rr_laws_valid_bin_integral K hK (fun j => if tau j then (1 : ℝ) else 1/3)
       (fun j => by split <;> norm_num)
+
+example : type_of% @AronowAudit.P046.RobinsRitov.rr_laws_valid := rr_laws_valid_proof
 
 end
 end AronowAudit.P046.Wave1

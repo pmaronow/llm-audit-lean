@@ -251,6 +251,185 @@ theorem tc09_harmonic_weighted_error (n : ℕ) (hn : 1 ≤ n) {T : ℝ}
       ring
   exact tc09_nonnegative_integral_limit_bound hG hGn hf hlim hb hbB
 
+/-- C023-HARMONIC, with the exact ordered-series and actual-residual contract. -/
+theorem residual_harmonic_tail :
+    ∃ F : ℕ → ℝ → ℝ,
+      (∀ n : ℕ, 2 ≤ n → ∀ t ∈ Set.Ioo (0 : ℝ) (Real.pi/2),
+        Filter.Tendsto (fun M : ℕ => ∑ m ∈ Finset.Ico n M,
+          Real.sin ((2*(m : ℝ)+3/2)*t) / (m : ℝ)) Filter.atTop (nhds (F n t))) ∧
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 2 ≤ n →
+        (∀ t ∈ Set.Icc (1/(n : ℝ)) (Real.pi/2 - 1/(n : ℝ)),
+          |F n t - Real.cos ((2*(n : ℝ)+1/2)*t)/(2*(n : ℝ)*Real.sin t)| ≤
+            C / ((n : ℝ)^2 * (Real.sin t)^2)) ∧
+        (∫ t in Set.Icc (0 : ℝ) (Real.pi/2 - 1/(n : ℝ)),
+          |popResidual uniformMargins (2*n-1) (Real.sin t) -
+            F n t/(Real.pi * Real.sqrt (Real.cos t))| * Real.cos t) ≤ C/(n : ℝ) := by
+  refine ⟨tc09_harmonicTail, ?_, (Real.pi + 4) / Real.pi + 1, by positivity, ?_⟩
+  · intro n hn t ht
+    apply tc09_harmonic_ordered_limit n (by omega)
+    exact (Real.sin_pos_of_pos_of_lt_pi ht.1 (by linarith [ht.2, Real.pi_pos])).ne'
+  · intro n hn
+    have hp : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+    constructor
+    · intro t ht
+      have htpos : 0 < t := (one_div_pos.mpr hp).trans_le ht.1
+      have hsin : 0 < Real.sin t := Real.sin_pos_of_pos_of_lt_pi htpos
+        (by linarith [ht.2, one_div_pos.mpr hp, Real.pi_pos])
+      apply (tc09_harmonic_tail_bound n (by omega) hsin).trans
+      apply div_le_div_of_nonneg_right _ (by positivity)
+      have h : 0 ≤ (Real.pi + 4) / Real.pi := by positivity
+      linarith
+    · have hT : 0 ≤ Real.pi/2 - 1/(n : ℝ) := by
+        have hn' : (2 : ℝ) ≤ n := by exact_mod_cast hn
+        have hrec : 1/(n : ℝ) ≤ 1/2 := one_div_le_one_div_of_le (by norm_num) hn'
+        linarith [Real.two_le_pi]
+      have hTp : Real.pi/2 - 1/(n : ℝ) < Real.pi/2 := sub_lt_self _ (one_div_pos.mpr hp)
+      apply (tc09_harmonic_weighted_error n (by omega) hT hTp).2.trans
+      have he : (Real.pi + 4) / (Real.pi * (n : ℝ)) =
+          ((Real.pi + 4) / Real.pi) / (n : ℝ) := by ring
+      rw [he]
+      exact div_le_div_of_nonneg_right (by linarith) hp.le
+
+-- The complete planned statement, checked without additional premises.
+example :
+    ∃ F : ℕ → ℝ → ℝ,
+      (∀ n : ℕ, 2 ≤ n → ∀ t ∈ Set.Ioo (0 : ℝ) (Real.pi/2),
+        Filter.Tendsto (fun M : ℕ => ∑ m ∈ Finset.Ico n M,
+          Real.sin ((2*(m : ℝ)+3/2)*t) / (m : ℝ)) Filter.atTop (nhds (F n t))) ∧
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 2 ≤ n →
+        (∀ t ∈ Set.Icc (1/(n : ℝ)) (Real.pi/2 - 1/(n : ℝ)),
+          |F n t - Real.cos ((2*(n : ℝ)+1/2)*t)/(2*(n : ℝ)*Real.sin t)| ≤
+            C / ((n : ℝ)^2 * (Real.sin t)^2)) ∧
+        (∫ t in Set.Icc (0 : ℝ) (Real.pi/2 - 1/(n : ℝ)),
+          |popResidual uniformMargins (2*n-1) (Real.sin t) -
+            F n t/(Real.pi * Real.sqrt (Real.cos t))| * Real.cos t) ≤ C/(n : ℝ) :=
+  residual_harmonic_tail
+
+/-- The individual ODE errors; unlike the sine series these are absolutely summable. -/
+def tc09_odeTerm (m : ℕ) (t : ℝ) : ℝ :=
+  tc08_coefficient m * (AronowAudit.Literature.legendreRodrigues (2*m+1)).eval (Real.sin t) -
+    tc09_sinPhase m t / ((m : ℝ) * (Real.pi * Real.sqrt (Real.cos t)))
+
+def tc09_odeTail (n : ℕ) (t : ℝ) : ℝ := ∑' k : ℕ, tc09_odeTerm (n+k) t
+
+theorem tc09_odeTerm_bound (m : ℕ) (hm : 1 ≤ m) {t : ℝ}
+    (ht : t ∈ Ico (0 : ℝ) (Real.pi/2)) :
+    |tc09_odeTerm m t| ≤ ((1+Real.tan t)/(Real.pi*Real.sqrt (Real.cos t))) *
+      (1/(m : ℝ)^2) := by
+  have he : tc09_odeTerm m t = tc08_coefficient m *
+      (AronowAudit.Literature.legendreRodrigues (2*m+1)).eval (Real.sin t) -
+      Real.sin (tc08_frequency m*t)/(Real.pi*(m : ℝ)*Real.sqrt (Real.cos t)) := by
+    unfold tc09_odeTerm tc09_sinPhase tc08_frequency
+    congr 1
+    ring
+  rw [he]
+  exact (legendre_sine_error_explicit m hm ht).trans_eq (by ring)
+
+theorem tc09_odeTail_summable (n : ℕ) (hn : 1 ≤ n) {t : ℝ}
+    (ht : t ∈ Ico (0 : ℝ) (Real.pi/2)) :
+    Summable (fun k : ℕ => tc09_odeTerm (n+k) t) := by
+  let K := (1+Real.tan t)/(Real.pi*Real.sqrt (Real.cos t))
+  have hK : 0 ≤ K := by
+    have htan := Real.tan_nonneg_of_nonneg_of_le_pi_div_two ht.1 ht.2.le
+    dsimp [K]
+    positivity
+  apply ((tc09_drop_summable n hn).mul_left (2*K)).of_norm_bounded
+  intro k
+  rw [Real.norm_eq_abs]
+  have hm : 1 ≤ n+k := by omega
+  have hp : (0 : ℝ) < n+k := by exact_mod_cast (show 0 < n+k by omega)
+  have hp' : (1 : ℝ) ≤ n+k := by exact_mod_cast hm
+  have hd : 1/((n+k : ℕ) : ℝ)^2 ≤ 2*tc09_reciprocalDrop (n+k) := by
+    rw [tc09_drop_eq (n+k) hm]
+    apply (div_le_iff₀ (by positivity : 0 < ((n+k : ℕ) : ℝ)^2)).mpr
+    field_simp
+    simp only [Nat.cast_add]
+    nlinarith
+  calc
+    _ ≤ K * (1/((n+k : ℕ) : ℝ)^2) := tc09_odeTerm_bound _ hm ht
+    _ ≤ K * (2*tc09_reciprocalDrop (n+k)) := mul_le_mul_of_nonneg_left hd hK
+    _ = _ := by ring
+
+theorem tc09_odeTail_ordered_limit (n : ℕ) (hn : 1 ≤ n) {t : ℝ}
+    (ht : t ∈ Ico (0 : ℝ) (Real.pi/2)) :
+    Tendsto (fun M : ℕ => ∑ m ∈ Finset.Ico n M, tc09_odeTerm m t) atTop
+      (𝓝 (tc09_odeTail n t)) := by
+  have h := (tc09_odeTail_summable n hn ht).hasSum.tendsto_sum_nat
+  apply (h.comp (tendsto_sub_atTop_nat n)).congr'
+  filter_upwards [eventually_ge_atTop n] with M hM
+  rw [Finset.sum_Ico_eq_sum_range]
+  rfl
+
+/-- Identification with the actual residual on each compact positive half interval.
+The error series here is absolutely convergent; the harmonic series remains ordered. -/
+theorem tc09_residual_abel_identity_ae (n : ℕ) (hn : 1 ≤ n) {T : ℝ}
+    (hT : 0 ≤ T) (hTp : T < Real.pi/2) :
+    ∀ᵐ t ∂volume.restrict (Icc (0 : ℝ) T),
+      popResidual uniformMargins (2*n-1) (Real.sin t) =
+        tc09_harmonicTail n t/(Real.pi * Real.sqrt (Real.cos t)) + tc09_odeTail n t := by
+  let G := fun (M : ℕ) (t : ℝ) =>
+    |popResidual uniformMargins (2*(n+M)-1) (Real.sin t)| * Real.cos t
+  let f := fun t => |popResidual uniformMargins (2*n-1) (Real.sin t) -
+    tc09_harmonicTail n t/(Real.pi * Real.sqrt (Real.cos t)) - tc09_odeTail n t| * Real.cos t
+  have hnat : Tendsto (fun M : ℕ => n+M) atTop atTop := by
+    simpa only [Nat.add_comm] using tendsto_add_atTop_nat n
+  have hG : ∀ M, IntegrableOn (G M) (Icc (0 : ℝ) T) := fun M =>
+    tc09_residual_sine_integrable _ hT hTp
+  have hGn : ∀ M, 0 ≤ᵐ[volume.restrict (Icc (0 : ℝ) T)] G M := by
+    intro M
+    apply (ae_restrict_iff' measurableSet_Icc).mpr
+    exact Eventually.of_forall fun t ht => mul_nonneg (abs_nonneg _) (tc09_cos_positive hTp ht).le
+  have hf : 0 ≤ᵐ[volume.restrict (Icc (0 : ℝ) T)] f := by
+    apply (ae_restrict_iff' measurableSet_Icc).mpr
+    exact Eventually.of_forall fun t ht => mul_nonneg (abs_nonneg _) (tc09_cos_positive hTp ht).le
+  have hlim : ∀ᵐ t ∂volume.restrict (Icc (0 : ℝ) T),
+      Tendsto (fun M => G M t) atTop (𝓝 (f t)) := by
+    apply (ae_restrict_iff' measurableSet_Icc).mpr
+    apply Eventually.of_forall
+    intro t ht
+    have ht' : t ∈ Ico (0 : ℝ) (Real.pi/2) := ⟨ht.1, ht.2.trans_lt hTp⟩
+    have hsin : Tendsto (fun M : ℕ => ∑ m ∈ Finset.Ico n (n+M),
+        tc09_sinPhase m t/(m : ℝ)) atTop (𝓝 (tc09_harmonicTail n t)) := by
+      by_cases ht0 : t=0
+      · subst t
+        simpa only [tc09_sinPhase, tc09_harmonicTail, Real.sin_zero, mul_zero,
+          zero_div, Finset.sum_const_zero, div_zero, zero_mul] using
+          (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+      · have hpos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm ht0)
+        have hs := Real.sin_pos_of_pos_of_lt_pi hpos (by linarith [ht'.2, Real.pi_pos])
+        exact (tc09_harmonic_ordered_limit n hn hs.ne').comp hnat
+    have herr := (tc09_odeTail_ordered_limit n hn ht').comp hnat
+    have hres := ((tendsto_const_nhds : Tendsto (fun _ : ℕ =>
+        popResidual uniformMargins (2*n-1) (Real.sin t)) atTop (𝓝 _)).sub
+      (hsin.div_const (Real.pi*Real.sqrt (Real.cos t)))).sub herr
+    have he (M : ℕ) : popResidual uniformMargins (2*(n+M)-1) (Real.sin t) =
+        popResidual uniformMargins (2*n-1) (Real.sin t) -
+          (∑ m ∈ Finset.Ico n (n+M), tc09_sinPhase m t/(m : ℝ)) /
+            (Real.pi*Real.sqrt (Real.cos t)) -
+          ∑ m ∈ Finset.Ico n (n+M), tc09_odeTerm m t := by
+      have h := tc09_residual_finite_tail n (n+M) hn (by omega) (Real.sin t)
+      simp only [tc09_odeTerm, Finset.sum_sub_distrib, div_mul_eq_div_div, ← Finset.sum_div]
+      linarith
+    have hres' := hres.congr (fun M => (he M).symm)
+    exact hres'.abs.mul_const (Real.cos t)
+  have hb : ∀ M, (∫ t in Icc (0 : ℝ) T, G M t) ≤
+      2 * expectation uniformMargins (fun x => |popResidual uniformMargins (2*(n+M)-1) x|) :=
+    fun M => tc09_residual_sine_l1_le _ hT hTp
+  have hb0 : Tendsto (fun M : ℕ => 2 * expectation uniformMargins
+      (fun x => |popResidual uniformMargins (2*(n+M)-1) x|)) atTop (𝓝 0) := by
+    simpa only [mul_zero, Function.comp_apply] using
+      (tc09_uniform_residual_l1_zero.comp hnat).const_mul 2
+  obtain ⟨hfi, hbound⟩ := tc09_nonnegative_integral_limit_bound hG hGn hf hlim hb hb0
+  have hzero : f =ᵐ[volume.restrict (Icc (0 : ℝ) T)] 0 :=
+    (integral_eq_zero_iff_of_nonneg_ae hf hfi).mp
+      (le_antisymm hbound (integral_nonneg_of_ae hf))
+  filter_upwards [hzero, ae_restrict_mem measurableSet_Icc] with t hz ht
+  have hc : Real.cos t ≠ 0 := (tc09_cos_positive hTp ht).ne'
+  have hz' : |popResidual uniformMargins (2*n-1) (Real.sin t) -
+      tc09_harmonicTail n t/(Real.pi*Real.sqrt (Real.cos t)) - tc09_odeTail n t| = 0 :=
+    (mul_eq_zero.mp hz).resolve_right hc
+  have he := abs_eq_zero.mp hz'
+  linarith
 
 end
 end AronowAudit.P023.Wave1

@@ -3,9 +3,12 @@ import AronowAudit.P002.Wave1.PrintedTheorem2
 /-!
 P002-T4: the quantitative sharpness counterexample for adjusted coverage.
 
-The finite-design sampling calculation puts the square inside the expectation:
+The existing `PrintedTheorem2` nodes prove the finite-design ingredients for
+exactly this Xi class. We reuse them without changing their statements or files.
+In particular, their sampling calculation puts the square inside the expectation:
 `E[(bar x)^2] = f_m Q` and
 `E[(overline{x^2} - Q)^2] = f_m (R - Q^2)`.
+Neither the held sharpness theorem nor any admitted sampling theorem is used.
 -/
 
 namespace AronowAudit.P002.Wave1
@@ -65,6 +68,8 @@ theorem theorem2_sharpness_counterexample_proof (α : ℝ) (hα : 0 < α ∧ α 
     have hlt : ENNReal.ofReal (1-α) < 1 :=
       ENNReal.ofReal_lt_one.mpr (by linarith [hα.1])
     exact (ne_of_lt hlt) heq.symm
+
+example : type_of% @AronowAudit.P002.theorem2_sharpness_counterexample := theorem2_sharpness_counterexample_proof
 
 end
 end AronowAudit.P002.Wave1

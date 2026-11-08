@@ -282,3 +282,6 @@ lemma variance_expansion (μ:Measure Ω) [IsProbabilityMeasure μ] (Z:ι→Ω→
 end
 end AronowAudit.P011.DenseCumulant
 
+#print axioms AronowAudit.P011.DenseCumulant.cumulant_of_cut
+#print axioms AronowAudit.P011.DenseCumulant.cumulant_connected_bound
+#print axioms AronowAudit.P011.DenseCumulant.variance_expansion

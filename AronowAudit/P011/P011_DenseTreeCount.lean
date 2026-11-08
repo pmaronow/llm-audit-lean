@@ -1,7 +1,7 @@
 import Mathlib
 
 /-! Direct finite counting for a four-position connected-support estimate.
-This helper makes no probabilistic or cumulant assertion. -/
+This scratch helper makes no probabilistic or cumulant assertion. -/
 namespace AronowAudit.P011.DenseTreeCount
 open scoped BigOperators
 noncomputable section
@@ -180,5 +180,9 @@ theorem connected4_count_le (D : ℝ) (hD : 0 ≤ D)
       simp only [Finset.sum_add_distrib]
       linarith
 
+#check @grow4_count_le
+#check @connected4_count_le
+#print axioms grow4_count_le
+#print axioms connected4_count_le
 end
 end AronowAudit.P011.DenseTreeCount

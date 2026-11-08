@@ -1,0 +1,192 @@
+[
+  {
+    "target_id": "P001-T58",
+    "theorem": "SAP.P001d.T58",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No premises. The fixed signed kernel is compactly supported: its integral is 2*1 + 2*(-1/2)=1. For a=0, n=1 and h=1 its integrated density at -1 is the integral of -1/2 on [-2,-1], namely -1/2; changing the endpoint value has zero Lebesgue mass. Thus the retained negative-CDF witness refutes the printed universal CDF-domain assertion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T59",
+    "theorem": "SAP.P001d.T59",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2, observations 0 and 1, h=1, and rectangleKernel=1/2 on [-1,1], zero elsewhere. It is even, nonnegative and has integral 1. scratch/Check.lean compiles all three kernel premises and proves that integral K=1 implies Integrable K, guarding against a totalized nonintegrable integral.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T60",
+    "theorem": "SAP.P001d.T60",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2, observations 0 and 1, h=1, and K=rectangleKernel. For the rectangular formula choose x=0; no observation equals x-h=-1. The first identity permits any integrable K, and the same normalized compactly supported kernel is an instance. The positive size and bandwidth exclude all zero denominators.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T61",
+    "theorem": "SAP.P001d.T61",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean without importing Challenge: heavyBootstrapLaw is an actual probability measure; its positive tail map is measurable; and there exists a probability measure on Omega=(N -> R), namely the infinite product of heavyBootstrapLaw, for which coordinate projections are IID and X_0 has precisely that law. The endpoint U=0 has zero uniform mass. The two asymptotic variance parameters are positive (4 and 1/4). In the local-functional conclusion H(0)=1/2 and the strict quarter-neighborhood forces the linear branch, so the unrestricted real infimum does no work there.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P001-T62",
+    "theorem": "SAP.P001d.T62",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the moment criterion and mean case use IID fair Bernoulli observations, T_n=the sample mean and phi=1/2. The estimator CLT holds, and conditional bootstrap weak convergence follows from Bernoulli empirical probabilities tending to 1/2 (equivalently, the bounded triangular-array bootstrap CLT); the bootstrap averages have finite support for each sample. For the median case use IID U[-1,1], m=0, delta=1/2, f identically 1/2 on that neighborhood and eta=1: the local density, unique median, positivity and moment hypotheses all hold. The real limsup is of probabilities in [0,1], with this bound compiled in scratch/Check.lean. Revision 2 changes only the label and disclosure: the theorem still requires every T_n to be globally Borel measurable, now exactly disclosed in record2.json and the Challenge docstring. The Bernoulli sample-mean and uniform-median instances continue to satisfy that requirement.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T63",
+    "theorem": "SAP.P001d.T63",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use an infinite sequence R_i of independent fair signs and clusters of size m=2 with X_i=(R_i,2R_i). Both coordinates have finite positive second moments, the cluster vectors are IID, and the cluster average is (3/2)R_i. Its mean is 0 and variance 9/4, so the cluster-mean variance is 9/(4l). No coordinate or sample index type is empty.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T64",
+    "theorem": "SAP.P001d.T64",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take m=2, s=1 and any rho in [0,1]. For each cluster choose independent standard normals Z_i,U_i,V_i, independently across clusters, and let X_i=(sqrt(rho)Z_i+sqrt(1-rho)U_i, sqrt(rho)Z_i+sqrt(1-rho)V_i). Diagonal covariances are 1 and the off-diagonal covariance is rho, including both endpoints. For resampling choose l=m=2 and any fixed array; the four index maps each have probability 1/4, with independent uniform coordinates.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T65",
+    "theorem": "SAP.P001d.T65",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled witness design is X=[[1,0],[1,1]] with n=2, K=1. Its first column is 1, its Gram matrix is [[2,1],[1,1]] and its determinant is 1. Choose Y=(2,3), giving beta=(2,1). Both slope and observation index sets are nonempty. scratch/Check.lean verifies the full-rank and intercept premises directly. The dropped singular-design regime is also real: for three design rows (1,1), response (-1,0,1) and b=(0,0), RSS(b)=2 is minimal, the Gram determinant is zero, and all three residual properties hold. scratch/Delta.lean verifies this by the identity RSS(c)=2+3(c_0+c_1)^2. The separately quoted canonical Theorem 4.1.5 uses the general argmin OLS definition, so this excluded regime makes the declared restriction accurate. The earlier objection based on the contradictory explanatory note is withdrawn; see REPORT2.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T66",
+    "theorem": "SAP.P001d.T66",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use X=[[1,0],[1,1]], n=2, K=1, e=(1,-1) and s2=1. The Gram inverse is [[1,-1],[-1,2]]. Since diag(e_i^2)=I, both supplied covariance matrices equal that inverse, with diagonals 1 and 2. Thus both selected nonnegativity premises hold, for example at slope index 1. The determinant/intercept witness itself is compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T67",
+    "theorem": "SAP.P001d.T67",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the four equally weighted points (Z,epsilon) in {-1,1}^2, X=(1,Z) in R^2, and sigma2=1. Given either value of Z, epsilon is equally likely to be -1 or 1, so its conditional mean is zero and its centered conditional square mean is 1. Every moment is finite, Q=I_2 and the meat is I_2. Neither the regressor type nor the noise is degenerate. scratch/Check.lean also verifies that removing subtraction of zero from the conditional-square certificate is exactly a definitional simplification.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P001-T68",
+    "theorem": "SAP.P001d.T68",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let X and W be independent fair signs on their four-point product probability space, take g(x)=x, and Y=X+W. Then W is integrable with mean zero, g is globally Borel measurable, and g(X) is integrable. Conditional on each X value the two noise signs average to zero, giving the asserted event-integral identities. A simple integrable IsCEF certificate is also compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T69",
+    "theorem": "SAP.P001d.T69",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use Omega=[0,1]^2 with the product uniform probability, X1 and X2 the coordinate projections, and Y=apdExample(X1,X2). The coordinates are independent uniforms and Y is a bounded measurable function of them, so the specified IsCEF holds by identical integrands. The derivative is -1 on the 4/5-probability branch and 9 on the remaining 1/5, giving mean 1, while evaluation at the covariate mean (1/2,1/2) gives -1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T70",
+    "theorem": "SAP.P001d.T70",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2, J=1, x=(0,1) and y=(2,3). The polynomial design is [[1,0],[1,1]] with Gram determinant 1, so the conditional inverse-formula branch is live. Keeping the slope zero and sending the intercept to positive infinity makes the unsquared criterion 5-2b_0 unbounded below. The squared minimizer is (2,1). The same nonempty full-rank design premises are compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T71",
+    "theorem": "SAP.P001d.T71",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2, K=1 and X=[[1,0],[1,1]], with any Y and lambda=1. The penalty is |b_1|. For b=(1,0) it is zero although the full l1 norm is 1. The slope index is nonempty, and both lambda=0 and lambda>0 cases are meaningful; no rank or probabilistic premises need satisfaction.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T72",
+    "theorem": "SAP.P001d.T72",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take K=1, x=(1,2), b=(3,4), and s=1. The location is 11 and the density is the ordinary N(11,1) density with finite absolute first moment. The s=0 expression is identically zero by real division-by-zero totalization, as compiled in scratch/Check.lean; that explicit excluded-scale check is not used to claim a probability law at scale zero.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T73",
+    "theorem": "SAP.P001d.T73",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No premises. scratch/Check.lean proves the entire T73Statement by exact normalization of the four equal weights and rational arithmetic, without using the Challenge theorem. Both conditioning events have mass 1/2. The residuals are (-1,1,-3,3), so the joint event has mass 1/2 and its marginal-probability product is 1/4.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P001-T74",
+    "theorem": "SAP.P001d.T74",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the first branch use independent fair signs X,W on a four-point product space, Y=X+W, m(x)=x and v(x)=1. All required L2 and global measurability conditions hold, and e=W. For the Gaussian branch use Omega=R^2 with U[-1,1] times N(0,1), X(x,z)=x, Y(x,z)=x+z, m=id and s=1; its joint law is exactly the stated translated product and the residual is the second coordinate. The finite nonindependence conjunct is the independently compiled T73Statement.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P001-T75",
+    "theorem": "SAP.P001d.T75",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take K=1, x=(1,2), b=(0,1) and h constantly 1/3. This supplies an actual two-point probability law with masses 2/3 at 0 and 1/3 at 1. Its mean is 1/3 and belongs to [0,1]. The binaryChoiceMean equality for this example is compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T76",
+    "theorem": "SAP.P001d.T76",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2, K=1, design rows both (1,0), and Y=(1,3). The RSS minimum is attained by every b with b_0=2, with arbitrary b_1. At any fixed s>0 the Gaussian log-likelihood is a negative positive multiple of RSS plus a constant. Thus the optimizer-set assertions have nonempty instances even for singular designs, and positive scales s=1 and t=2 supply the cross-scale case.",
+    "confidence": 0.99
+  }
+]

@@ -677,6 +677,8 @@ theorem proposition_one_variance_limit_proof (S : Study Ω) (hs : S.standing) (c
     (combined_influence_variance S hs)
     (GP019B2b_t18_combined_remainder S hs c1 c0)
 
+example : type_of% @AronowAudit.P019.proposition_one_variance_limit := proposition_one_variance_limit_proof
+
 /-! T20: apply the same ratio tools to the two treatment arms. -/
 
 lemma GP019B2b_arm_ratio (S : Study Ω) (z : Bool) (c : ℝ) (n : ℕ) (s : Fin n → Ω) :
@@ -784,6 +786,8 @@ theorem proposition_two_efficiency_proof (S : Study Ω) (hs : S.standing)
   exact ⟨proposition_one_variance_limit_proof S hs c1 c0,
     GP019B2b_t20_standard_variance_limit S hs d1 d0,
     (population_efficiency_gap S hs).2⟩
+
+example : type_of% @AronowAudit.P019.proposition_two_efficiency := proposition_two_efficiency_proof
 
 end
 end AronowAudit.P019.Wave1

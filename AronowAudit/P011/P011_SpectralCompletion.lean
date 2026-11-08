@@ -2,7 +2,7 @@ import AronowAudit.P011.P011_Audit
 import AronowAudit.P011.P011_DenseVarianceCompletion
 import Mathlib.Analysis.CStarAlgebra.Matrix
 
-/-! Spectral clipping, operator-norm bounds, and Frobenius projection inequalities. -/
+/-! Isolated spectral proofs; the canonical P011 source remains frozen. -/
 namespace AronowAudit.P011.SpectralConfidence
 noncomputable section
 open scoped BigOperators Matrix Matrix.Norms.L2Operator
@@ -61,7 +61,7 @@ theorem positive_part_majorant {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ)
       sub_nonneg.mpr (le_max_left (hM.eigenvalues i) 0))).mul_mul_conjTranspose_same
         (hM.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℝ)
 
-/-- The positive and negative spectral parts have orthogonal ranges; their product is zero. -/
+/-- Positive and negative spectral corrections have disjoint eigenspaces. -/
 theorem positive_part_orthogonal {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ)
     (hM : M.IsHermitian) : positivePart M * (positivePart M - M) = 0 := by
   let U : Matrix (Fin n) (Fin n) ℝ := hM.eigenvectorUnitary
@@ -224,7 +224,7 @@ theorem positive_part_frobenius_unique {n : ℕ}
   have hz : frobeniusSq (X-positivePart M) = 0 := by linarith
   exact sub_eq_zero.mp ((frobeniusSq_eq_zero _).mp hz)
 
-/-- The absolute row-sum bound in the Euclidean operator norm. -/
+/-- The genuine absolute row-sum bound in the audit's Euclidean operator norm. -/
 theorem operatorNorm_le_abs_row_sum {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ)
     (hM : ∀ i j, M i j = M j i) (C : ℝ) (hC : 0 ≤ C)
     (hrow : ∀ i, (∑ j, |M i j|) ≤ C) : operatorNorm M ≤ C := by
@@ -320,7 +320,7 @@ theorem oracle_operatorNorm_degree {n : ℕ} (A : Graph n) :
     exact_mod_cast hd
   linarith
 
-/-- Five finite spectral properties of the positive part of an oracle matrix. -/
+/-- Exact original five-conjunct finite spectral contract. -/
 theorem positive_part_finite {n : ℕ} (A : Graph n) :
     PSD (positivePart (oracleMatrix A)) ∧
     PSD (positivePart (oracleMatrix A) - oracleMatrix A) ∧
@@ -348,7 +348,7 @@ theorem positive_part_finite {n : ℕ} (A : Graph n) :
   · intro M hM
     exact positive_part_frobenius_nearest _ M hA hM
 
-/-- Uniqueness of the nearest PSD matrix to a graph oracle matrix. -/
+/-- Exact original graph-specific uniqueness contract. -/
 theorem positive_part_nearest_unique {n : ℕ} (A : Graph n)
     (M : Matrix (Fin n) (Fin n) ℝ) (hM : PSD M)
     (hnearest : frobeniusSq (M-oracleMatrix A) =
@@ -356,7 +356,7 @@ theorem positive_part_nearest_unique {n : ℕ} (A : Graph n)
     M = positivePart (oracleMatrix A) := by
   exact positive_part_frobenius_unique _ M (oracle_hermitian A) hM hnearest
 
-/-- Asymptotic conservativeness for the positive part of the true-graph oracle matrix. -/
+/-- Exact original unconditional known-graph asymptotic contract. -/
 theorem positive_part_conservative (F : Family) (c1 c2 c3 c4 : ℝ)
     (h : Scaling F c1 c2 c3 c4) :
     Conservative F (fun k y => VPositive (F.model k).G (weighted (F.model k) y)) := by
@@ -446,12 +446,32 @@ theorem cycle_clipped_eq_positive_part :
   exact positive_part_of_orthogonal_decomposition _ cycleClipped (oracle_hermitian cycleGraph)
     hp hn horth
 
+theorem cycle_actual_positive_quadratic (x : Fin 4 → ℝ) :
+    quadratic (positivePart (oracleMatrix cycleGraph)) x =
+      quadratic (oracleMatrix cycleGraph) x+(x 0-x 1+x 2-x 3)^2/4 := by
+  rw [←cycle_clipped_eq_positive_part]
+  exact cycle_spectral_certificate.2.2 x
 
 theorem cycle_actual_positive_value :
     quadratic (positivePart (oracleMatrix cycleGraph)) (![0,1,-1,0] : Fin 4 → ℝ) = 1 := by
   rw [←cycle_clipped_eq_positive_part]
   exact cycle_majorant_certificate.2.2.2
 
+#print axioms cycle_clipped_eq_positive_part
+#print axioms cycle_actual_positive_quadratic
+#print axioms cycle_actual_positive_value
+#print axioms positive_part_of_orthogonal_decomposition
+#print axioms positive_part_finite
+#print axioms positive_part_nearest_unique
+#print axioms positive_part_conservative
+#print axioms positive_part_frobenius_identity
+#print axioms positive_part_frobenius_projection
+#print axioms positive_part_frobenius_nearest
+#print axioms positive_part_frobenius_unique
+#print axioms trace_psd_product_nonneg
+#print axioms positive_part_majorant
+#print axioms positive_part_orthogonal
+#print axioms positive_part_operatorNorm_le
 end
 end AronowAudit.P011.SpectralConfidence
 
@@ -479,6 +499,10 @@ theorem positive_part_conservative (F : Family) (c1 c2 c3 c4 : ℝ)
     (h : Scaling F c1 c2 c3 c4) :
     Conservative F (fun k y => VPositive (F.model k).G (weighted (F.model k) y)) := by
   exact SpectralConfidence.positive_part_conservative F c1 c2 c3 c4 h
+
+#print axioms AronowAudit.P011.positive_part_finite
+#print axioms AronowAudit.P011.positive_part_nearest_unique
+#print axioms AronowAudit.P011.positive_part_conservative
 
 end
 end AronowAudit.P011

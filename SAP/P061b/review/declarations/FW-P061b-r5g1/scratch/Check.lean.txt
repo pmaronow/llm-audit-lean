@@ -1,0 +1,212 @@
+import SAP.P061b.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+namespace BlindAudit
+open SAP.P061b
+open scoped BigOperators Classical
+
+-- Reduce each household calculation to four assignments and two units.
+local macro "household_calc" : tactic =>
+  `(tactic| norm_num [averageContrast, averageExposureMean, unitContrast,
+    exposureMean, designMean, exposureProbability, eventProbability,
+    htMean, htDifference, oneTreated, bothOrNeither, independentHousehold,
+    ownAssignment, housemateAssignment, attenuatedOutcome, amplifiedOutcome,
+    tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two])
+
+-- T12: one tuple satisfies all the general clauses' hypotheses, with d=1,e=0.
+example :
+    0 < (2 : ℕ) ∧
+    (∀ i z, housemateAssignment i z = (fun (_ : Fin 2) (d : ℝ) => d) i
+      (housemateAssignment i z)) ∧
+    GloballyStable housemateAssignment housemateAssignment ∧
+    (∀ i, 0 < exposureProbability bothOrNeither housemateAssignment i 1 ∧
+      0 < exposureProbability bothOrNeither housemateAssignment i 0) ∧
+    (∀ i, 0 < exposureProbability independentHousehold housemateAssignment i 1 ∧
+      0 < exposureProbability independentHousehold housemateAssignment i 0) ∧
+    averageContrast bothOrNeither housemateAssignment housemateAssignment 1 0 = 1 ∧
+    averageContrast independentHousehold housemateAssignment housemateAssignment 1 0 = 1 := by
+  refine ⟨by norm_num, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i z; rfl
+  · intro i z w h; exact h
+  · intro i; fin_cases i <;> household_calc
+  · intro i; fin_cases i <;> household_calc
+  · household_calc
+  · household_calc
+
+-- T13: support stability is nonvacuous and genuinely weaker than global stability.
+lemma support_household : SupportStable oneTreated ownAssignment housemateAssignment := by
+  intro i z w hz hw he
+  rcases z with ⟨a,b⟩
+  rcases w with ⟨c,d⟩
+  fin_cases i <;> fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;>
+    norm_num [InSupport, oneTreated, ownAssignment, housemateAssignment] at *
+
+lemma not_global_household : ¬GloballyStable ownAssignment housemateAssignment := by
+  intro h
+  have bad := h 0 (1,0) (1,1) (by norm_num [ownAssignment])
+  norm_num [housemateAssignment] at bad
+
+-- Explicit globally stable extension agreeing with y on the positive-mass support.
+def extended (i : Fin 2) (z : Household) : ℝ := 1 - ownAssignment i z
+
+lemma extended_global : GloballyStable ownAssignment extended := by
+  intro i z w h
+  simp only [extended, h]
+
+lemma extended_agrees : ∀ i z, InSupport oneTreated z →
+    housemateAssignment i z = extended i z := by
+  intro i z hz
+  rcases z with ⟨a,b⟩
+  fin_cases i <;> fin_cases a <;> fin_cases b <;>
+    norm_num [InSupport, oneTreated, housemateAssignment, ownAssignment, extended] at *
+
+example : 0 < (2 : ℕ) ∧
+    SupportStable oneTreated ownAssignment housemateAssignment ∧
+    ¬GloballyStable ownAssignment housemateAssignment ∧
+    (∀ i, 0 < exposureProbability oneTreated ownAssignment i 1 ∧
+      0 < exposureProbability oneTreated ownAssignment i 0) ∧
+    ∃ y' : Schedule Household 2, GloballyStable ownAssignment y' ∧
+      (∀ i z, InSupport oneTreated z → housemateAssignment i z = y' i z) ∧
+      ∀ A, observedEventProbability oneTreated housemateAssignment A =
+        observedEventProbability oneTreated y' A := by
+  refine ⟨by norm_num, support_household, not_global_household, ?_, extended,
+    extended_global, extended_agrees, ?_⟩
+  · intro i; fin_cases i <;> household_calc
+  · intro A
+    unfold observedEventProbability eventProbability
+    apply tsum_congr
+    intro z
+    by_cases hz : InSupport oneTreated z
+    · have vec : (fun i => housemateAssignment i z) = (fun i => extended i z) := by
+        funext i; exact extended_agrees i z hz
+      dsimp only
+      simp only [vec]
+    · have hp : oneTreated.p z = 0 := by
+        have hn := oneTreated.nonneg z
+        exact le_antisymm (le_of_not_gt hz) hn
+      simp [hp]
+
+-- T14: every conjunct is independently checked by exact finite calculation.
+example : T14Statement := by
+  unfold T14Statement
+  refine ⟨?_, ?_, ?_, support_household, not_global_household, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  all_goals household_calc <;> norm_num [InSupport, oneTreated]
+
+-- T15: all binary stability/failure statements and all six contrasts.
+lemma attenuated_support (D : AtomicDesign Household) :
+    (D = oneTreated ∨ D = bothOrNeither) → SupportStable D ownAssignment attenuatedOutcome := by
+  rintro (rfl | rfl) <;>
+    intro i z w hz hw he <;>
+    rcases z with ⟨a,b⟩ <;> rcases w with ⟨c,d⟩ <;>
+    fin_cases i <;> fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;>
+    norm_num [InSupport, oneTreated, bothOrNeither, ownAssignment, attenuatedOutcome] at *
+
+lemma amplified_support (D : AtomicDesign Household) :
+    (D = oneTreated ∨ D = bothOrNeither) → SupportStable D ownAssignment amplifiedOutcome := by
+  rintro (rfl | rfl) <;>
+    intro i z w hz hw he <;>
+    rcases z with ⟨a,b⟩ <;> rcases w with ⟨c,d⟩ <;>
+    fin_cases i <;> fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;>
+    norm_num [InSupport, oneTreated, bothOrNeither, ownAssignment, amplifiedOutcome] at *
+
+example :
+    averageContrast oneTreated ownAssignment attenuatedOutcome 1 0 = 1 ∧
+    averageContrast bothOrNeither ownAssignment attenuatedOutcome 1 0 = 0 ∧
+    SupportStable oneTreated ownAssignment attenuatedOutcome ∧
+    SupportStable bothOrNeither ownAssignment attenuatedOutcome ∧
+    ¬GloballyStable ownAssignment attenuatedOutcome ∧
+    averageContrast oneTreated ownAssignment amplifiedOutcome 1 0 = 0 ∧
+    averageContrast bothOrNeither ownAssignment amplifiedOutcome 1 0 = 1 ∧
+    SupportStable oneTreated ownAssignment amplifiedOutcome ∧
+    SupportStable bothOrNeither ownAssignment amplifiedOutcome ∧
+    ¬GloballyStable ownAssignment amplifiedOutcome := by
+  refine ⟨?_, ?_, attenuated_support _ (Or.inl rfl), attenuated_support _ (Or.inr rfl),
+    ?_, ?_, ?_, amplified_support _ (Or.inl rfl), amplified_support _ (Or.inr rfl), ?_⟩
+  · household_calc
+  · household_calc
+  · intro h
+    have bad := h 0 (1,0) (1,1) (by norm_num [ownAssignment])
+    norm_num [attenuatedOutcome, ownAssignment] at bad
+  · household_calc
+  · household_calc
+  · intro h
+    have bad := h 0 (1,0) (1,1) (by norm_num [ownAssignment])
+    norm_num [amplifiedOutcome] at bad
+
+local macro "version_calc" : tactic =>
+  `(tactic| norm_num [averageContrast, averageExposureMean, exposureMean, designMean,
+    exposureProbability, eventProbability, oneVersionTreated, versionCategory,
+    versionResponse, tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_succ,
+    Finset.filter_singleton])
+
+lemma version_support (v : Fin 3) (hv : v = 1 ∨ v = 2) :
+    SupportStable (oneVersionTreated v hv) versionCategory versionResponse := by
+  intro i z w hz hw he
+  rcases hv with rfl | rfl <;>
+    rcases z with ⟨a,b⟩ <;> rcases w with ⟨c,d⟩ <;>
+    fin_cases i <;> fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;>
+    norm_num [InSupport, oneVersionTreated, versionCategory, versionResponse] at *
+
+example :
+    (∀ i : Fin 2,
+      exposureProbability (oneVersionTreated 1 (Or.inl rfl)) versionCategory i 1 = 1/2 ∧
+      exposureProbability (oneVersionTreated 1 (Or.inl rfl)) versionCategory i 0 = 1/2 ∧
+      exposureProbability (oneVersionTreated 2 (Or.inr rfl)) versionCategory i 1 = 1/2 ∧
+      exposureProbability (oneVersionTreated 2 (Or.inr rfl)) versionCategory i 0 = 1/2) ∧
+    averageContrast (oneVersionTreated 1 (Or.inl rfl)) versionCategory versionResponse 1 0 = 1 ∧
+    averageContrast (oneVersionTreated 2 (Or.inr rfl)) versionCategory versionResponse 1 0 = 2 ∧
+    SupportStable (oneVersionTreated 1 (Or.inl rfl)) versionCategory versionResponse ∧
+    SupportStable (oneVersionTreated 2 (Or.inr rfl)) versionCategory versionResponse ∧
+    ¬GloballyStable versionCategory versionResponse ∧
+    ∀ i z w, (if i = 0 then z.1 else z.2) = (if i = 0 then w.1 else w.2) →
+      versionResponse i z = versionResponse i w := by
+  refine ⟨?_, ?_, ?_, version_support 1 (Or.inl rfl), version_support 2 (Or.inr rfl), ?_, ?_⟩
+  · intro i; fin_cases i <;> version_calc
+  · version_calc
+  · version_calc
+  · intro h
+    have bad := h 0 (1,0) (2,0) (by norm_num [versionCategory])
+    norm_num [versionResponse] at bad
+  · intro i z w h
+    fin_cases i <;> simpa [versionResponse] using congrArg (fun a : Fin 3 => (a.val : ℝ)) h
+
+-- T16: full support, unequal margins, and outcomes violating support stability.
+noncomputable def unequal : AtomicDesign Household where
+  p := fun z => if z.1 = 0 then 1/8 else if z.2 = 0 then 1/4 else 1/2
+  nonneg := by intro z; split_ifs <;> norm_num
+  summable := Summable.of_finite
+  total := by norm_num [tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two]
+
+example :
+    0 < (2 : ℕ) ∧
+    (∀ i, 0 < exposureProbability unequal ownAssignment i 1) ∧
+    ExposureMoment unequal ownAssignment housemateAssignment 1 ∧
+    (∀ i, 0 < exposureProbability unequal ownAssignment i 0) ∧
+    ExposureMoment unequal ownAssignment housemateAssignment 0 ∧
+    ¬SupportStable unequal ownAssignment housemateAssignment ∧
+    HasFirstMoment unequal (htMean unequal ownAssignment housemateAssignment 1) ∧
+    HasFirstMoment unequal (htDifference unequal ownAssignment housemateAssignment 1 0) ∧
+    designMean unequal (htMean unequal ownAssignment housemateAssignment 1) = 11/15 ∧
+    averageExposureMean unequal ownAssignment housemateAssignment 1 = 11/15 ∧
+    designMean unequal (htDifference unequal ownAssignment housemateAssignment 1 0) = 3/20 ∧
+    averageContrast unequal ownAssignment housemateAssignment 1 0 = 3/20 := by
+  refine ⟨by norm_num, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i; fin_cases i <;> unfold unequal <;> household_calc
+  · intro i; exact Summable.of_finite
+  · intro i; fin_cases i <;> unfold unequal <;> household_calc
+  · intro i; exact Summable.of_finite
+  · intro h
+    have bad := h 0 (1,0) (1,1)
+      (by norm_num [InSupport, unequal]) (by norm_num [InSupport, unequal])
+      (by norm_num [ownAssignment])
+    norm_num [housemateAssignment] at bad
+  · exact Summable.of_finite
+  · exact Summable.of_finite
+  · unfold unequal; household_calc
+  · unfold unequal; household_calc
+  · unfold unequal; household_calc
+  · unfold unequal; household_calc
+
+end BlindAudit

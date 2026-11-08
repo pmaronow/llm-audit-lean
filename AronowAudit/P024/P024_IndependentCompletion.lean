@@ -31,6 +31,20 @@ def nonemptyPerm (k : ℕ) (π : Equiv.Perm (Fin (k+2))) :
 def subsetCoefficient {k : ℕ} (i : Fin (k+2)) (s : NonemptyAllocations k) : ℝ :=
   if i ∈ s.val then 1/(s.val.card : ℝ) else 0
 
+lemma subset_coefficient_symmetric (k : ℕ) (i j : Fin (k+2)) :
+    expectation (conditionalNonemptyDesign k) (subsetCoefficient i) =
+      expectation (conditionalNonemptyDesign k) (subsetCoefficient j) := by
+  classical
+  let π : Equiv.Perm (Fin (k+2)) := Equiv.swap j i
+  let e := nonemptyPerm k π
+  have ht (s : NonemptyAllocations k) : subsetCoefficient i (e s) = subsetCoefficient j s := by
+    change (if i ∈ s.val.map π.toEmbedding then 1/((s.val.map π.toEmbedding).card : ℝ) else 0) = _
+    simp [subsetCoefficient,π]
+  have hp : expectation (conditionalNonemptyDesign k) (fun s => subsetCoefficient i (e s)) =
+      expectation (conditionalNonemptyDesign k) (subsetCoefficient i) := by
+    unfold expectation conditionalNonemptyDesign uniformDesign
+    exact Equiv.sum_comp e (fun s => (1/(Fintype.card (NonemptyAllocations k) : ℝ))*subsetCoefficient i s)
+  simpa only [ht] using hp.symm
 
 lemma subset_coefficients_sum {k : ℕ} (s : NonemptyAllocations k) :
     ∑ i, subsetCoefficient i s = 1 := by
@@ -41,10 +55,34 @@ lemma subset_coefficients_sum {k : ℕ} (s : NonemptyAllocations k) :
   rw [hf,Finset.sum_const]
   simp [hc]
 
+lemma subset_coefficient_expectation (k : ℕ) (i : Fin (k+2)) :
+    expectation (conditionalNonemptyDesign k) (subsetCoefficient i) = 1/(k+2) := by
+  classical
+  have hs : (∑ j, expectation (conditionalNonemptyDesign k) (subsetCoefficient j)) = 1 := by
+    rw [← expectation_sum]
+    have he : (fun s : NonemptyAllocations k => ∑ j, subsetCoefficient j s) = fun _ => 1 :=
+      funext subset_coefficients_sum
+    rw [he,expectation_const]
+  have he : ∀ j, expectation (conditionalNonemptyDesign k) (subsetCoefficient j) =
+      expectation (conditionalNonemptyDesign k) (subsetCoefficient i) :=
+    fun j => subset_coefficient_symmetric k j i
+  simp only [he,Finset.sum_const,Finset.card_univ,Fintype.card_fin,nsmul_eq_mul,
+    Nat.cast_add,Nat.cast_ofNat] at hs
+  apply (eq_div_iff (by positivity : (k+2 : ℝ) ≠ 0)).mpr
+  nlinarith
+
 
 def subsetMean {k : ℕ} (y : Fin (k+2) → ℝ) (s : NonemptyAllocations k) : ℝ :=
   ∑ j, subsetCoefficient j s * y j
 
+lemma subset_mean_expectation (k : ℕ) (y : Fin (k+2) → ℝ) :
+    expectation (conditionalNonemptyDesign k) (subsetMean y) = (∑ j, y j)/(k+2) := by
+  classical
+  unfold subsetMean
+  rw [expectation_sum]
+  simp_rw [expectation_mul,subset_coefficient_expectation]
+  simp only [one_div,div_eq_mul_inv,← Finset.mul_sum]
+  ring
 
 lemma subset_mean_formula {k : ℕ} (y : Fin (k+2) → ℝ) (s : NonemptyAllocations k) :
     subsetMean y s = (∑ j ∈ s.val, y j)/(s.val.card : ℝ) := by
@@ -56,6 +94,16 @@ lemma subset_mean_formula {k : ℕ} (y : Fin (k+2) → ℝ) (s : NonemptyAllocat
   rw [hf,← Finset.mul_sum]
   ring
 
+lemma complement_subset_mean_expectation (k : ℕ) (y : Fin (k+2) → ℝ) :
+    expectation (conditionalNonemptyDesign k)
+      (fun s => subsetMean y (nonemptyComplementEquiv k s)) = (∑ j, y j)/(k+2) := by
+  have hp : expectation (conditionalNonemptyDesign k)
+      (fun s => subsetMean y (nonemptyComplementEquiv k s)) =
+      expectation (conditionalNonemptyDesign k) (subsetMean y) := by
+    unfold expectation conditionalNonemptyDesign uniformDesign
+    exact Equiv.sum_comp (nonemptyComplementEquiv k)
+      (fun s => (1/(Fintype.card (NonemptyAllocations k) : ℝ))*subsetMean y s)
+  rw [hp,subset_mean_expectation]
 
 lemma equal_cluster_subset_formula {k : ℕ} (n : ℝ) (hn : 0 < n)
     (y0 y1 : Fin (k+2) → ℝ) (s : NonemptyAllocations k) :
@@ -82,6 +130,23 @@ lemma equal_cluster_subset_formula {k : ℕ} (n : ℝ) (hn : 0 < n)
   have hCN : (∑ j, if subsetExposure s.val j then 0 else n) = n*(s.valᶜ).card := by
     simpa using hC (fun _ => 1)
   rw [hTN,hCN,mul_div_mul_left _ _ hn.ne',mul_div_mul_left _ _ hn.ne']
+
+/-- Equal-sized clusters under the actual fair independent assignment conditional
+on nonempty treatment and control arms. No fixed treatment count is assumed. -/
+theorem equal_cluster_independent_conditional_unbiased (k : ℕ) (n : ℝ) (hn : 0 < n)
+    (y0 y1 : Fin (k+2) → ℝ) :
+    expectation (conditionalNonemptyDesign k)
+      (fun s => clusterDIM (fun _ => n) y0 y1 (subsetExposure s.val)) =
+      clusterEffect (fun _ => n) y0 y1 := by
+  have he : (fun s : NonemptyAllocations k => clusterDIM (fun _ => n) y0 y1 (subsetExposure s.val)) =
+      fun s => subsetMean y1 s - subsetMean y0 (nonemptyComplementEquiv k s) :=
+    funext (equal_cluster_subset_formula n hn y0 y1)
+  rw [he,expectation_sub,subset_mean_expectation,complement_subset_mean_expectation]
+  unfold clusterEffect
+  simp only [← Finset.mul_sum,Finset.sum_const,Finset.card_univ,Fintype.card_fin,nsmul_eq_mul]
+  simp only [Nat.cast_add,Nat.cast_ofNat]
+  rw [mul_comm (k+2 : ℝ) n,mul_div_mul_left _ _ hn.ne',Finset.sum_sub_distrib]
+  ring
 
 
 /-- The uniform nonempty allocation design is exactly the conditional law of
@@ -160,6 +225,25 @@ theorem unequal_cluster_independent_bias :
   · unfold expectation
     rw [huniv]
     norm_num [conditionalNonemptyDesign,uniformDesign,hc,a,b,clusterEffect,clusterDIM,subsetExposure,Fin.sum_univ_two]
+
+/-- Explicit repair of the equal-cluster unbiasedness statement: retain the
+independent assignment law, condition on the event where both sample means
+exist, and prove unbiasedness without assuming a fixed treatment count. -/
+theorem equal_cluster_independent_scope_repair (k : ℕ) (n : ℝ) (hn : 0 < n)
+    (y0 y1 : Fin (k+2) → ℝ) :
+    independentClusterLaw (uniformDesign (Finset (Fin (k+2)))) (1/2) ∧
+    (0 < probability (uniformDesign (Finset (Fin (k+2))))
+      (fun s => s ≠ ∅ ∧ s ≠ Finset.univ)) ∧
+    (∀ s : NonemptyAllocations k, (conditionalNonemptyDesign k).mass s =
+      (uniformDesign (Finset (Fin (k+2)))).mass s.val /
+        probability (uniformDesign (Finset (Fin (k+2))))
+          (fun s => s ≠ ∅ ∧ s ≠ Finset.univ)) ∧
+    expectation (conditionalNonemptyDesign k)
+      (fun s => clusterDIM (fun _ => n) y0 y1 (subsetExposure s.val)) =
+      clusterEffect (fun _ => n) y0 y1 := by
+  exact ⟨uniform_subsets_independent _,(conditional_nonempty_actual_mass k).1,
+    (conditional_nonempty_actual_mass k).2,
+    equal_cluster_independent_conditional_unbiased k n hn y0 y1⟩
 
 
 def armCoefficient {k : ℕ} (upper : Bool) (i : Fin (k+2)) (s : NonemptyAllocations k) : ℝ :=
@@ -325,6 +409,25 @@ theorem equal_cluster_bernoulli_scope_repair (k : ℕ) (p : ℝ) (hp : 0 < p) (h
     rw [← bernoulli_nonempty_mass_probability]
     rfl
 
+/-- The printed comparison of sample means needs a nonempty-arm domain.
+For illustration only, Lean's zero-denominator extension of that comparison
+has expectation 3/4 rather than effect1 under two fair independent clusters. -/
+lemma empty_arm_extension_changes_expectation :
+    independentClusterLaw (uniformDesign (Finset (Fin 2))) (1/2) ∧
+    expectation (uniformDesign (Finset (Fin 2)))
+      (fun s => clusterDIM (fun _ => 1) (fun _ => 0) (fun _ => 1) (subsetExposure s)) = 3/4 ∧
+    clusterEffect (fun _ : Fin 2 => 1) (fun _ => 0) (fun _ => 1) = 1 := by
+  classical
+  have hall : (Finset.univ : Finset (Finset (Fin 2))) = {∅,{0},{1},{0,1}} := by decide
+  refine ⟨uniform_subsets_independent 2,?_,?_⟩
+  · unfold expectation
+    rw [hall]
+    norm_num [uniformDesign,clusterDIM,subsetExposure,Fin.sum_univ_two,
+      Finset.sum_insert,Finset.ext_iff,Fin.forall_fin_succ]
+  · norm_num [clusterEffect,Fin.sum_univ_two]
 
 end AronowAudit.P024
 
+#print axioms AronowAudit.P024.unequal_cluster_independent_bias
+#print axioms AronowAudit.P024.equal_cluster_bernoulli_scope_repair
+#print axioms AronowAudit.P024.empty_arm_extension_changes_expectation

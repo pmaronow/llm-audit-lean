@@ -1,8 +1,9 @@
 import AronowAudit.P027.Wave1.GaussianMomentsBlueprint
 import Mathlib.Probability.Independence.Integration
 
-/-! Independent integrable mean-zero real random variables have an integrable
-product with integral zero. -/
+/-! Node N2 of the shared Gaussian-moments blueprint (trivial; written by the
+blueprint architect): independent integrable mean-zero real random variables have an
+integrable product with integral zero. -/
 
 namespace AronowAudit.P027.Wave1.GaussianMoments
 

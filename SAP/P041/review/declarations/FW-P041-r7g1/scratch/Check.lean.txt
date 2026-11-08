@@ -1,0 +1,153 @@
+import SAP.P041.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open SAP.P041
+open scoped BigOperators
+
+-- These checks use definitions only, without importing a Challenge theorem.
+namespace Review
+
+lemma rates {q : ℝ} (hq : 0 < q) (hq1 : q < 1) :
+    0 < positiveHazard q ∧ 0 < negativeHazard q ∧
+    positiveHazard q / negativeHazard q = 2/3 := by
+  have hl : Real.log q < 0 := Real.log_neg hq hq1
+  have hn : Real.log q ≠ 0 := ne_of_lt hl
+  constructor
+  · dsimp [positiveHazard]
+    exact div_pos (mul_pos_of_neg_of_neg (by norm_num) hl) (by norm_num)
+  constructor
+  · dsimp [negativeHazard]
+    exact div_pos (mul_pos_of_neg_of_neg (by norm_num) hl) (by norm_num)
+  · dsimp [positiveHazard, negativeHazard]
+    field_simp
+
+lemma contrast {q : ℝ} (hq : 0 < q) : twelveHourContrast q = q^2*(1-q) := by
+  have ha : -(-2 * Real.log q / 12) * 12 = 2 * Real.log q := by ring
+  have hn : -(-3 * Real.log q / 12) * 12 = 3 * Real.log q := by ring
+  have he2 : Real.exp (2 * Real.log q) = q^2 := by
+    simpa only [Nat.cast_ofNat, Real.exp_log hq] using Real.exp_nat_mul (Real.log q) 2
+  have he3 : Real.exp (3 * Real.log q) = q^3 := by
+    simpa only [Nat.cast_ofNat, Real.exp_log hq] using Real.exp_nat_mul (Real.log q) 3
+  unfold twelveHourContrast exponentialSurvival positiveHazard negativeHazard
+  rw [ha, hn, he2, he3]
+  ring
+
+-- All universal hypotheses of T1 are realized at both supplied parameters,
+-- including a nonnegative observation time and positive, non-null rates.
+example :
+    (0:ℝ) < 4/5 ∧ (4/5:ℝ) < 1 ∧
+    (0:ℝ) < 99/100 ∧ (99/100:ℝ) < 1 ∧ (0:ℝ) ≤ 12 ∧
+    0 < positiveHazard (4/5) ∧ 0 < negativeHazard (4/5) ∧
+    0 < positiveHazard (99/100) ∧ 0 < negativeHazard (99/100) := by
+  have a := rates (q := 4/5) (by norm_num) (by norm_num)
+  have f := rates (q := 99/100) (by norm_num) (by norm_num)
+  exact ⟨by norm_num, by norm_num, by norm_num, by norm_num, by norm_num,
+    a.1, a.2.1, f.1, f.2.1⟩
+
+lemma binomial_pos {n k : ℕ} {p : ℝ}
+    (hk : k ≤ n) (hp : 0 < p) (hp1 : p < 1) :
+    0 < binomialCountProbability n k p := by
+  have hc : (0:ℝ) < (n.choose k : ℝ) := by exact_mod_cast Nat.choose_pos hk
+  unfold binomialCountProbability
+  exact mul_pos (mul_pos hc (pow_pos hp _)) (pow_pos (sub_pos.mpr hp1) _)
+
+-- The exact four masses are positive with ordinary binomial inputs.
+example :
+    0 < binomialCountProbability 150 75 (61/125) ∧
+    0 < binomialCountProbability 150 52 (9/25) ∧
+    0 < binomialCountProbability 76 1 (29701/1000000) ∧
+    0 < binomialCountProbability 75 3 (199/10000) := by
+  exact ⟨binomial_pos (by norm_num) (by norm_num) (by norm_num),
+    binomial_pos (by norm_num) (by norm_num) (by norm_num),
+    binomial_pos (by norm_num) (by norm_num) (by norm_num),
+    binomial_pos (by norm_num) (by norm_num) (by norm_num)⟩
+
+-- The complete rounding rectangle hypotheses in T2 hold jointly at their
+-- centers. Its comparison denominator is a strictly positive real.
+example : ∃ hF sF hA sA : ℝ,
+    printedInterval 0.691 hF ∧ printedInterval 0.318 sF ∧
+    printedInterval 0.629 hA ∧ printedInterval 0.091 sA ∧
+    0 < Real.sqrt ((logHazardSE hF sF)^2 + (logHazardSE hA sA)^2) := by
+  refine ⟨0.691, 0.318, 0.629, 0.091, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [printedInterval]
+  · norm_num [printedInterval]
+  · norm_num [printedInterval]
+  · norm_num [printedInterval]
+  · apply Real.sqrt_pos.2
+    norm_num [logHazardSE]
+
+-- An explicit witness for every condition of T2's existential, together
+-- with its exact contrasts, without assuming T1 or T2.
+example : ∃ qA qF : ℝ, 0 < qA ∧ qA < 1 ∧ 0 < qF ∧ qF < 1 ∧
+    positiveHazard qA / negativeHazard qA = 2/3 ∧
+    positiveHazard qF / negativeHazard qF = 2/3 ∧
+    positiveHazard qF / negativeHazard qF ≠ 1 ∧
+    0 < twelveHourContrast qF ∧
+    13 * twelveHourContrast qF < twelveHourContrast qA := by
+  refine ⟨4/5, 99/100, by norm_num, by norm_num, by norm_num, by norm_num,
+    (rates (by norm_num) (by norm_num)).2.2,
+    (rates (by norm_num) (by norm_num)).2.2, ?_, ?_, ?_⟩
+  · rw [(rates (q := 99/100) (by norm_num) (by norm_num)).2.2]
+    norm_num
+  · rw [contrast (by norm_num)]
+    norm_num
+  · rw [contrast (by norm_num), contrast (by norm_num)]
+    norm_num
+
+-- T3's only universal hypotheses admit ordinary positive removal counts.
+example : ∃ a b : ℝ, 0 < b ∧ b < a := ⟨75, 52, by norm_num, by norm_num⟩
+
+-- T3/T4 are genuine fixed arithmetic comparisons with nonzero baselines.
+example :
+    relativeIncrease (75/150) (52/150) = 575/13 ∧
+    ¬ roundsWhole (relativeIncrease (75/150) (52/150)) 36 ∧
+    roundsWhole (relativeIncrease (75/150) (52/150)) 44 ∧
+    relativeIncrease (92/150) (69/150) = 100/3 ∧
+    relativeIncrease (62/100) (32/100) = 375/4 ∧
+    relativeIncrease (76/150) (52/150) = 600/13 := by
+  norm_num [relativeIncrease, roundsWhole]
+
+-- T5's balanced family has a positive cardinality at every m, without
+-- needing any theorem about its expectations.
+example (m : ℕ) : 0 < (balancedSequences m).card := by
+  rw [balancedSequences, Finset.card_powersetCard]
+  simp only [Finset.card_univ, Fintype.card_fin]
+  exact Nat.choose_pos (by omega)
+
+-- A positive-size member and a pair of genuine potential assignments
+-- agree on every predecessor while switching the rank's own treatment.
+example : (1:ℕ) ≤ 2 ∧
+    ({0,1} : Finset (Fin 4)) ∈ balancedSequences 2 ∧
+    (∀ s : Fin 4, s < 1 →
+      (s ∈ ({0,1} : Finset (Fin 4)) ↔ s ∈ ({0} : Finset (Fin 4)))) ∧
+    scrutinyOutcome ({0,1} : Finset (Fin 4)) 1 =
+      scrutinyOutcome ({0} : Finset (Fin 4)) 1 := by
+  norm_num [balancedSequences, Finset.mem_powersetCard, scrutinyOutcome,
+    Fin.forall_fin_succ, Fin.exists_fin_succ]
+
+-- Compute the entire six-order block, its nonzero average, and the
+-- independent-assignment boundary from definitions, without T5.
+example :
+    scrutinyBlockCase {2,3} ![0,1,1,1] 1 (1/2) (1/2) ∧
+    balancedExpectation 2 (fun z => citationContrast 2 z (scrutinyOutcome z)) = 1/6 ∧
+    balancedExpectation 2 (fun z => citationContrast 2 z ![0,0,1,1]) = 0 ∧
+    independentCitationExpectation = 0 := by
+  have u4 : (Finset.univ : Finset (Fin 4)) = {0,1,2,3} := by decide
+  have b2 : balancedSequences 2 = {{2,3},{1,3},{1,2},{0,3},{0,2},{0,1}} := by decide
+  have p4 : (Finset.univ : Finset (Fin 4)).powerset =
+      {∅, {0}, {1}, {2}, {3}, {0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3},
+        {0,1,2}, {0,1,3}, {0,2,3}, {1,2,3}, {0,1,2,3}} := by decide
+  simp only [balancedExpectation, independentCitationExpectation, b2, p4]
+  simp +decide [scrutinyBlockCase, scrutinyOutcome, citationContrast,
+    u4, Finset.sum_insert, Finset.sdiff_eq_filter, Finset.filter_insert,
+    Finset.filter_singleton,
+    Fin.sum_univ_succ,
+    funext_iff, Fin.forall_fin_succ, Fin.exists_fin_succ] <;> norm_num
+
+-- T4 has no assumptions: check its entire numerical conjunction.
+example : T4Statement := by
+  norm_num [T4Statement, relativeIncrease, symmetricDifference, roundsWhole]
+
+end Review

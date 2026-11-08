@@ -1,0 +1,161 @@
+import SAP.P037a.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open SAP.P037a
+open scoped BigOperators
+
+namespace Review
+
+-- T6: all interval hypotheses hold simultaneously at the printed centres.
+example : ∃ A B e m : ℝ,
+    (5389/2 ≤ A ∧ A ≤ 5391/2) ∧
+    (4023/2 ≤ B ∧ B ≤ 4025/2) ∧
+    (11/200 ≤ e ∧ e ≤ 13/200) ∧
+    (39/200 ≤ m ∧ m ≤ 41/200) := by
+  refine ⟨2695, 2012, 3/50, 1/5, ?_⟩
+  norm_num
+
+example : totalsReduction := by
+  norm_num [totalsReduction, reduction]
+
+-- T7: both concrete overlaps are genuine, and the two labels differ.
+example : exposureOverlapWitnesses := by
+  norm_num [exposureOverlapWitnesses, ExposureData.Feasible, printedCase]
+
+-- A concrete design-compatible school: 40 seed-eligibles, four strata
+-- of size 10, the first five in each stratum selected. There are 20 seeds.
+-- A focal student can be a seed (index 0) or a nonseed (index 5).
+def schoolSeed (i : Fin 40) : Prop := i.val % 10 < 5
+instance (i : Fin 40) : Decidable (schoolSeed i) :=
+  inferInstanceAs (Decidable (i.val % 10 < 5))
+
+example : (Finset.univ.filter schoolSeed).card = 20 := by decide
+example : schoolSeed 0 ∧ ¬ schoolSeed 5 := by decide
+example : ∀ b : Fin 4,
+    ((Finset.univ.filter fun i : Fin 40 => i.val / 10 = b.val).card = 10) ∧
+    ((Finset.univ.filter fun i : Fin 40 =>
+        i.val / 10 = b.val ∧ schoolSeed i).card = 5) := by decide
+
+-- With no named peers, both peer counts really are zero for either focal
+-- student, regardless of referent statuses. The peer count is at most 10.
+example (gamma : Fin 40 → ℕ) :
+    (∑ i : Fin 40, (if schoolSeed i then (1 : ℕ) else 0) * 0) = 0 ∧
+    (∑ i : Fin 40, (if schoolSeed i then (1 : ℕ) else 0) * gamma i * 0) = 0 ∧
+    (Finset.card (∅ : Finset (Fin 40))) ≤ 10 := by simp
+
+-- T8: every corrected category has a feasible concrete representative.
+example : (ExposureData.mk 0 0 0 0).Feasible ∧
+    correctedCase ⟨0,0,0,0⟩ .control := by
+  norm_num [ExposureData.Feasible, correctedCase]
+example : (ExposureData.mk 1 0 0 0).Feasible ∧
+    correctedCase ⟨1,0,0,0⟩ .school := by
+  norm_num [ExposureData.Feasible, correctedCase]
+example : (ExposureData.mk 1 0 1 0).Feasible ∧
+    correctedCase ⟨1,0,1,0⟩ .nonreferent := by
+  norm_num [ExposureData.Feasible, correctedCase]
+example : (ExposureData.mk 1 0 1 1).Feasible ∧
+    correctedCase ⟨1,0,1,1⟩ .referent := by
+  norm_num [ExposureData.Feasible, correctedCase]
+example : (ExposureData.mk 1 1 0 0).Feasible ∧
+    correctedCase ⟨1,1,0,0⟩ .direct := by
+  norm_num [ExposureData.Feasible, correctedCase]
+
+-- T9: a nondegenerate finite design and an event with probability 1/2.
+noncomputable def coin : Design (Fin 2) where
+  weight := fun _ => 1/2
+  nonneg := by intro w; norm_num
+  total := by norm_num [Fin.sum_univ_succ]
+
+def hit (w : Fin 2) : Prop := w = 1
+instance : DecidablePred hit := fun _ => inferInstanceAs (Decidable (_ = _))
+
+noncomputable def X (w : Fin 2) : ℝ := if hit w then 1 else 0
+noncomputable def twoDraws := independentDesign (fun _ : Fin 2 => coin)
+
+example : mean coin X = 1/2 ∧ variance coin X = 1/4 := by
+  norm_num [mean, variance, coin, X, hit, Fin.sum_univ_succ]
+
+example : (0 : ℕ) < 2 ∧ (0 : ℝ) < 1/4 := by norm_num
+example : twoDraws.weight (![0,1] : Fin 2 → Fin 2) = 1/4 := by
+  norm_num [twoDraws, independentDesign, coin, Fin.prod_univ_succ]
+
+lemma sumTwo (f : (Fin 2 → Fin 2) → ℝ) :
+    (∑ w, f w) = f ![0,0] + f ![0,1] + f ![1,0] + f ![1,1] := by
+  calc
+    (∑ w, f w) = ∑ a : Fin 2 × Fin 2, f ![a.1,a.2] := by
+      apply Fintype.sum_equiv (finTwoArrowEquiv (Fin 2))
+      intro w
+      congr 1
+      ext i
+      fin_cases i <;> rfl
+    _ = _ := by
+      simp only [Fintype.sum_prod_type, Fin.sum_univ_two]
+      ring
+
+example : mean twoDraws (fun w => (X (w 0) + X (w 1))/2) = 1/2 ∧
+    variance twoDraws (fun w => (X (w 0) + X (w 1))/2) = 1/8 := by
+  simp only [variance, mean, sumTwo]
+  norm_num [twoDraws, independentDesign, coin, X, hit, Fin.prod_univ_succ]
+
+example : frequencyExample := by
+  unfold frequencyExample frequency
+  simp only [Fin.sum_univ_succ]
+  norm_num
+
+example : ¬ Nonempty (Design (Fin 0)) := by
+  rintro ⟨d⟩
+  have h := d.total
+  simpa using h
+
+-- T10: construct data satisfying all three hypotheses of fixedCountDependence.
+example : ∃ (d : Design (Fin 6)) (T : Fin 4 → Fin 6 → ℝ),
+    (∀ i w, T i w = 0 ∨ T i w = 1) ∧
+    (∀ w, ∑ i, T i w = 2) ∧
+    (∀ i, mean d (T i) = 1/2) := by
+  refine ⟨blockDesign, fun i w => treatment w i, ?_, ?_, ?_⟩
+  · intro i w
+    simp only [treatment]
+    split_ifs <;> simp
+  · intro w
+    fin_cases w <;> simp only [Fin.sum_univ_succ] <;>
+      norm_num [treatment, treatmentPair]
+  · intro i
+    fin_cases i <;>
+      norm_num [mean, blockDesign, treatment, treatmentPair, Fin.sum_univ_succ]
+
+-- Check the covariance and independent-block witness without using T10.
+example : covariance blockDesign (fun w => treatment w 0)
+      (fun w => treatment w 1) = -1/12 ∧
+    covariance blockDesign (fun w => 1 - treatment w 0)
+      (fun w => 1 - treatment w 1) = -1/12 := by
+  norm_num [covariance, mean, blockDesign, treatment, treatmentPair, Fin.sum_univ_succ]
+
+example : ∀ u v, doubleBlockDesign.weight (u,v) =
+    blockDesign.weight u * blockDesign.weight v := by
+  intro u v
+  norm_num [doubleBlockDesign, blockDesign]
+
+-- An unequal-probability law meeting the general fixed-count hypotheses:
+-- only allocations (0,1) and (2,3) have positive weight.
+noncomputable def unequal : Design (Fin 6) where
+  weight := fun w => if w = 0 ∨ w = 5 then 1/2 else 0
+  nonneg := by intro w; split_ifs <;> norm_num
+  total := by norm_num [Fin.sum_univ_succ]
+
+example : (∀ i w, treatment w i = 0 ∨ treatment w i = 1) ∧
+    (∀ w, ∑ i, treatment w i = 2) ∧
+    (∀ i, mean unequal (fun w => treatment w i) = 1/2) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro i w
+    simp only [treatment]
+    split_ifs <;> simp
+  · intro w
+    fin_cases w <;> simp only [Fin.sum_univ_succ] <;>
+      norm_num [treatment, treatmentPair]
+  · intro i
+    fin_cases i <;>
+      norm_num [mean, unequal, treatment, treatmentPair, Fin.sum_univ_succ]
+
+end Review

@@ -1,0 +1,233 @@
+import SAP.P011c.Defs.WholeW1
+
+open MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators Topology ENNReal
+
+namespace Review
+noncomputable section
+
+def emptyGraph (n : ℕ) : SAP.P011c.Graph n :=
+  ⟨fun _ _ => false, (by simp)⟩
+
+def signLaw : Measure ℝ :=
+  (2 : ℝ≥0∞)⁻¹ • (Measure.dirac 1 + Measure.dirac (-1))
+
+instance : IsProbabilityMeasure signLaw := by
+  constructor
+  simp only [signLaw, Measure.smul_apply, Measure.add_apply, measure_univ,
+    one_add_one_eq_two, smul_eq_mul]
+  exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+lemma signSupport : ∀ᵐ x ∂signLaw, |x| = 1 := by
+  apply Measure.ae_smul_measure
+  simp
+
+lemma signIntegral : ∫ x, x ∂signLaw = 0 := by
+  rw [signLaw, integral_smul_measure,
+    integral_add_measure (integrable_dirac (by simp)) (integrable_dirac (by simp))]
+  simp
+
+lemma signSquare : ∫ x, x^2 ∂signLaw = 1 := by
+  rw [signLaw, integral_smul_measure,
+    integral_add_measure (integrable_dirac (by simp)) (integrable_dirac (by simp))]
+  norm_num
+
+lemma signVariance : ProbabilityTheory.variance id signLaw = 1 := by
+  rw [variance_eq_integral measurable_id.aemeasurable]
+  simpa [signIntegral] using signSquare
+
+lemma signMemLp : MemLp (id : ℝ → ℝ) 2 signLaw := by
+  apply MemLp.of_bound measurable_id.aestronglyMeasurable 1
+  filter_upwards [signSupport] with x hx
+  simp [Real.norm_eq_abs, hx]
+
+def rowLaw (n : ℕ) : Measure (Fin n → ℝ) :=
+  Measure.pi (fun _ => signLaw)
+
+instance (n : ℕ) : IsProbabilityMeasure (rowLaw n) := by
+  unfold rowLaw
+  infer_instance
+
+lemma rowIndep (n : ℕ) :
+    iIndepFun (fun i (y : Fin n → ℝ) => y i) (rowLaw n) :=
+  iIndepFun_pi (X := fun _ => (id : ℝ → ℝ)) (fun _ => measurable_id.aemeasurable)
+
+lemma coordMemLp (n : ℕ) (i : Fin n) :
+    MemLp (fun y : Fin n → ℝ => y i) 2 (rowLaw n) :=
+  signMemLp.comp_measurePreserving (measurePreserving_eval (fun _ : Fin n => signLaw) i)
+
+lemma coordIntegral (n : ℕ) (i : Fin n) :
+    ∫ y : Fin n → ℝ, y i ∂rowLaw n = 0 := by
+  have h := measurePreserving_eval (fun _ : Fin n => signLaw) i
+  have hh : (∫ x : ℝ, x ∂(rowLaw n).map (fun y => y i)) =
+      ∫ y : Fin n → ℝ, y i ∂rowLaw n :=
+    integral_map h.measurable.aemeasurable measurable_id.aestronglyMeasurable
+  have hm : (rowLaw n).map (fun y => y i) = signLaw := h.map_eq
+  rw [hm] at hh
+  exact hh.symm.trans signIntegral
+
+lemma coordSquare (n : ℕ) (i : Fin n) :
+    ∫ y : Fin n → ℝ, (y i)^2 ∂rowLaw n = 1 := by
+  have h := measurePreserving_eval (fun _ : Fin n => signLaw) i
+  have hh : (∫ x : ℝ, x^2 ∂(rowLaw n).map (fun y => y i)) =
+      ∫ y : Fin n → ℝ, (y i)^2 ∂rowLaw n :=
+    integral_map h.measurable.aemeasurable
+      (measurable_id.pow_const 2).aestronglyMeasurable
+  have hm : (rowLaw n).map (fun y => y i) = signLaw := h.map_eq
+  rw [hm] at hh
+  exact hh.symm.trans signSquare
+
+def rowModel (n : ℕ) : SAP.P011c.Model n where
+  law := rowLaw n
+  probability := inferInstance
+  theta := fun _ => 1
+  G := emptyGraph n
+  R := emptyGraph n
+  d := fun _ => 0
+
+open SAP.P011c
+
+lemma rowBetaHat (n : ℕ) :
+    betaHat (rowModel n) = fun y => (∑ i, y i) / (n : ℝ) := by
+  funext y
+  simp [betaHat, SAP.P011c.average, weighted, rowModel]
+
+lemma rowMean (n : ℕ) : SAP.P011c.beta (rowModel n) = 0 := by
+  unfold SAP.P011c.beta expectation
+  rw [rowBetaHat]
+  change (∫ y : Fin n → ℝ, (∑ i, y i) / (n : ℝ) ∂rowLaw n) = 0
+  rw [integral_div, integral_finsetSum]
+  · simp [coordIntegral]
+  · exact fun i _ => (coordMemLp n i).integrable (by norm_num)
+
+lemma rowScaled (n : ℕ) (hn : 0 < n) :
+    (n : ℝ) * var (rowModel n) (betaHat (rowModel n)) = 1 := by
+  have hs : ProbabilityTheory.variance (fun y : Fin n → ℝ => ∑ i, y i) (rowLaw n) =
+      (n : ℝ) := by
+    have h := variance_sum_pi (μ := fun _ : Fin n => signLaw)
+      (X := fun _ => (id : ℝ → ℝ)) (fun _ => signMemLp)
+    have hfun : (∑ i : Fin n, (fun y : Fin n → ℝ => y i)) =
+        (fun y => ∑ i, y i) := by
+      ext y
+      simp
+    change ProbabilityTheory.variance (∑ i : Fin n, (fun y : Fin n → ℝ => y i))
+      (rowLaw n) = _ at h
+    rw [hfun] at h
+    simpa [signVariance] using h
+  have hm : Measurable (betaHat (rowModel n)) := by
+    rw [rowBetaHat]
+    fun_prop
+  have hv : var (rowModel n) (betaHat (rowModel n)) =
+      ProbabilityTheory.variance (betaHat (rowModel n)) (rowLaw n) := by
+    symm
+    exact variance_eq_integral hm.aemeasurable
+  rw [hv, rowBetaHat]
+  simp_rw [div_eq_mul_inv]
+  rw [variance_mul_const, hs]
+  have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hn)
+  field_simp
+
+lemma rowDependency (n : ℕ) : Dependency (rowModel n) := by
+  intro S T hd _
+  exact iIndepFun.indepFun_finset S T hd (rowIndep n) (fun i => measurable_pi_apply i)
+
+lemma rowBound (n : ℕ) : ∀ᵐ y ∂(rowModel n).law,
+    ∀ i, |weighted (rowModel n) y i - SAP.P011c.beta (rowModel n)| ≤ 1 := by
+  have h : ∀ i : Fin n, ∀ᵐ y ∂rowLaw n, |y i| = 1 := fun i =>
+    (measurePreserving_eval (fun _ : Fin n => signLaw) i).quasiMeasurePreserving.ae signSupport
+  filter_upwards [ae_all_iff.mpr h] with y hy
+  intro i
+  rw [rowMean]
+  simp [weighted, rowModel, hy i]
+
+lemma emptyCompatible (n : ℕ) :
+    Compatible (emptyGraph n) (fun _ => 0) (emptyGraph n) := by
+  simp [Compatible, degree, emptyGraph]
+
+lemma rowHomoskedastic (n : ℕ) : Homoskedastic (rowModel n) := by
+  intro i j
+  simp only [SAP.P011c.covariance, weighted, rowModel, expectation, one_mul, coordIntegral,
+    sub_zero, ← pow_two, coordSquare]
+
+def family : Family where
+  size := fun k => k + 1
+  positive := fun k => Nat.succ_pos k
+  grows := tendsto_atTop.mpr fun b => eventually_atTop.mpr ⟨b, fun k hk => by omega⟩
+  model := fun k => rowModel (k + 1)
+
+lemma familyScaling : WholeScaling family 1 1 1 2 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+    (fun k => rowDependency (k + 1)), (fun k => rowBound (k + 1)), ?_, ?_, ?_⟩
+  · intro k i
+    simp [family, rowModel, degree, emptyGraph]
+  · have h : scaledTrue family = fun _ => (1 : ℝ) := by
+      funext k
+      exact rowScaled (k + 1) (Nat.succ_pos k)
+    rw [h]
+    exact tendsto_const_nhds
+  · intro k i
+    change |(1 : ℝ)| < 2
+    norm_num
+
+lemma familyValid : Valid family := fun k => emptyCompatible (k + 1)
+
+lemma familyHomoskedastic : ∀ k, Homoskedastic (family.model k) :=
+  fun k => rowHomoskedastic (k + 1)
+
+def trueStatistic (F : Family) (k : ℕ) (_ : Fin (F.size k) → ℝ) : ℝ :=
+  var (F.model k) (betaHat (F.model k))
+
+lemma trueConsistent (F : Family) :
+    InProbability F (fun k y => (F.size k : ℝ) * trueStatistic F k y) (scaledTrue F) := by
+  intro ε hε
+  simp [trueStatistic, scaledTrue, probability, not_lt_of_ge hε.le]
+
+lemma trueConservative (F : Family) : Conservative F (trueStatistic F) := by
+  intro ε hε
+  simp [trueStatistic, probability, not_lt_of_ge hε.le]
+
+theorem t39Nonvacuity : ∃ (F : Family)
+    (V : ∀ k, (Fin (F.size k) → ℝ) → ℝ),
+    WholeScaling F 1 1 1 2 ∧
+    (∀ k, AEMeasurable (V k) (F.model k).law) ∧
+    InProbability F (fun k y => (F.size k : ℝ) * V k y) (scaledTrue F) ∧
+    Conservative F V := by
+  exact ⟨family, trueStatistic family, familyScaling,
+    (fun _ => measurable_const.aemeasurable), trueConsistent family, trueConservative family⟩
+
+lemma compatibleZeroOnly (n : ℕ) (A : Graph n)
+    (hA : Compatible (emptyGraph n) (fun _ => 0) A) : A = emptyGraph n := by
+  apply Subtype.ext
+  funext i j
+  change A.val i j = false
+  cases hij : A.val i j with
+  | false => rfl
+  | true =>
+    have ht : (if A.val i j then (1 : ℕ) else 0) ≤ degree A i :=
+      Finset.single_le_sum (f := fun l : Fin n => if A.val i l then (1 : ℕ) else 0)
+        (fun _ _ => Nat.zero_le _) (Finset.mem_univ j)
+    have hd := hA.2 i
+    change degree A i ≤ 0 at hd
+    simp only [hij, ↓reduceIte] at ht
+    omega
+
+lemma emptyMaximizes (n : ℕ) (x : Fin n → ℝ) :
+    Maximizes (emptyGraph n) (fun _ => 0) (fun B => V2 B x) (emptyGraph n) := by
+  refine ⟨emptyCompatible n, ?_⟩
+  intro B hB
+  rw [compatibleZeroOnly n B hB]
+
+theorem t40Nonvacuity : ∃ (F : Family)
+    (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k)),
+    WholeScaling F 1 1 1 2 ∧
+    (∀ k, Homoskedastic (F.model k)) ∧ Valid F ∧
+    (∀ k y, Maximizes (F.model k).R (F.model k).d
+      (fun B => V2 B (weighted (F.model k) y)) (A k y)) := by
+  exact ⟨family, (fun k _ => emptyGraph (k + 1)), familyScaling,
+    familyHomoskedastic, familyValid, (fun k y => emptyMaximizes (k + 1) (weighted _ y))⟩
+
+#print axioms t39Nonvacuity
+#print axioms t40Nonvacuity
+
+end
+end Review

@@ -1,0 +1,62 @@
+[
+  {
+    "target_id": "P042-T1",
+    "theorem": "SAP.P042.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are exactly 90 disjoint two-by-two allocations of six people; both marginal variances are 3/10, covariance is 3/20, and pooled variance is 9/40. These values and nonemptiness were compiled from the actual SAP definitions in scratch/Check.lean and independently enumerated in scratch/check_exact.py. The independent binomial product masses sum to one; exact integer convolution gives coverage 0.8886829667422668 at threshold 19 and 0.9546954675333121 at threshold 24. Exact fractions, thresholds and strict bounds pass the independent rational checks. No antecedent or empty index set can make this closed conjunction vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P042-T2",
+    "theorem": "SAP.P042.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On the uniform space {-1,1}^3, coordinate signs are independent, centered, square integrable and have variance 1. Taking one sign per arm with n0=n1=n2=1 gives shared-control contrasts of variance 2 and covariance 1, realizing the independent-arm and positive precision hypotheses. For the bound's equality case take Dj=sj*Z for a centered unit-variance sign Z and positive sj. For the three-contrast clause take J=3, Dj=Z, weights a=1/3 and all three covariances 1. For the signed pools take nonempty disjoint singleton index sets. For finite-population randomization take N=4 and n=(1,1,1): the actual SAP allocation set has 24 elements (compiled), including one unused unit, and an independent exact check with nonconstant potential outcomes gives covariance 31/48. The base sign's MemLp and variance 1 are proved in scratch/Check.lean. These are instances of the separate quantified laws; their differing antecedents need not hold for the same family.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P042-T3",
+    "theorem": "SAP.P042.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed numerical conjunction on the two explicitly defined rational input pairs, without empirical antecedents. Both standard errors, total weights and the fixed and random variances are positive. The multiplier interval [19599/10000,49/25] is nonempty (49/25 is an instance). Independent Fraction arithmetic verifies every stated exact fraction and the squared endpoint inequalities at both ends; monotonicity in the positive multiplier gives all the universal endpoint bounds. The normal quantile is absent, as explicitly disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P042-T4",
+    "theorem": "SAP.P042.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All closed numerical clauses pass exact rational checks, with a nonempty multiplier interval and positive fixed variance. To realize RoboStochasticVariance, take independent uniform signs U,V and define D0=(1741/3125)*U and D1=(40891/50000)*V. They are square integrable, have exactly roboVariances 0 and 1, and covariance zero. The independent finite-space computation verifies that their precision-weighted combination has variance 5068191371295361/23906548994140625. Thus the stochastic hypothesis is jointly satisfiable and does not assume the pooled-variance conclusion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P042-T5",
+    "theorem": "SAP.P042.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take a uniform sign Z with variance 1 and D0=D1=Z. Both variables are in L2 with positive variance, and J=2. Their equally weighted pool is Z, so its true variance is 1 while 1/W=1/2. This counterexample using actual Mathlib variance and SAP pooling is compiled in scratch/Check.lean. For the second negation take disjoint nonempty pools {0} and {1} on this same family: their difference is zero, but the claimed sum of inverse weight sums is 1+1=2. The finite rational checker verifies both discrepancies. These refute the audit-supplied unrestricted variance readings and make no assertion that historical empirical estimates or intervals are false.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P042-T6",
+    "theorem": "SAP.P042.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=4,m=2, fixed untreated outcomes (0,1,0,1), contacted outcomes (1,0,1,1), and contact types (true,false,true,false). The six size-two assignments are equally weighted; there are two compliers and two never-takers. Exact enumeration gives the asserted balance, unbiased assignment contrast, expected contacted contrast 1/2, expected contact rate 1/2, and CACE 1. The actual SAP assignment cardinality and positive complier count are compiled in scratch/Check.lean. All group and complier divisors are positive. The ratio is explicitly a ratio of expectations, and its positive denominator is derived from the positive complier count. The Michelson arithmetic also passes exact rational evaluation.",
+    "confidence": 0.99
+  }
+]

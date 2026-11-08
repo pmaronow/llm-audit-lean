@@ -1,0 +1,101 @@
+import SAP.P030.Defs
+
+open scoped BigOperators
+open SAP.P030
+
+set_option maxRecDepth 4000
+set_option maxHeartbeats 1000000
+
+private lemma row0_distance : tableDistances 0 = ![1,6,7,8] := by
+  classical
+  have hv : (Finset.univ.filter (fun j : Fin 10 =>
+      tenS j = false ∧ tenAssignment (tableTreatment 0) j = true)) = {1} := by
+    ext j
+    fin_cases j <;> norm_num [tenS, tenAssignment, tableTreatment]
+  funext k
+  simp only [tableDistances, nearestDistance, hv]
+  fin_cases k <;> norm_num [tenX, tenFixed]
+
+private lemma row3_distance : tableDistances 3 = ![4,3,4,5] := by
+  classical
+  have hv : (Finset.univ.filter (fun j : Fin 10 =>
+      tenS j = false ∧ tenAssignment (tableTreatment 3) j = true)) = {4} := by
+    ext j
+    fin_cases j <;> norm_num [tenS, tenAssignment, tableTreatment]
+  funext k
+  simp only [tableDistances, nearestDistance, hv]
+  fin_cases k <;> norm_num [tenX, tenFixed]
+
+private lemma table_outcome : tableY = ![1,3,2,1] := by
+  funext k
+  fin_cases k <;> norm_num [tableY, tenYnull, tenFixed]
+
+private lemma actual_rho (r : Fin 6) :
+    statistic tenS tenYnull tenG (tenAssignment (tableTreatment r)) = tableRho r := by
+  rfl
+
+-- The actual, explicitly specified T6 witness has two different squared
+-- statistics on the conditional assignments checked in Check.lean.
+example : (statistic tenS tenYnull tenG (tenAssignment (tableTreatment 0)))^2 = 1/90 ∧
+    (statistic tenS tenYnull tenG (tenAssignment (tableTreatment 3)))^2 = 25/36 ∧
+    statistic tenS tenYnull tenG (tenAssignment (tableTreatment 0)) ≠
+      statistic tenS tenYnull tenG (tenAssignment (tableTreatment 3)) := by
+  have h0 : (statistic tenS tenYnull tenG (tenAssignment (tableTreatment 0)))^2 = 1/90 := by
+    rw [actual_rho]
+    simp only [tableRho, row0_distance, table_outcome]
+    norm_num [spearman, rankCross, rankSquares, centeredRanks, averageRank,
+      Fin.sum_univ_succ, Fin.card_filter_univ_succ, div_pow, Real.sq_sqrt]
+  have h3 : (statistic tenS tenYnull tenG (tenAssignment (tableTreatment 3)))^2 = 25/36 := by
+    rw [actual_rho]
+    simp only [tableRho, row3_distance, table_outcome]
+    norm_num [spearman, rankCross, rankSquares, centeredRanks, averageRank,
+      Fin.sum_univ_succ, Fin.card_filter_univ_succ, div_pow, Real.sq_sqrt]
+  refine ⟨h0, h3, ?_⟩
+  intro he
+  rw [he, h3] at h0
+  norm_num at h0
+
+-- The T8 observed-row counterexample uses defined, nonzero variances and
+-- produces the two different printed values and a third correct square.
+example : printedRho 4 (![6,1,2,3] : Fin 4 → ℝ) ![1,3,2,1] = -4/5 ∧
+    printedRho 3 (![6,1,2,3] : Fin 4 → ℝ) ![1,3,2,1] = -3/5 ∧
+    (spearman (![6,1,2,3] : Fin 4 → ℝ) ![1,3,2,1])^2 = 9/10 := by
+  norm_num [printedRho, rankCov, spearman, rankCross, rankSquares,
+    centeredRanks, averageRank, Fin.sum_univ_succ, Fin.card_filter_univ_succ,
+    div_pow, Real.sq_sqrt]
+
+-- The weakly monotone example has correlation with square 3/4, hence neither
+-- +1 nor -1. Check.lean separately checks its order relation and both variances.
+example : (spearman (![1,2,3] : Fin 3 → ℝ) ![0,0,1])^2 = 3/4 ∧
+    spearman (![1,2,3] : Fin 3 → ℝ) ![0,0,1] ≠ 1 ∧
+    spearman (![1,2,3] : Fin 3 → ℝ) ![0,0,1] ≠ -1 := by
+  have hs : (spearman (![1,2,3] : Fin 3 → ℝ) ![0,0,1])^2 = 3/4 := by
+    norm_num [spearman, rankCross, rankSquares, centeredRanks, averageRank,
+      Fin.sum_univ_succ, Fin.card_filter_univ_succ, div_pow, Real.sq_sqrt]
+  refine ⟨hs, ?_, ?_⟩
+  · intro h
+    rw [h] at hs
+    norm_num at hs
+  · intro h
+    rw [h] at hs
+    norm_num at hs
+
+-- Both signs of the proportionality/equality-case hypotheses in T9 occur
+-- for ordinary nonconstant data. These are separate implication branches.
+example : (∀ k l : Fin 3, (![1,2,3] : Fin 3 → ℝ) k < (![1,2,3] : Fin 3 → ℝ) l ↔
+      (![1,2,3] : Fin 3 → ℝ) k < (![1,2,3] : Fin 3 → ℝ) l) ∧
+    centeredRanks (![1,2,3] : Fin 3 → ℝ) =
+      (fun k => (1 : ℝ) * centeredRanks (![1,2,3] : Fin 3 → ℝ) k) ∧
+    (∀ k l : Fin 3, (![1,2,3] : Fin 3 → ℝ) k < (![1,2,3] : Fin 3 → ℝ) l ↔
+      (![3,2,1] : Fin 3 → ℝ) l < (![3,2,1] : Fin 3 → ℝ) k) ∧
+    centeredRanks (![1,2,3] : Fin 3 → ℝ) =
+      (fun k => (-1 : ℝ) * centeredRanks (![3,2,1] : Fin 3 → ℝ) k) := by
+  refine ⟨by intros; rfl, ?_, ?_, ?_⟩
+  · funext k
+    simp
+  · intro k l
+    fin_cases k <;> fin_cases l <;> norm_num
+  · funext k
+    fin_cases k <;>
+      norm_num [centeredRanks, averageRank, Fin.univ_succ,
+        Finset.filter_insert, Finset.filter_singleton]

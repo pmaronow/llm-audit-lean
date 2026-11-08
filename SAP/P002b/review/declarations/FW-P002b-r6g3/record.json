@@ -1,0 +1,125 @@
+[
+ {
+  "target_id": "P002-T26",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T26",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.adjusted_wald_equals_IV_proof",
+   "AronowAudit.P002.adjusted_wald_in_set",
+   "AronowAudit.P002.corrected_I1_I2",
+   "SAP.P002b.WH.W1.T26_whole",
+   "SAP.P002b.WH.W1.T26_assembly",
+   "SAP.P002b.WH.W1.T26_L1_proof",
+   "SAP.P002b.WH.W1.T26_L2_proof",
+   "SAP.P002b.WH.W1.T26_L3_proof",
+   "SAP.P002b.WH.W1.T26_L4_proof",
+   "SAP.P002b.WH.W1.T26_L5_proof",
+   "SAP.P002b.WH.W1.T26_L6_proof",
+   "SAP.P002b.WH.W1.fixed_confidence_finite_intervals",
+   "SAP.P002b.WH.W1.interacted_coefficient_eq",
+   "SAP.P002b.WH.W1.arm_adjusted_mean",
+   "AronowAudit.P002.adjustedSigma2_affine",
+   "AronowAudit.P002.ols_normal_equations",
+   "AronowAudit.P002.score_residual",
+   "AronowAudit.P002.groupMean_add_const",
+   "AronowAudit.P002.Wave1.RepairT21_arm_nonempty",
+   "SAP.P002b.Bridge.toCovPopulation"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P002b.T26WholeStatement"
+ },
+ {
+  "target_id": "P002-T27",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T27",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.quantile_index_interval_paper"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.Wave1.quantile_index_interval_AR_proof",
+    "reason": "quantile_index_interval_paper already exports all four required conclusions."
+   },
+   {
+    "lean_name": "AronowAudit.P002.arFamily_regular",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.arFunction_continuous",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.paperAR_regular",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.quantile_index_rank",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T27Statement"
+ },
+ {
+  "target_id": "P002-T28",
+  "decision": "restricted",
+  "theorem": "SAP.P002b.T28",
+  "restriction": "For both covariate settings, includes finite complete crossing-list existence, Algorithm 1/3 run existence and correctness, existence and correctness of completed corrected Algorithm 2/4 runs, and arbitrary quantile selections in the no-intersection branch. In the regression-adjusted branch, assumes positive covariate dimension, population-centered covariates, and full-rank augmented design matrices in both arms for the observed assignment and every simulated assignment; no assertion is made for rank-deficient adjusted datasets. Does not assert termination for every prescribed sequence of admissible Algorithm 2/4 index choices.",
+  "rows_used": [
+   "AronowAudit.P002.Wave1.algorithm2_paper",
+   "AronowAudit.P002.Wave1.quantile_index_interval_paper",
+   "AronowAudit.P002.arFamily_regular"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.Wave1.algorithm_correctness_paper",
+    "reason": "Not invoked separately; its corrected completed-run and no-intersection conclusions are assembled from existing component declarations, with adjusted-domain and policy-termination restrictions disclosed."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T28Statement",
+  "unit_theorems_used": [
+   "SAP.P002b.T22",
+   "SAP.P002b.T27"
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n1_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n2_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n3_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n4_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n5_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n6_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n7_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n8_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.n9_proof",
+   "AronowAudit.P002.Wave1.AlgorithmSupport.glue_algorithm1_returned"
+  ]
+ },
+ {
+  "target_id": "P002-T29",
+  "decision": "refuted",
+  "theorem": "SAP.P002b.T29",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.ConfidenceFollowup.printed_theorem1_refuted"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.Wave1.neyman_variance_proof",
+    "reason": "A variance identity is not needed to transport the existing refutation of the printed coverage limit."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T29Statement"
+ },
+ {
+  "target_id": "P002-T30",
+  "decision": "refuted",
+  "theorem": "SAP.P002b.T30",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.printed_theorem2_refuted"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P002b.T30Statement"
+ }
+]

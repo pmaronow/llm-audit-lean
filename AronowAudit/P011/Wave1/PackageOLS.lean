@@ -25,7 +25,7 @@ open scoped BigOperators Topology Matrix
 
 noncomputable section
 
-/-- Refutation of the printed generic OLS guarantee (P011-T35). -/
+/-- Refutation of the frozen printed contract, assembled from its blueprint nodes. -/
 theorem printed_package_ols_guarantee_refuted :
   ¬ ∀ (F : Family) (c1 c2 c3 c4 : ℝ), Scaling F c1 c2 c3 c4 → Valid F →
       ∀ (p : ℕ) (j : Fin p) (D : ∀ k, Matrix (Fin (F.size k)) (Fin p) ℝ) (b : Fin p → ℝ),
@@ -52,6 +52,9 @@ theorem printed_package_ols_guarantee_refuted :
     AronowAudit.P011.Wave1.PackageOLS.n1_proof
     AronowAudit.P011.Wave1.PackageOLS.n2_proof
     AronowAudit.P011.Wave1.PackageOLS.n3_proof
+
+example : AronowAudit.P011.Wave1.PackageOLS.Target :=
+  printed_package_ols_guarantee_refuted
 
 end
 

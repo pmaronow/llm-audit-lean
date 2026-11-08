@@ -6,23 +6,27 @@ set_option maxRecDepth 4096
 set_option maxHeartbeats 800000
 
 /-- Section 3, p. 577: “90 percent/90 percent, 90 percent/70 percent,
-90 percent/45 percent.” `Fin 3` indexes these arms in that order.
-P010-N011: the displayed aggregate counts are inputs to the calculations. -/
+90 percent/45 percent.” `Fin 3` indexes these arms in that order. Counts are
+inputs reconstructed in the target's P010-N011 derivation, not a Lean claim
+that the confidential or deposited data have been independently re-read. -/
 def armN : Fin 3 → ℕ := ![544, 538, 533]
 
-/-- Figure 2, pp. 578–579 and 585, P010-N011: aggregate failure counts.
-Passing counts and binary success counts are used below. -/
+/-- Figure 2, pp. 578–579 and 585: failures, passers, and the numbers of binary
+ones among passers, as reconstructed in the P010-N011 artifact. -/
 def armFailures : Fin 3 → ℕ := ![35, 182, 40]
 /-- Figure 2 reconstruction, T1/T2: subjects who “pass the manipulation
-check” (p. 578), counted as arm size minus failures. -/
+check” (p. 578), counted as arm size minus failures in the named artifact. -/
 def armPassers (a : Fin 3) : ℕ := armN a - armFailures a
-/-- Figure 2, p. 585, T1/T2: binary “preference” successes among passers. -/
+/-- Figure 2, p. 585: binary “preference” successes among passers,
+with the explicit input counts supplied by the T1/T2 validator artifact. -/
 def preferenceOnes : Fin 3 → ℕ := ![61, 162, 327]
-/-- Figure 2, p. 585, T1/T2: binary “approval” successes among passers. -/
+/-- Figure 2, p. 585: binary “approval” successes among passers,
+with the explicit input counts supplied by the T1/T2 validator artifact. -/
 def approvalOnes : Fin 3 → ℕ := ![192, 188, 324]
 
-/-- Figure 2, p. 585: the empirical failure proportion in each arm,
-computed as failures divided by arm size using exact rational arithmetic. -/
+/-- Paragraph after Proposition 1, p. 575: “trimming ... upper or lower”
+proportions. Here the proportion is the sum of other-arm failure rates divided
+by the focal-arm passing rate, with exact empirical rational probabilities. -/
 def empiricalFailure (a : Fin 3) : ℚ := (armFailures a : ℚ) / armN a
 /-- Proposition 1's “sum” of other-arm failure proportions over the focal
 passing proportion (p. 575), evaluated on the Figure 2 input counts. -/
@@ -35,8 +39,8 @@ The strict inequalities give `ceil(n*(1-trim))-1` and `n-floor(n*trim)`.
 For these data each count is positive and at most n. -/
 def lowerRetained (a : Fin 3) : ℕ :=
   (⌈(armPassers a : ℚ) * (1 - empiricalTrim a)⌉ - 1).toNat
-/-- T1/T2 deposited helper's upper-tail rule “j/n > trim”; the retained count
-is the complement of its integer cutoff. -/
+/-- T1/T2 deposited helper's upper-tail rule “j/n > trim”; the complement
+of its integer cutoff, as reconstructed in the named validator artifact. -/
 def upperRetained (a : Fin 3) : ℕ :=
   armPassers a - (⌊(armPassers a : ℚ) * empiricalTrim a⌋).toNat
 
@@ -52,10 +56,11 @@ between the exact reconstructed empirical endpoints. -/
 noncomputable def empiricalInterval (ones : Fin 3 → ℕ) (a : Fin 3) : Set ℝ :=
   Set.Icc ((empiricalBounds ones a).1 : ℝ) ((empiricalBounds ones a).2 : ℝ)
 
-/-- Fractional trimming, T2(d), P010-N011: the union-bound lower
-mass of always-passers, equal to one minus the sum of arm failure proportions. -/
+/-- Fractional trimming, T2(d), P010-N011 artifact: q is the union-bound lower
+mass of always-passers, and a_z is passer success mass in the entire arm.
+The interval is `[max 0 ((a_z-sum other failures)/q), min 1 (a_z/q)]`. -/
 def empiricalAlwaysMass : ℚ := 1 - ∑ a : Fin 3, empiricalFailure a
-/-- Corrected T2(d), P010-N011: “fractional trimming” of the
+/-- Corrected T2(d), named N011 derivation: “fractional trimming” of the
 binary preference distribution at union-bound retained mass q. -/
 def fractionalBounds (a : Fin 3) : ℚ × ℚ :=
   let az : ℚ := (preferenceOnes a : ℚ) / armN a
@@ -95,7 +100,7 @@ theorem rational_lower_cutoff (n m j : ℕ) (c : ℚ)
     exact lt_of_le_of_lt (div_le_div_of_nonneg_right hq (Nat.cast_nonneg n)) hlo
 
 /-- Strict upper-tail membership reduces to the complementary integer cutoff
-under the deposited helper rule (P010-N011). -/
+under the same deposited helper rule (P010-N011 derivation). -/
 theorem rational_upper_cutoff (n m j : ℕ) (c : ℚ)
     (hlo : (m:ℚ)/n ≤ c) (hhi : c < ((m:ℚ)+1)/n) :
     (c < (j:ℚ)/n ↔ m < j) := by
@@ -178,5 +183,12 @@ theorem empirical_overlap_corrected :
   norm_num [Fin.forall_fin_succ, empiricalAlwaysMass,
     fractionalBounds, empiricalFailure, preferenceOnes, armN, armFailures,
     Fin.sum_univ_succ]
+
+#print axioms rational_lower_cutoff
+#print axioms rational_upper_cutoff
+#print axioms empirical_exact_certificate
+#print axioms empirical_cutoff_certificate
+#print axioms empirical_overlap_counterexample
+#print axioms empirical_overlap_corrected
 
 end AronowAudit.P010

@@ -1,0 +1,79 @@
+import SAP.P008a.Defs
+
+open SAP.P008a MeasureTheory
+open scoped BigOperators Classical
+
+namespace Review
+noncomputable section
+
+-- Two distinct nodes, a finite atomic measure, a nonempty radius set, and
+-- the genuine sharp null; the conditional design always has both arms.
+def simpleModel : SpatialModel 2 where
+  field := Set.univ
+  node i := lineEmbedding (i.val : ℚ)
+  node_mem _ := Set.mem_univ _
+  ζ := Measure.dirac (lineEmbedding 0) + Measure.dirac (lineEmbedding 1)
+  Y _ _ := 0
+
+lemma simpleCircle (i : Fin 2) : simpleModel.circle i 0 = {simpleModel.node i} := by
+  ext x
+  simp [SpatialModel.circle, simpleModel, eq_comm]
+
+lemma simpleCircleMass (i : Fin 2) :
+    simpleModel.circleMeasure i 0 Set.univ = 1 := by
+  simp only [SpatialModel.circleMeasure, simpleCircle, Measure.restrict_apply MeasurableSet.univ,
+    Set.univ_inter]
+  fin_cases i <;> norm_num [simpleModel, lineEmbedding, WithLp.toLp]
+
+example : simpleModel.node 0 ≠ simpleModel.node 1 := by
+  norm_num [simpleModel, lineEmbedding, WithLp.toLp]
+
+example : SigmaFinite simpleModel.ζ := by
+  dsimp [simpleModel]
+  infer_instance
+
+example :
+    let P := simpleModel
+    let Q := uniformLaw (Assignment 2)
+    let A := fun z : Assignment 2 => treatedCount z = 1
+    let D : Finset ℝ := {0}
+    0 < Q.prob A ∧ MeasurableSet P.field ∧ P.sharpNull ∧ 0 < (2 : ℕ) ∧
+      (∀ i d, d ∈ D → 0 < P.circleMass i d) ∧
+      (∀ i d, d ∈ D → P.circleMeasure i d Set.univ ≠ ⊤) ∧
+      (∀ i d, d ∈ D → ∀ z, Integrable (fun x => P.Y x z) (P.circleMeasure i d)) ∧
+      (∀ z, A z → 0 < Q.mass z → nTreated z ≠ 0 ∧ nControl z ≠ 0) ∧
+      (0 : ℝ) ≤ 1 / 20 ∧ (1 / 20 : ℝ) ≤ 1 := by
+  have hc : (Finset.univ.filter (fun z : Assignment 2 => treatedCount z = 1)).card = 2 := by
+    decide
+  dsimp only
+  refine ⟨?_, MeasurableSet.univ, ?_, by norm_num, ?_, ?_, ?_, ?_, by norm_num, by norm_num⟩
+  · simp only [FiniteLaw.prob, uniformLaw, Finset.sum_const, nsmul_eq_mul]
+    rw [Finset.filter_congr_decidable _ _ (fun z => Classical.propDecidable (treatedCount z = 1)), hc]
+    norm_num [Assignment]
+  · intro x hx z
+    rfl
+  · intro i d hd
+    simp only [Finset.mem_singleton] at hd
+    subst d
+    simp [SpatialModel.circleMass, simpleCircleMass]
+  · intro i d hd
+    simp only [Finset.mem_singleton] at hd
+    subst d
+    simp [simpleCircleMass]
+  · intro i d hd z
+    exact integrable_zero _ _ _
+  · intro z hz _
+    have hn : nTreated z = (treatedCount z : ℝ) := by
+      simp only [nTreated, treatedCount, Nat.cast_sum]
+      apply Finset.sum_congr rfl
+      intro i _
+      cases z i <;> simp [bit]
+    constructor
+    · rw [hn, hz]
+      norm_num
+    · unfold nControl
+      rw [hn, hz]
+      norm_num
+
+end
+end Review

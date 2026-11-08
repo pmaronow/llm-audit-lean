@@ -1,12 +1,13 @@
-/- Portions adapted from StatLean, Apache-2.0; see NOTICE at the repository root.
-Modified finite-array rank proof; local product-symmetry bridges. -/
+/- Portions adapted from StatLean, Apache-2.0. See
+AronowAudit/External/StatLean/LICENSE and provenance.json.
+Modified finite-array rank proof; new local product-symmetry bridges. -/
 import AronowAudit.P004.P004_KernelCompletion
 
 /-!
 The finite minimum-rank argument in `rank_count_bound` is adapted from
-StatLean.HypothesisTesting.Randomization.ExactLevel.superUniform_randPValue
-(Apache-2.0). The product-weight and coordinate-swap lemmas give the
-finite-product rank bound.
+StatLean.HypothesisTesting.Randomization.ExactLevel.superUniform_randPValue,
+commit e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2 (Apache-2.0).
+The product-weight and coordinate-swap bridges below are new local proofs.
 -/
 namespace AronowAudit.P004.MCCompletion
 open scoped BigOperators Topology
@@ -189,5 +190,6 @@ theorem mc_exact_level {N P : ℕ} (p : Fin N → ℝ) (T : Assignment N → ℝ
     linarith
 
 
+#print axioms mc_exact_level
 end
 end AronowAudit.P004

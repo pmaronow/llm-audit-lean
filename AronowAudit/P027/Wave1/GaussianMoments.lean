@@ -16,5 +16,7 @@ theorem gaussian_noise_moments
     0 ≤ σ2 → GaussianNoise μ ε σ2 → NoiseMoments μ ε σ2 :=
   GaussianMoments.assemble GaussianMoments.n1_proof GaussianMoments.n2_proof μ ε σ2
 
+example : GaussianMoments.Target := gaussian_noise_moments
+
 end
 end AronowAudit.P027.Wave1

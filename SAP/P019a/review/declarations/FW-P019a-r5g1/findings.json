@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P019-T1",
+    "theorem": "SAP.P019a.T1",
+    "fingerprint": "c81b6cf9f61af31e1423d888165e91269831eca5bd6ef7b9a8f7951c8db381cc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteChecks.lean compiles checks that the five-point baseline is normalized, every atom has strictly positive mass, and both endpoint response discrepancies are genuine. T1 is a closed conjunction with no hypotheses; no vacuous implication is involved. The exact rho=1/5 contrasts are also independently checked there and in scratch/exact_checks.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T2",
+    "theorem": "SAP.P019a.T2",
+    "fingerprint": "4e23f34d35e6028d66351556c54b26056e14dd27400d66127ec9036412838543",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteChecks.lean compiles an existential instance rho=1/5 satisfying 0<=rho<=1 and rho>0, and independently computes both advertised contrasts. The baseline is a normalized law with all five masses positive. Thus all outer hypotheses, including the strict-positivity subcase, are jointly satisfiable.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T3",
+    "theorem": "SAP.P019a.T3",
+    "fingerprint": "84e11bf15d1bdd3242481c8dae70a4f65b1e199491a95275f1aad6242464310c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteChecks.lean: checkStanding16 independently proves all four assumptions for finiteSampleWitness, including whole-triple treatment independence and every nondegeneracy clause. occupiedSample=[0,8,0,8] is proved to lie in D with strictly positive iid four-sample mass. scratch/exact_checks.py independently enumerates the nine observable atoms and all 9^4 ordered observable samples, reproducing the singleton covariances, P(D), all six moments, both variances, and their nonzero difference.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T4",
+    "theorem": "SAP.P019a.T4",
+    "fingerprint": "ad22ac08d13b3b47074371fe5412ef64382d2573e51a7fc26cf2f99ae073f499",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/MeasureChecks.lean compiles an example satisfying every hypothesis of T4WholeStatement: E=Fin 8 with its discrete measurable space, nu=(1/8)*count, and W,X,Y,Z,V from distributionWitness. It proves IsProbabilityMeasure nu, measurability of all five coordinates, the almost-sure bound V<=2, and all four standing assumptions. Its bridgeMean lemma establishes the actual Bochner integral equals the finite weighted sum. No audited theorem T1-T5 is used in these proofs.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P019-T5",
+    "theorem": "SAP.P019a.T5",
+    "fingerprint": "105656e2611135a1f70525707f2081540cc19140ff5cfaedcb029dda2668db40",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteChecks.lean: checkStanding8 independently proves every standing assumption for distributionWitness. A compiled example gives both affirmative conditioning cells probability 1/4 and computes the t=0 discrepancy as control probability 1/2 versus treated-plus-one probability 0. scratch/exact_checks.py also checks the conditional support values. All functions are measurable and bounded on the finite population.",
+    "confidence": 0.99
+  }
+]

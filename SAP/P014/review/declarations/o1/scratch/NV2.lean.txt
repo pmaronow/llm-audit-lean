@@ -1,0 +1,79 @@
+import SAP.P014.Challenge
+open SAP.P014 MeasureTheory
+open scoped ENNReal
+
+noncomputable def μB : Measure Bool := (1/2 : ℝ≥0∞) • (Measure.dirac true + Measure.dirac false)
+
+instance : IsProbabilityMeasure μB := ⟨by
+  simp [μB]
+  exact ENNReal.inv_two_add_inv_two⟩
+
+open Classical in
+lemma μB_apply (s : Set Bool) : μB s =
+    (1/2 : ℝ≥0∞) * ((if true ∈ s then 1 else 0) + (if false ∈ s then 1 else 0)) := by
+  simp only [μB, Measure.smul_apply, Measure.add_apply, smul_eq_mul]
+  rw [Measure.dirac_apply' _ (by measurability), Measure.dirac_apply' _ (by measurability)]
+  simp [Set.indicator]
+
+abbrev S2 : Finset (Fin 2) := Finset.univ
+noncomputable def XB : Bool → Fin 2 → ℝ := fun ω => if ω then ![1, -1] else ![-1, 1]
+noncomputable def vB : S2 → ℝ := fun i => ![1, -1] i.1
+
+def s0 : S2 := ⟨0, by simp⟩
+def s1 : S2 := ⟨1, by simp⟩
+
+lemma perm_cases : ∀ σ : Equiv.Perm S2, σ = 1 ∨ σ = Equiv.swap s0 s1 := by decide
+
+lemma vB_inj : Function.Injective vB := by
+  intro a b h
+  rcases a with ⟨a, ha⟩; rcases b with ⟨b, hb⟩
+  fin_cases a <;> fin_cases b <;> simp_all [vB] <;> norm_num at h
+
+lemma vB_win : ∀ i, insideWindow 2 (vB i) := by
+  rintro ⟨i, hi⟩; fin_cases i <;> simp [vB, insideWindow] <;> norm_num
+
+lemma vB_count : (Finset.univ.filter (fun i : S2 => 0 ≤ vB i)).card = 1 := by
+  rw [Finset.card_eq_one]; refine ⟨s0, ?_⟩
+  ext ⟨i, hi⟩
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+  fin_cases i <;> simp [vB, s0]
+
+lemma XB_CLC : CorrectedLocalConditions μB XB 2 S2 vB := by
+  refine ⟨fun i => measurable_of_countable _, ?_, ?_⟩
+  · intro i
+    fin_cases i <;> simp [eventProbability, XB, insideWindow, μB_apply] <;> norm_num
+  · intro σ
+    rcases perm_cases σ with rfl | rfl
+    · have : {ω : Bool | ∀ i : S2, XB ω i = vB ((1 : Equiv.Perm S2) i)} = {true} := by
+        ext ω; constructor
+        · intro h; have h0 := h s0
+          cases ω
+          · exfalso; simp [XB, vB, s0] at h0; norm_num at h0
+          · rfl
+        · rintro rfl ⟨i, hi⟩; fin_cases i <;> simp [XB, vB]
+      have hc : ((S2.card.factorial : ℕ) : ℝ) = 2 := by simp
+      show (μB _).toReal = _
+      rw [this, μB_apply, hc]; simp [ENNReal.toReal_inv]
+    · have : {ω : Bool | ∀ i : S2, XB ω i = vB ((Equiv.swap s0 s1) i)} = {false} := by
+        ext ω; constructor
+        · intro h; have h0 := h s0
+          rw [Equiv.swap_apply_left] at h0
+          cases ω
+          · rfl
+          · exfalso; simp [XB, vB, s0, s1] at h0; norm_num at h0
+        · rintro rfl ⟨i, hi⟩; fin_cases i <;> simp [XB, vB, s0, s1, Equiv.swap_apply_def]
+      have hc : ((S2.card.factorial : ℕ) : ℝ) = 2 := by simp
+      show (μB _).toReal = _
+      rw [this, μB_apply, hc]; simp [ENNReal.toReal_inv]
+
+-- nonvacuity of T2ScoreWholePart
+example : (∀ᵐ ω ∂μB, armSize S2 (thresholdAssignment (XB ω)) true = ((1:ℕ):ℝ)) ∧
+    (∀ y : PotentialOutcomes 2, WeightedIdentity μB (fun ω => thresholdAssignment (XB ω)) S2 y 1) := by
+  have h := SAP.P014.T2.{0}.2 μB XB 2 S2 vB 1 (by norm_num) vB_inj vB_win (by norm_num) (by simp)
+    vB_count XB_CLC
+  exact ⟨h.1, h.2.2⟩
+
+-- nonvacuity of T7LocalPart (2 ≤ |S| additionally)
+example : ∀ i j : S2, i ≠ j → eventProbability μB (fun ω => XB ω i = XB ω j) = 0 :=
+  SAP.P014.T7.{0}.2.1 μB XB 2 S2 vB 1 (by norm_num) (by simp) vB_inj vB_win (by norm_num) (by simp)
+    vB_count XB_CLC

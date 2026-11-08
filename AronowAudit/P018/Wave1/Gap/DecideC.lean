@@ -11,9 +11,9 @@ import AronowAudit.P018.Wave1.WeightedConsistency.M10
 P018-T10: repeated-data sandwich consistency with overlap mean control.
 P018-T25: refutation of the printed benchmark covariance correspondence.
 
-The repeated-data proof uses finite-dependence and probability bounds.
-All data bounds are transferred to the product sample law almost surely;
-individual block scores need not have zero mean.
+The repeated-data proof uses the proved finite-dependence and probability tools
+from WeightedConsistency. All data bounds are transferred to the product sample
+law almost surely; individual block scores need not have zero mean.
 -/
 
 set_option autoImplicit false
@@ -762,6 +762,9 @@ theorem benchmark_correspondence_printed_false :
   rcases DecideC_cross_role_entry t1 t2 σ with ⟨hs, ht⟩
   rw [hs, ht] at hentry
   norm_num at hentry
+
+example : ¬ type_of% @AronowAudit.P018.benchmark_correspondence_printed :=
+  benchmark_correspondence_printed_false
 
 end
 end AronowAudit.P018.Wave1

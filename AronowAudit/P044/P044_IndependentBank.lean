@@ -34,6 +34,37 @@ def smoothedWeight (R c : ℕ) : ℝ := ((c : ℝ) + 1) / ((R : ℝ) + 1)
 def weightedObservation (R : ℕ) (ω : Bool × ℕ) : ℝ :=
   (if ω.1 then 1 else 0) / smoothedWeight R ω.2
 
+lemma weight_pos (R c : ℕ) : 0 < smoothedWeight R c := by
+  unfold smoothedWeight
+  positivity
+
+lemma observation_law (R : ℕ) (p : unitInterval) :
+    HasLaw Prod.fst (bernoulliMeasure true false p) (jointLaw R p) := by
+  refine { aemeasurable := measurable_fst.aemeasurable, map_eq := ?_ }
+  simp [jointLaw]
+
+lemma count_law (R : ℕ) (p : unitInterval) :
+    HasLaw Prod.snd (binomial R p) (jointLaw R p) := by
+  refine { aemeasurable := measurable_snd.aemeasurable, map_eq := ?_ }
+  simp [jointLaw]
+
+lemma observation_count_independent (R : ℕ) (p : unitInterval) :
+    IndepFun Prod.fst Prod.snd (jointLaw R p) := by
+  exact indepFun_prod measurable_id measurable_id
+
+lemma count_bound (R : ℕ) (p : unitInterval) :
+    ∀ᵐ ω ∂jointLaw R p, ω.2 ≤ R :=
+  ae_le_of_hasLaw_binomial (count_law R p)
+
+lemma weight_le_one {R c : ℕ} (hc : c ≤ R) : smoothedWeight R c ≤ 1 := by
+  unfold smoothedWeight
+  rw [div_le_one (by positivity : (0 : ℝ) < (R : ℝ) + 1)]
+  exact_mod_cast (Nat.add_le_add_right hc 1)
+
+lemma weight_domain (R : ℕ) (p : unitInterval) :
+    ∀ᵐ ω ∂jointLaw R p, 0 < smoothedWeight R ω.2 ∧ smoothedWeight R ω.2 ≤ 1 := by
+  filter_upwards [count_bound R p] with ω hω
+  exact ⟨weight_pos R ω.2, weight_le_one hω⟩
 
 lemma reciprocal_binomial_moment (R : ℕ) (p : unitInterval) :
     (p : ℝ) * ((R : ℝ) + 1) *
@@ -115,7 +146,24 @@ theorem independent_bank_expectation {Ω : Type*} [MeasurableSpace Ω]
   · have hpos : 0 < (1 - (p : ℝ)) ^ (R + 1) := by positivity
     linarith
 
+/-- A fully specified normalized independent model witnesses every premise of
+the general theorem; the expectation is strictly below one for all R and 0<p<1. -/
+theorem independent_bank_model (R : ℕ) (p : unitInterval)
+    (_hp : 0 < (p : ℝ)) (hp1 : (p : ℝ) < 1) :
+    HasLaw Prod.fst (bernoulliMeasure true false p) (jointLaw R p) ∧
+    HasLaw Prod.snd (binomial R p) (jointLaw R p) ∧
+    IndepFun Prod.fst Prod.snd (jointLaw R p) ∧
+    Integrable (weightedObservation R) (jointLaw R p) ∧
+    (∫ ω, weightedObservation R ω ∂jointLaw R p) =
+      1 - (1 - (p : ℝ)) ^ (R + 1) ∧
+    1 - (1 - (p : ℝ)) ^ (R + 1) < 1 := by
+  refine ⟨observation_law R p, count_law R p, observation_count_independent R p,
+    weightedObservation_integrable R p, weightedObservation_expectation R p, ?_⟩
+  have hpos : 0 < (1 - (p : ℝ)) ^ (R + 1) := by positivity
+  linarith
 
 end
 end AronowAudit.P044.IndependentBank
 
+#print axioms AronowAudit.P044.IndependentBank.independent_bank_expectation
+#print axioms AronowAudit.P044.IndependentBank.independent_bank_model

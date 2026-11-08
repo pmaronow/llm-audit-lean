@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P044-T1",
+    "theorem": "SAP.P044.T1",
+    "fingerprint": "e9e7abb45bc8308f138b9459eeb8c5ed112f2773cce5dfd24b8f834d5d378406",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean constructs a normalized real design on Fin 66 and checks the joint-law probability factors, representative actual exposure counts, and a genuine retained row. The independent law has 66^2 equally likely pairs; the included law has 66*65 equally likely pairs, so both rational laws are nonnegative and normalized. The exhaustive pair list and the skip map give a genuine distinct 65-row bank; relevant weights are positive and the natural subtractions remove a counted row. There are no outer hypotheses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T2",
+    "theorem": "SAP.P044.T2",
+    "fingerprint": "2499932e05ba124564172abe49bbf9380197bb6f89f9039c73784164e59b7f42",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean constructs an explicit nonconstant one-unit Bool design with positive probabilities for both exposures, a normalized joint bank/observation law with the correct marginal, and positive/nonnegative tables with matching diagonals, satisfying every universal exact-input and W1ErrorTransfer premise. It also checks the supported n=0 matching design and its mean 0, variance 25/81, expected variance estimate 85/324 and strict shortfall. For n=4998, R=10000 and N=10002 by the displayed natural-number formulas; all denominators stay positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T3",
+    "theorem": "SAP.P044.T3",
+    "fingerprint": "5c43dc815eb9061ddaed2e047fa31ea11775b196ffbf72011c6b70e389ef15f4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean checks the actual nonisolated star, injective exhaustive two-treated assignment list, agreement of all observed outcomes, positivity of every used denominator, and the two genuine targets 0 and -1. A real statistic such as the constant-zero function exists; the quantified statistic class is nonempty.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T4",
+    "theorem": "SAP.P044.T4",
+    "fingerprint": "f776e4adc0f6ee7dcab8189d3d86b13e4da1a489f71ed8b05c08d54816fca8f5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean constructs the supported Bool design and a nonempty common-support set. It also constructs a normalized singleton design with a truly absent exposure and a nonzero schedule perturbation: observations agree and targets differ by 4. The four-unit star satisfies all complete-randomization hypotheses with N=4,M=2, including symmetry, zero diagonal and positive degree. Thus both the support and missing-support branches have instances.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T5",
+    "theorem": "SAP.P044.T5",
+    "fingerprint": "af93c6cde3332027de5facbde110aba2fe73519232df9fc1596e099e7bbee200",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean checks that normalPair is a probability measure, the triangle has degree and two-walk degree 2 and scale 8, and g=1/64,e=-3/4 is strictly inside the prescribed nonempty negative-baseline rectangle, with baseline -5/8. Gaussian densities with these strictly positive variances are positive on every real point; each open interval therefore has positive probability and their independent product has positive probability. The statement also includes L2 membership of every baseline and the half-normal variable, excluding undefined means or infinite variances.",
+    "confidence": 0.99
+  }
+]

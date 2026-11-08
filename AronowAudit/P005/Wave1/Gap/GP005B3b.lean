@@ -168,6 +168,9 @@ theorem noninteracted_exact_unbiasedness_proof {n d m : ℕ} (P : Population n d
     GP005B3b_T21_expectation_sub m _ _
   exact ⟨by linarith, hD⟩
 
+example : type_of% @AronowAudit.P005.noninteracted_exact_unbiasedness :=
+  noninteracted_exact_unbiasedness_proof
+
 lemma GP005B3b_T22_inverse_free_identity {n d m : ℕ} (P : Population n d)
     (hmn : m < n) (S : Finset (Fin n)) (hS : S ∈ design n m) :
     interactedDebiasedATE P m S = armDebiased P S P.yT-armDebiased P (control S) P.yC := by
@@ -194,6 +197,9 @@ theorem interacted_exact_unbiasedness_proof {n d m : ℕ} (P : Population n d)
     GP005B3b_T21_expectation_sub m _ _
   exact ⟨by linarith, hD, hT, hC⟩
 
+example : type_of% @AronowAudit.P005.interacted_exact_unbiasedness :=
+  interacted_exact_unbiasedness_proof
+
 lemma GP005B3b_T23_dot_sub_left {d : ℕ} (u v w : Fin d → ℝ) :
     dot (u-v) w = dot u w-dot v w := by
   simp only [dot, Pi.sub_apply, sub_mul, Finset.sum_sub_distrib]
@@ -219,6 +225,9 @@ theorem interacted_exact_decomposition_proof {n d m : ℕ} (P : Population n d)
         ((n : ℝ)-m)/((n-1 : ℝ)*m)*leverageCov P P.yT := by
   exact interacted_exact_decomposition_completion P hn hm hmn hP hinv
 
+
+example : type_of% @AronowAudit.P005.interacted_exact_decomposition :=
+  interacted_exact_decomposition_proof
 
 lemma GP005B3b_T21_second_centered_left {n m : ℕ} (hn : 3 ≤ n) (hm : 0 < m)
     (hmn : m < n) (a b : Fin n → ℝ) (ha : ∑ i, a i = 0) :
@@ -930,6 +939,9 @@ theorem noninteracted_stochastic_expansion_proof (d m : ℕ → ℕ)
       _ ≤ B/H := div_le_div_of_nonneg_right hZexp hH0.le
       _ < ε := hBH
   exact Filter.eventually_atTop.mp htail
+
+example : type_of% @AronowAudit.P005.noninteracted_stochastic_expansion :=
+  noninteracted_stochastic_expansion_proof
 
 end
 

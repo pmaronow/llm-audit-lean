@@ -1,0 +1,120 @@
+import SAP.P001g.Defs.WholeW2
+
+open MeasureTheory ProbabilityTheory Filter SAP.P001g
+open scoped BigOperators ENNReal NNReal Topology
+
+noncomputable section
+namespace ReviewCounterexamples
+
+lemma baseNonnegative (y : Fin 3) : 0 ≤ circleBaseW2 y := by
+  have hs : Real.sqrt 2 < 2 := by
+    nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), Real.sqrt_nonneg 2]
+  fin_cases y <;> dsimp [circleBaseW2] <;> nlinarith [Real.sqrt_nonneg 2]
+
+lemma baseNormalized : (∑ y : Fin 3, circleBaseW2 y) = 1 := by
+  simp [circleBaseW2, Fin.sum_univ_succ]
+  ring
+
+lemma truthNormalized (b : Fin 2 → ℝ) : (∑ y : Fin 3, circleMixW2 (circleTruthW2 b) y) = 1 := by
+  simpa [circleMixW2, circleTruthW2] using baseNormalized
+
+def baseLaw : Measure (Fin 3) :=
+  ∑ y : Fin 3, ENNReal.ofReal (circleBaseW2 y) • Measure.dirac y
+
+instance : IsProbabilityMeasure baseLaw := by
+  constructor
+  simp only [baseLaw, Measure.finsetSum_apply, Measure.smul_apply, Measure.dirac_apply_of_mem,
+    Set.mem_univ, smul_eq_mul, mul_one]
+  rw [← ENNReal.ofReal_sum_of_nonneg (fun y _ => baseNonnegative y), baseNormalized]
+  norm_num
+
+def sampleLaw : Measure (ℕ → Fin 3) := Measure.infinitePi (fun _ : ℕ => baseLaw)
+
+instance : IsProbabilityMeasure sampleLaw := by unfold sampleLaw; infer_instance
+
+lemma iidSample : IID sampleLaw (fun i ω => ω i) := by
+  refine ⟨fun i => measurable_pi_apply i,
+    iIndepFun_infinitePi (X := fun _ : ℕ => id) (fun _ => measurable_id), ?_⟩
+  intro i
+  refine ⟨(measurable_pi_apply i).aemeasurable, (measurable_pi_apply 0).aemeasurable, ?_⟩
+  simp only [sampleLaw, Measure.infinitePi_map_eval]
+
+example : (![1, 0] : Fin 2 → ℝ) ∈ circleBoundaryW2 ∧
+    (![-1, 0] : Fin 2 → ℝ) ∈ circleBoundaryW2 ∧
+    circleTruthW2 (![1, 0] : Fin 2 → ℝ) ≠ circleTruthW2 (![-1, 0] : Fin 2 → ℝ) ∧
+    (∀ b : Fin 2 → ℝ, sampleLaw.map (fun ω => ω 0) =
+      ∑ y : Fin 3, ENNReal.ofReal (circleMixW2 (circleTruthW2 b) y) • Measure.dirac y) := by
+  refine ⟨by norm_num [circleBoundaryW2], by norm_num [circleBoundaryW2], ?_, ?_⟩
+  · intro heq
+    have h := congrFun heq 1
+    norm_num [circleTruthW2] at h
+  · intro b
+    simpa [sampleLaw, baseLaw, circleMixW2, circleTruthW2] using
+      Measure.infinitePi_map_eval (fun _ : ℕ => baseLaw) 0
+
+-- A strictly positive rational population for the placebo example:
+-- X is uniform on {-1,0,1}; Z is uniform and independent given X;
+-- P(D=1|X)=1/4 at X=0 and 3/4 at X=±1.
+def cellWeight (j : Fin 12) : ℝ :=
+  if placeboX j = 0 then (if placeboD j = 1 then 1/24 else 1/8)
+  else (if placeboD j = 1 then 1/8 else 1/24)
+
+example : (∑ j : Fin 12, cellWeight j) = 1 := by
+  norm_num [cellWeight, placeboX, placeboD, Fin.sum_univ_succ]
+
+example (j : Fin 12) : 0 < cellWeight j := by
+  unfold cellWeight
+  split_ifs <;> norm_num
+
+lemma restrictedDet : (placeboFTest_gram placeboFTest_restricted cellWeight).det = 2/3 := by
+  norm_num [placeboFTest_gram, placeboFTest_restricted, cellWeight,
+    placeboX, placeboD, Fin.sum_univ_succ, Matrix.det_fin_two]
+
+lemma fullDet : (placeboFTest_gram placeboRegressor cellWeight).det = 17/54 := by
+  norm_num [placeboFTest_gram, placeboRegressor, cellWeight,
+    placeboX, placeboZ, placeboW, placeboD, Fin.sum_univ_succ, Matrix.det_fin_three]
+
+lemma fullCoef : placeboFTest_coef placeboRegressor cellWeight = ![29/68, 0, 4/17] := by
+  have hcross : (placeboFTest_gram placeboRegressor cellWeight).mulVec ![29/68, 0, 4/17] =
+      placeboFTest_cross placeboRegressor cellWeight := by
+    ext a
+    fin_cases a <;>
+      norm_num [Matrix.mulVec, dotProduct, placeboFTest_gram, placeboFTest_cross,
+        placeboRegressor, cellWeight, placeboX, placeboZ, placeboW, placeboD, Fin.sum_univ_succ]
+  unfold placeboFTest_coef
+  rw [← hcross, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul, Matrix.one_mulVec]
+  rw [fullDet]
+  exact isUnit_iff_ne_zero.mpr (by norm_num)
+
+lemma restrictedCoef : placeboFTest_coef placeboFTest_restricted cellWeight = ![7/12, 0] := by
+  have hcross : (placeboFTest_gram placeboFTest_restricted cellWeight).mulVec ![7/12, 0] =
+      placeboFTest_cross placeboFTest_restricted cellWeight := by
+    ext a
+    fin_cases a <;>
+      norm_num [Matrix.mulVec, dotProduct, placeboFTest_gram, placeboFTest_cross,
+        placeboFTest_restricted, cellWeight, placeboX, placeboD, Fin.sum_univ_succ]
+  unfold placeboFTest_coef
+  rw [← hcross, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul, Matrix.one_mulVec]
+  rw [restrictedDet]
+  exact isUnit_iff_ne_zero.mpr (by norm_num)
+
+lemma fullRisk : placeboFTest_risk placeboRegressor cellWeight = 59/272 := by
+  unfold placeboFTest_risk
+  rw [fullCoef]
+  norm_num [placeboRegressor, cellWeight, placeboX, placeboZ, placeboW, placeboD,
+    Fin.sum_univ_succ]
+
+lemma restrictedRisk : placeboFTest_risk placeboFTest_restricted cellWeight = 35/144 := by
+  unfold placeboFTest_risk
+  rw [restrictedCoef]
+  norm_num [placeboFTest_restricted, cellWeight, placeboX, placeboD, Fin.sum_univ_succ]
+
+-- The eventual F/n limit is strictly positive under this null population.
+example :
+    (placeboFTest_risk placeboFTest_restricted cellWeight -
+      placeboFTest_risk placeboRegressor cellWeight) /
+        placeboFTest_risk placeboRegressor cellWeight = 64/531 := by
+  rw [fullRisk, restrictedRisk]
+  norm_num
+
+end ReviewCounterexamples

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P026-T13",
+    "theorem": "SAP.P026b.T13",
+    "fingerprint": "6db577ddd0d02e201302a8fc7edf7fda59f7fce29133f4b48bc8e019f4615164",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs Audit.fairOne : UnitExperiment (Fin 1), with both binary allocations of weight 1/2, and checks its probability law and positive marginals without importing Challenge. This supplies every substantive hypothesis. Fixed y1=2, y0=1 and arbitrary assignment-dependent real f are available in the required types; no independence hypothesis is present.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T14",
+    "theorem": "SAP.P026b.T14",
+    "fingerprint": "6abf6933f9ea6f152c6bdd3ad9c5d62a02ccf21c56ef676c2ace5c996ba3c045",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed assertion, with no hypotheses to make vacuous. scratch/Check.lean independently verifies that realTableDesign is normalized and has positive marginals. scratch/numerical_check.py enumerates all 90 distinct assignments and corroborates both opposite-block fits and all ten corrected column entries: SE approximately 0.2470917506, variance 0.06105433321, SD(Vhat) 0.01256670239. This numerical corroboration is not a certified enclosure proof. Existence and uniqueness of each real maximizer also follow mathematically from strict concavity (two distinct covariates give rank two) and coercivity (the displayed positive/negative outcome covariates admit no nonzero weak separating direction); thus the coefficient-choice fallback cannot be used. No independent Lean construction of the transcendental roots was needed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T15",
+    "theorem": "SAP.P026b.T15",
+    "fingerprint": "f01548ddcd55366e20e6b464430434d6fc2ba57a370daac764cf5e25537e9df2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently verifies the one-of-three law and marginals, proves that all three displayed fitted vectors are in the intercept-and-X column space and minimize ordinary real squared residuals, and checks the estimates (1/4,1,1/4), covariances (1/6,0,1/6), expectation 1/2, ATE 1 and unadjusted HT=1. The Gram matrix [[3,3],[3,5]] has determinant 6, ensuring uniqueness. A separate real-valued check evaluates the actual observed-outcome residual contrast to (1/4,1,1/4). Printed-reading conditions are checked in scratch/refutation-check.txt.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T16",
+    "theorem": "SAP.P026b.T16",
+    "fingerprint": "82827b54d8a1c2f14a14fa63d8fb165b65cd8ec357a44709e08edc6ee3a1b6e7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs Audit.fairOne for every universal block, checks a zero-prediction instance of the zero-covariance premise and assignment-independent observed outcomes at the sharp null x=2, and independently checks the embedded three-unit biased OLS example. K=0 and the empty covariate matrix are admissible and give an intercept-only regression; no rank hypothesis is required. For arbitrary fixed X, its column space is finite dimensional, hence has an actual orthogonal projection. All quantified domains and the only additional covariance premise are inhabited.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T17",
+    "theorem": "SAP.P026b.T17",
+    "fingerprint": "4a647e260e2711d1efe6f6a5d09fede3cdda2a27a42df15bf12df841edffbd6e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently proves that realAsymmetricTwo (FF, FT, TT with weights 1/3) satisfies normalization, positivity of all arm marginals, positive disagreement, and positive off-diagonal same-arm joints. It checks the missing directed joint, and computes in Lean E[Vhat]=23/8 and Var(generalized with f=0)=27/8 for fixed sharp-null outcomes one. Diagonal same-arm joints equal the positive marginals. Thus all printed conditions hold, and both conservativeness and the sharp-null equality actually fail. The printed reading and each condition are checked in scratch/refutation-check.txt.",
+    "confidence": "high"
+  }
+]

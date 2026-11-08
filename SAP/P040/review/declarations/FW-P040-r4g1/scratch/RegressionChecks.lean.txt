@@ -1,0 +1,105 @@
+import SAP.P040.Challenge
+
+open MeasureTheory ProbabilityTheory Set Filter
+open scoped BigOperators Topology
+namespace AuditP040
+open SAP.P040
+
+set_option maxHeartbeats 1000000
+
+-- T4/T5 invert full-rank matrices. These proofs use data rows, not the audited targets.
+lemma unadjusted_injective : Function.Injective unadjustedDesign.mulVecLin := by
+  intro v w h
+  have h0 := congrFun h (0 : Fin 30)
+  have h2 := congrFun h (2 : Fin 30)
+  norm_num [unadjustedDesign, salesTreatment, Matrix.mulVecLin,
+    Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h0 h2
+  ext j
+  fin_cases j <;> dsimp <;> linarith
+
+lemma weekday_frequency_values (c : Fin 7) :
+    weekdayFrequency c = (![4, 5, 5, 5, 4, 3, 4] c : ℝ) / 30 := by
+  fin_cases c <;> unfold weekdayFrequency <;>
+    simp only [Fin.sum_univ_succ] <;> norm_num [salesDay]
+
+lemma mean_day_value : meanSalesDay = (491 / 30 : ℝ) := by
+  unfold meanSalesDay
+  simp only [Fin.sum_univ_succ]
+  norm_num [salesDay]
+
+lemma adjusted_injective : Function.Injective adjustedDesign.mulVecLin := by
+  intro v w h
+  have h0 := congrFun h (0 : Fin 30)
+  have h1 := congrFun h (1 : Fin 30)
+  have h2 := congrFun h (2 : Fin 30)
+  have h3 := congrFun h (3 : Fin 30)
+  have h4 := congrFun h (4 : Fin 30)
+  have h5 := congrFun h (5 : Fin 30)
+  have h6 := congrFun h (6 : Fin 30)
+  have h8 := congrFun h (8 : Fin 30)
+  have h10 := congrFun h (10 : Fin 30)
+  norm_num [adjustedDesign, mean_day_value, centeredWeekday, weekday_frequency_values,
+    salesDay, salesTreatment, Matrix.mulVecLin, Matrix.mulVec, dotProduct,
+    Fin.sum_univ_succ] at h0 h1 h2 h3 h4 h5 h6 h8 h10
+  ext j
+  fin_cases j
+  · dsimp
+    linear_combination (17 / 30 : ℝ) * h0 + (1 / 6 : ℝ) * h1 + (-29 / 15 : ℝ) * h2 + (2 / 15 : ℝ) * h3 + (2 / 15 : ℝ) * h4 + (2 / 15 : ℝ) * h5 + (-2 / 5 : ℝ) * h6 + (21 / 10 : ℝ) * h8 + (1 / 10 : ℝ) * h10
+  · dsimp
+    linear_combination -1 * h0 + 1 * h2 + 1 * h6 + -1 * h8
+  · dsimp
+    linear_combination (-1 / 7 : ℝ) * h2 + (1 / 7 : ℝ) * h8
+  · dsimp
+    linear_combination -1 * h0 + (8 / 7 : ℝ) * h2 + -1 * h4 + 1 * h5 + 1 * h6 + (-8 / 7 : ℝ) * h8
+  · dsimp
+    linear_combination (2 / 7 : ℝ) * h2 + -1 * h4 + 1 * h6 + (-2 / 7 : ℝ) * h8
+  · dsimp
+    linear_combination -1 * h0 + 1 * h1 + (3 / 7 : ℝ) * h2 + -1 * h4 + 1 * h6 + (-3 / 7 : ℝ) * h8
+  · dsimp
+    linear_combination (4 / 7 : ℝ) * h2 + -1 * h4 + (3 / 7 : ℝ) * h8
+  · dsimp
+    linear_combination -1 * h0 + (5 / 7 : ℝ) * h2 + 1 * h3 + -1 * h4 + 1 * h6 + (-5 / 7 : ℝ) * h8
+  · dsimp
+    linear_combination (6 / 7 : ℝ) * h2 + -1 * h4 + (-6 / 7 : ℝ) * h8 + 1 * h10
+
+example : unadjustedDesign.rank = 2 := by
+  rw [Matrix.rank, LinearMap.finrank_range_of_inj unadjusted_injective]
+  simp
+example : adjustedDesign.rank = 9 := by
+  rw [Matrix.rank, LinearMap.finrank_range_of_inj adjusted_injective]
+  simp
+
+example : (0 : ℝ) < cafeVarianceWitness ∧ 0 < bulkVarianceWitness ∧
+    (0 : ℝ) < cafeSquaredStatistic ∧ 0 < bulkSquaredStatistic ∧
+    cafeCoefficientWitness ^ 2 / cafeVarianceWitness = cafeSquaredStatistic ∧
+    bulkCoefficientWitness ^ 2 / bulkVarianceWitness = bulkSquaredStatistic := by
+  norm_num [cafeVarianceWitness, bulkVarianceWitness, cafeSquaredStatistic,
+    bulkSquaredStatistic, cafeCoefficientWitness, bulkCoefficientWitness]
+example (a : Bool) (o : Fin 4) : 0 < tableSquaredStatistic a o := by
+  cases a <;> fin_cases o <;>
+    norm_num [tableSquaredStatistic, cafeSquaredStatistic, bulkSquaredStatistic]
+
+-- The reference integrals do not use the zero default for nonintegrability.
+example (q : ℝ) : IntervalIntegrable (fun u : ℝ => Real.exp (-u ^ 2 / 2))
+    volume 0 (Real.sqrt q) := by
+  apply Continuous.intervalIntegrable
+  fun_prop
+example (q nu : ℝ) (hn : 0 < nu) :
+    IntervalIntegrable (studentReferenceDensity nu) volume 0 (Real.sqrt q) := by
+  apply Continuous.intervalIntegrable
+  unfold studentReferenceDensity
+  apply Continuous.mul continuous_const
+  apply Continuous.rpow_const (by fun_prop)
+  intro t
+  left
+  have : (0 : ℝ) ≤ t ^ 2 / nu := div_nonneg (sq_nonneg t) hn.le
+  linarith
+example : (0 : ℝ) < Real.sqrt (21 * Real.pi) * Real.Gamma (21 / 2) ∧
+    (0 : ℝ) < Real.sqrt (28 * Real.pi) * Real.Gamma (28 / 2) := by
+  constructor <;> apply mul_pos
+  · exact Real.sqrt_pos.2 (mul_pos (by norm_num) Real.pi_pos)
+  · exact Real.Gamma_pos_of_pos (by norm_num)
+  · exact Real.sqrt_pos.2 (mul_pos (by norm_num) Real.pi_pos)
+  · exact Real.Gamma_pos_of_pos (by norm_num)
+
+end AuditP040

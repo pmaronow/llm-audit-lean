@@ -1,0 +1,59 @@
+[
+  {
+    "target_id": "P011-T15",
+    "theorem": "SAP.P011b.T15",
+    "fingerprint": "b56b0700065765eea8c74eb23289f69e870a72f831911072e74cce8d63f3042e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean checks coordinate integrability for every block count, binary values for every latent star input, validity of both one-block graphs, and nonzero Gram determinants for both one-block OLS designs, without using any Challenge theorem. scratch/exact_checks.py independently enumerates both 3072-state latent block laws and checks means, covariance, conditional laws, the two nondegenerate scaled variances, mean quadratics, true-error expectations, and finite raw-oracle expectations. For every K>0 the independent product block construction gives all Scaling, valid-constraint and full-rank mean-model hypotheses simultaneously; the complete argument is in scratch/witness-audit.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T16",
+    "theorem": "SAP.P011b.T16",
+    "fingerprint": "a4fa6a35c534be3576add2e80eb5c9409911c1cb0b9546d631909941045d612d",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "record.json:84 says the fixed-b domain is retained and that no generalized coefficient-sequence result is asserted. This is an inaccurate declared scope restriction: SAP/P011b/Defs/WholeW2.lean:185 explicitly quantifies b : ℕ → Fin p → ℝ, and SAP/P011b/Challenge/Part1.lean:41 correctly says coefficients and targets may vary with sample size. The formal statement, its docstring, and the whole decision do cover the canonical claim; only this record note is inaccurate."
+    ],
+    "fix": "Replace record.json:84 credit_note with: \"The final theorem allows arbitrary deterministic coefficient sequences b : ℕ → Fin p → ℝ, and targets may vary with sample size. The residual asymptotic conclusions keep p and j fixed; no fixed-b restriction is imposed.\"",
+    "nonvacuity": "scratch/Check.lean constructs the full finite OLS mean-model, rank and coefficient-weight hypotheses for shiftModelW2 with shiftDesignW2, n=p=2 and b=0. It also constructs DesignRegularW2 for the entire independent-sign family with the one-column intercept design and constants Bx=By=lambda=1. That family has mean model b_k=0, weights one, n Var(B)=1, dependency on the empty graph and Scaling(1,1,1,2), proving joint satisfiability of all residual asymptotic hypotheses; the scaling and mean calculations are argued in scratch/witness-audit.md. The independent lower-star family with empty recruitment supplies the nonnecessity instance; exact finite arithmetic is independently checked in scratch/exact_checks.py.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T17",
+    "theorem": "SAP.P011b.T17",
+    "fingerprint": "1969637a642f21e06e80303d7d1ae399eb85e55374ed6304ed26746b4d4fca35",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs the n=4 constant Dirac model and proves, for every i,j,k,l including repetitions, that all five exact weighted/raw/constant-centering moment domains in T17Statement hold simultaneously. Every displayed function is a polynomial of Borel coordinate functions, all moments are finite, and 0<4. No target theorem is used in these examples.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T18",
+    "theorem": "SAP.P011b.T18",
+    "fingerprint": "7e8ebbca1346622f4c508257a11d1d14acd27383ee04ccf60c70af9939720a6e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently proves the entire T18Statement by unfolding the actual definitions and using Dirac integration and rational arithmetic; it also verifies Dependency and Homoskedastic for the witness. scratch/exact_checks.py independently obtains beta=7/2, actual covariance 0, printed values 9/4 and 93009/16, bracket-only repair -70, and fully corrected value 0. All printed-reading conditions are checked explicitly in scratch/witness-audit.md. No certified Challenge theorem is invoked.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T19",
+    "theorem": "SAP.P011b.T19",
+    "fingerprint": "d930ccf88767ebeefaccc6316c933d9651d250b2cb8855f64287da32774aa14d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean verifies the alternating weight is strictly positive for every positive n and every coordinate is integrable throughout the actual alternating family. scratch/exact_checks.py verifies its exact finite moments, positive common variance and support bounds for n=1,...,8. For every n, w_n=n/(2 ceil(n/2))>0, beta=1, common variance=w_n^2, n Var(B)=w_n^2 tending to 1, centered weighted outcomes bounded by 2 and weights below 2; nested empty graphs and independent coordinate draws give Scaling(2,1,1,2), validity and homoskedasticity. Mean spread is 1 for even n and (n-1)/(n+1) for odd n. The full asymptotic/nonvacuity argument and an equal-means instance satisfying the consistency premise are in scratch/witness-audit.md.",
+    "confidence": "high"
+  }
+]

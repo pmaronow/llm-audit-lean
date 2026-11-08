@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P026b.T13",
+    "target_id": "P026-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "All finite nonempty binary assignment laws with nonnegative normalized weights and positive marginals are quantified, and arbitrary real assignment-dependent predictions are allowed. Both arm-total expectation identities and the ATE covariance bias identity match the canonical corrected equations [17]-[19]. The misplaced printed expectation bracket is repaired by the definition of generalizedTotal."
+  },
+  {
+    "theorem": "SAP.P026b.T14",
+    "target_id": "P026-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "The actual Table 1 rows and 90 equiprobable assignments, opposite-block logistic maximum-likelihood fits with intercept, coefficient bounds, exact unbiasedness assertions, moment intervals, all ten corrected rounded entries and rejection of all six erroneous entries are present. The opposite prediction-block selector is required by canonical clause (a), not an error. Maximizer existence/uniqueness is concluded, so the fallback (0,0) convention cannot do the work. Independent 60-digit numerical checks agree with the moment intervals; finite full-rank nonseparated data support existence and uniqueness."
+  },
+  {
+    "theorem": "SAP.P026b.T15",
+    "target_id": "P026-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "The exact specified three-unit design, covariate/intercept OLS fitted values as unique real least-squares fitted vectors, all estimates, treatment-prediction covariances, expectation, ATE, bias identity and unadjusted HT comparison are present. generalized is identically the branch residual estimator after the identical prediction-total terms cancel. This is the canonical counterexample to the stated reading of package guidance, and the Challenge docstring does not claim that printed guidance itself is false."
+  },
+  {
+    "theorem": "SAP.P026b.T16",
+    "target_id": "P026-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both fixed-prediction and all-unit intercept-inclusive OLS residual estimators, unbiasedness of the former, the covariance bias formula for the latter, its biased example, zero-covariance sufficient condition, and sharp-null consequence are covered. OLS projection gives fitted responses without a hidden full-rank hypothesis. The general sharp-null clause allows any deterministic fitting map, and specializes to OLS."
+  },
+  {
+    "theorem": "SAP.P026b.T17",
+    "target_id": "P026-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is a faithful refutation of assertions actually in the canonical claim: positive disagreement need not give positive directed cross support, universal variance conservativeness fails, and sharp-null unbiasedness in footnote 9 fails even with positive same-arm joints. The real asymmetric design has p10(0,1)=0 and p10(1,0)=1/3; for constant outcomes its expected variance estimate is 23/8 whereas the true variance is 27/8. These jointly refute the printed support/conservativeness claim and separately its sharp-null assertion. All marginals and regularized pair denominators are valid."
+  },
+  {
+    "theorem": "SAP.P026b.T18",
+    "target_id": "P026-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical formal content explicitly asserts a rule from pairwise independence with each fitting input. The XOR example supplies exactly that hypothesis, a deterministic function solely of the two observed fitting outcomes, and nonzero covariance (1/4), which contradicts the printed general rule. It need not refute the separately valid single-input statement in footnote 5, or the independent-block examples, to refute this canonical general assertion."
+  },
+  {
+    "theorem": "SAP.P026b.T19",
+    "target_id": "P026-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "The population, allocation law, FE covariate coefficient via Frisch-Waugh residualization, opposite-block OLS residual totals, and opposite-block logistic fits match the estimators named in the canonical claim. Positivity of every FE denominator and uniqueness of logistic maximizers are conclusions. Negating a subset of the printed moment conjunction suffices to refute that conjunction; no claim that every entry fails is needed. Exact finite arithmetic gives FE mean about -0.0139874 and Linear variance 38307/634880, already outside the printed intervals."
+  },
+  {
+    "theorem": "SAP.P026b.T20",
+    "target_id": "P026-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both observed/potential-outcome masking identities, both unbiased total estimators, and unbiasedness of HT for the actual nonzero unit count hold for every finite binary allocation law with positive marginals, without independence assumptions. These are exactly the canonical assertions."
+  },
+  {
+    "theorem": "SAP.P026b.T21",
+    "target_id": "P026-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Clauses (a) and (c) match the canonical fixed-unit-count contrast and explicit biased unequal-cluster example. Clause (b) adds that every supported assignment treats exactly m clusters, beyond the partition and uniform marginal hypotheses in the canonical formal-content (b). This is not implied by the marginals: two singleton clusters with independent fair assignments have m=1, M=2 marginals but positive probability of treating zero or two clusters. No other substantive restriction was found; the Challenge docstring explicitly identifies this added condition."
+  },
+  {
+    "theorem": "SAP.P026b.T22",
+    "target_id": "P026-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universal zero-treatment-prediction-covariance implication yields unbiasedness of both generalized totals and the ATE, includes all fixed prediction vectors, and gives the assignmentwise adjustment identity. In the two-arm setting control covariance is the negative of treatment covariance, so no missing independent hypothesis is needed."
+  },
+  {
+    "theorem": "SAP.P026b.T23",
+    "target_id": "P026-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "The affine HT formula, exact necessary-and-sufficient balance criterion, supported noninvariance witness (N=1, p1=1/3, b0=1, b1=-1), and generalized affine invariance with identically transformed predictions match all canonical formal clauses. The unit count is nonzero and b0/b1 are unrestricted real constants."
+  },
+  {
+    "theorem": "SAP.P026b.T24",
+    "target_id": "P026-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "The arbitrary-prediction residual identity, fixed-prediction variance expansion, and both cluster total variance formulas plus full, split and off-diagonal cross-covariance formulas match the canonical assertion. Surjectivity gives actual cluster totals, and positive disagreement enforces the standing distinct-indicator convention. The off-diagonal formula includes zero directed cross joints and remains valid without crossSupport; their contribution is -Xc*Zd. No extra directed-support hypothesis is present."
+  }
+]

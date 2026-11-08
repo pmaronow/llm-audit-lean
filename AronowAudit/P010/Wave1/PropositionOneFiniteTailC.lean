@@ -379,4 +379,6 @@ theorem proposition_one_finite_proof {K d : ℕ} (μ : Measure (State K d))
     tcFinite_zero_bounds μ h a hc, (tcFinite_integral_formulas μ h a hc hi hr).1,
     (tcFinite_integral_formulas μ h a hc hi hr).2⟩
 
+example : type_of% @AronowAudit.P010.proposition_one_finite := AronowAudit.P010.Wave1.proposition_one_finite_proof
+
 end AronowAudit.P010.Wave1

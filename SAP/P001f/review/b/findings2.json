@@ -1,0 +1,195 @@
+[
+  {
+    "target_id": "P001-T96",
+    "theorem": "SAP.P001f.T96",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed assertion, with no hypotheses. The displayed positive integer counts form an actual eighteen-unit sample. It has positive probability under iid sampling with Z uniform on {-1,0,1}, true treatment probabilities (1/3,1/2,2/3), and deterministic potential outcomes Y0=(3,2,3), Y1=(4,3,4) given Z. This population has ignorability and uniform overlap. Exact rational checks independently verified both estimator values and their gap; the logistic likelihood is strictly concave and the displayed fit has zero score. Delta review: the refuted label is appropriate because this is an admissible finite-covariate iid sample with actual binary-choice ML fitted propensities, yet the two printed estimators differ. The log arguments and both arm denominators are strictly positive; no log-zero or division-zero convention is used.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T97",
+    "theorem": "SAP.P001f.T97",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use E=Fin 1, n=2, nt=nc=1, and q=1/2; the cell has one unit in each arm and every divisor is positive. These hypotheses were compiled in scratch/Check.lean. The necessity direction is nontrivial: q=1/3 satisfies the hypotheses, but st=1,sc=0 yields IPW=3/2 and poststratification=1.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T98",
+    "theorem": "SAP.P001f.T98",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the infinite product of fair Bernoulli laws on {0,1}^N, D_i the coordinate indicators, X_i identically zero, and p identically 1/2. All pointwise binarity/overlap hypotheses hold with epsilon=1/4; the sequence is measurable iid. Each arm weight has mean one, each reciprocal weight is identically two. scratch/Check.lean compiles the one-observation constant-covariate ConditionalMean premise and overlap arithmetic.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T99",
+    "theorem": "SAP.P001f.T99",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem itself specifies the normalized nonnegative two-atom law (3/4,1/4), D=(0,1), X=0, Y0=0 and Y1=1. Both conditioning events are positive. Finite conditional independence follows because the potential-outcome pair is constant. Normalization and nonnegativity were independently compiled in scratch/Check.lean. Delta review: the refuted label concerns exactly the unnormalized ATT equality. The conditioning-event masses are 1 or 1/4, and the normalizing propensity mean is 1/4, so every displayed finite conditional mean and normalization has a nonzero denominator.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T100",
+    "theorem": "SAP.P001f.T100",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use a fair binary treatment on two atoms, X=0, Y0=0, Y1=1 and p=1/2. Then Delta=1, P=1/2, W=1/2 and ATT=1. All functions are measurable/integrable and conditional independence holds for the constant potential-outcome pair. scratch/Check.lean compiles the fair-law propensity CM, positive treatment-arm probabilities, and a generic constant-variable CI lemma.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T101",
+    "theorem": "SAP.P001f.T101",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. For a nonempty example take ambient type Fin 3, A={0,1}, B={1}; both asserted sets are {0}. No empty type is needed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T102",
+    "theorem": "SAP.P001f.T102",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For K=1, let X have density (1/2) times the indicator of (-2,-1) union (1,2); independently let Y be uniform on (-1,1). The joint density is the product density and all first moments are finite. Both m0(x)=0 and m1(x)=x when |x|<1, zero otherwise, are measurable CM versions and differentiable at every positive-density x. E[X]=0; their actual derivatives there are respectively 0 and 1. This witnesses the negation within the joint-density domain. The plug-in conjunct has instances n=1, constant X and mhat(x)=x_k, with derivative one. These analytic witnesses were checked mathematically, not compiled. Delta review: the unchanged refuted label continues to concern distributional well-definedness in the printed joint-density domain. The estimator conjunct is an identity for a chosen differentiable estimator and does not assert a population-distributional derivative.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T103",
+    "theorem": "SAP.P001f.T103",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=1 and y_0=1. Valid parameters include theta=(1,0,1,s,0,1,1) for every s>0. The sample likelihood is 1/(s sqrt(2 pi)), unbounded as s decreases to zero. Every valid parameter has finite likelihood, so no maximizer exists. This uses nonempty samples and strictly positive scales/rate. Delta review: the new refuted label is valid for printed assertion (A); the scope paragraph continues to omit (B). A counterexample within the positive-sample subclass refutes universal maximizer existence for all samples. The witness uses s>0 throughout, not a zero-scale value.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T104",
+    "theorem": "SAP.P001f.T104",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every k>=0 set t_k=4^{-(k+1)} and c_k=2^{-(k+1)}-4^{-(k+1)}. Both sequences are positive and summable, with sums 1/3 and 2/3, so their joint total is one and both arms are nonempty. Both positive supports are N, but the propensity t_k/(t_k+c_k)=2^{-(k+1)} tends to zero. Thus no positive uniform lower bound exists. All divisions and infinite sums are legitimate. Delta review: the printed unqualified assertions (A) and (B) together imply the equivalence being negated, on this admissible countable PMF subdomain. Thus the refuted label is meaningful. The docstring expressly does not claim a separate formal proof of (A), isolation of (B), or resolution of the hedged (C). Normalizing each arm by its positive total preserves the positive supports.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T105",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: there is no theorem. The supplied canonical text expressly says that informational completeness is not formally defined, and the supplied Defs contain no predicate for it. Choosing a model for this premise would require additional semantics. A larger-domain negation without binary treatment or that premise would not by itself be an admissible refutation. The omitted credited row itself is unavailable for independent inspection.",
+    "confidence": 0.82
+  },
+  {
+    "target_id": "P001-T106",
+    "theorem": "SAP.P001f.T106",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A fair Bernoulli X on two atoms is measurable, in L2, and has mean 1/2 and variance 1/4>0. Use Y=2X-1 for the linearity component; arbitrary real affine constants are allowed. Thus the positive-variance branch is attained, and no infinite-variance toReal convention is involved.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T107",
+    "theorem": "SAP.P001f.T107",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the fair two-atom law, X=0, Y the binary indicator and m=1/2. scratch/Check.lean independently compiles precisely this ConditionalMean premise from its event-integral definition, with the nonzero mean 1/2. It also proves the generic constant-covariate CM construction without importing Challenge.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T108",
+    "theorem": "SAP.P001f.T108",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the infinite product of fair Bernoulli laws and the coordinate indicators X_i. Their common mean is 1/2 and common variance is 1/4, and every n>=1 gives a genuine positive-size sample. All first-moment, second-moment and positive-variance branches are populated. Delta review: the revised infinite-sequence disclosure is accurate. The restriction matters on the original space: a fair binary observation on a two-atom probability space is a valid finite sample with n=1, but there is no second independent fair binary observation on that same space. Positive n guards the average and variance divisors; L2 and positive variance remain nested premises, not first-moment requirements.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T109",
+    "theorem": "SAP.P001f.T109",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Continuous branch: X uniform on [0,1], Y=X, m(x)=x, and marginal density 1 on [0,1], zero elsewhere, including positive endpoint values as permitted density versions. The degree-zero minimizer is 1/2 and p_J(x)=x for J>=1; every risk is finite. Discrete branch: X=0, Y a fair binary indicator, m=1/2 and [a,b]=[0,0]. Positive atomic support is exactly that singleton and range X is countable. Thus the discrete branch is degenerate for nontrivial intervals as the printed PMF support requires, but the continuous assertion is nondegenerate.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T110",
+    "theorem": "SAP.P001f.T110",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=3, Y=(true,false,true), k=2 and a=2/3; n=1 with either Boolean value also supplies both endpoint cases. The success count is always <=n, so truncated subtraction does not alter the failure count, and 0^0 at an endpoint is the usual empty product.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T111",
+    "theorem": "SAP.P001f.T111",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take four equally weighted atoms (X,R) in {0,1}^2, Y=X, and p=1/2. The respondent CEF is m(x)=x, all functions are integrable, both response arms have probability 1/2, and epsilon=1/4 works. This gives MCAR and both discrete and one-coordinate vector MAR instances. In the six-unit estimator example there are four respondents and respondent counts 3 and 1 in the two observed cells. scratch/Check.lean independently compiles the exact estimator values 3/4 and 7/9.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T112",
+    "theorem": "SAP.P001f.T112",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take four equally weighted atoms (X,R) in {0,1}^2, embed X as a one-coordinate real vector, put Y=X and p=1/2. MAR and epsilon=1/4 hold; both response arms are positive. Conditioning on the constant true propensity leaves R and X independent. The theorem does not use outcome integrability.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T113",
+    "theorem": "SAP.P001f.T113",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "Earlier finding partly fixed: record2.json:229 now says Retains rather than Adds and explicitly compares with the displayed formula; Challenge/Part1.lean:136-140 also clarifies that finiteness of the outcome and combined-score expectations does not imply nuisance-regression integrability. That mathematical clarification is correct. However the supplied P001-T113 canonical_claim.note at claims.json:274 still explicitly states that regression integrability is implicit in case (ii). Relative to that supplied canonical interpretation, its explicit retention is not a newly excluded class. The revised record and docstring have not reconciled the two scopes.",
+      "The proposed reason for disregarding that canonical note is not established by the supplied review instructions: architect-report.md:198-206 cites brief.md:30 as a rule making notes diagnostic and forbidding hypotheses from them. In the actual supplied brief.md, line 30 is part of the claim-stage JSON schema and no such precedence rule occurs anywhere. The report cannot itself establish a missing rule for interpreting the canonical input. This is a minor unresolved scope-description problem, not a false or vacuous Lean theorem."
+    ],
+    "fix": "Keep T113Statement unchanged. Relative to the supplied canonical note, classify T113 as whole and replace the restriction paragraph with: \"Integrability of the nuisance regression m(X), called implicit in the supplied canonical claim, is explicit in both correctness branches. Correctness and propensity bounds are interpreted up to null sets. If comparison is made only with the displayed formula, without that note, this explicit premise excludes some integrable-score cases with nonintegrable nuisance regression.\" Remove or correct architect-report.md's unsupported citation of a note-precedence rule in the supplied brief.md. If a different precedence rule is intended, it must be supplied as governing review context before the broader canonical reading can replace the present one.",
+    "nonvacuity": "The Lean hypotheses remain nonvacuous in both branches: on four equally weighted atoms (X,R) in {0,1}^2, with X a one-coordinate real vector, Y=X and true p=1/2, use m(x)=x,q=1/4 for branch (i), or m=42,q=1/2 for branch (ii). All relevant integrands are integrable, both response arms are positive, and the propensity denominators are bounded away from zero almost everywhere. The architect's separate cancellation model is mathematically valid: independent X,U uniform on (0,1), Y=0, R=1 for X<1/2 and R=1_{U<1/2} otherwise, q=p=1 below 1/2 and 1/2 above it, m(x)=1/x for 0<x<1/2 and zero otherwise. The response/nonresponse probabilities are 3/4 and 1/4, MAR has lower bound 1/4, and the combined score is identically zero. Yet integral |m(X)| diverges. This verifies exclusion relative to the displayed-formula-only reading without using a junk integral or zero denominator; it does not resolve whether the supplied note is to be retained as a canonical assumption.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P001-T114",
+    "theorem": "SAP.P001f.T114",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take fair D on two atoms, Y0=0, Y1=1 and [a,b]=[0,1]. The observed outcome is Y=D and [L,U]=[0,1]. Every c in [0,1] is attained on the same space by Z1=1 on treated atoms and c on controls, Z0=1-c on treated atoms and zero on controls; the observed pair is preserved pointwise and the effect equals c. Exact rational checks verified the six-unit endpoints -2/6 and 4/6.",
+    "confidence": 0.98
+  }
+]

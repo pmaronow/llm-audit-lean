@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P044-T1",
+    "theorem": "SAP.P044.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual 12-vertex graph is three disjoint K4s. Its 66 distinct two-treated assignments give a genuine uniform design; every 65-assignment retained bank has positive relevant weights. The independent pair law has 4356 atoms of mass 1/4356; the included-observation law has 4290 atoms of mass 1/4290. scratch/finite_checks.py independently recomputed every table, all reported rational moments, both joint laws and every fixed-table shortfall. Natural count subtraction never underflows. The docstring correctly limits the refuted reading to exact expected-variance dominance for these finite simulated inputs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T2",
+    "theorem": "SAP.P044.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the abstract supported-design block take N=1, sample space Fin 2 with masses 1/2, D=Bool, and f(r,0)=(r=0); both contrasted marginals are 1/2. This instance compiled in scratch/Nonvacuity.lean. For a nonisolated network with all four exposures supported, use the actual eight-cycle uniform rotation design. The finite-bank block uses the concrete T1 laws, independently recomputed. A signed-outcome one-unit check gives variance 1, expected variance estimate 26 and structural-zero surplus 25, confirming that the surplus need not vanish. The disclosed exclusions match the canonical clauses that are absent.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T3",
+    "theorem": "SAP.P044.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The star has four vertices, six equally likely assignments and no isolates. The additional observed-term positivity premise is true: each observed event occurs in at least its own assignment of mass 1/6. This exact premise was proved directly by a finite-sum bound in scratch/Check.lean, which compiled successfully. Independent exact enumeration checked both schedules' observed outcomes, means 1 and 3/4, and biases 1/4 and 5/4. The impossibility result quantifies over actual observed-data estimator functions, for example the constant-zero function. The docstring accurately discloses both the six omitted vectors and the conditional positivity-dependent final block.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T4",
+    "theorem": "SAP.P044.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The supported block has the compiled fair two-state, one-unit instance in scratch/Nonvacuity.lean. The necessity and common-support blocks have the concrete star: the center has zero 00 probability, while common support for 11 versus 00 consists of its three leaves. For the complete-randomization all-exposures-positive criterion, N=4, M=2 and a degree-one vertex satisfy it; the four-cycle at N=4, M=2 has positive individual degrees but fails it. Independent enumeration checked all 168 triples (N,M,k) with 2<=N<=8, 1<=M<=N-1, 0<=k<=N-1. At N=1000, M=100, a cycle has degree 2 and satisfies 1<=k<=899. All averaging denominators are positive in their stated domains.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T5",
+    "theorem": "SAP.P044.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the actual triangle, whose ordinary and two-walk degrees are both 2 and scale is 8. The specified real G and E vectors give B=(-5/8,9,21/4). Under the genuine probability product N(0,1) x N(1,1/16), each displayed open rectangle has positive probability by strictly positive normal densities. For a>=0, a/[4(a+1)]<1/4 makes its stated event force a|G|+E<-1/4. Continuous maps ensure genuine pushforwards, and the L2 clauses ensure finite integrals and variance. The source-code identification is external exactly as allowed by the canonical premise.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T6",
+    "theorem": "SAP.P044.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=3 with the triangle gives the asserted product Gaussian population and expected 11-00 effect 1+8*sqrt(2/pi). The realized triangle vector has average 109/24. For the alternative half-normal-law block take N=1, probability space (R,N(0,1)) and B(g,0)=|g|; this has the required measurable half-normal law. Neither the Gaussian population nor the alternative law is empty or infinite-mass. The explicit L2/integrability clauses prevent default values of divergent integrals from supplying the results.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T7",
+    "theorem": "SAP.P044.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual eight-cycle has eight distinct rotations of a three-treated assignment. Exact enumeration confirms all four marginal probabilities are positive, every exposure group is nonempty in each assignment, returned marginals sum to 4/3, and all displayed weighted means and contrasts have the asserted values. The independently checked joint-count row is (1,0,1,0), with returned entries (1/9,0,1/8,0) summing to 17/72. The docstring lists exactly which detailed vector/count/entry identities the theorem omits.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T8",
+    "theorem": "SAP.P044.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The eight-cycle exhaustive bank gives R=N=8 and positive smoothed weights for the first block. For the second block choose R=1, p=1/2, sample space Bool x {0,1} with independent fair coordinates, D the Boolean coordinate and C the 0/1 coordinate. Then the integral is 3/4=1-(1/2)^2<1, and the integrand is bounded. More generally the product of Bernoulli(p) and Binomial(R,p) realizes all stated laws and independence. Independent rational summation checked the binomial identity in 93 cases, including R=0. Counts/R, R+1 and N have the required nonzero denominators, and the bias numerator uses real subtraction.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T9",
+    "theorem": "SAP.P044.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=2 and the single-edge loopless adjacency; such a Boolean graph compiled in scratch/Nonvacuity.lean. The constant-zero outcome schedule satisfies no interference. The schedule Y_0(z)=1 if z_1 is treated and 0 otherwise, Y_1(z)=0, exhibits interference with own treatment held fixed. Thus the equivalences do not rely solely on N=0 or an empty off-unit profile type. The docstring accurately discloses the missing matrix-dimension diagnosis.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T10",
+    "theorem": "SAP.P044.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=2, the simple graph with its single possible edge, both vertices in one community, and a singleton sample space of mass 1. Both degrees are 1, crossing-event probabilities are zero, W=M=1, E[W/M]=E[W]/E[M]=1. The positive-degree and zero-crossing hypotheses compiled in scratch/Nonvacuity.lean. No generator law is inferred merely from the algebraic expression blockEdgeProbability; that missing connection is explicitly disclosed in the record and docstring. Positive N and degrees ensure every edge-count denominator and its expectation are strictly positive.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P044-T11",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is supplied. The visible T1 witness is a genuine R=65 counterexample to an exact expected-dominance interpretation, including an observation drawn from the bank. It is not a calculation for the chapter's N=1000, R=10000 bank or an error bound for an approximation, and says nothing about the Hajek variance estimator. T2 supplies the exact-input corrected result. These facts justify withholding a direct refutation of the printed assertion; the unprovided row's reported credit status is not treated as independent mathematical evidence.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P044-T12",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is supplied. S7 specifies positive marginal inputs as the estimator's domain. The star of T3 has zero marginal probabilities for contrasted outcomes, so its zero-term extension is not a counterexample within that stated domain; its broader nonidentification result establishes why a support qualification is necessary. T4 proves unbiasedness for actual positive exact inputs. T7/T8 analyze smoothed inputs, a distinct issue. None supplies a precise asymptotic regime or efficiency comparison for the quoted Hajek/WLS assertions, so withholding a direct refutation is justified.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P044-T13",
+    "theorem": "SAP.P044.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A loopless single-edge network with N=2 is nonempty and has degree scale 1 at each vertex: its baseline law is the law of |G|+E, which has positive negative-half-line mass and mean sqrt(2/pi)+1, unlike the half-normal law. Even N=1 with the zero adjacency satisfies the actual hypotheses and gives the N(1,1/16) baseline law. Thus the negation has genuine instances. It refutes the canonical claim's own absolute-standard-normal baseline conjunct under the stated external generator identification; negating that conjunct suffices without disputing the correct outcome multipliers.",
+    "confidence": 0.99
+  }
+]

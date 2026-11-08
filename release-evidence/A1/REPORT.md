@@ -1,0 +1,1 @@
+Current A1 reliance evidence joined for 416 pending rows; all 452 historical observations/statuses retained. Independent final Sol approval remains required. No operational deployment, paper fidelity/coverage, full A1 or release approval is issued. See RECONCILIATION.json for exact input and replay bindings.

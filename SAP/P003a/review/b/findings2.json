@@ -1,0 +1,182 @@
+[
+  {
+    "target_id": "P003-T29",
+    "theorem": "SAP.P003a.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. Take v=(0,0,0,2), m=1, alpha=1/2. There are two labeled assignments, one aggregated state of multiplicity two, and both arms are positive. The true effect is zero and is accepted with p=1. Positive-arm hypotheses were compiled in scratch/Check.lean; independent exact checks covered 3,995 design/level instances through n=6.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T1",
+    "theorem": "SAP.P003a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. Closed constructive counterexample: v=(11,0,3,6), n=20, m=3, alpha=109/500. The mask hides one control success only at treated counts (0,0,3,0), a state of multiplicity one; all other assignments have zero missing counts. This is a legal deterministic missingness rule under the uniform 1,140-assignment design. The critical intervals, tails, possibility contrast and coverage 297/380 were independently computed and compiled. The strict shortfall is real, not empty-set or zero-denominator behavior.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T2",
+    "theorem": "SAP.P003a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. A legal joint law is compiled for v=(0,0,0,2),m=1, with mu(q,0)=1 at its unique admissible count state and all other mask masses zero. For the coupling take n=4,m=2,w=((0,0),(0,0),(1,1),(1,1)), z={0,1}, r={0}, y=y'=(0,0,1,1), alpha=1/4. Then p(w,y',z)=1/3, T_plus=-1/2<tau(w)=0 and d=1. Thus even the changed-outcome coupling branch is satisfiable. Independent exact checks verified 2,580 balanced completion-inclusion cases through n=6.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P003-T3",
+    "theorem": "SAP.P003a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. The compiled n=2,m=1 law above supplies a joint-law instance. A genuinely unbalanced instance is n=3,m=1,v=(0,0,0,3), with missingness fixed at zero and weight one on its sole count state. The target's own n=20,m=3 example has a nonzero missing mask; its repaired hull and coverage 892/1140 were independently computed and compiled. Completion membership, distinctness and counts were checked on 2,584 legal masks with positive observed arms through n=6.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T4",
+    "theorem": "SAP.P003a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. The integer search inputs k1=1,k2=2 and either constant Boolean decision satisfy the printed positive-endpoint and threshold hypotheses: r=2 for all acceptance, r=0 for all rejection. The former returns 1; the latter reaches the invariant state (1,1) and fails at every fuel. The balanced observation (7,1,0,8) has n=16,m=8 and feasible p=1 tables; the exact interval [1/2,15/16] and executed printed return 14 were compiled without using Challenge stubs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T5",
+    "theorem": "SAP.P003a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. For k1=1,k2=2,r=2 and f=false the assumptions hold and the sentinel run returns 2. Singleton and negative-endpoint domains are also allowed and nonempty because k1<=k2 gives d>=1. Exact exhaustive checks tested all decision patterns on lengths 1 through 12 at three translated domains, including negative endpoints: 24,570 runs, with correct threshold returns, valid distinct queries, the claimed bound and final adjacency.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T11",
+    "theorem": "SAP.P003a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. The all-zero binary population has n=2,m=1 and two genuine labeled assignments. Both centered deviations are zero. At alpha=1/2 the rejecting set is (0,infinity): x=1 witnesses nonemptiness, and x/2 refutes minimality for every member. This directly refutes the printed smallest-real-threshold assertion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T12",
+    "theorem": "SAP.P003a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. Use Omega=Bool, w(false)=3/4, w(true)=1/4, D(false)=0,D(true)=1,alpha=1/2. Positive weights sum to one and the upper support point rejects with tail 1/4; these facts were compiled. The alternative with no rejection occurs on Omega=Unit,w=1,D=0,alpha=1/2. Normalization prohibits an empty index type.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T13",
+    "theorem": "SAP.P003a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. For n=2 take w=((1,0),(0,0)); the treatment and control potential sums are 1 and 0 and the effect is 1/2. Both closed n=20 formula witnesses are legitimate nonempty populations. The subtraction in the effect is in Z and the denominator is positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T14",
+    "theorem": "SAP.P003a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement is unchanged. Take k=2 and g=zeroMass=delta_0: IsMass g and IsSD g were proved from Defs in round one in scratch/Check.lean, and both means are zero. k is positive, the support is finite, the first moment is absolutely summable, and normalization is 1. The displayed normalization still follows immediately as hg.2.2.1; the revised docstring and record2.json now explicitly disclose this repeated premise and the omitted source-law/rescaling correspondence. Both earlier disclosure issues are fixed; no missing mathematical clause was restored or claimed to be restored.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T9",
+    "theorem": "SAP.P003a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. The two-element Boolean probability space assigns probability 1/2 to each outcome and sets X1=X2=1_B. Each marginal is the SD fair mass; their sum has mass 1/2 at 0 and 2, mean 1 and mass zero at 1. Its increase from 1 to 2 violates SD. Independence is absent from the printed reading, so this is a genuine refutation of that reading under corrected Definition A.1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T10",
+    "theorem": "SAP.P003a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. zeroMass is IsSD by a compiled proof from definitions; smoothing it gives fairMass. A nonzero half-integer center occurs for fairMass itself, which has mean 1/2 and twice-center 1, and smoothing gives masses 1/4,1/2,1/4 at 0,1,2. For the parity component use f=zeroMass and p=0 or p=1; it gives a fair mass at p,p+1. Integer floor division by positive two handles negative indices correctly.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T15",
+    "theorem": "SAP.P003a.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. Take v=(0,1,0,1),n=2,m=1. It has one discordant unit and mT is fair on {0,1}, hence SD with half-integer mean. The finite law prevents any summability convention from doing work. Independent exact checks verified the scaled SD mass, its mean and symmetry/decrease for all 987 qualifying count vectors at even n from 2 through 12.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P003-T16",
+    "theorem": "SAP.P003a.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. Use n=2,m=1,z={0},w=((1,0),(0,0)); both full-estimator formulas equal 1. The six Boolean pair cases give the displayed integer outcomes by direct evaluation; a fair Boolean orientation gives exactly the claimed uniform or constant laws. No empty arm or truncated subtraction is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T17",
+    "theorem": "SAP.P003a.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. The target's v=(0,0,1,4),n=5,m=2 has ten assignments and the possible observation o=(0,2,0,3), with positive arm sizes, zero variance and numerator 1/5. Four assignments give this observation and six give (0,2,1,2), whose variance is 2/27; the latter squared standardized magnitude is 6/25. Thus the exact tail is 1 for C=0 and 4/10 for C=10^6. Any K>=1 gives a nonempty independent-product Monte Carlo space; the same fixed statistic on all K+1 uniform assignments supplies the usual valid rank bound.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T21",
+    "theorem": "SAP.P003a.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. The closed n=9,m=7 observation (1,6,0,2) has positive arms and 36 assignments. Possible population (0,1,0,8) realizes it. Exact accepted numerators {0,1} and interval [0,1/9] were independently computed and compiled; observed 1/7 lies above the interval. The witness (1,0,1,7) is a genuine possible negative-effect vector, with p=29/36<17/18.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T22",
+    "theorem": "SAP.P003a.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. For o=(0,1,0,1),u=(0,0,0,2) is possible; firstOnLine at effect 0,j=0 returns u and k=0 realizes the decomposition. The second effect-zero line at j=1 contains (0,1,1,0). In the general decomposition, nonnegative counts imply k=u.b-v.b>=0, while k<=v.a,v.d makes both subtractions ordinary integer subtractions. The statement's empty-arm extension is purely combinatorial, without estimator division.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T23",
+    "theorem": "SAP.P003a.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unchanged mathematical statement; the round-one instance remains applicable. Take k1=1,k2=2 and f=true: the run queries 1, rejects, and returns 0, so the rejection/cutoff branch is nonempty. For larger domains the invariant b=c after a rejection forces all later queries and the returned lower endpoint below c. The 24,570 exhaustive arbitrary-decision runs used for T5 also verified both cutoff properties; the universal target u needs no probability or monotonicity assumption.",
+    "confidence": 0.99
+  }
+]

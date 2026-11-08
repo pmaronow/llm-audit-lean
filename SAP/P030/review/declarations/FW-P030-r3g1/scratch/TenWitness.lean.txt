@@ -1,0 +1,71 @@
+import SAP.P030.Challenge
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxRecDepth 2000
+
+open SAP.P030
+open scoped BigOperators
+
+namespace ReviewTenWitness
+noncomputable section
+
+lemma treated (r : Fin 6) :
+    Finset.univ.filter (fun j => tenS j = false ∧
+      tenAssignment (tableTreatment r) j = true) = {tableTreatment r} := by
+  classical
+  ext i
+  fin_cases r <;> fin_cases i <;> norm_num [tenS, tenAssignment, tableTreatment]
+
+lemma distances (r : Fin 6) : tableDistances r =
+    (![![1,6,7,8], ![2,5,6,7], ![3,4,5,6],
+       ![4,3,4,5], ![5,2,3,4], ![6,1,2,3]] : Fin 6 → Fin 4 → ℝ) r := by
+  classical
+  funext i
+  simp only [tableDistances, nearestDistance, treated]
+  fin_cases r <;> fin_cases i <;> norm_num [tenX, tenFixed, tableTreatment]
+
+lemma outcomes : tableY = ![1,3,2,1] := by
+  funext i
+  fin_cases i <;> norm_num [tableY, tenYnull, tenFixed]
+
+lemma variance (r : Fin 6) : 0 < rankSquares (tableDistances r) := by
+  classical
+  rw [distances]
+  fin_cases r <;>
+    norm_num [rankSquares, centeredRanks, averageRank,
+      Fin.sum_univ_succ, Fin.card_filter_univ_succ]
+
+lemma squares (r : Fin 6) : (tableRho r)^2 =
+    (![1/90,1/90,1/90,25/36,9/10,9/10] : Fin 6 → ℝ) r := by
+  classical
+  unfold tableRho
+  rw [distances, outcomes]
+  fin_cases r <;>
+    norm_num [spearman, rankCross, rankSquares, centeredRanks, averageRank,
+      Fin.sum_univ_succ, Fin.card_filter_univ_succ, div_pow, Real.sq_sqrt]
+
+lemma actual (r : Fin 6) :
+    statistic tenS tenYnull tenG (tenAssignment (tableTreatment r)) = tableRho r := rfl
+
+lemma reference (obs : Assignment 10) (r : Fin 6) :
+    referenceStatistic tenS tenYnull tenG obs (tenAssignment (tableTreatment r)) = tableRho r := rfl
+
+-- Explicit, supported assignments give unequal actual statistics.
+theorem genuine_nonconstancy : ∃ z ∈ tableΩ, ∃ w ∈ tableΩ,
+    statistic tenS tenYnull tenG z ≠ statistic tenS tenYnull tenG w := by
+  classical
+  refine ⟨tenAssignment (tableTreatment 0),
+    Finset.mem_image.mpr ⟨0, Finset.mem_univ _, rfl⟩,
+    tenAssignment (tableTreatment 3),
+    Finset.mem_image.mpr ⟨3, Finset.mem_univ _, rfl⟩, ?_⟩
+  rw [actual, actual]
+  intro heq
+  have hs := congrArg (fun x : ℝ => x^2) heq
+  rw [squares, squares] at hs
+  norm_num at hs
+
+#print axioms genuine_nonconstancy
+
+end
+end ReviewTenWitness

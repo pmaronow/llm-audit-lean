@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P046-T6",
+    "theorem": "SAP.P046.T6",
+    "fingerprint": "b9edd920c2b879fc8993db36b4361cd567cff0218552b6a39fc285c12b4c72ba",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:16: IntervalExample.study, n=100 and alpha=1/10000000 satisfy ValidStudy and have strict closed-interval noncoverage greater than alpha, using the independent certified T1 declaration, without using T6. scratch/T6-witness.md checks every printed condition against the actual measure-map construction, including independent product sampling. An independent 5151-state multinomial enumeration in scratch/T6-arithmetic.json reproduces 1946 exclusions and probability 1.19792910697956e-7. Strict exclusion also contradicts the canonical non-strict tail assertion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T7",
+    "theorem": "SAP.P046.T7",
+    "fingerprint": "e43db62b7c10fd840b45eed1512fefd01ad1c00819c6c216d76da415155a0cb6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:24: the explicit continuous IntervalExample.study is valid with common positivity constant delta=1/200>0, using independent certified T1 for validity. The positive-sample-size premise is also instantiated at n=100 in the preceding example. Thus both the fixed-law and common-delta domains are inhabited. No target under review is used to construct this instance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T8",
+    "theorem": "SAP.P046.T8",
+    "fingerprint": "e9c5b3c33fb4883be2a919114578c6f5dfbb320b4896674d1f1c922e08a8692b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:81 with the valid IntervalExample.study, n=2, one observation in each deterministic fold, and both fitted functions identically 1/2. The construction proves joint fit measurability, opposite-fold dependence, integrability of every evaluated prediction, and integrability of the whole adjusted estimator. The latter is proved directly by a measurable summand bound of 2, activating all expectation guards. Validity uses independent certified T1; none of T6-T10 is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T9",
+    "theorem": "SAP.P046.T9",
+    "fingerprint": "45a7def7117a23372494d6ed5d5017c735781767bcdcf7d167a67a3e716f93ef",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled both branches in scratch/Nonvacuity.lean:95 and :113. Part (b) uses the valid IntervalExample.study and balanced deterministic folds with exact fitted limits g_false=0 and g_true=1, proving measurability, MemLp 2 and extended mean-square convergence with identically zero error. Part (d) uses exact true-regression fits and proves extended L2 convergence in probability with zero error. Certified T1 supplies the explicit law's validity and independent T4 supplies the partition's balance. None of T6-T10 is used.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P046-T10",
+    "theorem": "SAP.P046.T10",
+    "fingerprint": "f03f30b869ba95965d20fb57084494c931c27e1cd1ef76e8d91bebfd3b98fb0c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:130: zeroEstimator is measurable for every n; choose eps=1/4, c=1, n=N+1 and IntervalExample.study for every N. Its target is mu=3/5, so the strict failure event has probability one. Validity and mu use independent certified T1, not T10. This checks a concrete instance of the existential conclusion and inhabits the estimator premise; the universal assertion is assessed separately by its quantifiers and canonical model class.",
+    "confidence": 0.99
+  }
+]

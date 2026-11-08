@@ -1,0 +1,103 @@
+[
+ {
+  "target_id": "P023-T1",
+  "decision": "whole",
+  "theorem": "SAP.P023.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.linear_counterexample",
+   "AronowAudit.P023.coarsened_localization"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P023.T1Statement"
+ },
+ {
+  "target_id": "P023-T2",
+  "decision": "whole",
+  "theorem": "SAP.P023.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.degree7_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P023.T2Statement"
+ },
+ {
+  "target_id": "P023-T3",
+  "decision": "whole",
+  "theorem": "SAP.P023.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.Wave1.uniform_common_target_distant_information_proof",
+   "AronowAudit.P023.coarsened_ols_printed_equivalence",
+   "AronowAudit.P023.corrected_coarsened_weights",
+   "AronowAudit.P023.corrected_finite_conditional_moments",
+   "AronowAudit.P023.corrected_finite_nonlocality",
+   "AronowAudit.P023.corrected_finite_polynomial_weights",
+   "AronowAudit.P023.polynomial_rd_shared_consistency",
+   "AronowAudit.P023.coarsened_localization",
+   "AronowAudit.P023.uniform_law_normalized",
+   "AronowAudit.P023.Wave1.uniform_full_rank",
+   "AronowAudit.P023.Wave1.GLP023B4c_T8_cpb_residual_moments",
+   "AronowAudit.P023.difference_probability_bound",
+   "AronowAudit.P023.shared_target_asymptotic_equivalence"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P023.T3WholeStatement"
+ },
+ {
+  "target_id": "P023-T4",
+  "decision": "whole",
+  "theorem": "SAP.P023.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.Wave1.sigmoid_counterexample_proof",
+   "AronowAudit.P023.Wave1.sigmoid_fit_criterion_proof",
+   "AronowAudit.P023.Wave1.sigmoid_sample_separation_proof",
+   "AronowAudit.P023.Wave1.uniform_residual_symmetry_proof",
+   "AronowAudit.P023.Wave1.uniform_common_target_distant_information_proof",
+   "AronowAudit.P023.uniform_law_normalized",
+   "AronowAudit.P023.Wave1.uniform_full_rank",
+   "AronowAudit.P023.Wave1.GLP023B4c_T8_cpb_residual_moments",
+   "AronowAudit.P023.Wave1.GP023B1b_continuous",
+   "AronowAudit.P023.Wave1.GP023B1b_witness_probability",
+   "AronowAudit.P023.Wave1.GP023B1b_witness_margin",
+   "AronowAudit.P023.Wave1.GP023B1b_regression_risk_integrable",
+   "AronowAudit.P023.Wave1.GLP023B4c_T8_cpb_fwl",
+   "AronowAudit.P023.Wave1.GLP023B4c_T8_cpb_continuous",
+   "AronowAudit.P023.Wave1.GLP023B4c_T8_fixed_limit",
+   "AronowAudit.P023.Wave1.GP023B1b_risk_lower"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P023.sigmoid_rational_certificates",
+    "reason": "The population and fit rows already export the exact coefficients and improvement bound; no separate numerical certificate is needed."
+   }
+  ],
+  "statement_definition": "SAP.P023.T4WholeStatement",
+  "review_notes": "Declaration review round 4: corrected the Challenge and WholeW1 docstrings to assign oddness to the centered function h, not to the shifted conditional mean 1/2+h. Mathematical statement, definitions, proof and whole scope are unchanged."
+ },
+ {
+  "target_id": "P023-T5",
+  "decision": "whole",
+  "theorem": "SAP.P023.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.Wave1.clustered_counterexample_proof",
+   "AronowAudit.P023.Wave1.clustered_fit_bound_proof",
+   "AronowAudit.P023.Wave1.GP023B1b_risk_lower",
+   "AronowAudit.P023.Wave1.GP023B1b_predict_measurable",
+   "AronowAudit.P023.Wave1.GP023B1b_integrable_witness_iff",
+   "AronowAudit.P023.Wave1.GP023B1b_supported_integrable",
+   "AronowAudit.P023.Wave1.GP023B1b_predict_bound"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P023.clustered_bias_rational_certificate",
+    "reason": "The clustered population row already exports the exact numerical population coefficient."
+   }
+  ],
+  "statement_definition": "SAP.P023.T5WholeStatement",
+  "review_notes": "Declaration review round 4: corrected the Challenge and WholeW1 docstrings to assign oddness to the centered function h, not to the shifted conditional mean 1/2+h. Mathematical statement, definitions, proof and whole scope are unchanged."
+ }
+]

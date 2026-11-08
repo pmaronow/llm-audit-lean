@@ -1,6 +1,6 @@
 import AronowAudit.P002.P002_Audit
 
-/-! Counterexamples to printed Lemma 5, equation (E.10), and Theorem 1. -/
+/-! Checked full-contract refutations. Exact false affirmative drafts are archived in the integration evidence. -/
 namespace AronowAudit.P002.ConfidenceFollowup
 noncomputable section
 open scoped BigOperators ENNReal Matrix
@@ -9,7 +9,7 @@ attribute [local instance] Classical.propDecidable
 set_option maxRecDepth 100000
 set_option maxHeartbeats 2000000
 
-/-- Universal form of the printed Lemma 5 statement. -/
+/-- Universal closure of the exact recorded printed Lemma 5 contract. -/
 def PrintedLemma5 : Prop :=
   ∀ {n : ℕ} (P : Population n) (δ r A : ℝ),
     δ < 1 → (0 < r ∧ r ≤ 1/2) → 0 < A → Theta P δ r A →
@@ -26,7 +26,7 @@ theorem printed_lemma5_refuted : ¬ PrintedLemma5 := by
   exact (not_le_of_gt hbad)
     (by simpa only [negativeDeltaModel, Nat.mul_one, Nat.cast_ofNat] using hh)
 
-/-- Universal form of the printed (E.10) statement. -/
+/-- Universal closure of the exact recorded printed (E.10) contract. -/
 def PrintedE10 : Prop :=
   ∀ {n k : ℕ} (P : CovPopulation n k) (δ e A B r : ℝ),
     0 < k → δ < 1 → 0 < e → 0 < A → 0 < B →
@@ -46,7 +46,7 @@ theorem printed_E10_refuted : ¬ PrintedE10 := by
   exact (not_le_of_gt ho)
     (by simpa only [negativeDeltaModel, Nat.mul_one, Nat.cast_ofNat] using hh)
 
-/-- Universal form of the printed Theorem 1 statement. -/
+/-- Universal closure of the exact recorded printed Theorem 1 contract. -/
 def PrintedTheorem1 : Prop :=
   ∀ (δ r A α : ℝ), δ < 1 → (0 < r ∧ r ≤ 1/2) → 0 < A →
     (0 < α ∧ α < 1) →
@@ -59,6 +59,10 @@ theorem printed_theorem1_refuted : ¬ PrintedTheorem1 := by
     (by constructor <;> norm_num) (by norm_num) hα
   exact (theorem1_sharpness_counterexample (1/2) hα).2.2.2.2 hh
 
+
+#print axioms printed_lemma5_refuted
+#print axioms printed_E10_refuted
+#print axioms printed_theorem1_refuted
 
 end
 end AronowAudit.P002.ConfidenceFollowup

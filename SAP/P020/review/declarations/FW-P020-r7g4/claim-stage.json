@@ -1,0 +1,14 @@
+[
+  {
+    "theorem": "SAP.P020.T16",
+    "target_id": "P020-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "T16Statement states exactly the canonical in-expectation conservativeness inequality for HT, with the disjunction of constant cluster-total effects and equal treatment/control cluster counts. Complete randomization, positive sizes and arm counts, the HT statistic, observed totals, and the M-divisor finite-population variance all match the standing assumptions and definitions_needed. It does not strengthen the bound to a pointwise assertion or replace constant total effects by constant individual effects. All denominators are positive. scratch/Check.lean independently realizes each disjunct without the other and computes nonzero true variances and expected variance estimates: 3/8 versus 1/2 in the unbalanced constant-effect case and 1/9 versus 2/9 in the balanced varying-effect case."
+  },
+  {
+    "theorem": "SAP.P020.T17",
+    "target_id": "P020-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "The conjunction of T17Statement and the WholeW1 clauses covers the canonical positive replication sequences, convergence in probability, strict growth of total and both realized individual arm counts, exact copied population and unchanged ATE, independent separate uniform allocations within copies, all four weak-law limits, positive limit denominators and the pooled ratio limit. The common path coupling proves these under the required independent-copy design rather than reusing one draw across copies. Within-cluster replication multiplies sizes and totals by h, preserves the estimator, target and distribution, and preserves bias for every base population; a genuine nonzero-bias population shows inconsistency with growing N. Additional HT/Des Raj invariances and explicit witness calculations are compatible true strengthenings, not additional assumptions. All population ratios use h>0 or h=r+1, and Measure.real is applied to probability measures. scratch/Check.lean checks the witness's positive sizes, aggregate realization, all three assignment values, bias -1/315, error probability one at 1/25, persistence of values for every h>0, and a nine-outcome two-copy law assigning probability 1/9 to a pair of distinct assignments."
+  }
+]

@@ -1,0 +1,11 @@
+# P031: On Equivalencies Between Design-Based and Regression-Based Variance Estimators for Randomized Experiments
+
+Cyrus Samii and P. M. Aronow (2012). On Equivalencies Between Design-Based and Regression-Based Variance Estimators for Randomized Experiments. Statistics and Probability Letters 82(2):365–370.
+
+This entry covers 11 catalog targets through 1 internal unit(s): P031. It exposes 11 existing proved Solution declarations.
+
+Source kind: `collected_candidate`. Counts: `{"restricted":3,"whole":8}`. Restricted statements and omissions retain their original disclosures in manifest.json and TARGET-MAP.json.
+
+Use `SAP.Works.P031.Defs`, `SAP.Works.P031.Challenge`, and `SAP.Works.P031.Solution`. Challenge stubs are for statement checking; import the Solution in proof developments. The roots add no declarations and preserve every existing theorem name. Challenge and Solution are separate environments.
+
+Unit certificates and reviews are mapped in PROVENANCE.json. The combined work has not been compiled or certified; ASSURANCE.json lists its remaining checks. See ../BUILD.md for the executable replay command. Do not run the unit-only run_comparator.py on this directory.

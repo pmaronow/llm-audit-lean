@@ -1,0 +1,83 @@
+import SAP.P001g.Defs
+open MeasureTheory ProbabilityTheory Filter
+open scoped Topology ENNReal NNReal BigOperators
+noncomputable section
+namespace Audit129
+open SAP.P001g
+abbrev Vec := Fin 1 → ℝ
+
+def κ : Measure ℝ := Measure.dirac 0
+def νX : Measure Vec := Measure.dirac 0
+def μ : Measure (ℕ → ℝ) := Measure.infinitePi (fun _ : ℕ => κ)
+instance : IsProbabilityMeasure κ := by unfold κ; infer_instance
+instance : IsProbabilityMeasure νX := by unfold νX; infer_instance
+instance : IsProbabilityMeasure μ := by unfold μ; infer_instance
+
+def X (_i : ℕ) (_ω : ℕ → ℝ) : Vec := 0
+def Y (i : ℕ) (ω : ℕ → ℝ) : ℝ := ω i
+def g (_y : ℝ) (_x : Vec) (_t : Vec) : ℝ := 1
+def Θ : Set Vec := {0}
+def that (_n : ℕ) (_ω : ℕ → ℝ) : Vec := 0
+def Δ (_n : ℕ) (_ω : ℕ → ℝ) : ℝ := 0
+
+def obs (y : ℝ) : Vec × ℝ := (0, y)
+lemma mobs : Measurable obs := measurable_const.prodMk measurable_id
+lemma coord_law (i : ℕ) : μ.map (fun ω => obs (ω i)) = κ.map obs := by
+  rw [show (fun ω => obs (ω i)) = obs ∘ (fun ω : ℕ → ℝ => ω i) from rfl,
+    ← Measure.map_map mobs (measurable_pi_apply i), μ, Measure.infinitePi_map_eval]
+lemma iid : IID μ (fun i ω => (X i ω, Y i ω)) := by
+  change IID μ (fun i ω => obs (ω i))
+  refine ⟨fun i => mobs.comp (measurable_pi_apply i), ?_, ?_⟩
+  · exact iIndepFun_infinitePi (P := fun _ : ℕ => κ) (X := fun _ => obs) (fun _ => mobs)
+  · intro i
+    exact ⟨(mobs.comp (measurable_pi_apply i)).aemeasurable,
+      (mobs.comp (measurable_pi_apply 0)).aemeasurable, by rw [coord_law, coord_law]⟩
+lemma true_law : μ.map (fun ω => (X 0 ω, Y 0 ω)) = conditionalModelLaw νX κ g 0 := by
+  change μ.map (fun ω => obs (ω 0)) = _
+  rw [coord_law]
+  simp [κ, νX, obs, conditionalModelLaw, g, Measure.dirac_prod_dirac]
+lemma elog (t : Vec) : expectedLogLikelihood μ (X 0) (Y 0) g t = 0 := by
+  simp [expectedLogLikelihood, g, mean]
+lemma slog (n : ℕ) (ω : ℕ → ℝ) (t : Vec) : sampleLogLikelihood X Y g n ω t = 0 := by
+  simp [sampleLogLikelihood, sampleMean, g]
+
+-- Simultaneously supplies every hypothesis of both independent conjuncts.
+-- K = tau = 1, so no empty index type is used.
+example :
+    IID μ (fun i ω => (X i ω, Y i ω)) ∧
+    IsCompact Θ ∧ (0 : Vec) ∈ Θ ∧
+    (∀ t ∈ Θ, Measurable (fun xy : Vec × ℝ => g xy.2 xy.1 t)) ∧
+    (∀ t ∈ Θ, ∀ y x, 0 ≤ g y x t) ∧
+    (∀ t ∈ Θ, ∀ x, (∫⁻ y, ENNReal.ofReal (g y x t) ∂κ) = 1) ∧
+    μ.map (fun ω => (X 0 ω, Y 0 ω)) = conditionalModelLaw νX κ g 0 ∧
+    (∀ t ∈ Θ, Integrable (fun ω => Real.log (g (Y 0 ω) (X 0 ω) t)) μ) ∧
+    (∀ t ∈ Θ, ∀ᵐ ω ∂μ, 0 < g (Y 0 ω) (X 0 ω) t) ∧
+    ContinuousOn (expectedLogLikelihood μ (X 0) (Y 0) g) Θ ∧
+    (∀ t ∈ Θ, expectedLogLikelihood μ (X 0) (Y 0) g t ≤ expectedLogLikelihood μ (X 0) (Y 0) g 0 ∧
+      (expectedLogLikelihood μ (X 0) (Y 0) g t = expectedLogLikelihood μ (X 0) (Y 0) g 0 → t = 0)) ∧
+    (∀ n, Measurable (that n)) ∧ (∀ n ω, that n ω ∈ Θ) ∧
+    (∀ n ω t, t ∈ Θ → sampleLikelihood X Y g n ω t ≤ sampleLikelihood X Y g n ω (that n ω)) ∧
+    (∀ n ω t, t ∈ Θ → |sampleLogLikelihood X Y g n ω t - expectedLogLikelihood μ (X 0) (Y 0) g t| ≤ Δ n ω) ∧
+    CP μ Δ 0 ∧ Measurable (X 0) ∧ Measurable (Y 0) ∧
+    (∀ t ∈ Θ, ∀ᵐ xy ∂(νX.prod κ), 0 < g xy.2 xy.1 (0 : Vec) → 0 < g xy.2 xy.1 t) := by
+  refine ⟨iid, by simpa [Θ] using isCompact_singleton (x := (0 : Vec)), by simp [Θ],
+    fun _ _ => measurable_const, fun _ _ _ _ => by norm_num [g],
+    fun _ _ _ => by simp [g], true_law,
+    fun _ _ => by simpa [g] using (integrable_const (0 : ℝ) : Integrable (fun _ : ℕ → ℝ => 0) μ),
+    fun _ _ => ae_of_all _ (fun _ => by norm_num [g]),
+    ?_, ?_, fun _ => measurable_const, fun _ _ => by simp [that, Θ],
+    fun _ _ _ _ => by simp [sampleLikelihood, g],
+    fun _ _ _ _ => by simp [slog, elog, Δ], ?_, measurable_const, measurable_pi_apply 0,
+    fun _ _ => ae_of_all _ (fun _ _ => by norm_num [g])⟩
+  · have heq : expectedLogLikelihood μ (X 0) (Y 0) g = fun _ => 0 := funext elog
+    rw [heq]
+    exact continuousOn_const
+  · intro t ht
+    exact ⟨by simp [elog], fun _ => ht⟩
+  · intro ε hε
+    have he : (fun n => prob μ {ω | ε ≤ dist (Δ n ω) 0}) = fun _ => 0 := by
+      funext n
+      simp [Δ, prob, hε.not_ge]
+    rw [he]
+    exact tendsto_const_nhds
+end Audit129

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P061-T1",
+    "theorem": "SAP.P061a.T1",
+    "fingerprint": "bf02814fa60c15eef17c3be6acb6e04e08cbd764841811622af02c8713386570",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteWitnesses.lean successfully, importing Defs rather than using any Challenge theorem. It constructs normalized uniform designs on (Fin N → Fin 3) for every N with the stipulated mass 3^(−N), and checks the genuine (1,0)/(2,0) hidden-version witness at N=2. All positive-N populations are nonempty finite spaces; all moments are finite and target probabilities are 2/3 and 1/3. The stipulated uniform product law and fixed response schedule are genuine data, not assumptions of the desired conclusions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T2",
+    "theorem": "SAP.P061a.T2",
+    "fingerprint": "cf6b99d4a61e12a3161c1f0f08512218e95e3d70325d4d5d96820552c5247506",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteWitnesses.lean successfully. It independently constructs the uniform four-point design and the product-mass family for every K, verifies both target probabilities and exposure means at unit 0, and computes all four exposure-image points. The product formula really yields independent copies; at K>0 there are 2K units. The membership obstructions use this actual finite domain and never evaluate a default-valued outcome outside its domain.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T3",
+    "theorem": "SAP.P061a.T3",
+    "fingerprint": "65f57049f9e475f4d679c84495fa80fe08f214e45a9680c5860cfe1e236f7e07",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/UniversalNonvacuity.lean successfully. For N=1, S=all real one-vectors, D gives mass 1/2 to 0 and 1, d=1, d′=0 and y_i(z)=z_i. The examples prove every positivity, targeted absolute-moment and own-versus-rest independence hypothesis. The same data with g_i(z)=z_i and H_i(v)=v_i prove all hypotheses of part (ii), including supported target-cell consistency. The response contrast is nonzero. No Challenge theorem is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T4",
+    "theorem": "SAP.P061a.T4",
+    "fingerprint": "9a3a6ce21f5ba540e3238f00f6c06bb537f7e73b5a8fad15a6b19cfd07747669",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteWitnesses.lean successfully. It constructs the exact normalized product family for every m and proves full support, with within-pair masses (1±pairParameter m)/4; the canonical range is m≥2. It also independently calculates within-pair covariance 1/8 and the pair-contribution variance V_2 at m=2. For m≥2, a=ρ=1/m is positive and at most 1/2, every binary assignment is feasible, all outcomes and moments are finite, both target cells have probability 1/2, and the positive variance V_m/(4m^8) makes every standardized expression ordinary. This verifies genuine data for the existential construction without invoking T4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T5",
+    "theorem": "SAP.P061a.T5",
+    "fingerprint": "9c87539e650513854f55a784ca60e1c4ab7186b3fde03b4ce49bfef31816a2af",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/UniversalNonvacuity.lean successfully. For every n, S_n is the full real (n+1)-cube and D_n puts mass 1/2 on each constant vector 0 and 1; targets are distinct 1 and 0. Zero responses, estimator 0, deterministic and estimated scales 1, and L=dirac 0 satisfy all PopulationDomainW2, probability-law, first-order weak-limit, scale-consistency and zero-standardized-gap hypotheses. Separate examples construct all local-bound hypotheses with empty neighborhoods, their singleton configuration supports, attained zero extrema, and feasible hybrids. A nonzero bound 1/(n+1) verifies nonvacuity of the rate implication. The exact correlated-pair family used by the rate-example conjunct is independently constructed in scratch/FiniteWitnesses.lean. No Challenge theorem is used.",
+    "confidence": 0.99
+  }
+]

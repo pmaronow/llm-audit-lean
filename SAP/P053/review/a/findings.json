@@ -1,0 +1,82 @@
+[
+  {
+    "target_id": "P053-T1",
+    "theorem": "SAP.P053.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take S=R, n1=n0=2 and y=(1,1,0,0). The support consists of six assignments, including fourA={0,2} and fourB={1,2}, both with difference 0 and table (1,1,1,1). Arbitrary table functions and within-arm symmetric sample functions exist. The definitions-only Lean scratch check verifies the support, memberships and equal differences. Independent exact enumeration checks every binary outcome vector and positive allocation for 2<=N<=7 (21,336 assignment/vector cases). The empty-codomain case is harmless: the quantified input functions into an empty S then do not exist, exactly as in the canonical set-valued formulation.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T2",
+    "theorem": "SAP.P053.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The finite counterexamples have actual supported assignments and positive arm sizes; m=1 already realizes both unequal statistics at equal differences. For every m>=1 the repeated population has 4m units and 2m treated units. With identical binary potential outcomes consisting of 2m ones and 2m zeros, V1=V0=m/(4m-1)->1/4, Vdelta=0, tau=0, and the raw fourth-moment average is 1. Thus the repeated examples are compatible with full S5; the theorem and its accurate restriction assert only the listed scaling and fourth-moment conditions, without packaging all those additional limits. Exact arithmetic checks both statistics for m=1,2,3,4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T3",
+    "theorem": "SAP.P053.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit six-unit and four-unit supports have respectively 20 and 6 assignments. Exact enumeration verifies the six-unit counts 1,9,9,1, p-values 1/20 and 1/10, and all the specified four-unit p-values. The monotone-transformation implication is instantiated by any positive arm sizes, any real outcome vector and g(t)=t (or t^3+7). None of these probability denominators is zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T4",
+    "theorem": "SAP.P053.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "p=3/4,S1=2,S0=1 satisfies the first strict branch; p=1/4,S1=1,S0=2 satisfies the second; p=1/2 gives equality. All denominators are positive. The identity follows by common denominators and the criterion by the sign of (S1^2-S0^2)(2p-1); 225 exact rational cases also pass.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T5",
+    "theorem": "SAP.P053.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let r=k+1,N=4r,n1=n0=2r and let y have r ones and 3r zeros. Taking Y0=y and Y1=y+1 gives v1=v0=3/16,vt=0,tauInf=1,p=1/2 and raw fourth-moment average 5; this is a nondegenerate nonlocal instance of S5. Taking Y1=Y0 instead supplies a nondegenerate sharp-null instance. scratch/Check.lean independently compiles Regularity for n1=n0=k+2 and zero outcomes, with no sorryAx. The fourth-moment premise contains no consistency or asymptotic conclusion.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P053-T6",
+    "theorem": "SAP.P053.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let r=k+1,N=4r,n1=n0=2r,Y1=Y0 be 1 on r units and 0 on 3r units. Then S5 holds with p=1/2,v1=v0=3/16,vt=tauInf=0 and fourth-moment average 1/2. For every supported assignment with a treated successes, RSS=r-[a^2+(r-a)^2]/(2r)>=r/2, so OLS>=1/[2(4r-2)]>0. This satisfies the sharp null, constant effects, positive variance limit and PositiveOLS simultaneously. Adding 1 to Y1 gives a nonlocal constant-effect instance of the unstudentized implication. The restriction is substantive: the equally allocated sharp-null family with 2r ones and 2r zeros satisfies S5 with positive limit 1/4 but has OLS=0 when the two arms are homogeneous. Exact enumeration confirms assignment-wide positivity for the first family at N=4,8,12.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P053-T8",
+    "theorem": "SAP.P053.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "heterogeneousWitness has N=10(k+1),n1=2(k+1),n0=8(k+1), balanced +/-1 control outcomes and doubled treatment outcomes. It satisfies S5 with p=1/5,v1=4,v0=vt=1,tauInf=0 and raw fourth-moment average 17. Exact enumeration at N=10 and N=20 verifies the actual variance 81/[4(N-1)] and comparison coefficients 10/(N-1),85/[4(N-1)]. The scaled limits are 81/4,10,85/4 with 10<81/4<85/4. The quarter-one sharp-null family described for T6 separately instantiates the constant-effect branch with positive variance.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P053-T7",
+    "theorem": "SAP.P053.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "heterogeneousWitness satisfies Regularity with p=1/5,sigma1=2,sigma0=1,vt=1,tauInf=0. Its OLS and local Fisher limits equal 10 while the Neyman limit equals 85/4, so both the local implication and the unequal-limit necessary-condition premise are realized. The nonnegative standard-deviation parameters cover all admissible variance limits; no positive-variance premise is smuggled into the general comparison.",
+    "confidence": 0.98
+  }
+]

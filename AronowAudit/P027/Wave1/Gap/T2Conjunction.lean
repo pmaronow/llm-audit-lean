@@ -48,5 +48,7 @@ theorem periodic_correction_values_with_uniform_start :
   exact ⟨AronowAudit.P027.Wave1.periodic_uniform_start_bridge,
     AronowAudit.P027.phase_correction_values⟩
 
+example : (type_of% @AronowAudit.P027.Wave1.periodic_correction_values_with_uniform_start) = ((type_of% @AronowAudit.P027.Wave1.periodic_uniform_start_bridge) ∧ (type_of% @AronowAudit.P027.phase_correction_values)) := rfl
+
 end
 end AronowAudit.P027.Wave1

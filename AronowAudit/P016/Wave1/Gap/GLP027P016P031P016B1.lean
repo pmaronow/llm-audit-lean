@@ -5,7 +5,10 @@ import Mathlib.Analysis.SumIntegralComparisons
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
-/-! Finite iid rejection probabilities for the power-of-two SSR witness (P016-T13). -/
+/-!
+Finite iid rejection probabilities for the power-of-two SSR witness (P016-T13).
+The helper prefix `t13b_` belongs to this record.
+-/
 
 namespace AronowAudit.P016.Wave1
 
@@ -907,7 +910,7 @@ lemma t13b_zero_formula {B : ℕ} (hB : 0 < B) :
   exact div_pos (mul_pos (by norm_num) hsum) (pow_pos (by norm_num) _)
 
 set_option maxHeartbeats 800000 in
-/-- P016-T13: exact iid finite-design mixture and the cutoff claims. -/
+/-- P016-T13: exact iid finite-design mixture and all archived cutoff claims. -/
 theorem t13_finite_rejection_proof :
     let y : Outcome 16 := fun i => (2 : ℝ)^i.val
     (∀ B : ℕ, 0 < B → ∀ c : ℕ, 2*c < B →
@@ -989,5 +992,7 @@ theorem t13_finite_rejection_proof :
       exact (t13b_uniform_congr _ _ hevent).trans
         (t13b_concrete_mixture (B := B) (c := 0) hcut)
     exact ⟨hm, (t13b_zero_formula hB).1, (t13b_zero_formula hB).2⟩
+
+example : type_of% @AronowAudit.P016.t13_finite_rejection := t13_finite_rejection_proof
 
 end AronowAudit.P016.Wave1

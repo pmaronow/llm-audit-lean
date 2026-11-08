@@ -1,6 +1,6 @@
 import AronowAudit.P031.Wave1.LargeSampleRefutationBlueprint
 
-/-! The exact randomization variance, from the population moments. -/
+/-! Node 3: the exact randomization variance, from the population moments. -/
 
 namespace AronowAudit.P031.Wave1.LargeSampleRefutation
 noncomputable section

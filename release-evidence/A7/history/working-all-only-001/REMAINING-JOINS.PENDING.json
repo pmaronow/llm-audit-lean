@@ -1,0 +1,85 @@
+{
+  "Opus": {
+    "completed_trust_report_review": null,
+    "required_timing": "Exactly once after the completed actual trust report exists; prior finding/calibration/formalization reviews are different purposes and must not be repeated.",
+    "runs_for_this_final_trust_report": 0
+  },
+  "final_A1": {
+    "actual_config": {
+      "bytes": 4181,
+      "path": "/Users/paronow/sap-lean/reports/A3-2026-11-05/parent-a3-continuation-final-validation-001/FINAL-A1.CONFIG.ACTUAL.json",
+      "sha256": "8d4c2c06eb364b391c707daf73c7626f97ae88d880fae8443b8c7dde8b836a86"
+    },
+    "native_capture": null,
+    "producer": {
+      "path": "/home/ubuntu/sap/assure/a3-work-continuation-v1-reviewed/a1/reconcile.py",
+      "sha256": "1fd7a893d409efa87cae64e7727eb8a63a7e67860c8f8f1e7fc2da694458517b"
+    },
+    "reconciliation": null,
+    "recorded_live_invocation": {
+      "existing_exec": 44333,
+      "identity": {
+        "boot_id": "787d8ad1-3854-4eb0-9229-b44214fc6ee7",
+        "pgid": 3734339,
+        "pid": 3734339,
+        "sid": 3734339,
+        "start_ticks": 59406110,
+        "uid": 1000
+      },
+      "status": {
+        "bytes": 2044,
+        "path": "/Users/paronow/sap-lean/reports/A3-2026-11-05/parent-a3-continuation-final-validation-001/final-a1-001/STATUS-20261108T023943280120Z.json",
+        "sha256": "633968aeb8e35df4150b1fd54ef071ee2530e7c051f6b4f8d4f9f438462c659d"
+      }
+    },
+    "report": null,
+    "required_join": "Current1fd/historical8652/execution394/context074b, actual summary+selection, ten fixed refs,452 unchanged historical keys/statuses,416 current evidence joins (406routed+10direct), actual output late fences."
+  },
+  "final_Sol": {
+    "decision": null,
+    "existing_review_workstream": "reports/A3-2026-11-05/final-sol-a7-a1-delta-review-001",
+    "report": null,
+    "required_join": "Evolving combined V-ORCH/A7/A1 delta only; actual all/A1/package joins and any real blocker."
+  },
+  "final_all": {
+    "canonical_summary": {
+      "path": "/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001/replay/replay-summary.json",
+      "sha256": "58b93d9a3f77703bd3b89c1706ef1068d6dd1f318af7da8721866543a81f2c2a"
+    },
+    "existing_exec": 41277,
+    "independent_final_review": null,
+    "native_completion": {
+      "bytes": 253,
+      "path": "/Users/paronow/sap-lean/reports/A3-2026-11-05/parent-a3-continuation-final-validation-001/final-all-001/native-readback/native/COMPLETION.json",
+      "sha256": "a6e26d0953c3586254dd33bd140d5b18a86d9a3996ec59f713eff7ddb06a7af6"
+    },
+    "native_readback_capture": {
+      "bytes": 4596,
+      "path": "/Users/paronow/sap-lean/reports/A3-2026-11-05/parent-a3-continuation-final-validation-001/final-all-001/native-readback/ACTUAL-CAPTURE.json",
+      "sha256": "ad4674d9c0b246d88f51d1c9196d6549432f944c2f42a2311eadee20204126a1"
+    },
+    "required_join": "Actual source/native/summary map joins completed in ALL-EVIDENCE-JOINS.json. Independent final all/A1/package delta review remains external and pending."
+  },
+  "final_package": {
+    "commit": null,
+    "filemap_sha256": null,
+    "required_join": "Bind the exact final noncompiled package and current projections to actual evidence; do not interchange Git40 identities with SHA256 file maps.",
+    "reviewed_export_and_site_bindings": null,
+    "tree": null
+  },
+  "final_trust_report": {
+    "actual_A1_incorporated": false,
+    "actual_all_A1_incorporated": false,
+    "actual_all_incorporated": true,
+    "completed_report": null,
+    "preparation_must_stay_preserved": true
+  },
+  "formal_final_A1_A3_or_release_approval_issued": false,
+  "publication": {
+    "actual_publication": null,
+    "finding_exact_text_acceptances_or_Moderate_gates_not_waived": true,
+    "new_permission_request_created": false,
+    "prior_user_authorization_preserved": true
+  },
+  "scope": "Working completed-evidence successor: genuine all native/canonical summary incorporated; A1/final Sol/package/completed report/once Opus remain unresolved. No actual acceptance synthesized."
+}

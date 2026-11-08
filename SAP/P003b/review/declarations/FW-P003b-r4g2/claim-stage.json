@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P003b.T26",
+    "target_id": "P003-T26",
+    "my_reading_vs_claim": "different",
+    "reason": "The declaration states a concrete counterexample rather than the positive universal coverage assertion. It genuinely refutes that assertion: fixed binary population (11,0,3,6), m=3, alpha=109/500, a deterministic legal Z-dependent mask, defined nonempty-completion endpoints, and uniform complete randomization give 297/380 < 1-alpha. All printed conditions, including S12 arbitrary dependent missingness, are met. The empty-set fallback is inactive. See claim-analysis.md for the printed reading and condition-by-condition witness audit."
+  },
+  {
+    "theorem": "SAP.P003b.T27",
+    "target_id": "P003-T27",
+    "my_reading_vs_claim": "different",
+    "reason": "The declaration negates the canonical universal correctness-with-budget assertion, so its logical direction is deliberately different. It is a genuine refutation: k1=1,k2=2,r=2,f identically false meets every printed input condition but returns 1; the constant-true function with r=0 never terminates. The fuel recursion, post-Step-2 adjacency test, return order and evaluation count match definitions_needed. Neither witness uses an out-of-domain input."
+  },
+  {
+    "theorem": "SAP.P003b.T30",
+    "target_id": "P003-T30",
+    "my_reading_vs_claim": "whole",
+    "reason": "States all balanced positive-arm endpoint inequalities for every level in (0,1), plus the canonical Lemma A.3 possible vector, its effect T, its p-value one, membership in K, and an explicit labeled possible table agreeing with the observed outcomes. The nonempty accepted set is concluded, not assumed. All SAP definitions match the finite-population notions."
+  },
+  {
+    "theorem": "SAP.P003b.T31",
+    "target_id": "P003-T31",
+    "my_reading_vs_claim": "whole",
+    "reason": "States exactly the canonical length bound for every positive-arm observed vector, every alpha in (0,1), and every defined interval (nonempty K). The explicit nonemptiness premise is present in the canonical statement qualification. The radicand, natural predecessor cast, and finite nonempty extrema have the intended meaning. The unused true-population parameter and the rate in the note add no required conclusion."
+  },
+  {
+    "theorem": "SAP.P003b.T33",
+    "target_id": "P003-T33",
+    "my_reading_vs_claim": "whole",
+    "reason": "States precisely the balanced positive-arm monotonicity assertion for every same-total nonnegative count vector, with both printed min/max discordance conditions and the exact (+1,-1,-1,+1) update. As required by the canonical statement, neither input nor updated vector is required to be possible. Finite permutation p-values have positive denominators and use the printed two-sided tail event."
+  }
+]

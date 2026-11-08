@@ -247,6 +247,9 @@ theorem diagnostic_counterexample_proof :
     rw [hsa, hsb]
     norm_num
 
+example : type_of% @AronowAudit.P033.diagnostic_counterexample :=
+  diagnostic_counterexample_proof
+
 /-- Chebyshev for the actual standard Gaussian, with an inclusive tail. -/
 lemma GP010P033B1b_t2_standard_tail (r : ℝ) (hr : 0 < r) :
     (gaussianReal 0 1).real {x : ℝ | r ≤ |x|} ≤ 1/r^2 := by
@@ -331,7 +334,7 @@ lemma GP010P033B1b_t2_printed_threshold : (5 : ℝ) < 20/m1SELinear-(49/25) := b
   have hlt := (sq_lt_sq₀ (by norm_num : (0 : ℝ) ≤ 5+49/25) hp.le).mp hsq
   linarith
 
-/-- Any M2 critical multiplier whose standardized lower threshold is at least five. -/
+/-- Any M2 critical multiplier whose standardized lower threshold exceeds five. -/
 lemma GP010P033B1b_t2_m2_coverage_upper (κ : ℝ) (hκ : 5 ≤ 20/m1SELinear-κ) :
     intervalCoverage (rdConditionalLaw m2Treated m1Control)
       (rdEstimator m1Linear) 24 (κ*m1SELinear) ≤ 1/25 := by
@@ -488,6 +491,9 @@ theorem diagnostic_correction_proof :
   · intro Ω mΩ μ hμ L βhat hL hβ
     exact bias_adjustment_variance μ L βhat hL hβ
 
+example : type_of% @AronowAudit.P033.diagnostic_correction :=
+  diagnostic_correction_proof
+
 end
 end AronowAudit.P033.Wave1
 
@@ -533,7 +539,7 @@ lemma GP010P033B1b_t15_passer_integrability_transfer {K d : ℕ} (μ : Measure (
   simpa only [Function.id_comp] using
     hmap.comp_measurable (measurable_potentialY a)
 
-/-- The extended-real quantile at level `r` is finite, and its closed upper tail has mass `1-r`. -/
+/-- The extended-real quantile is finite and has the specified lower mass. -/
 lemma GP010P033B1b_quantile_cut (F : Measure ℝ) [IsProbabilityMeasure F]
     (hc : Atomless F) (r : ℝ) (hr : 0 < r) (hr1 : r < 1) :
     ∃ q : ℝ, quantile F r = q ∧ F.real (Ici q) = 1-r := by
@@ -742,5 +748,8 @@ theorem observable_upper_bound_corrected_proof {K d : ℕ} (μ : Measure (State 
       (by simpa only [htrim] using hr)
     rw [htrim, htail] at hbound
     exact hbound
+
+example : type_of% @AronowAudit.P010.observable_upper_bound_corrected :=
+  observable_upper_bound_corrected_proof
 
 end AronowAudit.P010.Wave1

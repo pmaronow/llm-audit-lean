@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P030.T1",
+    "target_id": "P030-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "The fixed five-unit coordinates, binary support, invariant potential outcomes, nonexperimental fixed units, two conditional masses, nearest-variant distances, midranks, centered ranks, rank products and positive square sums, correlation 1, inclusive tails 1, printed size 1 and corrected size 0 for every 0<alpha<1, and alpha=1/20 thresholds are all present. Definitions implement the stated notions without operative junk values. The statement has no data hypotheses; scratch/Check.lean independently constructs the null and nonempty supports and verifies positive outcome rank variance, and scratch/recompute.py checks the full finite witness exactly."
+  },
+  {
+    "theorem": "SAP.P030.T2",
+    "target_id": "P030-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The complete null outcome schedule, ten-assignment unconditional design, six-assignment conditional law, conditioning probability and ratio, all six distances and correlations, complete rank computations and rational squares, order and decimal accuracy, assignment-count inclusive tails, exactly three distinct actual statistics, exact printed rejection set and size 1/2 for 0<alpha<=2/3, corrected size zero, and strict size violation for every positive alpha<1/2 are present. Counts retain assignment multiplicities. No substantive extra hypothesis is imposed; all relevant distance sets and variances are nondegenerate. Independent Lean and rational-arithmetic checks verify the concrete design."
+  },
+  {
+    "theorem": "SAP.P030.T3",
+    "target_id": "P030-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universal finite probability law with nonnegative masses summing to 1 represents exactly the canonical finite conditional law; zero-mass support points are harmless and off-support values are ignored. All six requested proof components are explicit: inclusive-tail identity, both super-uniformity bounds, union bound and size control with strict endpoints, inclusion in printed rejection, genuine strictness via the entire five-unit example, and the conventional min(1,2 min(pL,pU)) alternative with inclusive cutoffs. The canonical formal content is already stated abstractly for an arbitrary finite law and f; a separate generic imputation lemma is not an additional missing clause. scratch/Check.lean constructs an unequal-mass law and evaluates its tails."
+  },
+  {
+    "theorem": "SAP.P030.T4",
+    "target_id": "P030-T4",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem states the negation of the canonical universal printed-rule size guarantee, rather than that guarantee itself. This is an exact refutation of the canonical assertion and is eligible for the refuted decision under the task rules: it uses the same conditional support, observed-outcome imputation, inclusive lower tail, uniform counting law, no-interference null and strict rejection endpoints. Allowing all real statistics does not introduce a spurious refutation: the genuine five-unit Spearman counterexample is within the class, including positive rank variances, and remains a counterexample even if the printed statistic-constancy equality is additionally imposed. scratch/recompute.py independently confirms it and the ten-unit witness. Alpha in [0,1] includes alpha=1/20, where the claimed guarantee fails."
+  },
+  {
+    "theorem": "SAP.P030.T5",
+    "target_id": "P030-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem gives the entire specified no-effects ten-unit population and conditional design, exact six-row rank arithmetic, correlations, ordering and roundings, fixed-outcome constancy alongside two actual supported assignments with unequal statistics, exactly three actual statistic values, actual observed-data lower-tail p=1/3 and its decimal approximation. Both generic constant-statistic consequences are explicit on every nonempty finite support: all mass at the observed statistic and inclusive lower-tail p=1. This is the canonical counterexample to interpreting Equation (1) as a consequence of no interference, not a negation of the canonical counterexample. scratch/Check.lean constructs the null hypotheses and a two-point constant-statistic instance, and scratch/recompute.py verifies the nonconstant witness and observed p-value exactly."
+  }
+]

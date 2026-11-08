@@ -1,0 +1,40 @@
+import SAP.P012b.Defs
+
+namespace ReviewT24
+open SAP.P012b
+
+def mixedEdge : State where
+  vertices := {Sum.inl 0, Sum.inl 1}
+  edges := {{Sum.inl 0, Sum.inl 1}}
+  trait := fun v => decide (v = Sum.inl 1)
+
+-- All hypotheses of the graph branch hold together at epsilon = 1.
+example : (0 : ℝ) < 1 ∧ Simple mixedEdge ∧
+    0 < traitDegree mixedEdge false ∧ 0 < traitDegree mixedEdge true := by
+  norm_num [Simple, traitDegree, graphDegree, mixedEdge,
+    Finset.filter_insert, Finset.filter_singleton]
+
+example : traitDegree mixedEdge false = 1 ∧ traitDegree mixedEdge true = 1 := by
+  norm_num [traitDegree, graphDegree, mixedEdge,
+    Finset.filter_insert, Finset.filter_singleton]
+
+example : hNumerator mixedEdge = -(1 / 2 : ℝ) ∧
+    hDenominator mixedEdge = (1 / 2 : ℝ) := by
+  norm_num [hNumerator, hDenominator, adjacency, graphDegree, z, mixedEdge,
+    Finset.filter_insert, Finset.filter_singleton]
+
+example : HomophilyDefined mixedEdge ∧ homophily mixedEdge = some (-1) ∧
+    hValue mixedEdge = -1 := by
+  norm_num [HomophilyDefined, homophily, hValue, hNumerator, hDenominator,
+    adjacency, graphDegree, z, mixedEdge, Finset.filter_insert, Finset.filter_singleton]
+
+-- The square maximum is attained by this genuine, defined graph as well.
+example : annealingObjective 1 (hValue mixedEdge) 0 = 1 := by
+  norm_num [annealingObjective, hValue, hNumerator, hDenominator,
+    adjacency, graphDegree, z, mixedEdge, Finset.filter_insert, Finset.filter_singleton]
+
+example (ε : ℝ) (hε : 0 < ε) : (1 / ε) ∈ squareObjectiveValues ε := by
+  refine ⟨-1, by norm_num, 0, by norm_num, ?_⟩
+  simp [annealingObjective]
+
+end ReviewT24

@@ -1,0 +1,68 @@
+[
+  {
+    "theorem": "SAP.P031.T1",
+    "target_id": "P031-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the HC2=Neyman identity for every observed vector and every assignment with at least two units in each arm. The two-column design, inverse Gram matrix, coefficient contraction, leverages and traditional sample variances agree with the canonical definitions. Arbitrary observed vectors are realizable by taking y1=y0=Y."
+  },
+  {
+    "theorem": "SAP.P031.T2",
+    "target_id": "P031-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the expected-HC2 inequality under the uniform distribution on M-element assignments. True variance is the actual variance around its randomization mean, not the closed formula assumed as a definition. The three natural-number inequalities express the standing two-per-arm design, with no extra restriction; they prevent empty averaging spaces and truncated-subtraction artifacts."
+  },
+  {
+    "theorem": "SAP.P031.T3",
+    "target_id": "P031-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly (N-2)/(N-1) times the conventional residual/Gram OLS variance equals expression (5) applied to the specified imputed potential outcomes. It assumes neither constant original effects nor any equality involving their covariance."
+  },
+  {
+    "theorem": "SAP.P031.T4",
+    "target_id": "P031-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly all adjacent equalities of the balanced-design chain, including the essential (N-1)/(N-2) factor on CE, under precisely admissibility and N=2M."
+  },
+  {
+    "theorem": "SAP.P031.T5",
+    "target_id": "P031-T5",
+    "my_reading_vs_claim": "different",
+    "reason": "Different in logical polarity: the canonical target states a positive conjunction, whereas the stub supplies an existential counterexample and its negation. This is a valid direct refutation of an asserted clause: statement explicitly says \"The other estimators are all asymptotically equivalent to HC2\" and explicitly lists asymptotic normality as the only printed hypothesis. A growing sequence with a true-variance standardized normal limit and HR not first-order equivalent to HC2 contradicts that universal assertion under the ordinary relative-equivalence meaning appropriate to the claimed transfer of coverage. Fixed M=2, y0=0 and distinct Gaussian-quantile y1 provide a nonvacuous witness with HR=HC2/2>0. No separate coverage failure is asserted or needed to refute the conjunction. Correction of the initially saved reason: I had treated the absence of formal asymptotic definitions in definitions_needed as if it removed the explicit equivalence assertion from statement. It does not; the quoted assertion and the statement's last bracket are the cited basis for withdrawing that concern. The category remains different because this is a refutation, not the original positive proposition. The initial reason is preserved in scratch/claim-stage-initial.json."
+  },
+  {
+    "theorem": "SAP.P031.T6",
+    "target_id": "P031-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains both existential directions of scaled OLS/CE variance error and proves strict limiting undercoverage on one standardized-normal sequence for every positive critical value. Drops the canonical contrast asserting approximately correct or conservative Neyman/HC2 coverage. The N-times-variance scale is the scale explicitly allowed by definitions_needed, not an additional omitted claim. The two sign families a=2 and a=1/2 give nondegenerate under- and overestimation witnesses."
+  },
+  {
+    "theorem": "SAP.P031.T7",
+    "target_id": "P031-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the canonical counterexample, with zero-based indexing equivalent to the printed unit numbering: identical original outcomes (0,2,5,9), first two units treated, six possible assignments, both imputed vectors and their common variance 5/2, original covariance 23/2, and the required inequality. The canonical assertion is the counterexample, not the false covariance equality it quotes."
+  },
+  {
+    "theorem": "SAP.P031.T8",
+    "target_id": "P031-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every link of the corrected proof is present: the per-unit imputation relation; equal imputed variances and covariance; expression (5) reduced to the common imputed variance; the residual sum chain; and every scaled-OLS equality. The only hypotheses are the standing design condition and arbitrary observed outcomes."
+  },
+  {
+    "theorem": "SAP.P031.T9",
+    "target_id": "P031-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every term and adjacent equality of the corrected balanced-design proof is present, with the CE estimator, ordinary arm sample variances, residual sums, and scale factors correctly restored. No extra hypotheses occur."
+  },
+  {
+    "theorem": "SAP.P031.T10",
+    "target_id": "P031-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains all three prescribed sign families, every allocation/first/second-moment identity, scaled true-variance and expected-OLS limits, OLS and ratio probability limits, and arbitrary population first-moment/OLS/true-variance shift invariance. Omits the observed-vector, intercept, treatment-estimate and per-unit residual shift identities from (a); the exact finite-row N*trueVariance and N*OLS formulas and E[r^2]=3/(N-1) from (b); and all N=8,M=2,28-assignment values, expectations and ratios from (c). These clauses belong to statement itself, so their omission cannot be excused as dropping finite_lemmas. CE limits are not canonical clauses."
+  },
+  {
+    "theorem": "SAP.P031.T11",
+    "target_id": "P031-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "All four deterministic limits, bounded-outcome sufficiency, the conditional scaled-OLS probability limit, the positive-true-variance-limit ratio assertion, and every exact shift identity are present with the correct quantifier order. Arm second-moment convergence is explicitly interpreted as consistency of the centered traditional arm variances for the population variances; this supplies exactly the moments used by OLS. Interior allocation and positivity for the ratio are canonical hypotheses. Bibliographic attribution is not mathematical content."
+  }
+]

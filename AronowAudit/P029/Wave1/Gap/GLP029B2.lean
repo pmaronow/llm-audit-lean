@@ -2,12 +2,13 @@ import AronowAudit.P029.Wave1.LateIdentity
 import AronowAudit.P029.Wave1.Gap.GP029B3b
 
 /-!
-P029-T25 and P029-T27(b): LATE and the ICSW population limit.
+Exact held-statement proofs for P029-T25 and P029-T27(b).
 
-The LATE identities follow from independent-arm identities, integration of the
-almost-everywhere no-defier identities, and normalization by positive complier mass.
-The ICSW limit follows from the six raw-moment limits and the estimated-score
-substitution bound before taking the Wald ratio.
+The existing LATE nodes establish the independent-arm identities, integrate the
+almost-everywhere no-defier identities, and normalize by positive complier mass.
+The existing general ICSW limit establishes the six raw-moment limits and the
+estimated-score substitution bound before taking the Wald ratio. Neither held
+declaration is used as a proof input.
 -/
 
 namespace AronowAudit.P029.Wave1
@@ -37,6 +38,8 @@ theorem late_identity_proof {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace
       mWald μ U Z (fun _ => 1) := by
   exact late_identity_paper_scope μ U Z hiv
 
+example : type_of% @AronowAudit.P029.late_identity := late_identity_proof
+
 /-- P029-T27(b): ICSW averages complier effects over the full covariate law. -/
 theorem icsw_complier_effect_limit_proof {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X]
     [TopologicalSpace X] [SecondCountableTopology X] [BorelSpace X]
@@ -47,6 +50,8 @@ theorem icsw_complier_effect_limit_proof {Ω X : Type*} [MeasurableSpace Ω] [Me
       ε < c x ∧ c x ≤ 1) :
     TendstoInMeasure μ (icswSequence U Z s) atTop (fun _ => ∫ ω, m (U 0 ω).x ∂μ) := by
   exact GP029B3b_icsw_limit h
+
+example : type_of% @AronowAudit.P029.icsw_complier_effect_limit := icsw_complier_effect_limit_proof
 
 end
 

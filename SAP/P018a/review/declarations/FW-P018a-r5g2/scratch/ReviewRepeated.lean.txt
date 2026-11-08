@@ -1,0 +1,211 @@
+import SAP.P018a.Challenge
+
+set_option autoImplicit false
+set_option maxHeartbeats 2000000
+open Finset Matrix MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Topology Matrix.Norms.Elementwise ENNReal
+open SAP.P018a
+
+namespace ReviewRepeated
+
+noncomputable def K : Kernel Unit 1 :=
+  ⟨Measure.dirac (), fun _ _ => ![1], fun _ _ => 0⟩
+noncomputable def R : RepeatedKernel Unit 1 := singleRecord K
+
+local instance (N : ℕ) : IsProbabilityMeasure (repeatedLaw R N) := by
+  change IsProbabilityMeasure (Measure.pi (fun _ : Fin N => Measure.dirac ()))
+  infer_instance
+
+lemma dyad_card (N : ℕ) : (Fintype.card (Dyad N) : ℝ) = Dreal N := by
+  rw [Fintype.card_coe (dyads N)]
+  simp only [dyads, Finset.card_powersetCard, Finset.card_univ,
+    Fintype.card_fin, Nat.cast_choose_two, Dreal]
+
+lemma dyad_card_pos {N : ℕ} (hN : 2 ≤ N) : 0 < Fintype.card (Dyad N) := by
+  simpa [Dyad, dyads, Finset.card_powersetCard] using
+    (Nat.choose_pos hN : 0 < N.choose 2)
+
+lemma standing : RepeatedStanding R := by
+  refine ⟨by change IsProbabilityMeasure (Measure.dirac ()); infer_instance,
+    ?_, ?_, ?_, ?_⟩
+  · intros
+    norm_num [R, singleRecord]
+  · intros
+    exact ⟨measurable_const, measurable_const⟩
+  · refine ⟨1, by norm_num, ?_⟩
+    intro N d t
+    apply Filter.Eventually.of_forall
+    intro uv
+    have hx : R.X N d t uv.1 uv.2 = (1 : Vec 1) := by
+      ext a
+      fin_cases a
+      rfl
+    rw [hx]
+    constructor
+    · norm_num
+    · change |(0 : ℝ)| ≤ 1
+      norm_num
+  · exact ⟨0, by intros; rfl⟩
+
+lemma common : ∃ fX : ℕ → Unit → Unit → Vec 1,
+    ∃ fY : ℕ → Unit → Unit → ℝ,
+    ∀ N d (t : Fin (R.T N d)) u v,
+      R.X N d t u v = fX t.val u v ∧ R.Y N d t u v = fY t.val u v := by
+  exact ⟨fun _ _ _ => ![1], fun _ _ _ => 0, by intros; exact ⟨rfl,rfl⟩⟩
+
+lemma count_bound : ∃ T0 : ℕ, ∀ N d, R.T N d ≤ T0 := by
+  exact ⟨1, by intros; exact le_rfl⟩
+
+lemma total_count (N : ℕ) : repeatedL R N = (Fintype.card (Dyad N) : ℝ) := by
+  simp [repeatedL, R, singleRecord]
+
+lemma gram {N : ℕ} (ω : Fin N → Unit) :
+    repeatedGram R ω = (Fintype.card (Dyad N) : ℝ) • (1 : Mat 1) := by
+  have ho : outer (![1] : Vec 1) ![1] = (1 : Mat 1) := by
+    ext a b
+    fin_cases a
+    fin_cases b
+    norm_num [outer]
+  change (∑ _d : Dyad N, ∑ _t : Fin 1, outer (![1] : Vec 1) ![1]) = _
+  simp_rw [ho]
+  ext a b
+  fin_cases a
+  fin_cases b
+  simp [Matrix.sum_apply]
+
+lemma normalized_gram {N : ℕ} (hN : 2 ≤ N) : repeatedH R N = (1 : Mat 1) := by
+  have hn : (Fintype.card (Dyad N) : ℝ) ≠ 0 := by
+    exact_mod_cast (ne_of_gt (dyad_card_pos hN))
+  simp only [Fintype.card_coe] at hn
+  ext a b
+  fin_cases a
+  fin_cases b
+  simp [repeatedH, total_count, gram, meanMat, hn]
+
+lemma design_limit : Tendsto (repeatedH R) atTop (𝓝 (1 : Mat 1)) := by
+  apply Filter.Tendsto.congr' _ (tendsto_const_nhds :
+    Tendsto (fun _ : ℕ => (1 : Mat 1)) atTop (𝓝 1))
+  filter_upwards [eventually_ge_atTop 2] with N hN
+  exact (normalized_gram hN).symm
+
+lemma beta_zero (N : ℕ) : repeatedBeta R N = 0 := by
+  have hy : ∀ (ω : Fin N → Unit) d t, repeatedY R ω d t = 0 := by intros; rfl
+  have hm : meanVec (repeatedLaw R N) (fun ω => ∑ d : Dyad N, ∑ t,
+      score (repeatedX R ω d t) (repeatedY R ω d t)) = 0 := by
+    have hz : meanVec (repeatedLaw R N) (fun _ => (0 : Vec 1)) = 0 := by
+      ext a
+      simp [meanVec]
+    simpa only [hy, score, zero_smul, Finset.sum_const_zero] using hz
+  rw [repeatedBeta, hm]
+  simp
+
+lemma mean_overlap_zero (N : ℕ) :
+    ((N : ℝ)/(repeatedL R N)^2) • meat members
+      (fun d : Dyad N => meanVec (repeatedLaw R N)
+        (fun ω => repeatedBlockScore R (repeatedBeta R N) ω d)) = 0 := by
+  have hb : ∀ (ω : Fin N → Unit) d,
+      repeatedBlockScore R (repeatedBeta R N) ω d = 0 := by
+    intro ω d
+    rw [beta_zero]
+    change (∑ _t : Fin 1, score (![1] : Vec 1) (0-dot (![1] : Vec 1) 0)) = 0
+    simp [dot, score]
+  simp only [hb]
+  have hm : meanVec (repeatedLaw R N) (fun _ => (0 : Vec 1)) = 0 := by
+    ext a
+    simp [meanVec]
+  have ho : outer (0 : Vec 1) 0 = 0 := by
+    ext a b
+    simp [outer]
+  simp only [hm, meat, ho, ite_self, Finset.sum_const_zero, smul_zero]
+
+lemma overlap_limit : Tendsto (fun N : ℕ =>
+    ((N : ℝ)/(repeatedL R N)^2) • meat members
+      (fun d : Dyad N => meanVec (repeatedLaw R N)
+        (fun ω => repeatedBlockScore R (repeatedBeta R N) ω d))) atTop (𝓝 0) := by
+  simp only [mean_overlap_zero]
+  exact tendsto_const_nhds
+
+-- T10 C1: every hypothesis holds jointly, for all sample sizes.
+example : RepeatedStanding R ∧
+    (∃ fX : ℕ → Unit → Unit → Vec 1, ∃ fY : ℕ → Unit → Unit → ℝ,
+      ∀ N d (t : Fin (R.T N d)) u v,
+        R.X N d t u v = fX t.val u v ∧ R.Y N d t u v = fY t.val u v) ∧
+    (∃ T0 : ℕ, ∀ N d, R.T N d ≤ T0) ∧
+    (1 : Mat 1).PosDef ∧ Tendsto (repeatedH R) atTop (𝓝 (1 : Mat 1)) ∧
+    Tendsto (fun N : ℕ => ((N : ℝ)/(repeatedL R N)^2) • meat members
+      (fun d : Dyad N => meanVec (repeatedLaw R N)
+        (fun ω => repeatedBlockScore R (repeatedBeta R N) ω d))) atTop (𝓝 0) := by
+  exact ⟨standing, common, count_bound, Matrix.PosDef.one, design_limit, overlap_limit⟩
+
+noncomputable def dir : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → Bool :=
+  fun _ _ _ => false
+
+lemma ordered : W1OrderedStanding K := by
+  refine ⟨by change IsProbabilityMeasure (Measure.dirac ()); infer_instance,
+    measurable_const, measurable_const, ?_, ⟨0, by intros; rfl⟩⟩
+  refine ⟨1, by norm_num, Filter.Eventually.of_forall ?_⟩
+  intro uv
+  have hx : K.X uv.1 uv.2 = (1 : Vec 1) := by
+    ext a
+    fin_cases a
+    rfl
+  rw [hx]
+  norm_num [K]
+
+lemma directed : W1DirectedRecords R K dir := by
+  refine ⟨rfl, ?_, ?_⟩
+  · intro N d
+    change Function.Injective (fun _ : Fin 1 => false)
+    exact Function.injective_of_subsingleton _
+  · intros
+    exact ⟨rfl,rfl⟩
+
+lemma weighted_gram {N : ℕ} (ω : Fin N → Unit) :
+    recordWeightedGram R (fun _ _ => 1) ω =
+      (Fintype.card (Dyad N) : ℝ) • (1 : Mat 1) := by
+  simpa [recordWeightedGram, repeatedGram] using gram ω
+
+lemma weighted_design {N : ℕ} (hN : 2 ≤ N) :
+    recordWeightedH (N := N) R (fun _ _ => 1) = (1 : Mat 1) := by
+  have hn : Dreal N ≠ 0 := by
+    rw [← dyad_card]
+    exact_mod_cast (ne_of_gt (dyad_card_pos hN))
+  have hf : recordWeightedGram (N := N) R (fun _ _ => 1) =
+      (fun _ : Fin N → Unit => Dreal N • (1 : Mat 1)) := by
+    funext ω
+    rw [weighted_gram, dyad_card]
+  rw [recordWeightedH, hf]
+  ext a b
+  fin_cases a
+  fin_cases b
+  simp [meanMat, hn]
+
+lemma weighted_limit : Tendsto (fun N : ℕ =>
+    recordWeightedH (N := N) R (fun _ _ => 1)) atTop (𝓝 (1 : Mat 1)) := by
+  apply Filter.Tendsto.congr' _ (tendsto_const_nhds :
+    Tendsto (fun _ : ℕ => (1 : Mat 1)) atTop (𝓝 1))
+  filter_upwards [eventually_ge_atTop 2] with N hN
+  exact (weighted_design hN).symm
+
+-- T10 C2: a genuine common-direction setting with positive normalized weights/design.
+example : W1OrderedStanding K ∧ W1DirectedRecords R K dir ∧
+    (∀ N : ℕ, 0 < (1 : ℝ)) ∧
+    (∃ C : ℝ, ∀ N d (t : Fin (R.T N d)),
+      0 < (1 : ℝ)/1 ∧ (1 : ℝ)/1 ≤ C) ∧ (1 : Mat 1).PosDef ∧
+    Tendsto (fun N : ℕ => recordWeightedH (N := N) R
+      (fun _ _ => (1 : ℝ)/1)) atTop (𝓝 (1 : Mat 1)) := by
+  refine ⟨ordered, directed, by intros; norm_num, ⟨1, by intros; norm_num⟩,
+    Matrix.PosDef.one, ?_⟩
+  simpa using weighted_limit
+
+-- T10 C3: both ordinary-inverse guards hold on a concrete nonempty sample.
+example : ∃ ω : Fin 2 → Unit,
+    (recordWeightedGram R (fun _ _ => 1) ω).det ≠ 0 ∧
+    (recordWeightedH (N := 2) R (fun _ _ => 1)).det ≠ 0 := by
+  refine ⟨fun _ => (), ?_, ?_⟩
+  · rw [weighted_gram, dyad_card]
+    norm_num [Dreal]
+  · rw [weighted_design (by norm_num : 2 ≤ 2)]
+    simp
+
+end ReviewRepeated

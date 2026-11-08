@@ -5,8 +5,13 @@ import Mathlib.MeasureTheory.Function.SimpleFuncDenseLp
 /-!
 P006-T6 with integrability of the treated estimator residual only.
 
-For T7, finiteness of the weighted total does not justify integrating the
-weighted conditional moments term by term.
+The conditional-moment and welfare arguments adapt GLP006B2; the auxiliary
+integration argument adapts GP006B2. Neither held theorem is used as a proof.
+The two examples specialize the repaired results to the original held types.
+
+The proposed T7 weakening is false: finiteness of the weighted total does not
+justify integrating the weighted conditional moments term by term. A countable
+counterexample is given in the run report, so no T7 final is asserted here.
 -/
 
 namespace AronowAudit.P006.Wave1
@@ -19,8 +24,8 @@ noncomputable section
 local instance instDecidableRepairT6T7 (p : Prop) : Decidable p := Classical.propDecidable p
 
 /-- The outcome and randomization assumptions at one fixed policy. This is the
-part of `Standing` used below, with no assumption on the estimator. The alignment theorem
-requires it only on the feasible class. Independence across units and fixed
+part of `Standing` used below, with no assumption on the estimator. Finals
+require it only on the feasible class. Independence across units and fixed
 potential-outcome laws across policies are unnecessary for these conclusions. -/
 structure RepairT6T7_Design {Ω C : Type*} [MeasurableSpace Ω] [MeasurableSpace C] {n : ℕ}
     (E : Experiment Ω C n) (π : C → ℝ) : Prop where
@@ -342,6 +347,33 @@ lemma RepairT6T7_positive_rule_integral_maximum {P : Measure C} {t : C → ℝ}
 
 end ExperimentMoments
 
+/-- The original standing assumptions imply the estimator-free design assumptions. -/
+lemma RepairT6T7_design_of_standing {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n) (hS : Standing E)
+    {π : C → ℝ} (hπ : Admissible π) : RepairT6T7_Design E π where
+  px_probability := hS.px_probability
+  means_measurable := hS.means_measurable
+  means_integrable := hS.means_integrable
+  law_probability := hS.law_probability π hπ
+  measurable_units := hS.measurable_units π hπ
+  integrable_units i := ⟨(hS.integrable_units π hπ i).1,
+    (hS.integrable_units π hπ i).2.1⟩
+  covariate_law := hS.covariate_law π hπ
+  conditional_means := hS.conditional_means π hπ
+  bernoulli := hS.bernoulli π hπ
+  ignorability := hS.ignorability π hπ
+
+lemma RepairT6T7_residual_of_standing {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n) (hS : Standing E)
+    {π : C → ℝ} (hπ : Admissible π) (i : Fin n) :
+    Integrable (fun ω => bit (E.T π i ω) *
+      (E.μhat π ω (E.X i ω) - E.μ0 (E.X i ω))) (E.law π) := by
+  have hm := ((hS.covariate_law π hπ i).comp hS.means_measurable.1).integrable_iff.mpr
+    hS.means_integrable.1
+  exact RepairT6T7_mul_integrable
+    ((measurable_of_countable bit).comp (hS.measurable_units π hπ i).2.2.2)
+    (fun ω => RepairT6T7_bit_norm (E.T π i ω))
+    ((hS.integrable_units π hπ i).2.2.sub hm)
 
 /-- Corrected T6 on the feasible class, with only the treated estimator residual
 integrable. The finite TT expectation follows from these assumptions. -/
@@ -393,6 +425,11 @@ theorem T6_corrected_TT_minimal_integrability {Ω C : Type*} [MeasurableSpace Ω
     refine ⟨hmem, fun π hπ => ?_⟩
     rw [(hid π hπ).2, (hid _ hmem).2]
     exact hmax π (hPiSet π hπ)
+
+example : type_of% @AronowAudit.P006.T6_corrected_TT :=
+  fun E hS PiSet hPiSet hU => T6_corrected_TT_minimal_integrability E PiSet hPiSet
+    (fun π hπ => RepairT6T7_design_of_standing E hS (hPiSet π hπ))
+    (fun π hπ => RepairT6T7_residual_of_standing E hS (hPiSet π hπ)) hU
 
 /-- Conditional integration with respect to an independent auxiliary draw.
 This is a direct set-integral uniqueness proof; the measurable spaces A and D
@@ -513,6 +550,11 @@ theorem T6_independent_estimation_minimal_integrability {Ω C : Type*}
     (f := fun ω => bit (E.T π i ω) *
       (E.μhat π ω (E.X i ω) - E.μ0 (E.X i ω))) hsmall hvle
   exact htower.symm.trans ((condExp_congr_ae hce).trans (by simp))
+
+example : type_of% @AronowAudit.P006.T6_independent_estimation :=
+  fun E hS PiSet hPiSet hU hI => T6_independent_estimation_minimal_integrability E PiSet
+    (fun π hπ => RepairT6T7_design_of_standing E hS (hPiSet π hπ))
+    (fun π hπ => RepairT6T7_residual_of_standing E hS (hPiSet π hπ)) hU hI
 
 end
 end AronowAudit.P006.Wave1

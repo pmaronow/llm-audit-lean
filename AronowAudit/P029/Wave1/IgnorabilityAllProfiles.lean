@@ -33,6 +33,9 @@ theorem printed_ignorability_ordering_all_profiles_refuted :
     IgnorabilityAllProfiles.n1_proof
     IgnorabilityAllProfiles.n2_proof
 
+example : AronowAudit.P029.Wave1.IgnorabilityAllProfiles.Target :=
+  printed_ignorability_ordering_all_profiles_refuted
+
 end
 
 end AronowAudit.P029.Wave1

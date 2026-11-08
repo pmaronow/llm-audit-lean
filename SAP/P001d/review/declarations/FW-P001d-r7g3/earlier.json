@@ -1,0 +1,14 @@
+[
+ {
+  "theorem": "SAP.P001d.T72",
+  "target_id": "P001-T72",
+  "round": 6,
+  "verdict": "label_wrong",
+  "severity": "major",
+  "issues": [
+   "SAP/P001d/Defs/Part4.lean:52: T72Statement quantifies only deterministic x,b,s. Its conclusions through line 60 are normalization and first-moment integrals of normalDensity, plus the zero-scale diagnostic. It omits canonical P001-T72 statement clause (ii), Theorem 5.1.5: under the classical conditional-normal model for random X,Y, x↦x·β is a version of E[Y|X=x]. There is no probability space, response variable, conditional-law premise or CEF conclusion in this declaration or its closure.",
+   "record.json:63: decision=\"whole\" with restriction=null (line 65) is inaccurate for the fixed-covariate kernel lemma. The missing conditional-model-to-CEF implication is part of the canonical statement itself, not an optional note or provenance condition.",
+   "SAP/P001d/Challenge/Part2.lean:43: The docstring accurately describes the kernel calculation but does not disclose omission of the conditional-law-to-CEF implication of the cited Theorem 5.1.5. A restricted declaration needs that omission stated explicitly."
+  ]
+ }
+]

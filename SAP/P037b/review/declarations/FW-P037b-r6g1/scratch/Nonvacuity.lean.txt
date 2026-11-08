@@ -1,0 +1,240 @@
+import SAP.P037b.Defs
+
+open SAP.P037b MeasureTheory
+open scoped BigOperators ENNReal
+
+set_option autoImplicit false
+set_option maxRecDepth 2048
+
+/- T18: two independent Rademacher coordinates, n=2, k=1, an intercept
+   design, nonzero residuals, sigma squared = 1. -/
+noncomputable def testMu : Measure (Fin 4) := (4 : ℝ≥0∞)⁻¹ • Measure.count
+
+instance : IsProbabilityMeasure testMu := by
+  constructor
+  norm_num [testMu, Measure.smul_apply]
+  exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+noncomputable def testV : Fin 4 → Fin 2 → ℝ :=
+  ![![1,1], ![1,-1], ![-1,1], ![-1,-1]]
+
+def interceptX : Matrix (Fin 2) (Fin 1) ℝ := fun _ _ => 1
+
+lemma intercept_injective : Function.Injective interceptX.mulVec := by
+  intro a b h
+  funext j
+  fin_cases j
+  have hj := congrFun h (0 : Fin 2)
+  simpa [interceptX, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] using hj
+
+lemma test_integral (f : Fin 4 → ℝ) :
+    (∫ ω, f ω ∂testMu) = (∑ ω, f ω)/4 := by
+  simp [testMu, integral_smul_measure, integral_count, div_eq_mul_inv, mul_comm]
+
+example :
+    Function.Injective interceptX.mulVec ∧ 0 < (2 : ℕ) ∧
+    (∀ i, Integrable (fun ω => testV ω i) testMu) ∧
+    (∀ i j, Integrable (fun ω => testV ω i * testV ω j) testMu) ∧
+    vectorMean testMu testV = 0 ∧
+    (∀ i j, (∫ ω, testV ω i * testV ω j ∂testMu) =
+      if i = j then (1 : ℝ) else 0) ∧
+    0 ≤ (1 : ℝ) ∧
+    (∀ i : Fin 2, 0 ≤ (![0,1] : Fin 2 → ℝ) i ∧
+      (![0,1] : Fin 2 → ℝ) i ≤ 1) ∧
+    0 < ∑ i : Fin 2, ((![1,2] : Fin 2 → ℝ) i)^2 := by
+  refine ⟨intercept_injective, by norm_num, ?_, ?_, ?_, ?_, by norm_num, ?_, ?_⟩
+  · intro i
+    exact Integrable.of_finite
+  · intro i j
+    exact Integrable.of_finite
+  · funext i
+    fin_cases i <;>
+      norm_num [vectorMean, test_integral, testV, Fin.sum_univ_succ]
+  · intro i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [test_integral, testV, Fin.sum_univ_succ]
+  · intro i
+    fin_cases i <;> norm_num
+  · norm_num [Fin.sum_univ_succ]
+
+/- The same sample has a positive HC0 variance, so the multiplier example
+   is not restricted to interpolation or zero residuals. -/
+example : hc0Covariance interceptX ![0,2] 0 0 = 1/2 := by
+  norm_num [hc0Covariance, olsResidual, olsMap, interceptX,
+    Matrix.inv_def, Matrix.det_fin_one, Matrix.adjugate_fin_one,
+    Matrix.mul_apply, Matrix.mulVec, Matrix.diagonal, dotProduct,
+    Fin.sum_univ_succ]
+
+/- T23: verify the finite certificate from definitions, without the audited
+   theorem or its solution. The positive Gram determinant also witnesses rank. -/
+example : bandDesignGram.det = 5488/25 := by
+  norm_num [bandDesignGram, bandSizes, bandDesignRow, bandTreatments,
+    bandCompositions, Matrix.det_fin_three, Fin.sum_univ_succ]
+
+lemma meat_table : bandSandwichMeat =
+    !![14/25,7/25,7/250; 7/25,7/25,7/250; 7/250,7/250,7/1250] := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [bandSandwichMeat, bandSizes, bandDesignRow, bandTreatments,
+      bandCompositions, bandFit, bandOutcomes, dotProduct, Fin.sum_univ_succ]
+
+example :
+    bandGramInverse * bandDesignGram = 1 ∧
+    bandDesignGram.mulVec bandFit = bandNormalRhs ∧
+    (∀ i, |bandOutcomes i - dotProduct (bandDesignRow i) bandFit| = 1/10) ∧
+    bandGramInverse * bandSandwichMeat * bandGramInverse.transpose = bandHC0 := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [bandGramInverse, bandDesignGram, bandSizes, bandDesignRow,
+        bandTreatments, bandCompositions, Matrix.mul_apply, Fin.sum_univ_succ]
+  · ext j
+    fin_cases j <;>
+      norm_num [bandDesignGram, bandSizes, bandDesignRow, bandTreatments,
+        bandCompositions, bandFit, bandNormalRhs, bandOutcomes,
+        Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+  · intro i
+    fin_cases i <;>
+      norm_num [bandOutcomes, bandDesignRow, bandTreatments,
+        bandCompositions, bandFit, dotProduct, Fin.sum_univ_succ]
+  · ext i j
+    rw [meat_table]
+    fin_cases i <;> fin_cases j <;>
+      norm_num [bandGramInverse, bandHC0,
+        Matrix.mul_apply, Matrix.vecMul, Matrix.transpose_apply, dotProduct, Fin.sum_univ_succ]
+
+/- Check the residual-control quantity independently, including the mean
+   and sample-variance links which the theorem explicitly omits. -/
+example :
+    (∑ i : Fin 6, if bandTreatments i = 0 then
+      bandSizes i * (bandOutcomes i - dotProduct (bandDesignRow i) bandFit)
+      else 0) = 0 ∧
+    (∑ i : Fin 6, if bandTreatments i = 0 then
+      bandSizes i * (bandOutcomes i - dotProduct (bandDesignRow i) bandFit)^2
+      else 0)/27/56 = 1/5400 := by
+  norm_num [bandSizes, bandOutcomes, bandDesignRow, bandTreatments,
+    bandCompositions, bandFit, dotProduct, Fin.sum_univ_succ]
+
+/- T24: n=3, p=0, rows (1,0,0), (1,1,0), (1,1,1).
+   This is an actual full-rank design of the stipulated form. -/
+def recenterX : Matrix (Fin 3) (Fin 3) ℝ := fun i j =>
+  if j.val = 0 then 1 else if j.val = 1 then
+    (![0,1,1] : Fin 3 → ℝ) i else
+    (![0,1,1] : Fin 3 → ℝ) i * (![0,0,1] : Fin 3 → ℝ) i
+
+example : Function.Injective recenterX.mulVec := by
+  intro a b h
+  have h0 := congrFun h (0 : Fin 3)
+  have h1 := congrFun h (1 : Fin 3)
+  have h2 := congrFun h (2 : Fin 3)
+  simp [recenterX, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h0 h1 h2
+  funext i
+  fin_cases i <;> dsimp <;> linarith
+
+example : Function.Injective (Matrix.mulVec
+    ((fun i j => if h0 : j.val = 0 then 1 else if h1 : j.val = 1 then
+      (![0,1,1] : Fin 3 → ℝ) i else if h2 : j.val = 2 then
+      (![0,1,1] : Fin 3 → ℝ) i * (![0,0,1] : Fin 3 → ℝ) i
+      else (fun (_ : Fin 3) (j : Fin 0) => Fin.elim0 j) i
+        ⟨j.val-3, by omega⟩) : Matrix (Fin 3) (Fin (3+0)) ℝ)) := by
+  have heq :
+      ((fun i j => if h0 : j.val = 0 then 1 else if h1 : j.val = 1 then
+        (![0,1,1] : Fin 3 → ℝ) i else if h2 : j.val = 2 then
+        (![0,1,1] : Fin 3 → ℝ) i * (![0,0,1] : Fin 3 → ℝ) i
+        else (fun (_ : Fin 3) (j : Fin 0) => Fin.elim0 j) i
+          ⟨j.val-3, by omega⟩) : Matrix (Fin 3) (Fin (3+0)) ℝ) = recenterX := by
+    ext i j
+    fin_cases j <;> simp [recenterX]
+  rw [heq]
+  intro a b h
+  have h0 := congrFun h (0 : Fin 3)
+  have h1 := congrFun h (1 : Fin 3)
+  have h2 := congrFun h (2 : Fin 3)
+  simp [recenterX, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h0 h1 h2
+  funext i
+  fin_cases i <;> dsimp <;> linarith
+
+example :
+    Matrix.transpose (fun (_ : Fin 1) (_ : Fin 1) => (1 : ℝ)) =
+      (fun (_ : Fin 1) (_ : Fin 1) => (1 : ℝ)) := rfl
+
+/- T19: independently check every assignment has a defined contrast, and
+   that the table and constant-effect claim are genuine. -/
+lemma kept_table (z : Fin 6) : keptSchools4 z =
+    (![({0,1,2,3} : Finset (Fin 4)), {0,1,2,3}, {0,1,2,3},
+      {1,2,3}, {1,2,3}, {1,2,3}]) z := by
+  fin_cases z <;> ext i <;> fin_cases i <;>
+    norm_num [keptSchools4, observedOutcome4, potentialOutcome4,
+      passesConflictThreshold, treatmentPair]
+
+example :
+    (∀ i, potentialOutcome4 i true - potentialOutcome4 i false = 3/100) ∧
+    (∀ z, (keptTreated4 z).card = 2 ∧
+      (keptControl4 z).card = (![2,2,2,1,1,1] : Fin 6 → ℕ) z) ∧
+    (∀ z, selectedContrast4 z =
+      (![-3/100,0,3/100,-3/200,3/100,3/40] : Fin 6 → ℝ) z) ∧
+    (∀ z, selectionWeight4 z = (![1,1,1,2/3,2/3,2/3] : Fin 6 → ℝ) z) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro i
+    simp [potentialOutcome4]
+  · intro z
+    fin_cases z <;>
+      norm_num [keptTreated4, keptControl4, kept_table, observedOutcome4,
+        potentialOutcome4, passesConflictThreshold, treatmentPair,
+        Finset.sdiff_insert, Finset.sdiff_singleton_eq_erase]
+  · intro z
+    fin_cases z <;>
+      norm_num [selectedContrast4, keptTreated4, keptControl4, kept_table,
+        observedOutcome4, potentialOutcome4, passesConflictThreshold,
+        treatmentPair, Finset.sdiff_insert, Finset.sdiff_singleton_eq_erase]
+  · intro z
+    fin_cases z <;>
+      norm_num [selectionWeight4, keptTreated4, keptControl4, kept_table,
+        observedOutcome4, potentialOutcome4, passesConflictThreshold,
+        treatmentPair, Finset.sdiff_insert, Finset.sdiff_singleton_eq_erase]
+
+example :
+    0 < (2 : ℝ) ∧ 0 < (1 : ℝ) ∧
+    (Finset.univ : Finset (Fin 4)).Nonempty ∧
+    0 < (1/100 : ℝ) := by
+  norm_num
+
+/- A nonempty independent product assignment space and its genuine
+   normalization (B=2) for the asymptotic construction. -/
+example : (∑ _z : Fin 2 → Fin 6, (1/6 : ℝ)^2) = 1 := by
+  norm_num
+
+/- T20: a design with two equally likely assignments, two units, and both
+   exposures positive. Fixed inclusion retains both units. -/
+noncomputable def twoDesign : ProbabilityDesign (Fin 2) where
+  mass := fun _ => 1/2
+  positive := by intro z; norm_num
+  total := by norm_num [Fin.sum_univ_succ]
+
+def testD (z i : Fin 2) : Fin 2 := if i = 0 then z else 1-z
+
+example :
+    (∀ d i, 0 < eventProbability twoDesign (fun z => testD z i = d)) ∧
+    0 < (Finset.univ.filter (fun _i : Fin 2 => true = true)).card := by
+  constructor
+  · intro d i
+    fin_cases d <;> fin_cases i <;>
+      norm_num [eventProbability, twoDesign, testD, Fin.sum_univ_succ]
+  · norm_num
+
+example :
+    (∀ i : Fin 2, (∀ _z : Fin 2, (1/10 : ℝ) > 1/50) ∨
+      (∀ _z : Fin 2, (1/10 : ℝ) ≤ 1/50)) := by
+  intro i
+  left
+  intro z
+  norm_num
+
+/- Assignment-dependent inclusion realizes different conditional factors,
+   using positive-probability exposures rather than an undefined conditional. -/
+example :
+    eventProbability twoDesign (fun z => z = (1 : Fin 2) ∧ z = 1) /
+      eventProbability twoDesign (fun z => z = (1 : Fin 2)) = 1 ∧
+    eventProbability twoDesign (fun z => z = (1 : Fin 2) ∧ z = 0) /
+      eventProbability twoDesign (fun z => z = (0 : Fin 2)) = 0 := by
+  norm_num [eventProbability, twoDesign, Fin.sum_univ_succ]

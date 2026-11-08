@@ -1,0 +1,22 @@
+[
+ {
+  "theorem": "SAP.P012a.T7",
+  "target_id": "P012-T7",
+  "round": 3,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P012a/Challenge/Part1.lean:91 and SAP/P012a/Defs/WholeW1.lean:163: “Private degree-one neighbours attain both endpoints simultaneously” overstates attainment. The proposition uses distinct same-trait and opposite-trait assignments for the two endpoints. The compiled datum has p_min=0 and p_max=1/3, so no single compatible graph/trait pair attains both simultaneously. What is simultaneous is attainment of all event bounds within each endpoint construction. The formal statement and the record’s whole decision otherwise match the canonical claim."
+  ]
+ },
+ {
+  "theorem": "SAP.P012a.T10",
+  "target_id": "P012-T10",
+  "round": 3,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P012a/Challenge/Part1.lean:116 and SAP/P012a/Defs/WholeW1.lean:230: “sampled nonrecruitment neighbours” incorrectly calls the selected vertices neighbours. The hypotheses require sampled vertices not joined by a recruitment edge; adjacency is not a hypothesis, and the first constructed graph explicitly omits their edge. This wording understates/misdescribes the domain of the otherwise whole formal statement."
+  ]
+ }
+]

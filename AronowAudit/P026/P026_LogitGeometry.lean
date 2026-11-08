@@ -7,6 +7,17 @@ set_option maxHeartbeats 2000000
 set_option maxRecDepth 4000
 set_option autoImplicit false
 
+lemma sigmoid_pos (t:ℝ):0<sigmoid t:=by
+  have he:=Real.exp_pos t
+  unfold sigmoid
+  have hd:0<1+Real.exp t:=by positivity
+  rw [sub_pos,div_lt_one hd]
+  linarith
+
+lemma sigmoid_lt_one (t:ℝ):sigmoid t<1:=by
+  unfold sigmoid
+  have h:0<1/(1+Real.exp t):=by positivity
+  linarith
 
 lemma sigmoid_eq_exp_div (t:ℝ):sigmoid t=Real.exp t/(1+Real.exp t):=by
   unfold sigmoid
@@ -73,6 +84,9 @@ lemma likelihood_le_term (b:Bool) (β:ℝ×ℝ) (i:Fin 16) (hi:i∈trainingSet b
   rw [sum_neg_distrib] at h
   linarith
 
+lemma likelihood_nonpos (b:Bool) (β:ℝ×ℝ):logitLikelihood b β≤0:=by
+  rw [likelihood_eq]
+  exact sum_nonpos (fun i _=>table_term_nonpos β i)
 
 lemma likelihood_le_success (b:Bool) (β:ℝ×ℝ) (i:Fin 16)
     (hi:i∈trainingSet b) (hy:(tableY i:ℝ)=1):
@@ -298,5 +312,10 @@ lemma logit_exact_moments:
       variance realTableDesign (ht realTableDesign 16 tableLogitResidual tableLogitResidual):=
   real_table_fixed_moments tableLogitResidual
 
+#print axioms likelihood_controls_parameters
+#print axioms logit_maximizer_exists
+#print axioms logit_maximizer_unique
+#print axioms logitCoefficients_maximizer
+#print axioms logit_exact_moments
 end
 end AronowAudit.P026.LogitCompletion

@@ -1,20 +1,23 @@
 import AronowAudit.P006.P006_CounterfactualMetrics
 
 /-!
-# Binary-covariate product experiment for P006-T26 and P006-T27
+# Blueprint (shared nodes): the binary-covariate product experiment for P006-T26 and P006-T27
 
-One unit has state `(x, t) ∈ Bool × Bool` with mass
-`(1/2)·coinMass (π x) t`: a fair covariate and Bernoulli `π x` treatment.
-The `n` units are i.i.d. (`Measure.pi`), with `X_i = (ω i).1`,
-`T_i = (ω i).2`, `Y0 = 0`, `Y1_i = y1 (ω i).1`, `μ0 = 0` and `μ1 = y1`.
-The random baseline `μhat` is an arbitrary parameter. At non-admissible
-policies the same formula uses masses clipped at `0` (`Real.toNNReal`);
-`Standing` makes no claim there. For n=1 the sample space is
-`Fin 1 → Bool × Bool`, with the same law as a single `Bool × Bool` state.
+Wave 1, group P005-P006-P017-P023-P046-P047. This module has no `Target` of its own: it
+defines the explicit finite witness experiment used by both refutations
+(`AverageBestResponseBlueprint`, n = 2; `TTAlignmentBlueprint`, n = 1) and the shared nodes
+that certify the frozen `Standing` predicate for it.
 
-`Sk` denotes a mathematical proposition; `Nk` is either `Sk` itself or an
-implication from other stated propositions to `Sk`. These propositions imply
-`Standing` for the experiment.
+Construction (mapper §§4–5, "binary_policy_unit_law", accepted by both referees): one unit has
+state `(x, t) ∈ Bool × Bool` with mass `(1/2)·coinMass (π x) t` (fair covariate, treatment
+Bernoulli `π x`); `n` units are i.i.d. (`Measure.pi`). `X_i = (ω i).1`, `T_i = (ω i).2`,
+`Y0 = 0`, `Y1_i = y1 (ω i).1`, `μ0 = 0`, `μ1 = y1`, and the random baseline `μhat` is an
+arbitrary parameter. At non-admissible policies the same formula is used with masses clipped at
+`0` (`Real.toNNReal`); `Standing` makes no claim there. The mapper's T27 witness used
+`Ω = Bool × Bool`; here `Ω = Fin 1 → Bool × Bool` (same law), so one construction serves both.
+
+Writers: prove `theorem nk_proof : Nk` in `AronowAudit/P006/Wave1/BinaryExperiment/Nk.lean`.
+`Sk` is the statement of node k; `Nk` is `Sk` with, as hypotheses, the statements it may use.
 -/
 
 set_option autoImplicit false
@@ -60,31 +63,33 @@ def binExp (n : ℕ) (hn : 0 < n) (y1 : Bool → ℝ)
   T _ i ω := (ω i).2
   μhat := μhat
 
-/-! ## Mathematical statements -/
+/-! ## Node statements -/
 
-/-- **Statement S1.** For admissible `π`, the four atom masses
-(1/2)coinMass(π x,t) define a probability law with fair X marginal.
-The nonnegative Bernoulli masses sum to one; summing the Dirac masses
-identifies the atoms and covariate marginal. -/
+/-- **Statement S1** (mapper "binary_policy_unit_law": "the four atom masses (1/2)coinMass(π x)t
+define a probability law with fair X marginal"): for admissible `π` the unit law is a
+probability measure with the stated atoms and fair covariate marginal. Use
+`coin_is_probability`, `Measure.coe_finset_sum`, `Measure.dirac_apply`, `Fintype.sum_prod_type`,
+`Real.toNNReal` of a nonnegative number, and `Measure.map_apply` / `Measure.ext` on `Bool`. -/
 def S1 : Prop :=
   ∀ π : Bool → ℝ, Admissible π →
     IsProbabilityMeasure (unitLaw π) ∧
     (∀ a : Bool × Bool, unitLaw π {a} = ENNReal.ofReal ((1 / 2) * coinMass (π a.1) a.2)) ∧
     (unitLaw π).map Prod.fst = fairLaw
 
-/-- **Statement S2.** On the finite product space, every integral equals
-the explicit weighted sum. All functions are integrable on this finite
-discrete space, and the product singleton masses follow from S1. -/
+/-- **Statement S2** (mapper §4 step 2, "expand the integral under νπ⊗νπ over x0,x1,t0,t1"):
+on the finite product space every integral is the explicit weighted sum. Use `integral_fintype`
+(all functions on a finite discrete space are integrable), `Measure.pi_pi` on singletons
+(`Set.univ_pi_singleton`) and S1. -/
 def S2 : Prop :=
   ∀ (n : ℕ) (π : Bool → ℝ), Admissible π → ∀ f : (Fin n → Bool × Bool) → ℝ,
     ∫ ω, f ω ∂(Measure.pi fun _ : Fin n => unitLaw π) =
       ∑ ω : Fin n → Bool × Bool, (∏ i, (1 / 2) * coinMass (π (ω i).1) (ω i).2) * f ω
 
-/-- **Statement S3.** Given X_i=x, treatment T_i is Bernoulli π(x).
-This gives the conditional expectation of any function of unit i's state
-given `σ(X_i)`. The candidate is a function of `X_i`; every `σ(X_i)`-measurable
-set is a preimage under `X_i`. The coordinate projection reduces the
-set-integral identity to the unit law in S1. -/
+/-- **Statement S3** (mapper §4 step 1, "Given X_i=x ... T_i is Bernoulli π(x)"): conditional
+expectation given `σ(X_i)` of any function of unit `i`'s state. Use
+`ae_eq_condExp_of_forall_setIntegral_eq` (the candidate is a function of `X_i`; every
+`σ(X_i)`-measurable set is `X_i ⁻¹' B`), `measurePreserving_eval` / `Measure.pi_map_eval`
+to reduce to the unit law, and S1. -/
 def S3 : Prop :=
   ∀ (n : ℕ) (hn : 0 < n) (y1 : Bool → ℝ) (μhat : (Bool → ℝ) → (Fin n → Bool × Bool) → Bool → ℝ)
     (π : Bool → ℝ), Admissible π → ∀ (i : Fin n) (g : Bool × Bool → ℝ),
@@ -92,11 +97,14 @@ def S3 : Prop :=
       =ᵐ[(binExp n hn y1 μhat).law π]
       fun ω => ∑ t : Bool, coinMass (π (ω i).1) t * g ((ω i).1, t)
 
-/-- **Statement S4.** The ten non-conditional fields of `Standing`.
-Functions on the finite discrete spaces are measurable and integrable;
-the units are independent and identically distributed under the product law.
-The full (X_i,Y0_i,Y1_i) law is identical across policies because the triple
-is a function of X_i, whose law is fair by S1. -/
+/-- **Statement S4** (mapper §4 step 1, "All functions on these finite discrete spaces are
+measurable ... The units are independent and identically distributed by its definition ...
+the full (X_i,Y0_i,Y1_i) law is identical across policies"): the ten non-conditional fields of
+`Standing`. Measurability is `measurable_of_finite`/`measurable_of_countable` on the discrete
+product; integrability is `Integrable.of_finite`; independence is `iIndepFun_pi` (with the
+`IsProbabilityMeasure` instance from S1); identical distribution and the fixed potential law
+follow from `Measure.pi_map_eval` and S1 (the triple is a function of `X_i` whose law is fair).
+-/
 def S4 : Prop :=
   ∀ (n : ℕ) (hn : 0 < n) (y1 : Bool → ℝ) (μhat : (Bool → ℝ) → (Fin n → Bool × Bool) → Bool → ℝ),
     let E := binExp n hn y1 μhat
@@ -119,12 +127,12 @@ def S4 : Prop :=
       IdentDistrib (fun ω => (E.X i ω, E.Y0 i ω, E.Y1 i ω, E.T π i ω))
         (fun ω => (E.X j ω, E.Y0 j ω, E.Y1 j ω, E.T π j ω)) (E.law π) (E.law π))
 
-/-- **Statement S5.** The three conditional fields of `Standing`:
-the two conditional means, the Bernoulli conditional moment and the
-all-Borel-set ignorability equality. These include π(x)=0 and π(x)=1.
-For a Borel set B, the conditional treatment-weighted indicator is
-π(x)1{(0,μ1(x))∈B}. Each identity follows from S3 with an explicit function
-of the unit's state and the Bernoulli mass identity. -/
+/-- **Statement S5** (mapper §4 step 1, "Consequently the two conditional means, the Bernoulli
+conditional moment and the all-Borel-set ignorability equality in Standing hold, including when
+π(x)=0 or 1. Explicitly, for a Borel B the conditional left side is π(x)1{(0,μ1(x))∈B}"): the
+three conditional fields of `Standing`. Each is S3 with an explicit `g` (`g = 0`,
+`g (x,t) = y1 x`, `g (x,t) = bit t`, `g (x,t) = bit t · 1_B(0, y1 x)`, `g (x,t) = 1_B(0,y1 x)`)
+followed by pointwise arithmetic (`coin_is_probability`). -/
 def S5 : Prop :=
   ∀ (n : ℕ) (hn : 0 < n) (y1 : Bool → ℝ) (μhat : (Bool → ℝ) → (Fin n → Bool × Bool) → Bool → ℝ),
     let E := binExp n hn y1 μhat
@@ -141,17 +149,22 @@ def S5 : Prop :=
           (E.law π)[(fun η => B.indicator (fun _ => (1 : ℝ))
             (E.Y0 i η, E.Y1 i η)) | E.covariateSigma i] ω))
 
-/-! ## Implications between statements -/
+/-! ## Nodes (`Nk` = statements it may use → `Sk`) -/
 
+/-- Node N1 = S1. -/
 def N1 : Prop := S1
+/-- Node N2: may use S1. -/
 def N2 : Prop := S1 → S2
+/-- Node N3: may use S1. -/
 def N3 : Prop := S1 → S3
+/-- Node N4: may use S1. -/
 def N4 : Prop := S1 → S4
+/-- Node N5: may use S1, S3. -/
 def N5 : Prop := S1 → S3 → S5
 
 /-! ## Assembly of `Standing` -/
 
-/-- **Assembly.** The stated implications imply `Standing` for every
+/-- **Shared assembly.** The nodes certify the frozen `Standing` predicate for every witness
 experiment `binExp n hn y1 μhat`. -/
 theorem standing_of (h1 : N1) (h3 : N3) (h4 : N4) (h5 : N5) (n : ℕ) (hn : 0 < n)
     (y1 : Bool → ℝ) (μhat : (Bool → ℝ) → (Fin n → Bool × Bool) → Bool → ℝ) :
@@ -172,6 +185,14 @@ theorem standing_of (h1 : N1) (h3 : N3) (h4 : N4) (h5 : N5) (n : ℕ) (hn : 0 < 
       conditional_means := c1
       bernoulli := c2
       ignorability := c3 }
+
+/-- Sanity checks on the construction. -/
+example (n : ℕ) (hn : 0 < n) (y1 : Bool → ℝ) (μhat : (Bool → ℝ) → (Fin n → Bool × Bool) → Bool → ℝ)
+    (π : Bool → ℝ) (i : Fin n) (ω : Fin n → Bool × Bool) :
+    (binExp n hn y1 μhat).observed π ω i = if (ω i).2 then y1 (ω i).1 else 0 := rfl
+example (n : ℕ) (hn : 0 < n) (y1 : Bool → ℝ) (μhat : (Bool → ℝ) → (Fin n → Bool × Bool) → Bool → ℝ) :
+    (binExp n hn y1 μhat).τ = fun x => y1 x - 0 := rfl
+example (π : Bool → ℝ) : IsFiniteMeasure (unitLaw π) := inferInstance
 
 end
 

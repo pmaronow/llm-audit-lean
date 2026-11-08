@@ -1,0 +1,74 @@
+[
+ {
+  "target_id": "P011-T29",
+  "decision": "whole",
+  "theorem": "SAP.P011c.T29",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.ols_linear_unbiased",
+   "AronowAudit.P011.linear_variance_identity"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011c.T29Statement"
+ },
+ {
+  "target_id": "P011-T30",
+  "decision": "restricted",
+  "theorem": "SAP.P011c.T30",
+  "restriction": "Retain only C1's optimization encoding in program (3.6)'s unordered-edge formulation: exactly the same maximizers for the degree-constrained normalized variance objective and the two-endpoint incidence 0/1 knapsack with the same mandatory edges and empirical real edge profits. Require positive sample size for the normalized objective. Omit C2 (NP-hardness or its correction), C3 (PTAS), running-time and decision-variable-count assertions. No algorithm or transfer of hardness from general knapsack is asserted.",
+  "rows_used": [
+   "AronowAudit.P011.knapsack_encoding"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011c.T30Statement",
+  "bridge": "SAP.P011c.Bridge.incidenceFeasible_iff",
+  "glue": "Instantiate the credited feasibility equivalence with the specified forced edges and degree caps and unused rational weight zero. Rewrite feasibility for each candidate and use the positive affine identity Q(S)=(sum_i r_i^2+2*p(S))/n^2 to equate all maximizers, including ties."
+ },
+ {
+  "target_id": "P011-T31",
+  "decision": "refuted",
+  "theorem": "SAP.P011c.T31",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.Wave1.printed_proposition_one_refuted"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011c.T31Statement"
+ },
+ {
+  "target_id": "P011-T32",
+  "decision": "refuted",
+  "theorem": "SAP.P011c.T32",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.Wave1.printed_corollary_one_refuted"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P011.underestimation_event_inclusion",
+    "reason": "A valid finite proof component, not needed to transport the negation of the universal printed guarantee."
+   }
+  ],
+  "statement_definition": "SAP.P011c.T32Statement"
+ },
+ {
+  "target_id": "P011-T33",
+  "decision": "restricted",
+  "theorem": "SAP.P011c.T33",
+  "restriction": "Retain the negation of the universal coverage guarantee only under the explicit extension that negative-estimate realizations, whose printed real intervals are undefined, count as uncovered. The existing path witness has n*V1 tending to -11/15 and uses this convention. It does not refute the guarantee on its real-square-root domain or establish undercoverage when V1 is nonnegative almost surely; those conclusions are not claimed. The Lean statement and existing proof are unchanged.",
+  "rows_used": [
+   "AronowAudit.P011.Wave1.printed_corollary_three_refuted"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P011.interval_containment",
+    "reason": "A finite interval comparison, not needed separately for the retained target conclusion."
+   },
+   {
+    "lean_name": "AronowAudit.P011.printed_coverage_eq_of_nonnegative",
+    "reason": "A finite nonnegative-estimate comparison, not needed separately for this target conclusion."
+   }
+  ],
+  "statement_definition": "SAP.P011c.T33Statement"
+ }
+]

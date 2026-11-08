@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P020.T11",
+    "target_id": "P020-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Canonical equation (7), clause (a), is for general positive-denominator random variables with the required expectations and covariance. Part4.lean:62 restricts it to FiniteLaw, hence finite support. The exact expectation and bias in clause (b), equation (8), are complete: the uniform fixed-arm assignment law, sums of potential totals, and both arm covariance terms agree with the canonical statement. The current Challenge docstring explicitly discloses the precise omission. No faulty definition, zero denominator on the support, or vacuous premise was found."
+  },
+  {
+    "theorem": "SAP.P020.T12",
+    "target_id": "P020-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both potential-total unbiasedness assertions and ATE unbiasedness, the individual affine-sum identity, exact equation (15), assignmentwise failure when the shift and arm mean-size difference are nonzero, and an admissible existential failure are present. affinePopulation transforms totals by n_j*b0+b1*y_a(j), exactly as individual affine transformation requires; the selected potential total is the observed total on its arm under SUTVA. No sharp null, equal-size assumption, or condition beyond the standing design is imposed. The docstring correctly describes an unnamed existential witness."
+  },
+  {
+    "theorem": "SAP.P020.T13",
+    "target_id": "P020-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "All six canonical unbiasedness equations for fixed common size coefficients and fixed finite covariate coefficients are present. WholeW3 also states the factorization and zero expectations in (22) for the randomly selected arm mean, the zero expectation of the combined covariate adjustment, and equality with both HT arm expectations. This is the selected-cluster averaging argument used by the estimator sums; there is no fixed-label design-expectation refutation. Every fixed cluster covariate total can be represented by individual fixed covariates since n_j>0. No positivity of size or covariate variance is required; zero covariates are included."
+  },
+  {
+    "theorem": "SAP.P020.T14",
+    "target_id": "P020-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both arm mean/variance expansions, the actual design-variance scaling and complete substituted quadratic, actual first and second derivatives, all first-order and coefficient rearrangements, unique minima, successive efficiency comparisons and both sign intervals are stated. Coefficient divisions and unique stationary-minimum claims are guarded by positive/nonzero size variance, the domain of the printed coefficient fractions and the printed positive-second-derivative optimization step. This domain is identified in the statement itself rather than supplied by audit history. Expansions and derivatives hold without that guard, and equal cluster sizes explicitly give HT for every k. Covariance argument reversal is harmless by commutativity of the finite product defining covariance. No derivative default or ratio-at-zero is used."
+  },
+  {
+    "theorem": "SAP.P020.T15",
+    "target_id": "P020-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical clauses (a)-(f) are covered: exact total variance/covariance components and ATE variance; the rearranged expression (17); the nonpositive remainder and upper bound; unbiased estimation of that bound and conservativeness for at least two clusters per arm; fixed-k Des Raj conservativeness; and independently randomized block unbiasedness, variance decomposition, and plug-in conservativeness. blockLaw is uniform on the entire Cartesian product of admissible assignments, so it implements the printed independent block design. Per-block conservativeness is the premise of the plug-in result, not an assumption of its global conclusion. All normalizations match divisor-M population variance."
+  }
+]

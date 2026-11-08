@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P006a.T6",
+    "target_id": "P006-T6",
+    "my_reading_vs_claim": "broader",
+    "reason": "Every canonical clause is covered: the ordinary L1 treated-residual assumption, TT and welfare identities, equality of argmax sets for every feasible class, zero regret for every best response, the unconstrained positive-effect rule, and independent jointly measurable pointwise-unbiased estimation as a sufficient implementation. PolicyDesign is imposed only on feasible policies and does not require the standing model's cross-unit independence or cross-policy invariance of the potential-outcome joint law. Those omissions give a correct stronger theorem: the shared covariate law and conditional means suffice for the linear TT expectation. They introduce no restriction on the canonical model. The selected conditional-mean wording is an equivalent specification of the imposed moment, not a separate claimed conclusion. No untreated-estimator L1 condition is added. scratch/Nonvacuity.lean compiled a nonempty model satisfying both branches, including all admissible policies and a genuine independent-estimator representation."
+  },
+  {
+    "theorem": "SAP.P006a.T7",
+    "target_id": "P006-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "The hypotheses match the corrected claim: the entire measurable [0,1]-valued policy class, fixed strictly positive measurable g, the treated zero conditional moment on its ordinary L1 domain, integrable g*tau, and each weighted reward summand integrable. Standing is applied to the zero-estimator update and adds no actual estimator integrability on untreated observations. The theorem includes all three conclusions, with every maximizer characterized almost everywhere, optimal welfare and zero regret. Definitions of weighted TT, welfare and attained regret have the claimed meanings. scratch/Nonvacuity.lean compiled all hypotheses simultaneously for a Bernoulli experiment with treatment effect one and g=1."
+  },
+  {
+    "theorem": "SAP.P006a.T8",
+    "target_id": "P006-T8",
+    "my_reading_vs_claim": "broader",
+    "reason": "The seven conjuncts cover all main clauses and every qualification in definitions_needed: selected-mean equivalence; the independent pointwise-unbiased sufficient implementation; the sum form of Lemma 2 and the exact criterion for its fixed-unit n-times form; conditional independence implying the weighted coin moment, and its factorization equivalence when H is L1; and Proposition 10 both with a common joint evaluation law and in the derived independent auxiliary-data setting. No common-law or untreated-moment hypothesis is imposed on the main information bound, and all policy moments are on the feasible set. PolicyDesign omits unnecessary cross-unit independence and cross-policy outcome-law invariance while retaining the shared covariate law and conditional means, so several branches are valid generalizations of the standing setting. Standard Borel conditions appear only for conditional independence and are allowed usual measure-theoretic conditions. scratch/Nonvacuity.lean compiled direct instances of every branch's hypotheses, a nonempty feasible set, and actual reward/welfare maximizers."
+  },
+  {
+    "theorem": "SAP.P006a.T9",
+    "target_id": "P006-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The positive-effect subset, its sum, whole-sample mean and beneficiary mean render the canonical fitted-sample quantities exactly. The general identity and strict inequality match (a); the two sets of rational interval conclusions and prose-impossibility bounds match (b)-(c); the treatment-rate bounds match (d); and the four open three-decimal intervals encode the numerical corrections in (e). The input utility intervals are hypotheses in the canonical assertion as well as in Lean; no claim of re-running an empirical fit is made. Positive cardinalities and positive rates exclude zero-division defaults. scratch/Arithmetic.lean compiled a fitted-effects witness [1,0] and exact rational values satisfying all numerical premise sets and all corresponding intervals."
+  },
+  {
+    "theorem": "SAP.P006a.T10",
+    "target_id": "P006-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The printed reading and each witness condition were written and checked in REPORT.md before accepting the refutation. The canonical assertion permits an arbitrary feasible set; it does not require zero treatment to be feasible. Unit is a faithful singleton realization of the constant covariate 0. The one-unit ATO reward has the required invariance for all admissible policies and all finite-moment probability laws, the always-treated singleton satisfies nondegeneracy, and its regret is identically zero for every real welfare objective, hence under every finite-mean outcome distribution. The B>0 Dirac family also verifies welfare -B, optimal welfare -B, failure of zero-treatment feasibility, and failure of the printed lower bound 0>=B. These prove the canonical counterexample target (canonical_claim.kind=counterexample); the witness contradicts the explicitly quoted printed Theorem 4 under its own conditions. scratch/Arithmetic.lean independently compiled the arbitrary-B witness, the nondegeneracy certificate, and the general expectation/invariance identities without invoking the Challenge theorem."
+  }
+]

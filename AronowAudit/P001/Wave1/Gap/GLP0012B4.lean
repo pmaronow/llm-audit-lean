@@ -2,9 +2,11 @@ import AronowAudit.P001.Wave1.PdaMeanNotIdentified
 
 /-! # P001-T3: exact extrapolation witness
 
-The witness has a fixed product law with bounded support, zero mean and CEF,
-and a family of C¹ CEF extensions with arbitrary slopes at the covariate mean.
-The bump vanishes wherever the covariate density is positive.
+The existing `pda_at_mean_not_identified` proves the fixed product law,
+its densities and bounded support, the zero mean and CEF, and the entire
+family of C¹ CEF extensions with arbitrary slopes. Reuse that proved
+witness, reorder its conjuncts, and supply the explicit positive-density
+vanishing and constant-derivative clauses of the held statement.
 -/
 
 namespace AronowAudit.P001.Wave1
@@ -21,7 +23,7 @@ lemma pda_extrapolation_witness_bump_zero_on_support (x : ℝ) (hx : 0 < gapPDF 
   have hs := (PdaMeanNotIdentified.n1_proof.2.2.2.1 x hx).1
   simp [pdaBump, not_lt.mpr hs]
 
-/-- The fixed-law PDA witness with arbitrary CEF slopes at the covariate mean. -/
+/-- The complete fixed-law PDA witness, with exactly the held declaration's type. -/
 theorem pda_extrapolation_witness_proof :
   IsProbabilityMeasure gapJointLaw ∧
   HasJointPDF gapJointLaw (fun xy => gapPDF xy.1 *
@@ -42,6 +44,8 @@ theorem pda_extrapolation_witness_proof :
   exact ⟨hprob, hjoint, hprod, hpdf, hsnd, hbounds, hmean, hgap,
     hcef, hC1, pda_extrapolation_witness_bump_zero_on_support,
     (hasDerivAt_const (0 : ℝ) (0 : ℝ)).deriv, hfamily⟩
+
+example : type_of% @AronowAudit.P001.pda_extrapolation_witness := pda_extrapolation_witness_proof
 
 end
 end AronowAudit.P001.Wave1

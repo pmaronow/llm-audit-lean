@@ -1,0 +1,134 @@
+import SAP.P044.Challenge
+
+open SAP.P044 MeasureTheory ProbabilityTheory
+open scoped BigOperators unitInterval
+
+set_option maxRecDepth 20000
+set_option maxHeartbeats 1000000
+
+-- T6: a nonempty loopless network without isolates satisfies all network guards.
+example : ∃ (N : ℕ) (A : Adjacency N), 0 < N ∧
+    (∀ i, A i i = false) ∧ (∀ i, 1 ≤ degree A i) := by
+  refine ⟨3, fun i j => decide (i ≠ j), by norm_num, ?_, ?_⟩
+  · simp
+  · decide
+
+-- The actual independent Gaussian population is a probability law.
+example : IsProbabilityMeasure (normalPopulation 3) := by
+  unfold normalPopulation normalPair
+  infer_instance
+
+-- The comparison clause's HasLaw assumptions also have a concrete joint model.
+example : ∃ (P : Measure ℝ) (_hP : IsProbabilityMeasure P)
+    (B : ℝ → Fin 3 → ℝ), ∀ i,
+    HasLaw (fun g => B g i) halfNormalLaw P := by
+  refine ⟨gaussianReal 0 1, inferInstance, fun g _ => |g|, ?_⟩
+  intro i
+  exact hasLaw_map measurable_abs.aemeasurable
+
+-- T7: the supplied data really are a uniform exhaustive eight-profile design.
+example : (∑ _r : Fin 8, (1/8 : ℚ)) = 1 := by norm_num
+example : Function.Injective cycle8Assignments := by decide
+example : (∀ i, cycle8Adj i i = false) ∧
+    (∀ i j, cycle8Adj i j = cycle8Adj j i) ∧
+    (∀ i, ∃ j, cycle8Adj i j = true) := by decide
+example : (∀ r, (Finset.univ.filter (fun i => cycle8Assignments r i)).card = 3) ∧
+    (∀ r a, 0 < (Finset.univ.filter (fun i =>
+      exposure cycle8Adj (cycle8Assignments r) i = a)).card) := by decide
+example : ∀ i a, 0 < marginal (fun _ : Fin 8 => (1/8 : ℚ))
+    (fun r => exposure cycle8Adj (cycle8Assignments r)) i a := by
+  have hc : ∀ i a, 0 < exposureCount
+      (fun r => exposure cycle8Adj (cycle8Assignments r)) i a := by decide
+  intro i a
+  obtain ⟨r, hr⟩ := Finset.card_pos.mp (hc i a)
+  unfold marginal
+  refine Finset.sum_pos' ?_ ?_
+  · intro s hs
+    split_ifs <;> norm_num
+  · refine ⟨r, Finset.mem_univ r, ?_⟩
+    rw [if_pos (Finset.mem_filter.mp hr).2]
+    norm_num
+
+-- T8: a two-profile, two-unit, two-label design with positive fixed and exact weights.
+example : ∃ (f : Fin 2 → Fin 2 → Bool) (w : Fin 2 → Bool → ℝ),
+    Function.Injective f ∧ (∀ i, 0 < w i true) ∧
+    (∀ i, 0 < marginal (fun _ : Fin 2 => (1/2 : ℝ)) f i true) ∧
+    2 ≤ Fintype.card Bool ∧ 0 < (2 : ℕ) := by
+  refine ⟨fun r i => decide (r = i), fun _ _ => 1/2, ?_, ?_, ?_, ?_, by norm_num⟩
+  · decide
+  · norm_num
+  · intro i
+    fin_cases i <;> norm_num [marginal, Fin.sum_univ_succ]
+  · decide
+
+noncomputable def reviewHalf : unitInterval := ⟨1/2, by constructor <;> norm_num⟩
+
+-- A genuine nondegenerate random-bank model, R=3 and p=1/2, with independence.
+example : ∃ (μ : Measure (Bool × ℕ)) (_hμ : IsProbabilityMeasure μ)
+    (D : Bool × ℕ → Bool) (C : Bool × ℕ → ℕ),
+    HasLaw D (bernoulliMeasure true false reviewHalf) μ ∧
+    HasLaw C (binomial 3 reviewHalf) μ ∧ IndepFun D C μ ∧
+    0 < (reviewHalf : ℝ) ∧ (reviewHalf : ℝ) < 1 := by
+  let μ := (bernoulliMeasure true false reviewHalf).prod (binomial 3 reviewHalf)
+  refine ⟨μ, inferInstance, Prod.fst, Prod.snd, ?_, ?_, ?_, ?_, ?_⟩
+  · exact ⟨measurable_fst.aemeasurable, by simp [μ]⟩
+  · exact ⟨measurable_snd.aemeasurable, by simp [μ]⟩
+  · exact indepFun_prod (μ := bernoulliMeasure true false reviewHalf)
+      (ν := binomial 3 reviewHalf) measurable_id measurable_id
+  · norm_num [reviewHalf]
+  · norm_num [reviewHalf]
+
+-- T9: no-interference schedules exist on a nonempty population.
+example : NoInterference (fun (i : Fin 2) z => if z i then (1 : ℝ) else 0) := by
+  intro i a u v
+  simp [insertOwn]
+
+-- Interference also has an actual witness with fixed own treatment.
+example : Interference (fun (_i : Fin 2) z => if z 1 then (1 : ℝ) else 0) := by
+  refine ⟨0, false, (fun _ => false), (fun _ => true), ?_⟩
+  norm_num [insertOwn]
+
+-- The zero diagonal and profile-agreement guards hold simultaneously.
+example : ∃ (A : Adjacency 2) (i : Fin 2) (z z' : Assignment 2),
+    A i i = false ∧ (∀ j, j ≠ i → z j = z' j) ∧ z i ≠ z' i := by
+  refine ⟨fun i j => decide (i ≠ j), 0, ![false,true], ![true,true], ?_, ?_, ?_⟩
+  · decide
+  · decide
+  · decide
+
+example (z : Assignment 1) : w1InsertOwn (0 : Fin 1) (z 0)
+    (w1DeleteOwn 0 z) = z := by
+  funext i
+  fin_cases i
+  rfl
+
+-- T10: a deterministic two-vertex, one-community law meets all law hypotheses.
+noncomputable def reviewMass : FiniteDesign (Fin 1) where
+  mass := fun _ => 1
+  nonneg := by simp
+  total := by simp
+
+def reviewGraph : SimpleGraph (Fin 2) := ⊤
+
+instance : DecidableRel reviewGraph.Adj := by
+  unfold reviewGraph
+  infer_instance
+
+example : (0 < (2 : ℕ)) ∧
+    (∀ (_ω : Fin 1) (i : Fin 2), 0 < reviewGraph.degree i) ∧
+    (∀ (_ω : Fin 1) (i j : Fin 2), reviewGraph.Adj i j →
+      (0 : Fin 1) = 0) ∧
+    (∀ i j : Fin 2, (∑ ω : Fin 1,
+      if reviewGraph.Adj i j ∧ (0 : Fin 1) ≠ 0 then reviewMass.mass ω else 0) = 0) := by
+  refine ⟨by norm_num, ?_, by simp, by simp⟩
+  intro ω i
+  change 0 < (⊤ : SimpleGraph (Fin 2)).degree i
+  rw [SimpleGraph.degree, SimpleGraph.neighborFinset_top]
+  rw [Finset.card_compl]
+  simp
+
+-- The probability-zero algebra also admits different communities and positive parameters.
+example : ∃ (c : Fin 2 → Fin 2) (i j : Fin 2),
+    c i ≠ c j ∧ blockEdgeProbability 1 (fun _ => 1) c i j = 0 := by
+  refine ⟨id, 0, 1, by decide, ?_⟩
+  norm_num [blockEdgeProbability]

@@ -1,0 +1,24 @@
+[
+ {
+  "theorem": "SAP.P009a.T11",
+  "target_id": "P009-T11",
+  "round": 3,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P009a/Defs/WholeW2.lean:162: T11WholeStatement only negates a universal eventual-dominance implication. The canonical statement also asserts the specified m-block fair-Bernoulli witness, its full-cube [0,2] bounds and all moment orders, exact interference/dependence graph, C1=2, d_AVG=m, tau_MSQ=1, B1=2/m^2 and B2=0, and the extension to every n>=4 with its exact formulas. None of these witness clauses occurs in this statement. wholeStarSequence at line 147 is not referenced by the statement or its closure, so its existence elsewhere does not state those clauses.",
+   "record.json:4: The decision is refuted, with no restriction declared at record.json:6. Relative to the canonical target, which itself asserts the counterexample and the specified witness facts, this theorem supports only the refutation component; it does not contradict the canonical assertion. It should be restricted unless the omitted canonical clauses are added, in which case it should be whole.",
+   "SAP/P009a/Challenge/Part2.lean:25: \"The printed claim is false\" overstates what the theorem establishes about the dominance guidance. The formal assertion refutes the eventually-largest-in-magnitude reading, leaving the printed big-O bounds and Proposition 7 intact. The docstring must identify that reading explicitly. The same wording is repeated in SAP/P009a/Defs/WholeW2.lean:158."
+  ]
+ },
+ {
+  "theorem": "SAP.P009a.T13",
+  "target_id": "P009-T13",
+  "round": 3,
+  "verdict": "label_wrong",
+  "severity": "minor",
+  "issues": [
+   "record.json:33: The decision refuted is relative to the wrong assertion. P009-T13 canonically asserts the stated three-unit cancellation counterexample to the quoted direct-interference implication. T13WholeStatement at SAP/P009a/Defs/WholeW2.lean:224 proves that counterexample in full, including the exact witness, bounds and zero expectations; it does not contradict the canonical counterexample assertion. Under the required canonical-claim-relative labelling rule the decision is whole."
+  ]
+ }
+]

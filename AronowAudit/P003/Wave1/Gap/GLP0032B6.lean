@@ -11,14 +11,15 @@ import Mathlib.Probability.ProbabilityMassFunction.Integrals
 import Mathlib.MeasureTheory.Integral.Pi
 
 /-!
-P003-T7: corrected Monte Carlo interval inclusions.
+Record 11 (P003-T7): corrected Monte Carlo interval inclusions.
 
-Finite-product freshness uses an explicit nonnegative error bound.
+Finite-product freshness uses the referees' explicit nonnegative error bound.
 The actual selected-test union combines iid Hoeffding bounds, chronological
 causality and the two-endpoint budget. A discrete second-difference comparison
 and the proved discordant shape theorem establish fixed-effect candidate
 reduction, including the concordant-base exception. One-sided search invariants,
-outcome reflection and averaging over the observed assignment establish the inclusions.
+outcome reflection and averaging over the observed assignment finish the exact
+frozen statement.
 -/
 
 namespace AronowAudit.P003.Wave1
@@ -29,7 +30,7 @@ attribute [local instance 0] Classical.propDecidable
 set_option maxRecDepth 100000
 set_option maxHeartbeats 1200000
 
-/-! Finite averaging and finite-product freshness with a nonnegative error bound. -/
+/-! Finite averaging and the nonnegative-error version of S02. -/
 
 noncomputable def GLP0032B6_avg {A : Type*} [Fintype A] (f : A → ℝ) : ℝ :=
   (∑ a, f a) / Fintype.card A
@@ -132,8 +133,8 @@ lemma GLP0032B6_fresh_slot {B T : Type*} [Fintype B] [Nonempty B]
         simpa [hs, e, Equiv.funSplitAt, Equiv.piSplitAt, ← GLP0032B6_prob_avg] using hbad (e.symm (b₀,q)) t hs
     _ = δ := GLP0032B6_avg_const δ
 
-/-- Finite-product freshness with explicit `0 ≤ δ` and no upper bound on δ.
-Inactive slots are permitted. -/
+/-- S02 with the referees' correction: `0 ≤ δ` is explicit, and there is
+no upper bound on δ. Inactive slots are permitted. -/
 lemma GLP0032B6_finite_product_freshness {B T : Type*} [Fintype B] [Nonempty B]
     (L D : ℕ) (hDL : D ≤ L)
     (select : Fin D → (Fin L → B) → Option T) (bad : T → B → Prop)
@@ -181,7 +182,7 @@ lemma GLP0032B6_uniform_pi {A : Type*} [Fintype A] [Nonempty A]
     PMF.uniformOfFintype_apply, ENNReal.inv_pow]
 
 /-- Hoeffding for the mean of iid bounded finite observations, with the exact
-constant `exp (-2*K*ε^2)`. -/
+constant `exp (-2*K*ε^2)` used by the frozen theorem. -/
 lemma GLP0032B6_finite_hoeffding_upper {A : Type*} [Fintype A] [Nonempty A]
     (f : A → ℝ) (hf : ∀ a, f a ∈ Set.Icc (0 : ℝ) 1)
     (K : ℕ) (hK : 0 < K) (ε : ℝ) (hε : 0 ≤ ε) :
@@ -255,7 +256,8 @@ lemma GLP0032B6_finite_hoeffding_lower {A : Type*} [Fintype A] [Nonempty A]
     ring
   simpa only [heq] using h
 
-/-- The canonical assignment indicators have the p-value as their mean. -/
+/-- The actual canonical assignment indicators have the implemented p-value
+as their mean. No admitted sampling-law theorem is used. -/
 lemma GLP0032B6_tail_probability (v o : Counts) :
     uniformProb (fun z : Assignment v.total (o.a+o.b) =>
       (deviationNumerator v (canonicalObserved v z.val) (o.a+o.b)).natAbs ≥
@@ -757,8 +759,7 @@ lemma GLP0032B6_selected_possible (o : Counts) (r s : Counts → ℕ → Bool)
     exact ⟨Or.inr rfl,GLP0032B6_peek_possible (complementObserved o) s _ _ w hw⟩
 
 /-- Either dangerous-error union is bounded over the actual selected tests.
-The exponential supplies the nonnegative bound required by
-`GLP0032B6_finite_product_freshness`. -/
+The exponential supplies the explicit nonnegative bound required by S02. -/
 lemma GLP0032B6_actual_test_error_union {n m K : ℕ} (o : Counts) (α ε : ℝ)
     (ho : o.total = n) (hm : o.a+o.b = m)
     (hmn : m ≤ n) (hK : 0 < K) (hε : 0 ≤ ε) :
@@ -1652,5 +1653,7 @@ theorem corrected_monte_inclusions_proof (v : Counts) (m K : ℕ) (α ε : ℝ)
     simp only [not_not] at hc
     rw [hc]
     linarith
+
+example : type_of% @AronowAudit.P003.corrected_monte_inclusions := corrected_monte_inclusions_proof
 
 end AronowAudit.P003.Wave1

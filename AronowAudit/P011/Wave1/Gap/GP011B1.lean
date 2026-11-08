@@ -3,7 +3,10 @@ import AronowAudit.P011.P011_SampleCompletion
 import AronowAudit.P011.P011_SpectralCompletion
 import AronowAudit.P011.P011_StarCompletion
 
-
+/-!
+Draft dd-GP011B1. No Lean executable was run while preparing this file.
+The held declarations are used only in the three `type_of%` checks.
+-/
 namespace AronowAudit.P011.Wave1
 open MeasureTheory ProbabilityTheory Filter Finset
 open scoped BigOperators Topology Classical Matrix NNReal ENNReal
@@ -343,7 +346,10 @@ theorem alternating_counterexample_proof :
     rw [abs_of_neg (by linarith : t11_D k y-1 < 0)]
     linarith
 
-/- P011-T13: small exact matching certificates. -/
+example : type_of% @AronowAudit.P011.alternating_counterexample := alternating_counterexample_proof
+
+
+/- P011-T13: small exact certificates, independent of matching_reduction. -/
 private def t13_e01 : Edge 4 := ⟨(0,1), by decide⟩
 private def t13_e02 : Edge 4 := ⟨(0,2), by decide⟩
 private def t13_e03 : Edge 4 := ⟨(0,3), by decide⟩
@@ -687,6 +693,9 @@ theorem matching_exact_instances_proof :
         fun J hJ => by rw [t13_Jfalse_weight]; exact hu J hJ⟩
     · exact ⟨t13_Jtrue,t13_Jtrue_matching,t13_Jtrue_weight,
         fun J hJ => by rw [t13_Jtrue_weight]; exact hu J hJ⟩
+
+example : type_of% @AronowAudit.P011.matching_exact_instances := matching_exact_instances_proof
+
 
 /- P011-T6: actual spectral clipping on independent cycle blocks. -/
 private lemma t6_blockIndex (m : ℕ) (b : Fin m) (r : Fin 4) :
@@ -1108,6 +1117,8 @@ theorem positive_part_cycle_claims_proof :
   intro k
   simpa only [cycleFamily,Nat.cast_mul,Nat.cast_ofNat,Nat.cast_add,Nat.cast_one] using
     t6_expected (k+1) (by omega)
+
+example : type_of% @AronowAudit.P011.positive_part_cycle_claims := positive_part_cycle_claims_proof
 
 end
 end AronowAudit.P011.Wave1

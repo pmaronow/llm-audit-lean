@@ -12,7 +12,7 @@ universe u
 
 noncomputable section
 
-/-- Scalar record coordinates are square integrable under the repeated sample law. -/
+/-- Scalar record coordinates have every finite moment. -/
 theorem record_memLp {U : Type u} [MeasurableSpace U] {k N : ℕ}
     (R : RepeatedKernel U k) (hR : RepeatedStanding R) (hreg : RecordRegular R)
     (d : Dyad N) (t : Fin (R.T N d)) (a : Fin k) :

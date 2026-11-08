@@ -1,12 +1,10 @@
 import Mathlib
 
 /-!
-Formalization of Green, McGrath and Aronow, *Field Experiments and the Study of
-Voter Turnout*, printed pp. 27-48 (2013).
-The paper has no displayed mathematics. The definitions below express
-precision-weighted pooling, shared-control counterexamples, and corrected
-covariance formulas, together with finite-population randomization and
-one-sided contact effects.
+Formal audit of Green, McGrath and Aronow, *Field Experiments and the Study of
+Voter Turnout*, printed pp. 27-48 (2013, staged corrected edition).
+The paper has no displayed mathematics. Formulas below are the readings fixed
+in targets.json, or the validators' explicitly identified repairs/witnesses.
 -/
 
 namespace AronowAudit.P042
@@ -22,32 +20,33 @@ set_option maxRecDepth 100000
 set_option maxHeartbeats 4000000
 
 /-- "Weighting each study by the precision with which it estimates the treatment
-effect" (p. 31). Here v is the fixed marginal variance and w = 1/v;
+effect" (p. 31). Audit notation: v is the fixed marginal variance and w = 1/v;
 the printed article supplies no formula. -/
 def precisionWeight {ι : Type*} (v : ι → ℝ) (j : ι) : ℝ := (v j)⁻¹
 
-/-- Total inverse-marginal-variance weight W, representing precision weighting on p. 31. -/
+/-- Total inverse-marginal-variance weight W (audit reading of p. 31). -/
 def totalWeight {ι : Type*} [Fintype ι] (v : ι → ℝ) : ℝ := ∑ j, precisionWeight v j
 
-/-- Normalized fixed precision weights a_j = w_j/W for the pooling on p. 31. -/
+/-- Normalized fixed precision weights a_j = w_j/W (audit reading of p. 31). -/
 def normalizedWeight {ι : Type*} [Fintype ι] (v : ι → ℝ) (j : ι) : ℝ :=
   precisionWeight v j / totalWeight v
 
-/-- "Pools the experiments in a given domain" (p. 31): the pooled effect is
-represented as the weighted sum of the random effect estimates. -/
+/-- "Pools the experiments in a given domain" (p. 31): the audit represents the
+pooled effect as the weighted sum of the random effect estimates. -/
 def pooled {ι Ω : Type*} [Fintype ι] (a : ι → ℝ) (D : ι → Ω → ℝ) : Ω → ℝ :=
   fun ω => ∑ j, a j * D j ω
 
-/-- Diagonal-only variance corresponding to the printed intervals on pp. 31-33. -/
+/-- The diagonal-only variance behind the printed intervals on pp. 31-33;
+this is audit notation, inferred from the validators' reproduction. -/
 def diagonalVariance {ι : Type*} [Fintype ι] (v : ι → ℝ) : ℝ :=
   ∑ j, (normalizedWeight v j)^2 * v j
 
-/-- Joint covariance quadratic form correcting the pooling variance on p. 31
-by including the missing covariance terms (P042-E001). -/
+/-- Joint covariance quadratic form from the repair to the pooling on p. 31,
+P042-E001 derivations, sections on the missing covariance terms. -/
 def covarianceForm {ι : Type*} [Fintype ι] (a : ι → ℝ) (Sigma : ι → ι → ℝ) : ℝ :=
   ∑ j, ∑ k, a j * a k * Sigma j k
 
-/-- Unordered off-diagonal covariance sum, P042-T2 (ii). -/
+/-- Unordered off-diagonal covariance sum, audit notation of P042-T2 (ii). -/
 def offDiagonal {J : ℕ} (a : Fin J → ℝ) (Sigma : Fin J → Fin J → ℝ) : ℝ :=
   ∑ j, ∑ k ∈ Finset.univ.filter (fun k => j < k), a j * a k * Sigma j k
 
@@ -57,31 +56,31 @@ are rational, so exhaustive witnesses use exact arithmetic. -/
 def rationalMean {Ω : Type*} (s : Finset Ω) (X : Ω → ℚ) : ℚ :=
   (∑ ω ∈ s, X ω) / (s.card : ℚ)
 
-/-- Variance over the uniform finite randomization distribution
+/-- Variance over the uniform finite randomization distribution, audit notation
 for the finite-population witness to the intervals on pp. 31-33. -/
 def rationalVariance {Ω : Type*} (s : Finset Ω) (X : Ω → ℚ) : ℚ :=
   rationalMean s (fun ω => (X ω - rationalMean s X)^2)
 
-/-- Covariance over the same finite randomization distribution
+/-- Covariance over the same finite randomization distribution, audit notation
 for P042-E001's shared-control witness. -/
 def rationalCovariance {Ω : Type*} (s : Finset Ω) (X Y : Ω → ℚ) : ℚ :=
   rationalMean s (fun ω => (X ω - rationalMean s X) * (Y ω - rationalMean s Y))
 
 /-- "The term 'potential outcomes' refers to the outcomes that a subject would
 express depending on whether he or she receives the treatment" (Note 2,
-pp. 39-40). Witness A fixes (1,1,1,0,0,0) under all three
+pp. 39-40). Validator witness A fixes (1,1,1,0,0,0) under all three
 conditions, hence zero individual treatment effects. -/
 def sixOutcome (i : Fin 6) (_g : Fin 3) : ℚ := if i.val < 3 then 1 else 0
 
-/-- Witness A: every ordered pair of disjoint two-voter treatment sets,
-with the two remaining voters as the shared control; uniform over all
-such labelled allocations (P042-E001). -/
+/-- Validator witness A: every ordered pair of disjoint two-voter treatment
+sets, with the two remaining voters as the shared control; uniform over all
+such labelled allocations. P042-E001 v1, "Exact finite-population counterexample". -/
 def sixAllocations : Finset (Finset (Fin 6) × Finset (Fin 6)) :=
   ((Finset.univ.powersetCard 2) ×ˢ (Finset.univ.powersetCard 2)).filter
     (fun a => Disjoint a.1 a.2)
 
 /-- The no-mail shared control in witness A, following the single control
-described on p. 36; the numerical population is a constructed example. -/
+described on p. 36; the numerical population is the validator's construction. -/
 def sixControl (a : Finset (Fin 6) × Finset (Fin 6)) : Finset (Fin 6) :=
   Finset.univ \ (a.1 ∪ a.2)
 
@@ -118,7 +117,7 @@ theorem six_design : sixAllocations.card = 90 ∧
     norm_num
 
 /-- Integer turnout count in an arm of witness A, an exact computational
-representation of the fixed zero/one outcomes (P042-E001). -/
+representation of the fixed zero/one outcomes (P042-E001 v1 witness). -/
 def sixTurnoutCount (s : Finset (Fin 6)) : ℤ := (s.filter (fun i => i.val < 3)).card
 
 /-- Twice the first turnout contrast in witness A, as an integer. -/
@@ -320,15 +319,15 @@ end GeneralProbability
 /-! Exact two-study calculation for Note 5. -/
 
 /-- Note 5 (p. 40) says "a weighted average effect of 1.720 percentage points".
-The two deposited input effects are (58247/25000,21649/25000);
-these digits are not printed by the paper. -/
+The validator's two deposited inputs are effects (58247/25000,21649/25000);
+they are audit inputs, not additional digits printed by the paper. -/
 def roboEffects : Fin 2 → ℝ := ![58247/25000, 21649/25000]
 
 /-- Standard errors (1741/3125,40891/50000) of "Robo SP1" and "Robo SP2",
-P042-E002; exact deposited decimals. -/
+P042-E002 v1 derivation section 1; exact deposited decimals. -/
 def roboSE : Fin 2 → ℝ := ![1741/3125, 40891/50000]
 
-/-- Fixed marginal variances of the Note 5 pair for precision weighting (p. 31). -/
+/-- Fixed marginal variances of the Note 5 pair, audit reading of p. 31. -/
 def roboVariances (j : Fin 2) : ℝ := (roboSE j)^2
 
 /-- Declared fixed-effects weighted average of the Note 5 pair (p. 40). -/
@@ -338,17 +337,17 @@ def roboFixedMean : ℝ := ∑ j, normalizedWeight roboVariances j * roboEffects
 interval treats the two studies as uncorrelated, explicitly a modelling condition. -/
 def roboFixedVariance : ℝ := (totalWeight roboVariances)⁻¹
 
-/-- Cochran Q for the two-study alternative method (P042-E002),
+/-- Cochran Q for the two-study alternative method; P042-E002 v1 section 3,
 not named in the printed article. -/
 def roboQ : ℝ := ∑ j, precisionWeight roboVariances j * (roboEffects j - roboFixedMean)^2
 
-/-- DerSimonian-Laird moment denominator, an alternative to the declared
-fixed-effects scheme (P042-E002). -/
+/-- DerSimonian-Laird moment denominator, audit alternative to the declared
+fixed-effects scheme (P042-E002 v1 section 3). -/
 def roboC : ℝ := totalWeight roboVariances -
   (∑ j, (precisionWeight roboVariances j)^2) / totalWeight roboVariances
 
-/-- DerSimonian-Laird between-study variance estimate for k=2 (P042-E002),
-not a method declared by the paper. -/
+/-- DerSimonian-Laird between-study variance estimate for k=2; audit definition
+from P042-E002 v1 section 3, not a method declared by the paper. -/
 def roboTauSq : ℝ := max 0 ((roboQ - 1) / roboC)
 
 /-- Alternative random-effects variances v_i + tau^2 of the Note 5 pair. -/
@@ -695,9 +694,18 @@ theorem pooled_rank_one_equality {ι : Type*} [Fintype ι]
   intro k _
   ring
 
+/-- P042-T5, the unrestricted variance identity presupposed by the nine
+printed pooled intervals. This audit reading is false without a dependence
+condition; it is deliberately retained as an unproved statement. -/
+theorem printed_pooling_variance {J : ℕ} (hJ : 0 < J)
+    (D : Fin J → Ω → ℝ) (hD : ∀ j, MemLp (D j) 2 μ)
+    (hv : ∀ j, 0 < variance (D j) μ) :
+    variance (pooled (normalizedWeight (fun j => variance (D j) μ)) D) μ =
+      (totalWeight (fun j => variance (D j) μ))⁻¹ := by
+  sorry
 
 /-- Within-pool precision weights for a subset of estimates; used in the
-nonadvocacy/advocacy comparison printed on p. 31. -/
+nonadvocacy/advocacy comparison printed on p. 31 (audit notation). -/
 noncomputable def subsetWeight {ι : Type*} [Fintype ι] [DecidableEq ι]
     (P : Finset ι) (v : ι → ℝ) (j : ι) : ℝ :=
   if j ∈ P then (v j)⁻¹ / (∑ k ∈ P, (v k)⁻¹) else 0
@@ -723,17 +731,28 @@ theorem pooled_difference_covariance {ι : Type*} [Fintype ι] [DecidableEq ι]
   ext ω
   simp [pooled, sub_mul, Finset.sum_sub_distrib]
 
+/-- P042-T5: the corresponding unrestricted printed variance reading for
+the nonadvocacy-minus-advocacy comparison. The article does not name its test;
+this formula is the validators' reading and is false without covariance conditions. -/
+theorem printed_comparison_variance {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (N A : Finset ι) (hN : N.Nonempty) (hA : A.Nonempty) (hdis : Disjoint N A)
+    (D : ι → Ω → ℝ) (hD : ∀ j, MemLp (D j) 2 μ)
+    (hv : ∀ j, 0 < variance (D j) μ) :
+    let v := fun j => variance (D j) μ
+    variance (fun ω => pooled (subsetWeight N v) D ω - pooled (subsetWeight A v) D ω) μ =
+      (∑ j ∈ N, (v j)⁻¹)⁻¹ + (∑ j ∈ A, (v j)⁻¹)⁻¹ := by
+  sorry
 end FurtherProbability
 
 /-! Independent-arm and finite-population portions of the covariance repair. -/
 
-/-- Arm sample mean of fixed size n in P042-T2 (iv), for the
+/-- Arm sample mean of fixed size n, audit notation in P042-T2 (iv) for the
 sampling model used to explain the single control described on p. 36. -/
 def armSampleMean {Ω : Type*} {n : ℕ} (X : Fin n → Ω → ℝ) : Ω → ℝ :=
   fun ω => (∑ i, X i ω)/(n:ℝ)
 
 /-- Correlation is covariance divided by the product of marginal standard
-deviations, P042-T2 (iv); this notation is not printed in the paper. -/
+deviations; audit notation of P042-T2 (iv), not notation printed in the paper. -/
 noncomputable def effectCorrelation {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (X Y : Ω → ℝ) : ℝ :=
   covariance X Y μ / (Real.sqrt (variance X μ) * Real.sqrt (variance Y μ))
@@ -940,24 +959,24 @@ theorem three_contrast_block {Ω : Type*} [MeasurableSpace Ω]
 def finiteExpectation {Ω : Type*} (s : Finset Ω) (X : Ω → ℝ) : ℝ :=
   (∑ ω ∈ s, X ω)/(s.card:ℝ)
 
-/-- Real finite randomization covariance for P042-T2 (viii). -/
+/-- Real finite randomization covariance, audit definition for P042-T2 (viii). -/
 def finiteCovariance {Ω : Type*} (s : Finset Ω) (X Y : Ω → ℝ) : ℝ :=
   finiteExpectation s (fun ω =>
     (X ω - finiteExpectation s X)*(Y ω - finiteExpectation s Y))
 
 /-- Complete randomization into three disjoint labelled groups of sizes n_g,
 possibly leaving other units unassigned. Label 3 means unused; every admissible
-allocation is equiprobable, P042-T2 (viii). -/
+allocation is equiprobable. P042-T2 (viii), validator's finite-population model. -/
 def completeThreeAllocations (N : ℕ) (n : Fin 3 → ℕ) : Finset (Fin N → Fin 4) :=
   Finset.univ.filter (fun z => ∀ g : Fin 3,
     (Finset.univ.filter (fun i => z i = Fin.castLE (by decide : 3 ≤ 4) g)).card = n g)
 
 /-- Finite-population mean potential outcome under one condition; Note 2,
-pp. 39-40 supplies the potential-outcome definition, but does not print this formula. -/
+pp. 39-40 supplies the potential-outcome definition, the formula is the audit's. -/
 def populationMean {N : ℕ} (Y : Fin N → ℝ) : ℝ := (∑ i, Y i)/(N:ℝ)
 
 /-- S_gh, finite-population covariance with denominator N-1, P042-T2 (viii)
-and P042-E001; this notation is not printed in the article. -/
+and P042-E001 derivations; not mathematical notation from the printed article. -/
 def populationCovariance {N : ℕ} (Y V : Fin N → ℝ) : ℝ :=
   (∑ i, (Y i-populationMean Y)*(V i-populationMean V))/((N-1:ℕ):ℝ)
 
@@ -982,6 +1001,29 @@ def randomizedArmMean {N : ℕ} (n : Fin 3 → ℕ) (Y : Fin N → Fin 3 → ℝ
     (g : Fin 3) (z : Fin N → Fin 4) : ℝ :=
   (∑ i, if z i = Fin.castLE (by decide : 3 ≤ 4) g then Y i g else 0)/(n g:ℝ)
 
+/-- P042-T2 (viii): exact finite-population shared-control covariance under
+complete randomization, including the covariance of individual treatment effects
+and the zero-effect special case. No universal positivity is asserted. -/
+theorem finite_population_shared_control {N : ℕ} (hN : 2 ≤ N)
+    (n : Fin 3 → ℕ) (hn : ∀ g, 0 < n g) (hsizes : ∑ g, n g ≤ N)
+    (Y : Fin N → Fin 3 → ℝ) :
+    let S := completeThreeAllocations N n
+    let D1 := fun z => randomizedArmMean n Y 1 z - randomizedArmMean n Y 0 z
+    let D2 := fun z => randomizedArmMean n Y 2 z - randomizedArmMean n Y 0 z
+    let tau1 := fun i => Y i 1 - Y i 0
+    let tau2 := fun i => Y i 2 - Y i 0
+    finiteCovariance S D1 D2 =
+      populationCovariance (fun i => Y i 0) (fun i => Y i 0)/(n 0:ℝ) -
+      populationCovariance tau1 tau2/(N:ℝ) ∧
+    populationCovariance tau1 tau2 =
+      populationCovariance (fun i => Y i 1) (fun i => Y i 2) -
+      populationCovariance (fun i => Y i 1) (fun i => Y i 0) -
+      populationCovariance (fun i => Y i 0) (fun i => Y i 2) +
+      populationCovariance (fun i => Y i 0) (fun i => Y i 0) ∧
+    ((∀ i, Y i 1 = Y i 0 ∧ Y i 2 = Y i 0) →
+      finiteCovariance S D1 D2 =
+        populationCovariance (fun i => Y i 0) (fun i => Y i 0)/(n 0:ℝ)) := by
+  sorry
 
 /-! Binomial witness B: exact finite probability masses and coverage counts. -/
 
@@ -995,8 +1037,8 @@ in P042-T1 B's specified mass and coverage sum. -/
 theorem exactChoose_eq (n k : ℕ) : exactChoose n k = n.choose k := by
   exact (Nat.choose_eq_descFactorial_div_factorial n k).symm
 
-/-- Binomial(n,1/2) probability mass for a turnout count; witness B, P042-E001.
-This is a constructed experiment, not the article's observed counts. -/
+/-- Binomial(n,1/2) probability mass for a turnout count; witness B, P042-E001
+v2 section 5. This is a constructed experiment, not the article's observed counts. -/
 def binomialMass (n : ℕ) (x : Fin (n+1)) : ℚ := (exactChoose n x.val:ℚ)/2^n
 
 /-- Exact expectation for one 100-voter arm of witness B. -/
@@ -1345,11 +1387,19 @@ theorem binomial_coverage_fraction_reduced :
       (2^295) := by
   decide +kernel
 
+/-- P042-T1 B5-B6: the explicit independent three-arm probability space
+has the coverage given by the specified binomial convolution sum, for both
+integer thresholds. This is a probability identity, separate from numeric evaluation. -/
+theorem binomial_coverage_from_arms (r : ℕ) :
+    binomialTripleExpectation (fun x0 x1 x2 =>
+      if |(x1.val:ℤ)+(x2.val:ℤ)-2*(x0.val:ℤ)| ≤ (r:ℤ) then 1 else 0) =
+      binomialCoverage r := by
+  sorry
 
 /-! Complete randomization and the one-sided contact/CACE reading (P042-T6). -/
 
 /-- Every subset of m subjects is equally likely: complete randomization,
-a precise design interpretation of "assigned at random" (p. 28) and the
+the audit's precise design reading of "assigned at random" (p. 28) and the
 same-in-expectation assertion (p. 30). -/
 def completeAssignments (N m : ℕ) : Finset (Finset (Fin N)) := Finset.univ.powersetCard m
 
@@ -1514,8 +1564,8 @@ A Boolean c_i identifies this fixed subgroup; its complement is Never-takers. -/
 def complierCount {N : ℕ} (c : Fin N → Bool) : ℕ :=
   (Finset.univ.filter (fun i => c i = true)).card
 
-/-- Finite-population share of Compliers, used for the contact-rate identity
-of p. 32; a positive count is required in all identification statements. -/
+/-- Finite-population share of Compliers, audit notation for the contact-rate
+identity of p. 32; a positive count is required in all identification statements. -/
 def complierShare {N : ℕ} (c : Fin N → Bool) : ℝ := (complierCount c:ℝ)/(N:ℝ)
 
 /-- Complier average causal effect: "average treatment effect among
@@ -1540,6 +1590,15 @@ def contactedOutcome {N : ℕ} (S : Finset (Fin N))
 def assignedContactRate {N : ℕ} (m : ℕ) (S : Finset (Fin N)) (c : Fin N → Bool) : ℝ :=
   assignedTreatmentMean m S (fun i => if c i = true then 1 else 0)
 
+/-- P. 32 estimator: "calculating the difference in turnout rates between those
+assigned to treatment and control and dividing this difference by the fraction
+of the assigned treatment group that actually receives the treatment".
+The expectation identities below do not claim this
+random ratio is unbiased; division by zero is Lean's totalized real division. -/
+def caceEstimator {N : ℕ} (m : ℕ) (S : Finset (Fin N))
+    (Y : Fin N → Bool → ℝ) (c : Fin N → Bool) : ℝ :=
+  (assignedTreatmentMean m S (contactedOutcome S Y c) -
+    assignedControlMean m S (contactedOutcome S Y c))/assignedContactRate m S c
 
 /-- P042-T6 (b1): ITT equals the Complier share times CACE in the stated
 one-sided, exclusion/no-interference finite-population contact model. -/
@@ -1592,6 +1651,77 @@ theorem cace_randomization_identity {N m : ℕ} (hN : 2 ≤ N)
 /-- P042-T6 (b4): the p. 32 Michelson illustration, (9.4-7.0)/0.50=4.8,
 in percentage-point units; the printed decimals are taken as exact numbers. -/
 theorem michelson_cace_example : ((94:ℝ)/10 - 70/10)/(1/2) = 48/10 := by norm_num
+
+#print axioms AronowAudit.P042.six_sharp_null
+#print axioms AronowAudit.P042.six_design
+#print axioms AronowAudit.P042.six_integer_moments
+#print axioms AronowAudit.P042.six_contrast_numerators
+#print axioms AronowAudit.P042.six_moments
+#print axioms AronowAudit.P042.six_counterexample
+#print axioms AronowAudit.P042.precision_weights
+#print axioms AronowAudit.P042.precision_diagonal
+#print axioms AronowAudit.P042.pooled_mean
+#print axioms AronowAudit.P042.pooled_variance
+#print axioms AronowAudit.P042.shared_control_covariance
+#print axioms AronowAudit.P042.difference_variance
+#print axioms AronowAudit.P042.robo_fixed_exact
+#print axioms AronowAudit.P042.robo_fixed_counterexample
+#print axioms AronowAudit.P042.robo_random_exact
+#print axioms AronowAudit.P042.robo_fixed_rounding
+#print axioms AronowAudit.P042.robo_random_rounding
+#print axioms AronowAudit.P042.sqrt_enclosure
+#print axioms AronowAudit.P042.robo_fixed_interval
+#print axioms AronowAudit.P042.robo_fixed_endpoint_counterexample
+#print axioms AronowAudit.P042.robo_fixed_positive
+#print axioms AronowAudit.P042.robo_random_interval
+#print axioms AronowAudit.P042.covariance_form_decomposition
+#print axioms AronowAudit.P042.corrected_precision_variance
+#print axioms AronowAudit.P042.uncorrelated_precision_variance
+#print axioms AronowAudit.P042.positive_covariance_inflation
+#print axioms AronowAudit.P042.covariance_abs_bound
+#print axioms AronowAudit.P042.pooled_variance_upper_bound
+#print axioms AronowAudit.P042.pooled_rank_one_equality
+#print axioms AronowAudit.P042.printed_pooling_variance
+#print axioms AronowAudit.P042.pooled_difference_covariance
+#print axioms AronowAudit.P042.printed_comparison_variance
+#print axioms AronowAudit.P042.arm_sample_mean_memLp
+#print axioms AronowAudit.P042.arm_sample_mean_variance
+#print axioms AronowAudit.P042.arm_sample_means_uncorrelated
+#print axioms AronowAudit.P042.shared_control_correlation_from_moments
+#print axioms AronowAudit.P042.independent_arm_shared_control
+#print axioms AronowAudit.P042.three_contrast_block
+#print axioms AronowAudit.P042.population_effect_covariance
+#print axioms AronowAudit.P042.finite_population_shared_control
+#print axioms AronowAudit.P042.exactChoose_eq
+#print axioms AronowAudit.P042.binomial_arm_moments
+#print axioms AronowAudit.P042.binomial_expectation_add
+#print axioms AronowAudit.P042.binomial_expectation_sub
+#print axioms AronowAudit.P042.binomial_expectation_mul
+#print axioms AronowAudit.P042.binomial_expectation_div
+#print axioms AronowAudit.P042.binomial_expectation_tensor
+#print axioms AronowAudit.P042.binomial_marginal_zero
+#print axioms AronowAudit.P042.binomial_marginal_one
+#print axioms AronowAudit.P042.binomial_marginal_two
+#print axioms AronowAudit.P042.binomial_shared_control_moments
+#print axioms AronowAudit.P042.binomial_diagonal
+#print axioms AronowAudit.P042.covers_zero_iff_abs
+#print axioms AronowAudit.P042.binomial_diagonal_radius
+#print axioms AronowAudit.P042.binomial_interval_thresholds
+#print axioms AronowAudit.P042.binomial_convolution
+#print axioms AronowAudit.P042.binomial_coverage_exact
+#print axioms AronowAudit.P042.binomial_coverage_fraction_reduced
+#print axioms AronowAudit.P042.binomial_coverage_from_arms
+#print axioms AronowAudit.P042.finite_expectation_sub
+#print axioms AronowAudit.P042.finite_expectation_sum
+#print axioms AronowAudit.P042.finite_expectation_mul
+#print axioms AronowAudit.P042.finite_expectation_div
+#print axioms AronowAudit.P042.finite_expectation_const
+#print axioms AronowAudit.P042.complete_inclusion_probability
+#print axioms AronowAudit.P042.complete_group_mean
+#print axioms AronowAudit.P042.complete_randomization_balance
+#print axioms AronowAudit.P042.itt_complier_identity
+#print axioms AronowAudit.P042.cace_randomization_identity
+#print axioms AronowAudit.P042.michelson_cace_example
 
 end
 end AronowAudit.P042

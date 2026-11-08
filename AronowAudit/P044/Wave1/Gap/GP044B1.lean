@@ -1,8 +1,8 @@
 import AronowAudit.P044.P044_NetworkSpillovers
 
-/-! Finite exposure-variance calculations using the P044 definitions.
-Finite certificates and finite-sum algebra are adapted from this repository's P045
-exposure-variance model. -/
+/-! Independent kernel proofs of the six GP044B1 contracts.
+Finite certificates and finite-sum algebra are adapted from the parallel
+P045 exposure-variance model, using only the P044 definitions here. -/
 namespace AronowAudit.P044.Wave1
 open Finset
 open scoped BigOperators
@@ -259,6 +259,8 @@ theorem clique_all_fixed_table_counterexamples_proof :
   exact cfx_all_fixed_reduced_arithmetic t
 
 
+example : type_of% @AronowAudit.P044.clique_all_fixed_table_counterexamples := clique_all_fixed_table_counterexamples_proof
+
 theorem ccs_pairs_complete :
     (∀ r, (cliquePairs r).1 < (cliquePairs r).2) ∧
     (∀ i j : Fin 12, i < j → ∃ r : Fin 66, cliquePairs r = (i,j)) := by
@@ -301,11 +303,15 @@ theorem clique_complete_support_proof (z : Assignment 12) :
     fin_cases r <;> decide +kernel
 
 
+example : type_of% @AronowAudit.P044.clique_complete_support := clique_complete_support_proof
+
 theorem clique_conditional_moments_proof (t : Fin 66) (included : Bool) :
     expect (cliqueObservationMass t included) (cliqueT t) = cliqueConditionalMean t included ∧
     expect (cliqueObservationMass t included) (fun z => cliqueT t z ^ 2) = cliqueConditionalSecond t included ∧
     expect (cliqueObservationMass t included) (cliqueV t) = cliqueConditionalV t included := by
   exact cfx_conditional_moments t included
+
+example : type_of% @AronowAudit.P044.clique_conditional_moments := clique_conditional_moments_proof
 
 theorem cem_exact_reduced_arithmetic :
     let m := cliqueObservationMarginal 0 false
@@ -373,12 +379,16 @@ theorem clique_exact_moments_proof :
   exact hnum.2.1
 
 
+example : type_of% @AronowAudit.P044.clique_exact_moments := clique_exact_moments_proof
+
 theorem clique_exact_profile_estimates_proof :
     let m := cliqueObservationMarginal 0 false
     ∀ r, htContrast cliqueF cliqueY m .d01 .d00 r =
       if (cliquePairs r).1.val / 4 = (cliquePairs r).2.val / 4 then -220/189 else 55/126 := by
   decide +kernel
 
+
+example : type_of% @AronowAudit.P044.clique_exact_profile_estimates := clique_exact_profile_estimates_proof
 
 theorem clique_exact_reduced_arithmetic_proof :
     let m := cliqueObservationMarginal 0 false
@@ -391,6 +401,8 @@ theorem clique_exact_reduced_arithmetic_proof :
        J i j .d00 .d01 / (m i .d00 * m j .d01))) / 144
     M = 0 ∧ S - M^2 = 6050/11907 ∧ expectedVariance m J cliqueY m J .d01 .d00 = 6050/11907 := by
   exact cem_exact_reduced_arithmetic
+
+example : type_of% @AronowAudit.P044.clique_exact_reduced_arithmetic := clique_exact_reduced_arithmetic_proof
 
 end
 end AronowAudit.P044.Wave1

@@ -1,0 +1,102 @@
+[
+ {
+  "target_id": "P009-T11",
+  "decision": "restricted",
+  "theorem": "SAP.P009a.T11",
+  "restriction": "Only the failure of guaranteed eventual largest-in-absolute-value dominance is asserted, for sequences with uniform q>=4 regularity, independent Bernoulli assignment, restricted interference, and d_AVG/C1 tending to infinity. The specified square-size m-block fair-Bernoulli witness and its full outcome schedule are not stated. Omitted witness clauses are: the full-cube [0,2] bounds and regularity at every moment order; the exact interference and dependence graphs, C1=2, d_AVG=m=sqrt(n), the ratio m/2 and its divergence, and Assumption 2 for that family; the expected direct effects all equal to 1, tau_MSQ=1 and tau_MSQ/d_AVG=1/m; the xi and weighted-xi formulas, reciprocal products and B1=2/m^2>0; the arm-independent conditional covariances, their alternating-sum cancellations and B2=0; the comparison 0=B2<B1<=tau_MSQ/d_AVG with equality of the last two terms exactly at m=2; and the extension to every n>=4 with its floor-defined blocks, isolated units, and exact C1, d_AVG, tau_MSQ, B1 and B2 formulas. The printed big-O bounds and Proposition 7 are not refuted.",
+  "rows_used": [
+   "AronowAudit.P009.Wave1.dominating_term_counterexample_proof",
+   "SAP.P009a.WH.W2.T11_whole",
+   "SAP.P009a.WH.W2.T11_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009a.T11WholeStatement"
+ },
+ {
+  "target_id": "P009-T12",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.corrected_bias_term_bounds_proof",
+   "AronowAudit.P009.Wave1.corrected_bias_term_comparison_proof",
+   "SAP.P009a.WH.W2.T12_whole",
+   "SAP.P009a.WH.W2.T12_assembly",
+   "AronowAudit.P009.Wave1.dominating_term_counterexample_proof",
+   "AronowAudit.P009.average_degree_at_least_one"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009a.T12WholeStatement"
+ },
+ {
+  "target_id": "P009-T13",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.direct_spillover_counterexample",
+   "SAP.P009a.WH.W2.T13_whole",
+   "SAP.P009a.WH.W2.T13_assembly",
+   "AronowAudit.P009.SparseCompletion.fair_marginal",
+   "AronowAudit.P009.SparseCompletion.mean_le_constant"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.cons_at_two",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   }
+  ],
+  "statement_definition": "SAP.P009a.T13WholeStatement"
+ },
+ {
+  "target_id": "P009-T14",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.no_interference_zero_spillover",
+   "AronowAudit.P009.no_interference_B1_zero",
+   "SAP.P009a.WH.W3.T14_whole",
+   "SAP.P009a.WH.W3.T14_assembly",
+   "AronowAudit.P009.direct_spillover_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009a.T14WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P009.direct_spillover_counterexample"
+  ]
+ },
+ {
+  "target_id": "P009-T15",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.diagonal_omission_family",
+   "SAP.P009a.WH.W3.T15_whole",
+   "SAP.P009a.WH.W3.T15_assembly",
+   "AronowAudit.P009.BernoulliCompletion.count_variance_sum",
+   "AronowAudit.P009.BernoulliCompletion.covariance_product_formula",
+   "AronowAudit.P009.DiagonalCompletion.alpha_zero_of_block_functions",
+   "AronowAudit.P009.DiagonalCompletion.coordinate_covariance",
+   "AronowAudit.P009.DiagonalCompletion.identity_noI",
+   "AronowAudit.P009.DiagonalCompletion.noI_alpha_ext",
+   "AronowAudit.P009.DiagonalCompletion.noI_alpha_int",
+   "AronowAudit.P009.MixingBasics.covariance_indicator_le_alpha",
+   "AronowAudit.P009.SparseCompletion.fair_BER",
+   "AronowAudit.P009.SparseCompletion.fair_marginal",
+   "AronowAudit.P009.SparseCompletion.mean_le_constant",
+   "AronowAudit.P009.SparseCompletion.noI_d",
+   "AronowAudit.P009.SparseCompletion.noI_dAvg",
+   "AronowAudit.P009.SparseCompletion.noI_interferes",
+   "AronowAudit.P009.Wave1.t9_alpha_le_quarter"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.diagonal_omission_counterexample",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   }
+  ],
+  "statement_definition": "SAP.P009a.T15WholeStatement"
+ }
+]

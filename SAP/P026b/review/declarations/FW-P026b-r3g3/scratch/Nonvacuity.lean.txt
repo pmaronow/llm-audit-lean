@@ -1,0 +1,118 @@
+import SAP.P026b.Defs
+
+open Finset
+open scoped BigOperators
+open SAP.P026b
+
+namespace Audit
+noncomputable section
+
+lemma enumOne : (univ : Finset (Fin 1 → Bool)) =
+    {![false], ![true]} := by decide
+
+lemma enumTwo : (univ : Finset (Fin 2 → Bool)) =
+    {![false, false], ![false, true], ![true, false], ![true, true]} := by decide
+
+lemma enumTwoIndices : (univ : Finset (Fin 2)) = {0, 1} := by decide
+
+lemma enumThreeIndices : (univ : Finset (Fin 3)) = {0, 1, 2} := by decide
+
+def oneWeight (w : Fin 1 → Bool) : ℝ := if w 0 then 1/3 else 2/3
+
+def oneLaw : UnitExperiment (Fin 1) where
+  weight := oneWeight
+  nonnegative := by intro w; unfold oneWeight; split <;> norm_num
+  normalized := by norm_num [enumOne, oneWeight]
+  positive := by
+    intro i
+    fin_cases i
+    norm_num [enumOne, oneWeight]
+
+-- A real-valued, supported T23 location-invariance failure.
+example :
+    0 < oneLaw.weight ![true] ∧
+    ht oneLaw.design 1 (fun _ => 1) (fun _ => 1) ![true] = 3 ∧
+    (-1 : ℝ) * ht oneLaw.design 1 (fun _ => 0) (fun _ => 0) ![true] = 0 ∧
+    ht oneLaw.design 1 (fun _ => 1) (fun _ => 1) ![true] ≠
+      (-1 : ℝ) * ht oneLaw.design 1 (fun _ => 0) (fun _ => 0) ![true] := by
+  norm_num [oneLaw, oneWeight, ht, htTotal, indicator, marginal,
+    expectation, UnitExperiment.design, enumOne, Fin.sum_univ_succ]
+
+-- Independently check the entire concrete rational witness in T23Statement.
+example : probabilityDesign singleAsymmetric ∧ positiveMarginals singleAsymmetric ∧
+    0 < singleAsymmetric.weight 2 ∧
+    ht singleAsymmetric 1 (fun _ => 1) (fun _ => 1) 2 = 3 ∧
+    (-1 : ℚ) * ht singleAsymmetric 1 (fun _ => 0) (fun _ => 0) 2 = 0 ∧
+    ht singleAsymmetric 1 (fun _ => 1) (fun _ => 1) 2 ≠
+      (-1) * ht singleAsymmetric 1 (fun _ => 0) (fun _ => 0) 2 := by
+  norm_num [probabilityDesign, positiveMarginals, singleAsymmetric, asymmetricTwo,
+    ht, htTotal, indicator, marginal, expectation, Fin.sum_univ_succ, Fin.forall_fin_succ]
+
+-- The support consists of FF, FT, TT; TF has weight zero.
+def twoWeight (w : Fin 2 → Bool) : ℝ :=
+  if w 0 = true ∧ w 1 = false then 0 else 1/3
+
+def twoLaw : UnitExperiment (Fin 2) where
+  weight := twoWeight
+  nonnegative := by intro w; unfold twoWeight; split <;> norm_num
+  normalized := by norm_num [enumTwo, twoWeight]
+  positive := by
+    intro i
+    fin_cases i <;> norm_num [enumTwo, twoWeight]
+
+-- Unequal, nonempty clusters: {0} and {1,2}.
+def clusters : ClusterExperiment (Fin 3) (Fin 2) where
+  cluster := ![0, 1, 1]
+  covers := by intro c; fin_cases c; exact ⟨0, rfl⟩; exact ⟨1, rfl⟩
+  assignment := twoLaw
+
+example : (∀ c d : Fin 2, c ≠ d → 0 < disagreement clusters.clusterDesign c d) ∧
+    joint clusters.clusterDesign true false 0 1 = 0 ∧
+    joint clusters.clusterDesign true false 1 0 = 1/3 := by
+  constructor
+  · intro c d h
+    fin_cases c <;> fin_cases d <;>
+      norm_num [disagreement, expectation, ClusterExperiment.clusterDesign,
+        UnitExperiment.design, clusters, twoLaw, twoWeight, enumTwo] at *
+  · norm_num [joint, indicator, expectation, ClusterExperiment.clusterDesign,
+      UnitExperiment.design, clusters, twoLaw, twoWeight, enumTwo]
+
+example : clusters.totals (![2, 3, 4] : Fin 3 → ℝ) = ![2, 7] ∧
+    clusters.totals (![1, -1, 5] : Fin 3 → ℝ) = ![1, 4] := by
+  constructor <;> funext c <;> fin_cases c <;>
+    dsimp only [ClusterExperiment.totals, clusters]
+  all_goals
+    rw [Finset.sum_filter]
+    norm_num [Fin.sum_univ_succ]
+
+-- Eq. [30] still includes the nonzero contribution from the zero directed joint.
+example :
+    covariance clusters.clusterDesign
+      (htTotal clusters.clusterDesign true (clusters.totals (![2, 3, 4] : Fin 3 → ℝ)))
+      (htTotal clusters.clusterDesign false (clusters.totals (![1, -1, 5] : Fin 3 → ℝ))) =
+      -159/4 ∧
+    splitCovarianceExpression clusters.clusterDesign
+      (clusters.totals (![2, 3, 4] : Fin 3 → ℝ))
+      (clusters.totals (![1, -1, 5] : Fin 3 → ℝ)) = -159/4 ∧
+    clusterCovarianceExpression clusters.clusterDesign
+      (clusters.totals (![2, 3, 4] : Fin 3 → ℝ))
+      (clusters.totals (![1, -1, 5] : Fin 3 → ℝ)) = -159/4 := by
+  norm_num [covariance, htTotal, splitCovarianceExpression, clusterCovarianceExpression,
+    offSum, joint, marginal, indicator, expectation, ClusterExperiment.totals,
+    ClusterExperiment.clusterDesign, UnitExperiment.design, clusters, twoLaw, twoWeight,
+    Finset.sum_filter, enumTwo, enumTwoIndices, enumThreeIndices]
+
+-- A nonzero fixed prediction and a positive generalized-estimator variance.
+example :
+    variance twoLaw.design
+      (generalized twoLaw.design 2 (![2, 3]) (![3, 4]) (fun _ => ![1, -2])) = 373/8 ∧
+    (armVarianceExpression twoLaw.design true (![1, 5]) +
+      armVarianceExpression twoLaw.design false (![2, 6]) -
+      2 * splitCovarianceExpression twoLaw.design (![1, 5]) (![2, 6])) / (2 : ℝ)^2 =
+      373/8 := by
+  norm_num [variance, covariance, generalized, generalizedTotal, armVarianceExpression,
+    splitCovarianceExpression, offSum, joint, marginal, indicator, expectation,
+    UnitExperiment.design, twoLaw, twoWeight, enumTwo, enumTwoIndices]
+
+end
+end Audit

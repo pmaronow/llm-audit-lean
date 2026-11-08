@@ -1,6 +1,6 @@
 import AronowAudit.P017.Wave1.Gap.FidP017
 
-/-! The universally quantified empirical-data statement of P017-T9 and its negation. -/
+/-! Independent approved-statement and exact printed-negation checks for P017-T9. -/
 
 set_option autoImplicit false
 
@@ -13,15 +13,52 @@ noncomputable section
 
 namespace FidP017Contracts
 
+/-- P017-T9: the certificate statement copied from `map-fid-P017/map.json`, record 0,
+`proposed_statement_lean`. Both `ref1-fid-P017/referee.json` and
+`ref2-fid-P017/referee.json` accept it with `fixes: []`; no statement fix applies.
+The approved certificate has no outer binders. -/
+def approvedContract_P017_T9 : Prop :=
+    Measurable ipwEffect ∧
+    Integrable ipwEffect ipwPopulation ∧
+    populationMean ipwPopulation ipwEffect = 1 / 2 ∧
+    effectSupport ipwPopulation ipwEffect = Icc (0 : ℝ) 1 ∧
+    effectRadius ipwPopulation ipwEffect = (1 / 2 : ℝ≥0∞) ∧
+    0 < effectRadius ipwPopulation ipwEffect ∧
+    Measurable ipwObserved ∧
+    RootNNormal (iidSamples ipwPopulation) (sampleMean ipwSummand)
+      (populationMean ipwPopulation ipwEffect) ∧
+    (∀ n : ℕ, 1 ≤ n → ∀ s : ℕ → ℝ × (ℝ × ℝ),
+      sampleMean ipwSummand n s =
+        ∫ z : ℝ × ℝ, (2 * z.1 * z.2 - 2 * (1 - z.1) * z.2)
+          ∂(empiricalObserved ipwObserved n s)) ∧
+    (∀ n : ℕ, 1 ≤ n →
+      MeasurableSet (ipwBadEvent (-1) n) ∧
+      pr (iidSamples ipwPopulation) (ipwBadEvent (-1) n) = (1 / 4 : ℝ) ^ n ∧
+      0 < pr (iidSamples ipwPopulation) (ipwBadEvent (-1) n) ∧
+      (∀ s ∈ ipwBadEvent (-1) n,
+        empiricalObserved ipwObserved n s = Measure.dirac ((0 : ℝ), (-1 : ℝ)) ∧
+        sampleMean ipwSummand n s = 2 ∧
+        clipTarget (populationMean ipwPopulation ipwEffect)
+          (effectRadius ipwPopulation ipwEffect) (sampleMean ipwSummand n s) = 1 ∧
+        ¬ Representable ipwPopulation ipwEffect
+          (clipTarget (populationMean ipwPopulation ipwEffect)
+            (effectRadius ipwPopulation ipwEffect) (sampleMean ipwSummand n s))))
+
+example : approvedContract_P017_T9 := @proposition1_printed_empirical_counterexample
 
 /-- P017-T9, Proposition 1, PDF p. 2, under its full empirical-data universal closure.
+Sources: `runs/P017/staged/main.txt:51-60,68-91` (standing setting on PDF p. 1;
+Definitions 1-2, Proposition 1 and its all-realizations gloss on PDF p. 2),
+`runs/P017/lean/targets.json`, target P017-T9 and standing conventions (i)-(v),
+and `map-fid-P017/map.json`, record 0, accepted by both referees without fixes.
+
 Conventions the paper leaves implicit:
 * All population, observed-record and sampling types (in Lean's universe zero),
   their measurable spaces, and their genuine probability laws are quantified.
   The sampling law and measurable full-data sample map are arbitrary: no IID,
   treatment design, or particular observation space is imposed.
 * Effects are real, measurable and integrable. Support is closed support of
-  their law. Standing Assumption 1 is retained, `0 < effectRadius G τ`; the radius
+  their law. We retain standing Assumption 1, `0 < effectRadius G τ`; the radius
   may be infinite, in which case Definition 2 (`clipTarget`) is the identity.
 * Positive sample sizes use indices `0,...,n-1`. The observed empirical law is
   exactly the equally weighted empirical measure of `O (data s i)`. "Using F_n"
@@ -53,7 +90,7 @@ def printedContract_P017_T9 : Prop :=
 
 end FidP017Contracts
 
-/-- The empirical IPW certificate negates the entire universally closed
+/-- The approved empirical IPW certificate negates the entire universally closed
 printed P017-T9 contract, including its empirical-statistic premise. -/
 theorem proposition1_printed_empirical_counterexample_printed_negation :
     ¬ FidP017Contracts.printedContract_P017_T9 := by
@@ -73,8 +110,18 @@ theorem proposition1_printed_empirical_counterexample_printed_negation :
 
 namespace FidP017Contracts
 
+/-- P017-T9's credited endpoint is exactly the negation of the printed contract. -/
+abbrev Target_P017_T9 : Prop := ¬ printedContract_P017_T9
+
+example : Target_P017_T9 :=
+  proposition1_printed_empirical_counterexample_printed_negation
+
+example : Target_P017_T9 ↔ ¬ printedContract_P017_T9 := Iff.rfl
 
 end FidP017Contracts
+
+#print axioms proposition1_printed_empirical_counterexample
+#print axioms proposition1_printed_empirical_counterexample_printed_negation
 
 end
 

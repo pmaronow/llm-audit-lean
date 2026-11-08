@@ -1,0 +1,11 @@
+import SAP.P026b.Defs
+
+#print SAP.P026b.T23Statement._proof_1
+#print SAP.P026b.singleAsymmetric._proof_1
+#print SAP.P026b.T24Statement._proof_1
+#check SAP.P026b.Design.mk
+#check SAP.P026b.UnitExperiment.mk
+#check SAP.P026b.ClusterExperiment.mk
+
+example : (Fintype.card (Fin 1) : ℝ) ≠ 0 := by norm_num
+example : (0 : ℝ) / 0 = 0 := by simp

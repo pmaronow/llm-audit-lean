@@ -1,0 +1,56 @@
+[
+  {
+    "theorem": "SAP.P004c.T31",
+    "target_id": "P004-T31",
+    "my_reading_vs_claim": "whole",
+    "reason": "The corrected counts, unique two-arm OLS fit, equality of (19) and (21), spectral truncation, all stated positive-semidefinite differences, treatment-entry inequality, and outcome-point sharp null are present. Quantification over arbitrary real tables, matrices and residual vectors includes the paper's spatial tables and kernels. Positive arm counts are exactly the canonical nonsingularity requirement, not an extra restriction. Example N=2, z=(true,false), R_i(z)=(-1)^i+z_i, orthogonal vectors=identity, eigenvalues=(-1,2), e=(1,-1) has nonempty arms and genuine spectral truncation."
+  },
+  {
+    "theorem": "SAP.P004c.T32",
+    "target_id": "P004-T32",
+    "my_reading_vs_claim": "whole",
+    "reason": "All corrected finite variance and component formulas, constants 2 and 8, real-valued degree-minus-one, component O(1/N) rates, and spatial variance O(1/N) conclusion are present. The generic neighborhood assumptions express the paper's center-containing local dependence neighborhoods; symmetry in the bounded finite clause holds automatically for distance neighborhoods. Pair conditional means are used only for distinct nodes. The asymptotic spatial clause assumes C2-C4 with radius-dependent eventual thresholds and genuine positive finite integrable circle averages. These make mathematical averages meaningful rather than add a substantive statistical premise. The separated line-node sequence described in the audit supplies a bounded nonzero-effect example with positive HT variance."
+  },
+  {
+    "theorem": "SAP.P004c.T33",
+    "target_id": "P004-T33",
+    "my_reading_vs_claim": "whole",
+    "reason": "The four canonical parts (a)-(d) are present: the exact corrected linearization variance, the corrected second-moment expression, the homophily difference and iff bound, and the correctly centered positive-variance HT summands with their pointwise sum, zero expectations and unit sum variance. Both mean-product subtractions are retained. The center is included in homophily, and g_i(1)-g_i(0)=AME, so the residual-effect homophily is exactly C5. No homophily premise is smuggled into the identity. The two-node R_i=(-1)^i+z_i instance has positive HT and linearized variances."
+  },
+  {
+    "theorem": "SAP.P004c.T34",
+    "target_id": "P004-T34",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact absolute-value factorization, ratio identity, finite kernel cross-sum estimate and Bernoulli denominator O_p(N^(-1/2)) rate are present. The canonical composed bandwidth conclusion O_p(N^(-1/2)b_N^2)=o_p(1) is absent. The scalar 9/25 versus -9/25 calculation does not assert an eight-node assignment, zero-arm-mean residuals or kernel realizing S=-1/4, so it is not by itself a formal refutation of the printed kernel inequality. Both omissions are explicitly disclosed in Challenge/Part1.lean:28-32. Positive sample size, positive bandwidth, nonnegative distances, and zero extension of denominatorError on empty treated arms are appropriate and keep all reciprocals meaningful on the finite-identity event. All retained assertions appear true and nonvacuous."
+  },
+  {
+    "theorem": "SAP.P004c.T39",
+    "target_id": "P004-T39",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem gives precisely the design expectation of HT as the average of forced-coordinate marginal contrasts, for arbitrary assignment-dependent tables and common interior Bernoulli p. The canonical AME marginalizes over Z_{-i}; summing over a full fresh assignment and overwriting i gives that same marginal law. No independence or locality of outcomes is assumed. Positive N and interior p are the canonical domain. R_i=(-1)^i+z_i has AME=1 and unbiased HT; genuinely interfering tables are also within scope."
+  },
+  {
+    "theorem": "SAP.P004c.T40",
+    "target_id": "P004-T40",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three canonical additive-outcome conclusions are present, for every node-specific probability distribution of the other coordinates represented by normalized nonnegative full-assignment weights with the own coordinate overwritten. This representation loses no marginal assignment law. WellDefined imposes the stated positive finite regions and integrable potential outcomes; integrability of f and each g_i follows by subtracting additive potential outcomes for all-control and single-treated assignments. No Bernoulli or locality restriction is inserted. Singleton spatial regions and g_i(x)=1_{x=i} give nonzero point and circle effects under any such weights."
+  },
+  {
+    "theorem": "SAP.P004c.T41",
+    "target_id": "P004-T41",
+    "my_reading_vs_claim": "whole",
+    "reason": "The variance O(1/N) conclusion and the AME-centered, actual-variance-standardized Gaussian limit under an eventual positive lower bound on N*Var(HT) match the canonical claim. Independent Bernoulli assignment is in the finite weights; C2-C4 retain the stated eventual and radiuswise quantifiers. Nondegenerate requires a strictly positive constant and does not assume normality. CDF convergence is convergence in law because the target is the actual continuous standard Gaussian measure. The bounded-degree dependence graph follows from the shared-source definition. A separated alternating-baseline spatial sequence gives N*Var(HT)>=5, so the normal-limit premise is satisfiable."
+  },
+  {
+    "theorem": "SAP.P004c.T42",
+    "target_id": "P004-T42",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statistic, centering, lower bound on N*AVar and Gaussian limit match the canonical Hajek proposition. AVar is the actual variance of the augmented statistic with arm constants barMu and the corrected N(1-p) control denominator. It is not replaced by the variance of Hajek. Empty-arm zero means are the supplement's permitted convention; their exponentially small probabilities do not change the limit. The separated alternating-baseline sequence has N*Var(linearHajek)=4(1-bar(c)^2)>=32/9 for N>=2, so the lower-bound premise is not vacuous."
+  },
+  {
+    "theorem": "SAP.P004c.T44",
+    "target_id": "P004-T44",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All four canonical conclusions are retained: finite unbiasedness, HT variance O(1/N), root-N linearization error o_p(1), and the Hajek Gaussian limit under positive N*AVar. The NED premise uses the actual independent assignment field, uniform bounded scales, nonincreasing nonnegative coefficients and power decay with exponent greater than 4. Metric node distances match Appendix C. However QuadraticSpacing requires one eventual N threshold valid simultaneously for every radius, whereas the canonical text gives a radiuswise eventual threshold; it also repairs the impossible C_b*s^2 bound at radius zero to C_b*(1+s^2), as anticipated in the canonical note. The stronger quantifier order is a real restriction, explicitly disclosed in Challenge/Part1.lean:61-66. NED is requested only at the tested d, which suffices for the corresponding conclusions. Separated singleton line nodes with R_i=(-1)^i+z_i satisfy NED with psi=0, uniform quadratic spacing, and nondegenerate linearized variance."
+  }
+]

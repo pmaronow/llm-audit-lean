@@ -27,6 +27,8 @@ theorem mar_propensity_paper_support_balance :
   exact MarBalance.assemble MarSelection.n1_proof MarBalance.n1_proof
     MarBalance.n2_proof MarBalance.n3_proof
 
+example : AronowAudit.P001.Wave1.MarBalance.Target := mar_propensity_paper_support_balance
+
 end
 
 end AronowAudit.P001.Wave1

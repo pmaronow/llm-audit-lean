@@ -1,0 +1,150 @@
+import SAP.P024.Challenge
+
+open scoped BigOperators
+open SAP.P024
+
+noncomputable section
+
+def equalPairCheck : ClusterPopulation 2 where
+  size := fun _ => 2
+  positive := fun _ => by decide
+  y0 := fun j i => (j.val : ℝ) + (i.val : ℝ)
+  y1 := fun j i => (j.val : ℝ) + (i.val : ℝ) + 1 + (j.val : ℝ)
+
+lemma equalPairMean0Check : clusterMean0 equalPairCheck = ![1/2,3/2] := by
+  funext j
+  fin_cases j <;> dsimp only [clusterMean0, equalPairCheck] <;>
+    norm_num [Fin.sum_univ_succ]
+
+lemma equalPairMean1Check : clusterMean1 equalPairCheck = ![3/2,7/2] := by
+  funext j
+  fin_cases j <;> dsimp only [clusterMean1, equalPairCheck] <;>
+    norm_num [Fin.sum_univ_succ]
+
+lemma unequalPairMean0Check : clusterMean0 unequalPairPopulation = ![0,0] := by
+  funext j
+  fin_cases j <;> dsimp only [clusterMean0, unequalPairPopulation] <;>
+    norm_num [Fin.sum_univ_succ]
+
+lemma unequalPairMean1Check : clusterMean1 unequalPairPopulation = ![0,1] := by
+  funext j
+  fin_cases j <;> dsimp only [clusterMean1, unequalPairPopulation] <;>
+    norm_num [Fin.sum_univ_succ]
+
+lemma twoUnivCheck : (Finset.univ : Finset (Fin 2)) = {0,1} := by decide
+lemma fourUnivCheck : (Finset.univ : Finset (Fin 4)) = {0,1,2,3} := by decide
+lemma twoComplementCardCheck (i : Fin 2) :
+    (Finset.univ \ {i} : Finset (Fin 2)).card = 1 := by fin_cases i <;> decide
+lemma oneFilterCardCheck (i : Fin 4) :
+    (Finset.univ.filter (fun x : Fin 4 => x = i)).card = 1 := by
+  fin_cases i <;> decide
+lemma threeFilterCardCheck (i : Fin 4) :
+    (Finset.univ.filter (fun x : Fin 4 => ¬x = i)).card = 3 := by
+  fin_cases i <;> decide
+
+-- Every hypothesis of the equal-size component, with nonconstant individual
+-- outcomes and a parent probability different from one half.
+example : (0 < (2 : ℕ)) ∧ (∀ j, equalPairCheck.size j = 2) ∧
+    (0 < (1/3 : ℝ)) ∧ ((1/3 : ℝ) < 1) ∧
+    independentClusterLaw
+      (bernoulliDesign 2 (1/3) (by norm_num) (by norm_num)) (1/3) := by
+  refine ⟨by norm_num, fun _ => rfl, by norm_num, by norm_num, ?_⟩
+  intro s
+  rfl
+
+def leftAllocationCheck : NonemptyAllocations 0 :=
+  ⟨{0}, by decide⟩
+def rightAllocationCheck : NonemptyAllocations 0 :=
+  ⟨{1}, by decide⟩
+
+lemma nonemptyAllocationsCheck :
+    (Finset.univ : Finset (NonemptyAllocations 0)) =
+      {leftAllocationCheck, rightAllocationCheck} := by decide
+
+-- The conditional law has two genuine allocations. At p=1/3 its conditioning
+-- event has mass 4/9, with conditional mass one half on each allocation.
+example : bernoulliNonemptyMass 0 (1/3) = 4/9 ∧
+    bernoulliConditionalMass 0 (1/3) leftAllocationCheck = 1/2 ∧
+    bernoulliConditionalMass 0 (1/3) rightAllocationCheck = 1/2 := by
+  norm_num [bernoulliNonemptyMass, bernoulliConditionalMass,
+    nonemptyAllocationsCheck, leftAllocationCheck, rightAllocationCheck,
+    bernoulliMass, Fin.prod_univ_succ, twoComplementCardCheck]
+  rw [twoComplementCardCheck 0, twoComplementCardCheck 1]
+  norm_num
+
+-- Empty-arm extensions disappear without any bound or measurability loophole.
+example (empty : Finset (Fin 2) → ℝ) :
+    bernoulliConditionalExpectation 0 (1/3)
+      (fun s => populationEstimator equalPairCheck empty s.val) =
+    populationEffect equalPairCheck := by
+  unfold populationEstimator populationEffect
+  simp only [equalPairMean0Check, equalPairMean1Check]
+  norm_num [bernoulliConditionalExpectation, bernoulliConditionalMass,
+    bernoulliNonemptyMass, nonemptyAllocationsCheck, leftAllocationCheck,
+    rightAllocationCheck, bernoulliMass, clusterEffect, clusterDIM,
+    equalPairCheck, subsetExposure, Fin.sum_univ_succ, Fin.prod_univ_succ,
+    twoComplementCardCheck]
+  rw [twoComplementCardCheck 0, twoComplementCardCheck 1]
+  norm_num
+
+-- Independently compute the unequal-size witness from its individual outcomes.
+example (empty : Finset (Fin 2) → ℝ) :
+    populationEffect unequalPairPopulation = 2/3 ∧
+    populationEstimator unequalPairPopulation empty {0} = 0 ∧
+    populationEstimator unequalPairPopulation empty {1} = 1 ∧
+    expectation (conditionalNonemptyDesign 0)
+      (fun s => populationEstimator unequalPairPopulation empty s.val) = 1/2 := by
+  unfold populationEstimator populationEffect
+  simp only [unequalPairMean0Check, unequalPairMean1Check]
+  norm_num [clusterEffect, clusterDIM, unequalPairPopulation, subsetExposure,
+    expectation, conditionalNonemptyDesign, uniformDesign,
+    nonemptyAllocationsCheck, leftAllocationCheck, rightAllocationCheck,
+    Fin.sum_univ_succ, Fintype.card, Finset.card]
+
+-- Two blocks, four units per block. A single draw selects the treated unit in
+-- block zero and the control unit in block one, so the blocks are dependent.
+def blockExposureCheck (ω : Fin 4) (b : Fin 2) (i : Fin 4) : Bool :=
+  if b = 0 then decide (i = ω) else decide (i ≠ ω)
+def blockQuotaCheck (b : Fin 2) : ℕ := if b = 0 then 1 else 3
+def blockY0Check (b : Fin 2) (i : Fin 4) : ℝ := 10*b.val + i.val
+def blockY1Check (b : Fin 2) (i : Fin 4) : ℝ :=
+  blockY0Check b i + 2*b.val + 1
+
+-- Every hypothesis of T8, including actual marginals, holds simultaneously.
+example :
+    (∀ b, 0 < blockQuotaCheck b) ∧
+    (∀ b, blockQuotaCheck b < Fintype.card (Fin 4)) ∧
+    (∀ ω b, treatedCount (blockExposureCheck ω b) = blockQuotaCheck b) ∧
+    (∀ b i, exposureProbability (uniformDesign (Fin 4))
+      (fun ω => blockExposureCheck ω b) i =
+      (blockQuotaCheck b : ℝ) / Fintype.card (Fin 4)) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro b
+    fin_cases b <;> norm_num [blockQuotaCheck]
+  · intro b
+    fin_cases b <;> norm_num [blockQuotaCheck]
+  · decide
+  · intro b i
+    fin_cases b <;> fin_cases i <;>
+      norm_num [exposureProbability, expectation, uniformDesign, indicator,
+        blockExposureCheck, blockQuotaCheck, Fin.sum_univ_succ]
+
+-- Check the actual estimator, raw means, and nonzero individual effect as well.
+example :
+    expectation (uniformDesign (Fin 4))
+      (actualBlockedHTW3 (fun _ : Fin 2 => Fin 4) (uniformDesign (Fin 4))
+        blockExposureCheck blockY0Check blockY1Check) = 2 ∧
+    (∀ ω, actualBlockedHTW3 (fun _ : Fin 2 => Fin 4) (uniformDesign (Fin 4))
+      blockExposureCheck blockY0Check blockY1Check ω =
+      ∑ b : Fin 2, (4 : ℝ)/8 * clusterDIM (fun _ => 1)
+        (blockY0Check b) (blockY1Check b) (blockExposureCheck ω b)) := by
+  constructor
+  · norm_num [expectation, actualBlockedHTW3, observed, exposureProbability,
+      uniformDesign, indicator, blockPopulation, blockExposureCheck,
+      blockY0Check, blockY1Check, Fin.sum_univ_succ]
+  · intro ω
+    fin_cases ω <;>
+      norm_num [actualBlockedHTW3, observed, exposureProbability, expectation,
+        uniformDesign, indicator, blockPopulation, blockExposureCheck,
+        blockY0Check, blockY1Check, clusterDIM, Fin.sum_univ_succ,
+        oneFilterCardCheck, threeFilterCardCheck]

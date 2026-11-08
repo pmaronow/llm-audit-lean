@@ -1,0 +1,211 @@
+[
+  {
+    "target_id": "P001-T39",
+    "theorem": "SAP.P001c.T39",
+    "fingerprint": "7f29cc779579028448fbe3c7846d533ac1d5c6e46c6c2e796a604fa862fdcd81",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction; no scratch Lean compiled (no local lean; SSH blocked). For the universal normal combination take n=1 on R with standard Gaussian probability, X=id,m=0,v=1,a=1,b=0; measurability, independence of a singleton and nonzero coefficient hold. More generally use a finite Gaussian product. For the bivariate/transport parts use two independent standard Gaussians Z1,Z2 and X=mx+sx Z1, Y=my+sy(rho Z1+sqrt(1-rho^2)Z2), where sx,sy>0 and |rho|<1. The density follows by an invertible linear change of variables. The equal mixture of rho=+/-3/5 has the stated normal marginals, mean zero and covariance zero; E[X^2 Y^2]=43/25, not the independent value 1. This verifies genuine dependence without singular or undefined quantities. The rational cross-moment arithmetic was executed in scratch/finite-audit.py; the analytic density and Gaussian moment facts were argued, not machine checked.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T40",
+    "theorem": "SAP.P001c.T40",
+    "fingerprint": "a1c30c81628a9beb6966a6474ffd60f88a4220acd6db940a9afc3936342f736a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Lean compiled; exact rational Python checks were executed. On the full two-point sigma-algebra take probability weights (1/2,1/2) and X=(0,1). All MSE/variance hypotheses hold. Its mean is 1/2 and variance 1/4; the loss polynomial equals (c-1/2)^2+1/4. The script checks the coefficients, moments, and every stated special loss/doubled-loss value. The universal minimum is justified by a real square being nonnegative, with equality only at c=1/2. The declared omission of differentiation and certification of the drawn curve is accepted.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P001-T41",
+    "theorem": "SAP.P001c.T41",
+    "fingerprint": "2759a943899813552daa0bfc4b770270c5a1f75b7d37fbfe59b342ff509a4e79",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Lean compiled; all finite arithmetic and witness checks ran in exact rational Python. Printed reading: perfect positive/negative correlation implies the corresponding affine equality at every outcome. Conditions checked: probability masses sum to one and are nonnegative; the full three-point sigma-algebra makes X,Y+,Y- measurable; all moments are finite, all means are 1/2 and all variances 1/4>0; covariance/correlation values and both probability-one relations match the theorem. At indices 0 and 2, X=0 while each Y has unequal values, excluding every affine function pointwise. Each range equals its support {0,1}; the zero-mass outcome is allowed. This is a witness against the canonical pointwise assertion itself.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P001-T42",
+    "theorem": "SAP.P001c.T42",
+    "fingerprint": "a7232154af7f806616e637ff1fc7f299e77781d9798acc8f75d69c30410bb110",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not Lean compiled: the fair Bernoulli variable X on two equiprobable points, with Y=X, satisfies measurable L2 and both positive-variance hypotheses (variance 1/4); Y=1-X separately realizes the negative-correlation iff. These have genuine finite nonzero correlation denominators. An independent fair Bernoulli pair also realizes a nonextremal correlation.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T43",
+    "theorem": "SAP.P001c.T43",
+    "fingerprint": "dcef1e8447ae25c2809b3d9104941d1209eea0bd52c79834453a6ee3dcb68dde",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical constructions; no Lean compiled. Positive branch: on two equiprobable points set X=Y=(0,1). They are measurable L2 with Var X=1/4; the Borel CEF m(x)=x satisfies each event-integral equality, and (a*,b*)=(0,1) attains zero loss. Zero branch: set X=0,Y=(0,1); m(x)=1/2 is a conditional-mean version. Any finite-valued g,h of this constant X have constant, integrable compositions, so the arbitrary-function comparison has finite losses. The normal-equation, differentiability and residual conclusions are not premises. Both branches have genuine data.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T44",
+    "theorem": "SAP.P001c.T44",
+    "fingerprint": "a2c07ecf71869ba1ba66a1da60c9726754544d93b2c4378cba844cb92742e15d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Lean compiled; exact rational Python verified all six finite assertions. Printed reading: the affine BLP is the only affine function satisfying the covariance equation, in a finite-second-moment setting with Var X>0. On two equiprobable points set X=Y=(-1,1). Both g0(x)=x and g1(x)=x+1 are affine and measurable; Var X=1>0 and all quantities are finite. They are distinct on positive-mass outcomes and both have covariance 1 with X. The losses are respectively zero and one. Nonnegative squared loss proves g0 is a BLP, so this violates the asserted uniqueness. The record/docstring correctly retain only this example, omitting example (b) and the general covariance formula.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P001-T45",
+    "theorem": "SAP.P001c.T45",
+    "fingerprint": "1602a6a206d48d948c051d983b90d6fd2726bc44f5c6e3be30fba656d983a527",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not Lean compiled: take X=Y fair Bernoulli on the full two-point sigma-algebra. They are L2 with Var X=1/4>0, EX=EY=1/2, Cov(X,Y)=1/4, hence b*=1,a*=0. Those coefficients satisfy both equations and attain zero loss; all other affine candidates have finite loss. The premises contain neither equation nor the minimization conclusion.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T46",
+    "theorem": "SAP.P001c.T46",
+    "fingerprint": "f214139c1ea5d42021589de50e90b3d779982a1d30675914b867d14b3c9267c7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not Lean compiled: take the product probability Uniform[0,1] x N(0,1) on R^2, with X,W the coordinate projections and Y=10X^2+W. The projections are measurable and independent with precisely the required laws. Boundedness of X and Gaussian moments give every moment in the statements, Var X=1/12>0, and Y in L2. Fubini verifies the event-integral CEFs x^2,0,10x^2 for X^2,W,Y given X, respectively. For the general BLP block one may also use X=Y fair Bernoulli; for the integrable independent conditional-mean block the same product construction qualifies. No remote computation was performed.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T47",
+    "theorem": "SAP.P001c.T47",
+    "fingerprint": "705d6fe7549a52a470a1860cdb98e2c2013f61ac61b83c1bb663fa46bcdabb55",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not Lean compiled: on four equiprobable points take X,Y the two independent fair Bernoulli coordinates. Both are measurable and L2, with variance 1/4; product moments and all conditional-mean/variance quantities exist. For the transformed clauses choose g=h=id; more generally every real Borel transform of a Bernoulli variable has finite support and finite moments. The independent constant predictor has coefficients (1/2,0). Constant X with the same independent Y also realizes the zero-regressor-variance optimality branch. The final general BLP block is realized by X=Y Bernoulli. Clause-specific hypotheses are compatible.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T48",
+    "theorem": "SAP.P001c.T48",
+    "fingerprint": "487d02680196c13c08cecb4d1e3df2404abc7bec9c718b63fe7d3a4afd7a8de5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not Lean compiled: take a fair Bernoulli B, K=2 and X=(B,2B). Both coordinates are measurable L2. The actual covariance matrix is (1/4)[[1,2],[2,4]], singular but nontrivial; Var(B+2B)=9/4 equals the sum of its entries. K=0 yields the legitimate empty-matrix case and does not exhaust the theorem. No independence or invertibility premise is used.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T49",
+    "theorem": "SAP.P001c.T49",
+    "fingerprint": "3cce91a4eb3c97d0ad8cab398af052a833b25a793f8b6676f62ac730dd4fc273",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not Lean compiled: fair Bernoulli B, K=1, X=B,Y=B and b=(0,1). Every candidate residual is a function on two points, so every candidate squared loss is integrable; the selected b has zero loss and is a global minimizer because squared losses are nonnegative. Residual identities then concern the genuine zero residual. Taking K=2 and duplicate regressors X=(B,B), b=(0,1,0) realizes a singular design. Taking K=0,Y=B,b0=1/2 realizes the intercept-only case. The deterministic coefficient and coordinate-derivative assertions have actual polynomial affine maps for every K; they do not rely on deriv's default value.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T50",
+    "theorem": "SAP.P001c.T50",
+    "fingerprint": "18f14c3d12a4bc1fc36d9cac73076addc3e2421c4b6be2af102a872db662b3a8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Lean compiled; exact rational Python checked the full four-response example (3,4,3,10), its support/masses, mean 5, variance 17/2 and plus-sign discrepancy 50=2*5^2. Use the full four-point probability with masses 1/4 as a genuine finite population. All N>0 equal-weight populations are normalized. A deterministic sequence beginning with those four observations gives the empirical part at n=4; for every positive n its empirical law is a finite supported probability with all moments. A fair Bernoulli Z realizes the general L2 identity. All denominators in finite-sample claims are nonzero.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P001-T51",
+    "theorem": "SAP.P001c.T51",
+    "fingerprint": "a3d09a0b5b1a2eddabe40c0546b1607c717f5e87af41b7099c03fb8ea3a73f25",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not Lean compiled: geometric probability on N with P{k}=2^(-(k+1)), and Z_n(k)=1_{k=n}. All events are measurable and probabilities finite. For 0<epsilon<=1, the bad event is {n}, with probability 2^(-(n+1))->0; for epsilon>1 it is empty. Within epsilon=1/2 the probability is exactly 1-2^(-(n+1))<1 for every n, excluding every eventual bound p=1. The corrected equivalence applies to arbitrary measurable random-variable sequences. The same witness can be embedded into an IID geometric sampling model as the statistic 1_{first observation=n} for n>=1 if desired; it requires no dependent draws assumption.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T52",
+    "theorem": "SAP.P001c.T52",
+    "fingerprint": "ee3634c844f8484483863e56cb489b268cb0b87c07816610cb094527133125b4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not Lean compiled: take the countable product of fair Bernoulli probabilities and Xi the coordinate maps. This supplies actual mutual independence, identical laws and measurability. D={0} and x=1/2 give nondegenerate probability 1/2; x<0 and x>=1 give the two degenerate cases. The indicator statistics are bounded, integrable and measurable, whatever the original variables' higher moments. A finite initial n=0 convention cannot affect consistency.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T53",
+    "theorem": "SAP.P001c.T53",
+    "fingerprint": "8a15a54b1d858a6cdfd0667c0326bc94a25beb89469719567de50b823621b8c5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Lean compiled. Genuine witness: on N^N take the product of geometric(7/8) laws, Xi=2^(omega_i). Printed reading under challenge: IID and finite positive Var X should imply the finite-variance WLLN premise for X_i^2. The product coordinates give mutual independence, identical laws and measurability. Exact geometric-series arithmetic (executed in Python) gives total mass 1, E|X|=EX=7/6, EX^2=7/4, Var X=7/18>0. Fourth-moment summands are (7/8)*2^k, so the extended fourth moment diverges. For k>=1, (4^k-7/4)^2 >= (1/4)*16^k, proving evariance(X^2)=infinity while EX^2 remains finite. Thus X^2 is integrable but not L2, exactly violating the claimed additional WLLN premise. Infinite product existence, integrability and the WLLN/consistency conclusions were argued mathematically, not separately machine checked. The theorem explicitly retains the true sample-variance result.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T54",
+    "theorem": "SAP.P001c.T54",
+    "fingerprint": "92eab6c852d0f469ce49b51a83002320f7b5f6c368f264e3b0ec86258688753a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical constructions, not Lean compiled: a genuine infinite IID fair Bernoulli product has integrable coordinates, L2 and positive variance 1/4, satisfying the WLLN and sample-variance blocks. The actual heavy-tail IID construction in T53 satisfies the same third-block hypotheses without a fourth moment, showing there is no hidden fourth-moment requirement. For the independent continuous-mapping block on a fair Bernoulli space put S_n=T_n=B/(n+1), a=b=0; both sequences are measurable and converge uniformly to zero while depending on exactly the same B. Any continuous g, for example g(u,v)=u-v^2, supplies the remaining premise.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T55",
+    "theorem": "SAP.P001c.T55",
+    "fingerprint": "83c284ded6dbb2e32696e6db18abe88d0ecf18fcd75df5ee5139fc325f048f0c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical constructions, not Lean compiled. General equivalence block: on standard Gaussian probability take theta=0, thetaHat_n=Z/sqrt(n), Vhat_n=1/n for n>=1, and set both to zero at n=0. They are measurable, Vhat is everywhere nonnegative, and sqrt(n)*thetaHat_n has exactly the standard Gaussian law eventually, with finite variance 1. Thus every premise is simultaneously satisfied. For the sample-mean block use true IID Bernoulli(1/2) coordinates, variance 1/4>0. Every sample variance is finite; centered-square algebra makes V_n nonnegative, and the real-division conventions give V_0=V_1=0. Unbiasedness is asserted only for n>=2, so no junk endpoint is used as a substantive instance.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T56",
+    "theorem": "SAP.P001c.T56",
+    "fingerprint": "c25a7a78975b810576d6783aca79e96b7e2ce7a7916e6fdfc91d4918516050c7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Lean compiled. Printed reading: every sup-norm Hadamard differentiable CDF functional of genuinely IID empirical data has a centered normal root-n limit with strictly positive finite variance. Use the countable product of fair Bernoulli laws with coordinate Xi: measurable, mutually independent, identical Bernoulli law, and genuine bounded CDFs. T0=7 is measurable and differentiable with continuous zero derivative; its centered plug-in is exactly zero, whose CDF at 0 is 1, whereas every positive-variance centered Gaussian has continuous CDF 1/2 there. Q(G)=(G(0)-1/2)^2 is bounded/nonconstant on CDFs; at F(0)=1/2 its difference quotient is t*h_n(0)^2 ->0 for uniformly convergent bounded directions, proving derivative zero. Writing the centered Bernoulli indicators as independent +/-1/2 variables yields E(sum)^4=(3n^2-2n)/16, hence the displayed second moment (3n-2)/(16n^2) and its degenerate probability limit. Exact binomial sums for n=1,...,40 were executed in Python; the all-n fourth-moment derivation is a mathematical argument. The theorem's disclosed omissions and absence of a Lean-constructed IID realization are accepted.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T57",
+    "theorem": "SAP.P001c.T57",
+    "fingerprint": "e0b1025433e7665b992e88aa2d4a0e2833c474677170457d63b828ad50f01728",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Mathematical construction, not Lean compiled: take genuine IID Bernoulli(1/2) coordinates. Their F is 0 on x<0, 1/2 on [0,1), and 1 on x>=1. With h=1_[0,1), the process is Z_n*h, Z_n=sqrt(n)*(sample fraction of zeros-1/2), which tends by the scalar binomial CLT to Z~N(0,1/4). The law nu of Z*h is a tight Borel probability on the one-dimensional span of h, satisfies every finite bridge covariance and is carried by cdfTangent(F); ordinary weak convergence here supplies the outer formulation too. Choose H=span(h), ell(c*h)=c, T(G)=G(0). The evaluation L(f)=f(0) is a continuous linear extension; the Hadamard quotient is exactly h_n(0), plug-ins are measurable sample counts, and the derivative variance is 1/4>0. T=7 and ell=0 realize the zero-variance alternative. This exhibits all hypotheses, positive-variance and degenerate branches without assuming an empirical-process theorem as a premise. The general functional-analytic result was reviewed semantically, not re-proved by scratch Lean.",
+    "confidence": 0.91
+  }
+]

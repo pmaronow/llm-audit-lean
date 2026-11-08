@@ -138,6 +138,8 @@ theorem school_randomization_laws_proof (B n m : ℕ) (hn : 2≤n) (hm : m≤n) 
         convert he using 1 <;> congr!
       rcases hm01 with rfl | rfl <;> simp
 
+example : type_of% @AronowAudit.P037.school_randomization_laws := school_randomization_laws_proof
+
 /-- Rejected states lie in the upper tail of a rejected state of minimum score. -/
 private theorem sharp_tail {Ω : Type*} [Fintype Ω] (p t : Ω → ℝ)
     (hp : ∀ z, 0≤p z) (α : ℝ) (hα : 0≤α) :
@@ -164,7 +166,7 @@ private theorem sharp_tail {Ω : Type*} [Fintype Ω] (p t : Ω → ℝ)
       exact hR ⟨z, by simp [R,hz]⟩
     simpa only [hnone, if_false, mul_zero, Finset.sum_const_zero] using hα
 
-/-- Weighted permutation validity with an assignment-invariant outcome vector. -/
+/-- Weighted permutation validity with the outcome vector frozen as in the held type. -/
 theorem sharp_null_permutation_valid_proof {Ω I : Type*} [Fintype Ω] [Fintype I]
     (p : Ω → ℝ) (hp : ∀ z, 0<p z) (htotal : ∑ z, p z=1)
     (T : Ω → (I → ℝ) → ℝ) (Y : Ω → I → ℝ)
@@ -173,5 +175,7 @@ theorem sharp_null_permutation_valid_proof {Ω I : Type*} [Fintype Ω] [Fintype 
     let pval := fun z => ∑ z', p z'*(if |T z' (Y z0)| ≥ |T z (Y z0)| then (1:ℝ) else 0)
     (∑ z, p z*(if pval z≤α then (1:ℝ) else 0))≤α := by
   exact sharp_tail p (fun z => |T z (Y z0)|) (fun z => (hp z).le) α hα.1
+
+example : type_of% @AronowAudit.P037.sharp_null_permutation_valid := sharp_null_permutation_valid_proof
 
 end AronowAudit.P037.Wave1

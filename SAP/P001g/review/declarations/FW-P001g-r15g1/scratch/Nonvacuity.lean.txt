@@ -1,0 +1,115 @@
+import SAP.P001g.Defs.WholeW1
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators ENNReal NNReal Topology
+
+noncomputable section
+namespace Review
+
+def half : unitInterval := ⟨1/2, by norm_num⟩
+def coin : Measure (Fin 2) := bernoulliMeasure 1 0 half
+instance : IsProbabilityMeasure coin := by unfold coin; infer_instance
+def treatment (i : Fin 2) : ℝ := i.val
+
+lemma measurable_treatment : Measurable treatment := measurable_of_countable _
+lemma treatment_binary : ∀ i, treatment i = 0 ∨ treatment i = 1 := by
+  intro i
+  fin_cases i <;> norm_num [treatment]
+
+lemma arm_probabilities :
+    SAP.P001g.prob coin {i | treatment i = 0} = 1/2 ∧
+    SAP.P001g.prob coin {i | treatment i = 1} = 1/2 := by
+  constructor <;>
+    norm_num [SAP.P001g.prob, coin, bernoulliMeasure_apply,
+      measurableSet_setOfPred, treatment, half, unitInterval.toNNReal,
+      ENNReal.coe_toReal, ENNReal.toReal, NNReal.coe_mk] <;> rfl
+
+lemma zero_cef {E : Type*} [MeasurableSpace E] (x : Fin 2 → E)
+    (ν : Measure (Fin 2)) : SAP.P001g.IsCEF ν x (fun _ => 0) (fun _ => 0) := by
+  refine ⟨measurable_const, integrable_zero _ _ _, ?_, ?_⟩
+  · exact integrable_zero _ _ _
+  · intro A hA
+    simp
+
+lemma constant_covariate_propensity {E : Type*} [MeasurableSpace E] (x : E) :
+    SAP.P001g.IsCEF coin (fun _ => x) treatment (fun _ => 1/2) := by
+  refine ⟨measurable_const, integrable_bernoulliMeasure 1 0 half treatment,
+    integrable_const _, ?_⟩
+  intro A hA
+  by_cases hx : x ∈ A
+  · simp [hx, coin, integral_bernoulliMeasure, treatment, half]
+  · simp [hx]
+
+lemma zero_pair_ci {E : Type*} [MeasurableSpace E] (x : Fin 2 → E)
+    (hx : Measurable x) :
+    SAP.P001g.CI coin x hx (fun _ => ((0 : ℝ), (0 : ℝ))) treatment := by
+  classical
+  intro A B hA hB
+  by_cases h : ((0 : ℝ), (0 : ℝ)) ∈ A
+  · simp only [h, true_and, ite_true]
+    have hc : coin[(fun _ : Fin 2 => (1 : ℝ)) |
+        MeasurableSpace.comap x inferInstance] = fun _ => 1 :=
+      condExp_const hx.comap_le 1
+    simp [h, hc]
+  · simp [h]
+
+-- The complete population domain of T115, including its independence premise.
+example :
+    Measurable (fun _ : Fin 2 => (0 : ℝ)) ∧
+    Integrable (fun _ : Fin 2 => (0 : ℝ)) coin ∧
+    Measurable treatment ∧
+    (∀ᵐ i ∂coin, treatment i = 0 ∨ treatment i = 1) ∧
+    (0 < SAP.P001g.prob coin {i | treatment i = 1} ∧
+     0 < SAP.P001g.prob coin {i | treatment i = 0}) ∧
+    IndepFun (fun _ : Fin 2 => ((0 : ℝ), (0 : ℝ))) treatment coin := by
+  refine ⟨measurable_const, integrable_const _, measurable_treatment,
+    Filter.Eventually.of_forall treatment_binary, ?_, indepFun_const_left _ _⟩
+  rw [arm_probabilities.1, arm_probabilities.2]
+  norm_num
+
+-- Positive-count empirical domain of T115 (two distinct arms).
+example : ∃ (y d : Fin 2 → ℝ),
+    (∀ i, d i = 0 ∨ d i = 1) ∧ 0 < ∑ i, d i ∧ 0 < ∑ i, (1-d i) := by
+  refine ⟨fun _ => 0, treatment, treatment_binary, ?_, ?_⟩ <;>
+    norm_num [Fin.sum_univ_two, treatment]
+
+-- T116: discrete and general covariates, with the arm CEFs and full-law moments.
+example :
+    SAP.P001g.IsCEF coin (fun _ : Fin 2 => ()) treatment (fun _ => 1/2) ∧
+    (∀ i : Fin 2, (1/4 : ℝ) < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1-1/4) ∧
+    SAP.P001g.CI coin (fun _ : Fin 2 => ()) measurable_const
+      (fun _ => ((0 : ℝ), (0 : ℝ))) treatment ∧
+    SAP.P001g.IsCEF (coin.restrict {i | treatment i=0})
+      (fun _ : Fin 2 => ()) (fun _ => 0) (fun _ => 0) ∧
+    SAP.P001g.IsCEF (coin.restrict {i | treatment i=1})
+      (fun _ : Fin 2 => ()) (fun _ => 0) (fun _ => 0) ∧
+    Integrable (fun _ : Fin 2 => (0 : ℝ)) coin := by
+  exact ⟨constant_covariate_propensity (), by intros; norm_num,
+    zero_pair_ci _ measurable_const, zero_cef _ _, zero_cef _ _, integrable_const _⟩
+
+-- T117: K=0, genuine overlap, both alternatives of the augmented-score premise.
+example : ∃ (x : Fin 2 → (Fin 0 → ℝ)) (hx : Measurable x)
+    (p q m : (Fin 0 → ℝ) → ℝ),
+    SAP.P001g.IsCEF coin x treatment p ∧
+    (∃ ε : ℝ, 0 < ε ∧ ∀ᵐ i ∂coin, ε < p (x i) ∧ p (x i) < 1-ε) ∧
+    SAP.P001g.CI coin x hx
+      (fun _ => ((0 : ℝ), (0 : ℝ))) treatment ∧
+    Measurable m ∧ Measurable q ∧
+    Integrable (fun i => SAP.P001g.wholeAugmentedScore 0 (treatment i)
+      (m (x i)) (m (x i)) (q (x i))) coin ∧
+    (SAP.P001g.IsCEF (coin.restrict {i | treatment i=0}) x (fun _ => 0) m ∧
+     SAP.P001g.IsCEF (coin.restrict {i | treatment i=1}) x (fun _ => 0) m ∧
+     ∃ η : ℝ, 0 < η ∧ ∀ᵐ i ∂coin, η < q (x i) ∧ q (x i) < 1-η) ∧
+    q ∘ x =ᵐ[coin] p ∘ x := by
+  refine ⟨fun _ => 0, measurable_const, fun _ => 1/2, fun _ => 1/2, fun _ => 0,
+    constant_covariate_propensity _, ?_,
+    zero_pair_ci _ measurable_const, measurable_const, measurable_const, ?_, ?_, ?_⟩
+  · exact ⟨1/4, by norm_num, Filter.Eventually.of_forall (by intros; norm_num)⟩
+  · simp only [SAP.P001g.wholeAugmentedScore, sub_zero, mul_zero, zero_mul,
+      zero_div, zero_add, sub_self]
+    exact integrable_zero _ _ _
+  · exact ⟨zero_cef _ _, zero_cef _ _,
+      1/4, by norm_num, Filter.Eventually.of_forall (by intros; norm_num)⟩
+  · exact Filter.EventuallyEq.rfl
+
+end Review

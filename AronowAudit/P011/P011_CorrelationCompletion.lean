@@ -1,6 +1,4 @@
-/- P011 T21: finite correlation correction, including the zero-variance convention.
-All covariance and oracle identities are derived from weighted-coordinate L2
-and full dependency independence. -/
+/- Original P011 T21 finite correlation repair, with unchanged hypotheses and zero-variance convention retained. All covariance and oracle identities are derived from actual weighted-coordinate L2 and full dependency independence. -/
 import AronowAudit.P011.P011_ExpectationCompletion
 
 namespace AronowAudit.P011.CorrelationCompletion
@@ -140,3 +138,4 @@ theorem pairwise_correlation_repair {n : ℕ} (hn : 0 < n) (m : Model n)
   exact CorrelationCompletion.pairwise_correlation_repair_completed hn m hdep hs hL2
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.pairwise_correlation_repair

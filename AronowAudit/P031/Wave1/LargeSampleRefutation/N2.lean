@@ -1,7 +1,7 @@
 import AronowAudit.P031.Wave1.LargeSampleRefutationBlueprint
 
 /-!
-Exact moments of the enumerated hypercube.  These are finite sums,
+Node 2: exact moments of the enumerated hypercube.  These are finite sums,
 so the cancellation argument does not require a probability space.
 -/
 
@@ -105,7 +105,7 @@ private theorem n2_sum_sign_sums_sq (k : ℕ) :
       exact n2_coordinate_product_sum k j l
     _ = (k : ℝ) * (2 : ℝ) ^ k := by simp
 
-/-- Transport through the binary enumeration. -/
+/-- Transport through the actual binary enumeration used by the blueprint. -/
 private theorem n2_sum_digits (n : ℕ) (f : (Fin (hcK n) → Fin 2) → ℝ) :
     (∑ i : Fin (hcN n), f (hcDigits n i)) = ∑ v, f v := by
   change (∑ i : Fin (2 ^ hcK n),

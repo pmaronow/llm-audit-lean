@@ -1,0 +1,22 @@
+[
+ {
+  "theorem": "SAP.P024.T5",
+  "target_id": "P024-T5",
+  "round": 6,
+  "verdict": "restriction_inaccurate",
+  "severity": "minor",
+  "issues": [
+   "SAP/P024/Challenge/Part1.lean:32 and SAP/P024/Defs/WholeW1.lean:24 describe the probability hypothesis only as 'a common interior treatment probability', while SAP/P024/Challenge/Part1.lean:40 and SAP/P024/Defs/WholeW1.lean:32 explicitly allow probabilities to change. This omits the uniform-in-k positive distance from both endpoints required by SAP/P024/Defs/Part6.lean:16 and SAP/P024/Defs/Part6.lean:20 and by claims.json:68. Pointwise 0<p_k<1 is insufficient: singleton clusters with Y(0)=0, Y(1)=1, p_K=2^(-K), and empty-arm value 0 have maximum share 1/K tending to zero but P(error>1/2) at least (1-2^(-K))^K tending to one. The Lean proposition is whole and correct; its two docstrings understate a substantive hypothesis."
+  ]
+ },
+ {
+  "theorem": "SAP.P024.T6",
+  "target_id": "P024-T6",
+  "round": 6,
+  "verdict": "label_wrong",
+  "severity": "major",
+  "issues": [
+   "record.json:286 labels T6 'whole' and record.json:288 declares no restriction, but SAP/P024/Defs/WholeW2.lean:30 adds a fixed treatment count on the support, SAP/P024/Defs/WholeW2.lean:35 specifies complete randomization, SAP/P024/Defs/WholeW2.lean:40 specifies a full independent joint law before conditioning, and SAP/P024/Defs/WholeW2.lean:51 requires equal masses within each cardinality class. These are sufficient design subclasses, not consequences of the individual equal-probability wording in claims.json:83-84. claims.json:16 says no joint mechanism beyond the printed words is specified; its complete and independent examples are not stated as an exhaustive assumption. The more restrictive formal reading is in claims.json:85 (the note), which cannot add clauses or remove cases under this review's explicit rule. Consequently the phrase 'reading specified for this target' at SAP/P024/Challenge/Part1.lean:44 and SAP/P024/Defs/WholeW2.lean:12 does not justify the whole label. The compiled six-assignment diagnostic has common marginal 1/2, fixed own-treatment outcomes, fully observed nonempty arms, and assignment as the sole randomness, but random count and unequal masses within a count class (mean 3/8, effect 1/3); thus the extra joint-law conditions are substantive. This finding concerns the claimed scope, not the truth of any of the four positive branches."
+  ]
+ }
+]

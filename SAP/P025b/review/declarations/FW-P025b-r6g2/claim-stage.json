@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P025b.T17",
+    "target_id": "P025-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "The unconditional conjunction covers count uniqueness (a), all six exact rational endpoints and final rounding (b), the rounded-input provenance of all 42 printed cells (c), the remaining 36 unchanged cells and exactly six one-tenth corrections (d), and disjointness through gamma=3 and overlap at gamma=4 on the specified grid (e). The literal table matches definitions_needed, including the two inputs and the printed/corrected columns. The Bool and nested-product projections select the intended endpoint and displayed integer. All arithmetic denominators are positive; no assumption or junk value removes any cell. The independent scratch check verifies all 42 rounding pairs and the six differences."
+  },
+  {
+    "theorem": "SAP.P025b.T18",
+    "target_id": "P025-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "The same nonempty finite real sample, both admissible pairs of positive probability bounds, equality of beta/alpha, both physical attainable sets and the normalized box, both endpoints, and the singleton box and sample-mean endpoints at ratio one are all stated. Although the conclusions are under a quantifier over a second same-ratio pair, that pair can always be the original pair, so the normalization and ratio-one clauses have no extra premise. Unordered observations merely allow arbitrary relabeling of the sample. The interpretive probability-ratio sentence follows from the same positive bounds. A compiled n=2 instance uses (alpha,beta)=(1/4,1/2) and (alpha_prime,beta_prime)=(1/2,1), plus a genuine feasible vector."
+  },
+  {
+    "theorem": "SAP.P025b.T19",
+    "target_id": "P025-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "The n>=2 sorted-sample setting and positive bounds agree exactly. The zero-based IsLeast tests translate the canonical next-observation tests, with the corrected lower <= rule. The statement constructs the uniquely selected physical optimal vectors, treats all tied pairs (hence all adjacent ties), states the gamma>1 adjacent equality/cut equivalences, and includes every constant/nonconstant and strict-failure formula in Supplement steps (i)-(iv), with positive denominators. Assertions of existence and optimality are conclusions, not hypotheses. A compiled sorted sample (0,0,1,1) has genuine adjacent ties and both cuts equal to prefix length 2 at gamma=2."
+  },
+  {
+    "theorem": "SAP.P025b.T20",
+    "target_id": "P025-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The first conjunct states the full attainable closed interval, both optimization endpoints, p=0, p=1, and gamma=1 for every nonempty binary sample and admissible positive bounds. The second conjunct states both class counts, the normalized weight sums A and C, their bounds, the estimator identity, and both monotonicities. Denominators stay positive even when a class is empty. Compiled mixed, all-zero, all-one, and equal-bound inputs satisfy the premises; explicit mixed-sample vectors attain 1/3 and 2/3."
+  },
+  {
+    "theorem": "SAP.P025b.T21",
+    "target_id": "P025-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "FiniteDesign is an arbitrary finite-population sampling law, with actual inclusion probabilities, nonempty strictly ordered outcome classes, and the standing positive probability bounds. A law on any sample space induces a law on the finite set of population subsets, so finite kappa does not restrict the available sampling designs. Measure.infinitePi enforces independent identically distributed replicates as required by Assumption 1. Separation states both Assumption 2 inequalities for exactly 0<=k<J. The pooled endpoints optimize over the actual sampled replicate-unit pairs, and the limits optimize the class-total box (6)-(7). The almost-sure conclusion and eventual nonemptiness match the printed reading; empty initial samples are harmless totalizations. The finite_lemmas field is proof/audit history and adds no independent theorem clauses. A compiled random singleton-sampling design on two units satisfies every hypothesis, including separation, and its product law is an iid probability measure of mass one."
+  }
+]

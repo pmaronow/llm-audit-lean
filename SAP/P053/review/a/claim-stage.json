@@ -1,0 +1,50 @@
+[
+  {
+    "theorem": "SAP.P053.T1",
+    "target_id": "P053-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical clauses (a)-(e) are present: affine identities, equality of statistic/success-count/table fibers, a single explicit factor uniform over all binary outcome vectors with the same total, within-arm permutation-invariant sample statistics and the converse, and the exact table-constancy criterion. The integer floor only chooses the permitted arbitrary extension off attainable values. The single fixed Boolean vector correctly represents the binary sharp null. The use of integer table coordinates avoids truncated subtraction; the sole natural subtraction in the canonical control sample is protected by successes <= totalSuccesses. Positive arm sizes and arbitrary codomain S match the claim. Nonvacuity: n1=n0=2, y=fourY; the support has six assignments, and assignments fourA and fourB have the specified common table. Independently checked over every binary vector and assignment for 2 <= N <= 7."
+  },
+  {
+    "theorem": "SAP.P053.T2",
+    "target_id": "P053-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The entire four-unit example, both nonfactorization assertions, and both statistics on every positive repeated block size are retained. labelStatistic=1_{unit 0 treated} agrees exactly with the canonical z_1*y_1 because that fixed unit has y_1=1; the Boolean AND outcome is the product x_i*y_i. This proves the canonical counterexample to the unrestricted reading, not a refutation of the corrected table claim. For the final regularity assertion in canonical (v), RepeatedScaling supplies size divergence, allocation and success-fraction limits and a uniform raw fourth-moment bound, but does not assert the full standing S5 population/outcome-variance/effect-variance/average-effect certificate. This is a loss of stated scope, not a false counterexample. The missing regularity facts are in fact satisfiable: taking both potential outcomes equal to the repeated binary y gives V1=V0=m/(4m-1) -> 1/4, Vdelta=0, tau=0 and raw fourth-moment average 1. All supports are nonempty and all relevant divisors are positive for m>=1."
+  },
+  {
+    "theorem": "SAP.P053.T3",
+    "target_id": "P053-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "Canonical (a), (b), and (c) are all included: the six-unit counts 1,9,9,1, every specified signed/absolute upper-tail p-value on both populations, the rejection/nonrejection at level 1/20, and invariance for every real outcome vector and every transformation strictly increasing on the attainable range. Including ties via T(z)<=T(w) matches the canonical convention. The real-outcome clause is explicitly part of the canonical claim, so it is not an unintended broadening. Six- and four-unit supports contain respectively 20 and 6 assignments; exact rational enumeration confirms every finite value."
+  },
+  {
+    "theorem": "SAP.P053.T4",
+    "target_id": "P053-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universal real quantifiers, 0<p<1, both nonnegative standard-deviation parameters, the identity and both directions of the sign criterion match exactly. Nonnegativity is appropriate to standard deviations rather than an extra population restriction. No power assertion is required by the canonical formal reading or definitions_needed. Positive p*(1-p) prevents division by zero. Nonvacuity includes p=3/4,S1=2,S0=1 (strict inequality), p=1/4,S1=1,S0=2 (the other strict branch), and p=1/2 (equality). Algebra and 225 exact rational cases check the signs."
+  },
+  {
+    "theorem": "SAP.P053.T5",
+    "target_id": "P053-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "Regularity expands to the standing S5 assumptions, without a consistency or central-limit assumption. All three first-order expansions and both scaled probability limits in the canonical formal reading are present with the correct reversed arm denominators for OLS/Fisher. Finite sums, real N-1 and N-2 divisors, uniform assignment probabilities, and the definitions of o_p(1/N) are faithful to S4/S5; eventual arm sizes >=2 follow from the positive limiting allocation and divergent size. No interpretive Rao/power result is demanded by definitions_needed. Truth follows from finite-population sample mean/variance consistency under the raw fourth-moment bound and the combined-versus-pooled variance identity. Nonvacuity: the sharp-null binary family with N=4r,n1=n0=2r,r ones and 3r zeros has p=1/2,v1=v0=3/16,vt=tauInf=0 and raw fourth-moment average 1/2; the heterogeneous witness gives a second nondegenerate family. The definitions-only Lean scratch file additionally proves Regularity for the zero-outcome family without sorryAx."
+  },
+  {
+    "theorem": "SAP.P053.T6",
+    "target_id": "P053-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The local variance difference, both constant-effect variance approximations, the sharp-null normal limit, and the two-sided nominal size conclusion match canonical (a)-(c). The variance-ratio implication additionally assumes PositiveOLS, as does the studentized sharp-null implication: this requires eventual strict positivity on every supported assignment, whereas the canonical claim only requires the indicated positive limiting variance. S5 does not imply that stronger premise. The proposition also contains no conditional FRT distribution/quantile/p-value/rejection-rule comparison establishing the printed local equivalence of tests. None of these extra requirements assumes the limit or nominal-size conclusion. The retained statement is mathematically true under its added premise. Nonvacuity of all strengthened sharp-null hypotheses: r=k+1,N=4r,n1=n0=2r,Y1=Y0=1 on r units and 0 on 3r units. Then v0=v1=3/16,vt=tauInf=0; for a treated successes, RSS=r-[a^2+(r-a)^2]/(2r)>=r/2, so every OLS variance is >=1/[2(4r-2)]>0. Balanced half-one/half-zero sharp-null populations satisfy S5 with positive variance but fail PositiveOLS on homogeneous-arm assignments, showing the restriction is real."
+  },
+  {
+    "theorem": "SAP.P053.T7",
+    "target_id": "P053-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "The Neyman expansion, the OLS-minus-Neyman expansion, both probability limits, their exact difference identity, the necessary conditions on standard deviations and allocation, and the local Fisher replacement with both limits are all present. Parameterizing the variance limits as sigma1^2,sigma0^2 with sigma1,sigma0>=0 is precisely the canonical standard-deviation convention and loses no valid S5 sequence. The local Fisher limits use the same explicit constants as the unconditional OLS limits, so the common identity and necessary conditions remain available there. No extra testing-equivalence assertion is introduced. Nonvacuity with different limits: heterogeneousWitness has p=1/5,sigma1=2,sigma0=1,vt=1,tauInf=0, giving OLS/Fisher limit 10 and Neyman limit 85/4."
+  },
+  {
+    "theorem": "SAP.P053.T8",
+    "target_id": "P053-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three parts of the canonical variance target are included: the actual-variance limit and Neyman bound and estimator limit; finite and limiting constant-effect agreement, including the standard-deviation equalities; and the explicit heterogeneous Neyman-null witness with every stated finite formula, full S5 regularity and coefficients 81/4,10,85/4. The quantifiers place the general implication before the constant-effect premise and the explicit witness outside it, so no existence claim is hidden in an impossible antecedent. No test-size calculation is required: the canonical statement explicitly limits this target to variances. Nonvacuity: for heterogeneousWitness, N=10r, p=1/5, V0=Vdelta=N/(N-1), V1=4N/(N-1), tau=0, and the raw fourth-moment average is 17. Exact enumeration for N=10 and N=20 confirms the variance and all displayed coefficients."
+  }
+]

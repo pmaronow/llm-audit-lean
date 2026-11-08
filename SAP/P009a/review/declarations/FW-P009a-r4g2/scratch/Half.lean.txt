@@ -1,0 +1,140 @@
+import SAP.P009a.Challenge
+open SAP.P009a
+open scoped BigOperators Classical
+noncomputable section
+set_option maxHeartbeats 800000
+
+def cubeSplit (n : ℕ) : TreatmentVector (n+1) ≃ Bool × TreatmentVector n where
+  toFun z := (z 0, fun i => z i.succ)
+  invFun p := Fin.cons p.1 p.2
+  left_inv z := by
+    funext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  right_inv p := by
+    rcases p with ⟨b, z⟩
+    rfl
+
+lemma cube_sum_succ (n : ℕ) (f : TreatmentVector (n+1) → ℝ) :
+    (∑ z, f z) = (∑ z, f (Fin.cons true z)) + ∑ z, f (Fin.cons false z) := by
+  rw [← (cubeSplit n).symm.sum_comp f, Fintype.sum_prod_type, Fintype.sum_bool]
+  rfl
+
+lemma cube_sum_zero (f : TreatmentVector 0 → ℝ) :
+    (∑ z, f z) = f (fun _ => false) := by
+  rw [Fintype.sum_unique]
+  congr 1
+  funext i
+  exact Fin.elim0 i
+
+@[simp] lemma cons_two {n : ℕ} (b : Bool) (z : TreatmentVector (n+2)) :
+    (Fin.cons b z : TreatmentVector (n+3)) 2 = z 1 := rfl
+@[simp] lemma cons_three {n : ℕ} (b : Bool) (z : TreatmentVector (n+3)) :
+    (Fin.cons b z : TreatmentVector (n+4)) 3 = z 2 := rfl
+@[simp] lemma cons_four {n : ℕ} (b : Bool) (z : TreatmentVector (n+4)) :
+    (Fin.cons b z : TreatmentVector (n+5)) 4 = z 3 := rfl
+@[simp] lemma cons_five {n : ℕ} (b : Bool) (z : TreatmentVector (n+5)) :
+    (Fin.cons b z : TreatmentVector (n+6)) 5 = z 4 := rfl
+
+def sixMass (z : TreatmentVector 6) : ℝ :=
+  if (∑ i, if z i then (1 : ℕ) else 0) = 3 then 1/20 else 0
+
+def sixDesign : FiniteDistribution (TreatmentVector 6) where
+  mass := sixMass
+  nonneg := by
+    intro z
+    unfold sixMass
+    split_ifs <;> norm_num
+  total := by
+    simp only [sixMass, Fin.sum_univ_succ]
+    norm_num [cube_sum_succ, cube_sum_zero, cons_two, cons_three, cons_four, cons_five]
+
+def sixPopulation : FiniteExperiment 6 := ⟨sixDesign, halfPopulationResponse 1⟩
+
+lemma six_fixed : FixedSizeDesign sixPopulation 3 := by
+  refine ⟨by norm_num, by norm_num, ?_⟩
+  intro z
+  norm_num [sixPopulation, sixDesign, sixMass, Nat.choose]
+
+lemma firstHalf_one : firstHalf 1 = ({0, 2, 3} : Finset (Fin 6)) := by
+  ext i
+  fin_cases i <;> norm_num [firstHalf]
+
+lemma secondHalf_one : wholeSecondHalf 1 = ({1, 4, 5} : Finset (Fin 6)) := by
+  ext i
+  fin_cases i <;> norm_num [wholeSecondHalf, firstHalf]
+
+lemma countA (z : TreatmentVector 6) :
+    wholeTreatedCount (firstHalf 1) z =
+      (if z 0 then 1 else 0) + ((if z 2 then 1 else 0) + (if z 3 then 1 else 0)) := by
+  unfold wholeTreatedCount
+  rw [firstHalf_one, Finset.sum_insert (by decide), Finset.sum_insert (by decide), Finset.sum_singleton]
+
+lemma countB (z : TreatmentVector 6) :
+    wholeTreatedCount (wholeSecondHalf 1) z =
+      (if z 1 then 1 else 0) + ((if z 4 then 1 else 0) + (if z 5 then 1 else 0)) := by
+  unfold wholeTreatedCount
+  rw [secondHalf_one, Finset.sum_insert (by decide), Finset.sum_insert (by decide), Finset.sum_singleton]
+
+lemma six_events : probability sixPopulation.design (wholeMajorityA 1) = 1/2 ∧
+    probability sixPopulation.design (wholeMinorityB 1) = 1/2 ∧
+    probability sixPopulation.design
+      (fun z => wholeMajorityA 1 z ∧ wholeMinorityB 1 z) = 1/2 := by
+  simp only [probability, expectation, sixPopulation, sixDesign, sixMass,
+    wholeMajorityA, wholeMinorityB, countA, countB, Fin.sum_univ_succ]
+  norm_num [cube_sum_succ, cube_sum_zero, cons_two, cons_three, cons_four, cons_five]
+
+lemma six_marginals : ∀ i : Fin 6, armProbability sixPopulation i true = 1/2 := by
+  intro i
+  fin_cases i <;>
+    simp only [armProbability, probability, expectation, sixPopulation, sixDesign, sixMass,
+      Fin.sum_univ_succ] <;>
+    norm_num [cube_sum_succ, cube_sum_zero, cons_two, cons_three, cons_four, cons_five]
+
+lemma six_parentA (l : Fin 6) (h : Affects sixPopulation l 0) : l ∈ firstHalf 1 := by
+  rcases h with heq | ⟨z, z', hz, hne⟩
+  · subst l
+    norm_num [firstHalf]
+  · by_contra hl
+    apply hne
+    change (∑ j ∈ firstHalf 1, treatmentValue (z j)) / (3 : ℝ) =
+      (∑ j ∈ firstHalf 1, treatmentValue (z' j)) / (3 : ℝ)
+    congr 1
+    apply Finset.sum_congr rfl
+    intro j hj
+    rw [hz j (by intro heq; exact hl (heq ▸ hj))]
+
+lemma six_parentB (l : Fin 6) (h : Affects sixPopulation l 1) : l ∈ wholeSecondHalf 1 := by
+  rcases h with heq | ⟨z, z', hz, hne⟩
+  · subst l
+    norm_num [wholeSecondHalf, firstHalf]
+  · by_contra hl
+    apply hne
+    change (∑ j ∈ wholeSecondHalf 1, treatmentValue (z j)) / (3 : ℝ) =
+      (∑ j ∈ wholeSecondHalf 1, treatmentValue (z' j)) / (3 : ℝ)
+    congr 1
+    apply Finset.sum_congr rfl
+    intro j hj
+    rw [hz j (by intro heq; exact hl (heq ▸ hj))]
+
+lemma six_zero_pair : dependenceIndicator sixPopulation 0 1 = 0 := by
+  have hnot : ¬ SharesCause sixPopulation 0 1 := by
+    rintro ⟨l, hA, hB⟩
+    have ha := six_parentA l hA
+    have hb := six_parentB l hB
+    simp only [wholeSecondHalf, Finset.mem_sdiff] at hb
+    exact hb.2 ha
+  simp [dependenceIndicator, hnot]
+
+theorem t9_finite_nonvacuity : ∃ E : FiniteExperiment 6, FixedSizeDesign E 3 ∧
+    E.outcome = halfPopulationResponse 1 ∧
+    (∀ i, armProbability E i true = 1/2) ∧ dependenceIndicator E 0 1 = 0 ∧
+    probability E.design (wholeMajorityA 1) = 1/2 ∧
+    probability E.design (wholeMinorityB 1) = 1/2 ∧
+    |probability E.design (fun z => wholeMajorityA 1 z ∧ wholeMinorityB 1 z) -
+      probability E.design (wholeMajorityA 1) * probability E.design (wholeMinorityB 1)| = 1/4 := by
+  refine ⟨sixPopulation, six_fixed, rfl, six_marginals, six_zero_pair,
+    six_events.1, six_events.2.1, ?_⟩
+  rw [six_events.1, six_events.2.1, six_events.2.2]
+  norm_num
+
+#print axioms t9_finite_nonvacuity

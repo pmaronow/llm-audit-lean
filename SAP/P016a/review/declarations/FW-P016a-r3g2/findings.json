@@ -1,0 +1,46 @@
+[
+  {
+    "target_id": "P016-T8",
+    "theorem": "SAP.P016a.T8",
+    "fingerprint": "dd5c9d78028c54ef9a62d9e2547c5ec86f375f7892a09fae028073922e31da96",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:23 and :42 with import SAP.P016a.Defs only. The data are n=4, Omega=Fin 6, P=uniformLaw (Fin 6), assign=complete4, y0=(0,1,2,3), t=10, T(v,k)=meanDifference v (complete4 k), alpha=1/2. Both groups have size two on every assignment; P has nonnegative weights summing to one; adjustment recovers y0. The actual inclusive upper tails are (1,5/6,2/3,2/3,1/3,1/6), and the mass with p <= 1/2 is 1/3. Thus all stated hypotheses have simultaneous genuine instances.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T9",
+    "theorem": "SAP.P016a.T9",
+    "fingerprint": "96aa1caee01f1ef8d4b87ad4e962f73acf5656079c94d94b3099cf568c8276c2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:58, :107 and :133 with definitions only. These check the exact four-unit CDF differences and signed/absolute KS values, pooled total 5, all six residuals (1,4,5,5,4,1), lower tail 1/3 versus constant-statistic tails 1, and every entry of the six-unit design matrix. For the six-unit outcome of ones, the displayed coefficients attain residuals 0 with an intercept and 2 without it; lower bounds for every coefficient vector establish the actual infima. The general constant-statistic clause is instantiated with n=4, u=u4, complete4, the uniform six-index law, and observed index 0. All witness groups are nonempty.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T10",
+    "theorem": "SAP.P016a.T10",
+    "fingerprint": "6e96e462ed3074305ca483e2f217bd622d4390d377ac078a1f90de9e8663a020",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:144 and :156 with definitions only. Choose n=4, u=(0,1,2,3), z=TTFF, k=3, X_i=(1,bit(z_i),bit(z_i)), S with its only edge 0--1, and i=0. Both groups have size two, n >= 2, and S is symmetric and binary, satisfying every conjunct's hypotheses. This X is rank deficient: the distinct coefficients (5/2,-2,0) and (5/2,0,-2) both attain the true least-squares minimum 1 and give identical fitted values. The finite infimum is nonempty and bounded below independently of these examples; the KS supremum is over a nonempty range bounded by one under the stated group assumptions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T11",
+    "theorem": "SAP.P016a.T11",
+    "fingerprint": "34a7ab6fdbcc6ab7af8a3aa604e5c12700cb27a650ddf821952088eeb8eaa5b7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:178 with definitions only. At z=TTFF, the weak change (0,1,2,3) -> (2,3,2,3) satisfies the treated-up/control-down condition and lowers both KS versions from 1 to 0. The change (0,1,4,5) -> (2,3,2,3) is strict in every required direction and lowers absolute KS from 1 to 0. Raising respectively the first or second treated coordinate of (0,2,0,2) produces residuals 5/2 and 13/2 from the original 4, with controls unchanged; the directional conditions are explicitly checked. These are genuine witnesses against R and -R as well. Every group has size two, so the failures do not depend on empty-group CDF conventions.",
+    "confidence": "high"
+  }
+]

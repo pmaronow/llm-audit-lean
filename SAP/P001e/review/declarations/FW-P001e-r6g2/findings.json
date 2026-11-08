@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P001-T82",
+    "theorem": "SAP.P001e.T82",
+    "fingerprint": "ce8cc7299acbff77cc49cace9b54ff4371e4f6fa463e261b19b8b11e9d7306ab",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: Ω=Fin 2 with μ=(1/2)δ₀+(1/2)δ₁, X≡0, RB(0)=false and RB(1)=true. The response-true event has probability 1/2, so both strict support hypotheses hold. The same file constructs the full existential witness p≡1/2 and κ(x)=μ.map RB, proving measurability, global bounds, kernel normalization and disintegration, the probability/mean identities, the conditional-mean property, uniqueness almost surely and the range equivalence without invoking T82.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T83",
+    "theorem": "SAP.P001e.T83",
+    "fingerprint": "bee932de74fceb21322d459a70e7a637ec0e9cdea34aea9969117617184ef5b8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: on the fair two-point law μ=(1/2)δ₀+(1/2)δ₁, take X≡0, Y≡7, R(i)=i.val and p≡1/2. All measurability and integrability hypotheses hold; R is binary and each response value has probability 1/2. The file proves IsConditionalMean directly by set-integral calculations, proves the stated conditional independence for constant Y, and uses ε=1/4 for the almost-sure uniform lower bound.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T84",
+    "theorem": "SAP.P001e.T84",
+    "fingerprint": "828f091431700db37d962e9e82b945a6571117a18baf3c0d911d98a2aaad3477",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/T84Witness.lean: the twelve canonical observations have covariate groups of four, response pattern (1,1,0,0;1,1,1,0;1,1,0,0), and the canonical respondent outcomes; latent nonrespondent outcomes are set to 1/4. The file verifies all cell sizes/counts/sums, equality of the actual sample Bernoulli log likelihood with the grouped likelihood, fitted probabilities 7/12 at the stated parameter, IPW 3/7, plug-in 5/12 and gap 1/84. For the i.i.d./MAR setting, independent uniform X∈{-1,0,1}, uniform Y∈{1/4,1/2,3/4} and Bernoulli(7/12) R give a correctly specified positive logit propensity and positive probability (7/108)^7(5/108)^5 for this ordered completed sample; see REPORT.md. No hypothesis of the printed reading is violated.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T85",
+    "theorem": "SAP.P001e.T85",
+    "fingerprint": "9f1598063baa9d330409143a82f80293b3d03d7b4e939654e91173443d628047",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: n=4, X=(false,false,true,true), R=(1,0,1,0), Y=(2,5,4,7) and q≡1/2. Both observed cells have size two and one respondent, so every hypothesis and the saturation condition hold. The file verifies these facts directly, and computes ordinary IPW=3, mean weight=1 and stabilized IPW=3 without invoking T85.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T86",
+    "theorem": "SAP.P001e.T86",
+    "fingerprint": "5ef8260d3f7b193b8357c95488139048c29e232476d3f31b5f5431a465564ef3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: on the fair two-point law, X≡0, R(i)=i.val and p≡1/2 satisfy measurability, pointwise binarity, the directly verified conditional-mean predicate and the pointwise bounds with ε=1/4. Direct finite summation gives E[R/p]=1 and E[1/p]=2, so the inequality is realized nontrivially and no integral or division default is used.",
+    "confidence": 0.99
+  }
+]

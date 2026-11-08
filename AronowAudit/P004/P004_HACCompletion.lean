@@ -83,5 +83,7 @@ theorem hac_expansion {N : ℕ} (R : CircleTable N) (D : Fin N → Fin N → ℝ
       (fun i => by simp [distanceKernel, hdiag i, hK.1])
   · rfl
 
+#print axioms hac_expansion
+#print axioms HACCompletion.expansion
 end
 end AronowAudit.P004

@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P003-T21",
+    "theorem": "SAP.P003a.T21",
+    "fingerprint": "f2da4a8f7c1475231ef2eec42ab5100a2c42abbb9b0dc15d552090b7a9a5aa1c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: canonical population (0,1,0,8) on Fin 9 and treated subset {0,1,2,3,4,5,6} have population counts (0,1,0,8), realize observation (1,6,0,2), and have p=1. The rational T21Statement and all ten finite attained maxima also compute successfully. Independent labeled-table/assignment enumeration in scratch/labeled_oracle.py confirms all maxima and accepted effects {0,1/9}. There are no theorem hypotheses to make vacuous.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T22",
+    "theorem": "SAP.P003a.T22",
+    "fingerprint": "3e3bd7e5fbef7ce5afdd599a9dfc85990ad1ece0e1e590f0f2c725405a9d2df3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: K=1, alpha=1/2, size-one assignments on Fin 2, and well-typed seed arrays satisfy every input hypothesis. The labeled table ((0,1),(1,0)) under treated subset {0} realizes observation (0,1,0,1) and the omitted possible vector (0,1,1,0). Computed first-line and corrected supports give estimand sets {0,1} and {0,1,2}; a separate Mathlib proof shows the constant statistic has rank 1 for all samples. A feasible four-unit line from (2,0,0,2) verifies positive reuse indices [1,2] and actual treated-count updates.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T23",
+    "theorem": "SAP.P003a.T23",
+    "fingerprint": "466d677842c17b99114f70d479f281deea872c656cc251736e33c28000cf5ee7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: o=(0,2,0,2), K=1, alpha=1/2, epsilon=0, and a well-typed pool alternating size-two subsets {0,2} and {1,3} satisfy all hypotheses. Proved the rational decision implementation equals w1ApproxReject, and computed actual chronological queries (1,accept),(2,reject), final numerator 1, and rational exact interval [-1/4,1/4]. This pool is a possible realization under independent uniform draws, not a claim of dependence. Also checked a generic nonmonotone search on an integer domain containing negative indices. Independent labeled enumeration confirms the exact upper endpoint 1/4.",
+    "confidence": "high"
+  }
+]

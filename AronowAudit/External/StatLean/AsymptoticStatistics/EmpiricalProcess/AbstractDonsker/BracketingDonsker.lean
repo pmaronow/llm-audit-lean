@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -8,17 +7,27 @@ import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.Abstr
 import Mathlib.Topology.Algebra.Module.Basic
 
 /-!
-# Envelopes and separability from finite bracketing entropy
+# Infinite-dimensional Gaussian-carrier form of van der Vaart Theorem 19.5
 
-This file derives two consequences of a finite bracketing-entropy integral
-`J_{[]}(1, F, L₂(P)) < ∞`:
+This file derives the abstract `IsPDonsker'` conclusion (`𝔾ₙ ⇝ₒ G_P` in
+`ℓ∞(F)`) from the bracketing theorem when the centred Gaussian
+Hilbert carrier is infinite-dimensional. The hypothesis `hH_inf` is not implied
+by finite bracketing entropy, so this is the infinite-dimensional case rather
+than the unconditional statement of Theorem 19.5.
 
-* a square-integrable envelope (`exists_l2_envelope_of_entropyIntegral`);
-* separability of the centred Gaussian Hilbert space
-  (`separableSpace_gpH_of_entropyIntegral`, via `totallyBounded_L2`).
+The theorem `donsker'_of_finite_bracketing_entropy` applies the Theorem-18.14
+characterization `isPDonsker'_iff` to
+`isPDonsker_of_finite_bracketing_entropy_integral`. The remaining assumptions
+follow from the single analytic input `h_int : J_{[]}(1, F, L₂(P)) < ∞`:
 
-Infinite-dimensionality of the centred Gaussian Hilbert carrier is not implied
-by finite bracketing entropy.
+* the square-integrable envelope `hG_env`/`hG`
+  (`exists_l2_envelope_of_entropyIntegral`);
+* separability of the centred Gaussian Hilbert space `hH_sep`
+  (`separableSpace_gpH_of_entropyIntegral`, via `totallyBounded_L2`);
+* the finite-entropy clause `hF_ent` (which **is** `h_int`).
+
+Only the infinite-dimensionality clause `hH_inf` remains a hypothesis. The
+finite-dimensional and degenerate Gaussian-carrier cases are treated separately.
 
 Reference: van der Vaart, *Asymptotic Statistics* (Cambridge, 1998), Theorem 19.5
 (book p.270), §19.2.
@@ -130,5 +139,40 @@ lemma separableSpace_gpH_of_entropyIntegral
   -- STEP 4: separable set ⟹ `SeparableSpace` of the subtype.
   exact hgpH.separableSpace
 
+/-- **Infinite-dimensional Gaussian-carrier form of Theorem 19.5.**
+
+The theorem `isPDonsker_of_finite_bracketing_entropy_integral` implies
+`ℓ∞(F)`-weak-convergence predicate `IsPDonsker'` (`𝔾ₙ ⇝ₒ G_P`) for an
+infinite-dimensional centred Gaussian carrier. The additional assumption
+`hH_inf` is not implied by finite bracketing entropy.
+
+The conclusion is existential over the derived square-integrable envelope `G`
+(`exists_l2_envelope_of_entropyIntegral`); the separability clause `hH_sep`
+(`separableSpace_gpH_of_entropyIntegral`) and the finite-entropy clause `hF_ent`
+(`= h_int`) are likewise **derived** from `h_int`. Only `hH_inf` (the
+infinite-dimensionality of the centred Gaussian Hilbert space) remains an
+assumption. Finite-dimensional and degenerate carriers are covered by the
+corresponding finite-carrier construction.
+
+The proof applies the Theorem-18.14 characterization `isPDonsker'_iff` to
+`isPDonsker_of_finite_bracketing_entropy_integral`; the derived envelope and
+separability witnesses provide its remaining assumptions.
+
+Reference: van der Vaart, *Asymptotic Statistics* (Cambridge, 1998), Theorem 19.5
+(book p.270), §19.2. -/
+theorem donsker'_of_finite_bracketing_entropy
+    {F : Set (Ω → ℝ)} {P : Measure Ω} [IsProbabilityMeasure P]
+    (hF_ne : F.Nonempty) (hF_meas : ∀ f ∈ F, Measurable f)
+    (h_int : bracketingEntropyIntegral 1 F P < ⊤)
+    (hH_inf : ∀ (h : ∃ G, IsEnvelope F G ∧ MemLp G 2 P),
+        ¬ FiniteDimensional ℝ ↥(gpH h hF_meas)) :
+    ∃ (G : Ω → ℝ) (hG_env : IsEnvelope F G) (hG : MemLp G 2 P),
+      IsPDonsker' F P hG_env hG hF_meas (hH_inf ⟨G, hG_env, hG⟩)
+        (separableSpace_gpH_of_entropyIntegral h_int ⟨G, hG_env, hG⟩ hF_meas) h_int hF_ne := by
+  obtain ⟨G, hG_env, hG⟩ := exists_l2_envelope_of_entropyIntegral h_int
+  exact ⟨G, hG_env, hG,
+    (isPDonsker'_iff hG_env hG hF_meas (hH_inf ⟨G, hG_env, hG⟩)
+        (separableSpace_gpH_of_entropyIntegral h_int ⟨G, hG_env, hG⟩ hF_meas) h_int hF_ne).mpr
+      (isPDonsker_of_finite_bracketing_entropy_integral F P hF_meas h_int)⟩
 
 end AsymptoticStatistics.EmpiricalProcess

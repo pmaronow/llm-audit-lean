@@ -85,10 +85,8 @@ lemma residual_nonzero : groupedResidual W (fun _=>1) Y id theta≠0 := by
   rw [residual_intercept] at hh
   norm_num at hh
 
-/-- P015-T18(B), Appendix C, p. 265: a concrete interior global ML fit
-of an injective smooth Bernoulli inverse link has nonzero substituted residual.
-This refutes the printed implication from an ML maximizer to the substituted
-residual equation; it is not merely a failure at an arbitrary parameter point. -/
+/-- A concrete interior global ML fit of an injective smooth Bernoulli inverse
+link has nonzero substituted residual. This directly refutes ML ⇒ residual. -/
 theorem identity_link_ML_counterexample :
     (∀ i,Y i=0 ∨ Y i=1) ∧ (∀ i,W i 0=1) ∧
     IsOpen domain ∧ DifferentiableOn ℝ id domain ∧ Function.Injective (domain.restrict id) ∧
@@ -117,5 +115,8 @@ theorem printed_inverse_link_claim_false : ¬(∀ (N K : ℕ)
   obtain ⟨hb,hi,ho,hd,hinj,hp,ha,hm,hn⟩ := identity_link_ML_counterexample
   exact hn (h 3 0 W Y hb hi domain ho id hd hinj hp theta ha hm)
 
+#print axioms identity_score_global_max
+#print axioms identity_link_ML_counterexample
+#print axioms printed_inverse_link_claim_false
 end
 end AronowAudit.P015.InverseLinkMLCounterexample

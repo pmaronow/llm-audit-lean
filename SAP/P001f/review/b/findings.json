@@ -1,0 +1,195 @@
+[
+  {
+    "target_id": "P001-T96",
+    "theorem": "SAP.P001f.T96",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed assertion, with no hypotheses. The displayed positive integer counts form an actual eighteen-unit sample. It has positive probability under iid sampling with Z uniform on {-1,0,1}, true treatment probabilities (1/3,1/2,2/3), and deterministic potential outcomes Y0=(3,2,3), Y1=(4,3,4) given Z. This population has ignorability and uniform overlap. Exact rational checks independently verified both estimator values and their gap; the logistic likelihood is strictly concave and the displayed fit has zero score.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T97",
+    "theorem": "SAP.P001f.T97",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use E=Fin 1, n=2, nt=nc=1, and q=1/2; the cell has one unit in each arm and every divisor is positive. These hypotheses were compiled in scratch/Check.lean. The necessity direction is nontrivial: q=1/3 satisfies the hypotheses, but st=1,sc=0 yields IPW=3/2 and poststratification=1.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T98",
+    "theorem": "SAP.P001f.T98",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the infinite product of fair Bernoulli laws on {0,1}^N, D_i the coordinate indicators, X_i identically zero, and p identically 1/2. All pointwise binarity/overlap hypotheses hold with epsilon=1/4; the sequence is measurable iid. Each arm weight has mean one, each reciprocal weight is identically two. scratch/Check.lean compiles the one-observation constant-covariate ConditionalMean premise and overlap arithmetic.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T99",
+    "theorem": "SAP.P001f.T99",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem itself specifies the normalized nonnegative two-atom law (3/4,1/4), D=(0,1), X=0, Y0=0 and Y1=1. Both conditioning events are positive. Finite conditional independence follows because the potential-outcome pair is constant. Normalization and nonnegativity were independently compiled in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T100",
+    "theorem": "SAP.P001f.T100",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use a fair binary treatment on two atoms, X=0, Y0=0, Y1=1 and p=1/2. Then Delta=1, P=1/2, W=1/2 and ATT=1. All functions are measurable/integrable and conditional independence holds for the constant potential-outcome pair. scratch/Check.lean compiles the fair-law propensity CM, positive treatment-arm probabilities, and a generic constant-variable CI lemma.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T101",
+    "theorem": "SAP.P001f.T101",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. For a nonempty example take ambient type Fin 3, A={0,1}, B={1}; both asserted sets are {0}. No empty type is needed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T102",
+    "theorem": "SAP.P001f.T102",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For K=1, let X have density (1/2) times the indicator of (-2,-1) union (1,2); independently let Y be uniform on (-1,1). The joint density is the product density and all first moments are finite. Both m0(x)=0 and m1(x)=x when |x|<1, zero otherwise, are measurable CM versions and differentiable at every positive-density x. E[X]=0; their actual derivatives there are respectively 0 and 1. This witnesses the negation within the joint-density domain. The plug-in conjunct has instances n=1, constant X and mhat(x)=x_k, with derivative one. These analytic witnesses were checked mathematically, not compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T103",
+    "theorem": "SAP.P001f.T103",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=1 and y_0=1. Valid parameters include theta=(1,0,1,s,0,1,1) for every s>0. The sample likelihood is 1/(s sqrt(2 pi)), unbounded as s decreases to zero. Every valid parameter has finite likelihood, so no maximizer exists. This uses nonempty samples and strictly positive scales/rate.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T104",
+    "theorem": "SAP.P001f.T104",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every k>=0 set t_k=4^{-(k+1)} and c_k=2^{-(k+1)}-4^{-(k+1)}. Both sequences are positive and summable, with sums 1/3 and 2/3, so their joint total is one and both arms are nonempty. Both positive supports are N, but the propensity t_k/(t_k+c_k)=2^{-(k+1)} tends to zero. Thus no positive uniform lower bound exists. All divisions and infinite sums are legitimate.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T105",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: there is no theorem. The supplied canonical text expressly says that informational completeness is not formally defined, and the supplied Defs contain no predicate for it. Choosing a model for this premise would require additional semantics. A larger-domain negation without binary treatment or that premise would not by itself be an admissible refutation. The omitted credited row itself is unavailable for independent inspection.",
+    "confidence": 0.82
+  },
+  {
+    "target_id": "P001-T106",
+    "theorem": "SAP.P001f.T106",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A fair Bernoulli X on two atoms is measurable, in L2, and has mean 1/2 and variance 1/4>0. Use Y=2X-1 for the linearity component; arbitrary real affine constants are allowed. Thus the positive-variance branch is attained, and no infinite-variance toReal convention is involved.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T107",
+    "theorem": "SAP.P001f.T107",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the fair two-atom law, X=0, Y the binary indicator and m=1/2. scratch/Check.lean independently compiles precisely this ConditionalMean premise from its event-integral definition, with the nonzero mean 1/2. It also proves the generic constant-covariate CM construction without importing Challenge.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T108",
+    "theorem": "SAP.P001f.T108",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the infinite product of fair Bernoulli laws and the coordinate indicators X_i. Their common mean is 1/2 and common variance is 1/4, and every n>=1 gives a genuine positive-size sample. All first-moment, second-moment and positive-variance branches are populated.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T109",
+    "theorem": "SAP.P001f.T109",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Continuous branch: X uniform on [0,1], Y=X, m(x)=x, and marginal density 1 on [0,1], zero elsewhere, including positive endpoint values as permitted density versions. The degree-zero minimizer is 1/2 and p_J(x)=x for J>=1; every risk is finite. Discrete branch: X=0, Y a fair binary indicator, m=1/2 and [a,b]=[0,0]. Positive atomic support is exactly that singleton and range X is countable. Thus the discrete branch is degenerate for nontrivial intervals as the printed PMF support requires, but the continuous assertion is nondegenerate.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T110",
+    "theorem": "SAP.P001f.T110",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=3, Y=(true,false,true), k=2 and a=2/3; n=1 with either Boolean value also supplies both endpoint cases. The success count is always <=n, so truncated subtraction does not alter the failure count, and 0^0 at an endpoint is the usual empty product.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T111",
+    "theorem": "SAP.P001f.T111",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take four equally weighted atoms (X,R) in {0,1}^2, Y=X, and p=1/2. The respondent CEF is m(x)=x, all functions are integrable, both response arms have probability 1/2, and epsilon=1/4 works. This gives MCAR and both discrete and one-coordinate vector MAR instances. In the six-unit estimator example there are four respondents and respondent counts 3 and 1 in the two observed cells. scratch/Check.lean independently compiles the exact estimator values 3/4 and 7/9.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T112",
+    "theorem": "SAP.P001f.T112",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take four equally weighted atoms (X,R) in {0,1}^2, embed X as a one-coordinate real vector, put Y=X and p=1/2. MAR and epsilon=1/4 hold; both response arms are positive. Conditioning on the constant true propensity leaves R and X independent. The theorem does not use outcome integrability.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T113",
+    "theorem": "SAP.P001f.T113",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "record.json:229 describes Integrable (m composed with X) as an added restriction, and Challenge/Part1.lean:130-133 presents the resulting exclusion as a restriction of this target. However claims.json:274 (P001-T113 canonical_claim.note) explicitly says that integrability of the nuisance regression is implicit in case (ii). In case (i), integrability of a correct respondent CEF under the population law already follows from its restricted-law integrability and the uniform positive response bound. Thus the claimed new restriction is inaccurate relative to the supplied canonical target. The theorem itself states the correct finite-moment double-robust identity.",
+      "Cases with nonintegrable nuisance regression but an integrable combined score can exist in an enlarged model, but they are already outside the finite-moment canonical target specified by claims.json. Their exclusion therefore does not support the record's claim that integrability is added here."
+    ],
+    "fix": "Keep T113Statement unchanged. Set the record decision to whole and its restriction to null. Replace the docstring with: \"P001-T113, Theorem 6.2.9, pp. 229-230 (PDF pp. 247-248): under MAR and the standing finite-expectation convention, the augmented missing-data score has the outcome mean if the respondent regression is correct and the candidate propensity has uniform two-sided bounds, or if the propensity is correct. Integrability of the nuisance regression m(X), implicit in the canonical claim, is explicit in both branches; correctness and overlap are interpreted up to null sets.\"",
+    "nonvacuity": "Use four equally weighted atoms (X,R) in {0,1}^2, X as a one-coordinate real vector, Y=X, and true p=1/2. Branch (i): m(x)=x and q=1/4, with eta=1/8. Branch (ii): m=42 and q=1/2. Both nuisance regressions are integrable and both augmented scores have mean 1/2. The correct-propensity branch therefore allows a genuinely misspecified regression. The canonical note already requires nuisance-regression integrability in that branch.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P001-T114",
+    "theorem": "SAP.P001f.T114",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take fair D on two atoms, Y0=0, Y1=1 and [a,b]=[0,1]. The observed outcome is Y=D and [L,U]=[0,1]. Every c in [0,1] is attained on the same space by Z1=1 on treated atoms and c on controls, Z0=1-c on treated atoms and zero on controls; the observed pair is preserved pointwise and the effect equals c. Exact rational checks verified the six-unit endpoints -2/6 and 4/6.",
+    "confidence": 0.98
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "target_id": "P002-T2",
+    "theorem": "SAP.P002a.T2",
+    "fingerprint": "939036ba09f56c0368ab5fdc3ab4354824f5ad3109e40a28d84aff849ca4ba62",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean, importing only SAP.P002a.Defs. Review.finite_nonvacuity constructs n=4, n1=2, all compliers, identical potential responses (-1,1,-1,1), covariate (-1,-1,1,1), beta=0, Theta(0,1/2,2) and Xi(1,0,1,1,2,1/2). Both population OLS coefficients vanish and both residual variances are 4/3. Review.negative_delta_nonvacuity verifies both parameter predicates also at delta=-1/2. The four compliers satisfy the intermediate chain's cardinality guard. All constant sign restrictions hold. Singleton-complier and zero-variance cases are deliberately allowed by the canonical claim; the singleton group covariance convention is expressly prescribed there.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T7",
+    "theorem": "SAP.P002a.T7",
+    "fingerprint": "ee04199f35aa6d103057ee208d264a064d96c2ffd8e7b62662dbd7bb18aa0a97",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean. Review.full_sequence_nonvacuity constructs a probability measure and exact RandomizationSequence marginals for strictly increasing sizes 4*(j+1), with dimension 1, delta=0, e=A=1, B=2, r=1/2 and the identity strict subsequence. Each of the four cells (x,y)=(-1,-1),(-1,1),(1,-1),(1,1) is repeated j+1 times, all units comply, and n1=2*(j+1). The population OLS fit is zero; both residual schedules equal y, their fourth norms are 1, and their variances are n/(n-1)>0 at every size. The probability measure is Mathlib's infinite product of uniform measures on the genuine assignment sets, and the full measurable marginal identity is proved for every event. Thus the positive-residual premise and all other sequence hypotheses are jointly satisfiable without invoking a Challenge theorem.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json's single round-7 T7 issue: the row_use_note incorrectly described canonical residual positivity as an added restriction.",
+        "status": "fixed",
+        "reason": "record.json:56 now expressly says that positivity of both population OLS residual variances belongs to the corrected canonical claim dated 2026-11-04, that T7 states the claim wholly, and that the older assessment concerned the superseded unqualified claim. This agrees with decision=whole at record.json:33, restriction=null at record.json:35, the premise at SAP/P002a/Defs/WholeW4.lean:42, and the Challenge docstring at SAP/P002a/Challenge/Part1.lean:69. The historical report sections are expressly superseded; no current contradictory restriction remains."
+      }
+    ]
+  },
+  {
+    "target_id": "P002-T9",
+    "theorem": "SAP.P002a.T9",
+    "fingerprint": "d32df914c21e12045f531d7c9028c16c8cdf7b7dd2728854ca7e8847c0e1813e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean. Review.spectral_nonvacuity verifies the finite hypotheses for n=4, k=1, x=(-1,-1,1,1), e=1, including exact leastRayleigh x=1. Review.full_sequence_nonvacuity supplies strictly increasing sizes, fixed admissible constants, Xi at every size, a probability space and exact measurable complete-randomization marginals, and a fixed strict subsequence, satisfying every premise of T9WholeSequence. Its positive residuals are additional properties of this witness, not assumptions of T9. The lower bound min(1,e)>0 and vanishing-error requirement prevent the conclusion from being made trivial by arbitrary negative errors.",
+    "confidence": 0.99
+  }
+]

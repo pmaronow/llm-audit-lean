@@ -1,0 +1,17 @@
+#!/bin/bash
+# sap-lean FILE.lean [FILE.lean ...]: compile SAP/ modules of the current worktree, in the order given, against the
+# shared prebuilt project (~/sap/repo2: Mathlib + AronowAudit), writing .olean/.ilean only under ./.lake/build/lib/lean.
+# Never builds Mathlib or AronowAudit, and never runs Lake in the worktree (Lake there would rebuild Mathlib).
+set -eu
+W=$(pwd); R=$HOME/sap/repo2
+LEAN=$HOME/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean
+# LEAN_PATH of the prebuilt project, computed once by the orchestrator (agents' sandboxes cannot run Lake in repo2)
+LP=$(cat "$HOME/sap/tools/lean_path.txt")
+export LEAN_PATH="$W/.lake/build/lib/lean:$LP"
+export LEAN_NUM_THREADS=${LEAN_NUM_THREADS:-4}
+for f in "$@"; do
+  case "$f" in SAP/*.lean|SAPAudit/*.lean|scratch/*.lean) ;; *) echo "sap-lean: only SAP/, SAPAudit/ or scratch/ files: $f" >&2; exit 2;; esac
+  mod=${f%.lean}; out=$W/.lake/build/lib/lean/$mod
+  mkdir -p "$(dirname "$out")"
+  nice -n 10 "$LEAN" -DautoImplicit=false -DrelaxedAutoImplicit=false "$f" -o "$out.olean" -i "$out.ilean"
+done

@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -40,6 +39,8 @@ import any empirical-process material — it is `ForMathlib`-layer infrastructur
 * `isAsymptoticallyTight_of_weakConvergesOuter` — the easy-Prohorov direction:
   weak convergence in outer expectation to a tight Borel limit `νD` implies
   asymptotic tightness (vdV 18.12 ⟸).
+* `limsup_outerMeasureStar_preimage_isClosed_le_of_lipschitz` — the closed-set
+  outer-portmanteau inequality from a **Lipschitz-only** readout hypothesis.
 * `weakConvergesOuter_of_lipschitz_readout` — bounded-Lipschitz ⟹ bounded-continuous
   outer portmanteau: convergence of the outer readout against all bounded Lipschitz
   test functions upgrades to full `WeakConvergesOuter` in the setting of vdV
@@ -255,6 +256,126 @@ theorem limsup_outerMeasureStar_preimage_isClosed_le {Ω D : Type*}
     simpa only [heq] using hlim
   exact ge_of_tendsto hlim' (Eventually.of_forall hstep3)
 
+/-- **Closed-set limsup from a Lipschitz-only readout.** A weakening of
+`limsup_outerMeasureStar_preimage_isClosed_le`: instead of the full
+`WeakConvergesOuter` hypothesis (the readout converges for *every* bounded
+continuous `f`), we only assume the readout converges for **bounded Lipschitz**
+`f`. The conclusion is unchanged: for closed `C`,
+`limsup (μ n)* (Xₙ ⁻¹ C) ≤ νD C`.
+
+This works because the proof of the full version only ever evaluates the readout
+at the Urysohn approximants `gₖ ↓ 1_C`; here we take those approximants to be the
+**thickened indicators** `thickenedIndicator (1/(k+1)) C`, which are genuinely
+bounded Lipschitz (`lipschitzWith_thickenedIndicator`). The `1/(k+1)`-thickening
+radius shrinks to `0`, so `∫ gₖ dνD ↓ νD C` (`tendsto_lintegral_thickenedIndicator_of_isClosed`). -/
+theorem limsup_outerMeasureStar_preimage_isClosed_le_of_lipschitz {Ω D : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace D] [PseudoMetricSpace D]
+    [OpensMeasurableSpace D] {μ : ℕ → Measure Ω} {Xn : ℕ → Ω → D} {νD : Measure D}
+    [∀ n, IsFiniteMeasure (μ n)] [IsFiniteMeasure νD]
+    (hlip : ∀ f : D →ᵇ ℝ, (∃ K, LipschitzWith K f) →
+        Tendsto (fun n => (outerExpectation (μ n)
+          (fun ω => ENNReal.ofReal (f (Xn n ω) + ‖f‖))).toReal
+          - ‖f‖ * (μ n Set.univ).toReal) atTop (𝓝 (∫ y, f y ∂νD)))
+    {C : Set D} (hC : IsClosed C) :
+    limsup (fun n => (μ n).outerMeasureStar (Xn n ⁻¹' C)) atTop ≤ νD C := by
+  -- The thickening radii `δ k = 1/(k+1) ↓ 0`.
+  have hδ_pos : ∀ k : ℕ, (0 : ℝ) < 1 / (k + 1) := fun k => by positivity
+  have hδ_lim : Tendsto (fun k : ℕ => (1 : ℝ) / (k + 1)) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  -- The bounded-Lipschitz approximating sequence `gₖ ↓ 1_C`, coerced to `ℝ`.
+  set g : ℕ → (D →ᵇ ℝ) := fun k =>
+    (thickenedIndicator (hδ_pos k) C).comp _ NNReal.isometry_coe.lipschitzWith with hg
+  have hg_apply : ∀ k x, g k x = (thickenedIndicator (hδ_pos k) C x : ℝ) := fun k x => rfl
+  -- Each `g k` is bounded Lipschitz.
+  have hg_lip : ∀ k, ∃ K, LipschitzWith K (g k) := fun k =>
+    ⟨1 * (1 / (k + 1 : ℝ)).toNNReal⁻¹,
+      NNReal.isometry_coe.lipschitzWith.comp (lipschitzWith_thickenedIndicator (hδ_pos k) C)⟩
+  have hg_nonneg : ∀ k x, (0 : ℝ) ≤ g k x := fun k x => by
+    rw [hg_apply]; positivity
+  have hg_le_one : ∀ k x, g k x ≤ 1 := fun k x => by
+    rw [hg_apply]; exact_mod_cast thickenedIndicator_le_one (hδ_pos k) C x
+  -- `‖g k‖ ≤ 1`.
+  have hg_norm_le : ∀ k, ‖g k‖ ≤ 1 := by
+    intro k
+    rw [BoundedContinuousFunction.norm_le (by norm_num : (0 : ℝ) ≤ 1)]
+    intro x
+    rw [Real.norm_eq_abs, abs_le]
+    exact ⟨by linarith [hg_nonneg k x], hg_le_one k x⟩
+  -- Step 1 : for each `k, n`, `(μ n)* (Xₙ⁻¹ C) ≤ E*[ofReal (g k ∘ Xₙ)]`.
+  have hstep1 : ∀ k n, (μ n).outerMeasureStar (Xn n ⁻¹' C)
+      ≤ outerExpectation (μ n) (fun ω => ENNReal.ofReal (g k (Xn n ω))) := by
+    intro k n
+    rw [Measure.outerMeasureStar]
+    refine outerExpectation_mono fun ω => ?_
+    by_cases hω : Xn n ω ∈ C
+    · -- On `C`, `g k (Xₙ ω) ≥ 1`, so `ofReal (g k …) ≥ 1`.
+      have h1 : (1 : ℝ) ≤ g k (Xn n ω) := by
+        rw [hg_apply]
+        exact_mod_cast one_le_thickenedIndicator_apply D (hδ_pos k) hω
+      simp only [Set.mem_preimage.2 hω, Set.indicator_of_mem, Pi.one_apply]
+      rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 by simp]
+      exact ENNReal.ofReal_le_ofReal h1
+    · have hω' : ω ∉ Xn n ⁻¹' C := by simpa using hω
+      simp [Set.indicator_of_notMem hω']
+  -- Step 2 : `E*[ofReal (g k ∘ Xₙ)] = ofReal (R(g k, n))` (the `⇝ₒ` readout).
+  set R : ℕ → ℕ → ℝ := fun k n =>
+    (outerExpectation (μ n)
+        (fun ω => ENNReal.ofReal (g k (Xn n ω) + ‖g k‖))).toReal
+      - ‖g k‖ * (μ n Set.univ).toReal with hR
+  have hfin : ∀ k n,
+      outerExpectation (μ n) (fun ω => ENNReal.ofReal (g k (Xn n ω))) ≤ μ n Set.univ := by
+    intro k n
+    calc outerExpectation (μ n) (fun ω => ENNReal.ofReal (g k (Xn n ω)))
+        ≤ outerExpectation (μ n) (fun _ => 1) :=
+          outerExpectation_mono fun ω => by
+            rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 by simp]
+            exact ENNReal.ofReal_le_ofReal (hg_le_one k _)
+      _ = μ n Set.univ := by rw [outerExpectation_const]; simp
+  have hstep2 : ∀ k n,
+      outerExpectation (μ n) (fun ω => ENNReal.ofReal (g k (Xn n ω)))
+        = ENNReal.ofReal (R k n) := by
+    intro k n
+    have hsplit : (fun ω => ENNReal.ofReal (g k (Xn n ω) + ‖g k‖))
+        = fun ω => ENNReal.ofReal (g k (Xn n ω)) + ENNReal.ofReal ‖g k‖ := by
+      funext ω; rw [ENNReal.ofReal_add (hg_nonneg k _) (norm_nonneg _)]
+    have hshift : outerExpectation (μ n) (fun ω => ENNReal.ofReal (g k (Xn n ω) + ‖g k‖))
+        = outerExpectation (μ n) (fun ω => ENNReal.ofReal (g k (Xn n ω)))
+          + ENNReal.ofReal ‖g k‖ * μ n Set.univ := by
+      rw [hsplit]; exact outerExpectation_add_const _ _ ENNReal.ofReal_ne_top
+    have hμfin : μ n Set.univ ≠ ⊤ := measure_ne_top _ _
+    have hEfin : outerExpectation (μ n) (fun ω => ENNReal.ofReal (g k (Xn n ω))) ≠ ⊤ :=
+      ne_top_of_le_ne_top hμfin (hfin k n)
+    simp only [hR]
+    rw [hshift, ENNReal.toReal_add hEfin (by finiteness),
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal (norm_nonneg _)]
+    rw [add_sub_cancel_right, ENNReal.ofReal_toReal hEfin]
+  -- Step 3 : `limsup (μ n)* (Xₙ⁻¹ C) ≤ ofReal (∫ g k dνD)` for each `k`.
+  have hstep3 : ∀ k, limsup (fun n => (μ n).outerMeasureStar (Xn n ⁻¹' C)) atTop
+      ≤ ENNReal.ofReal (∫ y, g k y ∂νD) := by
+    intro k
+    have hRtendsto : Tendsto (fun n => ENNReal.ofReal (R k n)) atTop
+        (𝓝 (ENNReal.ofReal (∫ y, g k y ∂νD))) :=
+      (ENNReal.continuous_ofReal.tendsto _).comp (hlip (g k) (hg_lip k))
+    calc limsup (fun n => (μ n).outerMeasureStar (Xn n ⁻¹' C)) atTop
+        ≤ limsup (fun n => ENNReal.ofReal (R k n)) atTop :=
+          limsup_le_limsup (Eventually.of_forall fun n =>
+            le_trans (hstep1 k n) (le_of_eq (hstep2 k n)))
+      _ = ENNReal.ofReal (∫ y, g k y ∂νD) := hRtendsto.limsup_eq
+  -- Step 4 : `∫ g k dνD → νD C`, so `limsup … ≤ νD C`.
+  have hlim : Tendsto (fun k => ∫⁻ y, (thickenedIndicator (hδ_pos k) C y : ℝ≥0∞) ∂νD) atTop
+      (𝓝 (νD C)) :=
+    tendsto_lintegral_thickenedIndicator_of_isClosed νD hC hδ_pos hδ_lim
+  have heq : ∀ k, ENNReal.ofReal (∫ y, g k y ∂νD)
+      = ∫⁻ y, (thickenedIndicator (hδ_pos k) C y : ℝ≥0∞) ∂νD := by
+    intro k
+    rw [ofReal_integral_eq_lintegral_ofReal
+      (BoundedContinuousFunction.integrable νD (g k))
+      (Eventually.of_forall fun y => hg_nonneg k y)]
+    refine lintegral_congr fun y => ?_
+    rw [hg_apply, ENNReal.ofReal_coe_nnreal]
+  have hlim' : Tendsto (fun k => ENNReal.ofReal (∫ y, g k y ∂νD)) atTop (𝓝 (νD C)) := by
+    simpa only [heq] using hlim
+  exact ge_of_tendsto hlim' (Eventually.of_forall hstep3)
 
 /-- **Easy-Prohorov direction (vdV 18.12 ⟸).** Weak convergence in outer
 expectation to a tight Borel limit law `νD` implies asymptotic tightness of the

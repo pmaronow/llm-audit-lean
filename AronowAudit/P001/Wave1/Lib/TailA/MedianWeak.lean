@@ -346,7 +346,7 @@ theorem medianWeak_no_local_ties {Ω : Type u} [MeasurableSpace Ω]
   filter_upwards [hae] with ω hω _ hx he
   exact hω ⟨hx, he⟩
 
-/-- A sorted list has exactly `k+1` entries at or below its rank-`k` value when that
+/-- A sorted list has exactly `k+1` entries below its rank-`k` value when that
 value occurs at most once. Duplicates at other values are allowed. -/
 theorem medianWeak_sorted_unique_rank (l : List ℝ) (hl : l.Pairwise (· ≤ ·))
     (k : ℕ) (hk : k < l.length)
@@ -743,5 +743,14 @@ theorem local_median_weak {Ω : Type u} [MeasurableSpace Ω]
   refine ⟨medianWeak_local_marginal μ X hiid m f hlocal, ?_⟩
   apply medianTransport_bootstrap_of_cdf μ X (fun {n} => @sampleMedian n)
   exact medianWeak_conditional_cdf μ X hiid m f hlocal
+
+example {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (X : ℕ → Ω → ℝ)
+    (hiid : IID μ X) (m : ℝ) (f : ℝ → ℝ) (hlocal : LocalMedianData μ X m f) :
+    CD μ (fun n ω => Real.sqrt n * (sampleMedian (firstSample X n ω)-m))
+      (gaussianReal 0 ⟨1/(4*(f m)^2), by positivity⟩) ∧
+    BootstrapWeakCP μ X (fun n => n) (fun {n} => @sampleMedian n)
+      (gaussianReal 0 ⟨1/(4*(f m)^2), by positivity⟩) :=
+  local_median_weak μ X hiid m f hlocal
 
 end AronowAudit.P001.TailA

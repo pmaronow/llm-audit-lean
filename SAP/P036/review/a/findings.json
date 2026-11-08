@@ -1,0 +1,22 @@
+[
+  {
+    "target_id": "P036-T1",
+    "theorem": "SAP.P036.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully with only SAP.P036.Defs imported. It constructs a fair measure on Fin 2 with peer set {0}, probability 1/2 per arm, beta0=2, beta1=3, zero disturbance, and a nonconstant one-dimensional covariate with coefficient 2. All hypotheses of each conditional-model clause hold. Fin 4 with treated set {0,1} realizes the finite-sample arm hypotheses. On Fin 189, the peer set is {i : i.val < 94}; binary tableY 10 and tableY 7 have exactly 10 treated responses and respectively 10 and 7 control responses, with arm sizes 94 and 95. The interest responders are a subset of the any-response responders by construction. Both coefficient fractions and the rounded values were independently checked using exact rationals.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P036-T2",
+    "theorem": "SAP.P036.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully and realizes n1=n0=2 on Fin 4 with six assignments, including fixed potential outcomes Y1(i)=i.val, Y0(i)=0 whose treatment effects are nonconstant. Exact enumeration gives E[HC2]=5/6, Var(estimated effect)=5/12 and gap=5/12. With Y1(i)=i.val+3 and Y0(i)=i.val, the effects are constant and E[HC2]=Var(estimated effect)=5/3. The same file realizes the binary 94/95-arm table counts on Fin 189. scratch/numerical_check.py independently verifies the full matrix sandwich, all stated randomization moments and the equality case for every one of the 256 binary potential-outcome pairs on Fin 4, plus six additional populations; it also checks both exact table variances and square-root rounding intervals using exact rational inequalities. These finite checks supplement the mathematical assessment of the universal statements.",
+    "confidence": 0.99
+  }
+]

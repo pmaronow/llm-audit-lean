@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -44,7 +43,8 @@ register_simp_attr indicator_simps
 their underlying conditional expectations and restricted integrals.
 
 Conditional-expectation wrapper normal form: unfolds Causalean's
-conditioning wrappers to the Mathlib primitives they abbreviate —
+conditioning wrappers (`POVar`/`POCFBundle` `condExpGiven`, `condExpRatio`, and
+the event-level `normalizedRestrictedIntegral`) to the Mathlib primitives they abbreviate —
 `condExp` given the conditioning σ-algebra, and the restricted integral over
 the event's mass — so the Mathlib API applies. Wrapper unfolding ONLY: condExp
 linearity is `=ᵐ[μ]`-valued and out of simp's reach. -/

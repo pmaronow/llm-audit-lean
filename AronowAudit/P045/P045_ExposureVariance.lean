@@ -3,13 +3,12 @@ import Mathlib.Data.Fin.Tuple.Basic
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Data.Rat.BigOperators
 
-/-!
-P045-T32/T33: exact and simulated exposure-probability HT variance.
-Adapted from this repository's related P044 formalization. All definitions and theorems are local
-to this file. Fixed real potential outcomes and normalized finite design masses are
-used for the general correction; the concrete witness uses canonically embedded
-rational arithmetic.
--/
+/-! P045-T32/T33: exact and simulated exposure-probability HT variance.
+Adapted from the related P044 formalization as expressly permitted by the
+P045 target list. All definitions and theorems are local to this file.
+Fixed real potential outcomes and normalized finite design masses are used
+for the general correction; the concrete witness uses canonically embedded
+rational arithmetic. -/
 
 namespace AronowAudit.P045.ExposureVariance
 open Finset
@@ -55,11 +54,20 @@ Pr(Z=z)=p_z. Also used over rational fields for exact numerical witnesses. -/
 def expect {Ω K : Type*} [Fintype Ω] [CommSemiring K] (p : Ω → K) (t : Ω → K) : K :=
   ∑ ω, p ω * t ω
 
-/-- Randomization variance E[T²]−E[T]² (notation P045-T32/T33), valid when the
+/-- Randomization variance E[T²]−E[T]² (audit notation P045-T32/T33), valid when the
 nonnegative masses sum to one. It is not squared error about the estimand. -/
 def designVariance {Ω K : Type*} [Fintype Ω] [CommRing K]
     (p : Ω → K) (t : Ω → K) : K := expect p (fun ω => t ω ^ 2) - (expect p t) ^ 2
 
+/-- "yᵢ(·) is a real-valued function" of assignments (p. 294), translated
+by a correctly specified mapping into the exposure-indexed schedule (pp. 294–295).
+The scalar type is ℝ in general statements and ℚ in numerical witnesses. -/
+abbrev OutcomeSchedule (N : ℕ) (D K : Type*) := Fin N → D → K
+
+/-- "... will reveal the associated potential outcome, yᵢ(d)" (p. 297).
+Observed outcomes are Yᵢ=yᵢ(Dᵢ), with population and outcome schedule fixed. -/
+def observed {Ω D K : Type*} {N : ℕ} (f : Ω → Fin N → D)
+    (y : OutcomeSchedule N D K) (ω : Ω) (i : Fin N) : K := y i (f ω i)
 
 /-- "τ(d,d') = 1/N ∑ᵢ (yᵢ(d)−yᵢ(d'))" (display, p. 297).
 Outcomes are fixed exposure-indexed real values; rational witnesses use the
@@ -73,31 +81,32 @@ def marginal {Ω D K : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D] [CommSemiri
     (p : Ω → K) (f : Ω → Fin N → D) (i : Fin N) (a : D) : K :=
   ∑ ω, if f ω i = a then p ω else 0
 
-/-- πᵢⱼ(d,e)=Pr(Dᵢ=d,Dⱼ=e), notation P045-T32/T33 for shared-peer dependencies
+/-- πᵢⱼ(d,e)=Pr(Dᵢ=d,Dⱼ=e), audit notation P045-T32/T33 for shared-peer dependencies
 (p. 294). Ordered pairs, including diagonal pairs, are retained. -/
 def joint {Ω D K : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D] [CommSemiring K]
     (p : Ω → K) (f : Ω → Fin N → D) (i j : Fin N) (a b : D) : K :=
   ∑ ω, if f ω i = a ∧ f ω j = b then p ω else 0
 
-/-- The HT unit contribution I(Dᵢ=d)Yᵢ/wᵢ(d) (P045-T32/T33; pp. 297–298). By correct specification Yᵢ=yᵢ(Dᵢ), this is the displayed
+/-- The HT unit contribution I(Dᵢ=d)Yᵢ/wᵢ(d) (P045-T32/T33; staged estimates.R,
+pp. 297–298). By correct specification Yᵢ=yᵢ(Dᵢ), this is the displayed
 conditional expression. Lean's total division is not a support assumption. -/
 def htTerm {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K) (a : D) (ω : Ω) (i : Fin N) : K :=
   if f ω i = a then y i a / w i a else 0
 
-/-- μ̂_HT(d)=N⁻¹∑ᵢ I(Dᵢ=d)Yᵢ/wᵢ(d) (P045-T32/T33).
-This is the HT exposure-total estimator of p. 297 divided by N. -/
+/-- μ̂_HT(d)=N⁻¹∑ᵢ I(Dᵢ=d)Yᵢ/wᵢ(d) (P045-T32/T33; staged estimates.R 216–218,314).
+The estimator is not displayed in the chapter; the prose is on pp. 297–298. -/
 def htMean {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K) (a : D) (ω : Ω) : K :=
   (∑ i, htTerm f y w a ω i) / N
 
 /-- The implemented effect estimate μ̂(k)−μ̂(l), for the p. 297 estimand
-(P045-T32/T33). -/
+(P045-T32/T33; staged estimates.R). -/
 def htContrast {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K) (a b : D) (ω : Ω) : K :=
   htMean f y w a ω - htMean f y w b ω
 
-/-- V̂_d from P045-T32/T33; ordered positive-joint terms
+/-- V̂_d from P045-T32/T33 (staged estimates.R 365–403); ordered positive-joint terms
 include i=j; zero-joint squared-outcome adjustment excludes i=j. -/
 def totalVarianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K] [LinearOrder K] [IsStrictOrderedRing K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K)
@@ -112,7 +121,7 @@ def totalVarianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K] [
       (if f ω j = a then y j a ^ 2 / (2 * w j a) else 0)
     else 0))
 
-/-- Ĉ_kl from P045-T32/T33. The cross zero adjustment
+/-- Ĉ_kl from P045-T32/T33 (staged estimates.R 422–465). The cross zero adjustment
 has a minus sign and includes every i=j pair. -/
 def totalCovarianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K] [LinearOrder K] [IsStrictOrderedRing K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K)
@@ -128,7 +137,7 @@ def totalCovarianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K]
     else 0))
 
 /-- V̂(k,l)=(V̂_k+V̂_l−2 Ĉ_kl)/N², the HT variance functional used by
-"conservative approximations" on p. 298 (P045-T32/T33). -/
+"conservative approximations" on p. 298 (P045-T32/T33; staged estimates.R 289–292). -/
 def varianceEstimate {Ω D K : Type*} {N : ℕ} [DecidableEq D] [Field K] [LinearOrder K] [IsStrictOrderedRing K]
     (f : Ω → Fin N → D) (y w : Fin N → D → K)
     (q : Fin N → Fin N → D → D → K) (a b : D) (ω : Ω) : K :=
@@ -151,6 +160,10 @@ theorem expect_sum {Ω I K : Type*} [Fintype Ω] [Field K] (p : Ω → K) (s : F
   simp_rw [Finset.mul_sum]
   rw [Finset.sum_comm]
 
+/-- Finite expectation of a scalar multiple, used in the variance correction. -/
+theorem expect_mul_const {Ω K : Type*} [Fintype Ω] [Field K] (p u : Ω → K) (c : K) :
+    expect p (fun ω => u ω * c) = expect p u * c := by
+  simp [expect, Finset.sum_mul, mul_assoc]
 
 /-- Finite expectation of a difference, used in the p. 298 variance correction. -/
 theorem expect_sub {Ω K : Type*} [Fintype Ω] [Field K] (p u v : Ω → K) :
@@ -205,8 +218,8 @@ theorem htTerm_product_expectation {Ω D K : Type*} {N : ℕ} [Fintype Ω] [Fiel
       simp [hi, hj, div_eq_mul_inv] <;> ring
   rw [he, expect_joint_event]
 
-/-- T33 finite algebra: the second moment of the population average expands into
-all ordered pairs, divided by N², with no independence requirement. -/
+/-- T33 finite algebra: a weighted sum's squared second moment expands into
+all ordered pairs, with no independence requirement. -/
 theorem expect_square_sum {Ω K : Type*} {N : ℕ} [Fintype Ω] [Field K]
     (p : Ω → K) (u : Ω → Fin N → K) :
     expect p (fun ω => ((∑ i, u ω i) / N) ^ 2) =
@@ -374,7 +387,7 @@ theorem ht_unbiased {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D]
     simp [tau, Finset.sum_sub_distrib, sub_div]
 
 /-- Exposure counts cᵢ(a) over an enumerated table, the p. 296 recipe and
-P045-T32/T33's make_exposure_prob inputs. -/
+P045-T32/T33's make_exposure_prob inputs (staged lines 83,88). -/
 def exposureCount {R N : ℕ} {D : Type*} [DecidableEq D]
     (f : Fin R → Fin N → D) (i : Fin N) (a : D) : ℕ :=
   (Finset.univ.filter (fun r => f r i = a)).card
@@ -385,7 +398,7 @@ def jointCount {R N : ℕ} {D : Type*} [DecidableEq D]
   (Finset.univ.filter (fun r => f r i = a ∧ f r j = b)).card
 
 /-- Returned marginal weights (cᵢ(a)+1)/(R+1), rather than counts/R:
-the package's `make_exposure_prob`, used on pp. 298–299 (T32 correction). -/
+staged make_exposure_prob.R line 83, used on pp. 298–299 (T32 correction). -/
 def smoothedWeight {R N : ℕ} {D K : Type*} [DecidableEq D] [Field K]
     (f : Fin R → Fin N → D) (i : Fin N) (a : D) : K :=
   ((exposureCount f i a : K) + 1) / ((R : K) + 1)
@@ -565,6 +578,13 @@ theorem exact_variance_surplus {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableE
   unfold zeroSurplus
   ring
 
+/-- T33 finite algebra: the within-exposure zero adjustment exceeds the missing
+variance term by (x+y)²/2; the cross adjustment after −2 gives (x−y)².
+These are the two terms in the corrected p. 298 variance proof. -/
+theorem zero_pair_algebra (x y : ℝ) :
+    (x ^ 2 + y ^ 2) / 2 - (-x * y) = (x + y) ^ 2 / 2 ∧
+    -2 * (-(x ^ 2 + y ^ 2) / 2 - (-x * y)) = (x - y) ^ 2 := by
+  constructor <;> ring
 
 /-- T33 finite inequality: every structural-zero surplus is nonnegative,
 including the cross diagonal contribution. Exact-probability clarification of p. 298. -/
@@ -588,9 +608,10 @@ theorem exact_variance_conservative {Ω D : Type*} {N : ℕ} [Fintype Ω] [Decid
   linarith
 
 
+
 /-- T32's complete randomization atoms: all 66 ordered-increasing treated
 pairs on twelve vertices. The table below is just a computable enumeration
-of the two-element subsets. -/
+of the two-element subsets; it is not a list of validator output numbers. -/
 def cliquePairs : Fin 66 → Fin 12 × Fin 12 :=
   ![(0,1), (0,2), (0,3), (0,4), (0,5), (0,6), (0,7), (0,8), (0,9), (0,10), (0,11), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9), (1,10), (1,11), (2,3), (2,4), (2,5), (2,6), (2,7), (2,8), (2,9), (2,10), (2,11), (3,4), (3,5), (3,6), (3,7), (3,8), (3,9), (3,10), (3,11), (4,5), (4,6), (4,7), (4,8), (4,9), (4,10), (4,11), (5,6), (5,7), (5,8), (5,9), (5,10), (5,11), (6,7), (6,8), (6,9), (6,10), (6,11), (7,8), (7,9), (7,10), (7,11), (8,9), (8,10), (8,11), (9,10), (9,11), (10,11)]
 
@@ -1213,7 +1234,7 @@ def twoImagePerm {n : ℕ} [NeZero n] (a b : Fin n) : Equiv.Perm (Fin n) :=
 
 /-- Permute the three clique labels, and independently permute the four
 vertices of each source clique. This explicit product equivalence is used
-only to verify the two representative-bank classes (T32(vi)). -/
+only to verify the validator's two representative-bank classes (T32(vi)). -/
 def cliqueProductPerm (e : Equiv.Perm (Fin 3)) (u : Fin 3 → Equiv.Perm (Fin 4)) :
     Equiv.Perm (Fin 3 × Fin 4) where
   toFun x := (e x.1, u x.1 x.2)
@@ -1506,8 +1527,7 @@ theorem clique_all_fixed_table_counterexamples :
 /-- T32: every hypothesis of the explicit twelve-unit counterexample, and
 its exact design and simulated-bank means, variances, expected variance
 estimates, strict shortfalls in both sampling regimes, and the two fixed
-representative tables. Counterexample to an exact finite-simulation extension
-of p. 298; it concerns HT only. -/
+representative tables. Counterexample to p. 298; it concerns HT only. -/
 theorem clique_variance_counterexample :
     cliqueF = (fun r => exposure cliqueAdj (cliqueAssignments r)) ∧
     (∀ z : Assignment 12, (Finset.univ.filter (fun i => z i)).card = 2 ↔ ∃ r, cliqueAssignments r = z) ∧
@@ -1587,6 +1607,25 @@ theorem ratCast_designVariance {Ω : Type*} [Fintype Ω] (p t : Ω → ℚ) :
   unfold designVariance
   simp only [Rat.cast_sub, Rat.cast_pow, ← ratCast_expect]
 
+/-- Marginal exposure probabilities in a rational numerical witness are
+exactly the paper's real probabilities after embedding (P045-T32/T33). -/
+theorem ratCast_marginal {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D]
+    (p : Ω → ℚ) (f : Ω → Fin N → D) (i : Fin N) (a : D) :
+    marginal (fun ω => (p ω : ℝ)) f i a = ((marginal p f i a : ℚ) : ℝ) := by
+  simp only [marginal, Rat.cast_sum]
+  apply Finset.sum_congr rfl
+  intro ω _
+  split_ifs <;> simp only [Rat.cast_zero]
+
+/-- Joint exposure probabilities also embed exactly, preserving ordered
+and diagonal pairs (P045-T32/T33). -/
+theorem ratCast_joint {Ω D : Type*} {N : ℕ} [Fintype Ω] [DecidableEq D]
+    (p : Ω → ℚ) (f : Ω → Fin N → D) (i j : Fin N) (a b : D) :
+    joint (fun ω => (p ω : ℝ)) f i j a b = ((joint p f i j a b : ℚ) : ℝ) := by
+  simp only [joint, Rat.cast_sum]
+  apply Finset.sum_congr rfl
+  intro ω _
+  split_ifs <;> simp only [Rat.cast_zero]
 
 /-- HT unit contributions in rational witnesses are exactly the real
 paper contributions after embedding (T32). -/
@@ -1629,9 +1668,8 @@ theorem ratCast_varianceEstimate {Ω D : Type*} {N : ℕ} [DecidableEq D]
 /-- T32's strict counterexample in the paper's real scalar type. Both actual
 joint randomization laws are nonnegative and normalized; using the same
 point and variance functionals with real outcomes and real table inputs,
-the expected variance estimate is below both the point estimator's actual
-variance and the exact-probability variance 6050/11907. Counterexample to an
-exact finite-simulation extension of p. 298. -/
+the expected variance estimate is below both its actual variance and the
+exact-probability variance 6050/11907. Counterexample to p. 298. -/
 theorem clique_real_variance_shortfall :
     ∀ included : Bool,
       (∀ x, 0 ≤ (cliqueJointMass included x : ℝ)) ∧
@@ -1674,6 +1712,77 @@ theorem clique_real_variance_shortfall :
         _ = 6050/11907 := by norm_num
 
 
+
 end
+
+#print axioms clique_pair_sum_relabel
+#print axioms clique_conditional_relabel
+#print axioms clique_two_class_expect
+#print axioms clique_two_representative_arithmetic
+#print axioms clique_all_fixed_reduced_arithmetic
+#print axioms clique_pair_ordinal
+#print axioms clique_assignment_injective
+#print axioms expect_sum
+#print axioms expect_mul_const
+#print axioms expect_sub
+#print axioms expect_add
+#print axioms expect_div
+#print axioms expect_event
+#print axioms expect_joint_event
+#print axioms htTerm_product_expectation
+#print axioms expect_square_sum
+#print axioms htContrast_second_moment
+#print axioms expect_const_mul
+#print axioms expect_ite
+#print axioms varianceEstimate_expectation
+#print axioms htTerm_expectation
+#print axioms htMean_expectation
+#print axioms ht_unbiased
+#print axioms exhaustive_probabilities
+#print axioms joint_nonneg
+#print axioms joint_diagonal
+#print axioms joint_swap
+#print axioms exact_totalVariance
+#print axioms exact_totalCovariance
+#print axioms htVariance_pair_expansion
+#print axioms exact_variance_surplus
+#print axioms zero_pair_algebra
+#print axioms zeroSurplus_nonneg
+#print axioms exact_variance_conservative
+#print axioms peerCount_two_treated
+#print axioms clique_pair_distinct
+#print axioms cliqueF_is_exposure
+#print axioms clique_full_counts
+#print axioms count_delete_atom
+#print axioms clique_retained_weights
+#print axioms clique_observation_independent_mass
+#print axioms clique_observation_marginal
+#print axioms clique_observation_joint
+#print axioms clique_conditional_moments
+#print axioms clique_joint_expectation
+#print axioms clique_reduced_arithmetic
+#print axioms clique_joint_moments
+#print axioms clique_structure
+#print axioms clique_retained_injective
+#print axioms clique_exact_reduced_arithmetic
+#print axioms clique_exact_profile_estimates
+#print axioms clique_fixed_reduced_arithmetic
+#print axioms clique_fixed_table_counterexamples
+#print axioms clique_exact_moments
+#print axioms clique_probability_laws
+#print axioms clique_pairs_complete
+#print axioms clique_complete_support
+#print axioms clique_relabeling_verified
+#print axioms clique_all_fixed_table_counterexamples
+#print axioms clique_variance_counterexample
+#print axioms ratCast_expect
+#print axioms ratCast_designVariance
+#print axioms ratCast_marginal
+#print axioms ratCast_joint
+#print axioms ratCast_htTerm
+#print axioms ratCast_htMean
+#print axioms ratCast_htContrast
+#print axioms ratCast_varianceEstimate
+#print axioms clique_real_variance_shortfall
 
 end AronowAudit.P045.ExposureVariance

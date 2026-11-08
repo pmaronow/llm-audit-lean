@@ -2,6 +2,9 @@ import AronowAudit.P009.P009_BernoulliCompletion
 
 /-!
 Finite variance-bias identities (T47) and the spectral inflation bound (T50).
+The finite-law helper proofs below are adapted from the proved private helpers
+in P009/Wave1/Gap/GP0092B1.lean in the read-only audit checkout. They are
+reproved here under unique names, without depending on held declarations.
 -/
 namespace AronowAudit.P009.Wave1
 
@@ -499,7 +502,7 @@ private lemma t47b3_variance_sub_const {Ω : Type*} [Fintype Ω]
   funext z
   ring
 
-/-- T47: six finite identities and bounds. -/
+/-- T47: all six finite identities and bounds with the held statement unchanged. -/
 theorem variance_bias_finite_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
     (k q s : ℝ) (hReg : Regular E k q s) (hQ : 4 ≤ q) (hBER : Bernoulli E) :
     mean E.design (fun z => (n:ℝ)*vBER E z) = aVariance E ∧
@@ -535,7 +538,10 @@ theorem variance_bias_finite_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
         div_le_div_of_nonneg_right hv (sq_nonneg _)
       _ = _ := by field_simp [hn0, hd0]
 
-/-! T50: spectral inflation bounds via the Rayleigh quotient. -/
+example : type_of% @AronowAudit.P009.variance_bias_finite := variance_bias_finite_proof
+
+/-! T50. The Rayleigh proofs are adapted from private helpers in the proved
+P009/Wave1/Gap/GP0092B2.lean in the read-only audit checkout. -/
 
 private lemma t50b3_d_nonneg {n : ℕ} (E : Experiment n) (i j : Fin n) :
     0 ≤ d E i j := by unfold d; split_ifs <;> norm_num
@@ -698,6 +704,8 @@ theorem spectral_inflation_finite_proof {n : ℕ} (hn : 0 < n) (E : Experiment n
   have hr := t50b3_rayleigh hn E
   exact ⟨hr.1, (t50b3_spectral_margin hn E hBER).1,
     hr.2, t50b3_lambda_le_max hn E⟩
+
+example : type_of% @AronowAudit.P009.spectral_inflation_finite := spectral_inflation_finite_proof
 
 end
 end AronowAudit.P009.Wave1

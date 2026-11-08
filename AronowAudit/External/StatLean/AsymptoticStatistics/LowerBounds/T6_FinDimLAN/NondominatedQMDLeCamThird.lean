@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLAN
 import AronowAudit.External.StatLean.AsymptoticStatistics.Probability.ScoreCLT
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.Contiguity
@@ -1305,5 +1301,297 @@ theorem qmd_local_contiguous
   rw [heq] at hofReal
   simpa only [ENNReal.ofReal_zero] using hofReal
 
+/-- A zero-score QMD path is asymptotically equivalent to baseline for all
+uniformly bounded measurable tests.
+
+Proof idea: combine contiguity in both directions with the zero-score LAN
+limit and actual product comparison. -/
+theorem zero_score_local_product_equivalent
+    (γ : NondominatedQMDPath P) (hscore : γ.score = 0)
+    (f : ∀ n, (Fin n → Ω) → ℝ) (C : ℝ)
+    (hf : ∀ n, Measurable (f n)) (hbound : ∀ n X, |f n X| ≤ C) :
+    Tendsto (fun n =>
+      (∫ X, f n X ∂(Measure.pi (fun _ : Fin n => γ.curve ((Real.sqrt n)⁻¹))))
+        - ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P)))
+      atTop (nhds 0) := by
+  have hC : 0 ≤ C :=
+    (abs_nonneg (f 0 (fun i => Fin.elim0 i))).trans
+      (hbound 0 (fun i => Fin.elim0 i))
+  have hlog0 : WeakConverges
+      (fun n => (Measure.pi (fun _ : Fin n => P)).map
+        (actualLogLikelihood γ 1 n))
+      (Measure.dirac 0) := by
+    let v₀ : NNReal := ⟨1 ^ 2 * ‖γ.score‖ ^ 2,
+      mul_nonneg (sq_nonneg _) (sq_nonneg _)⟩
+    have h : WeakConverges
+        (fun n => (Measure.pi (fun _ : Fin n => P)).map
+          (actualLogLikelihood γ 1 n))
+        (gaussianReal (-(v₀ : ℝ) / 2) v₀) := by
+      simpa only [v₀] using!
+        weakConverges_actualLogLikelihood_under_pi γ 1 zero_le_one
+    have hv₀ : v₀ = 0 := by
+      apply NNReal.eq
+      (norm_num [v₀, hscore]; rfl)
+    rw [hv₀] at h
+    simpa only [NNReal.coe_zero, neg_zero, zero_div,
+      ProbabilityTheory.gaussianReal_zero_var] using h
+  let truncExp : BoundedContinuousFunction ℝ ℝ :=
+    { toFun := fun x => min (Real.exp x) 1
+      continuous_toFun := Real.continuous_exp.min continuous_const
+      map_bounded' := ⟨1, fun x y => by
+        rw [Real.dist_eq]
+        have hx0 : 0 ≤ min (Real.exp x) 1 :=
+          le_min (Real.exp_pos _).le zero_le_one
+        have hy0 : 0 ≤ min (Real.exp y) 1 :=
+          le_min (Real.exp_pos _).le zero_le_one
+        have hx1 : min (Real.exp x) 1 ≤ 1 := min_le_right _ _
+        have hy1 : min (Real.exp y) 1 ≤ 1 := min_le_right _ _
+        rw [abs_le]
+        constructor <;> linarith⟩ }
+  have htrunc : Tendsto (fun n =>
+      ∫ X, min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+        ∂(Measure.pi (fun _ : Fin n => P))) atTop (nhds 1) := by
+    have h := hlog0 truncExp
+    have hmap : ∀ n,
+        ∫ x, truncExp x
+            ∂((Measure.pi (fun _ : Fin n => P)).map
+              (actualLogLikelihood γ 1 n)) =
+          ∫ X, truncExp (actualLogLikelihood γ 1 n X)
+            ∂(Measure.pi (fun _ : Fin n => P)) := by
+      intro n
+      exact integral_map
+        (measurable_actualLogLikelihood γ 1 n).aemeasurable
+        truncExp.continuous.aestronglyMeasurable
+    simp_rw [hmap] at h
+    dsimp only [truncExp] at h
+    rw [MeasureTheory.integral_dirac] at h
+    norm_num at h
+    exact h
+  have hmass := integral_exp_actualLogLikelihood_tendsto_one γ 1 zero_le_one
+  have hExpL1_eq : ∀ n,
+      ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) - 1|
+          ∂(Measure.pi (fun _ : Fin n => P)) =
+        (∫ X, Real.exp (actualLogLikelihood γ 1 n X)
+          ∂(Measure.pi (fun _ : Fin n => P))) + 1 -
+          2 * (∫ X, min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+            ∂(Measure.pi (fun _ : Fin n => P))) := by
+    intro n
+    have hexp := integrable_exp_actualLogLikelihood γ 1 zero_le_one n
+    have hone : Integrable (fun _ : Fin n → Ω => (1 : ℝ))
+        (Measure.pi (fun _ : Fin n => P)) := integrable_const 1
+    have hmin : Integrable (fun X =>
+        min (Real.exp (actualLogLikelihood γ 1 n X)) 1)
+        (Measure.pi (fun _ : Fin n => P)) := by
+      refine hexp.mono' ?_ ?_
+      · exact (((measurable_actualLogLikelihood γ 1 n).exp).min
+          measurable_const).aestronglyMeasurable
+      · filter_upwards with X
+        rw [Real.norm_eq_abs, abs_of_nonneg]
+        · exact min_le_left _ _
+        · exact le_min (Real.exp_pos _).le zero_le_one
+    have hpw : (fun X =>
+        |Real.exp (actualLogLikelihood γ 1 n X) - 1|) =
+        fun X => Real.exp (actualLogLikelihood γ 1 n X) + 1 -
+          2 * min (Real.exp (actualLogLikelihood γ 1 n X)) 1 := by
+      funext X
+      by_cases hz : Real.exp (actualLogLikelihood γ 1 n X) ≤ 1
+      · rw [min_eq_left hz, abs_of_nonpos (sub_nonpos.mpr hz)]
+        ring_nf
+      · have hz' : 1 ≤ Real.exp (actualLogLikelihood γ 1 n X) :=
+          (lt_of_not_ge hz).le
+        rw [min_eq_right hz', abs_of_nonneg (sub_nonneg.mpr hz')]
+        ring_nf
+    rw [hpw]
+    calc
+      ∫ X, Real.exp (actualLogLikelihood γ 1 n X) + 1 -
+          2 * min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+          ∂(Measure.pi (fun _ : Fin n => P)) =
+          (∫ X, Real.exp (actualLogLikelihood γ 1 n X) + 1
+            ∂(Measure.pi (fun _ : Fin n => P))) -
+          ∫ X, 2 * min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+            ∂(Measure.pi (fun _ : Fin n => P)) :=
+        integral_sub (hexp.add hone) (hmin.const_mul 2)
+      _ = _ := by
+        rw [integral_add hexp hone, integral_const_mul, integral_const]
+        have hOne : (Measure.pi (fun _ : Fin n => P)).real Set.univ = 1 := by
+          simp only [measureReal_def, measure_univ, ENNReal.toReal_one]
+        rw [hOne]
+        simp only [smul_eq_mul, mul_one]
+  have hExpL1 : Tendsto (fun n =>
+      ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) - 1|
+        ∂(Measure.pi (fun _ : Fin n => P))) atTop (nhds 0) := by
+    have hcalc := (hmass.add_const 1).sub (htrunc.const_mul 2)
+    have hcalc' : Tendsto (fun n =>
+        (∫ X, Real.exp (actualLogLikelihood γ 1 n X)
+          ∂(Measure.pi (fun _ : Fin n => P))) + 1 -
+          2 * (∫ X, min (Real.exp (actualLogLikelihood γ 1 n X)) 1
+            ∂(Measure.pi (fun _ : Fin n => P)))) atTop (nhds 0) := by
+      simpa only [one_add_one_eq_two, mul_one, sub_self] using hcalc
+    exact hcalc'.congr' (Filter.Eventually.of_forall fun n => (hExpL1_eq n).symm)
+  have hbad : Tendsto (fun n =>
+      ((Measure.pi (fun _ : Fin n => P))
+        {X | (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal = 0}).toReal)
+      atTop (nhds 0) := by
+    have hz := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp
+      (γ.base_zeroLikelihood_localScale_tendsto 1 zero_le_one)
+    refine squeeze_zero
+      (fun _ => ENNReal.toReal_nonneg)
+      (fun n => ENNReal.toReal_mono
+        (ENNReal.mul_ne_top (ENNReal.natCast_ne_top n) (measure_ne_top P _))
+        (by simpa only [one_mul] using!
+          acProductLikelihood_toReal_zero_mass_le γ ((Real.sqrt n)⁻¹) n)) ?_
+    simpa only [one_mul, Function.comp_apply, ENNReal.toReal_zero] using! hz
+  have hExpActualL1_eq : ∀ n,
+      ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) -
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal|
+          ∂(Measure.pi (fun _ : Fin n => P)) =
+        ((Measure.pi (fun _ : Fin n => P))
+          {X | (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal = 0}).toReal := by
+    intro n
+    have hexp := integrable_exp_actualLogLikelihood γ 1 zero_le_one n
+    have hR := (γ.integrable_acProductLikelihood_and_integral
+      ((Real.sqrt n)⁻¹) (inv_nonneg.mpr (Real.sqrt_nonneg _)) n).1
+    rw [integral_congr_ae (Filter.Eventually.of_forall fun X => by
+      rw [abs_of_nonneg]
+      by_cases hzero :
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal = 0
+      · simp [hzero, actualLogLikelihood]
+      · rw [show actualLogLikelihood γ 1 n X = Real.log
+            (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal by
+            simp only [actualLogLikelihood, one_mul]]
+        rw [Real.exp_log (lt_of_le_of_ne ENNReal.toReal_nonneg (Ne.symm hzero))]
+        exact sub_nonneg.mpr le_rfl
+      )]
+    rw [integral_sub hexp hR]
+    simpa only [one_mul] using
+      integral_exp_actualLogLikelihood_sub_likelihood γ 1 zero_le_one n
+  have hExpActualL1 : Tendsto (fun n =>
+      ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) -
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal|
+        ∂(Measure.pi (fun _ : Fin n => P))) atTop (nhds 0) :=
+    hbad.congr' (Filter.Eventually.of_forall fun n => (hExpActualL1_eq n).symm)
+  have hActualL1 : Tendsto (fun n =>
+      ∫ X, |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal - 1|
+        ∂(Measure.pi (fun _ : Fin n => P))) atTop (nhds 0) := by
+    apply squeeze_zero
+    · intro n
+      exact integral_nonneg fun _ => abs_nonneg _
+    · intro n
+      have hR := (γ.integrable_acProductLikelihood_and_integral
+        ((Real.sqrt n)⁻¹) (inv_nonneg.mpr (Real.sqrt_nonneg _)) n).1
+      have hexp := integrable_exp_actualLogLikelihood γ 1 zero_le_one n
+      have hleft := (hR.sub (integrable_const 1)).abs
+      have hfirst : Integrable (fun X =>
+          |Real.exp (actualLogLikelihood γ 1 n X) -
+            (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal|)
+          (Measure.pi (fun _ : Fin n => P)) := (hexp.sub hR).abs
+      have hsecond : Integrable (fun X =>
+          |Real.exp (actualLogLikelihood γ 1 n X) - 1|)
+          (Measure.pi (fun _ : Fin n => P)) :=
+        (hexp.sub (integrable_const 1)).abs
+      calc
+        ∫ X, |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal - 1|
+            ∂(Measure.pi (fun _ : Fin n => P)) ≤
+          ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) -
+              (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal| +
+              |Real.exp (actualLogLikelihood γ 1 n X) - 1|
+            ∂(Measure.pi (fun _ : Fin n => P)) := by
+              apply integral_mono hleft (hfirst.add hsecond)
+              intro X
+              calc
+                |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal - 1| ≤
+                    |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal -
+                      Real.exp (actualLogLikelihood γ 1 n X)| +
+                    |Real.exp (actualLogLikelihood γ 1 n X) - 1| :=
+                  abs_sub_le _ _ _
+                _ = _ := by
+                  rw [abs_sub_comm
+                    (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal]
+                  rfl
+        _ = (∫ X, |Real.exp (actualLogLikelihood γ 1 n X) -
+              (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal|
+            ∂(Measure.pi (fun _ : Fin n => P))) +
+              ∫ X, |Real.exp (actualLogLikelihood γ 1 n X) - 1|
+              ∂(Measure.pi (fun _ : Fin n => P)) := by
+                rw [integral_add hfirst hsecond]
+    · simpa only [zero_add] using hExpActualL1.add hExpL1
+  obtain ⟨error, herror, hcomparison⟩ :=
+    γ.product_integral_comparison 1 C zero_le_one f hf hbound
+  have hweighted : Tendsto (fun n =>
+      (∫ X, f n X *
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+          ∂(Measure.pi (fun _ : Fin n => P))) -
+        ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P)))
+      atTop (nhds 0) := by
+    apply (tendsto_zero_iff_abs_tendsto_zero _).mpr
+    change Tendsto (fun n =>
+      |(∫ X, f n X *
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+          ∂(Measure.pi (fun _ : Fin n => P))) -
+        ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P))|)
+      atTop (nhds 0)
+    apply squeeze_zero (g := fun n => C *
+      ∫ X, |(γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal - 1|
+        ∂(Measure.pi (fun _ : Fin n => P)))
+    · exact fun _ => abs_nonneg _
+    · intro n
+      let R : (Fin n → Ω) → ℝ := fun X =>
+        (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+      have hR : Integrable R (Measure.pi (fun _ : Fin n => P)) :=
+        (γ.integrable_acProductLikelihood_and_integral
+          ((Real.sqrt n)⁻¹) (inv_nonneg.mpr (Real.sqrt_nonneg _)) n).1
+      have hfint : Integrable (f n) (Measure.pi (fun _ : Fin n => P)) := by
+        refine Integrable.of_bound (hf n).aestronglyMeasurable C ?_
+        exact Filter.Eventually.of_forall fun X => by
+          simpa only [Real.norm_eq_abs] using hbound n X
+      have hfR : Integrable (fun X => f n X * R X)
+          (Measure.pi (fun _ : Fin n => P)) :=
+        hR.bdd_mul (hf n).aestronglyMeasurable
+          (Filter.Eventually.of_forall fun X => by
+            simpa only [Real.norm_eq_abs] using hbound n X)
+      have hrewrite :
+          (∫ X, f n X * R X ∂(Measure.pi (fun _ : Fin n => P))) -
+              ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P)) =
+            ∫ X, f n X * (R X - 1) ∂(Measure.pi (fun _ : Fin n => P)) := by
+        rw [← integral_sub hfR hfint]
+        apply integral_congr_ae
+        filter_upwards with X
+        ring_nf
+      change |(∫ X, f n X * R X ∂(Measure.pi (fun _ : Fin n => P))) -
+        ∫ X, f n X ∂(Measure.pi (fun _ : Fin n => P))| ≤ _
+      rw [hrewrite]
+      have hmajor : Integrable (fun X => C * |R X - 1|)
+          (Measure.pi (fun _ : Fin n => P)) :=
+        ((hR.sub (integrable_const 1)).abs).const_mul C
+      have hb := MeasureTheory.norm_integral_le_of_norm_le hmajor
+        (Filter.Eventually.of_forall fun X => by
+          rw [Real.norm_eq_abs, abs_mul]
+          exact mul_le_mul_of_nonneg_right (hbound n X) (abs_nonneg _))
+      rw [integral_const_mul] at hb
+      simpa only [Real.norm_eq_abs, R] using hb
+    · simpa only [mul_zero] using hActualL1.const_mul C
+  have hcomparison' : Tendsto (fun n =>
+      (∫ X, f n X ∂(Measure.pi (fun _ : Fin n =>
+          γ.curve ((Real.sqrt n)⁻¹)))) -
+        ∫ X, f n X *
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+          ∂(Measure.pi (fun _ : Fin n => P)))
+      atTop (nhds 0) := by
+    apply (tendsto_zero_iff_abs_tendsto_zero _).mpr
+    change Tendsto (fun n =>
+      |(∫ X, f n X ∂(Measure.pi (fun _ : Fin n =>
+          γ.curve ((Real.sqrt n)⁻¹)))) -
+        ∫ X, f n X *
+          (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n X).toReal
+          ∂(Measure.pi (fun _ : Fin n => P))|) atTop (nhds 0)
+    apply squeeze_zero (fun _ => abs_nonneg _)
+    · intro n
+      simpa only [one_mul] using hcomparison n
+    · exact herror
+  have hsum := hcomparison'.add hweighted
+  convert hsum using 1
+  · funext n
+    ring_nf
+  · ring_nf
 
 end AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLeCamThird

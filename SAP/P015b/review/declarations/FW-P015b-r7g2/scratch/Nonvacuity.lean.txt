@@ -1,0 +1,225 @@
+import SAP.P015b.Challenge
+
+open MeasureTheory ProbabilityTheory Filter Matrix
+open scoped BigOperators Topology ENNReal
+
+set_option maxHeartbeats 500000
+set_option linter.unusedSimpArgs false
+set_option backward.isDefEq.respectTransparency false
+noncomputable section
+namespace Review
+
+def half : unitInterval := ⟨1/2, by norm_num⟩
+def bitLaw : Measure ℝ := bernoulliMeasure 1 0 half
+instance : IsProbabilityMeasure bitLaw := by unfold bitLaw; infer_instance
+abbrev Space := ℕ → ℝ
+def P : Measure Space := Measure.infinitePi (fun _ : ℕ => bitLaw)
+instance : IsProbabilityMeasure P := by unfold P; infer_instance
+def D (i : ℕ) (s : Space) : ℝ := s i
+def Y0 (_ : ℕ) (_ : Space) : ℝ := 0
+def tau (_ : ℕ) (_ : Space) : ℝ := 1
+def X (_ : ℕ) (_ : Space) : Fin 0 → ℝ := 0
+def omega : Fin 1 → ℝ := fun _ => 1/2
+
+lemma measurable_D (i : ℕ) : Measurable (D i) := measurable_pi_apply i
+lemma law (i : ℕ) : HasLaw (D i) bitLaw P :=
+  (measurePreserving_eval_infinitePi (fun _ : ℕ => bitLaw) i).hasLaw
+lemma independent : iIndepFun D P :=
+  iIndepFun_infinitePi (X := fun _ (x : ℝ) => x) (fun _ => measurable_id)
+lemma int_bit (f : ℝ → ℝ) : Integrable f bitLaw :=
+  integrable_bernoulliMeasure 1 0 half f
+lemma expectation (f : ℝ → ℝ) : (∫ x, f x ∂bitLaw) = (f 1 + f 0)/2 := by
+  simp [bitLaw, integral_bernoulliMeasure, half]
+  ring
+
+lemma moment (f : ℝ → ℝ) (hf : Measurable f) :
+    SAP.P015b.MomentConvergence P (fun i s => f (D i s)) := by
+  have hi : ∀ i, Integrable (fun s => f (D i s)) P :=
+    fun i => (law i).integrable_comp (int_bit f)
+  have hid : ∀ i, IdentDistrib (fun s => f (D i s)) (fun s => f (D 0 s)) P P :=
+    fun i => ((law i).identDistrib (law 0)).comp hf
+  refine ⟨hi, ?_⟩
+  have hh : iIndepFun (fun i s => f (D i s)) P :=
+    independent.comp (fun _ => f) (fun _ => hf)
+  have hp : Pairwise (fun i j => IndepFun (fun s => f (D i s)) (fun s => f (D j s)) P) :=
+    fun _ _ hij => hh.indepFun hij
+  have h := strong_law_ae (fun i s => f (D i s)) (hi 0) hp hid
+  have hm (n : ℕ) : AEStronglyMeasurable
+      (fun s => (∑ i : Fin n, f (D i s))/(n : ℝ)) P := by
+    exact ((Finset.measurable_sum (Finset.univ : Finset (Fin n))
+      (fun i _ => hf.comp (measurable_D i))).div_const (n : ℝ)).aestronglyMeasurable
+  apply tendstoInMeasure_of_tendsto_ae hm
+  simpa only [← Fin.sum_univ_eq_sum_range, smul_eq_mul, div_eq_mul_inv, mul_comm] using h
+
+lemma mean_D : (∫ s, D 0 s ∂P) = 1/2 := by
+  rw [(law 0).integral_eq, expectation]
+  norm_num
+
+lemma linear : P[D 0 | MeasurableSpace.comap (X 0) inferInstance] =ᵐ[P]
+    fun s => dotProduct (SAP.P015b.controlVector (X 0 s)) omega := by
+  have h : MeasurableSpace.comap (X 0) inferInstance = ⊥ :=
+    MeasurableSpace.comap_const _
+  rw [h, condExp_bot, mean_D]
+  apply Filter.Eventually.of_forall
+  intro s
+  simp [SAP.P015b.controlVector, X, omega, dotProduct, Fin.sum_univ_succ]
+
+lemma weight : SAP.P015b.squaredPopulationResidual P (D 0) (X 0) =ᵐ[P]
+    fun s => (D 0 s - 1/2)^2 := by
+  filter_upwards [linear] with s hs
+  simp [SAP.P015b.squaredPopulationResidual, hs, SAP.P015b.controlVector,
+    X, omega, dotProduct, Fin.sum_univ_succ]
+
+lemma residual_integrable : Integrable (fun s => (D 0 s - 1/2)^2) P :=
+  (law 0).integrable_comp (int_bit (fun d => (d-1/2)^2))
+
+lemma weight_mean : (∫ s, SAP.P015b.squaredPopulationResidual P (D 0) (X 0) s ∂P) = 1/4 := by
+  rw [integral_congr_ae weight]
+  have h := (law 0).integral_comp
+    (show AEStronglyMeasurable (fun d : ℝ => (d-1/2)^2) bitLaw by fun_prop)
+  norm_num [Function.comp_def, expectation] at h ⊢
+  exact h
+
+lemma gram : ((fun j k => ∫ s, SAP.P015b.controlVector (X 0 s) j *
+    SAP.P015b.controlVector (X 0 s) k ∂P) : Matrix (Fin 1) (Fin 1) ℝ) = 1 := by
+  ext j k
+  fin_cases j; fin_cases k
+  norm_num [SAP.P015b.controlVector, X]
+
+lemma gram_nonzero : Matrix.det ((fun j k => ∫ s,
+    SAP.P015b.controlVector (X 0 s) j * SAP.P015b.controlVector (X 0 s) k ∂P) :
+      Matrix (Fin 1) (Fin 1) ℝ) ≠ 0 := by
+  rw [gram]
+  simp
+
+lemma regularity : SAP.P015b.RegressionRegularity P D Y0 tau X := by
+  have c0 := moment (fun _ => (0 : ℝ)) measurable_const
+  have c1 := moment (fun _ => (1 : ℝ)) measurable_const
+  have d1 := moment id measurable_id
+  have d2 := moment (fun d => d^2) (by fun_prop)
+  have wi : Integrable (SAP.P015b.squaredPopulationResidual P (D 0) (X 0)) P :=
+    residual_integrable.congr weight.symm
+  unfold SAP.P015b.RegressionRegularity
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, wi, ?_⟩
+  · intro j k; fin_cases j; fin_cases k
+    simpa [SAP.P015b.controlVector, X] using c1
+  · intro j; fin_cases j
+    simpa [SAP.P015b.controlVector, X] using d1
+  · exact d2
+  · simpa [Y0] using c0
+  · intro j; fin_cases j; simpa [Y0] using c0
+  · simpa [tau] using d2
+  · intro j; fin_cases j
+    simpa [SAP.P015b.controlVector, X, tau] using d1
+  · intro j k; fin_cases j; fin_cases k
+    simpa [SAP.P015b.controlVector, X, tau] using c1
+  · exact gram_nonzero
+  · rw [weight_mean]; norm_num
+
+lemma effective_regularity : SAP.P015b.EffectiveMeanRegularity P D tau X omega := by
+  have c1 := moment (fun _ => (1 : ℝ)) measurable_const
+  have d1 := moment id measurable_id
+  have r1 := moment (fun d => d-1/2) (by fun_prop)
+  have r2 := moment (fun d => (d-1/2)^2) (by fun_prop)
+  have hi : (∫ s, (D 0 s-1/2)^2 ∂P) = 1/4 := by
+    rw [← weight_mean]; exact (integral_congr_ae weight).symm
+  unfold SAP.P015b.EffectiveMeanRegularity
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro j k; fin_cases j; fin_cases k
+    simpa [SAP.P015b.controlVector, X] using c1
+  · intro j; fin_cases j
+    simpa [SAP.P015b.controlVector, X] using d1
+  · simpa [SAP.P015b.controlVector, X, omega, tau, dotProduct, Fin.sum_univ_succ] using r2
+  · simpa [SAP.P015b.controlVector, X, omega, dotProduct, Fin.sum_univ_succ] using r2
+  · intro j; fin_cases j
+    simpa [SAP.P015b.controlVector, X, omega, tau, dotProduct, Fin.sum_univ_succ] using r1
+  · intro j; fin_cases j
+    simpa [SAP.P015b.controlVector, X, omega, dotProduct, Fin.sum_univ_succ] using r1
+  · intro j k; fin_cases j; fin_cases k
+    simpa [SAP.P015b.controlVector, X, tau] using c1
+  · exact gram_nonzero
+  · simp only [SAP.P015b.controlVector, X, omega, dotProduct, Fin.sum_univ_succ,
+      Fin.cases_zero, Fin.cases_succ, Finset.univ_eq_empty, Finset.sum_empty,
+      add_zero, one_mul]
+    rw [hi]; norm_num
+
+lemma unconfounded : SAP.P015b.WholeConditionalIndependent P (X 0)
+    (fun s => (Y0 0 s, tau 0 s)) (D 0) := by
+  intro A B hA hB
+  by_cases h : (0,1) ∈ A
+  · have hc : P[(fun _ : Space => (1 : ℝ)) | MeasurableSpace.comap (X 0) inferInstance] =
+        fun _ => 1 := condExp_const measurable_const.comap_le 1
+    simp [Y0, tau, Set.preimage, h, hc]
+  · simp [Y0, tau, Set.preimage, h]
+
+lemma tuple_iid : iIndepFun (fun i s => (D i s, Y0 i s, tau i s, X i s)) P := by
+  exact independent.comp (fun _ d => (d, (0 : ℝ), (1 : ℝ), (0 : Fin 0 → ℝ)))
+    (fun _ => by fun_prop)
+
+lemma tuple_ident (i : ℕ) : IdentDistrib
+    (fun s => (D i s, Y0 i s, tau i s, X i s))
+    (fun s => (D 0 s, Y0 0 s, tau 0 s, X 0 s)) P P := by
+  exact ((law i).identDistrib (law 0)).comp
+    (show Measurable (fun d : ℝ => (d, (0 : ℝ), (1 : ℝ), (0 : Fin 0 → ℝ))) by fun_prop)
+
+lemma randomized : IndepFun (D 0) (fun s => (Y0 0 s, tau 0 s, X 0 s)) P :=
+  indepFun_const_right (D 0) ((0 : ℝ), (1 : ℝ), (0 : Fin 0 → ℝ))
+
+-- A single joint witness supplies every hypothesis of the OLS-convergence
+-- component of T15, of T22, and of the convergence component of T24.
+example :
+    (∀ i, Measurable (D i)) ∧ (∀ i, Measurable (Y0 i)) ∧
+    (∀ i, Measurable (tau i)) ∧ (∀ i, Measurable (X i)) ∧
+    iIndepFun (fun i s => (D i s, Y0 i s, tau i s, X i s)) P ∧
+    (∀ i, IdentDistrib (fun s => (D i s, Y0 i s, tau i s, X i s))
+      (fun s => (D 0 s, Y0 0 s, tau 0 s, X 0 s)) P P) ∧
+    SAP.P015b.WholeConditionalIndependent P (X 0)
+      (fun s => (Y0 0 s, tau 0 s)) (D 0) ∧
+    (P[D 0 | MeasurableSpace.comap (X 0) inferInstance] =ᵐ[P]
+      fun s => dotProduct (SAP.P015b.controlVector (X 0 s)) omega) ∧
+    SAP.P015b.RegressionRegularity P D Y0 tau X ∧
+    IndepFun (D 0) (fun s => (Y0 0 s, tau 0 s, X 0 s)) P := by
+  exact ⟨measurable_D, fun _ => measurable_const, fun _ => measurable_const,
+    fun _ => measurable_const, tuple_iid, tuple_ident, unconfounded,
+    linear, regularity, randomized⟩
+
+-- All hypotheses for T23, including genuine tuple independence.
+example :
+    (∀ i, Measurable (D i)) ∧ (∀ i, Measurable (tau i)) ∧
+    (∀ i, Measurable (X i)) ∧
+    iIndepFun (fun i s => (D i s, tau i s, X i s)) P ∧
+    (∀ i, IdentDistrib (fun s => (D i s, tau i s, X i s))
+      (fun s => (D 0 s, tau 0 s, X 0 s)) P P) ∧
+    (P[D 0 | MeasurableSpace.comap (X 0) inferInstance] =ᵐ[P]
+      fun s => dotProduct (SAP.P015b.controlVector (X 0 s)) omega) ∧
+    SAP.P015b.EffectiveMeanRegularity P D tau X omega := by
+  refine ⟨measurable_D, fun _ => measurable_const, fun _ => measurable_const,
+    ?_, ?_, linear, effective_regularity⟩
+  · exact independent.comp (fun _ d => (d, (1 : ℝ), (0 : Fin 0 → ℝ)))
+      (fun _ => by fun_prop)
+  · intro i
+    exact ((law i).identDistrib (law 0)).comp
+      (show Measurable (fun d : ℝ => (d, (1 : ℝ), (0 : Fin 0 → ℝ))) by fun_prop)
+
+-- All extra hypotheses of T24's population-only conjunct, on the same space.
+example :
+    Measurable (D 0) ∧ Measurable (Y0 0) ∧ Measurable (tau 0) ∧ Measurable (X 0) ∧
+    IndepFun (D 0) (fun s => (Y0 0 s, tau 0 s, X 0 s)) P ∧
+    MemLp (D 0) 2 P ∧ Integrable (tau 0) P ∧ 0 < variance (D 0) P := by
+  refine ⟨measurable_D 0, measurable_const, measurable_const, measurable_const,
+    randomized, ?_, integrable_const 1, ?_⟩
+  · apply (memLp_two_iff_integrable_sq (measurable_D 0).aestronglyMeasurable).2
+    exact (law 0).integrable_comp (int_bit (fun d => d^2))
+  · rw [variance_eq_integral (measurable_D 0).aemeasurable, mean_D]
+    rw [← integral_congr_ae weight, weight_mean]
+    norm_num
+
+-- Affine potential outcomes for the coefficient-formula conjunct of T15.
+example : ∀ i s d, (Y0 i s + tau i s*d) = Y0 i s + tau i s*d := by
+  intros; rfl
+
+#print axioms moment
+#print axioms regularity
+#print axioms effective_regularity
+#print axioms unconfounded
+end Review

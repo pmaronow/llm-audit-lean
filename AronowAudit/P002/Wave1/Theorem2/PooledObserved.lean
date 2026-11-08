@@ -83,7 +83,7 @@ lemma T2C_observed_pooledH {n k} (P : CovPopulation n k) (δ e A B r : ℝ)
   unfold T2C_pooledH
   rw [T2C_observed_pooledResidual P δ e A B r he hP S hS]
 
-/-- Pooled-residual kurtosis control from the Xi assumptions with no response-scale bound. -/
+/-- H-P002-ADJ-POOLED, proved from the Xi assumptions with no response-scale bound. -/
 theorem T2C_observed_pooled_limit (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
     (k : ℕ) (P : ∀ j, CovPopulation (sizes j) k) (δ e A B r : ℝ)
     (he : 0 < e) (hr : 0 < r) (hP : ∀ j, Xi (P j) δ e A B r)

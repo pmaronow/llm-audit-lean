@@ -46,7 +46,7 @@ def marginal (D : Design Ω I R) (a : Bool) (i : I) : R :=
   expectation D (fun w => indicator D a w i)
 
 /-- "π_1i1j", "π_0i0j", "π_1i0j" are the corresponding joint inclusion
-probabilities (p. 143, eqs. [21]-[23]); primed versions p. 145. -/
+probabilities (p. 143, eqs. [21]-[23); primed versions p. 145. -/
 def joint (D : Design Ω I R) (a b : Bool) (i j : I) : R :=
   expectation D (fun w => indicator D a w i * indicator D b w j)
 
@@ -139,9 +139,9 @@ def printedVariance (D : Design Ω I R) (N : ℕ) (y1 y0 : I → R) (w : Ω) : R
       indicator D false w i * observed D y1 y0 w i ^ 2 / (2 * marginal D false i) +
       indicator D false w j * observed D y1 y0 w j ^ 2 / (2 * marginal D false j))) / (N : R)^2
 
-/-- Eq. [34] (p. 146), using Lean's total division.
-`positiveMarginals` supplies marginal positivity; `crossSupport` supplies
-off-diagonal directed cross-arm joint positivity. -/
+/-- Eq. [34] (p. 146). Lean's field division is total; a separate
+`crossSupport` premise records when this is the literally defined estimator.
+Without that premise this function is its zero-omission continuation only. -/
 def printedCovariance (D : Design Ω I R) (y1 y0 : I → R) (w : Ω) : R :=
   offSum (fun i j =>
     indicator D true w i * indicator D false w j / joint D true false i j *
@@ -151,9 +151,8 @@ def printedCovariance (D : Design Ω I R) (y1 y0 : I → R) (w : Ω) : R :=
   (∑ i, indicator D true w i * observed D y1 y0 w i ^ 2 / (2 * marginal D true i)) -
   (∑ i, indicator D false w i * observed D y1 y0 w i ^ 2 / (2 * marginal D false i))
 
-/-- Positive directed cross-arm joint probabilities for distinct units or
-clusters (H+ in P026-T3). Marginal positivity is specified separately by
-`positiveMarginals`. -/
+/-- All literal denominators in eq. [34] are positive; added hypothesis
+H+ in P026-T3, not a consequence of distinct cluster indicators. -/
 def crossSupport (D : Design Ω I R) : Prop :=
   ∀ i j, i ≠ j → 0 < joint D true false i j
 
@@ -430,7 +429,7 @@ theorem ht_cluster_covariance (D : Design Ω I R) (hp : positiveMarginals D)
   rw [h]
   ring
 
-/-- P026-T1(B), six-cluster design: the fourteen printed binary
+/-- P026-T1(B), adjudicated six-cluster design: the fourteen printed binary
 vectors, uniform, with exactly three treated and T'_1≤T'_2. -/
 def asymmetricSix : Design (Fin 14) (Fin 6) ℚ where
   weight := fun _ => 1/14
@@ -572,8 +571,8 @@ def oneOfThree : Design (Fin 3) (Fin 3) ℚ where
   weight := fun _ => 1/3
   treatment := fun w i => decide (w = i)
 
-/-- Fitted values from the exact intercept-and-slope OLS solution of
-`lm(Y~X)` for X=(0,1,2), Y=T (P026-T15, ri package estate's Raj-Within branch). -/
+/-- Intercept and slope of `lm(Y~X)` for X=(0,1,2), Y=T; exact
+normal-equation solution (P026-T15, ri package estate's Raj-Within branch). -/
 def packageFit (w : Fin 3) (i : Fin 3) : ℚ :=
   (![5/6,1/3,-1/6] : Fin 3 → ℚ) w + (![-1/2,0,1/2] : Fin 3 → ℚ) w * i.val
 
@@ -848,17 +847,23 @@ theorem correctedBiasExpression_nonneg (D : Design Ω I R) (x z : I → R) :
   have h3 := zeroSum_squares_nonneg D true false (fun i j => x i-z j)
   linarith
 
+/- P026-T2(c): exact bias of printed eq. [35], including its missing
+cross-arm products. No positivity assumption on any joint is added. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
+/- P026-T2(d): the corrected covariance estimator has exactly the
+negative half-sum of the within-cluster and unavailable cross-pair effect
+squares as its bias, and consequently is nonpositively biased. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
+/- P026-T2(e): exact squared-gap identity and conservativeness of the
+repaired eq. [35] for every assignment distribution with positive marginals. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
-
-
-
-
-
-
-
-
+/- P026-T2(f): under the sharp null and positive same-arm joints,
+the repaired variance bias is N⁻²∑_Z10(c_k-c_l)². Equality requires equal
+cluster totals on every unavailable directed pair, not merely the sharp null. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
 /-- P026-T2(f), exact witness that the repaired sharp-null equality
 qualification is necessary: same six-cluster design, null totals (1,2,1,1,1,1). -/
@@ -869,8 +874,11 @@ theorem repaired_sharp_null_strict_bias :
     (2759/12600 : ℚ) < 3109/12600 := by
   decide +kernel
 
-
-
+/- P026-T3(a)-(c): the assumption-only repair keeps eqs. [34]-[35]
+and explicitly adds all directed cross-arm support. Its covariance bias is
+the negative within-cluster squared gap, and its variance estimator is
+conservative, with sharp-null equality under positive same-arm support. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
 /-- Population covariance lower bound Cov_C in Appendix E, eq. [43],
 p. 152. This deterministic bound includes all off-diagonal product terms. -/
@@ -895,8 +903,10 @@ theorem covariance_bound_gap (D : Design Ω I R) (hp : positiveMarginals D) (x z
   rw [h]
   ring
 
-
-
+/- P026-T8(c,d): replacing Appendix E's copied display with eq. [34]
+estimates [43] without bias under positive directed cross-arm support;
+its covariance bias is nonpositive, with equality iff all cluster effects vanish. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
 /-- Same-arm conservative population upper bound in Appendix D,
 pp. 151-152: replace each unavailable pair product by its Young square bound. -/
@@ -916,8 +926,10 @@ def armVarianceEstimator (D : Design Ω I R) (a : Bool) (y1 y0 : I → R) (w : �
   zeroSum D a a (fun i j => indicator D a w i * observed D y1 y0 w i ^ 2 / (2*marginal D a i) +
     indicator D a w j * observed D y1 y0 w j ^ 2 / (2*marginal D a j))
 
-
-
+/- P026-T11(c)-(f): Appendix D with restored cluster primes; each arm
+upper bound is estimated without bias, its gap is the unavailable same-arm
+half-sum of squared pair sums, and the estimator is conservative. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
 /-- The basic difference-of-totals variance identity, eq. [20], p. 143. -/
 theorem variance_sub (D : Design Ω I R) (f g : Ω → R) :
@@ -1213,14 +1225,14 @@ theorem unequal_clusters_bias :
 
 /- P026-T17(i)-(iii): the printed universal cluster claims, including
 the false support deduction, covariance sign, conservative eq. [35], and
-sharp-null equalities under same-arm positivity alone. These printed claims
-have no H+ premise; P026-T1 refutes them. -/
-
+sharp-null equalities under same-arm positivity alone. These are deliberately
+stated as printed, with no H+ premise; P026-T1 refutes them. -/
+/- Public printed_cluster_claims is retained only as a proposition in P026_PrintedClaims.lean. -/
 
 /- P026-T18: the general fitting rule exactly as printed in Section
 5.1, p. 142, has only pairwise independence premises for an arbitrary
 deterministic vector fit. P026-T4 refutes it; the corrected premise is T5. -/
-
+/- Public printed_pairwise_fitting is retained only as a proposition in P026_PrintedClaims.lean. -/
 
 /-- Two of six clusters treated, the fifteen possibilities in Table 1's
 second block (p. 147, Section 7). -/
@@ -1260,9 +1272,13 @@ def tableJoint (a b : Bool) (i j : Fin 10) : ℚ :=
 theorem table_marginal : ∀ a i, marginal tableDesign a i = tableMarginal a i := by
   decide +kernel
 
+#eval IO.eprintln "P026 processed: table_marginal"
+
 /-- Exact finite counting of Table 1's joint probabilities, pp. 147-148. -/
 theorem table_joint : ∀ a b i j, joint tableDesign a b i j = tableJoint a b i j := by
   decide +kernel
+
+#eval IO.eprintln "P026 processed: table_joint"
 
 /-- P026-T3, numerical-design qualification: H+ holds in Table 1.
 The minimum directed cross-arm joint is 1/6, TT minimum 1/15, CC minimum
@@ -1336,15 +1352,19 @@ def linearVarianceCertificate (w : Fin 6 × Fin 15) : ℚ :=
     ![(349579/5904384),(382891/5904384),(887807/17713152),(887807/17713152),(29063/571392),(336811/5904384),(1270015/17713152),(1270015/17713152),(41863/571392),(1398223/17713152),(1398223/17713152),(46087/571392),(885265/17713152),(28753/571392),(28753/571392)],
     ![(153167/2952192),(169823/2952192),(94759/2214144),(94759/2214144),(12439/285696),(146783/2952192),(142535/2214144),(142535/2214144),(18839/285696),(158561/2214144),(158561/2214144),(20951/285696),(377765/8856576),(3071/71424),(3071/71424)]] : Fin 6 → Fin 15 → ℚ) w.1 w.2
 
-/-- Exact values of G (Linear) on all 90 assignments; Section 7.1, p. 148. -/
+/-- Exact values of G (Linear) on all90 assignments; Section 7.1, p. 148. -/
 theorem table_linear_ht_certificate : ∀ w, ht tableDesign 16 tableLinearResidual tableLinearResidual w=linearHTCertificate w := by
   simp only [ht,htTotal,table_marginal]
   decide +kernel
 
-/-- Exact values of printed eq. [35] for G (Linear) on all 90 assignments, pp. 147-148. -/
+#eval IO.eprintln "P026 processed: table_linear_ht_certificate"
+
+/-- Exact values of printed eq. [35] for G (Linear) on all90 assignments, pp. 147-148. -/
 theorem table_linear_v_certificate : ∀ w, printedVariance tableDesign 16 tableLinearResidual tableLinearResidual w=linearVarianceCertificate w := by
   simp only [printedVariance,estimatedPair,zeroSum,table_marginal,table_joint,observed,ite_self]
   decide +kernel
+
+#eval IO.eprintln "P026 processed: table_linear_v_certificate"
 
 /-- Exact Table 2 moments of the G (Linear) estimator, Section 7.1,
 p. 148, computed using eq. [25] on the verified residual cluster totals. -/
@@ -1356,6 +1376,8 @@ theorem table_linear_moments :
       2400328658503/15687787688755200  := by
   simp only [variance,covariance,expectation,table_linear_ht_certificate,table_linear_v_certificate]
   decide +kernel
+
+#eval IO.eprintln "P026 processed: table_linear_moments"
 
 /-- Rounding interval for a number printed to three decimals in Table 2,
 p. 149. Endpoint convention is immaterial for all established examples. -/
@@ -1396,10 +1418,10 @@ def tableTreatmentMean (w : Fin 6 × Fin 15) (b : Bool) : ℚ :=
     indicator tableUnitDesign true w i) / (if b then 10 else 6)
 
 /-- Covariate centered within its block; the fixed block mean is 5/2
-in block 1, 14/5 in block 2 (Table 1, p. 147). -/
+in block 1,14/5 in block 2 (Table 1, p. 147). -/
 def tableCenteredX (i : Fin 16) : ℚ := tableX i-(if i.val < 6 then 5/2 else 14/5)
 
-/-- Outcome centered within its block; fixed means 5/6 and 3/5
+/-- Outcome centered within its block; fixed means 5/6 and3/5
 from Table 1, p. 147. -/
 def tableCenteredY (i : Fin 16) : ℚ := tableY i-(if i.val < 6 then 5/6 else 3/5)
 
@@ -1413,7 +1435,7 @@ def tableTreatmentMeanCertificate (w : Fin 6 × Fin 15) (b : Bool) : ℚ :=
   if b then (![(1/2),(1/2),(2/5),(2/5),(2/5),(2/5),(3/10),(3/10),(3/10),(3/10),(3/10),(3/10),(1/5),(1/5),(1/5)] : Fin 15 → ℚ) w.2
   else (![(2/3),(1/2),(1/2),(1/2),(1/2),(1/3)] : Fin 6 → ℚ) w.1
 
-/-- Exact block treatment means on all 90 Table 1 allocations, p. 148. -/
+/-- Exact block treatment means on all90 Table 1 allocations, p. 148. -/
 theorem table_treatment_mean_certificate : ∀ w b,
     tableTreatmentMean w b=tableTreatmentMeanCertificate w b := by
   decide +kernel
@@ -1428,7 +1450,7 @@ def feTXCertificate (w : Fin 6 × Fin 15) : ℚ :=
 theorem fe_x_norm : (∑ i, (tableCenteredX i)^2)=(331/10) ∧ (0 : ℚ)<(331/10) := by
   decide +kernel
 
-/-- Exact treatment/X centered cross products on all 90 Table 1 allocations,
+/-- Exact treatment/X centered cross products on all90 Table 1 allocations,
 Section 7.1, p. 148; the cached block means are independently certified. -/
 theorem fe_tx_certificate : ∀ w,
     (∑ i, tableCenteredX i*tableCenteredT w i)=feTXCertificate w := by
@@ -1437,7 +1459,7 @@ theorem fe_tx_certificate : ∀ w,
 
 /-- Treatment residual after projection on intercept, block dummy and X.
 The Frisch-Waugh normal-equation form of the printed FE (Cov.) regression
-(Section 7.1, p. 148), with all 16 observations and no weights. -/
+(Section 7.1, p. 148), with all16 observations and no weights. -/
 def feTreatmentResidual (w : Fin 6 × Fin 15) (i : Fin 16) : ℚ :=
   tableCenteredT w i - (∑ j, tableCenteredX j*tableCenteredT w j) /
     (∑ j, (tableCenteredX j)^2)*tableCenteredX i
@@ -1482,11 +1504,15 @@ theorem fe_estimate_certificate : ∀ w, feEstimate w=feCoefficientCertificate w
   simp only [tableCenteredT,table_treatment_mean_certificate]
   decide +kernel
 
+#eval IO.eprintln "P026 processed: fe_estimate_certificate"
+
 /-- Exact certificate of every FE (Cov.) X coefficient, Section 7.1, p. 148. -/
 theorem fe_x_certificate : ∀ w, feXCoefficient w=feXCertificate w := by
   unfold feXCoefficient
   simp only [fe_estimate_certificate,fe_x_norm.1,tableCenteredT,table_treatment_mean_certificate]
   decide +kernel
+
+#eval IO.eprintln "P026 processed: fe_x_certificate"
 
 /-- OLS fitted value for FE (Cov.), reconstructed from its treatment,
 covariate and two block-intercept normal-equation coefficients, p. 148. -/
@@ -1507,6 +1533,8 @@ theorem fe_normal_equations : ∀ w : Fin 6 × Fin 15,
   simp only [tableCenteredT,table_treatment_mean_certificate]
   decide +kernel
 
+#eval IO.eprintln "P026 processed: fe_normal_equations"
+
 /-- P026-T6(B), T7(b,c): exact rational interval certification of
 FE (Cov.) mean, variance, SE and RMSE. These give corrected entries
 (-.014,.078,.279,.279) and preserve G (Linear)'s smaller RMSE. -/
@@ -1522,6 +1550,8 @@ theorem fe_table_moments :
   simp only [variance,covariance,expectation,fe_estimate_certificate]
   decide +kernel
 
+#eval IO.eprintln "P026 processed: fe_table_moments"
+
 /-- Cluster totals Y'_k and prior-adjusted totals in Table 1/Section
 7.1, pp. 147-148: G (Prior) subtracts 0.5 from each original unit. -/
 def tableClusterY : Fin 10 → ℚ := ![2,2,1,0,2,2,2,0,0,0]
@@ -1532,7 +1562,7 @@ def tablePriorResidual : Fin 10 → ℚ := ![1,1,1/2,-1/2,1/2,1,1,-1/2,-1/2,-1/2
 
 /-- P026-T7(d): HT and G (Prior) columns survive unchanged. Their
 expectations are zero and both variance estimators are exactly unbiased,
-with variances 353/1920 and 233/2560. -/
+with variances353/1920 and233/2560. -/
 theorem table_unchanged_columns :
     (∀ k, clusterTotal tableCluster tableY k=tableClusterY k ∧
       clusterTotal tableCluster (fun i => tableY i-1/2) k=tablePriorResidual k) ∧
@@ -1547,6 +1577,8 @@ theorem table_unchanged_columns :
   simp only [variance, covariance, expectation, ht, htTotal, printedVariance, estimatedPair, zeroSum,
     table_marginal, table_joint, observed, ite_self]
   decide +kernel
+
+#eval IO.eprintln "P026 processed: table_unchanged_columns"
 
 /-- The same Table 1 design as a real probability space, for the real
 logistic likelihood in P026-T14. -/
@@ -1570,7 +1602,9 @@ def logitMaximizer (b : Bool) (β : ℝ × ℝ) : Prop :=
   ∀ γ : ℝ × ℝ, logitLikelihood b γ ≤ logitLikelihood b β
 
 /-- The logistic fit used by the numerical estimator (Section 7.1,
-p. 148). Choose a global maximizer if one exists, and (0,0) otherwise. -/
+p. 148). Choose a global maximizer if it exists; the T14 statement below
+explicitly asserts existence and uniqueness. The fallback never enters its
+asserted setting, and no unproved existence is hidden in this definition. -/
 noncomputable def logitCoefficients (b : Bool) : ℝ × ℝ := by
   classical
   exact if h : ∃ β, logitMaximizer b β then Classical.choose h else (0,0)
@@ -1587,18 +1621,24 @@ noncomputable def tableLogitResidual : Fin 10 → ℝ :=
   clusterTotal tableCluster (fun i => (tableY i : ℝ)-tableLogitPrediction i)
 
 /-- P026-T14(a), finite no-separation certificate from the printed
-successes at X=0,4 and failure at X=2 in block 1; analogous X=1,4,2
-in block 2. Every weak separating direction is zero. -/
+successes at X=0,4 and failure at X=2 in block1; analogous X=1,4,2
+in block2. Every weak separating direction is zero. -/
 theorem logit_no_separation (a b : ℝ) :
     (0 ≤ a → 0 ≤ a+4*b → a+2*b ≤ 0 → a=0 ∧ b=0) ∧
     (0 ≤ a+b → 0 ≤ a+4*b → a+2*b ≤ 0 → a=0 ∧ b=0) := by
   constructor <;> intro h1 h2 h3 <;> constructor <;> linarith
 
+/- P026-T14(a)-(c): both logistic MLEs exist uniquely; coefficients
+fall within 5e-7 of the quoted values. The corrected real SE/variance
+intervals, exact unbiasedness and variance-estimator SD apply to the
+opposite-block estimator on the 90 allocations. No numerical fit is assumed. -/
+/- Public logit_table_corrected is proved in P026_LogitCompletion.lean. -/
 
-
-
-
-
+/- P026-T19, as printed: the established rows in the FE (Cov.),
+G (Linear), and G (Logit) columns of Table 2 are their true design moments
+rounded to three decimals. Regression variance rows with an unspecified
+small-sample convention and historical RE rows are outside this target. -/
+/- Public printed_table_columns is retained only as a proposition in P026_PrintedClaims.lean. -/
 
 /-- Covariance is additive in its second input, Section 5.1, p. 142. -/
 theorem covariance_add_right (D : Design Ω I R) (f g h : Ω → R) :
@@ -1686,11 +1726,14 @@ def mutuallyIndependentBlocks {B : Type*} [Fintype B] [DecidableEq B]
     expectation D (fun w => ∏ b, F b (fittingAssignments D (univ.filter (fun i => c i=b)) w)) =
       ∏ b, expectation D (fun w => F b (fittingAssignments D (univ.filter (fun i => c i=b)) w))
 
+/- P026-T5(e): mutually independent unit assignment makes each focal
+assignment independent of the whole leave-one-out assignment vector,
+justifying arbitrary deterministic leave-one-out fits. -/
+/- Public mutually_independent_leave_out is proved in P026_IndependenceCompletion.lean. -/
 
-
-
-
-
+/- P026-T5(e): independent block assignment processes make each
+focal assignment independent of the whole vector in all other blocks. -/
+/- Public mutually_independent_other_blocks is proved in P026_IndependenceCompletion.lean. -/
 
 /-- P026-T16(c): under the sharp null any deterministic OLS or other
 fit based only on observed outcomes and fixed quantities is constant over
@@ -1706,20 +1749,27 @@ theorem sharp_null_fit_unbiased (D : Design Ω I R) (hD : probabilityDesign D)
   rw [h]
   exact fixed_prediction_unbiased D hD hp N hN x x (G x)
 
+/- P026-T2(e), supported-allocation equivalence: the corrected
+effect-variance estimate equals N⁻²(V1_C-hat+V0_C-hat-2Cov_C^+-hat),
+with eqs. [32]-[33], on every assignment of positive probability. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
+/- P026-T2(g): for fixed prediction cluster totals r, apply the full
+scope-preserving variance repair to residual potential outcomes. Its bias
+is the same corrected squared-gap expression, and it is conservative for
+the sampling variance of the generalized estimator itself. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
+/- P026-T3(d): the assumption-only repair applies to fixed residual
+predictions; with H+ it is conservative for Var(Δ_G-hat), and becomes
+exactly unbiased under the sharp null and positive same-arm joints. -/
+/- The unchanged public theorem is proved in P026_VarianceCompletion.lean. -/
 
-
-
-
-
-
-
-/- P026-T17(iv), as printed in footnote 9, p. 147: under the sharp
+/- P026-T17(iv), as printed in footnote9, p. 147: under the sharp
 null, outcome-derived fitting functions are constant over randomization;
 the footnote asserts unbiasedness of printed [35] with positive same-arm
 joints alone. It already fails for G=0 in P026-T1. -/
-
+/- Public printed_sharp_null_footnote is retained only as a proposition in P026_PrintedClaims.lean. -/
 
 /-- P026-T20, unit-population headline with N explicitly equal to the
 number of units: eqs. [5]-[8], pp. 138-139. -/
@@ -1790,3 +1840,92 @@ theorem unit_vector_fitting_unbiased (D : Design Ω I ℝ) (hD : probabilityDesi
 
 end AronowAudit.P026
 
+#print axioms AronowAudit.P026.expectation_sub
+#print axioms AronowAudit.P026.expectation_add
+#print axioms AronowAudit.P026.expectation_div
+#print axioms AronowAudit.P026.expectation_mul_const
+#print axioms AronowAudit.P026.expectation_sum
+#print axioms AronowAudit.P026.htTotal_unbiased
+#print axioms AronowAudit.P026.ht_unbiased
+#print axioms AronowAudit.P026.asymmetricTwo_counterexample
+#print axioms AronowAudit.P026.joint_nonneg
+#print axioms AronowAudit.P026.disagreement_identity
+#print axioms AronowAudit.P026.disagreement_positive_iff
+#print axioms AronowAudit.P026.joint_diagonal
+#print axioms AronowAudit.P026.cross_diagonal
+#print axioms AronowAudit.P026.expectation_const
+#print axioms AronowAudit.P026.covariance_scale
+#print axioms AronowAudit.P026.covariance_sum
+#print axioms AronowAudit.P026.sum_diagonal_off
+#print axioms AronowAudit.P026.ht_covariance_full
+#print axioms AronowAudit.P026.ht_arm_variance
+#print axioms AronowAudit.P026.ht_cluster_covariance
+#print axioms AronowAudit.P026.asymmetricSix_counterexample
+#print axioms AronowAudit.P026.xorSix_counterexample
+#print axioms AronowAudit.P026.xorThree_counterexamples
+#print axioms AronowAudit.P026.appendixE_counterexample
+#print axioms AronowAudit.P026.package_counterexample
+#print axioms AronowAudit.P026.observed_mask
+#print axioms AronowAudit.P026.generalized_residual
+#print axioms AronowAudit.P026.generalized_adjustment
+#print axioms AronowAudit.P026.generalized_total_bias
+#print axioms AronowAudit.P026.generalized_bias
+#print axioms AronowAudit.P026.covariance_div_right
+#print axioms AronowAudit.P026.indicator_complement
+#print axioms AronowAudit.P026.control_covariance
+#print axioms AronowAudit.P026.generalized_bias_two_arm
+#print axioms AronowAudit.P026.generalized_unbiased
+#print axioms AronowAudit.P026.covariance_const_right
+#print axioms AronowAudit.P026.fixed_prediction_unbiased
+#print axioms AronowAudit.P026.independent_comp
+#print axioms AronowAudit.P026.independent_covariance_zero
+#print axioms AronowAudit.P026.vector_fitting_independence
+#print axioms AronowAudit.P026.outcome_vector_fitting_independence
+#print axioms AronowAudit.P026.zeroSum_squares_nonneg
+#print axioms AronowAudit.P026.correctedBiasExpression_nonneg
+#print axioms AronowAudit.P026.repaired_sharp_null_strict_bias
+#print axioms AronowAudit.P026.covariance_bound_gap
+#print axioms AronowAudit.P026.variance_sub
+#print axioms AronowAudit.P026.variance_sub_div
+#print axioms AronowAudit.P026.ht_covariance_split
+#print axioms AronowAudit.P026.ht_variance_identity
+#print axioms AronowAudit.P026.generalized_fixed_variance
+#print axioms AronowAudit.P026.htTotal_affine
+#print axioms AronowAudit.P026.ht_affine
+#print axioms AronowAudit.P026.ht_affine_invariant_iff
+#print axioms AronowAudit.P026.generalized_affine
+#print axioms AronowAudit.P026.ht_location_counterexample
+#print axioms AronowAudit.P026.cluster_aggregation
+#print axioms AronowAudit.P026.complete_units
+#print axioms AronowAudit.P026.complete_clusters
+#print axioms AronowAudit.P026.unequal_clusters_bias
+#print axioms AronowAudit.P026.table_marginal
+#print axioms AronowAudit.P026.table_joint
+#print axioms AronowAudit.P026.table_support
+#print axioms AronowAudit.P026.table_linear_fits
+#print axioms AronowAudit.P026.table_linear_ht_certificate
+#print axioms AronowAudit.P026.table_linear_v_certificate
+#print axioms AronowAudit.P026.table_linear_moments
+#print axioms AronowAudit.P026.table_linear_refutation
+#print axioms AronowAudit.P026.table_linear_corrected_rounding
+#print axioms AronowAudit.P026.fe_estimate_certificate
+#print axioms AronowAudit.P026.fe_x_certificate
+#print axioms AronowAudit.P026.fe_normal_equations
+#print axioms AronowAudit.P026.fe_table_moments
+#print axioms AronowAudit.P026.table_unchanged_columns
+#print axioms AronowAudit.P026.logit_no_separation
+#print axioms AronowAudit.P026.covariance_add_right
+#print axioms AronowAudit.P026.covariance_sum_right
+#print axioms AronowAudit.P026.additive_fitting_unbiased
+#print axioms AronowAudit.P026.vector_fitting_unbiased
+#print axioms AronowAudit.P026.sharp_null_fit_unbiased
+#print axioms AronowAudit.P026.unit_ht_unbiased
+#print axioms AronowAudit.P026.unit_generalized_unbiased
+#print axioms AronowAudit.P026.unit_sampling_variance_identity
+#print axioms AronowAudit.P026.unit_generalized_fixed_variance
+#print axioms AronowAudit.P026.unit_generalized_bias
+#print axioms AronowAudit.P026.unit_fixed_prediction_unbiased
+#print axioms AronowAudit.P026.unit_vector_fitting_unbiased
+#print axioms AronowAudit.P026.table_treatment_mean_certificate
+#print axioms AronowAudit.P026.fe_x_norm
+#print axioms AronowAudit.P026.fe_tx_certificate

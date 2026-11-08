@@ -1,0 +1,162 @@
+[
+  {
+    "target_id": "P017-T1",
+    "theorem": "SAP.P017.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem is unconditional. Its specified population is the product of three probability laws: U~Uniform(0,1), B fair on {-1,1}, D fair on {0,1}. For each n>=1 the two disjoint bad cylinder events each have probability 4^(-n)>0. The constant weight 1 is admissible; bounded summands have variance 53/12>0, so their IID CLT is nondegenerate. All displayed integrands are bounded almost surely or are finite-sample polynomials of bounded summands.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T2",
+    "theorem": "SAP.P017.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: G=fairPair(-1,1) on R, tau=id is measurable and integrable, E_G tau=0, support={-1,1}, and effectRadius=1>0. The constant weight w=1 is admissible. For t=0 use w=1; for endpoint t=1 use w(x)=2 if x=1 and 0 otherwise, whose denominator is 1 and numerator is 1. The space and both support endpoints are nonempty. The constant-effect Dirac law is also allowed by this theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T3",
+    "theorem": "SAP.P017.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: G=fairPair(-1,1) on R, tau=id is measurable and integrable, E_G tau=0, support={-1,1}, and effectRadius=1>0. The constant weight w=1 is admissible. Also compiled there: on P=N(0,1), hat_n(z)=z/sqrt(n) is measurable for every n and RootNNormal at mean 0; Z_n(z)=z and epsilon_n=0 satisfy NormalRemainder and SmallRemainderMS. The scaled equality is required only for n>=1, so no division-by-zero convention supplies a hypothesis. These data meet every outer hypothesis and the hypothesis of the probability-limit implication. The endpoint atoms each have probability 1/2, so the all-realization sufficient condition also has a nonempty finite-radius instance. Gaussian effects with tau=id furnish the infinite-radius instance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T4",
+    "theorem": "SAP.P017.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: G=fairPair(-1,1) on R, tau=id is measurable and integrable, E_G tau=0, support={-1,1}, and effectRadius=1>0. The constant weight w=1 is admissible. Choose d=1/2. Every clipped value lies in [-1/2,1/2], strictly between the effect-support bounds; e.g. weights w_t(-1)=1-t and w_t(1)=1+t have denominator 1 and weighted mean t. For the support corollary choose a constant-zero estimate. For the larger-radius obstruction use x=(d+c_prime)/2 at mu=0 and any c_prime>d.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P017-T5",
+    "theorem": "SAP.P017.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses are assumed: this is the explicit normal/Rademacher IID construction. Its sampling law is a probability product, M_n~N(0,1/n) for n>=1, and the shifted estimate is M_n+1/n. The central event has positive normal probability; the unique zero M_n=1 has probability zero. The exact normal component and deterministic remainder satisfy the asserted decomposition. The analogous zero-remainder normal hypotheses are independently compiled in scratch/Nonvacuity.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T6",
+    "theorem": "SAP.P017.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same unconditional normal/Rademacher construction applies. At n=25 the central event has probability at least 21/25>0, and on it the intermediate squared error is 1/625. The remainder has finite second moment 1/n and sqrt(n)/n tends to zero. Normal moments and the squared intermediate/actual errors are integrable; the positive gap 6/15625 compares genuine finite expectations.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T7",
+    "theorem": "SAP.P017.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: G=fairPair(-1,1) on R, tau=id is measurable and integrable, E_G tau=0, support={-1,1}, and effectRadius=1>0. The constant weight w=1 is admissible. Also compiled there: on P=N(0,1), hat_n(z)=z/sqrt(n) is measurable for every n and RootNNormal at mean 0; Z_n(z)=z and epsilon_n=0 satisfy NormalRemainder and SmallRemainderMS. The scaled equality is required only for n>=1, so no division-by-zero convention supplies a hypothesis. This gives a nontrivial finite-radius instance of the combined theorem. For comparison, merely consistent deterministic estimates n^(-1/4) at mu=0 do not have bounded root-n errors; the disclosed removal of the canonical consistency-only assertion is necessary for its tightness clause.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T8",
+    "theorem": "SAP.P017.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Also compiled there: on P=N(0,1), hat_n(z)=z/sqrt(n) is measurable for every n and RootNNormal at mean 0; Z_n(z)=z and epsilon_n=0 satisfy NormalRemainder and SmallRemainderMS. The scaled equality is required only for n>=1, so no division-by-zero convention supplies a hypothesis. Take mu=0,c=1,v=1 for all finite-radius hypotheses, including both limits. No independence is needed. The finite-moment decomposition makes all positive-n square integrals integrable. For the separate infinite-radius part any measure and any hat are permitted: its actual residual is pointwise zero, whose integral is legitimately zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T9",
+    "theorem": "SAP.P017.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A genuine countermodel to the negated universal is the IPW construction of T1: G=ipwPopulation, tau=ipwEffect, P=iidSamples G, data=id, O=ipwObserved, and hat_n=sampleMean ipwSummand n. Define H(n,M) as the integral of (d,y) -> 2*d*y-2*(1-d)*y against M; on every positive-size empirical measure this equals hat_n. Its CLT variance is 53/12, and on the bad cylinder event of probability 4^(-n) the clipped value is 1, which no admissible population weight attains. Thus the refutation does not rely on an arbitrary unrelated sampling law or a null exceptional sample.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P017-T10",
+    "theorem": "SAP.P017.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: G=fairPair(-1,1) on R, tau=id is measurable and integrable, E_G tau=0, support={-1,1}, and effectRadius=1>0. The constant weight w=1 is admissible. For the support-bound part let P be a Dirac law and hat=0, giving estimator support {0} and equality probability 1. For the full-support part let G=N(0,1), tau=id, giving finite mean 0, support R, and radius infinity. For the one-sided part use G with density exp(-x) on [0,infinity), tau=id (mean 1, support [0,infinity), radius 1), P=dirac(-1), and hat=id; negative-estimate probability is 1. The extra probability-zero implication in the first part has an impossible antecedent under its support condition, but that condition itself is satisfiable and the canonical clause explicitly tests the contradictory printed numeral.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P017-T11",
+    "theorem": "SAP.P017.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The quantified parameter domain is nonempty: take n=1,c=1,sigma=1. More generally n>=1,c>0,sigma>0 make the denominator positive and the tail integrand a Gaussian density times x^2, with finite integral. Every asymptotic claim fixes positive c and sigma. No unbounded limsup or zero denominator is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T12",
+    "theorem": "SAP.P017.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified slowPopulation is a product of four probability laws; its effect law has atom masses 1/4 at -1 and 1 and continuous mass 1/2 on [-1,1]. Take p_n=1/(n+1), or the given slowP sequence. Both are positive and <=1 at every n>=1 and tend to zero. The rare-event construction has exactly that probability and is independent of the normal sample mean. All error squares are integrable because the estimator is bounded and the remainder is a sum of a normal sample mean and bounded terms. The Lean check independently verifies slowP 1000=1/10 and slowP (10^12)=1/40. For an arbitrary positive vanishing comparison r, p_n=min(1,sqrt(r_n)) gives the existential domination instance (with an arbitrary admissible value at zero).",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P017-T13",
+    "theorem": "SAP.P017.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: G=fairPair(-1,1) on R, tau=id is measurable and integrable, E_G tau=0, support={-1,1}, and effectRadius=1>0. The constant weight w=1 is admissible. Also compiled there: on P=N(0,1), hat_n(z)=z/sqrt(n) is measurable for every n and RootNNormal at mean 0; Z_n(z)=z and epsilon_n=0 satisfy NormalRemainder and SmallRemainderMS. The scaled equality is required only for n>=1, so no division-by-zero convention supplies a hypothesis. The arbitrary-rate branch has the nonempty slowPopulation instance with p_n=1/(n+1). For the normal-plus-remainder bound choose n=1, P=N(0,1), tilde=id, u=0, mu=0,c=1,sigma=1; its law and all measurability/positivity hypotheses hold.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T14",
+    "theorem": "SAP.P017.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: G=fairPair(-1,1) on R, tau=id is measurable and integrable, E_G tau=0, support={-1,1}, and effectRadius=1>0. The constant weight w=1 is admissible. Also compiled there: on P=N(0,1), hat_n(z)=z/sqrt(n) is measurable for every n and RootNNormal at mean 0; Z_n(z)=z and epsilon_n=0 satisfy NormalRemainder and SmallRemainderMS. The scaled equality is required only for n>=1, so no division-by-zero convention supplies a hypothesis. In particular the positive-radius and nondegenerate normal-limit assumptions coexist. A standard Gaussian effect law also gives an infinite-radius instance, for which the actual clipping error is identically zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T15",
+    "theorem": "SAP.P017.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: G=fairPair(-1,1) on R, tau=id is measurable and integrable, E_G tau=0, support={-1,1}, and effectRadius=1>0. The constant weight w=1 is admissible. Also compiled there: on P=N(0,1), hat_n(z)=z/sqrt(n) is measurable for every n and RootNNormal at mean 0; Z_n(z)=z and epsilon_n=0 satisfy NormalRemainder and SmallRemainderMS. The scaled equality is required only for n>=1, so no division-by-zero convention supplies a hypothesis. Together these satisfy every stated population, measurability, positive-variance, exact decomposition, finite-second-moment and remainder-rate assumption. Positive-n actual error squares are integrable by the decomposition; no assumption is a restatement of the desired mean-square conclusion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T16",
+    "theorem": "SAP.P017.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: G=fairPair(-1,1) on R, tau=id is measurable and integrable, E_G tau=0, support={-1,1}, and effectRadius=1>0. The constant weight w=1 is admissible. Also compiled there: on P=N(0,1), hat_n(z)=z/sqrt(n) is measurable for every n and RootNNormal at mean 0; Z_n(z)=z and epsilon_n=0 satisfy NormalRemainder and SmallRemainderMS. The scaled equality is required only for n>=1, so no division-by-zero convention supplies a hypothesis. For radius zero use G=dirac(0), tau=id, with the same normal estimate and population mean 0. For infinite radius use a standard Gaussian effect law, tau=id. These are genuine finite-mean probability laws, so the zero, finite positive, and infinite-radius cases do not rely on empty supports or negative-radius truncation.",
+    "confidence": 0.99
+  }
+]

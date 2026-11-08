@@ -1,18 +1,23 @@
 import AronowAudit.P001.Wave1.MarSelectionBlueprint
 
 /-!
-# MAR identification with discrete covariates (P001-T111)
+# Blueprint: MAR identification with discrete covariates, paper support (P001-T111)
 
-Theorems 6.1.9–6.1.10 (pp. 216–217), Definition 6.1.8 (p. 215), with
-`Supp[R] = {0,1}`, a.e. binary values and a.e. positivity. The covariate profiles
-are countable (`[Countable E]`, footnote 8).
+Record 10 of group P001a: P001-T111 / held `AronowAudit.P001.mar_cef_and_discrete_mean`;
+resolution `repair_and_prove`. Theorems 6.1.9-6.1.10 (pp. 216-217), Definition 6.1.8
+(p. 215). The held draft (:4299) allows a constant response indicator; the repair (mapper's
+`mar_discrete_paper_support_identification`) restores `Supp[R] = {0,1}` (`hR0`, `hR1`),
+uses a.e. binary values and a.e. positivity, keeps countably many covariate profiles
+(`[Countable E]`, footnote 8), and adds the summability of the weighted series.
 
-The respondent CEF of `Y* = censored Y R` is a population CEF of `Y`, the
+Conclusion: the respondent CEF of `Y* = censored Y R` is a population CEF of `Y`, the
 weighted family `m(x) P(X = x)` is summable, and `E[Y] = ∑' x, m(x) P(X = x)`.
 
-The proof combines CEF transfer with the countable partition formula.
-The positive probabilities of both response statuses restrict the domain to that of
-the paper; they are not used by the proof.
+Nodes: the shared `MarSelection.N1`-`MarSelection.N7` (bundled as `MarSelection.AllShared`;
+only `MarSelection.N1`-`N5` are used) and the record node `MarDiscrete.N1` (countable
+partition formula). `hR0`, `hR1` are paper-
+domain restrictions, not used by the proof. Writers prove `theorem n1_proof : N1` in
+`AronowAudit/P001/Wave1/MarDiscrete/N1.lean`.
 -/
 
 set_option autoImplicit false
@@ -26,7 +31,8 @@ open scoped BigOperators ENNReal
 
 noncomputable section
 
-
+/-- The frozen statement the record is resolved by (mapper's
+`AronowAudit.P001.Wave1.mar_discrete_paper_support_identification`). -/
 def Target : Prop :=
   ∀ {Ω : Type u} {E : Type v} [MeasurableSpace Ω] [MeasurableSpace E]
     [Countable E] [MeasurableSingletonClass E]
@@ -43,8 +49,15 @@ def Target : Prop :=
       Summable (fun x : E => m x * prob μ {ω | X ω = x}) ∧
       mean μ Y = ∑' x : E, m x * prob μ {ω | X ω = x}
 
-/-- For an integrable function of a countable discrete covariate, the weighted values
-are summable and their sum equals the mean. -/
+/-- **Node N1** (paper proof, record 10, third paragraph: "The measurable disjoint sets
+C_x={X=x} cover Ω. For the integrable M=m(X), countable additivity of its integral gives
+E[M]=∑_x∫_{C_x}M=∑_x m(x)P(C_x). The series is absolutely convergent:
+∑_x|m(x)|P(C_x)=∫|M|<∞"). Countable partition formula for an integrable function of a
+countable discrete covariate.
+Suggested route: `integral_iUnion` / `hasSum_integral_iUnion` on the disjoint measurable
+cells `X ⁻¹' {x}` (`measurableSet_singleton`, `Set.iUnion` of preimages is `univ`);
+on each cell `∫ m(X) = m x * μ.real (X⁻¹{x})` (`setIntegral_congr_fun`,
+`setIntegral_const`); summability from `HasSum.summable`. `prob μ A = (μ A).toReal`. -/
 def N1 : Prop :=
   ∀ {Ω : Type u} {E : Type v} [MeasurableSpace Ω] [MeasurableSpace E]
     [Countable E] [MeasurableSingletonClass E]
@@ -64,8 +77,8 @@ theorem mean_eq_of_isCEF {Ω : Type u} {E : Type v} [MeasurableSpace Ω] [Measur
   have := h.2.2.2 Set.univ MeasurableSet.univ
   simpa [mean, Set.preimage_univ, Measure.restrict_univ] using this
 
-/-- CEF transfer and the countable partition identity yield the population CEF
-and its summable representation of the mean. -/
+/-- The nodes suffice: the shared transfer `N5` (with `U = Y`, `g = Prod.snd`,
+`Z = censored Y R`) gives the population CEF; its `univ` identity and `N1` give the series. -/
 theorem assemble (hS : MarSelection.AllShared.{u, v, 0}) (hN1 : N1.{u, v}) :
     Target.{u, v} := by
   intro Ω E _ _ _ _ μ _ X hX Y R hY hR hYi hbin _ _ p hp hpos hmar m hm hmi

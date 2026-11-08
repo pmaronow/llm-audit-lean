@@ -1,0 +1,55 @@
+import SAP.P010.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+open MeasureTheory ProbabilityTheory Set
+open scoped ENNReal NNReal Classical Topology BigOperators
+
+namespace PalomarReviewSimulation
+
+-- Exact arithmetic behind the two canonical Bernoulli designs.
+lemma sqrt_factor : Real.sqrt ((4/5:ℝ)*(1-4/5)*(4/5)*(1-4/5)) = 4/25 := by
+  rw [show ((4/5:ℝ)*(1-4/5)*(4/5)*(1-4/5)) = (4/25)^2 by norm_num,
+    Real.sqrt_sq (by norm_num)]
+
+noncomputable def a (ρ : ℝ) : ℝ := (4/5)*(4/5)+ρ*Real.sqrt ((4/5)*(1-4/5)*(4/5)*(1-4/5))
+
+example : a (1/4) = 17/25 ∧ a (1/2) = 18/25 ∧
+    (1-(4/5:ℝ)-(4/5)+a (1/4) = 2/25) ∧
+    ((4/5:ℝ)-a (1/4) = 3/25) ∧
+    (1-(4/5:ℝ)-(4/5)+a (1/2) = 3/25) ∧
+    ((4/5:ℝ)-a (1/2) = 2/25) ∧
+    (1-a (1/4)/(4/5) = 3/20) ∧ (1-a (1/2)/(4/5) = 1/10) := by
+  norm_num [a, sqrt_factor]
+
+-- Both full stratum tables define probability distributions with positive all-pass mass.
+example : ∀ ρ ∈ ({(1/4:ℝ),1/2} : Set ℝ),
+    0 < 1-4/5-4/5+a ρ ∧ 0 < 4/5-a ρ ∧ 0 < a ρ ∧
+    (1-4/5-4/5+a ρ)+(4/5-a ρ)+(4/5-a ρ)+a ρ=1 ∧
+    ((4/5-a ρ)+a ρ=4/5) ∧
+    ((a ρ-(4/5)*(4/5))/Real.sqrt ((4/5)*(1-4/5)*(4/5)*(1-4/5))=ρ) := by
+  intro ρ hρ
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hρ
+  rcases hρ with rfl | rfl <;> norm_num [a, sqrt_factor]
+
+-- The noise and assignment are explicitly sampled from a product probability law.
+instance fair_prob : IsProbabilityMeasure SAP.P010.fairArmDistribution := by
+  constructor
+  norm_num [SAP.P010.fairArmDistribution, Measure.dirac_apply, ENNReal.inv_two_add_inv_two]
+example : IndepFun (fun o : ℝ × Fin 2 => o.1) (fun o => o.2)
+    ((gaussianReal 0 1).prod SAP.P010.fairArmDistribution) :=
+  indepFun_prod measurable_id measurable_id
+
+-- The shifted normal components have genuine finite means, even at zero variance.
+example (σ : ℝ) : Integrable id (gaussianReal 0 ⟨σ^2,sq_nonneg σ⟩) ∧
+    Integrable id (gaussianReal (-1) ⟨σ^2,sq_nonneg σ⟩) := by
+  constructor
+  · exact memLp_one_iff_integrable.mp
+      (memLp_id_gaussianReal (μ:=0) (v:=⟨σ^2,sq_nonneg σ⟩) (1:ℝ≥0))
+  · exact memLp_one_iff_integrable.mp
+      (memLp_id_gaussianReal (μ:=(-1)) (v:=⟨σ^2,sq_nonneg σ⟩) (1:ℝ≥0))
+
+example : (1798577298898/1000000000000:ℝ) -
+      1767983385319/1000000000000 > 0 := by norm_num
+
+end PalomarReviewSimulation

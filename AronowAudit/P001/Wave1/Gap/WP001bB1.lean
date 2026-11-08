@@ -54,6 +54,107 @@ private theorem fixed_binary_norm {p : ℝ} (hp : p ∈ Set.Icc (0 : ℝ) 1) :
   rw [← ENNReal.ofReal_add (by linarith only [hp.2]) hp.1]
   norm_num
 
+private def fixed_f (y : ℝ) (x : Fin 1 → ℝ) : ℝ :=
+  fixed_binary (if x 0=0 then 3/4 else 0) y
+private def fixed_g (y : ℝ) (_ : Fin 1 → ℝ) (t : Fin 1 → ℝ) : ℝ := fixed_binary (t 0) y
+private def fixed_Θ : Set (Fin 1 → ℝ) := {t | t 0 ∈ Set.Icc (1/10 : ℝ) (9/10)}
+private theorem fixed_f_meas : Measurable (fun xy : (Fin 1 → ℝ) × ℝ => fixed_f xy.2 xy.1) := by
+  have hm : Measurable (fun xy : (Fin 1 → ℝ) × ℝ => if xy.1 0=0 then (3/4 : ℝ) else 0) :=
+    measurable_const.ite ((measurable_pi_apply 0).comp measurable_fst (measurableSet_singleton 0)) measurable_const
+  unfold fixed_f fixed_binary
+  exact hm.ite (measurable_snd (measurableSet_singleton _)) ((measurable_const.sub hm).ite
+    (measurable_snd (measurableSet_singleton _)) measurable_const)
+
+private theorem fixed_kl (t : Fin 1 → ℝ) :
+    conditionalKL fixed_κ fixed_f fixed_g (fun _ => 0) t = bernoulliKL (3/4) (t 0) := by
+  unfold conditionalKL fixed_κ
+  rw [integral_add_measure (integrable_dirac enorm_lt_top) (integrable_dirac enorm_lt_top)]
+  simp [fixed_f,fixed_g,fixed_binary,bernoulliKL]
+  ring
+
+theorem printed_fixed_covariate_kl_mle_refuted :
+  ¬ (∀ {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+   (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+   (κ : Measure ℝ) [SFinite κ] (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX]
+   (f : ℝ → (Fin K → ℝ) → ℝ) (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+   (hf : μ.map (fun ω => (X 0 ω,Y 0 ω))=
+     (νX.prod κ).withDensity (fun xy => ENNReal.ofReal (f xy.2 xy.1)))
+   (Θ : Set (Fin τ → ℝ))
+   (hfpos : ∀ y x,0 ≤ f y x) (hfnorm : ∀ x,(∫⁻ y,ENNReal.ofReal (f y x) ∂κ)=1)
+   (hfmeas : Measurable (fun xy : (Fin K → ℝ) × ℝ => f xy.2 xy.1))
+   (hgmeas : ∀ t∈Θ,Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 t))
+   (hgpos : ∀ t∈Θ,∀ y x,0 ≤ g y x t)
+   (hgnorm : ∀ t∈Θ,∀ x,(∫⁻ y,ENNReal.ofReal (g y x t) ∂κ)=1)
+   (x : Fin K → ℝ) (tstar : Fin τ → ℝ) (ht : tstar∈Θ)
+   (hdom : ∀ t∈Θ,∀ᵐ y ∂κ,0 < f y x → 0 < g y x t)
+   (hKL : ∀ t∈Θ,Integrable (fun y => f y x*Real.log (f y x/g y x t)) κ)
+   (hunique : ∀ t∈Θ,conditionalKL κ f g x tstar ≤ conditionalKL κ f g x t ∧
+     (conditionalKL κ f g x t=conditionalKL κ f g x tstar → t=tstar))
+   (that : ℕ → Ω → Fin τ → ℝ) (hthat : ∀ n ω,that n ω∈Θ)
+   (hmax : ∀ n ω t,t∈Θ → (∏ i ∈ Finset.range n,g (Y i ω) (X i ω) t) ≤ 
+     ∏ i ∈ Finset.range n,g (Y i ω) (X i ω) (that n ω)),
+    CP μ that tstar) := by
+  intro h
+  let μ : Measure (ULift.{u} Unit) := Measure.dirac (ULift.up ())
+  let X : ℕ → ULift.{u} Unit → Fin 1 → ℝ := fun _ _ _ => 1
+  let Y : ℕ → ULift.{u} Unit → ℝ := fun _ _ => 0
+  let ν : Measure (Fin 1 → ℝ) := Measure.dirac (fun _ => 1)
+  have hf : μ.map (fun ω => (X 0 ω,Y 0 ω)) =
+      (ν.prod fixed_κ).withDensity (fun xy => ENNReal.ofReal (fixed_f xy.2 xy.1)) := by
+    simp [μ,X,Y,ν,fixed_κ,Measure.map_const,Measure.prod_add,
+      Measure.dirac_prod_dirac,withDensity_add_measure,dirac_withDensity,fixed_f,fixed_binary]
+  have hcp := h μ X Y (fixed_iid_const μ ((fun _ => 1),0)) fixed_κ ν fixed_f fixed_g hf
+    fixed_Θ
+    (fun y x => fixed_binary_nonneg (by split_ifs <;> norm_num) y)
+    (fun x => fixed_binary_norm (by split_ifs <;> norm_num)) fixed_f_meas
+    (fun t ht => (fixed_binary_meas (t 0)).comp measurable_snd)
+    (fun t ht y x => fixed_binary_nonneg ⟨by linarith only [ht.1],by linarith only [ht.2]⟩ y)
+    (fun t ht x => fixed_binary_norm ⟨by linarith only [ht.1],by linarith only [ht.2]⟩)
+    (fun _ => 0) (fun _ => 3/4) (by norm_num [fixed_Θ])
+    (by
+      intro t ht
+      filter_upwards [] with y
+      by_cases h1 : y=1
+      · subst y; norm_num [fixed_f,fixed_g,fixed_binary]; linarith only [ht.1]
+      · by_cases h0 : y=0
+        · subst y; norm_num [fixed_f,fixed_g,fixed_binary]; linarith only [ht.2]
+        · simp [fixed_f,fixed_g,fixed_binary,h1,h0])
+    (by
+      intro t ht
+      unfold fixed_κ
+      apply Integrable.add_measure
+      · exact integrable_dirac enorm_lt_top
+      · exact integrable_dirac enorm_lt_top)
+    (by
+      intro t ht
+      rw [fixed_kl,fixed_kl]
+      have hz : bernoulliKL (3/4) (3/4)=0 := by norm_num [bernoulliKL]
+      rw [hz]
+      have hk := bernoulli_kl_minimum (3/4) (t 0) (by norm_num) (by norm_num)
+        (by linarith only [ht.1]) (by linarith only [ht.2])
+      refine ⟨hk.1,fun he => ?_⟩
+      ext j
+      have hj : j=0 := Subsingleton.elim _ _
+      subst j
+      exact hk.2.mp he)
+    (fun _ _ _ => 1/10) (by intros; norm_num [fixed_Θ])
+    (by
+      intro n ω t ht
+      apply Finset.prod_le_prod₀
+      · intro i hi; exact fixed_binary_nonneg ⟨by linarith only [ht.1],by linarith only [ht.2]⟩ 0
+      · intro i hi
+        change fixed_binary (t 0) 0 ≤ fixed_binary (1/10) 0
+        norm_num [fixed_binary]
+        linarith only [ht.1])
+  have he := probability_limit_unique μ (fun _ _ => (fun _ : Fin 1 => (1/10 : ℝ)))
+    (fun _ => 1/10) (fun _ => 3/4) (fixed_cp_const μ _) hcp
+  have he0 := congrFun he 0
+  norm_num at he0
+
+example : (type_of% @printed_fixed_covariate_kl_mle_refuted.{u}) ↔
+    ¬ (type_of% @AronowAudit.P001.printed_fixed_covariate_kl_mle_target.{u}) := Iff.rfl
+
 
 private def general_κ : Measure ℝ := fixed_κ + Measure.dirac 2 + Measure.dirac 3
 private instance general_κ_finite : IsFiniteMeasure general_κ := by
@@ -160,6 +261,10 @@ theorem printed_general_subset_mixture_refuted :
   have he2 := congrFun he 2
   norm_num at he2
 
+example : (type_of% @printed_general_subset_mixture_refuted.{u}) ↔
+    ¬ (type_of% @AronowAudit.P001.printed_general_subset_mixture_consistency_efficiency.{u}) := Iff.rfl
+
+
 private def subset_mle (n : ℕ) (s : Fin n → Fin 4) : Fin 3 → ℝ :=
   Classical.choose ((finite_mixture_compact_attainment.2.2.2 n s).2)
 private theorem subset_mle_spec (n : ℕ) (s : Fin n → Fin 4) :
@@ -211,6 +316,9 @@ theorem printed_subset_full_vector_consistency_refuted :
   have he := probability_limit_unique μ _ _ _ ha hb
   have he2 := congrFun he 2
   norm_num at he2
+
+example : (type_of% @printed_subset_full_vector_consistency_refuted.{u}) ↔
+    ¬ (type_of% @AronowAudit.P001.printed_subset_full_vector_consistency.{u}) := Iff.rfl
 
 end
 end AronowAudit.P001.Wave1

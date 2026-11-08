@@ -1,0 +1,79 @@
+[
+ {
+  "target_id": "P001-T87",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T87",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.mar_respondent_cef_is_population_cef_proof",
+   "AronowAudit.P001.Wave1.stable_outcomes_respondent_cef_proof",
+   "SAP.P001e.WH.W2.T87_whole",
+   "SAP.P001e.WH.W2.T87_assembly",
+   "SAP.P001e.WH.W2.T87_L1_proof",
+   "SAP.P001e.WH.W2.T87_L2_proof",
+   "SAP.P001e.WH.W2.exists_conditionalMean",
+   "SAP.P001e.WH.W2.mar_transfer",
+   "AronowAudit.P001.Wave1.MarSelection.n1_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n2_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n3_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n4_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n5_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001e.T87WholeStatement"
+ },
+ {
+  "target_id": "P001-T88",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T88",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.ate_sharp_endpoint_estimation_ae_support"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.ate_bounds_estimators",
+    "reason": "The almost-sure-support row supplies the complete endpoint-estimation conclusion with weaker support hypotheses."
+   }
+  ]
+ },
+ {
+  "target_id": "P001-T89",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T89",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.post_treatment_latent_random_assignment",
+   "AronowAudit.P001.post_treatment_observable_mass_and_contrast",
+   "SAP.P001e.WH.W2.T89_whole",
+   "SAP.P001e.WH.W2.T89_assembly",
+   "SAP.P001e.Bridge.post_latent",
+   "SAP.P001e.Bridge.post_numbers"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001e.T89WholeStatement"
+ },
+ {
+  "target_id": "P001-T90",
+  "decision": "refuted",
+  "theorem": "SAP.P001e.T90",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.continuous_dose_nonidentification"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T91",
+  "decision": "restricted",
+  "theorem": "SAP.P001e.T91",
+  "restriction": "Clause (a) requires measurable and integrable potential outcomes at every real dose, separate measurability and integrability of the observed diagonal, and conditional independence of the entire real-indexed process, including unsupported doses. Clause (b) requires a measurable curve state, jointly measurable evaluation, injective state-to-curve encoding, conditional independence of state and treatment, integrability at every real dose and of the observed evaluation, and continuity and neighborhood positivity at both selected doses. It retains the observed conditional-mean construction, potential-mean standardization, continuous-version uniqueness at the selected doses and the standardized contrast. It does not establish (b) from supported-cylinder independence alone. It omits the intermediate conditional mean of an unobserved potential outcome given both X and D, a separate support-wide any-dose statement and an explicit two-model equal-observable-law identification statement.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.positive_mass_dose_identification_proof",
+   "AronowAudit.P001.Wave1.continuous_dose_identified_evaluation_ready",
+   "AronowAudit.P001.Wave1.DecisionT91_standardization"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001e.T91IdentificationStatement"
+ }
+]

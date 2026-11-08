@@ -1,7 +1,9 @@
 import AronowAudit.P037.P037_Network
 import Mathlib.Algebra.BigOperators.Ring.Finset
 
-/-! Exact finite-support proof of P037-T35 using intersections and histograms. -/
+/-! Exact finite-support proof of P037-T35.
+The intersection/histogram construction adapts the draft cited in
+sweep-P018P037P045: lw-GLP037B4/GLP037B4.lean, with fresh helper names. -/
 namespace AronowAudit.P037.Wave1
 open scoped BigOperators
 set_option autoImplicit false
@@ -531,5 +533,7 @@ theorem direct_effect_permutation_counterexample_proof :
         (252:ℝ)^4 = 2/(252:ℝ)^4
     rw [t35r2_four_tail_card]
     norm_num only [Nat.cast_ofNat]
+
+example : type_of% @AronowAudit.P037.direct_effect_permutation_counterexample := direct_effect_permutation_counterexample_proof
 
 end AronowAudit.P037.Wave1

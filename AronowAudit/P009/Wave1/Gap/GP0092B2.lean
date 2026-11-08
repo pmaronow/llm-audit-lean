@@ -1,7 +1,9 @@
 import AronowAudit.P009.P009_BernoulliCompletion
 import AronowAudit.P009.P009_SharpnessCompletion
 
-/-! Maximum-degree and spectral inflation bounds, and a one-source construction. -/
+/-! Draft for records 7, 8, 9, and 12.  No Lean process was run by the drafter.
+All intermediate results below are proved locally; no held audit theorem is used
+as proof evidence.  The final examples use the held declarations only as types. -/
 namespace AronowAudit.P009.Wave1
 
 open scoped BigOperators Topology
@@ -14,7 +16,7 @@ set_option maxRecDepth 4000
 
 open BernoulliCompletion
 
-/-- Unaveraged signed contribution for the maximum-degree and spectral inflation bounds. -/
+/-- Unaveraged signed contribution, used for the two inflation records. -/
 private def t49_U {n : ℕ} (E : Experiment n) (i : Fin n) (z : Assignment n) : ℝ :=
   (if z i then E.outcome i z else 0)/marginal E i true -
     (if z i then 0 else E.outcome i z)/marginal E i false
@@ -354,7 +356,7 @@ private lemma t49_inflation_two_alternatives (S : Study) (k q s : ℝ)
         _ ≤ mean (S.experiment t).design (fun z => (Z t z)^2)/c^2 := second_moment_tail _ _ c hc
         _ ≤ _ := div_le_div_of_nonneg_right (hZ t) (sq_nonneg _)
 
-
+/-- Record 7. -/
 theorem maximum_inflation_conservative_proof (S : Study) (k q s : ℝ)
     (hReg : RegularSequence S k q s) (hQ : 4 ≤ q)
     (hBER : ∀ t, Bernoulli (S.experiment t))
@@ -367,11 +369,17 @@ theorem maximum_inflation_conservative_proof (S : Study) (k q s : ℝ)
     (fun t => (t49_max_finite (S.positive t) _ (hBER t)).2)
     (fun t => (t49_max_finite (S.positive t) _ (hBER t)).1) hAlt
 
+example : type_of% @AronowAudit.P009.maximum_inflation_conservative :=
+  maximum_inflation_conservative_proof
 
+/-- Record 8. -/
 theorem maximum_inflation_finite_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
     (hBER : Bernoulli E) :
     (n:ℝ)/dMax E*var E.design (ht E) ≤ aVariance E-msq E ∧ dAvg E ≤ dMax E := by
   exact t49_max_finite hn E hBER
+
+example : type_of% @AronowAudit.P009.maximum_inflation_finite :=
+  maximum_inflation_finite_proof
 
 /-- The elementary symmetric-matrix upper bound also bounds the Rayleigh set. -/
 private lemma t50_quad_max {n : ℕ} (hn : 0 < n) (E : Experiment n) (v : Fin n → ℝ) :
@@ -495,7 +503,7 @@ private lemma t50_spectral_margin {n : ℕ} (hn : 0 < n) (E : Experiment n)
   rw [div_mul_eq_mul_div, div_le_iff₀ hl]
   nlinarith [hnorm]
 
-
+/-- Record 9. -/
 theorem spectral_inflation_conservative_proof (S : Study) (k q s : ℝ)
     (hReg : RegularSequence S k q s) (hQ : 4 ≤ q)
     (hBER : ∀ t, Bernoulli (S.experiment t))
@@ -507,6 +515,9 @@ theorem spectral_inflation_conservative_proof (S : Study) (k q s : ℝ)
     (fun t => lambdaMax (S.experiment t))
     (fun t => (t50_spectral_margin (S.positive t) _ (hBER t)).2)
     (fun t => (t50_spectral_margin (S.positive t) _ (hBER t)).1) hAlt
+
+example : type_of% @AronowAudit.P009.spectral_inflation_conservative :=
+  spectral_inflation_conservative_proof
 
 /-- Ceiling estimates, including the boundary cases n=1 and lambda=1. -/
 private lemma p1_ceiling_bounds {n : ℕ} (hn : 0 < n) (lam : ℝ)
@@ -721,7 +732,7 @@ private lemma p1_hajek_zero {n : ℕ} (hn : 0 < n) (E : Experiment n)
   unfold hajek
   split_ifs <;> simp [muHat, hy]
 
-
+/-- Record 12. -/
 theorem construction_p1_proof {n : ℕ} (hn : 0 < n) (E : Experiment n) (k q s lam : ℝ)
     (hReg : Regular E k q s) (hLam : 0 < lam ∧ lam ≤ 1) :
     let M := ⌈Real.sqrt lam*(n:ℝ)⌉₊
@@ -769,6 +780,8 @@ theorem construction_p1_proof {n : ℕ} (hn : 0 < n) (E : Experiment n) (k q s l
     calc
       k⁻¹ ≤ marginal E ⟨0,hn⟩ false := (hp ⟨0,hn⟩ false).1
       _ ≤ _ := finite_probability_mono E.design _ _ hinc
+
+example : type_of% @AronowAudit.P009.construction_p1 := construction_p1_proof
 
 end
 end AronowAudit.P009.Wave1

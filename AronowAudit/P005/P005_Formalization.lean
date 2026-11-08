@@ -77,9 +77,9 @@ def armSize (n m : ℕ) (t : Arm) : ℕ :=
 /-- The six-unit population support, for exact enumeration of the witnesses. -/
 theorem univ_six : (univ : Finset (Fin 6)) = {0,1,2,3,4,5} := by decide
 
-/-- P005-T1's first fixed vector for Lemma A.1 (P005-E002). -/
+/-- P005-T1's fixed vectors; validator E002, section 1, for Lemma A.1. -/
 def witnessA : Fin 6 → ℝ := ![0, -3, -1, 2, -4, -3]
-/-- P005-T1's second fixed vector (P005-E002). -/
+/-- P005-T1's second fixed vector; validator E002, section 1. -/
 def witnessB : Fin 6 → ℝ := ![2, 1, 3, -3, 1, 1]
 
 /-- Complete size-four randomization for the six-unit witness (P005-T1).
@@ -127,9 +127,21 @@ theorem covariance_counterexample :
   norm_num [covarianceBound, popCov, sampleCov, mean, popMean,
     witnessA, witnessB, univ_six]
 
+/-- P005-T2 (and P005-T19's unchanged expectation identity): the corrected
+Lemma A.1 (p. 1511) for arbitrary vectors, both arms, with centered RHS. -/
+theorem corrected_covariance_lemma {n m : ℕ} (hn : 4 ≤ n) (hm : 0 < m) (hmn : m < n)
+    (t : Arm) (a b : Fin n → ℝ) :
+    expectation m (fun S => sampleCov (armSet t S) a b) =
+      (((armSize n m t : ℕ) : ℝ) - 1) * n /
+        ((armSize n m t : ℝ) * (n - 1)) * popCov a b ∧
+    variance m (fun S => sampleCov (armSet t S) a b) ≤
+      covarianceBound (armSize n m t) (centered a) (centered b) := by
+  sorry
 
-
-
+/- P005-T19: Lemma A.1 exactly as printed (p. 1511), including its false
+variance bound for arbitrary, uncentered vectors. It is deliberately unproved. -/
+/- Historical false affirmative draft retired after exact full-contract refutation.
+   Full original source is archived in confidence-followup/batch02-small/source-integration/original-declarations.json. -/
 
 /-- "For each subject ... a column vector of covariates ... two potential
 outcomes y_i(1) and y_i(0)" (Section 2, p. 1504). They are fixed real arrays. -/
@@ -199,7 +211,7 @@ def Nhat {n d : ℕ} (P : Population n d) (m : ℕ) (S : Finset (Fin n)) : Fin d
   pT n m • armN P S P.yT + pC n m • armN P (control S) P.yC
 
 /-- "betahat = Lhat^{-1} Nhat" (p. 1506). The matrix inverse is Mathlib's
-total nonsingular inverse; invertibility hypotheses are explicit where needed. -/
+nonsingular inverse; all results concerning OLS impose determinant nonzero. -/
 def betaHat {n d : ℕ} (P : Population n d) (m : ℕ) (S : Finset (Fin n)) : Fin d → ℝ :=
   (Lhat P m S)⁻¹ *ᵥ Nhat P m S
 
@@ -273,7 +285,7 @@ def interactedDebiasedATE {n d : ℕ} (P : Population n d) (m : ℕ) (S : Finset
   interactedATE P S - interactedBiasEstimate P m S
 
 /-- The covariance S_t := bar(hy(t)) - bar h bar y(t), divisor n,
-used in (5), (6) and Theorem 4.1 (pp. 1507, 1509); S denotes this covariance. -/
+used in (5), (6) and Theorem 4.1 (pp. 1507, 1509); S is the validator's name. -/
 def leverageCov {n d : ℕ} (P : Population n d) (y : Fin n → ℝ) : ℝ := popCov (leverage P) y
 
 /-- "N_TTT = (n-n_T)(n-2n_T)/((n-1)(n-2)n_T^2)"
@@ -462,6 +474,79 @@ theorem collected_covariance_coefficients (t c : ℕ) (ht : 2 ≤ t) (hc : 2 ≤
     <;> ring
 
 
+/-- P005-T6: the third component of Theorem 4.1 (p. 1509), with both
+printed signs reversed; no covariance normalization or inverse is needed. -/
+theorem corrected_interacted_third_bias {n d m : ℕ} (P : Population n d)
+    (hn : 3 ≤ n) (hm : 0 < m) (hmn : m < n) (hx : xMean P univ = 0) :
+    expectation m (fun S => dot (xMean P S) (xMean P S) * mean S (centered P.yT)) =
+      NTTT n m * leverageCov P P.yT ∧
+    expectation m (fun S => dot (xMean P (control S)) (xMean P (control S)) *
+      mean (control S) (centered P.yC)) = NCCC n m * leverageCov P P.yC ∧
+    expectation m (fun S => dot (xMean P (control S)) (armNu3 P (control S) P.yC)) -
+      expectation m (fun S => dot (xMean P S) (armNu3 P S P.yT)) =
+        -NCCC n m * leverageCov P P.yC + NTTT n m * leverageCov P P.yT := by
+  sorry
+
+/-- P005-T4(a)–(e): the repaired fixed-n leverage variance chain (p. 1517),
+using u=h-d and v=y-bar y. The quantifier over arms includes the control version. -/
+theorem corrected_leverage_variance_chain {n d m : ℕ} (P : Population n d)
+    (hn : 4 ≤ n) (hm : 0 < m) (hmn : m < n) (hP : standardized P)
+    (t : Arm) (K : ℝ)
+    (hK : popMean (fun i => (if t = .treated then P.yT i else P.yC i)^2) ≤ K) :
+    let y := if t = .treated then P.yT else P.yC
+    let u := fun i => leverage P i - (d : ℝ)
+    let v := centered y
+    popMean (leverage P) = d ∧
+    (∀ i, 0 ≤ leverage P i ∧ leverage P i ≤ n * kappa P ∧ |u i| ≤ n * kappa P) ∧
+    (d : ℝ) ≤ n * kappa P ∧
+    popMean (fun i => u i^2) = popMean (fun i => leverage P i^2) - (d : ℝ)^2 ∧
+    popMean (fun i => u i^2) ≤ n * kappa P * d ∧
+    popMean (fun i => v i^2) = popMean (fun i => y i^2) - popMean y^2 ∧
+    popMean (fun i => v i^2) ≤ K ∧
+    popMean (fun i => (u i * v i - popMean (fun j => u j*v j))^2) ≤
+      popMean (fun i => u i^2 * v i^2) ∧
+    popMean (fun i => u i^2 * v i^2) ≤ (n : ℝ)^2 * kappa P^2 * K ∧
+    variance m (fun S => sampleCov (armSet t S) (leverage P) y) ≤
+      covarianceBound (armSize n m t) u v ∧
+    covarianceBound (armSize n m t) u v ≤
+      2 * ((n : ℝ)-armSize n m t) / ((armSize n m t : ℝ)*(n-1)) * (n : ℝ)^2 * kappa P^2 * K +
+      2 * ((n : ℝ)-armSize n m t) * n / ((armSize n m t : ℝ)^3*(n-1)) * n * kappa P * d * K := by
+  sorry
+
+/-- P005-T4(f): the repaired unscaled and scaled deterministic variance
+orders in Appendix B.2 (p. 1517), for both arms along the population sequence. -/
+theorem corrected_leverage_variance_order (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P) (t : Arm) :
+    Asymptotics.IsBigO atTop
+      (fun n => variance (m n) (fun S => sampleCov (armSet t S) (leverage (P n))
+        (if t = .treated then (P n).yT else (P n).yC)))
+      (fun n => (n : ℝ)*kappa (P n)^2 + kappa (P n)*(d n)/n) ∧
+    Asymptotics.IsBigO atTop
+      (fun n => variance (m n) (fun S => sampleCov (armSet t S) (leverage (P n))
+        (if t = .treated then (P n).yT else (P n).yC) / n))
+      (fun n => kappa (P n)^2/n + kappa (P n)*(d n)/(n : ℝ)^3) := by
+  sorry
+
+/-- P005-T8: Theorem 4.1's expansion (p. 1510), with the repaired condition
+kappa log(max(d,2)) -> 0 and the printed remainder order unchanged. -/
+theorem corrected_interacted_expansion_max (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P)
+    (hinv : ∀ᶠ n in atTop, interactedRegular (P n) (m n))
+    (hκ : Tendsto (fun n => kappa (P n) * Real.log (max (d n) 2 : ℕ)) atTop (nhds 0)) :
+    stochasticO m (fun n S => interactedATE (P n) S - ate (P n) - armLeading (P n) S)
+      (fun n => Real.sqrt (kappa (P n)*(d n)/n)) := by
+  sorry
+
+/-- P005-T9: the equivalent repair kappa log(2d) -> 0 for the interacted
+expansion (p. 1510), as established by validator P005-N004. -/
+theorem corrected_interacted_expansion_two (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P)
+    (hinv : ∀ᶠ n in atTop, interactedRegular (P n) (m n))
+    (hκ : Tendsto (fun n => kappa (P n) * Real.log (2*(d n) : ℕ)) atTop (nhds 0)) :
+    stochasticO m (fun n S => interactedATE (P n) S - ate (P n) - armLeading (P n) S)
+      (fun n => Real.sqrt (kappa (P n)*(d n)/n)) := by
+  sorry
+
 /-- P005-T9(a): comparison of the two repaired logarithms at every d>=1. -/
 theorem repaired_log_bounds (d : ℕ) (hd : 1 ≤ d) :
     Real.log (max d 2 : ℕ) ≤ Real.log (2*d : ℕ) ∧
@@ -552,6 +637,62 @@ def armDebiased {n d : ℕ} (P : Population n d) (S : Finset (Fin n))
   mean S y - dot (xMean P S) (armN P S y) +
     ((n : ℝ)-S.card) / ((n-2 : ℝ)*S.card) * sampleCov S (leverage P) y
 
+/-- P005-T11(b): expectation of the corrected treated expression for any
+coefficient c, its cancelling bias multiplier, and the printed wrong-weight bias (Appendix B.4, p. 1518). -/
+theorem treated_arm_expectation {n d m : ℕ} (P : Population n d) (hn : 3 ≤ n)
+    (hm : 2 ≤ m) (hmn : m < n) (hx : xMean P univ = 0) (c : ℝ) :
+    expectation m (fun S => mean S P.yT - dot (xMean P S) (armN P S P.yT) +
+      c*sampleCov S (leverage P) P.yT) =
+        popMean P.yT + (-((n : ℝ)-m)/((m : ℝ)*(n-1)) + NTTT n m +
+          c*((m : ℝ)-1)*n/((m : ℝ)*(n-1))) * leverageCov P P.yT ∧
+    (-((n : ℝ)-m)/((m : ℝ)*(n-1)) + NTTT n m +
+       c*((m : ℝ)-1)*n/((m : ℝ)*(n-1)) = 0 ↔
+      c = ((n : ℝ)-m)/((n-2 : ℝ)*m)) ∧
+    expectation m (fun S => armDebiased P S P.yT) = popMean P.yT ∧
+    expectation m (fun S => mean S P.yT-dot (xMean P S) (armN P S P.yT) +
+      (m : ℝ)/((n-2 : ℝ)*(n-m))*sampleCov S (leverage P) P.yT) =
+      popMean P.yT + ((m : ℝ)^2-((n : ℝ)-m)^2)/((n-2 : ℝ)*m*(n-m)) *
+        (((m : ℝ)-1)*n/((m : ℝ)*(n-1))) * leverageCov P P.yT := by
+  sorry
+
+/-- P005-T11(c): the corrected treated remainder is O_p(sqrt(kappa/n)),
+under Assumptions 1–3 (Appendix B.4, pp. 1518–1519), for either arm. -/
+theorem corrected_arm_debiased_order (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P) (t : Arm) :
+    stochasticO m (fun n S =>
+      let A := armSet t S
+      let y := if t = .treated then (P n).yT else (P n).yC
+      armDebiased (P n) A y - (mean A y - dot (xMean (P n) A) (populationSlope (P n) y)))
+      (fun n => Real.sqrt (kappa (P n)/n)) := by
+  sorry
+
+/-- P005-T13: unbiasedness of the control bias expression with Lhat_C^{-1},
+and its exact component expectations and coefficient identities, correcting
+the subscript on p. 1518; all population and inverse assumptions explicit. -/
+theorem corrected_control_bias_estimator {n d m : ℕ} (P : Population n d)
+    (hn : 3 ≤ n) (hm : 0 < m) (hmn : m < n) (hP : standardized P)
+    (hinv : ∀ S ∈ design n m, (armL P (control S)).det ≠ 0) :
+    expectation m (fun S =>
+      (m : ℝ)/((n-2 : ℝ)*(n-m)) * sampleCov (control S) (leverage P) P.yC +
+        dot (xMean P (control S)) (armNu2 P (control S) P.yC)) =
+    expectation m (fun S => dot (xMean P (control S))
+      (armNu1 P (control S) P.yC + armNu2 P (control S) P.yC + armNu3 P (control S) P.yC)) ∧
+    expectation m (fun S => dot (xMean P (control S))
+      (armNu1 P (control S) P.yC + armNu2 P (control S) P.yC + armNu3 P (control S) P.yC)) =
+    expectation m (fun S => dot (xMean P (control S)) (armBetaHat P (control S) P.yC)) ∧
+    (∀ S ∈ design n m, dot (xMean P (control S)) (armNu2 P (control S) P.yC) =
+      dot (xMean P (control S)) (((armL P (control S))⁻¹-1) *ᵥ armN P (control S) P.yC)) ∧
+    expectation m (fun S => dot (xMean P (control S)) (armNu1 P (control S) P.yC)) =
+      (m : ℝ)/((n-1 : ℝ)*(n-m))*leverageCov P P.yC ∧
+    expectation m (fun S => dot (xMean P (control S)) (armNu3 P (control S) P.yC)) =
+      -NCCC n m*leverageCov P P.yC ∧
+    expectation m (fun S => sampleCov (control S) (leverage P) P.yC) =
+      ((n : ℝ)-m-1)*n/(((n : ℝ)-m)*(n-1))*leverageCov P P.yC ∧
+    (m : ℝ)/((n-1 : ℝ)*(n-m))-NCCC n m =
+      (m : ℝ)*n*((n : ℝ)-m-1)/((n-1 : ℝ)*(n-2)*(n-m)^2) ∧
+    (m : ℝ)*n*((n : ℝ)-m-1)/((n-1 : ℝ)*(n-2)*(n-m)^2) =
+      (m : ℝ)/((n-2 : ℝ)*(n-m))*(((n : ℝ)-m-1)*n/(((n : ℝ)-m)*(n-1))) := by
+  sorry
 
 /-- D_i is the binary treatment indicator (Section 2, pp. 1504–1505). -/
 def indicator {n : ℕ} (S : Finset (Fin n)) (i : Fin n) : ℝ := if i ∈ S then 1 else 0
@@ -567,6 +708,37 @@ def distinctTriple {n : ℕ} (S : Finset (Fin n)) (a b c : Fin n → ℝ) : ℝ 
   ∑ i, ∑ j ∈ univ.erase i, ∑ k ∈ (univ.erase i).erase j,
     indicator S i * indicator S j * indicator S k * a i * b j * c k
 
+/-- P005-T16(a)–(e): corrected expectation and upper summation limit in
+Lemma A.2's proof (pp. 1511–1512), including both third-moment conclusions. -/
+theorem corrected_third_moment_calculation {n m : ℕ} (hn : 3 ≤ n)
+    (hm : 0 < m) (hmn : m < n) (a b c : Fin n → ℝ)
+    (ha : ∑ i, a i = 0) (hb : ∑ i, b i = 0) (hc : ∑ i, c i = 0) :
+    (∀ i j : Fin n, i ≠ j → expectation m (fun S => indicator S i * indicator S j) =
+      (m : ℝ)*(m-1)/((n : ℝ)*(n-1))) ∧
+    (∀ i j k : Fin n, i ≠ j → i ≠ k → j ≠ k →
+      expectation m (fun S => indicator S i*indicator S j*indicator S k) =
+        (m : ℝ)*(m-1)*(m-2)/((n : ℝ)*(n-1)*(n-2))) ∧
+    expectation m (fun S => repeatedPair S a b c) =
+      ∑ i, ∑ j ∈ univ.erase i,
+        expectation m (fun S => indicator S i * indicator S j) * a i * b i * c j ∧
+    expectation m (fun S => repeatedPair S a b c) =
+      -(m : ℝ)*(m-1)/((n : ℝ)*(n-1)) * ∑ i, a i*b i*c i ∧
+    expectation m (fun S => distinctTriple S a b c) =
+      2*(m : ℝ)*(m-1)*(m-2)/((n : ℝ)*(n-1)*(n-2)) * ∑ i, a i*b i*c i ∧
+    expectation m (fun S => mean S a*mean S b*mean S c) =
+      (1/(m : ℝ)^3)*(
+        expectation m (fun S => ∑ i, indicator S i*a i*b i*c i) +
+        expectation m (fun S => ∑ i, ∑ j ∈ univ.erase i,
+          indicator S i*indicator S j*(a i*b i*c j+a i*b j*c i+a j*b i*c i)) +
+        expectation m (fun S => distinctTriple S a b c)) ∧
+    expectation m (fun S => mean S a * mean S b * mean S c) =
+      (1/(m : ℝ)^3) * ((m : ℝ)/n - 3*(m : ℝ)*(m-1)/((n : ℝ)*(n-1)) +
+        2*(m : ℝ)*(m-1)*(m-2)/((n : ℝ)*(n-1)*(n-2))) * ∑ i, a i*b i*c i ∧
+    expectation m (fun S => mean S a * mean S b * mean S c) =
+      NTTT n m * popMean (fun i => a i*b i*c i) ∧
+    expectation m (fun S => mean S a * mean S b * mean (control S) c) =
+      NTTC n m * popMean (fun i => a i*b i*c i) := by
+  sorry
 
 /-- P005-T16(d): simplification of the third-moment coefficient, with
 n>=3, m>0, over the complete printed domain (Lemma A.2, p. 1512). -/
@@ -583,9 +755,116 @@ theorem third_moment_coefficient (n m : ℕ) (hn : 3 ≤ n) (hm : 0 < m) :
   field_simp [n0, n1, n2, m0]
   <;> ring
 
+/-- P005-T21: exact unbiasedness of the printed noninteracted bias estimate
+(7)–(8) and of its debiased ATE estimator (Theorem 3.2, pp. 1508–1509). -/
+theorem noninteracted_exact_unbiasedness {n d m : ℕ} (P : Population n d)
+    (hn : 3 ≤ n) (hm : 0 < m) (hmn : m < n) (hP : standardized P)
+    (hinv : noninteractedRegular P m) :
+    expectation m (biasEstimate P m) = expectation m (adjustedATE P m) - ate P ∧
+    expectation m (debiasedATE P m) = ate P := by
+  sorry
 
+/-- P005-T22: exact unbiasedness of the interacted bias estimate and
+its corrected ATE estimator, including armwise unbiasedness (Theorem 4.2, p. 1510). -/
+theorem interacted_exact_unbiasedness {n d m : ℕ} (P : Population n d)
+    (hn : 3 ≤ n) (hm : 0 < m) (hmn : m < n) (hP : standardized P)
+    (hinv : interactedRegular P m) :
+    expectation m (interactedBiasEstimate P m) = expectation m (interactedATE P) - ate P ∧
+    expectation m (interactedDebiasedATE P m) = ate P ∧
+    expectation m (fun S => armDebiased P S P.yT) = popMean P.yT ∧
+    expectation m (fun S => armDebiased P (control S) P.yC) = popMean P.yC := by
+  sorry
 
+/-- P005-T23: the exact decomposition, bias identities (5)–(6) and the
+additive-effect and balanced-allocation consequences of Remark 1 (p. 1507). -/
+theorem noninteracted_exact_decomposition {n d m : ℕ} (P : Population n d)
+    (hn : 3 ≤ n) (hm : 0 < m) (hmn : m < n) (hP : standardized P)
+    (hinv : noninteractedRegular P m) :
+    (∀ S ∈ design n m, betaHat P m S = N P m + nu1 P m S + nu2 P m S + nu3 P m S) ∧
+    expectation m (adjustedATE P m) - ate P =
+      expectation m (fun S => dot (xMean P (control S) - xMean P S)
+        (nu1 P m S + nu2 P m S + nu3 P m S)) ∧
+    expectation m (fun S => dot (xMean P (control S)-xMean P S) (nu1 P m S)) =
+      (leverageCov P P.yC - leverageCov P P.yT) / (n-1 : ℝ) ∧
+    (leverageCov P P.yC - leverageCov P P.yT) / (n-1 : ℝ) =
+      -(1/(n-1 : ℝ)) * popMean (fun i => (leverage P i-popMean (leverage P))*(P.yT i-P.yC i)) ∧
+    expectation m (fun S => dot (xMean P (control S)-xMean P S) (nu3 P m S)) =
+      ((n : ℝ)-2*m)/((n-1 : ℝ)*(n-2 : ℝ)*m)*leverageCov P P.yT -
+        (2*(m : ℝ)-n)/((n-1 : ℝ)*(n-2 : ℝ)*(n-m))*leverageCov P P.yC ∧
+    ((∃ c : ℝ, ∀ i, P.yT i-P.yC i = c) →
+      expectation m (fun S => dot (xMean P (control S)-xMean P S) (nu1 P m S)) = 0) ∧
+    (m = n-m → expectation m (fun S => dot (xMean P (control S)-xMean P S) (nu3 P m S)) = 0) := by
+  sorry
 
+/-- P005-T24: the exact portion of Theorem 4.1 that stands as printed:
+coefficient decomposition, bias expression and first component (p. 1509). -/
+theorem interacted_exact_decomposition {n d m : ℕ} (P : Population n d)
+    (hn : 2 ≤ n) (hm : 0 < m) (hmn : m < n) (hP : standardized P)
+    (hinv : interactedRegular P m) :
+    (∀ S ∈ design n m,
+      armBetaHat P S P.yT = populationSlope P P.yT + armNu1 P S P.yT + armNu2 P S P.yT + armNu3 P S P.yT ∧
+      armBetaHat P (control S) P.yC = populationSlope P P.yC + armNu1 P (control S) P.yC +
+        armNu2 P (control S) P.yC + armNu3 P (control S) P.yC) ∧
+    expectation m (fun S => interactedATE P S - ate P) =
+      expectation m (fun S => dot (xMean P (control S))
+        (armNu1 P (control S) P.yC + armNu2 P (control S) P.yC + armNu3 P (control S) P.yC)) -
+      expectation m (fun S => dot (xMean P S) (armNu1 P S P.yT + armNu2 P S P.yT + armNu3 P S P.yT)) ∧
+    expectation m (fun S => dot (xMean P S) (armNu1 P S P.yT)) =
+      ((n : ℝ)-m)/((n-1 : ℝ)*m)*leverageCov P P.yT ∧
+    expectation m (fun S => dot (xMean P (control S)) (armNu1 P (control S) P.yC)) =
+      (m : ℝ)/((n-1 : ℝ)*(n-m))*leverageCov P P.yC ∧
+    expectation m (fun S => dot (xMean P (control S)) (armNu1 P (control S) P.yC)) -
+      expectation m (fun S => dot (xMean P S) (armNu1 P S P.yT)) =
+      (m : ℝ)/((n-1 : ℝ)*(n-m))*leverageCov P P.yC -
+        ((n : ℝ)-m)/((n-1 : ℝ)*m)*leverageCov P P.yT := by
+  sorry
+
+/- P005-T20: the erroneous third-component identity, retained exactly
+as printed in Theorem 4.1 (p. 1509), under its finite-population assumptions. -/
+/- Historical false affirmative draft retired after exact full-contract refutation.
+   Full original source is archived in confidence-followup/batch02-small/source-integration/original-declarations.json. -/
+
+/-- P005-T20: the asymptotic assertion of Theorem 4.1 as printed (p. 1510),
+with the literal log d condition, including d=1. Deliberately unproved. -/
+theorem printed_interacted_expansion (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P)
+    (hinv : ∀ᶠ n in atTop, interactedRegular (P n) (m n))
+    (hκ : Tendsto (fun n => kappa (P n) * Real.log (d n)) atTop (nhds 0)) :
+    stochasticO m (fun n S => interactedATE (P n) S - ate (P n) - armLeading (P n) S)
+      (fun n => Real.sqrt (kappa (P n)*(d n)/n)) := by
+  sorry
+
+/-- P005-T25: the uncorrected noninteracted estimator's stochastic expansion
+under d/n -> 0 (Theorem 3.1, p. 1507), with its printed O_p(sqrt(kappa d/n)) rate. -/
+theorem noninteracted_stochastic_expansion (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P)
+    (hinv : ∀ᶠ n in atTop, noninteractedRegular (P n) (m n))
+    (hd : Tendsto (fun n => (d n : ℝ)/n) atTop (nhds 0)) :
+    stochasticO m (fun n S => adjustedATE (P n) (m n) S - ate (P n) - commonLeading (P n) (m n) S)
+      (fun n => Real.sqrt (kappa (P n)*(d n)/n)) := by
+  sorry
+
+/-- P005-T26: the debiased noninteracted estimator's asymptotic linear
+expansion under kappa -> 0 (Theorem 3.2, p. 1509), at exactly o_p(n^{-1/2}). -/
+theorem noninteracted_debiased_linear_expansion (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P)
+    (hinv : ∀ᶠ n in atTop, noninteractedRegular (P n) (m n))
+    (hκ : Tendsto (fun n => kappa (P n)) atTop (nhds 0)) :
+    stochasticLittleO m
+      (fun n S => debiasedATE (P n) (m n) S - ate (P n) - commonLeading (P n) (m n) S)
+      (fun n => Real.sqrt (1/(n : ℝ))) := by
+  sorry
+
+/-- P005-T27: the debiased interacted estimator's asymptotic linear
+expansion under kappa -> 0 (Theorem 4.2, p. 1510), at exactly o_p(n^{-1/2}). -/
+theorem interacted_debiased_linear_expansion (d m : ℕ → ℕ)
+    (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P)
+    (hinv : ∀ᶠ n in atTop, interactedRegular (P n) (m n))
+    (hκ : Tendsto (fun n => kappa (P n)) atTop (nhds 0)) :
+    stochasticLittleO m
+      (fun n S => interactedDebiasedATE (P n) (m n) S - ate (P n) - armLeading (P n) S)
+      (fun n => Real.sqrt (1/(n : ℝ))) := by
+  sorry
 
 
 /-- Complete size-two randomization for the six-unit witnesses in P005-T5,
@@ -610,7 +889,7 @@ theorem expectation_six_two (f : Finset (Fin 6) → ℝ) :
   rw [Finset.sum_singleton] <;> norm_num
 
 
-/-- P005-T5's covariate vector (P005-E003). -/
+/-- P005-T5's covariate vector (validator E003, section 4). -/
 def signX : Fin 6 → ℝ := ![-8/5, -1, 0, 3/5, 4/5, 6/5]
 /-- P005-T5's fixed potential outcomes and one-dimensional covariates. -/
 def signPopulation : Population 6 1 where
@@ -688,9 +967,8 @@ theorem sampleCov_scale_both {n : ℕ} (S : Finset (Fin n)) (a : Fin n → ℝ) 
   simp only [sampleCov, hf, mean_mul]
   ring
 
-/-- In one dimension, scaling the covariate by `s` multiplies `bar x' Nhat`
-by `s²`. For P005-T10, `s = sqrt(3/20)` gives the rational factor `3/20`.
-This identity ties the rational formula to the actual paper objects. -/
+/-- In one dimension the square root scale cancels from bar x' Nhat.
+This identity ties P005-T10's rational formula to the actual paper objects. -/
 theorem scalar_dot_armN {n : ℕ} (a yT yC y : Fin n → ℝ) (s : ℝ)
     (S : Finset (Fin n)) :
     dot (xMean (scalarPopulation a yT yC s) S)
@@ -774,7 +1052,7 @@ theorem scalar_inverse_product_scale {n : ℕ} (S H : Finset (Fin n)) (a y : Fin
     _ = _ := by rw [mul_div_mul_left _ _ (pow_ne_zero 2 hs)]
 
 
-/-- P005-T10 and P005-T12's unscaled rational covariates. -/
+/-- P005-T10 and P005-T12's unscaled rational covariates (validator B02). -/
 def weightA : Fin 6 → ℝ := ![-3, -2, -1, 0, 1, 5]
 /-- P005-T10 and P005-T12's nonzero potential outcome a_i^2. -/
 def weightY : Fin 6 → ℝ := fun i => weightA i^2
@@ -817,7 +1095,9 @@ theorem interacted_weight_counterexample :
   norm_num [weightA, weightY, pT, expectation_six_two, sampleCov, mean, popMean, univ_six]
 
 
-/-- P005-T12's actual covariates, x=sqrt(3/20)a. -/
+
+
+/-- P005-T12's actual covariates, x=sqrt(3/20)a (validator B02). -/
 def weightX (i : Fin 6) : ℝ := weightScale * weightA i
 
 /-- P005-T12: the expression printed with Lhat_T^{-1} does not estimate
@@ -887,27 +1167,48 @@ theorem interacted_inverse_counterexample :
     control, univ_six, Finset.sdiff_eq_filter, Finset.filter_insert,
     Finset.filter_singleton, Finset.filter_empty]
 
-/-- P005-T3's unscaled covariate magnitudes and signs (P005-E002).
+/-- P005-T3's unscaled covariate magnitudes and signs (validator E002).
 Two high-leverage units followed by seven pairs (1,-1). -/
 def leverageA : Fin 16 → ℝ := ![8,-8,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1]
 /-- P005-T3's fixed treated potential outcomes. -/
 def leverageY : Fin 16 → ℝ := fun i => if i.val < 2 then 1/64 else 1
-/-- P005-T3's population, x=sqrt(8/71)a, y(0)=0 (P005-E002). -/
+/-- P005-T3's population, x=sqrt(8/71)a, y(0)=0 (validator E002). -/
 def leveragePopulation : Population 16 1 :=
   scalarPopulation leverageA leverageY (fun _ => 0) (Real.sqrt (8/71))
 
+/-- P005-T3: actual admissible covariates invalidate the first two printed
+variance bounds in Appendix B.2, item 2 (p. 1517), at n=16, n_T=8. -/
+theorem leverage_variance_counterexample :
+    standardized leveragePopulation ∧ interactedRegular leveragePopulation 8 ∧
+    noninteractedRegular leveragePopulation 8 ∧
+    popMean (fun i => leverageY i^2) ≤ 1 ∧
+    popMean (fun i => leveragePopulation.yC i^2) = 0 ∧
+    (1/4 : ℝ) < pT 16 8 ∧ pT 16 8 < (3/4 : ℝ) ∧
+    (design 16 8).card = 12870 ∧
+    kappa leveragePopulation = (32/71 : ℝ) ∧
+    (∀ i, leverage leveragePopulation i * leverageY i = (8/71 : ℝ)) ∧
+    variance 8 (fun S => sampleCov S (leverage leveragePopulation) leverageY) =
+      (1678565511/8259174400 : ℝ) ∧
+    covarianceBound 8 (leverage leveragePopulation) leverageY = (117645319/619438080 : ℝ) ∧
+    covarianceBound 8 (leverage leveragePopulation) leverageY <
+      variance 8 (fun S => sampleCov S (leverage leveragePopulation) leverageY) ∧
+    (2*((16 : ℝ)-8)/(8*(16-1))*popMean (fun i => (leverage leveragePopulation i)^2*leverageY i^2) +
+      2*((16 : ℝ)-8)*16/((8 : ℝ)^3*(16-1))*popMean (fun i => leverageY i^2)*
+        popMean (fun i => (leverage leveragePopulation i)^2)) = (334349/1744896 : ℝ) ∧
+    (334349/1744896 : ℝ) < variance 8 (fun S => sampleCov S (leverage leveragePopulation) leverageY) := by
+  sorry
 
 /-- P005-T7's v-vector: special unit has outcome zero; ordinary units have
-an evenly spaced grid in [-1,1] (P005-E001). -/
+an evenly spaced grid in [-1,1] (validator E001, sections 2–5). -/
 def spikeV (n : ℕ) (i : Fin n) : ℝ :=
   if i.val = 0 then 0 else -1 + 2*(i.val-1 : ℕ)/(n-2 : ℝ)
 /-- P005-T7's a-vector: 1 at unit 1 and epsilon v_i elsewhere,
-with epsilon=n^{-2} (P005-E001). -/
+with epsilon=n^{-2} (validator E001). -/
 def spikeA (n : ℕ) (i : Fin n) : ℝ :=
   if i.val = 0 then 1 else spikeV n i/(n : ℝ)^2
-/-- P005-T7's z_i=a_i-1/n (P005-E001). -/
+/-- P005-T7's z_i=a_i-1/n (validator E001). -/
 def spikeZ (n : ℕ) (i : Fin n) : ℝ := spikeA n i - 1/(n : ℝ)
-/-- P005-T7's q=n^{-1}sum z_i^2 (P005-E001). -/
+/-- P005-T7's q=n^{-1}sum z_i^2 (validator E001). -/
 def spikeQ (n : ℕ) : ℝ := popMean (fun i => spikeZ n i^2)
 /-- P005-T7's exact sequence, x_i=z_i/sqrt(q), y_i(1)=y_i(0)=v_i.
 All populations, outcomes and covariates are explicitly specified. -/
@@ -916,6 +1217,27 @@ def spikePopulation (n : ℕ) : Population n 1 where
   yT := spikeV n
   yC := spikeV n
 
+/-- P005-T7: the specified one-covariate sequence satisfies the standing
+assumptions and invertibility, but violates the printed stochastic expansion
+(Theorem 4.1, p. 1510). The even-subsequence remainder grows under every assignment. -/
+theorem univariate_endpoint_counterexample :
+    standingAssumptions (fun _ => 1) (fun n => n/2) spikePopulation ∧
+    (∀ n, 6 ≤ n → standardized (spikePopulation n) ∧
+      popMean (fun i => (spikePopulation n).yT i^2) ≤ 1 ∧
+      popMean (fun i => (spikePopulation n).yC i^2) ≤ 1 ∧
+      (∀ k, popMean (fun i => (spikePopulation n).x i k^2) = 1) ∧
+      (1/4 : ℝ) < pT n (n/2) ∧ pT n (n/2) < (3/4 : ℝ)) ∧
+    (∀ n, 6 ≤ n → interactedRegular (spikePopulation n) (n/2)) ∧
+    Tendsto (fun n => kappa (spikePopulation n)) atTop (nhds 1) ∧
+    Tendsto (fun n => kappa (spikePopulation n) * Real.log (1 : ℝ)) atTop (nhds 0) ∧
+    (∀ n, 6 ≤ n → ate (spikePopulation n) = 0) ∧
+    (∀ n, 6 ≤ n → Even n → ∀ S ∈ design n (n/2),
+      (n : ℝ)-6 ≤ |interactedATE (spikePopulation n) S - ate (spikePopulation n) -
+        armLeading (spikePopulation n) S|) ∧
+    ¬stochasticO (fun n => n/2)
+      (fun n S => interactedATE (spikePopulation n) S - ate (spikePopulation n) - armLeading (spikePopulation n) S)
+      (fun n => Real.sqrt (kappa (spikePopulation n)/n)) := by
+  sorry
 
 /-- P005-T7(ii), finite: at d=1 the printed kappa log d condition is
 identically zero, regardless of the leverage sequence (p. 1510). -/
@@ -942,7 +1264,7 @@ theorem mean_mono {n : ℕ} (S : Finset (Fin n)) (a b : Fin n → ℝ)
   exact div_le_div_of_nonneg_right (Finset.sum_le_sum h) (Nat.cast_nonneg S.card)
 
 /-- P005-T4(b),(c),(d) and P005-T17(a): subtracting a mean reduces the
-mean square. This is an exact finite identity. -/
+mean square. This is the exact finite identity, not an asymptotic assumption. -/
 theorem mean_square_centering {n : ℕ} (S : Finset (Fin n)) (hS : S.Nonempty)
     (a : Fin n → ℝ) :
     mean S (fun i => (a i-mean S a)^2) = mean S (fun i => a i^2) - (mean S a)^2 ∧
@@ -1096,6 +1418,7 @@ theorem corrected_residual_brackets {n d m : ℕ} (P : Population n d)
     <;> ring
   dsimp only
   exact ⟨hB, hfirst, hsecond, congrArg (fun v => (1/pC n m)*dot (xMean P S) v) hsecond⟩
+
 
 
 /-- The probability of including a specified set of r units under complete
@@ -1391,6 +1714,7 @@ theorem corrected_contraction_chain {n d m : ℕ} (P : Population n d)
         <;> ring
 
 
+
 /-- The common slope cancels from the difference e_i(T)-e_i(C), whose
 population second moment is at most 4K under Assumption 1 (p. 1514). -/
 theorem common_residual_difference_second_moment {n d m : ℕ} (P : Population n d)
@@ -1531,7 +1855,7 @@ theorem armN_decomposition {n d : ℕ} (P : Population n d) (hP : standardized P
 
 /-- The exact within-arm slope decomposition beta_I,t = beta_I,t(population)
 + nu_1t + nu_2t + nu_3t (Theorem 4.1, p. 1509), under its normalization
-and inverse assumptions.  -/
+and inverse assumptions. This is independent of the unproved bias moments. -/
 theorem arm_slope_decomposition {n d : ℕ} (P : Population n d) (hP : standardized P)
     (S : Finset (Fin n)) (hS : S.Nonempty) (y : Fin n → ℝ)
     (hinv : (armL P S).det ≠ 0) :
@@ -1739,6 +2063,21 @@ theorem corrected_residual_term_identification {n d m : ℕ} (P : Population n d
   rw [hx,observed_residual_slope]
   simp only [dot, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc]
 
+/-- P005-T11(b), control analogue: the generic coefficient expectation,
+the coefficient cancelling its bias multiplier, and exact control-arm
+unbiasedness with the corrected weight (Appendix B.4, pp. 1518–1519). -/
+theorem control_arm_expectation {n d m : ℕ} (P : Population n d) (hn : 3 ≤ n)
+    (hm : 0 < m) (hmn : m < n) (hc : 2 ≤ n-m) (hx : xMean P univ = 0) (c : ℝ) :
+    expectation m (fun S => mean (control S) P.yC -
+      dot (xMean P (control S)) (armN P (control S) P.yC) +
+      c*sampleCov (control S) (leverage P) P.yC) =
+        popMean P.yC + (-(m : ℝ)/(((n : ℝ)-m)*(n-1)) + NCCC n m +
+          c*((n : ℝ)-m-1)*n/(((n : ℝ)-m)*(n-1))) * leverageCov P P.yC ∧
+    (-(m : ℝ)/(((n : ℝ)-m)*(n-1)) + NCCC n m +
+       c*((n : ℝ)-m-1)*n/(((n : ℝ)-m)*(n-1)) = 0 ↔
+      c = (m : ℝ)/((n-2 : ℝ)*(n-m))) ∧
+    expectation m (fun S => armDebiased P (control S) P.yC) = popMean P.yC := by
+  sorry
 
 /-- P005-T14(d): the two correctly transposed control-minus-treatment
 covariate mean identities on p. 1515, for every actual assignment. -/
@@ -1891,5 +2230,117 @@ theorem kappa_bounds {n d : ℕ} (P : Population n d) (hn : 0 < n) (hG : gram P 
       apply (div_le_iff₀ hn').mpr
       simpa only [one_mul] using leverage_le_population_size P hn hG i
 
+#eval "P005 verification revision: complete conclusions and explicit leverage summand"
 end
 end AronowAudit.P005
+#print axioms AronowAudit.P005.univ_six
+#print axioms AronowAudit.P005.design_six_four
+#print axioms AronowAudit.P005.covariance_counterexample
+#print axioms AronowAudit.P005.corrected_covariance_lemma
+#print axioms AronowAudit.P005.mean_sub
+#print axioms AronowAudit.P005.mean_mul
+#print axioms AronowAudit.P005.mean_const
+#print axioms AronowAudit.P005.mean_dot
+#print axioms AronowAudit.P005.covariance_location_invariant
+#print axioms AronowAudit.P005.treated_arm_cancellation
+#print axioms AronowAudit.P005.noninteracted_debiased_expansion
+#print axioms AronowAudit.P005.interacted_debiased_cancellation
+#print axioms AronowAudit.P005.collected_covariance_coefficients
+#print axioms AronowAudit.P005.corrected_interacted_third_bias
+#print axioms AronowAudit.P005.corrected_leverage_variance_chain
+#print axioms AronowAudit.P005.corrected_leverage_variance_order
+#print axioms AronowAudit.P005.corrected_interacted_expansion_max
+#print axioms AronowAudit.P005.corrected_interacted_expansion_two
+#print axioms AronowAudit.P005.repaired_log_bounds
+#print axioms AronowAudit.P005.repaired_log_conditions
+#print axioms AronowAudit.P005.treated_arm_expectation
+#print axioms AronowAudit.P005.corrected_arm_debiased_order
+#print axioms AronowAudit.P005.corrected_control_bias_estimator
+#print axioms AronowAudit.P005.corrected_third_moment_calculation
+#print axioms AronowAudit.P005.third_moment_coefficient
+#print axioms AronowAudit.P005.noninteracted_exact_unbiasedness
+#print axioms AronowAudit.P005.interacted_exact_unbiasedness
+#print axioms AronowAudit.P005.noninteracted_exact_decomposition
+#print axioms AronowAudit.P005.interacted_exact_decomposition
+#print axioms AronowAudit.P005.printed_interacted_expansion
+#print axioms AronowAudit.P005.noninteracted_stochastic_expansion
+#print axioms AronowAudit.P005.noninteracted_debiased_linear_expansion
+#print axioms AronowAudit.P005.interacted_debiased_linear_expansion
+#print axioms AronowAudit.P005.design_six_two
+#print axioms AronowAudit.P005.interacted_sign_counterexample
+#print axioms AronowAudit.P005.sampleCov_scale_left
+#print axioms AronowAudit.P005.sampleCov_scale_both
+#print axioms AronowAudit.P005.scalar_dot_armN
+#print axioms AronowAudit.P005.scalar_leverage
+#print axioms AronowAudit.P005.scalar_armL_det
+#print axioms AronowAudit.P005.standardized_scalar
+#print axioms AronowAudit.P005.scalar_slope_product_scale
+#print axioms AronowAudit.P005.scalar_inverse_product_scale
+#print axioms AronowAudit.P005.interacted_weight_counterexample
+#print axioms AronowAudit.P005.interacted_inverse_counterexample
+#print axioms AronowAudit.P005.leverage_variance_counterexample
+#print axioms AronowAudit.P005.univariate_endpoint_counterexample
+#print axioms AronowAudit.P005.univariate_printed_condition
+#print axioms AronowAudit.P005.mean_add
+#print axioms AronowAudit.P005.mean_nonneg
+#print axioms AronowAudit.P005.mean_mono
+#print axioms AronowAudit.P005.mean_square_centering
+#print axioms AronowAudit.P005.variance_difference_bound
+#print axioms AronowAudit.P005.covariate_contraction
+#print axioms AronowAudit.P005.corrected_contraction_order
+#print axioms AronowAudit.P005.corrected_residual_brackets
+#print axioms AronowAudit.P005.inclusion_count
+#print axioms AronowAudit.P005.indicator_expectation
+#print axioms AronowAudit.P005.expectation_sum
+#print axioms AronowAudit.P005.expectation_mul
+#print axioms AronowAudit.P005.expectation_congr
+#print axioms AronowAudit.P005.indicator_sum
+#print axioms AronowAudit.P005.mean_unbiased
+#print axioms AronowAudit.P005.leverage_nonneg
+#print axioms AronowAudit.P005.leverage_le_maximum
+#print axioms AronowAudit.P005.leverage_population_mean
+#print axioms AronowAudit.P005.centered_leverage_moment_bounds
+#print axioms AronowAudit.P005.dot_population_slope
+#print axioms AronowAudit.P005.corrected_contraction_chain
+
+#print axioms AronowAudit.P005.expectation_six_four
+
+#print axioms AronowAudit.P005.expectation_six_two
+
+#print axioms AronowAudit.P005.common_residual_difference_second_moment
+
+#print axioms AronowAudit.P005.armN_decomposition
+
+#print axioms AronowAudit.P005.arm_slope_decomposition
+
+#print axioms AronowAudit.P005.noninteracted_slope_decomposition
+
+#print axioms AronowAudit.P005.popMean_sum
+
+#print axioms AronowAudit.P005.populationSlope_centered
+
+#print axioms AronowAudit.P005.populationSlope_projection
+
+#print axioms AronowAudit.P005.populationSlope_common_residual
+
+#print axioms AronowAudit.P005.common_residual_normal_equation
+
+#print axioms AronowAudit.P005.complement_x_mean_identity
+
+#print axioms AronowAudit.P005.observed_residual_slope
+
+#print axioms AronowAudit.P005.corrected_residual_term_identification
+
+#print axioms AronowAudit.P005.control_arm_expectation
+
+#print axioms AronowAudit.P005.control_minus_treated_mean_identities
+
+#print axioms AronowAudit.P005.mean_congr
+
+#print axioms AronowAudit.P005.inverse_component_observable
+
+#print axioms AronowAudit.P005.dot_comm
+
+#print axioms AronowAudit.P005.leverage_le_population_size
+
+#print axioms AronowAudit.P005.kappa_bounds

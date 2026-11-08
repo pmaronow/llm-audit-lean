@@ -1,0 +1,97 @@
+import SAP.P032.Defs
+set_option maxHeartbeats 1600000
+open scoped BigOperators
+open Matrix MeasureTheory ProbabilityTheory SAP.P032
+noncomputable section
+
+-- Four records realize all four coefficient cases, without empty index types.
+def auditDyads : Fin 4 → DyadData (Fin 4) :=
+  ![sixDyadData 0, sixDyadData 0, sixDyadData 1, sixDyadData 5]
+def auditDesign : Matrix (Fin 4) (Fin 1) ℝ := Matrix.of (fun _ _ => 1)
+def auditScores : Fin 4 → Fin 1 → ℝ := fun _ _ => 1
+def auditIds : Fin 4 → Fin 3 := ![0,0,1,2]
+
+example : pairCoefficient auditDyads 0 0 = 1 ∧
+    pairCoefficient auditDyads 0 1 = 1 ∧
+    pairCoefficient auditDyads 0 2 = 1 ∧
+    pairCoefficient auditDyads 0 3 = 0 := by
+  have h01 : ({0,1} : Finset (Fin 4)) ≠ {0,2} := by decide
+  have h02 : ({0,1} : Finset (Fin 4)) ≠ {2,3} := by decide
+  simp only [pairCoefficient, Fin.sum_univ_succ]
+  norm_num [memberMask, repeatedMask, recordMask, auditDyads,
+    sixDyadData, Fin.sum_univ_succ, h01, h02]
+
+-- A genuine subject-id substitution error: 2*(V0-Vid) = -4.
+example : scoreCovariance recordMask auditScores 0 0 = 4 ∧
+    scoreCovariance (subjectMask auditIds) auditScores 0 0 = 6 ∧
+    2 * (scoreCovariance recordMask auditScores 0 0 -
+      scoreCovariance (subjectMask auditIds) auditScores 0 0) = -4 := by
+  simp only [scoreCovariance, Fin.sum_univ_succ]
+  norm_num [recordMask, subjectMask, auditScores, auditIds,
+    Fin.sum_univ_succ]
+
+-- Every T11 hypothesis holds, with nonzero residuals and all four members used.
+example : ∃ (d : Fin 4 → DyadData (Fin 4)) (X : Matrix (Fin 4) (Fin 1) ℝ)
+    (Y : Fin 4 → ℝ),
+    (X.transpose * X).det ≠ 0 ∧
+    (∀ i : Fin 4, ∃ r : Fin 4, i ∈ (d r).members) ∧
+    fitResidual X Y = ![1,-1,1,-1] := by
+  refine ⟨auditDyads, auditDesign, ![1,-1,1,-1], ?_, ?_, ?_⟩
+  · rw [Matrix.det_fin_one]
+    simp only [Matrix.mul_apply, Matrix.transpose_apply]
+    norm_num [auditDesign, Fin.sum_univ_succ]
+  · intro i
+    fin_cases i
+    · exact ⟨0, by decide⟩
+    · exact ⟨0, by decide⟩
+    · exact ⟨2, by decide⟩
+    · exact ⟨3, by decide⟩
+  · have hzero : auditDesign.transpose *ᵥ
+        (![1,-1,1,-1] : Fin 4 → ℝ) = 0 := by
+      ext i
+      simp only [Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+      norm_num [auditDesign]
+    simp only [fitResidual, leastSquares, hzero, Matrix.mulVec_zero, sub_zero]
+
+-- T7 orthogonality hypotheses and nontrivial clipping in dimension two.
+example : ∃ (Q : Matrix (Fin 2) (Fin 2) ℝ) (e : Fin 2 → ℝ),
+    Q.transpose * Q = 1 ∧ Q * Q.transpose = 1 ∧
+    clipEigenvalues Q e = !![2,0;0,0] ∧
+    Q * Matrix.diagonal e * Q.transpose = !![2,0;0,-1] := by
+  refine ⟨1, ![2,-1], by simp, by simp, ?_, ?_⟩
+  · ext i j; fin_cases i <;> fin_cases j <;>
+      norm_num [clipEigenvalues, Matrix.mul_apply, Fin.sum_univ_succ]
+  · ext i j; fin_cases i <;> fin_cases j <;> norm_num
+
+-- Positive diagonal does not imply PSD; no square-root or inverse junk values.
+example : (∀ i : Fin 2, 0 < (!![1,2;2,1] : Matrix (Fin 2) (Fin 2) ℝ) i i) ∧
+    ¬(!![1,2;2,1] : Matrix (Fin 2) (Fin 2) ℝ).PosSemidef := by
+  constructor
+  · intro i; fin_cases i <;> norm_num
+  · intro h
+    have hn := h.dotProduct_mulVec_nonneg ![1,-1]
+    norm_num [dotProduct, Matrix.mulVec, Fin.sum_univ_succ] at hn
+
+-- Discriminant is strictly positive, so Real.sqrt is used within its domain.
+example : 0 < (467922/3655808 : ℝ)^2 - 4*(-70529/308915776) := by norm_num
+
+-- Fixed ten-record example is exactly the claimed rational matrix.
+example : tenCovariance = (1/3655808 : ℝ) • !![460765,-79681;-79681,7157] := by
+  ext i j
+  simp only [tenCovariance, Matrix.mul_apply]
+  fin_cases i <;> fin_cases j <;>
+    simp only [tenDyadicMeat, scoreCovariance, Fin.sum_univ_succ] <;>
+    norm_num [tenBreadMatrix, tenDyadicMeat, scoreCovariance,
+      dyadicMask, tenDyadData, tenScoreValues, tenResidualValues,
+      tenDesignMatrix, tenCovariate, Matrix.mul_apply, Fin.sum_univ_succ]
+
+-- The hard-coded bread is a genuine inverse of the ten-record Gram matrix.
+example : tenBreadMatrix * (tenDesignMatrix.transpose * tenDesignMatrix) = 1 ∧
+    tenDesignMatrix.transpose *ᵥ tenResidualValues = 0 := by
+  constructor
+  · ext i j; fin_cases i <;> fin_cases j <;>
+      norm_num [tenBreadMatrix, tenDesignMatrix, tenCovariate, Matrix.mul_apply,
+        Fin.sum_univ_succ]
+  · ext i; fin_cases i <;>
+      norm_num [Matrix.mulVec, dotProduct, tenDesignMatrix, tenCovariate,
+        tenResidualValues, Fin.sum_univ_succ]

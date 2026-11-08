@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P012-T13",
+    "theorem": "SAP.P012b.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: spareRecruiter has sampled={1,2}, seeds={1}, parent(2)=1, times=(0,1), degrees=(2,1), and both traits false. It is admissible, 2 is a nonseed child of 1, and recruitmentDegree(1)=1<2. Its private leaf can have trait true or false, giving p=1/2 or 0. More generally every admissible datum has the private-leaf completion, and every recruitment event contains its recruited vertex in its susceptible set.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T14",
+    "theorem": "SAP.P012b.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "An unconditional conjunction of explicit examples. Admissibility and compatibility of A, B and C compile in scratch/Check.lean. The dyad's raw h numerator/denominator are compiled as 0/0 in A and (-1/2)/(1/2) in B. Independent exact computation in scratch/audit_checks.py verifies all eight D assignments: h=-3/5,-1/3,-1/7 according to zero, one, or two true leaves, and undefined with three true leaves. At its only recruitment the recruiter sees only its same-trait child, so p=0 for every D assignment.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T15",
+    "theorem": "SAP.P012b.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mixed dyad is a simple positive-edge graph with positive degree in both trait groups; the same-trait dyad and the edgeless singleton cover failed h domains. All these data/state compatibility examples compile. mixedRecruiter has sampled trait-degree totals 2 and 1, one nonseed, and a compatible private-leaf completion, all compiled in scratch/Check.lean. For arbitrary admissible data, adding d_i-r_i private leaves to each sampled i supplies a compatible state, including the empty datum, so the whole-class criteria are not vacuous universal implications over nonexistent completions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T16",
+    "theorem": "SAP.P012b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The constant sequence T(n)=1 satisfies the positivity and nondecreasing hypotheses of the first clause. epsilon=1 and T1=1/log(2) satisfy the corrected schedule hypotheses; epsilon=1, depth D=1 and t=2 satisfy the term-comparison hypotheses and the series depth restriction, including its equality boundary. Existence of the schedule and depth parameters compiles in scratch/Check.lean. All analytic logarithm and real-power bases in the positive-temperature tail are at least 2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T17",
+    "theorem": "SAP.P012b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "domainA with its compatible dyad has no unsampled vertices and retains both exact sampled degrees under induction. The compiled compatible mixedRecruiter completion has edges {s1,s2},{s1,u_(1,0)}; deleting the private leaf reduces vertex 1's degree from 2 to 1 and leaves an induced-compatible graph. Thus both sides of the exact-degree equivalence have concrete positive and negative cases.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T18",
+    "theorem": "SAP.P012b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the graph with vertices {s1,s2}, edge {s1,s2}, and traits (false,true). It is compatible both with domainB (both vertices seeds) and with domainA modified only to have traits (false,true), which has 1 recruit 2. Both histories are admissible, their augmented graph and on-vertex traits agree, and homophily is -1. The identical-history special case is also directly witnessed by the compiled compatible dyads. No hypothesis assumes equality of the statistic.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T19",
+    "theorem": "SAP.P012b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A complete refutation of the printed preservation claim, as explicitly labeled in the docstring and record. scratch/Check.lean compiles admissibility of mixedRecruiter, compatibility of literalStart with edges {s1,s2},{s1,a}, the literal proposal to literalOutput, and incompatibility of that output. Choose i=1, j=a=u_(1,0), invent b=u_(1,1), and execute the unconditional line 22: the output has edges {s1,s2},{s1,b},{a,b}. The unsampled-unsampled edge {a,b} violates Augmented. Both HomophilyDefined and PreferentialDefined hold at literalStart and are compiled, so this is also a counterexample on the intended common parameter domain.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P012-T20",
+    "theorem": "SAP.P012b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A complete refutation of the joint printed homophily-interval claim, not an assertion that the printed numbers are valid. The count/shared-data conditions are satisfiable: sampled={1,...,527}, seeds={1,...,6}, parent(j)=1 for all nonseeds, time(i)=i, degree(1)=3966, degree(j)=1 for j=7,...,527, and degree=0 for the other five seeds. All three data may share this structure, and assigning trait true only at 7 gives positive sampled degree in both trait groups. For any admissible data with the reported totals, 521 recruitment edges leave 3445 spare stubs. Opposite-trait private leaves give m=3966 and c>=3445 mixed edges, both trait-degree totals positive, and h=1-2mc/(D0 D1)<=-1462/1983. This is strictly below all three lower rounding windows; scratch/audit_checks.py verifies the rational comparisons. The contradiction uses a genuine defined completion and does not rely on absence of inputs or undefined h.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T21",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: there is no theorem. The canonical target itself is marked no_lean and permits recording no additional formal content for the informal denial of closed-form expressions. The record accurately claims no proof of nonexistence, optimization speed, or global optimization. The supplied package is not credited here with general endpoint formulas absent from its visible Challenge files.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T22",
+    "theorem": "SAP.P012b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "mixedRecruiter is admissible with sampled trait-degree totals 2 and 1, one recruitment, and spare degree at recruiter 1; all these hypotheses and its compatible leaf completion compile in scratch/Check.lean. This supplies a nonzero-spare case of every block. The mixed dyad with one recruitment, degrees (1,1), and traits (false,true) supplies the zero-spare domain case, where the compatible graph is uniquely the recruitment edge. If spare degree occurs only at a nonrecruiting sampled vertex, degrees (1,2) and traits (false,true) give the complementary p-identified, h-not-identified case.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T23",
+    "theorem": "SAP.P012b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "figureData is compiled admissible with sampled trait-degree totals (false,true)=(3,14) and four recruitments. Keep exactly its four recruitment edges and attach (3,1,2,2,1) private leaves. Giving every leaf the opposite sampled-neighbor trait attains h=-5/8; giving each the same trait attains h=79/105. For p, setting all leaves at recruiters 1 and 2 to true attains -11/80 and setting them to false attains 49/120. Independent exact enumeration checks 762 private-leaf statistic representatives, covering all compatible values by splitting shared unsampled neighbors; all four bounds and explicit witnesses are saved in scratch/exact-checks.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T24",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: there is no theorem. Omission is justified for the canonical printed process: the printed schedule has no finite T1, and the literal proposals fail to preserve the purported state space, as independently compiled for T19 even with both statistics defined. T16's corrected real-analysis facts do not prove stochastic convergence. The supplied claims also identify dependence on an external annealing theorem and missing process hypotheses. The record's refusal to substitute repaired-process convergence or an objective/depth bound is mathematically appropriate; the inaccessible source-row classification was not independently inspected.",
+    "confidence": 0.99
+  }
+]

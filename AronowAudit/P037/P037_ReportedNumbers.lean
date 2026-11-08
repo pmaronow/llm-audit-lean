@@ -13,9 +13,9 @@ is assumed: T3 explicitly quantifies over a critical value in [1.9, 2].
 namespace AronowAudit.P037
 set_option autoImplicit false
 
-/-- Main p. 568: “P values using robust SEs under a normal approximation”.
-Under a one-coefficient, two-sided Wald interpretation, the statistic is
-the absolute estimate / SE. -/
+/-- Main p. 568: "P values using robust SEs under a normal approximation".
+The one-coefficient, two-sided Wald statistic is the absolute estimate / SE;
+the two-sided reading is the validator's interpretation. -/
 noncomputable def waldRatio (estimate se : ℝ) : ℝ := |estimate| / se
 
 /-- SI Table S6 p. 41 prints -0.06 (0.03). Strict interior rounding bins
@@ -31,10 +31,10 @@ theorem significance_claims_incompatible (p : ℝ) :
   exact not_lt_of_ge (show (1:ℝ)/20 ≤ 1/20 from le_rfl) ∘
     (fun h => lt_of_le_of_lt h.2 h.1)
 
-/-- P037-T3(ii)--(iv): two exact estimates and SEs print identically,
-yet give opposite rejection decisions for every critical value in [1.9,2].
-Membership of the actual normal quantile in that interval is an explicit
-premise, not a proved normal-integral calculation. -/
+/-- P037-T3(ii)--(iv): the validator v1's two exact estimates and SEs
+print identically, yet give opposite rejection decisions for every critical
+value in [1.9,2]. Membership of the actual normal quantile in that interval
+is an explicit premise, not a proved normal-integral calculation. -/
 theorem rounded_wald_opposite_decisions (c : ℝ)
     (hc : 19/10 ≤ c ∧ c ≤ 2) :
     printsTableS6 (-57/1000) (7/250) ∧
@@ -249,4 +249,18 @@ theorem composition_prediction_intervals (t b m : ℝ)
   · rw [div_le_iff₀ hm0]; nlinarith [hm.1]
 
 end AronowAudit.P037
+
+#print axioms AronowAudit.P037.significance_claims_incompatible
+#print axioms AronowAudit.P037.rounded_wald_opposite_decisions
+#print axioms AronowAudit.P037.wald_rounding_envelope
+#print axioms AronowAudit.P037.wald_envelope_attainable
+#print axioms AronowAudit.P037.corrected_reduction_arithmetic
+#print axioms AronowAudit.P037.rounded_totals_reduction
+#print axioms AronowAudit.P037.mixed_basis_cannot_round_to_25
+#print axioms AronowAudit.P037.seed_interpolation_no_tie
+#print axioms AronowAudit.P037.seed_count_bounds_monotone
+#print axioms AronowAudit.P037.seed_count_cap_and_examples
+#print axioms AronowAudit.P037.seed_count_shares
+#print axioms AronowAudit.P037.composition_prediction_printed_arithmetic
+#print axioms AronowAudit.P037.composition_prediction_intervals
 

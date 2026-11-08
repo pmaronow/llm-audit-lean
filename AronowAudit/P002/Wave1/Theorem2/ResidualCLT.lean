@@ -1,6 +1,6 @@
 import AronowAudit.P002.Wave1.Theorem2.Studentization
 
-/-! The residual-mixture finite-population CLT. -/
+/-! The residual-mixture CLT layer reused from the checked Theorem 1 proof. -/
 
 namespace AronowAudit.P002.Wave1
 noncomputable section
@@ -16,6 +16,8 @@ set_option linter.unnecessarySeqFocus false
 def T2C_D_total {n} (P : Population n) : ℝ :=
   popVar (w P true (late P)) + popVar (w P false (late P))
 
+def T2C_D_B {n} (P : Population n) : ℝ :=
+  S2 P (late P) true / (P.n1 : ℝ) + S2 P (late P) false / controlSize P
 
 def T2C_D_mix {n} (P : Population n) (i : Fin n) : ℝ :=
   (1-fraction P)*w P true (late P) i + fraction P*w P false (late P) i
@@ -47,6 +49,46 @@ lemma T2C_D_fourth {n} (P : Population n) (δ r A : ℝ) (hP : Theta P δ r A)
       ((Real.sqrt (popVar (w P a (late P))))^2)^2 by ring, Real.sq_sqrt hv] at hp
   nlinarith only [(div_le_iff₀ hn).mp hp]
 
+lemma T2C_D_normalized {n} (P : Population n) (δ r A : ℝ)
+    (hP : Theta P δ r A) (hT : 0 < T2C_D_total P) :
+    let x := fun a i => v P a (late P) i / Real.sqrt (T2C_D_total P)
+    (∀ a, ∑ i, x a i = 0) ∧
+    (∑ i, x true i^2) + (∑ i, x false i^2) = (n : ℝ)-1 ∧
+    (∑ i, x true i^4) + (∑ i, x false i^4) ≤ (2*A^4)*n := by
+  let T := T2C_D_total P
+  let x := fun a i => v P a (late P) i / Real.sqrt T
+  change (∀ a, ∑ i, x a i = 0) ∧ _ ∧ _
+  have hn : 0 < n := by have := hP.1.1; omega
+  have hs := (Real.sqrt_pos.mpr hT).ne'
+  have hv (a) := T2C_U_popVar_nonneg hP.1.1 (w P a (late P))
+  have hx0 (a) : ∑ i, x a i = 0 := by
+    simp only [x, ← Finset.sum_div]
+    change (∑ i, (w P a (late P) i - mean (w P a (late P)))) / Real.sqrt T = 0
+    rw [DecisionLemma12_sum_centered hn]
+    simp
+  have hx2 (a) : ∑ i, x a i^2 = ((n : ℝ)-1)*popVar (w P a (late P))/T := by
+    have hn1 : (n : ℝ)-1 ≠ 0 := by
+      have hh : (2 : ℝ) ≤ n := by exact_mod_cast hP.1.1
+      linarith
+    simp only [x, div_pow, ← Finset.sum_div,
+      Real.sq_sqrt (show 0 ≤ T from hT.le), popVar, v]
+    field_simp [hn1]
+    <;> ring
+  have hx4 (a) : ∑ i, x a i^4 ≤ A^4*n := by
+    have ht : popVar (w P a (late P)) ≤ T := by
+      cases a <;> dsimp [T, T2C_D_total] <;> linarith [hv true,hv false]
+    have hf := (T2C_D_fourth P δ r A hP a).trans
+      (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (hv a) ht 2)
+        (show 0 ≤ A^4*n by positivity))
+    simp only [x, div_pow, ← Finset.sum_div]
+    apply (div_le_iff₀ (pow_pos (Real.sqrt_pos.mpr hT) 4)).mpr
+    rw [show (Real.sqrt T)^4 = ((Real.sqrt T)^2)^2 by ring, Real.sq_sqrt hT.le]
+    exact hf
+  refine ⟨hx0, ?_, by linarith [hx4 true,hx4 false]⟩
+  rw [hx2, hx2]
+  dsimp [T, T2C_D_total] at *
+  field_simp
+  <;> ring
 
 lemma T2C_D_mix_center {n} (P : Population n) :
     ∀ i, T2C_D_mix P i - mean (T2C_D_mix P) =
@@ -160,6 +202,18 @@ lemma T2C_D_mix_fourth {n} (P : Population n) (δ r A : ℝ)
   have hmul := mul_le_mul_of_nonneg_left hvar (show 0 ≤ 8*A^4*n by positivity)
   nlinarith
 
+lemma T2C_D_mix_B_upper {n} (P : Population n) (hP : ValidDesign P)
+    (hm : MonotoneReceipt P) (hc : (compliers P).Nonempty) :
+    designVariance P (rawTau P (T2C_D_mix P)) ≤ T2C_D_B P := by
+  have he : designVariance P (rawTau P (T2C_D_mix P)) = designVariance P (tau P (late P)) :=
+    NDS_variance_congr P (T2C_D_mix_tau P hP hm hc)
+  rw [he,NDS_neyman_variance P hP]
+  have hn : (2 : ℝ) ≤ n := by exact_mod_cast hP.1
+  have hd : 0 ≤ Sdiff2 P (late P)/(n : ℝ) := by
+    have hden : 0 ≤ (n : ℝ)-1 := by linarith
+    dsimp [Sdiff2]
+    positivity
+  exact sub_le_self _ hd
 
 lemma T2C_D_mix_CLT (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
     (P : ∀ j, Population (sizes j)) (δ r A : ℝ)

@@ -14,3 +14,21 @@ jobs:
       - run: python3 -m unittest discover -s scripts -p 'test_*.py'
         env:
           PYTHONDONTWRITEBYTECODE: "1"
+  lean:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      LEAN_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install Lean toolchain
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch pinned dependencies and Mathlib build cache
+        run: lake exe cache get
+      - name: Build full library and current statement/proof entries; check proof axioms
+        run: python3 scripts/build_current.py

@@ -1,0 +1,49 @@
+[
+ {
+  "target_id": "P009-T16",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.corrected_full_pair_mixing_bound",
+   "SAP.P009a.WH.W1.T16_whole",
+   "SAP.P009a.WH.W1.T16_assembly",
+   "SAP.P009a.WH.W1.T16_L1_proof",
+   "AronowAudit.P009.BernoulliCompletion.covariance_product_formula",
+   "AronowAudit.P009.MixingBasics.alpha_le_of_event_bound",
+   "AronowAudit.P009.MixingBasics.alpha_nonnegative",
+   "AronowAudit.P009.MixingBasics.event_abs_le_alpha",
+   "AronowAudit.P009.MixingBasics.probability_le_one",
+   "AronowAudit.P009.Wave1.t9_alpha_le_quarter",
+   "AronowAudit.P009.probability_nonnegative"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009a.T16WholeStatement"
+ },
+ {
+  "target_id": "P009-T17",
+  "decision": "whole",
+  "theorem": "SAP.P009a.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.hypergeom_interferes_zero",
+   "AronowAudit.P009.hypergeometric_draw_counterexample",
+   "SAP.P009a.WH.W1.T17_whole",
+   "SAP.P009a.WH.W1.T17_assembly",
+   "AronowAudit.P009.SparseCompletion.mean_le_constant",
+   "AronowAudit.P009.SparseCompletion.noI_interferes",
+   "AronowAudit.P009.cons_at_three",
+   "AronowAudit.P009.cons_at_two",
+   "AronowAudit.P009.mean_const",
+   "AronowAudit.P009.sum_cube_succ",
+   "AronowAudit.P009.sum_cube_zero"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.cons_at_three",
+    "reason": "Auxiliary component already discharged inside the retained primary declaration; no separate assertion of this helper is needed."
+   }
+  ],
+  "statement_definition": "SAP.P009a.T17WholeStatement"
+ }
+]

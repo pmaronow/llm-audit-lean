@@ -3,7 +3,7 @@ import AronowAudit.P041.P041_Risks
 noncomputable section
 namespace AronowAudit.P041
 
-/-- Refutation of the printed directional percentage claims. -/
+/-- The exact closed contract of the retired false printed assertion. -/
 theorem printed_directional_percentages_refuted :
     ¬ (roundsWhole (relativeIncrease (75/150) (52/150)) 36 ∧
     roundsWhole (relativeIncrease (92/150) (69/150)) 29 ∧
@@ -12,3 +12,4 @@ theorem printed_directional_percentages_refuted :
 
 end AronowAudit.P041
 
+#print axioms AronowAudit.P041.printed_directional_percentages_refuted

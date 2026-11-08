@@ -1,10 +1,11 @@
 import AronowAudit.P009.P009_Audit
 
 /-!
-Bernoulli finite identities and asymptotic estimator rates under the P009
-assumptions. Product-law block factorization supplies full interference
+Bernoulli finite identities and asymptotic estimator rates from the original
+P009 assumptions. Product-law block factorization supplies full interference
 graph covariance cancellation. Finite second moments control the IPW means and
 counts; an explicit ratio bound handles the Hájek empty-arm extension.
+No extra theorem hypotheses, axioms, or unfinished lemmas are used.
 -/
 
 namespace AronowAudit.P009.BernoulliCompletion
@@ -761,7 +762,8 @@ theorem bernoulli_consistency (S : Study) (k q s : ℝ)
     BernoulliCompletion.probability_of_op_zero S _ _ ha hH, hHT, hH⟩
 
 
-/-- The bounded-degree Bernoulli branch of the root-n corollary. -/
+/-- The bounded-degree Bernoulli branch of the original root-n corollary.
+The complete-randomization branch remains a separate unfinished target. -/
 theorem bernoulli_root_n_consistency (S : Study) (k q s : ℝ)
     (hReg : RegularSequence S k q s) (hBER : ∀ t, Bernoulli (S.experiment t))
     (hBound : BigO (fun t => dAvg (S.experiment t)) (fun _ => 1)) :
@@ -790,6 +792,14 @@ theorem bernoulli_atom_bounds {n : ℕ} (E : Experiment n) (k q s : ℝ)
   · rw [← Finset.prod_const]
     exact Finset.prod_le_prod₀ (fun i _ => (BernoulliCompletion.marginal_pos E hBER i (a i)).le)
       (fun i _ => (BernoulliCompletion.regular_marginal_bounds E k q s hReg i (a i)).2.1)
+
+#print axioms bernoulli_atom_bounds
+
+#print axioms bernoulli_root_n_consistency
+
+#print axioms bernoulli_consistency
+
+#print axioms bernoulli_finite_lemmas
 
 end
 end AronowAudit.P009

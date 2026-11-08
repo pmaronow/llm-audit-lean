@@ -7,7 +7,8 @@ import AronowAudit.External.StatLean.HypothesisTesting.ForMathlib.CombinatorialC
 
 /-!
 P022-T16: the exact Proposition 2 rate, using finite CDF/quantile transport.
-The proof uses finite rank cells and permutation block moments.
+The proof uses the proved finite rank cells and permutation block moments;
+the held finite and asymptotic bounds are used only through their types.
 -/
 
 namespace AronowAudit.P022.Wave1
@@ -114,6 +115,23 @@ private lemma GP022B1b_common_quadrature {m k : ℕ} (hm : 0 < m) (hk : 0 < k)
   · simpa only [Fin.coe_cast, mul_comm] using hl
   · simpa only [Fin.coe_cast, mul_comm] using hu
 
+private lemma GP022B1b_cdf_integrable {s : ℕ} (a : Fin s → ℝ) (v w : ℝ) :
+    IntervalIntegrable (empiricalCDF a) volume v w := by
+  have hm : Monotone (empiricalCDF a) := by
+    intro x y hxy
+    unfold empiricalCDF finiteMean
+    apply Finset.expect_le_expect
+    intro i _
+    by_cases hi : a i ≤ x
+    · simp only [if_pos hi, if_pos (hi.trans hxy), le_refl]
+    · simp only [if_neg hi]
+      split_ifs <;> norm_num
+  exact hm.intervalIntegrable
+
+private lemma GP022B1b_cdf_error_integrable {s t : ℕ}
+    (a : Fin s → ℝ) (b : Fin t → ℝ) (v w : ℝ) :
+    IntervalIntegrable (fun x => |empiricalCDF a x - empiricalCDF b x|) volume v w :=
+  ((GP022B1b_cdf_integrable a v w).sub (GP022B1b_cdf_integrable b v w)).abs
 
 private lemma GP022B1b_indicator_integrable (v a b : ℝ) :
     IntervalIntegrable (fun x => if v ≤ x then (1 : ℝ) else 0) volume a b := by
@@ -917,24 +935,8 @@ lemma GP022B1b_eventual_sizes (S : ExperimentSequence) (θ ρ c : ℝ)
       omega)
   exact ⟨((lt_div_iff₀ hN).mp hmq).le, ((lt_div_iff₀ hN).mp hkq).le⟩
 
-/-- P022-T3: condition 1 and bounded outcomes alone give the explicit limsup
-bound in the corrected proof of Proposition 2. No weak limit or atom-value
-hypotheses occur. -/
 lemma GP022B1b_asymptotic_rate :
-    (∀ (S : ExperimentSequence)
-      (θ ρ C : ℝ)
-      (hθ : 0 < θ ∧ θ ≤ 1)
-      (hρ : 0 < ρ ∧ ρ < 1)
-      (hm : Tendsto (fun q => ((S.design q).m : ℝ) / (S.design q).N) atTop (𝓝 (θ * ρ)))
-      (hn : Tendsto (fun q => (((S.design q).m : ℝ) + (S.design q).k) / (S.design q).N) atTop (𝓝 θ))
-      (hC : 0 ≤ C)
-      (hy : ∀ i, |S.y1 i| ≤ C ∧ |S.y0 i| ≤ C),
-      ∀ ε c, 0 < ε → 0 < c → c < min (θ * ρ) (θ * (1 - ρ)) → ∀ B,
-      scaledProbabilityLimsup S (fun q π => ε ≤ ((S.design q).N : ℝ) *
-        |estimatedVariance (S.design q) (rowOutcomes S true q)
-          (rowOutcomes S false q) B π - populationBound (S.design q)
-            (rowOutcomes S true q) (rowOutcomes S false q) B|) ≤
-        ENNReal.ofReal (16 * (16 / c + 8) ^ 2 * C ^ 4 / (c * ε ^ 2))) := by
+    type_of% @AronowAudit.P022.bounded_direct_asymptotic := by
   intro S θ ρ C hθ hρ hm hn hC hy ε c hε hc hcmin B
   have hsize := GP022B1b_size_atTop S
   have heT := hsize.eventually (eventually_ge_atTop (16 * C ^ 2 / (c ^ 2 * ε)))
@@ -1049,6 +1051,7 @@ theorem proposition2_proof (H : JointLaw) (θ ρ C : ℝ) (hC : 0 ≤ C) :
     · intro S hS
       exact False.elim (hp ⟨⟨hS.1, hS.2.1⟩, ⟨hS.2.2.1, hS.2.2.2.1⟩⟩)
 
-end
+example : type_of% @AronowAudit.P022.proposition2 := proposition2_proof
 
+end
 end AronowAudit.P022.Wave1

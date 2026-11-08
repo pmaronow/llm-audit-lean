@@ -1,0 +1,191 @@
+[
+  {
+    "target_id": "P022-T11",
+    "theorem": "SAP.P022.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Lean checked including BOTH variance bins: Va=(437/980)^2, VH=(423/980)^2, z=49/25, L=-3111/2000, U=385/2000, LH=-3055/2000, UH=329/2000. Half-widths are 0.874 and 0.846; both interval centers coincide. All positivity, display and Wald equations hold. See scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T12",
+    "theorem": "SAP.P022.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the statistical clause use full design (4,2,2) and y=(0,1,0,1) in both arms. For finite averages use a singleton with v=1,c=1. The multiplier hypotheses have Lean-checked witness c=q=d=1. The incompatibility clause intentionally has no joint witness: it forces meanVariance<=193/1000 and meanVariance>=30364623/157216000>193/1000. That contradiction is the canonical conclusion, not accidental vacuity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T2",
+    "theorem": "SAP.P022.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cornerWitness with cornerLaw, theta=1, rho=1/2, is a nonconstant witness: period-four empirical averages converge; marginal right and left CDFs converge at both atoms 0 and 1. zeroWitness with originLaw is another joint instance. See scratch/nonvacuity.md; the corner bounds and third-moment bound are Lean checked in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P022-T18",
+    "theorem": "SAP.P022.T18",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "P022-T18 canonical_claim.statement is the positive assertion of printed Lemma 2. SAP/P022/Defs/Part6.lean:127 begins with negation of the universal lemma, so the theorem proves the opposite proposition. A refutation is not a restriction of the assertion being refuted.",
+      "record.json nevertheless labels P022-T18 whole with restriction=null. The docstring accurately announces a refutation, but that does not repair the mismatch with the positive target. The current Lean statement is true; the positive canonical lemma is false, as claims.json itself notes and T1 witnesses."
+    ],
+    "fix": "For the unchanged canonical target mark P022-T18 omitted, theorem=null, with the explicit reason that printed Lemma 2 is false, witnessed by P022-T1. Keep the existing negation only as a separately identified auxiliary refutation (or create a separately authorized refutation target). Do not certify the negation as a whole statement of the positive lemma.",
+    "nonvacuity": "The positive printed lemma has jointly satisfiable antecedents: the reciprocal witness satisfies Conditions123 with originLaw,theta=1,rho=1/2, yet both uniform distances equal one and scaled sampled-tail limsups are infinite. This makes the current NEGATION true; it does not make that negation a whole encoding of the positive canonical target.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P022-T3",
+    "theorem": "SAP.P022.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Lean-checked finite witness: fourUnitDesign, C=1, c=1/2, y1_i=i/3, y0_i=1-i/3. Both arrays are nonconstant and all finite hypotheses hold. For the extra finite-tail condition choose epsilon=16. The balanced periodic cornerWitness gives the asymptotic hypotheses, with any 0<c<1/2. See scratch/Check.lean and scratch/nonvacuity.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T4",
+    "theorem": "SAP.P022.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use N=4,m=k=2, arrays y1=(0,1,2,3), y0=(0,1,0,1), threshold x=1/2. Assignment permutations form a nonempty finite set and induce six uniformly weighted allocations. Exact rational enumeration also checked both identities for every design with 4<=N<=7 on the specified test arrays.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T5",
+    "theorem": "SAP.P022.T5",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "The last sentence of P022-T5 canonical_claim.statement also asserts the general equality characterization: for m<N the quarter-factor bound is attained if and only if G_N(x)=1/2. SAP/P022/Defs/Part5.lean:91 contains only the closed four-unit counterexample, with no universally quantified equality characterization.",
+      "record.json labels P022-T5 whole with restriction=null, and SAP/P022/Challenge/Part1.lean:23 does not declare this narrower coverage. This is a missing ancillary conclusion, not a defect in the numerical refutation."
+    ],
+    "fix": "Change the record decision to restricted and append: \"Restriction: Retains only the four-unit counterexample to equation (11); drops the general characterization that, for m<N, equality in the quarter-factor bound holds if and only if G_N(x)=1/2.\" For whole coverage instead append: for every Design d, y:Fin d.N -> R and x:R, designVariance d (fun pi => empiricalCDF (observedTreatment d y pi) x) = ((d.N:R)-d.m)/(4*((d.N:R)-1)*d.m) iff empiricalCDF y x = 1/2. Valid designs already imply d.m<d.N.",
+    "nonvacuity": "No input hypotheses: fourUnitDesign is valid and the outcome arrays are constantly one. There are 24 permutation assignments representing six unordered allocations; every sampled threshold-zero indicator is zero. The printed last member is the nonzero rational 1/12.",
+    "confidence": 0.89
+  },
+  {
+    "target_id": "P022-T8",
+    "theorem": "SAP.P022.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take m=k=2, a=b=(0,1). The partition is [0,1/2,1], has two nonempty open cell interiors and valid ranks in {1,2}. Its widths and cell count are Lean checked; exact fractions check ranks and overlap formulas for all 2<=m,k<=9. There is no empty index set.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T9",
+    "theorem": "SAP.P022.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The stipulated all-ones example has N=4,m=k=2. Its two cell widths are 1/2>2e, a condition Lean checked in scratch/Check.lean. Direct exact arithmetic gives -4e/3=-1/50331648 in both code modes, while the actual and sharp estimated variances are zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T10",
+    "theorem": "SAP.P022.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fixed observed arrays a=b=(0,1), m=k=2 give a genuine limit 1/2. For the eventual fixed-arm clause, fixedTwoSequence in scratch/Check.lean has N=q+4,m=k=2 and zero population variances, all Lean checked. The same designs with alternating zero/one outcomes give a nonconstant witness with both variances <=1/4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T13",
+    "theorem": "SAP.P022.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use any valid design, e.g. (4,2,2), and nonconstant finite arrays. The original empirical joint measure is in empiricalCompatibleLaws, and sorted/reverse-sorted pairings furnish both attaining couplings. These sets are nonempty, finitely supported, and have integrable products. Exact rational checks verified actual variance in all designs with 4<=N<=7 and 15144 rearrangement comparisons.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P022-T14",
+    "theorem": "SAP.P022.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use full design (4,2,2) with nonconstant outcomes and the identity permutation; all assignments also exist. The full-sampling equality is Lean checked as satisfiable. It is a canonical scope condition, not an added restriction. Cauchy-Schwarz and arithmetic-geometric mean give the asserted estimator order.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T15",
+    "theorem": "SAP.P022.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cornerWitness and cornerLaw with theta=1,rho=1/2 satisfy all four conditions: period-four empirical averages converge; atom right CDFs converge; each squared tail mean is bounded by one and is zero for beta>1. All compatible laws have the same bounded Bernoulli marginals, so the moment and covariance extrema use actual integrable quantities. See scratch/nonvacuity.md.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P022-T16",
+    "theorem": "SAP.P022.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For fixed H=cornerLaw,theta=1,rho=1/2,C=1, cornerWitness is admissible; for example epsilon1=epsilon2=epsilon3=1 and epsilon=3 form a positive split. The theorem is not supported only by invalid outer allocation parameters or by C=0. T3 supplies bounds depending only on the allocation fractions, hence witnesses uniform over the stated class of sequences.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T17",
+    "theorem": "SAP.P022.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cornerWitness with cornerLaw,theta=1,rho=1/2 satisfies every hypothesis. Third moments are bounded by one (Lean checked). Its law cannot be supported on an affine line because (0,0),(1,0),(0,1) each have positive mass, forcing any almost-sure affine equation to have zero coefficients. Limiting true variance=1/2, upper endpoint=1 and gamma=1/2. See scratch/nonvacuity.md.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P022-T1",
+    "theorem": "SAP.P022.T1",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "claims.json, P022-T1 canonical_claim.statement, supplies both counterexample A and counterexample B. SAP/P022/Defs/Part5.lean:12 encodes only the negative-reciprocal A. The bounded perturbation of the four-corner population, its nonsingular limiting law, and its two divergent tail bounds are absent.",
+      "record.json labels P022-T1 whole with restriction=null. The Challenge docstring at SAP/P022/Challenge/Part1.lean:7 describes A but does not disclose the omission of B. The represented refutation is correct; the whole-target coverage claim is inaccurate."
+    ],
+    "fix": "Change the record decision to restricted and append this docstring: \"Restriction: Retains counterexample A, the negative-reciprocal population, and its refutation of both printed Lemma 2 conclusions. Drops counterexample B with bounded outcomes and nonsingular four-point limiting law; does not separately assert the explicit left-limit failure at zero or uniform square integrability of A.\" Alternatively add those missing canonical assertions to T1Statement.",
+    "nonvacuity": "Closed construction: N=q+4, m=floor(N/2), k=N-m, y1_i=y0_i=-1/(i+1), H=delta_(0,0), theta=1, rho=1/2. Allocation limits and weak convergence follow from the floor bound and Cesaro convergence. At the only atom zero each population right CDF is one. At -1/(2N) all sampled CDFs are one and the limiting CDFs zero. See scratch/nonvacuity.md.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P022-T6",
+    "theorem": "SAP.P022.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the conditional limit part choose zeroWitness, originLaw, theta=1,rho=1/2,C=1,epsilon1=1,xi=1/32. All CDF distances and seven terms vanish. Lemma2Conclusions holds with K1=K0=1; a positive eight-vector nu_i=1/16 has the required sum and all six rate antecedents hold. Thus the additional hypotheses do not assume the endpoint-error conclusion. See scratch/nonvacuity.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T7",
+    "theorem": "SAP.P022.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed nonconstant witness: period-four cornerWitness, uniform cornerLaw, balanced full sampling, C=1. The hypotheses include the correct left limits at atoms. The first event is certain because its printed tolerance is zero; on the multiples-of-four rows the true scaled variance tends to 1/2 and the upper endpoint to 1. See scratch/nonvacuity.md.",
+    "confidence": 0.99
+  }
+]

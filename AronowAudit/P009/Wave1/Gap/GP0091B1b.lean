@@ -4,10 +4,10 @@ import Mathlib.Logic.Equiv.Fintype
 import AronowAudit.P009.Wave1.Gap.GP0092B1
 
 /-!
-Asymptotic bounds for one-source and complete-randomization designs.
-The one-source calculation uses conditional product-law identities and
-affected-pair counts. The complete case uses permutation averaging to bound
-covariance on disjoint parent sets.
+Exact proofs of the three assigned asymptotic contracts. The one-source center
+uses conditional product-law identities and affected-pair counts. The complete
+case uses permutation averaging to bound covariance on disjoint parent sets.
+Held Audit declarations occur only in the compile-time type checks.
 -/
 
 namespace AronowAudit.P009.Wave1
@@ -255,6 +255,8 @@ theorem corrected_one_source_limit_proof (S : Study) (k q s : ℝ)
     rw [hrow t]
     exact GP0091B1b_source_center (S.positive t) (b t) (hb t) (c t) (hSource t)
   simpa only [hc] using (variance_bias_limit_proof S k q s hReg hQ hBER).1
+
+example : type_of% @AronowAudit.P009.corrected_one_source_limit := corrected_one_source_limit_proof
 
 private theorem GP0091B1b_mean_mono {Ω : Type*} [Fintype Ω] (P : Law Ω)
     (f g : Ω → ℝ) (h : ∀ z, f z ≤ g z) : mean P f ≤ mean P g :=
@@ -550,7 +552,7 @@ private theorem GP0091B1b_inverse_graph_ratio (S : Study)
     Tendsto (fun t => C1 (S.experiment t)/dAvg (S.experiment t)) atTop (nhds 0) := by
   simpa only [Function.comp_def, inv_div] using (tendsto_inv_atTop_zero.comp hRatio)
 
--- P009-T12.
+-- Record 3 / P009-T12.
 theorem corrected_bias_term_comparison_proof (S : Study) (k q s : ℝ)
     (hReg : RegularSequence S k q s) (hQ : 4 ≤ q)
     (hBER : ∀ t, Bernoulli (S.experiment t))
@@ -618,6 +620,10 @@ theorem corrected_bias_term_comparison_proof (S : Study) (k q s : ℝ)
       _ ≤ (12*k^4*(C1 (S.experiment t)/dAvg (S.experiment t)))/
           |B2 (S.experiment t)| := div_le_div_of_nonneg_right (hU t) hv.le
       _ = _ := by ring
+
+example : type_of% @AronowAudit.P009.corrected_bias_term_comparison :=
+  corrected_bias_term_comparison_proof
+
 
 open CompleteConditional CompleteMixing
 set_option backward.isDefEq.respectTransparency false
@@ -1131,7 +1137,7 @@ private theorem GP0091B1b_HT_mse_bound (S : Study) (k q s : ℝ)
     _ ≤ 4*k^4*a^2+(8*k^4+16*k^4)*a^2 := add_le_add hDmul hCmul
     _ ≤ _ := by nlinarith [sq_nonneg a]
 
--- P009-T42.
+-- Record 10 / P009-T42.
 theorem complete_consistency_proof (S : Study) (k q s : ℝ)
     (hReg : RegularSequence S k q s) (hCR : CompleteSequence S)
     (hRestricted : Restricted S)
@@ -1173,6 +1179,10 @@ theorem complete_consistency_proof (S : Study) (k q s : ℝ)
     simpa only [add_zero] using hr.add hc
   exact ⟨BernoulliCompletion.probability_of_op_zero S _ a hazero hHT,
     BernoulliCompletion.probability_of_op_zero S _ a hazero hHJ, hHT, hHJ⟩
+
+example : type_of% @AronowAudit.P009.complete_consistency :=
+  complete_consistency_proof
+
 
 end
 end AronowAudit.P009.Wave1

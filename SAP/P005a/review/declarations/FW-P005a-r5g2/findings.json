@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P005-T6",
+    "theorem": "SAP.P005a.T6",
+    "fingerprint": "4da20dd05fed1591eb7336afcffa61d38b66f97eae962d61033a99d1195b97b3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs a nonzero centered n=6,d=1,m=2 population satisfying the entire hypothesis tuple. Independent rational enumeration in scratch/exact_checks.py checks the identities for every allocation m=1,...,5, including singletons; the m=2 corrected difference is 217/2500.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T7",
+    "theorem": "SAP.P005a.T7",
+    "fingerprint": "1a8dd75698c84e16371848c38fdf8ff43e59933c1ccf80656add599fe469cde8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional assertion about explicitly defined data. checks.md checks every printed condition analytically: one common moment bound, standardization, strict allocation bounds, distinct covariates giving every-assignment invertibility, and kappa*log(1)=0. Independent exact rational enumeration of every assignment at n=6,8,10,12 confirms genuine positive arm variances, fitted-line and remainder bounds, and the stated attained minima at 6 and 12. The full asymptotic non-O_p argument follows from deterministic bounds on all large even sizes, not finite enumeration.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P005-T9",
+    "theorem": "SAP.P005a.T9",
+    "fingerprint": "1801eddf0cd2e438512e6f4bb8badc97770e92b66516da3b0cb85cf8dc7d0755",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The full joint nonvacuity instance is justified analytically in checks.md: for every n>=6 use d=1,m=floor(n/2), x_i=(i-(n-1)/2)/sqrt((n^2-1)/12), yT_i=(i/(n-1))^2, yC_i=i/(n-1). It has common K=1, allocation bounds 1/4 and 3/4, exact standardization, positive variances under every assignment, and kappa=3(n-1)/(n(n+1))->0. This variable-size instance was not fully formalized in Lean; the exact script checks finite grid cases n=6,...,12, and scratch/Check.lean compiles the nonzero logarithmic instance d=1,kappa_n=1/(n+1).",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P005-T10",
+    "theorem": "SAP.P005a.T10",
+    "fingerprint": "d233c9b1b5fd035ceed75ae8ee9376bc40a098e536be167c130973f726b30ce7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The witness is the actual fixed n=6,d=1,m=2 population with a=(-3,-2,-1,0,1,5), x=sqrt(3/20)*a, yT=a^2,yC=0. scratch/Check.lean independently verifies standardization and moment/allocation bounds; scratch/FiniteRegularity.lean verifies nonzero treated and control determinants under all 15 assignments. Independent rational enumeration reproduces printed expectation 4913/1200, corrected expectation and population mean 20/3, covariance 343/30, and gap -1029/400. No singular inverse or empty design is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T11",
+    "theorem": "SAP.P005a.T11",
+    "fingerprint": "1cadb29296645576a742f10164fd7c08e4ed8fd38214ca702a77767dbf2fca15",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs n=6,d=1 with a nonempty invertible arm for the algebraic hypotheses and verifies a nonzero centered finite population, actual cancelling and printed coefficients, and the singleton coefficient identity. The same weight population has all finite assumptions simultaneously, including all-assignment regularity checked in scratch/FiniteRegularity.lean. Exact rational enumeration checks generic expectations for four weights at every size s=1,...,5. The complete analytic normalized-grid sequence in checks.md satisfies every asymptotic assumption jointly; its variable-size formulas were not fully re-proved in Lean.",
+    "confidence": 0.98
+  }
+]

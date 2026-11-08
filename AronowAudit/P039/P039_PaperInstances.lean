@@ -107,5 +107,8 @@ theorem nested_standard_error_bound {n k₁ k₂ : ℕ}
       se₁/s₁ ≤ se₂/s₂ ∧ se₁ ≤ se₂*s₁/s₂) := by
   exact nested_standard_error_bound_full Z₁ Z₂ q hspan h₁ h₂ hn₁ hn₂
 
+#print axioms corrected_residual_covariance_assessment
+#print axioms zero_noise_refutes_literal_covariance
+#print axioms nested_standard_error_bound
 end
 end AronowAudit.P039.PaperDomains

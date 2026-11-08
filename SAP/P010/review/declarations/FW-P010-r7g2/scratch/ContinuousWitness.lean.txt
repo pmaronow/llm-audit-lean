@@ -1,0 +1,154 @@
+import SAP.P010.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+open MeasureTheory ProbabilityTheory Set
+open scoped ENNReal NNReal Classical Topology BigOperators
+namespace PalomarReviewContinuous
+open SAP.P010
+
+macro "ennr" : tactic => `(tactic|
+  (apply (ENNReal.toReal_eq_toReal_iff' (by finiteness) (by finiteness)).mp
+   norm_num [ENNReal.toReal_add, ENNReal.toReal_mul, ENNReal.toReal_div]))
+
+instance fair_prob : IsProbabilityMeasure fairArmDistribution := by
+  constructor
+  norm_num [fairArmDistribution, Measure.dirac_apply, ENNReal.inv_two_add_inv_two] <;> try ennr
+
+abbrev Base := (ℝ × Fin 2) × Fin 2
+noncomputable def baseLaw : Measure Base :=
+  ((gaussianReal 0 1).prod fairArmDistribution).prod fairArmDistribution
+instance base_prob : IsProbabilityMeasure baseLaw := by dsimp [baseLaw]; infer_instance
+
+def stateMap (o : Base) : Population 2 0 :=
+  (fun _ => o.1.1, fun _ => decide (o.1.2 = 1), o.2, fun _ => 0)
+lemma state_meas : Measurable stateMap := by
+  have hB : Measurable (fun o : Base => decide (o.1.2 = 1)) :=
+    (measurable_of_finite (fun i : Fin 2 => decide (i = 1))).comp
+      (measurable_snd.comp measurable_fst)
+  exact (Measurable.of_eval (fun _ => measurable_fst.comp measurable_fst)).prodMk
+    ((Measurable.of_eval (fun _ => hB)).prodMk
+      (measurable_snd.prodMk (Measurable.of_eval (fun _ => measurable_const))))
+
+noncomputable def continuousLaw : Measure (Population 2 0) := baseLaw.map stateMap
+
+lemma popMeasOutcome (a : Fin 2) : Measurable (potentialOutcome (d:=0) a) := by
+  exact (measurable_pi_apply a).comp measurable_fst
+lemma popMeasCheck (a : Fin 2) : Measurable (potentialCheck (d:=0) a) := by
+  exact (measurable_pi_apply a).comp (measurable_fst.comp measurable_snd)
+lemma popMeasArm : Measurable (arm (K:=2) (d:=0)) := by
+  exact measurable_fst.comp (measurable_snd.comp measurable_snd)
+lemma popMeasResponse : Measurable (response (K:=2) (d:=0)) := by
+  have heq : (response (K:=2) (d:=0)) = fun ω =>
+      if arm ω = 0 then potentialOutcome 0 ω else potentialOutcome 1 ω := by
+    funext ω
+    have hz : arm ω = 0 ∨ arm ω = 1 := by omega
+    rcases hz with hz | hz <;> simp [response, potentialOutcome, hz]
+  rw [heq]
+  exact Measurable.ite (popMeasArm (measurableSet_singleton 0))
+    (popMeasOutcome 0) (popMeasOutcome 1)
+
+lemma popMeasObservedCheck : Measurable (check (K:=2) (d:=0)) := by
+  have heq : (check (K:=2) (d:=0)) = fun ω =>
+      if arm ω = 0 then potentialCheck 0 ω else potentialCheck 1 ω := by
+    funext ω
+    have hz : arm ω = 0 ∨ arm ω = 1 := by omega
+    rcases hz with hz | hz <;> simp [check, potentialCheck, hz]
+  rw [heq]
+  exact Measurable.ite (popMeasArm (measurableSet_singleton 0))
+    (popMeasCheck 0) (popMeasCheck 1)
+
+lemma measurable_assigned (a : Fin 2) : MeasurableSet (assigned (d:=0) a) :=
+  popMeasArm (measurableSet_singleton a)
+
+instance continuous_prob : IsProbabilityMeasure continuousLaw := by
+  constructor
+  rw [continuousLaw, Measure.map_apply state_meas MeasurableSet.univ]
+  simp
+
+lemma arm_mass (a : Fin 2) : continuousLaw (assigned a) = 1/2 := by
+  rw [continuousLaw, Measure.map_apply state_meas (measurable_assigned a)]
+  have heq : stateMap ⁻¹' assigned a = Set.univ ×ˢ {a} := by
+    ext o
+    simp [stateMap, assigned, arm]
+  rw [heq]
+  simp only [baseLaw, Measure.prod_prod, measure_univ, one_mul]
+  fin_cases a <;> norm_num [fairArmDistribution, Measure.dirac_apply, ENNReal.inv_two_add_inv_two] <;> try ennr
+
+lemma pass_arm_mass (a : Fin 2) : continuousLaw (passed ∩ assigned a) = 1/4 := by
+  have hP : MeasurableSet (passed (K:=2) (d:=0)) := by
+    exact popMeasObservedCheck (measurableSet_singleton true)
+  rw [continuousLaw, Measure.map_apply state_meas (hP.inter (measurable_assigned a))]
+  have heq : stateMap ⁻¹' (passed ∩ assigned a) = (Set.univ ×ˢ {(1:Fin 2)}) ×ˢ {a} := by
+    ext o
+    simp [passed, assigned, check, arm, stateMap]
+  rw [heq]
+  simp only [baseLaw, Measure.prod_prod, measure_univ, one_mul]
+  fin_cases a <;> norm_num [fairArmDistribution, Measure.dirac_apply, ENNReal.inv_two_add_inv_two] <;> try ennr
+
+lemma allpass_mass : continuousLaw allPass = 1/2 := by
+  have hA : MeasurableSet (allPass (K:=2) (d:=0)) := by
+    have h := (popMeasCheck 0 (measurableSet_singleton true)).inter
+      (popMeasCheck 1 (measurableSet_singleton true))
+    convert h using 1
+    ext ω
+    simp [allPass, potentialCheck, Fin.forall_fin_succ]
+  rw [continuousLaw, Measure.map_apply state_meas hA]
+  have heq : stateMap ⁻¹' allPass = (Set.univ ×ˢ {(1:Fin 2)}) ×ˢ Set.univ := by
+    ext o
+    simp [allPass, stateMap]
+  rw [heq]
+  norm_num [baseLaw, Measure.prod_prod, fairArmDistribution, Measure.dirac_apply, ENNReal.inv_two_add_inv_two] <;> try ennr
+
+lemma perarm_independent (a : Fin 2) :
+    IndepFun (fun ω => (potentialOutcome a ω, potentialCheck a ω)) arm continuousLaw := by
+  have hi : IndepFun (fun o : Base => (o.1.1, decide (o.1.2 = 1))) (fun o => o.2) baseLaw := by
+    dsimp [baseLaw]
+    exact indepFun_prod
+      (measurable_fst.prodMk ((measurable_of_finite (fun i : Fin 2 => decide (i = 1))).comp measurable_snd))
+      measurable_id
+  rw [indepFun_iff_measure_inter_preimage_eq_mul]
+  intro s t hs ht
+  have hf := (popMeasOutcome a).prodMk (popMeasCheck a)
+  rw [continuousLaw, Measure.map_apply state_meas ((hf hs).inter (popMeasArm ht)),
+    Measure.map_apply state_meas (hf hs), Measure.map_apply state_meas (popMeasArm ht)]
+  exact hi.measure_inter_preimage_eq_mul s t hs ht
+
+lemma assumptions : populationAssumptions continuousLaw := by
+  refine ⟨inferInstance, ⟨perarm_independent, ?_⟩, ?_⟩
+  · intro a
+    rw [arm_mass]
+    norm_num
+  · intro a
+    norm_num [passRate, arm_mass, pass_arm_mass]
+
+lemma response_law : continuousLaw.map response = gaussianReal 0 1 := by
+  rw [continuousLaw, Measure.map_map popMeasResponse state_meas]
+  change baseLaw.map (fun o => o.1.1) = gaussianReal 0 1
+  rw [show (fun o : Base => o.1.1) = Prod.fst ∘ Prod.fst from rfl,
+    ← Measure.map_map measurable_fst measurable_fst]
+  simp [baseLaw]
+
+lemma continuous_noatoms : noAtoms (continuousLaw.map response) := by
+  rw [response_law]
+  letI : NullSingletonClass (gaussianReal (0:ℝ) 1) := nullSingletonClass_gaussianReal (by norm_num)
+  intro x
+  exact measure_singleton x
+
+lemma response_integrable : Integrable response continuousLaw := by
+  have hI : Integrable id (continuousLaw.map response) := by
+    rw [response_law]
+    exact MemLp.integrable (by norm_num) (memLp_id_gaussianReal (1:ℝ≥0))
+  exact hI.comp_aemeasurable popMeasResponse.aemeasurable
+
+-- All hypotheses of T6, including continuity, positive always-passer mass,
+-- ordinary integrability, and the equality case r=1, hold simultaneously.
+example : ∃ (μ : Measure (Population 2 0)) (a : Fin 2),
+    populationAssumptions μ ∧ 0 < μ allPass ∧ noAtoms (μ.map response) ∧
+    Integrable response (μ.restrict (passed ∩ assigned a)) ∧ 1 ≤ trimmingRatio μ a := by
+  refine ⟨continuousLaw, 0, assumptions, ?_, continuous_noatoms, response_integrable.restrict, ?_⟩
+  · rw [allpass_mass]
+    norm_num
+  · norm_num [trimmingRatio, Fin.sum_univ_succ, passRate, pass_arm_mass, arm_mass]
+
+end PalomarReviewContinuous

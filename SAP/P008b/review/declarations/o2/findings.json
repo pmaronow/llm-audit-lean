@@ -1,0 +1,62 @@
+[
+ {
+  "target_id": "P008-T20",
+  "theorem": "SAP.P008b.T20",
+  "fingerprint": "df3e762e0eb91fbd75bac436ad1be8ccc6376500d2cc286eeeb6ae2959e85488",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "scratch/Check.lean: (A) the 3x3 square {0,1,2}^2 in Z^2 has nonempty rasterBoundary (cell (0,0), neighbour (-1,-1) outside); (C) frontier (closedBall 0 1) = unit sphere is nonempty in Plane. (B) and (D) are closed numerical facts (25/16/9 cells; Hajek 0 and 9/25 at (true,false), denominators 1 and 1; AMRs 0 and 9/50 under the uniform law on {0,1}^2; checked by hand). Also checked: without the nonempty-frontier hypothesis (C) fails (frontier univ = empty, infDist x empty = 0), so that hypothesis is needed; it is in definitions_needed.",
+  "confidence": "high",
+  "notes": "Decision 'restricted' is correct: formal content (a)-(c) is fully stated (8-neighbour boundary, edge/area count means, 5x5 block 25/16/central 3x3, {x | infDist x (frontier P) = 0} = frontier P with interior points at positive distance, T19 numbers 0, 9/25, 0, 9/50); the corrected sentence about the smoothed curve is omitted and disclosed. 'Requires nonempty raster boundaries' is a disclosed extra hypothesis, equivalent to R nonempty for finite R and not needed for the definitional identities; 'nonempty continuous frontiers' is already in definitions_needed (over-disclosure, not a misdescription). No junk value is reachable (denominators 16, 25, 1, N = 2; infDist-to-empty excluded)."
+ },
+ {
+  "target_id": "P008-T21",
+  "theorem": "SAP.P008b.T21",
+  "fingerprint": "d023a6b1bffd69f89eb6acc1eb7e3c0c7f5fe808efe8120ace44d32947980c47",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Closed statement with no hypotheses: (-321/10000 : R) < -19/625, i.e. -0.0321 < -0.0304, checked by norm_num in scratch/Check.lean.",
+  "confidence": "high",
+  "notes": "Decision 'restricted' is correct: only formal content (i) is stated. The restriction names exactly what is dropped: (ii) the significance inference and its presupposition about the actual assignment law of the 121 villages and its percentiles (including 0.0336), and the empirical spillover/bandwagon conclusions. The theorem asserts no refutation (the note records the numerical claim as not refuted)."
+ },
+ {
+  "target_id": "P008-T22",
+  "theorem": "SAP.P008b.T22",
+  "fingerprint": "9e11ba3d3154caf5987377f6466ad3ab61ae87d80de1ee8f3c482a2a29134649",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Existential statement (proved). scratch/Nonvac.lean checks the arithmetic of its conditions for the sorted enumeration aT22 of the six 2-of-4 assignments with M_i = i: Hajek statistics (-2,-1,0,0,1,2), wholeQuantile7 at 1/40 and 39/40 equal -15/8 and 15/8, strict rejection probability under uniformLaw (Fin 6) equals 1/3 (sum over five radii scales by 5: quantiles -75/8, 75/8, probability 1/3). A fully measurable genuine witness exists: field = R^2, nodes (10i,0), zeta = sum of 20 Dirac masses at (10i, r_j), Y x z = x_0/10; each circle (i, r_j) carries exactly one atom (other atoms are at distance >= 10 or at a different radius), so the circle mass is 1 and M_i(r_j) = i. The refutation therefore does not rely on non-measurable sets or undefined averages.",
+  "confidence": "high",
+  "notes": "Decision 'refuted' is correct. Printed reading of (i): under the sharp null and a known design, the rule rejecting when the Hajek AMR estimate (or a cumulative linear functional) is strictly below the delta/2 or strictly above the 1-delta/2 percentile (type 7, fixed by (S9)(i), which is in the claim's definitions_needed) of the null permutation distribution has error rate delta, exactly when the permutations cover all possible assignments. Witness against each condition: nodes in a planar field with Euclidean circles and a measure giving positive finite mass and integrable outcomes at all 4 nodes and radii 0.1..0.5; design = uniform over the six two-treated assignments, which the permutations cover exactly; sharp null; N1 = N0 = 2; delta = 0.05; strict rule; cumulative statistic over [0.1, 0.5]. Rejection probability 1/3, contradicting (i). Part (B) (every nonempty deterministic rejection set on six equiprobable assignments has probability >= 1/6 > 0.05) refutes the error-rate reading of (ii); part (C) confirms the nominal reading (12.38 > 7.97), and the docstring says so. Docstring matches the statement."
+ },
+ {
+  "target_id": "P008-T23",
+  "theorem": "SAP.P008b.T23",
+  "fingerprint": "72bcf90960f6bc8d6a9642e67bcd8030a0a1452470eca86cda6db82329d9dfee",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "scratch/Nonvac.lean: Omega = Bool x Bool with the uniform law, phi_0 = bit of the first coordinate, phi_1 = bit of the second, D = 0 on the diagonal and 1 off it, c = 1/2; the hypothesis (zero covariance when D_ij > c) is proved, Var(phi_0 + phi_1) = 1/2 is nonzero, and SAP.P008b.T23 is instantiated.",
+  "confidence": "high",
+  "notes": "Decision 'restricted' is correct: the theorem is exactly formal content (i) (finite design law, arbitrary D and phi, a harmless generalization). The restriction names what is dropped: the interval table, its 95% coverage reading, (ii) that cutoff 0.4 captures interference dependence unlike 0 (which per the note fails; T23 makes no claim about it, so 'refuted' would be the wrong label for this theorem), and the cutoff-0 width comparison. No junk values (finite sums, Omega nonempty because masses sum to 1)."
+ },
+ {
+  "target_id": "P008-T25",
+  "theorem": "SAP.P008b.T25",
+  "fingerprint": "0f4be4131c8448b3249903d8489a2cfd46f22b6ccff34926bc2c3aac26bc3306",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "scratch/Nonvac.lean: modelT25 : MetricSpatialModel (Fin 2) 1 (coordinates (0,0),(1,0), Euclidean metric, counting measure, Y x z = x*bit(z_0) + 1). Lemma validT25 proves validCircle Q 0 d for every design Q and every radius d whose circle meets the field (measurable, mass in (0, inf), integrable). SAP.P008b.T25 parts 1 and 2 are instantiated at d = 0 with N = 1 > 0. Parts 3 and 4 are unconditional.",
+  "confidence": "high",
+  "notes": "Decision 'whole' is correct. marginal Q F i b = sum_z Q(z) F(z[i->b]) equals sum_{z_-i} Pr(Z_-i = z_-i) F(b, z_-i), the paper's E_{Z_-i}[.] with the marginal law of Z_-i ((S3), (S4)). The hypotheses are the claim's own: zeta-measure of the circle positive and finite, integrability of every override z[i->b] with Q(z) != 0 (z_-i in the support; this is weaker than the claim's requirement), and circle measurability (presupposed by 'the zeta-measure of the circle', a usual measure-theoretic condition, covered by the docstring's 'every existing circle average'). The AMR part needs validCircle at every node and 0 < N, both implicit in the claim's 'hence'. (c) is stated for every Y : {0,1}^4 -> R, hence for every Y_x. The arbitrary coordinate metric and the abstract measurable field with injective coordinates are generalizations. regionAverage junk (toReal of infinity, inverse of 0, integral of a non-integrable function) is excluded by validCircle."
+ }
+]

@@ -16,11 +16,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Lyng (the adapted tail lemmas below).
 
 The finite Pascal recursion and tail monotonicity below are adapted from
-Daniel Lyng, module `Econlib.Probability.Distributions.Binomial.Tail.Basic`,
+Daniel Lyng, Econlib/Probability/Distributions/Binomial/Tail/Basic.lean,
 commit d7bd9477476cade1c6695c8891746048ceddc52f (Apache-2.0, 2026).
-Only the elementary finite-sum lemmas are copied; no Econlib dependency is used.
-See NOTICE at the repository root.
--/
+Only the elementary finite-sum lemmas are copied; no Econlib dependency is used. -/
 def P033T8_tail (n : ℕ) (p : ℝ) (k : ℕ) : ℝ :=
   ∑ i ∈ Finset.filter (fun i => k ≤ i) (Finset.range (n + 1)),
     (n.choose i : ℝ) * p ^ i * (1 - p) ^ (n - i)
@@ -763,6 +761,8 @@ theorem caliper_correction_proof (f : ℝ → ℝ) (hf0 : ∀ x, 0 ≤ f x)
         (P033T8_prob_mem f hf0 hh.le hs) hp
   · exact ⟨caliper_exact_tails.1, caliper_exact_tails.2.2.1,
       caliper_exact_tails.2.2.2.2.1⟩
+
+example : type_of% @AronowAudit.P033.caliper_correction := caliper_correction_proof
 
 end
 end AronowAudit.P033.Wave1

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P029-T1",
+    "theorem": "SAP.P029a.T1",
+    "fingerprint": "7b65b0693c6a95237dd54764c813f8a438a700209fc117b48f1810abb7b9fef7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean independently proves IsFiniteLaw sixAtomMass. scratch/ExactChecks.py independently checks all six positive atom masses, the full randomized-IV conditions, receipt mean equalities, potential-pair independence, positive conditioning masses, E(tau)=1/2, complier mean 1, score 1/2 and both Wald ratios 1. This is a closed concrete counterexample, with no external hypotheses to make vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T2",
+    "theorem": "SAP.P029a.T2",
+    "fingerprint": "83344c5f461d6901a27e08bce4a2a9ff88ee55a915fdf410abef9ba0d5f4c1c9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean constructs auditCoin, a fair law on Bool, with X=Unit, D0=false, D1=true, Y0=0, Y1=1 and Z=id. Its examples prove every premise of WholeOneSidedImplication simultaneously, including positive profile probability, positive compliance and both receipt equalities. The independent exact-rational script also checks both specified six-atom incomparability witnesses, all three positive type masses, and all four baseline-selection means.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T3",
+    "theorem": "SAP.P029a.T3",
+    "fingerprint": "914f77471f40490e3760801d5e764549b38c6df6bbce7641be76d19e00c949ed",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean independently proves IsFiniteLaw for both 32-atom distributions. scratch/ExactChecks.py verifies their full randomized-IV conditions, genuine marginal/conditional full-type independence, conditional witness marginal dependence, every relevant positive conditioning mass, scores, means, nested probabilities, arm differences, LATEs and Wald ratios. Both are concrete laws rather than implications with potentially inconsistent hypotheses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T4",
+    "theorem": "SAP.P029a.T4",
+    "fingerprint": "ecad18e4dc2c9c0f455a7b163b358ff194dbd4de43a87293a3bd8758f2ad206f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean constructs a finite positive-support model on a fair Bool space, with nonzero effect one and score one, satisfying WholeFiniteModel, both mean-equality premises and a joint-independence alternative. It additionally constructs auditStreams as the infinite product of fair Bool laws and proves WholeFiniteModel at observation zero, WholeIID for the full response/assignment tuples, measurability of constant score estimates and their convergence in measure to the true score. Thus all sampling premises hold jointly with genuinely independent assignment draws. Both separation laws were independently verified by scratch/ExactChecks.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T5",
+    "theorem": "SAP.P029a.T5",
+    "fingerprint": "3b793c288557f455485c910fb1f207aac700702b3efc49e4bb9d681644e8546c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean checks the 500-record index cardinality, pointwise treatment effect five, benchmark six, and existence of strictly positive weights (all one). scratch/ExactChecks.py constructs every row, checks the balanced 250/250 assignment, exact Gram matrix, determinant 3906250000, both cross-products and unique coefficient vectors, opposite error discrepancies and a nonconstant positive-weight instance. The specified latent covariates and zero coefficients are interior uniform-support values; the specified normal draws are in normal support. These are design support inputs, as the canonical assertion requires, not purported population laws or dependent iid samples.",
+    "confidence": 0.98
+  }
+]

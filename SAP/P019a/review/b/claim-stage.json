@@ -1,0 +1,68 @@
+[
+  {
+    "theorem": "SAP.P019a.T1",
+    "target_id": "P019-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The fixed Binomial(4,2/5) law, both response vectors, unaffected response, baseline moments, and exact mixture contrasts at rho=1/5 match the canonical arithmetic. ceilingBeta is a deterministic integrated mixture, not beta defined by conditional observable means in a joint (W,affected,Z,Y,V) population; neither that population nor its conditional-mean identification is asserted. The Challenge docstring discloses this. The mechanism discrepancy is enough to contradict the printed response rule as a description of the coded rule, but it is not a numerical power theorem. Direct rational calculation verifies the retained equations; there are no hypotheses to make the theorem vacuous."
+  },
+  {
+    "theorem": "SAP.P019a.T2",
+    "target_id": "P019-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "For every rho in [0,1], both subject-level increments and the two exact mixture-contrast formulas match. The conclusion omits a joint population and identification of the mixture contrast with observable conditional beta, and does not assert the approximate power clause. These omissions are disclosed. No assumption asserts a contrast formula: ceilingBeta is defined by an ordinary weighted sum. rho=1/5 is an admissible instance and independent rational checks verify its values and the general formulas' coefficients."
+  },
+  {
+    "theorem": "SAP.P019a.T3",
+    "target_id": "P019-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The 16-atom population and the retained empty-cell probabilities, singleton covariances, one conditioned singleton mean, occupied-sample covariances and product-variance discrepancy, and random treatment-count facts match. Missing are the explicit population table and numerical cell/marginal summaries, individual n=1 moments, general conditional-binomial and missing-mass formulas, never-one assertion, individual n=4 moments, and separate Var(muHat|D)=Var(AB|D) assertion. The four missing-mass values are numeric identities, not the conditional-count formula for k=0,1,2,4; the docstring expressly says so. Empty means are expressly zero-completed, not silently treated as defined printed ratios. The positive occupied probability and nonzero discrepancy refute the exact product formula even after conditioning; the singleton covariances refute the unconditional lemma under the stated completion. Lean verifies standing for this population and independent exact enumeration verifies the retained n=4 values."
+  },
+  {
+    "theorem": "SAP.P019a.T4",
+    "target_id": "P019-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The corrected occupied-cell conditional moments, count laws, exact total-variance and discrepancy identities, covariance order and coefficient, and expected/realized treatment-count identities match. The conditional-count/moment block only covers sample sizes n>=2, losing the meaningful count endpoints at n=0,1; the equality K=n(1-Ybar) is not separately asserted. Both are disclosed. Using n+2 in the covariance sequence faithfully removes undefined occupied conditioning at n=0,1 and does not change the asymptotic coefficient. Finite-law sampling represents the bounded count setting without an additional population restriction. No unbounded integral or limsup is involved, denominators are positive on the guarded events, and the 16-atom standing example (compiled in Lean) has P(D)>0 for every n>=2. The covariance coefficient follows from binomial count concentration and the leading E[h|K]=[s1/gamma+s0/(1-gamma)]/K term."
+  },
+  {
+    "theorem": "SAP.P019a.T5",
+    "target_id": "P019-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The eight-atom valid population and the unequal conditional point probabilities at zero correctly refute the printed V_control versus V_treated+1 distribution equality; subtraction is real subtraction. Only the three point probabilities at zero and standing are asserted. The full two-point laws, disjoint supports, numerical cell/marginal summaries and corrected equality for every t are omitted, as disclosed. The witness's standing hypotheses and both positive affirmative-cell probabilities were compiled in Lean; rational enumeration confirms all three probabilities."
+  },
+  {
+    "theorem": "SAP.P019a.T6",
+    "target_id": "P019-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly Assumptions 1-3 and positive probabilities of the two affirmative cells imply the two corrected conditional point laws and their common baseline law for every real t. The additionally asserted t+1 identity is an equivalent translation of the same equality. All random counts have finite discrete support, so equality at every point is equality of distributions. Full Assumption 4 is not smuggled in. The eight-atom distributionWitness satisfies every premise (Lean-checked); no null-event division or natural truncated subtraction is used."
+  },
+  {
+    "theorem": "SAP.P019a.T7",
+    "target_id": "P019-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The first 16-atom witness exactly gives Assumptions 1,2,4, delta=0, beta=2 and failure of Assumption 3, hence refutes the two-cause diagnosis at the population level without assuming Treatment Independence. The second eight-atom example, numerical latent/cell/marginal summaries, independence of latent variables/potential direct responses and marginal Y, and explicit factorization witness are omitted, as disclosed. Independent enumeration checks all retained facts and positive cells/variances. It does not assert an empirical rejection or that delta=0 implies Treatment Independence."
+  },
+  {
+    "theorem": "SAP.P019a.T8",
+    "target_id": "P019-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "The common positive-affirmative-cell premises, separate Assumption-1-and-2 decomposition, Assumption-1-to-3 baseline balance and beta=1, and both logically correct failure diagnoses match all canonical formal conclusions. The informal sentence about evidence from a significant sample departure is explicitly outside the canonical formal content. No independence or nondegeneracy beyond the stated premises is added. distributionWitness satisfies all null premises; diagnosisWitness satisfies Assumptions 1,2 and beta!=1, so the final failure implication also has a nonvacuous instance."
+  },
+  {
+    "theorem": "SAP.P019a.T9",
+    "target_id": "P019-T9",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The sequential 128-atom population, per-list assumptions and nulls, independent fair assignments, exact influence identity/moments, correlated joint normal limit, Fisher limit, integrability, variance>20 and unequal-law conclusion match. The Challenge explicitly omits the additional numerical cell summaries, standalone marginal limits, displayed correlations, exact h variance expression, and separate chi-square variance assertion. Marginal limits/correlations remain consequences of the explicit joint law. Samples are iid respondent vectors, preserving across-list dependence; no false independence premise is imposed. The zero completions are explicit and affect asymptotics only on events with probability tending to zero. Rational enumeration verifies every finite influence and standing fact. Gaussian marginal tails give finite first/second Fisher moments, and the common-normal conditional covariance argument gives variance>20. This refutes the reference-law implication, not the reported survey result or a particular test cutoff."
+  },
+  {
+    "theorem": "SAP.P019a.T10",
+    "target_id": "P019-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All canonical probabilistic conclusions under the sufficient full joint-assignment premise are retained: list nulls, conditional and unconditional zero cross-influence moments, independent normal/uniform vector limits and chi-square-ten Fisher limit. The displayed empirical statistic, p-value and nonrejection are not asserted (the canonical note itself calls them nonformal). The partial printed estimators are extended using explicitly fixed zero completions and zero studentization at unavailable/nonpositive variance. These are the only changes to the asymptotic quantities and are disclosed. Finite laws cover the bounded-count setting. A concrete 128-atom model has shared independent fair X=Y and W across lists and five independent fair assignments; V_j=W+XZ_j. All standing premises and the full joint factorization hold, verified by exact finite tables. Thus the strong joint premise is substantive but satisfiable and is already present in the canonical sufficient-condition claim."
+  },
+  {
+    "theorem": "SAP.P019a.T11",
+    "target_id": "P019-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The arm-mean expansions under Assumptions 2,3 and positive arms, affirmative sensitive mean under Assumption 1, and affirmative-list mean shift under Assumptions 1-3 and positive affirmative cells match exactly. The theorem also asserts the corrected asymptotic coverage, with explicitly zero-completed means/whole variance and added nonempty/bounded-below standard-normal quantile-set premises. Those quantile premises are mathematically automatic for 0<alpha<1, but are explicit hypotheses beyond the printed coverage statement and are disclosed. The editorial indexing correction has no independent formal claim. A compiled standing finite witness satisfies all population premises, and alpha=1/2 gives a nonempty lower-bounded quantile set. Positive cell variances make the asymptotic estimator variance positive, so the Wald assertion does not rely on degenerate studentization or a nonintegrable quantity."
+  }
+]

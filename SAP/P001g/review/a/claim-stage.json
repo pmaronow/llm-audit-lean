@@ -1,0 +1,80 @@
+[
+  {
+    "theorem": "SAP.P001g.T115",
+    "target_id": "P001-T115",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains random-assignment population ATE identification and the final ATT-plus-selection-bias identity. The sample difference-in-means formula and two intermediate decomposition equalities in the canonical statement are absent. Integrability and positive arm probabilities give genuine conditional means."
+  },
+  {
+    "theorem": "SAP.P001g.T116",
+    "target_id": "P001-T116",
+    "my_reading_vs_claim": "whole",
+    "reason": "Covers the discrete ATE sum, the general conditional ATE identity, and all three propensity-score conclusions, with a separate moment-free domain for the score result. CEFs and conditional independence are legitimate versions under the standing assumptions. Integrability of the arm CEFs under the whole population is implied by their restricted-measure integrability and uniform overlap, rather than a substantive extra assumption."
+  },
+  {
+    "theorem": "SAP.P001g.T117",
+    "target_id": "P001-T117",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Covers population IPW and both double-robustness branches, but requires measurable nuisance functions and separately integrable m0(X) and m1(X) before the disjunction. Finiteness of the single combined-score expectation alone is weaker: cancellation can make that expectation finite with nonintegrable nuisance regressions. The stricter domain is explicitly described in the Challenge docstring."
+  },
+  {
+    "theorem": "SAP.P001g.T118",
+    "target_id": "P001-T118",
+    "my_reading_vs_claim": "whole",
+    "reason": "Faithful refutation of both printed assertions: the constant-zero Hadamard-differentiable functional has only a degenerate plug-in limit; escaping-tail finite-second-moment CDF perturbations disprove supremum-norm Hadamard differentiability of the mean, even in tangent direction zero. Bounds and the real CDF domain prevent misuse of an unbounded real supremum."
+  },
+  {
+    "theorem": "SAP.P001g.T120",
+    "target_id": "P001-T120",
+    "my_reading_vs_claim": "whole",
+    "reason": "Faithful refutation of the printed fixed-covariate reading: a shared Bernoulli model can have a unique conditional KL minimizer 1/4 at an atom x=0 while the product MLE converges to the marginal success probability 1/2. Finite support, positive model probabilities, normalized laws and integrable KL avoid all log/division fallback conventions. A common minimizer at every covariate is not refuted or claimed."
+  },
+  {
+    "theorem": "SAP.P001g.T121",
+    "target_id": "P001-T121",
+    "my_reading_vs_claim": "whole",
+    "reason": "Faithful refutation of the full-vector consistency-and-efficiency assertion: at mixing weight one the inactive component parameter b0 does not affect the four-outcome law. A globally valid product MLE can always select b=1/4 on samples from the active component, and cannot converge to b0=3/4. Failure of consistency alone refutes the printed conjunction."
+  },
+  {
+    "theorem": "SAP.P001g.T124",
+    "target_id": "P001-T124",
+    "my_reading_vs_claim": "whole",
+    "reason": "Faithful refutation of the universal asymptotic size assertion, witnessed at alpha=1/2. The theorem uses the actual F(1,n-3) reference CDF and an iid conditional-independence null, and explicitly requires nonsingular sample Gram matrices, positive full residual risk and n>3 at rejection. An ordinary finite-support nonlinear propensity example satisfies these conditions and has rejection probability tending to one."
+  },
+  {
+    "theorem": "SAP.P001g.T125",
+    "target_id": "P001-T125",
+    "my_reading_vs_claim": "whole",
+    "reason": "Ordinary finite-second-moment iid WLLN, including the zero-variance case explicitly covered by footnote 10. MemLp excludes the totalized infinite-variance convention, and sample size zero has no asymptotic effect."
+  },
+  {
+    "theorem": "SAP.P001g.T126",
+    "target_id": "P001-T126",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both printed positive-finite-variance CLT forms, the standardized-variable definition, and its finite positive-sample-size scale identity and moments are present. The variance argument of gaussianReal is the mathematical variance, and all finite standardization denominators are positive."
+  },
+  {
+    "theorem": "SAP.P001g.T127",
+    "target_id": "P001-T127",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches the rectangular-kernel pointwise consistency statement read with its explicitly quoted p.121 requirement that the PDF be continuous. The formal hypothesis is global continuity, as in that preceding sentence; the more general local-continuity formulation discussed in the transcription note is not additionally certified. Positive deterministic bandwidth, h_n tending to zero and n*h_n tending to infinity are exactly supplied."
+  },
+  {
+    "theorem": "SAP.P001g.T128",
+    "target_id": "P001-T128",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches the printed open normal interval and its coverage limit at least nominal. Variance consistency is correctly at the n scale, with positive limiting normal variance, exact normal quantile and nonnegative variance estimates. Degenerate estimated intervals at finite n have probability tending to zero and do not invalidate the coverage conclusion."
+  },
+  {
+    "theorem": "SAP.P001g.T129",
+    "target_id": "P001-T129",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains actual-product MLE consistency and an independent expected-log maximum/equality lemma, but imposes explicit compactness, expected-log continuity and unique maximum, finite logs, parameterwise a.s. positivity and a finite error envelope at every n,omega,t tending to zero in probability. The proof-sketch product/log identity, unique sample maximizer and separate pointwise WLLN conclusions are absent. The independent lemma adds support domination. These are substantive disclosed restrictions, not a derivation of the printed informal regularities."
+  },
+  {
+    "theorem": "SAP.P001g.T130",
+    "target_id": "P001-T130",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches both plug-in endpoint formulas, unbiasedness at every positive sample size and consistency under iid observable pairs. Bounded latent outcomes imply the needed finite moments; both response probabilities are positive, so the conditional mean is a genuine atom conditional mean. Sharpness is context from the companion theorem, not a further estimation conclusion here."
+  }
+]

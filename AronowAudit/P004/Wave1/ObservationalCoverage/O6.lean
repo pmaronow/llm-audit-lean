@@ -3,7 +3,7 @@ import AronowAudit.P004.Wave1.ObservationalCoverage.O2
 import AronowAudit.P004.Wave1.ObservationalCoverage.O4
 
 /-! Exact finite-sample identities for O6, with elementary helpers shared by O5, O7,
-and O8. -/
+and O8. This is a drafter file: no Lean executable was run. -/
 
 namespace AronowAudit.P004.Wave1.ObservationalCoverage
 

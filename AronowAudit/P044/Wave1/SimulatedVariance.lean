@@ -39,6 +39,9 @@ theorem printed_simulated_variance_claim_refuted : ¬ PrintedSimulatedConservati
     SimulatedVariance.n16_proof SimulatedVariance.n17_proof SimulatedVariance.n18_proof
     SimulatedVariance.n19_proof SimulatedVariance.n20_proof SimulatedVariance.n21_proof
 
+example : AronowAudit.P044.Wave1.SimulatedVariance.Target :=
+  printed_simulated_variance_claim_refuted
+
 end
 
 end AronowAudit.P044.Wave1

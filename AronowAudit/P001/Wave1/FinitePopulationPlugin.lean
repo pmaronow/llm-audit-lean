@@ -36,5 +36,7 @@ theorem finite_population_and_plugin_display_corrections
         ((∑ i ∈ Finset.range n, x i) / (n : ℝ))^2) :=
   FinitePopulationPlugin.n1_proof μ Z hZ2
 
+example : FinitePopulationPlugin.Target := finite_population_and_plugin_display_corrections
+
 end
 end AronowAudit.P001.Wave1

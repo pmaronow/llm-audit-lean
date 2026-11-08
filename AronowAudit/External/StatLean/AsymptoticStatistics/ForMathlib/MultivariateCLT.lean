@@ -1,7 +1,3 @@
-/-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
-
 import Mathlib.Probability.CentralLimitTheorem
 import Mathlib.Probability.Distributions.Gaussian.Multivariate
 import Mathlib.MeasureTheory.Measure.LevyConvergence
@@ -136,9 +132,8 @@ i.e. `Var[⟪t, X 0⟫; P] = t ⬝ᵥ S *ᵥ t` for every direction `t`.
 The covariance side-condition `hS_eq` is intentionally an external input: it
 records the user's choice of how to *name* the limit covariance (e.g. via a
 matrix of element-wise covariances, via `covarianceBilin`, etc.).  The
-positive-semidefiniteness side-condition `hS_pos` makes `S` an admissible covariance
-matrix for `multivariateGaussian`; singular and zero covariance matrices are allowed,
-so the Gaussian limit may be degenerate.
+positive-semidefiniteness side-condition `hS_pos` is the standard
+non-degeneracy requirement for `multivariateGaussian`.
 
 The proof reduces to Mathlib's 1-D CLT through the Cramér–Wold device on
 characteristic functions, closed by Lévy continuity. -/

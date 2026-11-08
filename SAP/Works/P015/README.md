@@ -1,0 +1,11 @@
+# P015: Does Regression Produce Representative Estimates of Causal Effects?
+
+P. M. Aronow and Cyrus Samii (2016). Does Regression Produce Representative Estimates of Causal Effects?. American Journal of Political Science 60(1):250–267.
+
+This entry covers 24 catalog targets through 2 internal unit(s): P015a, P015b. It exposes 24 existing proved Solution declarations.
+
+Source kind: `collected_candidate`. Counts: `{"refuted":2,"restricted":2,"whole":20}`. Restricted statements and omissions retain their original disclosures in manifest.json and TARGET-MAP.json.
+
+Use `SAP.Works.P015.Defs`, `SAP.Works.P015.Challenge`, and `SAP.Works.P015.Solution`. Challenge stubs are for statement checking; import the Solution in proof developments. The roots add no declarations and preserve every existing theorem name. Challenge and Solution are separate environments.
+
+Unit certificates and reviews are mapped in PROVENANCE.json. The combined work has not been compiled or certified; ASSURANCE.json lists its remaining checks. See ../BUILD.md for the executable replay command. Do not run the unit-only run_comparator.py on this directory.

@@ -8,7 +8,8 @@ open AronowAudit.P044
 
 noncomputable section
 
-/-- Reconstruct the full-joint identity from the joint-count hypothesis. -/
+/-- Reconstruct the full-joint identity from the new count node. This is
+deliberately independent of the source's unverified counting certificate. -/
 private theorem n12_full_joint (hN3 : N3) (i j : Fin 12) (a b : Exposure) :
     jointCount cliqueF i j a b = cliqueFullJoint i j a b := by
   unfold N3 at hN3
@@ -18,8 +19,8 @@ private theorem n12_full_joint (hN3 : N3) (i j : Fin 12) (a b : Exposure) :
     by_cases hs : i.val / 4 = j.val / 4 <;>
     simp [cliqueFullJoint, cliqueJointTable, hij, hs, hN3]
 
-/-- Reconstruct the independent conditional moments using the general
-finite-expectation identities and the marginal/joint count hypotheses. -/
+/-- Reconstruct the independent conditional moments using only the general
+finite-expectation identities and the new marginal/joint count hypotheses. -/
 theorem n12_proof : N12 := by
   intro hN2 hN3
   change ConditionalMoments

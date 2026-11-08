@@ -1,5 +1,8 @@
-/- P009 corrected normal approximation and its concrete sparse counterexample.
-Uses the licensed dependency-graph CLT through finite Bernoulli bridges. -/
+/- P009 original corrected normal approximation and its concrete sparse counterexample.
+Uses the licensed complete dependency-graph CLT through P004's verified generic
+finite Bernoulli bridges. Sparse finite witness lemmas adapt this repository's
+previously checked runs/P009/lean/fidelity/WitnessSupport.lean, with canonical imports.
+No new hypotheses, axioms or admissions are introduced. -/
 import AronowAudit.P009.P009_OutcomeCompletion
 import AronowAudit.P004.P004_SpatialCLTCompletion
 import AronowAudit.P053.P053_NormalQuantiles
@@ -438,10 +441,9 @@ theorem sparse_normal_counterexample :
         Real.sqrt (var (sparseStudy.experiment t).design (ht (sparseStudy.experiment t)))) normalCDF := by
   exact SparseCompletion.sparse_normal_counterexample_completed
 
-/-- T8, corrected normal approximation (p. 693): under Bernoulli assignment,
-original Assumption 1 with q≥2, bounded d_MAX and positive liminf of n Var(HT)
-give normal convergence after division by the true standard deviation.
-No estimated-error claim. -/
+/-- T8, corrected normal approximation (p. 693): original Assumption 1 with
+q≥2, bounded d_MAX and positive liminf of n Var(HT) give normal convergence
+after division by the TRUE standard deviation. No estimated-error claim. -/
 theorem corrected_normal_approximation (S : Study) (k q s : ℝ)
     (hReg : RegularSequence S k q s) (hBER : ∀ t, Bernoulli (S.experiment t))
     (hDegree : ∃ D, ∀ t, dMax (S.experiment t) ≤ D)
@@ -454,3 +456,5 @@ theorem corrected_normal_approximation (S : Study) (k q s : ℝ)
 end
 end AronowAudit.P009
 
+#print axioms AronowAudit.P009.sparse_normal_counterexample
+#print axioms AronowAudit.P009.corrected_normal_approximation

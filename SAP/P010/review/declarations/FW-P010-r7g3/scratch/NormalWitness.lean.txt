@@ -1,0 +1,90 @@
+import SAP.P010.Defs
+
+open MeasureTheory ProbabilityTheory Set Filter
+open SAP.P010
+open scoped ENNReal NNReal Classical Topology BigOperators
+
+namespace ReviewNormal
+
+lemma weight_sum : (4/5 : ℝ≥0∞) + 1/5 = 1 := by
+  have h : ENNReal.ofReal (4/5 : ℝ) + ENNReal.ofReal (1/5 : ℝ) = 1 := by
+    rw [← ENNReal.ofReal_add (by norm_num) (by norm_num)]
+    norm_num
+  norm_num [ENNReal.ofReal_div_of_pos] at h
+  simpa using h
+
+instance : IsProbabilityMeasure fairArmDistribution := by
+  refine ⟨?_⟩
+  norm_num [fairArmDistribution]
+  have h : ENNReal.ofReal (1/2 : ℝ) + ENNReal.ofReal (1/2 : ℝ) = 1 := by
+    rw [← ENNReal.ofReal_add (by norm_num) (by norm_num)]
+    norm_num
+  norm_num [ENNReal.ofReal_div_of_pos] at h
+  exact h
+
+lemma state_map_measurable (s : Bool) : Measurable
+    (fun ω : ℝ × Fin 2 => (![ω.1,ω.1], ![s,s], ω.2, (fun _ : Fin 0 => (0 : ℝ)))) := by
+  fun_prop
+
+lemma response_measurable : Measurable (response : Population 2 0 → ℝ) := by
+  have heval : Measurable (fun p : (Fin 2 → ℝ) × Fin 2 => p.1 p.2) :=
+    measurable_from_prod_countable_left (fun z => measurable_pi_apply z)
+  exact heval.comp (measurable_fst.prodMk (by fun_prop))
+
+lemma common_response (s : Bool) :
+    (commonOutcomePopulation s (gaussianReal 0 1)).map response = gaussianReal 0 1 := by
+  rw [commonOutcomePopulation, Measure.map_map response_measurable (state_map_measurable s)]
+  have heq :
+      (response ∘ (fun ω : ℝ × Fin 2 =>
+        (![ω.1,ω.1], ![s,s], ω.2, (fun _ : Fin 0 => (0 : ℝ))))) = Prod.fst := by
+    funext ω
+    rcases ω with ⟨y, z⟩
+    fin_cases z <;> rfl
+  rw [heq, Measure.map_fst_prod, measure_univ, one_smul]
+
+lemma common_allPass (s : Bool) :
+    commonOutcomePopulation s (gaussianReal 0 1) allPass = if s then 1 else 0 := by
+  rw [commonOutcomePopulation,
+    Measure.map_apply (state_map_measurable s) (by unfold allPass; measurability)]
+  cases s <;> simp [Set.preimage, allPass, Fin.forall_fin_two]
+
+lemma normal_probability : IsProbabilityMeasure normalCommonPopulation := by
+  haveI h1 : IsProbabilityMeasure (commonOutcomePopulation true (gaussianReal 0 1)) := by
+    unfold commonOutcomePopulation
+    infer_instance
+  haveI h0 : IsProbabilityMeasure (commonOutcomePopulation false (gaussianReal 0 1)) := by
+    unfold commonOutcomePopulation
+    infer_instance
+  refine ⟨?_⟩
+  norm_num [normalCommonPopulation]
+  simpa using weight_sum
+
+lemma normal_allPass : normalCommonPopulation allPass = 4/5 := by
+  simp only [normalCommonPopulation, Measure.add_apply, Measure.smul_apply, smul_eq_mul,
+    common_allPass]
+  norm_num
+
+lemma normal_response : normalCommonPopulation.map response = gaussianReal 0 1 := by
+  rw [normalCommonPopulation, Measure.map_add _ _ response_measurable]
+  rw [Measure.map_smul _ response_measurable.aemeasurable,
+    Measure.map_smul _ response_measurable.aemeasurable, common_response, common_response,
+    ← add_smul]
+  rw [weight_sum, one_smul]
+
+-- Independent checks of the actual counterexample's normalization, continuous
+-- Gaussian observed law, positive always-passer mass, and finite first moment.
+example : IsProbabilityMeasure normalCommonPopulation ∧
+    0 < normalCommonPopulation allPass ∧
+    noAtoms (normalCommonPopulation.map response) ∧
+    Integrable response normalCommonPopulation := by
+  refine ⟨normal_probability, by rw [normal_allPass]; norm_num, ?_, ?_⟩
+  · rw [normal_response]
+    haveI := nullSingletonClass_gaussianReal (μ := 0) (v := 1) (by norm_num)
+    exact fun x => measure_singleton x
+  · have hi : Integrable id (gaussianReal 0 1) :=
+      (memLp_id_gaussianReal (μ := 0) (v := 1) 1).integrable (by norm_num)
+    rw [← normal_response] at hi
+    exact (integrable_map_measure measurable_id.aestronglyMeasurable
+      response_measurable.aemeasurable).mp hi
+
+end ReviewNormal

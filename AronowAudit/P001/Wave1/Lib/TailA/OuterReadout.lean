@@ -2,7 +2,7 @@ import AronowAudit.P001.Wave1.Cond.CondP001cdProofs
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.WeakConvergence.OuterMapping
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.WeakConvergence.OuterSlutsky
 
-/-! Real majorant outer expectations and shifted nonnegative outer expectations. -/
+/-! Real majorant outer expectations and the shifted nonnegative donor readout. -/
 
 noncomputable section
 open MeasureTheory ProbabilityTheory Filter BoundedContinuousFunction
@@ -112,7 +112,7 @@ theorem outer_readout_eq {Ω : Type u} [MeasurableSpace Ω]
       simpa [integral_add hgi (integrable_const C), mean] using this)] at ht
     linarith
 
-/-- Shifting by the norm identifies the nonnegative outer expectation with the real outer mean. -/
+/-- The donor's norm shift gives exactly the audit's real readout. -/
 theorem outer_bcf_readout {Ω E : Type*} [MeasurableSpace Ω] [TopologicalSpace E]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (f : E →ᵇ ℝ) (X : Ω → E) :
     outerMean μ (fun ω => f (X ω)) =
@@ -121,7 +121,7 @@ theorem outer_bcf_readout {Ω E : Type*} [MeasurableSpace Ω] [TopologicalSpace 
   simpa using outer_readout_eq μ (fun ω => f (X ω)) ‖f‖ (norm_nonneg f)
     (fun ω => f.norm_coe_le_norm (X ω))
 
-/-- Testing both signs is equivalent to testing all bounded continuous functions. -/
+/-- Testing both signs is equivalent to testing all bounded continuous donor functions. -/
 theorem outer_weak_donor_iff {Ω E : Type*} [MeasurableSpace Ω]
     [PseudoMetricSpace E] [MeasurableSpace E] [BorelSpace E]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : ℕ → Ω → E)
@@ -149,8 +149,12 @@ theorem outer_weak_donor_iff {Ω E : Type*} [MeasurableSpace Ω]
         (nhds (∫ y, -f y ∂ν)) at hn
       simpa only [integral_neg, neg_neg, mean] using hn.neg
 
+/-- The literature and audit real majorant definitions coincide. -/
+theorem outer_mean_literature_eq {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (Z : Ω → ℝ) :
+    outerMean μ Z = AronowAudit.Literature.boundedOuterExpectation μ Z := rfl
 
-/-- A scalar ramp argument gives CDF convergence from the outer weak limit. -/
+/-- Reuse the retained scalar ramp argument for the audit's both-test limit. -/
 theorem outer_weak_real_CD {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : ℕ → Ω → ℝ)
     (ν : Measure ℝ) [IsProbabilityMeasure ν] (h : OuterWeakLimit μ Z ν) :
@@ -158,5 +162,21 @@ theorem outer_weak_real_CD {Ω : Type*} [MeasurableSpace Ω]
   apply AronowAudit.P001.Wave1.CondP001cd_outer_CD μ Z ν
   intro f hf hb
   exact (h f hf hb).1
+
+-- Exact library-interface checks from OUTER_READOUT in plan.json.
+example : ∀ {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : Ω → ℝ) (C : ℝ),
+    0 ≤ C → (∀ ω, |Z ω| ≤ C) →
+    outerMean μ Z =
+      (outerExpectation μ (fun ω => ENNReal.ofReal (Z ω + C))).toReal - C :=
+  @outer_readout_eq
+
+example {Ω E : Type*} [MeasurableSpace Ω] [PseudoMetricSpace E]
+    [MeasurableSpace E] [BorelSpace E] :
+    ∀ (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : ℕ → Ω → E)
+      (ν : Measure E) [IsProbabilityMeasure ν],
+      OuterWeakLimit μ Z ν ↔
+        AsymptoticStatistics.WeakConvergesOuter (fun _ => μ) Z ν :=
+  @outer_weak_donor_iff Ω E _ _ _ _
 
 end AronowAudit.P001.Wave1.TailA

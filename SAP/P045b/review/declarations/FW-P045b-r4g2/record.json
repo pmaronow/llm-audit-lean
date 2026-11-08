@@ -1,0 +1,89 @@
+[
+ {
+  "target_id": "P045-T22",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.mean_se_counterexample",
+   "AronowAudit.P045.mean_se_finite_obstruction",
+   "AronowAudit.P045.sign_mean_finite_moments"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P045.sign_mean_chebyshev",
+    "reason": "Included by the complete mean_se_counterexample assembly."
+   }
+  ],
+  "bridge": "SAP.P045b.Bridge.T22_glue",
+  "statement_definition": "SAP.P045b.T22Statement",
+  "supporting_declarations": [
+   "AronowAudit.P045.bernoulli_coordinate_expect"
+  ]
+ },
+ {
+  "target_id": "P045-T23",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.absolute_variance_consistency",
+   "AronowAudit.P045.mean_square_bound",
+   "AronowAudit.P045.nonvanishing_variance_counterexample",
+   "AronowAudit.P045.table_standard_error_comparison"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T23_glue",
+  "statement_definition": "SAP.P045b.T23Statement",
+  "supporting_declarations": [
+   "AronowAudit.P045.mean_se_counterexample",
+   "AronowAudit.P045.bernoulli_coordinate_expect"
+  ]
+ },
+ {
+  "target_id": "P045-T24",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T24",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.dilated_effect_labels",
+   "AronowAudit.P045.total_direct_indirect_identity"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T24_glue",
+  "statement_definition": "SAP.P045b.T24Statement"
+ },
+ {
+  "target_id": "P045-T25",
+  "decision": "refuted",
+  "theorem": "SAP.P045b.T25",
+  "restriction": null,
+  "rows_used": [],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P045.Wave1.bernoulli_unbiasedness_as_printed_refuted",
+    "reason": "Negation of the larger conjunction does not isolate the group assertion; its already proved N1/N2 witness facts give the direct refutation."
+   }
+  ],
+  "bridge": "SAP.P045b.Bridge.T25_glue",
+  "statement_definition": "SAP.P045b.T25Statement",
+  "supporting_declarations": [
+   "AronowAudit.P045.Wave1.BernoulliUnbiasedness.n1_proof",
+   "AronowAudit.P045.Wave1.BernoulliUnbiasedness.n2_proof"
+  ],
+  "description": "Direct refutation of the printed within-group Bernoulli unbiasedness assertion, independent of any first-stage design."
+ },
+ {
+  "target_id": "P045-T26",
+  "decision": "restricted",
+  "theorem": "SAP.P045b.T26",
+  "restriction": "Only refutes the extension to the singleton-drop software statistic on 0 < m_g < n_g. It does not refute the Hudgens–Halloran estimator on its defined domain with at least two units in each required arm, or establish the printed direct-effect variance values as values of that estimator.",
+  "rows_used": [
+   "AronowAudit.P045.Wave1.direct_variance_as_printed_refuted"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T26_glue",
+  "statement_definition": "SAP.P045b.T26Statement",
+  "description": "Failure of the guarantee extended to the package statistic that drops singleton-arm variance contributions."
+ }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "theorem": "SAP.P007.T1",
+    "target_id": "P007-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches the complete exact four-column refutation, including the counting identity for every fixed array, the integer supporting line (ordinary integer subtraction), its equality cases, the observed-total hypothesis, every numerator/denominator constant, and both loss inequalities. Sets of observed columns faithfully encode Boolean masks, without independence assumptions. The uniform sample space has choose(1205,4)>0 elements. A nonvacuous mask has 947 rows with the first 405 columns observed and 7633 rows with the first 406 observed, totaling 3482533. Independent exact arithmetic checked all 1206 supporting-line cases and all certificate constants."
+  },
+  {
+    "theorem": "SAP.P007.T2",
+    "target_id": "P007-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Includes the logged-average integer inference, fully missing removed columns, corrected missing/observed counts, rounded averages, population four-variable bound, and the exact arithmetic comparisons of the three quoted simulation estimates. It does not assert the corrected sentence's claim for every variable count six or greater; it only compares the constants at four, five and six. Nor does arithmetic on those supplied constants itself authenticate their empirical provenance, which claims.json explicitly treats as external evidence. Nonvacuity: append 19 entirely missing columns to the balanced mask specified for T1; its raw count is 7019387 and its average satisfies the exact stated tolerance (also checked in Lean)."
+  },
+  {
+    "theorem": "SAP.P007.T3",
+    "target_id": "P007-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both specified existential normalized laws are the canonical witnesses. The first has q=0, a null first prefix and an always-observed second variable; the second is fully missing and meets the assumptions for every admissible chosen q, hence also q=1/2. These refute both directions of the claimed equivalence without refuting the deletion bound. Singleton group interpretations require no extra structure. Normalization and probabilities were independently checked with exact fractions; a normalized point-law null-prefix witness also compiled in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P007.T4",
+    "target_id": "P007-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "The two laws exactly realize witnesses B and C, with first and later null prefixes, all printed assumptions, and the surviving deletion bounds. The first witness asserts s2=v*s1 for every v in [0,1], together with 1>1/2, thus exposing the unconstrained choice v=1. Both zero numerator and zero denominator are explicitly identified via survivals; no Mathlib convention assigning a conditional probability to a null event is used as the refutation. The second model has two independent nondegenerate rows and survivals 1,1/2,0,0. Exact fraction checks verify normalization, row independence and the bound for each witness."
+  },
+  {
+    "theorem": "SAP.P007.T5",
+    "target_id": "P007-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "Contains all repaired parts (a)-(e), with first-column zero endpoint, sure initial prefix, recursion and propagation at null prefixes, explicit zero-coefficient convention, product formula, row survival bound and final product/lower bound. Only the final product and deletion lower bound require row independence, as the canonical claim specifies. All dimensions are positive. General normalized all-missing point laws meet the hypotheses for every 0<=q<1; their construction and observation bound compiled without sorry. The coefficient convention is the stated repair, not a hidden assumption about an undefined conditional probability."
+  },
+  {
+    "theorem": "SAP.P007.T6",
+    "target_id": "P007-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches the corrected finite Bernoulli inequalities, probability sandwich and complement estimate, separate q=0 endpoint, and exponential identity only on the positive-logarithm domain. The final cardinality gives the explicit n groups of two variables: Fin n indexes groups and Fin n x Fin 2 indexes variables, with 2n!=n for n>0. No superlogarithmic assumption belongs to this finite target. Point-law models establish satisfiability; n=h=1,q=1/2 is one concrete instance."
+  },
+  {
+    "theorem": "SAP.P007.T7",
+    "target_id": "P007-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "Covers the equality/rounding counterexample, both printed n=10000 examples with equal-model attainment, and all three unequal-probability upper-guarantee counterexamples. Existence of normalized laws is in the conclusion, with the full factorized cell weights, rather than an assumption of existence or of the counterexample's numerical conclusion. Thresholds use valid logarithm/root arguments. Exact rational intervals independently certify B(33)<1/2<B(34) and B(952)<1/2<B(953), including the close 953 comparison. Small-model fractions and the Bernoulli lower estimate exceeding 99/100 are also independently checked. Product weights normalize by finite distributivity."
+  },
+  {
+    "theorem": "SAP.P007.T8",
+    "target_id": "P007-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "Contains the full natural-index monotonicity and range, unique nonnegative real inverse, integer comparison equivalences, floor maximum/ceiling minimum with endpoint attainment, integer/noninteger alternatives, guarantees for all admissible laws, and attaining equal models at every positive k (in particular below threshold). The worked values and an actual-probability upper-guarantee counterexample are included. Positive n,q,a hypotheses are the canonical logarithmic domain; natural floor's truncation plays no role because the threshold is positive. The product-law models construct all required existential witnesses. Numerical intervals independently verified both worked rounding intervals."
+  },
+  {
+    "theorem": "SAP.P007.T9",
+    "target_id": "P007-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The exact four-cell independent model is specified by its weights, not by its conclusions. All canonical row probabilities, expectations, the least possible q bound, and the distinction between 7/16, 49/256 and actual p_all=25/64 are asserted. DeletedFraction counts deleted rows, not missing cells. n=2 gives a positive denominator. Enumeration with exact fractions verifies a normalized model, independence, survivals 3/4 and 3/8, expected deleted fraction 5/8 and p_all=25/64."
+  },
+  {
+    "theorem": "SAP.P007.T10",
+    "target_id": "P007-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Preserves the expectation formulas and sharp lower bound without row independence, includes attaining independent-cell models for every 0<=q<1, and gives the exact algebraic relation between the two bounds. Relative to the canonical claim's final unqualified sentence that coincidence occurs only for n=1, the equivalence is qualified by 0<q<1; the statement explicitly gives the omitted endpoint as both bounds equal to one for every positive n,k when q=0. This qualification is necessary: n=2,k=1,q=0 refutes the unqualified sentence. Nonvacuity includes every equal-cell product model, including the endpoint all-missing model; positive dimensions guard both fractions."
+  },
+  {
+    "theorem": "SAP.P007.T11",
+    "target_id": "P007-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches both the general row-specific product under independence alone and the exact independent, nonidentical two-row witness satisfying observationBound 1/2. sameRowLaw tests every row event, so its negation genuinely denies identical row distributions. The unequal survivals 1/4 and 1/2 certify that negation. Enumeration independently gives normalized weight, p_all=3/8 and the lower bound 1/4. No identical-law hypothesis or hidden within-row independence is imposed on the general product assertion."
+  },
+  {
+    "theorem": "SAP.P007.T12",
+    "target_id": "P007-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "Includes the full arbitrary-mask identity with n,K>0 and d>=0, the strict retained-average bound from the printed rounding interval, and every corrected-average/overstatement fraction under the logged missing count. Choosing removed columns as a sum-type block merely labels the selected columns and loses no arrays. All denominator factors are positive; A-nd is real subtraction and the counted identity ensures no negative missing counts. The balanced mask from T1 with 19 fully missing appended columns satisfies both specialized antecedents. All specialized arithmetic was independently checked exactly."
+  },
+  {
+    "theorem": "SAP.P007.T14",
+    "target_id": "P007-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the finite Lemma 3 for positive row/column counts, full mutual row independence and the printed positive-prefix conditional observation bound, including q=0. Every probability law of finitely many binary indicators is represented by its finite joint weights, so using Law on the array type adds no restriction on the original probability space. General all-missing point laws and independent equal-cell product laws satisfy the hypotheses; the latter attain the bound."
+  },
+  {
+    "theorem": "SAP.P007.T15",
+    "target_id": "P007-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the finite group-indicator version of Lemma 3, with g>0 and Assumptions 6/7. The canonical claim explicitly permits the common binary-indicator formulation without separately modelling group members. Every grouped array induces these indicators, and singleton groups realize any such indicator array; all-variable completeness is exactly all group indicators false. Finite joint weights do not restrict the distribution. Normalized point laws and product laws give nonvacuous examples."
+  },
+  {
+    "theorem": "SAP.P007.T16",
+    "target_id": "P007-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly Proposition 5 with arbitrary changing joint laws, positive k(n) for positive n, one fixed 0<=q<1 for all n, per-n mutual row independence, and k(n)/log n tending to positive infinity. A law at n=0 is harmless: Array 0 (k 0) is a singleton and every positive-index family extends to it, while finite initial terms cannot affect the limit. The limit is ordinary convergence to 1. scratch/Check.lean constructs all-missing laws for k(n)=n*n+1 and fixed q=1/2 and proves the full superlogarithmic hypothesis, without sorry. The general bound 0<=1-D_n<=n*q^k(n) yields the claimed limit, treating q=0 separately."
+  },
+  {
+    "theorem": "SAP.P007.T17",
+    "target_id": "P007-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly Proposition 10 with g(n) replacing k(n), arbitrary changing group-indicator laws, and one fixed observation bound, including zero. No unprinted identical-distribution or cross-group independence assumption appears. Group sizes are immaterial and the canonical note permits the shared indicator formulation. The n=0 extension and finite initial logarithm conventions do not restrict positive-index probability models or the limit. The compiled quadratic positive dimension sequence with all-missing point laws and fixed q=1/2 establishes joint satisfiability of all assumptions."
+  }
+]

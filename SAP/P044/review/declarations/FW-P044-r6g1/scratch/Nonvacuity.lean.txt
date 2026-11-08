@@ -1,0 +1,150 @@
+import SAP.P044.Challenge
+
+open SAP.P044 Finset MeasureTheory ProbabilityTheory
+open scoped BigOperators
+
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+namespace AuditP044
+
+noncomputable section
+
+def coin : FiniteDesign Bool where
+  mass := fun _ => 1/2
+  nonneg := by intro s; norm_num
+  total := by norm_num [Fintype.sum_bool]
+
+def productCoin : FiniteDesign (Bool × Bool) where
+  mass := fun _ => 1/4
+  nonneg := by intro s; norm_num
+  total := by norm_num [Fintype.sum_prod_type, Fintype.sum_bool]
+
+def coinExposure : Bool → Fin 1 → Bool := fun s _ => s
+def coinOutcome : Fin 1 → Bool → ℝ := fun _ d => if d then 2 else -1
+def bankWeight : Bool → Fin 1 → Bool → ℝ := fun _ _ _ => 3/4
+def bankJoint : Bool → Fin 1 → Fin 1 → Bool → Bool → ℝ :=
+  fun _ _ _ d e => if d = e then 3/4 else 0
+
+-- Every hypothesis of the exact-input T2 and support-unbiasedness T4 clauses,
+-- plus every hypothesis of W1ErrorTransfer, holds on explicit nonzero data.
+example :
+    0 < (1 : ℕ) ∧ (true : Bool) ≠ false ∧
+    (∀ i, 0 < marginal coin.mass coinExposure i true) ∧
+    (∀ i, 0 < marginal coin.mass coinExposure i false) ∧
+    (∀ s, ∑ t, productCoin.mass (t, s) = coin.mass s) ∧
+    (∀ t i d, 0 < bankWeight t i d) ∧
+    (∀ t i j d e, 0 ≤ bankJoint t i j d e) ∧
+    (∀ t i d, bankJoint t i i d d = bankWeight t i d) := by
+  norm_num [marginal, coin, coinExposure, productCoin, Fintype.sum_bool,
+    bankWeight, bankJoint]
+
+-- The common support in the preceding example is genuinely nonempty.
+example : (commonSupport coin.mass coinExposure true false).Nonempty := by
+  refine ⟨0, ?_⟩
+  norm_num [commonSupport, marginal, coin, coinExposure, Fintype.sum_bool]
+
+def singletonDesign : FiniteDesign Unit where
+  mass := fun _ => 1
+  nonneg := by intro s; norm_num
+  total := by simp
+
+def zeroSupportExposure : Unit → Fin 1 → Bool := fun _ _ => false
+def zeroSchedule : Fin 1 → Bool → ℝ := fun _ _ => 0
+def changedSchedule : Fin 1 → Bool → ℝ := fun i d =>
+  if i = 0 ∧ d = true then zeroSchedule i d + 4 else zeroSchedule i d
+
+-- T4(b): the zero-support premise is satisfiable, the changed outcome stays
+-- unobserved, and the two targets really differ by the nonzero delta/N.
+example :
+    0 < (1 : ℕ) ∧ (true : Bool) ≠ false ∧ (4 : ℝ) ≠ 0 ∧
+    marginal singletonDesign.mass zeroSupportExposure 0 true = 0 ∧
+    (∀ s i, zeroSchedule i (zeroSupportExposure s i) =
+      changedSchedule i (zeroSupportExposure s i)) ∧
+    tau changedSchedule true false - tau zeroSchedule true false = 4 := by
+  norm_num [marginal, singletonDesign, zeroSupportExposure, zeroSchedule,
+    changedSchedule, tau, Fin.sum_univ_succ]
+
+-- T1's actual probability laws are normalized, not arbitrary signed weights.
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "generic premises\n"
+def cliqueLaw : FiniteDesign (Fin 66) where
+  mass := fun _ => 1/66
+  nonneg := by intro s; norm_num
+  total := by norm_num [Finset.sum_const]
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "clique design\n"
+
+-- There are 66^2 independent pairs and 66*65 distinct pairs in the included law.
+example : (1/4356 : ℚ) = 1/(66*66) ∧ (1/4290 : ℚ) = 1/(66*65) := by norm_num
+
+-- T1: representative actual counts and an actual retained row.
+example : exposureCount cliqueF 0 .d01 = 27 ∧
+    exposureCount cliqueF 0 .d00 = 28 := by decide +kernel
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "clique counts\n"
+
+example : retainedAssignments 0 0 ≠ cliqueAssignments 0 := by decide +kernel
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "retained row\n"
+
+-- T2: the smallest exhaustive matching bank has supported contrasted exposures
+-- and already gives a genuine finite-input variance shortfall.
+example : w1MatchingR 0 = 4 ∧ w1MatchingN 0 = 6 := by decide
+
+example : Function.Injective (w1MatchingAssignments 0) ∧
+    (∀ i, 0 < marginal w1Uniform (w1MatchingF 0) i .d11 ∧
+      0 < marginal w1Uniform (w1MatchingF 0) i .d00) := by native_decide
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "matching support\n"
+
+example :
+    let e : Equiv.Perm (Fin (w1MatchingR 0)) := Equiv.refl _
+    expect w1Uniform (w1MatchingT 0 e) = 0 ∧
+    designVariance w1Uniform (w1MatchingT 0 e) = 25/81 ∧
+    expect w1Uniform (w1MatchingV 0 e) = 85/324 ∧
+    expect w1Uniform (w1MatchingV 0 e) <
+      designVariance w1Uniform (w1MatchingT 0 e) := by native_decide
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "matching moments\n"
+
+-- T3: full witness support, equal observations, distinct targets, and protected
+-- divisions, without using any Challenge theorem.
+example :
+    (∀ i, ∃ j, starAdj i j = true) ∧
+    Function.Injective starAssignments ∧
+    (∀ z : Assignment 4, (Finset.univ.filter (fun i => z i)).card = 2 ↔
+      ∃ r : Fin 6, starAssignments r = z) ∧
+    (∀ r i, starA i (exposure starAdj (starAssignments r) i) =
+      starB i (exposure starAdj (starAssignments r) i)) ∧
+    (∀ r i a, exposure starAdj (starAssignments r) i = a →
+      0 < marginal (fun _ : Fin 6 => (1/6 : ℚ))
+        (fun r => exposure starAdj (starAssignments r)) i a) ∧
+    tau starA .d11 .d00 = 0 ∧ tau starB .d11 .d00 = -1 := by native_decide
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "star\n"
+
+-- T4(d): a nontrivial graph satisfies every complete-randomization assumption.
+example : 0 < (4 : ℕ) ∧ 1 ≤ (2 : ℕ) ∧ (2 : ℕ) ≤ 4 - 1 ∧
+    (∀ i j, starAdj i j = starAdj j i) ∧
+    (∀ i, starAdj i i = false) ∧ (∀ i, 1 ≤ degree starAdj i) := by native_decide
+
+-- T5: the Gaussian product is a probability measure; the actual finite
+-- triangle data have the stated scale and an interior negative-baseline point.
+example : IsProbabilityMeasure normalPair := by
+  unfold normalPair
+  infer_instance
+
+example : ∀ i : Fin 3,
+    degree (fun i j => decide (i ≠ j)) i = 2 ∧
+    twoWalkDegree (fun i j => decide (i ≠ j)) i = 2 ∧
+    degreeScale (fun i j => decide (i ≠ j)) i = 8 := by native_decide
+
+example : (0 : ℝ) ≤ 8 ∧ |(1/64 : ℝ)| < 1 / (4 * (8+1)) ∧
+    (-1 : ℝ) < -3/4 ∧ (-3/4 : ℝ) < -1/2 ∧
+    baseline 8 (1/64) (-3/4) = -5/8 ∧ baseline 8 (1/64) (-3/4) < -1/4 := by
+  norm_num [baseline, abs_of_pos]
+
+end
+end AuditP044
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "complete\n"

@@ -1,20 +1,13 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.ComputationalStatistics.Core.Defs
 import AronowAudit.External.StatLean.Bayesian.ForMathlib.MultinomialDist
 import Mathlib.MeasureTheory.Constructions.Pi
-
-
 
 /-!
 # Category counts of i.i.d. categorical draws are multinomial
 
 The bridge between sampling (i.i.d. index draws) and counting (the multinomial
-law): for a nonnegative vector `q` whose entries sum to one, if `A₁, …, Aₙ` are
-i.i.d. `categorical q` on `Fin m`, then the count vector `V_j = #{i | Aᵢ = j}`
-has the multinomial distribution `ℳ_m(n; q)`.
+law): if `A₁, …, Aₙ` are i.i.d. `categorical q` on `Fin m`, then the count
+vector `V_j = #{i | Aᵢ = j}` has the multinomial distribution `ℳ_m(n; q)`.
 
 * `categoricalCounts` — the count statistic of an index sample;
 * `map_categoricalCounts_pi` — the bridge
@@ -23,8 +16,10 @@ has the multinomial distribution `ℳ_m(n; q)`.
   `StatLean.Bayesian.ForMathlib.MultinomialDist` construction (reused, not
   reproved).
 
-This identifies `StatLean.Bayesian.multinomialKernel` with the law of category counts
-in i.i.d. sampling. Efron bootstrap counts correspond to `q = (1/n, …, 1/n)`.
+This is the missing link (noted absent in the 2026-08-10 survey) between
+`StatLean.Bayesian.multinomialKernel` and any i.i.d.-sampling representation;
+the Efron bootstrap-counts representation in
+`Resampling/BootstrapMoments.lean` is the `q = (1/n, …, 1/n)` case.
 
 **Reference.** James E. Gentle, *Elements of Computational Statistics*, Springer,
 2002 (ISBN 0-387-95489-9), ch. 4 p. 84 (the resampling vector `nP*` "has an
@@ -37,11 +32,12 @@ n-variate multinomial distribution with parameters `n` and `(1/n, …, 1/n)`"),
   equality reduces to singletons; the left singleton mass is a sum over the
   fiber `{a | counts a = v}`, of constant value `∏ⱼ qⱼ^{vⱼ}`, and the fiber
   has cardinality `Nat.multinomial univ v` — a finite combinatorial count.
-* The simplex hypotheses ensure this identity between probability laws. Off the
-  simplex, `multinomialWeight` is defined to be `0`, while the count pushforward
-  has total mass `(∑ⱼ max(qⱼ, 0))ⁿ`. For `n > 0` it is nonzero exactly when some
-  weight is positive; in particular, it is zero for `q = 0`. For `n = 0`, the
-  pushforward is the unit point mass at the zero count vector for every `q`.
+* The simplex hypotheses are genuinely needed: `multinomialWeight` hard-codes
+  the off-simplex junk value `0`, while the pushforward is a nonzero measure
+  for any nonnegative `q`.
+* `categoricalCounts` deliberately coexists with the random-variable-level
+  `StatLean.HypothesisTesting.multinomialCount` (Pearson χ² lane, concept
+  layer, not importable here); this one is a pure data-level statistic.
 
 **Bibliographic comments.** The multinomial law of category counts is
 classical (de Moivre); the resampling-vector formulation is Efron, "Bootstrap
@@ -278,7 +274,6 @@ private theorem prod_eval_eq_prod_pow (q : Fin m → ℝ) (a : Fin n → Fin m) 
   rfl
 
 /-- **Counts of i.i.d. categorical draws are multinomial** (ECS ch. 4, p. 84):
-for a nonnegative weight vector `q` with entries summing to one,
 the pushforward of `(categorical q)^{⊗n}` under the count statistic is the
 multinomial law `ℳ_m(n; q)` of `StatLean.Bayesian.multinomialKernel`. -/
 theorem map_categoricalCounts_pi {q : Fin m → ℝ}

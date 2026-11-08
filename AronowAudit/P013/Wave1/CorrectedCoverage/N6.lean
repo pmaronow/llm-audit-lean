@@ -10,8 +10,7 @@ open scoped BigOperators Topology NNReal ENNReal
 
 noncomputable section
 
-/-- The P013 and P053 definitions give the same standard Gaussian CDF
-and the same infimum quantile. -/
+/-- The two dossiers use the same standard Gaussian and the same infimum quantile. -/
 theorem n6_proof : N6 := by
   letI : MeasureTheory.NullSingletonClass (ProbabilityTheory.gaussianReal 0 1) :=
     ProbabilityTheory.nullSingletonClass_gaussianReal (by norm_num : (1 : ℝ≥0) ≠ 0)

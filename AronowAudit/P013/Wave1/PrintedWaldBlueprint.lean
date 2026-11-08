@@ -1,25 +1,32 @@
 import AronowAudit.P013.Wave1.CorrectedCoverageBlueprint
 
 /-!
-# P013-T18: refutation of printed Proposition 6.2
+# Blueprint: P013-T18, refutation of printed Proposition 6.2
 
-The printed claim asserts liminf Wald coverage `≥ 1-α` under nesting, standing positivity,
-all-exposure Condition 3, literal Condition 5 and Condition 6. `Target` is its exact negation.
+Wave 1, group P011-P013. The frozen record `AronowAudit.P013.printed_wald_coverage` asserts
+liminf Wald coverage `≥ 1-α` under nesting, standing positivity, all-exposure Condition 3,
+literal Condition 5 and Condition 6. `Target` is its exact negation.
 
-The witness is defined at every population size `N = n+1`: units `2b, 2b+1` share
-randomization coordinate `b`; the `⌈N/2⌉` coordinates are independent draws from the
-four-atom pair law `(ε,q,q,ε)` on `00,01,10,11`, `ε = 1/max(4,N)²`, `q = 1/2-ε`
-(`pairAtomDesign`). Unit `i` takes the first or second bit of its coordinate
-(`pairExposure`), so at odd `N` the last unit uses only the first bit of its own coordinate
-(an independent fair singleton). Potential outcomes are `+1` at even and `-1` at odd
-zero-based unit index at both exposures. At even `N ≥ 4` this is the paired witness
-`pairedDesign (N/2)` (here `max 4 N = N`); the product support is relabelled by `Fin`
-(`relabelDesign`). Small sizes `N ≤ 3` use the same positive law.
+Witness (mapper P013-T18, accepted by both referees), defined below at every population
+size `N = n+1`: units `2b, 2b+1` share randomization coordinate `b`; the `⌈N/2⌉`
+coordinates are independent draws from the four-atom pair law `(ε,q,q,ε)` on
+`00,01,10,11`, `ε = 1/max(4,N)²`, `q = 1/2-ε` (`pairAtomDesign`); unit `i` takes the
+first or second bit of its coordinate (`pairExposure`), so at odd `N` the last unit uses only
+the first bit of its own coordinate (an independent fair singleton). Potential outcomes are
+`+1` at even and `-1` at odd zero-based unit index at both exposures. At even `N ≥ 4` this is
+exactly the paired witness `pairedDesign (N/2)` (here `max 4 N = N`); the product support is
+relabelled by `Fin` (`relabelDesign`). Small sizes `N ≤ 3` use the same law (any positive
+law is admissible there).
 
-The even-size CLT follows from the general HT CLT `CorrectedCoverage.N5`, applied to the
-witness (which satisfies comparison C3, genuine C5 and C6) and restricted to the cofinal
-indices `n = 2k+3`. The finite-design and normal-limit statements `CorrectedCoverage.N1`–`N7`
-provide the common probability infrastructure.
+Departure from the mapper's node list (decided by the blueprint architect): the even-size
+CLT is obtained from the general HT CLT `CorrectedCoverage.N5` applied to the witness itself
+(it satisfies comparison C3, genuine C5 and C6) and restricted to the cofinal indices
+`n = 2k+3`, instead of a separate pair-score CLT. No mathematics changes.
+
+Writers: prove `theorem nk_proof : Nk` in `AronowAudit/P013/Wave1/PrintedWald/Nk.lean`.
+Shared nodes `CorrectedCoverage.N1`–`N7` are proved in `AronowAudit/P013/Wave1/CorrectedCoverage/`.
+Do not use the drafts `paired_finite_identities`, `paired_asymptotic_counterexample` or
+`printed_wald_coverage` (they are unproved drafts).
 -/
 
 set_option autoImplicit false
@@ -70,13 +77,13 @@ def wExperiment (n : ℕ) : Experiment (n + 1) where
   design := wDesign n
   population := wPop n
 
-/-- **N1.** Every marginal exposure probability is `1/2`, including fair singletons.
-This follows from `pi_relabel`, `replicate_marginal` and the four-atom computation
-as in `paired_pi`. -/
+/-- **Node N1** (paper proof T18, "Every unit has marginal probability epsilon_m+q_m=1/2 for
+either label, as do the fair singletons"): every marginal exposure probability is `1/2`.
+Use `pi_relabel`, `replicate_marginal` and the four-atom computation as in `paired_pi`. -/
 def N1 : Prop := ∀ (n : ℕ) (i : Fin (n + 1)) (d : Fin 2), pi (wPop n) i d = 1 / 2
 
-/-- The witness sequence is parametrised by a proof of N1 for its positivity
-fields. Treated label `1`, control label `0`. -/
+/-- The witness sequence. The positivity fields are filled from node N1, so the sequence is
+parametrised by a proof of N1 (proof-irrelevant). Treated label `1`, control label `0`. -/
 def wSeq (h : N1) : ExperimentSequence where
   experiment := wExperiment
   treated _ := (1 : Fin 2)
@@ -92,7 +99,7 @@ def wSeq (h : N1) : ExperimentSequence where
 /-- Genuine dependency graph: same coordinate (includes the diagonal). -/
 def wGraph (n : ℕ) (i j : Fin (n + 1)) : Bool := decide (i.val / 2 = j.val / 2)
 
-/-- The event "every pair is split" (`A_N`), on the relabelled support. -/
+/-- The event "every pair is split" (`A_N` of the paper proof), on the relabelled support. -/
 def wSplit (n : ℕ) (z : Fin (wSupport n)) : Prop :=
   ∀ i j : Fin (n + 1), i.val / 2 = j.val / 2 → i ≠ j →
     (wPop n).exposure z i ≠ (wPop n).exposure z j
@@ -102,72 +109,75 @@ even size `N = 2k+4`. -/
 def evenRatio (k : ℕ) : ℝ :=
   (8 - 2 / pairSplitProbability (2 * k + 4)) / (8 * pairSplitProbability (2 * k + 4))
 
-/-!
-## Printed coverage statement -/
+/-! ## Frozen target -/
 
-/-- **Target (P013-T18).** Negation of printed Proposition 6.2
-(p. 1926; Appendix A.7, p. 1943). -/
+/-- **Target (P013-T18).** The exact negation of the frozen printed contract
+`printed_wald_coverage` (Proposition 6.2 as printed, p. 1926; Appendix A.7, p. 1943). -/
 def Target : Prop :=
   ¬ ∀ S : ExperimentSequence, NestedPopulationSetup S → StandingPositivity S →
       Condition3 S → Condition5Printed S → Condition6 S →
         ∀ α : ℝ, 0 < α → α < 1 → 1 - α ≤ liminf (seqCoverage S α) atTop
 
-/-- The explicit witness statement is stronger than `Target`: it also includes
-genuine Condition 5 as a property of the witness. -/
+/-- The mapper's explicit witness statement (stronger than `Target`; it also records the
+genuine Condition 5, which is a property of the witness, not an added premise). -/
 def Witness : Prop :=
   ∃ S : ExperimentSequence, NestedPopulationSetup S ∧ StandingPositivity S ∧ Condition3 S ∧
     Condition5Printed S ∧ Condition5Genuine S ∧ Condition6 S ∧
     liminf (seqCoverage S (1 / 2 : ℝ)) atTop < (1 / 2 : ℝ)
 
-/-!
-## Supporting statements (N1 appears before `wSeq`) -/
+/-! ## Nodes (N1 is stated above, before `wSeq`) -/
 
-/-- **N2.** The same-coordinate graph is a genuine dependency graph with row bound 2.
-Separated disjoint unit sets depend on disjoint independent pair/singleton coordinates.
-The proof uses `probability_relabel`, `coordinate_population_genuine_dependency`
-(with index `wIndex n`) and the counting argument of `paired_row_bound`. -/
+/-- **Node N2** (paper proof T18, "A genuine graph connects exactly units sharing a pair and
+includes the diagonal ... Separated disjoint unit sets depend on disjoint independent
+pair/singleton coordinates"): the same-coordinate graph is a genuine dependency graph with
+row bound 2. Use `probability_relabel` and `coordinate_population_genuine_dependency`
+(index `wIndex n`), and the counting argument of `paired_row_bound`. -/
 def N2 : Prop :=
   ∀ n : ℕ, GenuineDependency (wDesign n) (wPop n).exposure (wGraph n) ∧ RowBound (wGraph n) 2
 
-/-- Score of coordinate `b`: `4(Z_first - Z_second)` for a full pair
-(units `2b, 2b+1`), and `2(2Z_first - 1)` for the odd singleton (unit `2b` alone). -/
+/-- Score of coordinate `b`: `4(Z_first - Z_second)` for a full pair (units `2b, 2b+1`, the
+paper's `T_b = 4(Z_a - Z_b)`), and `2(2Z_first - 1)` for the odd singleton (unit `2b` alone). -/
 def coordScore (n : ℕ) (b : Fin (wCoords n)) (a : Fin 4) : ℝ :=
   if 2 * b.val + 1 < n + 1 then
     4 * (((pairExposure a false).val : ℝ) - ((pairExposure a true).val : ℝ))
   else 2 * (2 * ((pairExposure a false).val : ℝ) - 1)
 
-/-- **N3.** With all marginals `1/2` (N1), `N τ̂_N` is the sum of the coordinate
-scores of the underlying product assignment. A full pair has score `4(Z_a-Z_b)`;
-an independent odd singleton has score `2(2Z-1)`. -/
+/-- **Node N3** (paper proof T18, "For a pair a,b with outcomes +1,-1, the HT
+difference-of-totals score is T_b=4(Z_a-Z_b) ... The independent odd singleton has score
+2(2Z-1)"): with all marginals `1/2` (N1), `N τ̂_N` is the sum of the coordinate scores of the
+underlying product assignment. -/
 def N3 : Prop :=
   N1 → ∀ (n : ℕ) (z : Fin (wSupport n)),
     ((n : ℝ) + 1) * htEffect (wPop n) 1 0 z = ∑ b, coordScore n b ((wEquiv n).symm z b)
 
-/-- **N4.** The variance of a sum of coordinate functions under an independent
-product design is the sum of the coordinate variances, by `replicate_marginal`,
-`replicate_pair_marginal` and `covariance_sum_sum`. -/
+/-- **Node N4** (paper proof T18, "Distinct blocks are independent"; generic): the variance of
+a sum of coordinate functions under an independent product design is the sum of the
+coordinate variances. Use `replicate_marginal`, `replicate_pair_marginal`,
+`covariance_sum_sum`. -/
 def N4 : Prop :=
   ∀ {Ω : Type} [Fintype Ω] (P : Design Ω) (R : ℕ) (g : Fin R → Ω → ℝ),
     variance (replicateDesign P R) (fun zs => ∑ r, g r (zs r)) = ∑ r, variance P (g r)
 
-/-- **N5.** The exact true variance at every size satisfies
-`N²V_N = 16⌊N/2⌋t + 4(N mod 2)`, with `t = pairSplitProbability (max 4 N)`.
-This follows from N1, N3, N4, `expectation_relabel`, and the four-atom moments
-of a full pair (`pair_score_moments`) and of the singleton bit. -/
+/-- **Node N5** (paper proof T18, "E T_b=0 and Var(T_b)=16t_m ... variance 4. Thus for N>=4
+V_N=Var(tauhat_N)=(16r t_m+4s)/N^2"): exact true variance at every size,
+`N²V_N = 16⌊N/2⌋t + 4(N mod 2)` with `t = pairSplitProbability (max 4 N)`. From N1, N3, N4,
+`expectation_relabel` and the four-atom moments of a full pair (`pair_score_moments`) and of
+the singleton bit. -/
 def N5 : Prop :=
   N1 → N3 → N4 → ∀ n : ℕ,
     ((n : ℝ) + 1) ^ 2 * variance (wDesign n) (htEffect (wPop n) 1 0) =
       16 * (((n + 1) / 2 : ℕ) : ℝ) * pairSplitProbability (max 4 (n + 1)) +
         4 * (((n + 1) % 2 : ℕ) : ℝ)
 
-/-- **N6.** The limit `N V_N → 8` gives Condition 6 with `c = 8` along every size. -/
+/-- **Node N6** (paper proof T18, "N V_N=(16r t_m+4s)/(2r+s)->8"): the elementary limit
+giving Condition 6 with `c = 8` along every size. -/
 def N6 : Prop :=
   Tendsto (fun n : ℕ => (16 * (((n + 1) / 2 : ℕ) : ℝ) * pairSplitProbability (max 4 (n + 1)) +
       4 * (((n + 1) % 2 : ℕ) : ℝ)) / ((n : ℝ) + 1)) atTop (𝓝 8)
 
-/-- **N7.** At even sizes `N = 2k+4` (index `n = 2k+3`), distinct units
-in a pair have same-exposure joint ε_N and cross-exposure joint q_N.
-Joints between pairs are 1/4, as in `paired_joint`. -/
+/-- **Node N7** (paper proof T18, "For distinct units in a pair the same-exposure joint is
+epsilon_N and the cross-exposure joint is q_N. Joints between pairs are 1/4"), at the even
+sizes `N = 2k+4` (index `n = 2k+3`). Compare `paired_joint`. -/
 def N7 : Prop :=
   ∀ (k : ℕ) (i j : Fin (2 * k + 3 + 1)) (d e : Fin 2), i ≠ j →
     jointPi (wPop (2 * k + 3)) i j d e =
@@ -175,34 +185,34 @@ def N7 : Prop :=
         (if d = e then pairEpsilon (2 * k + 4) else 1 / 2 - pairEpsilon (2 * k + 4))
       else 1 / 4
 
-/-- **N8.** On the all-split event at `N = 2k+4`, expression (7) consists of its
-diagonal terms. Each unit realizes exactly one label and `(1-1/2)/(1/2)^2=2`.
-Same-pair terms vanish on this event; distinct-pair covariance numerators vanish.
-The identity follows by finite algebra from N1 and N7. -/
+/-- **Node N8** (paper proof T18, "The combined diagonal variance terms are 2N, because each
+unit realizes exactly one of the two labels and (1-1/2)/(1/2)^2=2"; pair terms vanish on the
+all-split event, and distinct-pair numerators vanish): expression (7) on the split event at
+`N = 2k+4`. Pure finite algebra from N1 and N7. -/
 def N8 : Prop :=
   N1 → N7 → ∀ (k : ℕ) (z : Fin (wSupport (2 * k + 3))), wSplit (2 * k + 3) z →
     ∀ d : Fin 2, varianceHT (wPop (2 * k + 3)) d z =
       2 * ∑ i, indicator (wPop (2 * k + 3)).exposure i d z
 
-/-- **N9.** The `Â₂` corrections of (11) vanish at every assignment at `N = 2k+4`,
-since ε_N > 0. -/
+/-- **Node N9** (paper proof T18, "Same-exposure off-diagonal zero corrections vanish because
+epsilon_N>0"): the `Â₂` corrections of (11) vanish at every assignment, `N = 2k+4`. -/
 def N9 : Prop :=
   N7 → ∀ (k : ℕ) (z : Fin (wSupport (2 * k + 3))) (d : Fin 2),
     correctionA2 (wPop (2 * k + 3)) d z = 0
 
-/-- **N10.** On the all-split event at `N = 2k+4`, the positive-joint part of
-expression (10) equals `r(1/q_N - 4)`, with `r = k+2` pairs. Each split pair
-contributes one observed ordered (1,0) covariance term. Finite algebra from N1 and N7. -/
+/-- **Node N10** (paper proof T18, "If it is split, there is one observed ordered (1,0)
+covariance term (-4+1/q_N)"): the positive-joint part of expression (10) on the split
+event at `N = 2k+4` equals `r(1/q_N - 4)`, `r = k+2` pairs. Pure finite algebra (N1, N7). -/
 def N10 : Prop :=
   N1 → N7 → ∀ (k : ℕ) (z : Fin (wSupport (2 * k + 3))), wSplit (2 * k + 3) z →
     (∑ i, ∑ j ∈ univ.erase i, if 0 < jointPi (wPop (2 * k + 3)) i j 1 0 then
         pairTerm (wPop (2 * k + 3)) i j 1 0 z else 0) =
       ((k : ℝ) + 2) * (1 / (1 / 2 - pairEpsilon (2 * k + 4)) - 4)
 
-/-- **N11.** The zero-joint correction subtracted in expression (10) equals
-`N = 2k+4` at every assignment. Same-unit cross-exposure joints are zero and
-distinct-unit cross-exposure joints are positive; each diagonal correction is
-`I_1 y_1^2/(2π_1)+I_0 y_0^2/(2π_0)=1`. -/
+/-- **Node N11** (paper proof T18, "The diagonal covariance correction is -N, because
+I_1 y_1^2/(2pi_1)+I_0 y_0^2/(2pi_0)=1 per unit"; "A same-unit cross-exposure joint is
+zero", "no distinct-unit cross-exposure joint is zero"): the zero-joint part of expression
+(10) equals `N = 2k+4` at every assignment. -/
 def N11 : Prop :=
   N1 → N7 → ∀ (k : ℕ) (z : Fin (wSupport (2 * k + 3))),
     (∑ i, ∑ j, if jointPi (wPop (2 * k + 3)) i j 1 0 = 0 then
@@ -212,15 +222,16 @@ def N11 : Prop :=
             (2 * pi (wPop (2 * k + 3)) j 0) else 0) =
       2 * (k : ℝ) + 4
 
-/-- **N12.** A finite union bound over coordinates gives `P(A_Nᶜ) ≤ r·2ε_N = 1/N`,
-using `probability_relabel` and `replicate_marginal`. -/
+/-- **Node N12** (paper proof T18, "A union bound gives P(A_N^c)<=r*2epsilon_N=1/N"). Use
+`probability_relabel`, a finite union bound over coordinates and `replicate_marginal`. -/
 def N12 : Prop :=
   ∀ k : ℕ, probability (wDesign (2 * k + 3)) (fun z => ¬ wSplit (2 * k + 3) z) ≤
     1 / (2 * (k : ℝ) + 4)
 
-/-- **N13.** If `V̂ = bV` on `E`, with `V>0` and `b,z ≥ 0`, defined Wald
-coverage and the true-variance event `|(X-τ)/√V| ≤ z√b` differ in probability
-by at most `P(¬E)`. This compares the coverage and moving-width events on `A_N`. -/
+/-- **Node N13** (paper proof T18, "The coverage event and {|Z_N|<=w_N} agree on A_N, so their
+probabilities differ by at most 1/N"): generic finite comparison. If `V̂ = bV` on `E`
+(`V>0`, `b,z ≥ 0`), defined Wald coverage and the true-variance event
+`|(X-τ)/√V| ≤ z√b` differ in probability by at most `P(¬E)`. -/
 def N13 : Prop :=
   ∀ {Ω : Type} [Fintype Ω] (P : Design Ω) (X Vhat : Ω → ℝ) (target V b z : ℝ) (E : Ω → Prop),
     0 < V → 0 ≤ b → 0 ≤ z → (∀ ω, E ω → Vhat ω = b * V) →
@@ -228,12 +239,11 @@ def N13 : Prop :=
         probability P (fun ω => |(X ω - target) / Real.sqrt V| ≤ z * Real.sqrt b)| ≤
       probability P (fun ω => ¬ E ω)
 
-/-- **N14.** The variance ratio is nonnegative and tends to `3/4`; hence
-`z√((8-2/t_N)/(8t_N)) → z√(3/4)`. -/
+/-- **Node N14** (paper proof T18, "w_N=z*sqrt((8-2/t_N)/(8t_N))->w=z*sqrt(3/4)>0"):
+the ratio is nonnegative and tends to `3/4`. Elementary. -/
 def N14 : Prop := (∀ k, 0 ≤ evenRatio k) ∧ Tendsto evenRatio atTop (𝓝 (3 / 4))
 
-/-!
-## Refutation -/
+/-! ## Assembly (fully proved) -/
 
 /-- `ε_N = 1/N²` at `N = 2k+4` is positive and at most `1/16`. -/
 theorem pairEpsilon_even_bounds (k : ℕ) :
@@ -269,7 +279,7 @@ theorem even_variance (h1 : N1) (h3 : N3) (h4 : N4) (h5 : N5) (k : ℕ) :
   field_simp
   linarith
 
-/-- On the all-split event, `V̂_N = evenRatio k · V_N`, by N5 and N8–N11. -/
+/-- On the all-split event, `V̂_N = evenRatio k · V_N` (glue from N5, N8–N11). -/
 theorem split_estimator (h1 : N1) (h3 : N3) (h4 : N4) (h5 : N5) (h7 : N7) (h8 : N8)
     (h9 : N9) (h10 : N10) (h11 : N11) (k : ℕ)
     (z : Fin (wSupport (2 * k + 3))) (hz : wSplit (2 * k + 3) z) :
@@ -292,7 +302,7 @@ theorem split_estimator (h1 : N1) (h3 : N3) (h4 : N4) (h5 : N5) (h7 : N7) (h8 : 
   field_simp
   ring
 
-/-- The supporting statements give an explicit counterexample. -/
+/-- **Assembly of the explicit witness** from the nodes. -/
 theorem assemble_witness (c1 : CorrectedCoverage.N1) (c2 : CorrectedCoverage.N2)
     (c3 : CorrectedCoverage.N3) (c4 : CorrectedCoverage.N4) (c5 : CorrectedCoverage.N5)
     (c6 : CorrectedCoverage.N6) (c7 : CorrectedCoverage.N7) (h1 : N1) (h2 : N2) (h3 : N3)
@@ -398,7 +408,7 @@ theorem assemble_witness (c1 : CorrectedCoverage.N1) (c2 : CorrectedCoverage.N2)
   have := liminf_le_of_frequently_le hfreq hbdd
   linarith
 
-/-- The explicit counterexample refutes the printed claim. -/
+/-- **Assembly.** The nodes suffice for the refutation. -/
 theorem assemble (c1 : CorrectedCoverage.N1) (c2 : CorrectedCoverage.N2)
     (c3 : CorrectedCoverage.N3) (c4 : CorrectedCoverage.N4) (c5 : CorrectedCoverage.N5)
     (c6 : CorrectedCoverage.N6) (c7 : CorrectedCoverage.N7) (h1 : N1) (h2 : N2) (h3 : N3)
@@ -409,6 +419,18 @@ theorem assemble (c1 : CorrectedCoverage.N1) (c2 : CorrectedCoverage.N2)
     assemble_witness c1 c2 c3 c4 c5 c6 c7 h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12 h13 h14
   have := hall S hn hp hc3 hc5 hc6 (1 / 2) (by norm_num) (by norm_num)
   linarith
+
+/-- Sanity check: at the witness, `seqCoverage` is the defined-interval probability for the
+relabelled design and population. -/
+example (h : N1) (n : ℕ) :
+    seqCoverage (wSeq h) (1 / 2) n = probability (wDesign n) (fun z =>
+      0 ≤ effectVariance (wPop n) 1 0 z ∧
+        |htEffect (wPop n) 1 0 z - causalEffect (wPop n) 1 0| ≤
+          normalCritical (1 / 2) * Real.sqrt (effectVariance (wPop n) 1 0 z)) := rfl
+
+/-- Fidelity check: `Target` is literally the negation of the frozen statement
+`AronowAudit.P013.printed_wald_coverage` (only its type is read; its unproved draft proof is never used). -/
+example : Target = ¬ type_of% @AronowAudit.P013.printed_wald_coverage := rfl
 
 end
 

@@ -1,0 +1,824 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P032.T4",
+   "target_id": "P032-T4",
+   "fingerprint": "cadd11f0577336ad4bb86b00bf9984fbc67745fd06d1aa4bdc213c223d9ef8b2",
+   "module": "SAP.P032.Challenge.Part1",
+   "line": 24,
+   "closure": [
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData.members"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData.mk"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.SurvivalRecord"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.SurvivalRecord.dyad"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.SurvivalRecord.mk"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.T4Statement"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.dyadicMask"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.memberMask"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.pairCoefficient"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.pairCoefficient._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.pairDyads._proof_1"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.quadForm"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.recordMask"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.repeatedMask"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.scoreCovariance"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.sixDyadData"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.sixDyadData._proof_1"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.subjectCrossMask"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.subjectMask"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalClosedLikelihood._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalComponentsStatement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalComponentsStatement._proof_10"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalComponentsStatement._proof_11"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalComponentsStatement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalComponentsStatement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalComponentsStatement._proof_4"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalDiscrepancyStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalDiscrepancyStatement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalDiscrepancyStatement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalDiscrepancyStatement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalDiscrepancyStatement._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalDiscrepancyStatement._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalDiscrepancyStatement._proof_6"
+    },
+    {
+     "line": 66,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalInfluence"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalInfluence._proof_1"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalRecords"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalRecords._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalRecords._proof_2"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalScores"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalScoresStatement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalScoresStatement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part7",
+     "name": "SAP.P032.survivalSubjectTotalsStatement._proof_3"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P032.T2",
+   "target_id": "P032-T2",
+   "fingerprint": "f3557e347d257eac5abfdec1c1f7b10c9cf16c91f7fd8f2c5e1dac0c6cb369e9",
+   "module": "SAP.P032.Challenge.Part1",
+   "line": 12,
+   "closure": [
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData.members"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData.mk"
+    },
+    {
+     "line": 94,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.FiniteDistribution"
+    },
+    {
+     "line": 94,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.FiniteDistribution.mk"
+    },
+    {
+     "line": 95,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.FiniteDistribution.weight"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.T2Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.T2Statement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.T2Statement._proof_2"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.dyadicMask"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.dyadicRestriction"
+    },
+    {
+     "line": 72,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.errorMoments"
+    },
+    {
+     "line": 99,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.finiteMean"
+    },
+    {
+     "line": 102,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.finiteVar"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.leastSquares"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.negativePairDistribution"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.negativePairDistribution._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.negativePairDistribution._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.negativePairDistribution._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.negativePairDistribution._proof_4"
+    },
+    {
+     "line": 56,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.olsBread"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.omittedSum"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.pairCoefficient._proof_1"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.pairCovariance"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.pairCovariance._proof_1"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.pairDyads"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.pairDyads._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.pairDyads._proof_2"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.pairErrorValues"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.pairIntercept"
+    },
+    {
+     "line": 41,
+     "module": "SAP.P032.Defs.Part6",
+     "name": "SAP.P032.pairInterceptStatement"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P032.Defs.Part6",
+     "name": "SAP.P032.pairMomentStatement"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P032.Defs.Part6",
+     "name": "SAP.P032.pairSamplingStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part6",
+     "name": "SAP.P032.pairSamplingStatement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part6",
+     "name": "SAP.P032.pairSamplingStatement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part6",
+     "name": "SAP.P032.pairSamplingStatement._proof_3"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.pairSlope"
+    },
+    {
+     "line": 51,
+     "module": "SAP.P032.Defs.Part6",
+     "name": "SAP.P032.pairSlopeStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part6",
+     "name": "SAP.P032.pairSpectrumStatement._proof_1"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.positivePairDistribution"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.positivePairDistribution._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part2",
+     "name": "SAP.P032.positivePairDistribution._proof_2"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.quadForm"
+    },
+    {
+     "line": 63,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.sandwichCovariance"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P032.T11",
+   "target_id": "P032-T11",
+   "fingerprint": "dbabed4c52682b664f51e2d3eedb1c414e3add9a472bdd4702728afa1903d63a",
+   "module": "SAP.P032.Challenge.Part1",
+   "line": 73,
+   "closure": [
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData.members"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData.mk"
+    },
+    {
+     "line": 79,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.T11Statement"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.dyadicMask"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.fitResidual"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.leastSquares"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.memberMask"
+    },
+    {
+     "line": 56,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.olsBread"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.pairCoefficient._proof_1"
+    },
+    {
+     "line": 66,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.patternMeat"
+    },
+    {
+     "line": 69,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.plugInCovariance"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.recordMask"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.repeatedMask"
+    },
+    {
+     "line": 63,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.sandwichCovariance"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P032.T7",
+   "target_id": "P032-T7",
+   "fingerprint": "a7a6b7d8e1ccf28522af88c259c009ff8165ae760f0e2ec38cc78188a4a745c8",
+   "module": "SAP.P032.Challenge.Part1",
+   "line": 42,
+   "closure": [
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData.members"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.DyadData.mk"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P032.Defs.Part9",
+     "name": "SAP.P032.T7Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part9",
+     "name": "SAP.P032.T7Statement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part9",
+     "name": "SAP.P032.T7Statement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part9",
+     "name": "SAP.P032.T7Statement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part9",
+     "name": "SAP.P032.T7Statement._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part9",
+     "name": "SAP.P032.T7Statement._proof_5"
+    },
+    {
+     "line": 75,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.clipEigenvalues"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.diagonalGate"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.dyadicMask"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.psdPart"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.quadForm"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.scoreCovariance"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalClosedLikelihood._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalClosedLikelihood._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.survivalRecords._proof_2"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenBreadMatrix"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenBreadMatrix._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenBreadMatrix._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenBreadMatrix._proof_3"
+    },
+    {
+     "line": 86,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenCovariance"
+    },
+    {
+     "line": 72,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenCovariate"
+    },
+    {
+     "line": 76,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenDesignMatrix"
+    },
+    {
+     "line": 68,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenDyadData"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenDyadData._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenDyadData._proof_2"
+    },
+    {
+     "line": 84,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenDyadicMeat"
+    },
+    {
+     "line": 91,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenNegativeRoot"
+    },
+    {
+     "line": 88,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenPositiveRoot"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenPositiveRoot._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenPositiveRoot._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenPositiveRoot._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenPositiveRoot._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenPositiveRoot._proof_5"
+    },
+    {
+     "line": 80,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenResidualValues"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenResidualValues._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenResidualValues._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenResidualValues._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenResidualValues._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenResidualValues._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenResidualValues._proof_6"
+    },
+    {
+     "line": 82,
+     "module": "SAP.P032.Defs.Part3",
+     "name": "SAP.P032.tenScoreValues"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P032.T12",
+   "target_id": "P032-T12",
+   "fingerprint": "0102d188f5cc3965a3e3ad0674c42fbda4416ce19771a82ef03c45ade7fedd0f",
+   "module": "SAP.P032.Challenge.Part1",
+   "line": 81,
+   "closure": [
+    {
+     "line": 89,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.T12Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.T12Statement._proof_1"
+    },
+    {
+     "line": 89,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.countryOutcomes"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.countryOutcomes._proof_1"
+    },
+    {
+     "line": 86,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.naiveAverageVariance"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.naiveAverageVariance._proof_1"
+    },
+    {
+     "line": 84,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.outcomeAverage"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part1",
+     "name": "SAP.P032.outcomeAverage._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P032.Defs.Part8",
+     "name": "SAP.P032.pairCoefficient._proof_1"
+    }
+   ]
+  }
+ ]
+}

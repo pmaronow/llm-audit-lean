@@ -1,0 +1,75 @@
+[
+ {
+  "target_id": "P026-T13",
+  "decision": "whole",
+  "theorem": "SAP.P026b.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.generalized_bias_T13",
+   "AronowAudit.P026.PaperScope.generalized_total_bias_T13"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.PaperScope.generalized_bias_two_arm_T13",
+    "reason": "The selected rows already give both arm-total identities and the canonical covariance-difference bias formula; this equivalent treatment-only form adds no canonical clause."
+   },
+   {
+    "lean_name": "AronowAudit.P026.PaperScope.unit_generalized_bias_T13",
+    "reason": "The selected rows already give both arm-total identities and the canonical covariance-difference bias formula; this equivalent treatment-only form adds no canonical clause."
+   }
+  ]
+ },
+ {
+  "target_id": "P026-T14",
+  "decision": "whole",
+  "theorem": "SAP.P026b.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.logit_no_separation",
+   "AronowAudit.P026.logit_table_corrected"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P026-T15",
+  "decision": "whole",
+  "theorem": "SAP.P026b.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.package_counterexample"
+  ],
+  "rows_not_used": [],
+  "interpretation": "Refutes the reading of the package help that estate() with HT=TRUE preserves unbiased Horvitz-Thompson estimation when covariates X are supplied."
+ },
+ {
+  "target_id": "P026-T16",
+  "decision": "whole",
+  "theorem": "SAP.P026b.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.fixed_prediction_unbiased_T16",
+   "AronowAudit.P026.PaperScope.generalized_residual_T16",
+   "AronowAudit.P026.PaperScope.generalized_unbiased_T16",
+   "AronowAudit.P026.PaperScope.sharp_null_fit_unbiased_T16",
+   "AronowAudit.P026.Wave1.all_unit_OLS_bias_T16_rank_unrestricted",
+   "AronowAudit.P026.package_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.unit_fixed_prediction_unbiased",
+    "reason": "The fixed-prediction paper-scope row already supplies this unbiasedness component."
+   }
+  ]
+ },
+ {
+  "target_id": "P026-T17",
+  "decision": "refuted",
+  "theorem": "SAP.P026b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.Refutations.printed_cluster_claims_refuted",
+   "AronowAudit.P026.Refutations.printed_sharp_null_footnote_refuted"
+  ],
+  "rows_not_used": []
+ }
+]

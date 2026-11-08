@@ -1,0 +1,69 @@
+[
+  {
+    "target_id": "P019-T12",
+    "theorem": "SAP.P019b.T12",
+    "fingerprint": "4befafc5012e8cba1c11a9f8266b7ff0bd67314b5f9da5aea3326052db2cd0fd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditWhole.lean successfully with sap-lean. The example at line 91 constructs every T12 antecedent, including the inference nondegeneracy antecedent, for an explicit WholeStudy on (Bool × Bool) × Bool. W, Y and Z are independent fair bits, X=Y, and V=W+XZ. All four (Z,Y) cells have probability 1/4 and conditional V variance 1/4; Var(Y)=Var(Z)=1/4. The probability law, measurability and fixed count bound are constructed. These proofs do not invoke any Challenge theorem.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T13",
+    "theorem": "SAP.P019b.T13",
+    "fingerprint": "cd1f61cd5ee5fb6112209938beb93defc873982c70dcbeafee4237ab8c2731d3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditFinite.lean successfully with sap-lean. audit_cnn_standing at line 12 proves every standing hypothesis directly by finite sums and factorization. The example at line 34 independently computes watching prevalence 1/4 versus 1/2 and direct-answer disagreement probability 0 versus 1/4. The two worlds use the same genuine observable random variables and law, with independent type, baseline and assignment; they differ only in reading/watching labels. All positive-cell and moment conditions hold. No Challenge theorem is used in these checks.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T14",
+    "theorem": "SAP.P019b.T14",
+    "fingerprint": "1747e8190a161d1d581e617cfce776f8dfa5e7233814701a64aeb234746638bd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditFinite.lean successfully with sap-lean. The example at line 43 takes S=cnnWitness, R=cnnReading false, Q=cnnWatching false and proves every T14 antecedent: both pointwise truthful identities, no-liars/no-design-effects, joint (W,R,Q) independence from assignment, and strict interior assignment and watching probabilities. It also computes reader-only mass a=1/4, so this is a substantive instance with excess over watching, rather than only an a=0 case. The checks use direct arithmetic, not T14.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P019b/Defs/Part4.lean:31: T14Statement requires a Fintype underlying sample space and a finite-mass Study. The canonical general calculation quantifies over random variables without restricting the underlying probability space to be finite. Consequently the declaration states only the finite-space case. Its conclusions (i)–(v) are otherwise correctly rendered. A finite pushforward can represent the bounded observables, but the statement and its closure contain no arbitrary-space conclusion or transport assertion.",
+        "status": "fixed",
+        "reason": "Fixed by accurate classification and disclosure of the retained restriction. The finite-space quantifier remains, and no arbitrary-space extension has been added. record.json now marks P019-T14 restricted and states that exact domain; SAP/P019b/Challenge/Part1.lean:28–30 discloses finite underlying spaces and pointwise truthful identities. Under the author's rule permitting correct narrower results, the disclosed finite-space restriction is no longer a fidelity defect. Every displayed population conclusion (i)–(v) remains present."
+      },
+      {
+        "earlier_issue": "SAP/P019b/Challenge/Part1.lean:25: The T14 docstring presents the general truthful-question interpretation without disclosing the finite-space scope. record.json:37 marks the item whole and record.json:39 declares no restriction, so this narrowing is not an accurately disclosed restricted result.",
+        "status": "fixed",
+        "reason": "The current Challenge docstring at SAP/P019b/Challenge/Part1.lean:28–30 explicitly states the finite-space and pointwise-identity restriction and the omitted arbitrary-space/almost-sure extension. The current P019-T14 record row says restricted and gives the same restriction. The architect's explanation accurately describes this metadata/docstring repair."
+      }
+    ]
+  },
+  {
+    "target_id": "P019-T15",
+    "theorem": "SAP.P019b.T15",
+    "fingerprint": "85ac9d024247adecf9d7dfa1798a666f8f7af0f179354a03da67491bdf163064",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditFinite.lean successfully with sap-lean. Lines 66 and 70 check all numerical domain hypotheses at n=50, alpha=1/20, both the null p1=p2=1/2 and a genuine alternative p1=1/3, p2=2/3. In both cases S>0. The quantile is at 39/40, strictly inside (0,1); V>=S>0 protects all square roots and divisions. The two-sided power is a Gaussian event probability, independently defined before the sum-of-tails assertion. The canonical definitions identify n=N/2, so the literal n=50 example is correctly called N=100.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T16",
+    "theorem": "SAP.P019b.T16",
+    "fingerprint": "588081461ecea4ae5bd804f6beebe024f6fb6a98da6f6b1567dc92e10d3d4e61",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AuditFinite.lean successfully with sap-lean. The example at line 76 checks rho=1/5 is in [0,1] and computes the contrast directly from the actual binomial masses and response functions: beta(0)=1, beta(1/5)=3109/3125, beta(1)=609/625. Hence the parameter domain is inhabited and the contrast is nonconstant. The independent mixture is realizable by taking W with the stated five-point law and an independent Bernoulli(rho) affected indicator; its treated response is W+1 if unaffected and min(W+1,4) if affected. This supports the disclosed population restriction and establishes no rejection-power assertion.",
+    "confidence": "high"
+  }
+]

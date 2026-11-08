@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P008b.T20",
+    "target_id": "P008-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "States all of formal content (a)-(c): 8-neighbour raster boundary and the edge/area count means (definitional, as the claim's (a) is), the 5x5 block counts 25/16/9 with the central 3x3 interior, the continuous fact {x | infDist x (frontier P) = 0} = frontier P with positive distance for interior points (for every P with nonempty frontier, a generalization of the closed polygon with nonempty boundary of definitions_needed), and the T19 numbers 0, 9/25, 0, 9/50. Hypothesis (rasterBoundary R).Nonempty is equivalent to R nonempty for finite R and is not needed; nonempty frontier is in definitions_needed. Narrower only because the corrected sentence 'The smoothed curve is fitted to these boundary-based summaries across distances' (a statement about the package's smoothing) is not stated."
+  },
+  {
+    "theorem": "SAP.P008b.T21",
+    "target_id": "P008-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "States only formal content (i), -321/10000 < -19/625 (i.e. -0.0321 < -0.0304). Omits (ii) (the significance inference, even in conditional form), the design facts (121 villages, 60 treated), the upper percentile 0.0336, and the empirical conclusions (negligible spillovers beyond 2.5 km, bandwagon effect). Nothing stated is wrong; the claim is not refuted as a numerical statement."
+  },
+  {
+    "theorem": "SAP.P008b.T22",
+    "target_id": "P008-T22",
+    "my_reading_vs_claim": "different",
+    "reason": "A refutation of the canonical claim's (i). Printed reading of (i): under the sharp null, for a known randomization design, the test rejecting when the Hajek AMR estimate at a distance (or a linear functional such as the cumulative sum over a range) is strictly below the delta/2 or strictly above the 1-delta/2 percentile (type 7, (S9)(i)) of the null permutation distribution has error rate delta, exactly when the permutations cover all possible assignments. Conditions and the witness: spatial field with nodes in the field (node_mem), Euclidean d_i, suitable measure with positive finite circle mass and integrable outcomes (validCircle at all 4 nodes and radii 0.1..0.5); known design = uniform on the six 2-of-4 assignments, which the permutations cover exactly (injective a onto {z | count = 2}); sharp null (sharpNull); Hajek estimator with N1 = N0 = 2; type-7 percentiles at 1/40 and 39/40 (delta = 0.05); strict rule; cumulative statistic = sum over the five radii. The witness meets every condition, and its rejection probability is 1/3, not 0.05, contradicting (i). (ii) in its error-rate reading is contradicted by part (B): every nonempty deterministic rejection set on six equiprobable assignments has probability >= 1/6 > 0.05; its nominal reading (12.38 outside [-7.97, 7.97]) is confirmed by part (C), T22Statement. A measurable witness clearly exists (Dirac masses at one point per circle, field = R^2, Y measurable and constant in z), so the refutation does not depend on non-measurable sets."
+  },
+  {
+    "theorem": "SAP.P008b.T23",
+    "target_id": "P008-T23",
+    "my_reading_vs_claim": "narrower",
+    "reason": "States exactly formal content (i) (for any finite probability space, family phi_i, any matrix D and cutoff c: zero covariance whenever D_ij > c implies sum_{i,j} Cov(phi_i,phi_j) 1{D_ij <= c} = Var(sum phi_i)); generality over D and phi is harmless, and a finite law is the design-based setting ((S9)(iii)). Omits (ii) (the toy intervals with cutoff 0.4 account for interference dependence unlike cutoff 0; per the note (ii) fails), the printed interval table, the 95% coverage gloss, the 10 km cutoff and the interval-width comparison."
+  },
+  {
+    "theorem": "SAP.P008b.T25",
+    "target_id": "P008-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "States (a), (b) and (c). marginal Q F i b = sum_z Q(z) F(z[i->b]) is exactly E_{Z_-i}[F(b, Z_-i)] with the marginal law of Z_-i, as in (S3)/(S4). Hypotheses: circle measurable (presupposed by 'the zeta-measure of the circle'; a usual measure-theoretic condition), zeta-measure positive and finite, integrability for every own-treatment override z[i->b] with Q(z) != 0 (weaker than the claim's 'each of the finitely many (z, z_-i)'). The AMR identity needs validCircle at every node and 0 < N, both implicit in the 'hence'. Generalizations: arbitrary coordinate metric, field as an abstract measurable space with injective coordinates. (c): uniform law on {0,1}^4 gives (1/8) sum over the eight z with z_i = b, and the effect is the difference."
+  }
+]

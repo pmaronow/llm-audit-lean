@@ -1,0 +1,62 @@
+import SAP.P010.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open MeasureTheory ProbabilityTheory Set
+open scoped ENNReal NNReal Classical Topology BigOperators
+
+namespace PalomarReview
+open SAP.P010
+
+-- Independent of every Challenge theorem: a one-arm, always-passing Dirac population.
+def oneState : Population 1 0 := (fun _ => 0, fun _ => true, 0, fun _ => 0)
+noncomputable def oneLaw : Measure (Population 1 0) := Measure.dirac oneState
+
+lemma independent_dirac {Ω B C : Type*} [MeasurableSpace Ω] [MeasurableSingletonClass Ω]
+    [MeasurableSpace B] [MeasurableSpace C] (o : Ω) (f : Ω → B) (g : Ω → C) :
+    IndepFun f g (Measure.dirac o) := by
+  rw [indepFun_iff_measure_inter_preimage_eq_mul]
+  intro s t _ _
+  by_cases hs : f o ∈ s <;> by_cases ht : g o ∈ t <;>
+    simp [Measure.dirac_apply, hs, ht]
+
+lemma one_assumptions : populationAssumptions oneLaw := by
+  refine ⟨by dsimp [oneLaw]; infer_instance, ⟨?_, ?_⟩, ?_⟩
+  · intro a
+    exact independent_dirac oneState _ _
+  · intro a
+    have ha : a = 0 := Subsingleton.elim _ _
+    subst a
+    norm_num [oneLaw, assigned, arm, oneState, Measure.dirac_apply]
+  · intro a
+    have ha : a = 0 := Subsingleton.elim _ _
+    subst a
+    norm_num [passRate, oneLaw, passed, assigned, check, arm, oneState,
+      Measure.dirac_apply]
+
+-- Every input hypothesis of T8 is simultaneously satisfied.
+example : ∃ (μ : Measure (Population 1 0)) (a : Fin 1),
+    populationAssumptions μ ∧ μ sameCheck = 1 ∧ Integrable (potentialOutcome a) μ := by
+  refine ⟨oneLaw, 0, one_assumptions, ?_, ?_⟩
+  · norm_num [oneLaw, sameCheck, oneState, Measure.dirac_apply]
+  · exact integrable_dirac (by simp)
+
+-- Every outer input hypothesis of T10, with nonzero lambda and positive all-pass mass.
+example : ∃ p₁ p₂ ρ lam σ : ℝ,
+    0 < p₁ ∧ p₁ < 1 ∧ 0 < p₂ ∧ p₂ < 1 ∧ 0 ≤ σ ∧
+    0 ≤ 1-p₁-p₂+(p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂))) ∧
+    p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)) ≤ p₁ ∧
+    p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)) ≤ p₂ ∧
+    0 ≤ p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)) ∧ lam ≠ 0 ∧
+    0 < p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)) := by
+  refine ⟨1/2, 1/2, 0, 1, 1, ?_⟩
+  norm_num
+
+-- Nonempty scope of T10's fixed-observable-law clause, using independent Dirac data.
+example : ∃ (μ ν : Measure (Population 1 0)) (a : Fin 1),
+    populationAssumptions μ ∧ populationAssumptions ν ∧ passRate μ = passRate ν ∧
+      passerDistribution μ a = passerDistribution ν a := by
+  exact ⟨oneLaw, oneLaw, 0, one_assumptions, one_assumptions, rfl, rfl⟩
+
+end PalomarReview

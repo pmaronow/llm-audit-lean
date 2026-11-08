@@ -1,17 +1,21 @@
 import AronowAudit.P001.Wave1.MarDiscreteBlueprint
 
 /-!
-# CEF under MAR for vector covariates (P001-T111)
+# Blueprint: CEF under MAR for vector covariates, paper support (P001-T111)
 
-Theorem 6.1.10 (p. 217), with both response statuses in support, a.e. binary
-values, and a response propensity bounded below almost surely by a fixed positive
-constant. The respondent CEF evaluated at X is assumed integrable. The covariate
-is a general `K`-dimensional real vector; no countability, density or smoothness
-is required.
+Record 11 of group P001a: P001-T111 / held `AronowAudit.P001.mar_cef_general_covariates`;
+resolution `repair_and_prove`. Theorem 6.1.10 (p. 217). The held wrapper (:7203) calls the
+unfinished `mar_respondent_cef_is_population_cef` (:6015, sorry), and allows a constant
+response indicator. The repair (mapper's `mar_vector_paper_support_cef`) restores both
+response statuses in support (`hR0`, `hR1`), uses a.e. binary values and positivity, and
+keeps a general `K`-dimensional real covariate (no countability, density or smoothness).
 
-The respondent CEF is a population CEF: `IsCEF μ X Y m`, or
-`E[Y|X] = E[Y*|R=1,X]`. Consequently `E[Y] = E[m(X)]`.
-The proof uses the general CEF transfer and the CEF identity on the whole space.
+Conclusion: `IsCEF μ X Y m` (the respondent version is a population version,
+`E[Y|X] = E[Y*|R=1,X]`) and `E[Y] = E[m(X)]`.
+
+Nodes: the shared `MarSelection` nodes (bundled `AllShared`); no record-specific node (the
+mapper's incremental `mar_vector_transfer` is the assembly below, fully proved). It must
+reuse the general transfer `N5`, never the countable-sum record-10 node.
 -/
 
 set_option autoImplicit false
@@ -25,7 +29,8 @@ open scoped BigOperators ENNReal
 
 noncomputable section
 
-
+/-- The frozen statement the record is resolved by (mapper's
+`AronowAudit.P001.Wave1.mar_vector_paper_support_cef`). -/
 def Target : Prop :=
   ∀ {Ω : Type u} [MeasurableSpace Ω] {K : ℕ} (μ : Measure Ω) [IsProbabilityMeasure μ]
     (X : Ω → Fin K → ℝ) (hX : Measurable X) (Y R : Ω → ℝ), Measurable Y → Measurable R →
@@ -38,8 +43,8 @@ def Target : Prop :=
     Integrable (m ∘ X) μ →
     IsCEF μ X Y m ∧ mean μ Y = mean μ (m ∘ X)
 
-/-- CEF transfer with `U = Y`, `g = Prod.snd`, and `Z = censored Y R`
-establishes the population CEF; the CEF identity on `univ` gives the mean equality. -/
+/-- The nodes suffice: the shared transfer `N5` with `U = Y`, `g = Prod.snd`,
+`Z = censored Y R`, then the CEF identity on `univ`. -/
 theorem assemble (hS : MarSelection.AllShared.{u, 0, 0}) : Target.{u} := by
   intro Ω _ K μ _ X hX Y R hY hR hYi hbin _ _ p m hp hpos hmar hm hmi
   have hcef : IsCEF μ X Y m :=

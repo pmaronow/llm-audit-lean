@@ -1,0 +1,122 @@
+[
+ {
+  "target_id": "P007-T6",
+  "decision": "whole",
+  "theorem": "SAP.P007.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.bernoulli_sandwich",
+   "AronowAudit.P007.deletion_probability_sandwich",
+   "AronowAudit.P007.groups_are_not_variables",
+   "AronowAudit.P007.logarithm_decay_identity",
+   "AronowAudit.P007.zero_bound_all_deleted"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": []
+ },
+ {
+  "target_id": "P007-T7",
+  "decision": "whole",
+  "theorem": "SAP.P007.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.figure4_printed_lower_bound_not_upper",
+   "AronowAudit.P007.figure4_printed_worked_counterexamples",
+   "AronowAudit.P007.floor_is_not_first_crossing",
+   "AronowAudit.P007.lower_bound_is_not_upper_guarantee",
+   "AronowAudit.P007.printed_parameters_actual_deletion_high"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P007.bestCase_attained",
+   "AronowAudit.P007.threshold_floor_ceiling",
+   "AronowAudit.P007.threshold_unique_solution",
+   "AronowAudit.P007.adjacent_bracket_rounding",
+   "AronowAudit.P007.figure4_corrected_worked_values",
+   "AronowAudit.P007.unequalProbability_assumptions",
+   "AronowAudit.P007.unequalProbability_all"
+  ],
+  "declaration_review_round1": {
+   "finding": "label_wrong/minor: canonical T7(c3) explicitly compares the Bernoulli estimate itself with 99/100.",
+   "resolution": "Added (99/100 : ℝ) < 1 - (30000 : ℝ)/4^33 as an explicit conjunct of T7Statement; the whole decision is retained.",
+   "proof": "One closed numerical comparison by norm_num, already checked within AronowAudit.P007.printed_parameters_actual_deletion_high (P007_Probability.lean:1067).",
+   "scope": "Only the target-specific T7Statement and its Solution proof changed; all shared mathematical definitions and other target statements are unchanged."
+  }
+ },
+ {
+  "target_id": "P007-T8",
+  "decision": "whole",
+  "theorem": "SAP.P007.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.bestCase_attained",
+   "AronowAudit.P007.bestCase_increasing",
+   "AronowAudit.P007.figure4_corrected_worked_values",
+   "AronowAudit.P007.threshold_floor_ceiling",
+   "AronowAudit.P007.threshold_integer_inversion",
+   "AronowAudit.P007.threshold_probability_guarantee",
+   "AronowAudit.P007.threshold_rounding_gap",
+   "AronowAudit.P007.threshold_unique_solution"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P007.lemma3",
+   "AronowAudit.P007.lower_bound_is_not_upper_guarantee",
+   "AronowAudit.P007.unequalProbability_assumptions",
+   "AronowAudit.P007.figure4_numeric_33",
+   "AronowAudit.P007.figure4_numeric_34",
+   "AronowAudit.P007.figure4_numeric_952",
+   "AronowAudit.P007.figure4_numeric_953"
+  ]
+ },
+ {
+  "target_id": "P007-T9",
+  "decision": "whole",
+  "theorem": "SAP.P007.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.figure5_upper_bound_counterexample"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P007.figure5Witness_prefixes"
+  ]
+ },
+ {
+  "target_id": "P007-T10",
+  "decision": "whole",
+  "theorem": "SAP.P007.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.bestCase_attained",
+   "AronowAudit.P007.equalProbabilityLaw",
+   "AronowAudit.P007.equalProbability_prefix",
+   "AronowAudit.P007.expected_deletion_bound_attained",
+   "AronowAudit.P007.expected_deletion_lower_bound",
+   "AronowAudit.P007.expected_removed_fraction",
+   "AronowAudit.P007.expected_removed_row",
+   "AronowAudit.P007.fraction_bound_vs_all_bound",
+   "AronowAudit.P007.independentProduct",
+   "AronowAudit.P007.independentProduct_events",
+   "AronowAudit.P007.independentProduct_marginal",
+   "AronowAudit.P007.observationBernoulli",
+   "AronowAudit.P007.observationBernoulli_false",
+   "AronowAudit.P007.probability_compl",
+   "AronowAudit.P007.probability_congr",
+   "AronowAudit.P007.zero_bound_first_missing",
+   "SAP.P007.Bridge.fromAudit",
+   "SAP.P007.Bridge.toAudit",
+   "SAP.P007.WH.W2.T10_assembly",
+   "SAP.P007.WH.W2.T10_whole",
+   "SAP.P007.WH.W2.equal_cells",
+   "SAP.P007.WH.W2.finite_law_realization",
+   "SAP.P007.WH.W2.independent_weights",
+   "SAP.P007.WH.W2.observation_transfer"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P007.bestCase_attained"
+  ],
+  "statement_definition": "SAP.P007.T10WholeStatement_W2"
+ }
+]

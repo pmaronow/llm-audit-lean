@@ -1,13 +1,14 @@
 import AronowAudit.P018.Wave1.Gap.GP0182B2b
 
 /-!
-P018-T27: Proposition 1 with the printed assumptions.
+P018-T27: Proposition 1 with exactly the frozen printed statement.
 
-Common-directed-kernel weighted consistency specializes to `singleRecord K`
-with unit weights. It identifies the sample estimator and the unconditional
-target with the original statistics, using positive definiteness of the
-population Gram under `Standing`. The conclusion needs no additional
-sample-rank or fitted-moment assumptions.
+The proved `GP0182B2b_variance_consistency` specializes common-directed-kernel
+weighted consistency to `singleRecord K` with unit weights.  It identifies
+the sample estimator and the unconditional target with the original
+statistics, using positive definiteness of the population Gram under
+`Standing`.  Its conclusion needs no additional sample-rank or fitted-moment
+assumptions; the frozen binders are retained below.
 -/
 
 noncomputable section
@@ -26,5 +27,7 @@ theorem proposition1_printed_proof {U : Type*} [MeasurableSpace U] {k : ℕ}
     inProbability (unitSampleLaw K) (fun N ω =>
       (N : ℝ) • sampleVariance members (design K ω) (response K ω) - trueTarget K N) := by
   exact GP0182B2b_variance_consistency K hK
+
+example : type_of% @AronowAudit.P018.proposition1_printed := proposition1_printed_proof
 
 end AronowAudit.P018.Wave1

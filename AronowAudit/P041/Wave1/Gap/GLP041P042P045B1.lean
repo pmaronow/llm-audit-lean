@@ -1,8 +1,8 @@
 import AronowAudit.P041.Wave1.Gap.GP041P042P045B1
 
-/-! P041-T11: normal probability bounds for the three former-senator
-rounding rectangles and their printed centres, using Gaussian integrals
-and Taylor bounds. -/
+/-! P041-T11: certified normal probabilities for the three former-senator
+rounding rectangles and their printed centres. The Gaussian integral and
+Taylor bounds are reused from the proved Wave1 Gaussian certificate. -/
 
 noncomputable section
 open scoped BigOperators
@@ -263,5 +263,7 @@ theorem printed_former_normal_p_enclosures_proof :
   · obtain ⟨hl,hu⟩ := p041t11_deceased_centre_p _ p041t11_deceased_centre
     apply abs_le.mpr
     constructor <;> linarith
+
+example : type_of% @AronowAudit.P041.printed_former_normal_p_enclosures := printed_former_normal_p_enclosures_proof
 
 end AronowAudit.P041.Wave1

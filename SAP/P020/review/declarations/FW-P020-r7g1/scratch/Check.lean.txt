@@ -1,0 +1,142 @@
+import SAP.P020.Defs
+import SAP.P020.Defs.WholeW1
+import SAP.P020.Defs.WholeW2
+
+open scoped BigOperators
+open Filter
+open SAP.P020
+noncomputable section
+
+-- These examples use definitions only, never a Challenge theorem.
+
+-- T1: the three equiprobable assignments, positive sizes, and genuine
+-- individual potential outcomes from the canonical example.
+theorem witness_assignments : assignments efficiencyPopulation =
+    ({({0} : Finset (Fin 3)), {1}, {2}} : Finset (Finset (Fin 3))) := by
+  decide
+
+example : efficiencyPopulation.mt = 1 ∧ controlCount efficiencyPopulation = 2 ∧
+    populationSize efficiencyPopulation = 7 ∧
+    (∀ j, 0 < efficiencyPopulation.n j) := by
+  norm_num [efficiencyPopulation, controlCount, populationSize, Fin.sum_univ_succ]
+  intro j
+  fin_cases j <;> norm_num
+
+example (j : Fin 3) :
+    clusterTotal (fun i : Fin (efficiencyPopulation.n j) =>
+      if j = 0 then (0 : ℝ) else if i.val = 0 then 1 else 0) = efficiencyPopulation.y0 j ∧
+    clusterTotal (fun _ : Fin (efficiencyPopulation.n j) => (0 : ℝ)) = efficiencyPopulation.y1 j := by
+  fin_cases j
+  · norm_num [efficiencyPopulation, clusterTotal, Fin.sum_univ_succ]
+  · change (∑ i : Fin 2, if i.val = 0 then (1 : ℝ) else 0) = 1 ∧
+      (∑ _i : Fin 2, (0 : ℝ)) = 0
+    norm_num [Fin.sum_univ_succ]
+  · change (∑ i : Fin 4, if i.val = 0 then (1 : ℝ) else 0) = 1 ∧
+      (∑ _i : Fin 4, (0 : ℝ)) = 0
+    norm_num [Fin.sum_univ_succ]
+
+-- Finite expectation of a constant, for the general T2 hypotheses.
+theorem expectation_constant {Ω : Type*} (L : FiniteLaw Ω) (c : ℝ) :
+    expectation L (fun _ => c) = c := by
+  simp only [expectation, ← Finset.sum_mul, L.total, one_mul]
+
+-- T2: an actual positive within-cluster sequence, with both realized arm
+-- counts and the total count strictly growing. Its two comparison
+-- statistics have bias exactly one and MSE exactly zero, respectively.
+abbrev growingPopulation (h : ℕ) : ClusterPopulation :=
+  replicateWithin efficiencyPopulation (h+1) (Nat.succ_pos h)
+
+example : (1 : ℝ) ≠ 0 ∧
+    Tendsto (fun h : ℕ => designBias (clusterLaw (growingPopulation h))
+      (fun _ => averageTreatmentEffect (growingPopulation h) + 1)
+      (averageTreatmentEffect (growingPopulation h))) atTop (nhds 1) ∧
+    Tendsto (fun h : ℕ => meanSquaredError (clusterLaw (growingPopulation h))
+      (fun _ => averageTreatmentEffect (growingPopulation h))
+      (averageTreatmentEffect (growingPopulation h))) atTop (nhds 0) ∧
+    (0 : ℝ) < 1 := by
+  simp only [designBias, meanSquaredError, sub_self, zero_pow (by decide : 2 ≠ 0),
+    expectation_constant, add_sub_cancel_left]
+  exact ⟨by norm_num, tendsto_const_nhds, tendsto_const_nhds, by norm_num⟩
+
+example : StrictMono (fun h : ℕ => populationSize (growingPopulation h)) := by
+  intro a b hab
+  simp only [growingPopulation, replicateWithin, populationSize, efficiencyPopulation,
+    Fin.sum_univ_succ, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_succ,
+    Fin.sum_univ_zero, add_zero]
+  omega
+
+example (s : Finset (Fin 3)) (hs : s ∈ assignments efficiencyPopulation) (a : Bool) :
+    StrictMono (fun h : ℕ => armSize (growingPopulation h) a s) := by
+  rw [witness_assignments] at hs
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hs
+  rcases hs with rfl | rfl | rfl <;> cases a <;>
+    intro i j hij <;>
+    norm_num [growingPopulation, replicateWithin, armSize, armSum, controls,
+      efficiencyPopulation, Fin.sum_univ_succ, Nat.cast_add, Nat.cast_mul] <;>
+    have hc : (i : ℝ) < (j : ℝ) := by exact_mod_cast hij
+  all_goals linarith
+
+-- T3 and T4: two admissible cluster experiments, with all sizes either
+-- one or 445. No one-person randomized experiment is used.
+def twoClusters (n : ℕ) (hn : 0 < n) : ClusterPopulation where
+  M := 2
+  mt := 1
+  mt_pos := by decide
+  mt_lt := by decide
+  n := fun _ => n
+  n_pos := fun _ => hn
+  y0 := fun _ => 0
+  y1 := fun _ => 0
+
+example : populationSize (twoClusters 1 (by decide)) = 2 ∧
+    (∀ i : Fin 2, (1 : ℝ) ≤ (fun _ : Fin 2 => (1 : ℝ)) i) := by
+  change (∑ _j : Fin 2, (1 : ℕ)) = 2 ∧ _
+  norm_num
+
+example : populationSize (twoClusters 445 (by decide)) = 890 ∧
+    (∀ i : Fin 890, (445 : ℕ) ≤ (fun _ : Fin 890 => 445) i) := by
+  change (∑ _j : Fin 2, (445 : ℕ)) = 890 ∧ _
+  norm_num
+
+-- The logistic values are genuine probabilities, not a totalized inverse
+-- at zero or a value outside [0,1].
+example (x : ℝ) : 0 < logistic x ∧ logistic x < 1 := by
+  have he : 0 < Real.exp x := Real.exp_pos x
+  have hd : 0 < 1 + Real.exp x := by positivity
+  have hi : 0 < (1 + Real.exp x)⁻¹ := inv_pos.mpr hd
+  have hil : (1 + Real.exp x)⁻¹ < 1 := by
+    exact (inv_lt_one₀ hd).mpr (by linarith)
+  unfold logistic
+  constructor <;> linarith
+
+example : 0 < repairedContrast 444 ∧ repairedContrast 445 < 0 ∧
+    repairedContrast (4000/9) = 0 := by
+  norm_num [repairedContrast]
+
+-- T5: choose khat equal to the observed treated arm mean size. Its three
+-- supported values are 1,2,4, and its covariance correction is nonzero.
+def fittedSize (s : Finset (Fin efficiencyPopulation.M)) : ℝ :=
+  armMeanSize efficiencyPopulation true s
+
+example : fittedSize {0} = 1 ∧ fittedSize {1} = 2 ∧ fittedSize {2} = 4 := by
+  norm_num [fittedSize, armMeanSize, armSize, armSum, efficiencyPopulation]
+
+example : designCovariance (clusterLaw efficiencyPopulation) fittedSize
+    (armMeanSize efficiencyPopulation true) = 14/9 ∧
+    designCovariance (clusterLaw efficiencyPopulation) fittedSize
+    (armMeanSize efficiencyPopulation false) = -7/9 := by
+  norm_num [designCovariance, expectation, clusterLaw, uniformLaw, witness_assignments,
+    fittedSize, armMeanSize, armSize, armSum, controls, controlCount,
+    efficiencyPopulation, Fin.sum_univ_succ]
+
+example : expectation (clusterLaw efficiencyPopulation)
+    (fun s => desRaj efficiencyPopulation (fittedSize s) s) = -9/7 ∧
+    designBias (clusterLaw efficiencyPopulation)
+      (fun s => desRaj efficiencyPopulation (fittedSize s) s)
+      (averageTreatmentEffect efficiencyPopulation) = -1 := by
+  norm_num [designBias, expectation, clusterLaw, uniformLaw, witness_assignments,
+    desRaj, rajTotal, rajPotential, differenced, fittedSize, armMeanSize, armSize,
+    armSum, controls, controlCount, populationSize, averageTreatmentEffect,
+    clusterMean, efficiencyPopulation, Fin.sum_univ_succ]
+
+end

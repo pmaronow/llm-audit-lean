@@ -1,0 +1,80 @@
+[
+  {
+    "theorem": "SAP.P002b.T16",
+    "target_id": "P002-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The fixed four-row array has exactly the centering, second-moment, fourth-moment, and unequal maxima asserted by the canonical counterexample. The covariate second-moment matrix is (1/2)I_2; this is not the augmented Gram."
+  },
+  {
+    "theorem": "SAP.P002b.T17",
+    "target_id": "P002-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both corrected finite inequalities and the fixed-dimension O(sqrt(n)) consequence are present. n>0 makes the maxima genuine, and the arrays being maximized are nonnegative, so adjoining zero does not change their maxima. Allowing k=0 and A=0 also gives valid harmless boundary cases."
+  },
+  {
+    "theorem": "SAP.P002b.T18",
+    "target_id": "P002-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both corrected signs and both slope-error and inverse-Gram identities are retained, for every beta and allowed assignment with the two full-rank arms specified by the canonical statement. OLS, residuals, and zero-intercept covariates have the intended meanings."
+  },
+  {
+    "theorem": "SAP.P002b.T19",
+    "target_id": "P002-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "Population-minus-fitted equals the negative inverse-Gram score, and the actual (E.39) cross term equals -2 times its quadratic form. Only the selected arm needs to be full rank, exactly as the canonical finite identity specifies."
+  },
+  {
+    "theorem": "SAP.P002b.T20",
+    "target_id": "P002-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact finite LATE/oracle expansion is retained. The sequence remainder limit additionally requires positive oracle design variance at every index and invertibility of every control Gram on every design support. The canonical target does not impose these conditions for every finite index; its proof works on high-probability invertibility events. These are genuine additional conditions, not assumptions of the conclusion. A strictly increasing sample-size sequence is the natural sequence interpretation."
+  },
+  {
+    "theorem": "SAP.P002b.T22",
+    "target_id": "P002-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The canonical formal content includes finite termination whatever admissible index choices are made. This stub asserts existence of a completed finite run and correctness/length properties for every already completed finite run; it contains no policy-quantified termination assertion. Nonempty J is already part of this target, so its exclusion is not a further restriction. Data-generated sextuples and everywhere-positive denominators express the stated data and Assumptions 6/7."
+  },
+  {
+    "theorem": "SAP.P002b.T23",
+    "target_id": "P002-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "For every Algorithm 1/3 piece, it retains quantile-index validity and the squared critical-value equality at every closed endpoint, plus the exact piecewise confidence-set equality. This target explicitly assumes at least one intersection. Algorithm1Run assumes quantile validity only at the prescribed sample, so it does not assume its conclusion."
+  },
+  {
+    "theorem": "SAP.P002b.T24",
+    "target_id": "P002-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "It states full-rank arm OLS linearity, the resulting adjusted contrast identity, and Wald cancellation guarded by the nonzero receipt contrast. These are the complete corrected (I.1)-(I.2) assertions; the intercept linearity and arbitrary real Y,D are valid generalizations of the same identities."
+  },
+  {
+    "theorem": "SAP.P002b.T25",
+    "target_id": "P002-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "Baseline recovery for every assignment, equality of the true LATE to the common effect, and both full-randomization finite-sample coverage lower bounds are present. ValidDesign ensures nonempty support and positive arm counts. The paper explicitly allows infinite statistics and 0/0=0; the fixed least-squares minimizer on singular arms is an outcome/covariate/assignment-only rule permitted by the canonical note."
+  },
+  {
+    "theorem": "SAP.P002b.T26",
+    "target_id": "P002-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "All formal assertions (a)-(c) of the canonical target are present. The extra nonzero-receipt guard on the IV product identity is redundant when both arm Grams and the IV cross matrix are invertible: the cross matrix factors through the full-rank instrument Gram and the first-stage coefficient, which must be nonzero. The claims.json note expressly excludes the descriptive finite-union sentence from this target; omitting it does not narrow this canonical target."
+  },
+  {
+    "theorem": "SAP.P002b.T27",
+    "target_id": "P002-T27",
+    "my_reading_vs_claim": "whole",
+    "reason": "It states all four index constancy and finite-endpoint persistence conclusions, including either infinite endpoint, for the actual data-generated squared AR functions under their positive-denominator assumptions. Identical functions are correctly excluded from crossings. The extra observed curve occurs only in the natural shared data hypothesis and Assumption 6."
+  },
+  {
+    "theorem": "SAP.P002b.T29",
+    "target_id": "P002-T29",
+    "my_reading_vs_claim": "different",
+    "reason": "This is the negation of the universal exact-coverage limit printed as Theorem 1, rather than the positive theorem. It is a faithful complete refutation of that precise printed universal claim: choose delta=0,r=1/4,A=1/2 and any interior alpha. The fourth-moment inequality forces both adjusted potential arrays to be constant for n>=2, their constants coincide at the LATE, and all coverages equal 1. Nonempty model classes exist for every beta and n>=2; the refutation need not rely on empty infima."
+  },
+  {
+    "theorem": "SAP.P002b.T30",
+    "target_id": "P002-T30",
+    "my_reading_vs_claim": "different",
+    "reason": "This is the negation of the universal exact-coverage limit printed as Theorem 2. It is a faithful refutation: k=1,delta=0,e=1/4,A=4,B=1/2,r=1/4 forces both population residual arrays to vanish. Uniform covariate moment and eigenvalue bounds make singular-arm assignment probabilities tend to zero, while every full-rank assignment has observed adjusted AR=0 and is accepted. The nested infimum therefore tends to 1. The classes can be made nonempty for every beta and all sufficiently large n; no empty-class counterexample is needed."
+  }
+]

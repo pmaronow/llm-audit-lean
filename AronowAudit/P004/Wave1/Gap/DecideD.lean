@@ -743,5 +743,8 @@ theorem experimental_wald_coverage_printed_false :
   apply DecideD_no_limit
   exact ⟨L, Filter.Tendsto.congr (DecideD_lift_probability DecideD_alternating) hL⟩
 
+example : ¬ type_of% @AronowAudit.P004.experimental_wald_coverage.{0} :=
+  experimental_wald_coverage_printed_false
+
 end
 end AronowAudit.P004.Wave1

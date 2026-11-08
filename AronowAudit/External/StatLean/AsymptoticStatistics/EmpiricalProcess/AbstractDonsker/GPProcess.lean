@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -10,26 +9,49 @@ import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.Abstr
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.AbstractDonsker.GPNet
 import Mathlib.Topology.UniformSpace.UniformEmbedding
 
-
-
 /-!
-# The isonormal process and a bounded path-valued modification
+# The isonormal `F`-indexed Gaussian process `gpX`
 
-For a class `F` of measurable functions with a square-integrable envelope under
-a probability measure `P`,
-`gpX f` is a measurable representative of the isonormal image of the centered
-function `f - P f`. The construction assumes that the closed centered span is
-separable and infinite-dimensional. `gpX_measurable` is coordinatewise in `f`;
-no joint-measurability assertion about the chosen raw representatives is made.
-`gpX_aeeq` identifies each coordinate with its isonormal image, and `gpX_cov`
-gives the Brownian-bridge covariance `P(fg) - Pf * Pg`.
+This file builds the candidate limit process `G_P` of the abstract-Donsker theory
+(van der Vaart, *Asymptotic Statistics* §18.1, §19.2) as a genuine, jointly
+measurable family of random variables indexed by `↥F`, realised on the i.i.d.
+standard-Gaussian product space `iidStdGaussian` of the isonormal construction.
 
-For a nonempty class with finite bracketing entropy, `gpSkeleton_spec` supplies
-an almost surely bounded, uniformly continuous restriction to a countable dense
-skeleton. Its extension defines the bounded path `gpPath`. The finite-coordinate
-approximations `gpApprox n` factor through measurable Gaussian tuples and a
-continuous interpolation map. Their almost-sure uniform convergence proves
-`gpPath_aestronglyMeasurable` and defines the path law `gpBridgeMeasure`.
+## Mathematical content
+
+The `P`-Brownian-bridge process is the centred Gaussian process `(G_P f)_{f ∈ F}`
+with covariance `Cov(G_P f, G_P g) = P(fg) − Pf · Pg`, i.e. the covariance of the
+centred functions `f − Pf` in `L²(P)`. We realise it as the **isonormal process**
+`W : H →ₗᵢ[ℝ] L²(iidStdGaussian)` applied to the embedding of each centred
+`f − Pf` into the closed subspace `H ⊆ L²(P)` spanned by the centred members of
+`F`. The isonormal process preserves inner products, so
+
+  `Cov(W (f−Pf), W (g−Pg)) = ⟪f − Pf, g − Pg⟫_{L²(P)} = P(fg) − Pf·Pg`,
+
+which is exactly the Brownian-bridge covariance.
+
+## Construction
+
+* `centredLp f` — the centred function `f − ∫ f ∂P` as an element of `L²(P)`.
+* `gpH` — the closed subspace of `L²(P)` spanned by `{centredLp f : f ∈ F}`.
+* `gpEmbed f` — the embedding `↥F → ↥gpH` of each member of `F`.
+* `gpBasis` — a `ℕ`-indexed Hilbert basis of `gpH` (from the infinite-
+  dimensionality + separability hypotheses).
+* `gpX f` — the measurable representative of `isonormal gpBasis (gpEmbed f)`, a
+  genuine measurable map `(ℕ → ℝ) → ℝ`.
+
+## Main results
+
+* `gpX_measurable` — each `gpX f` is measurable.
+* `gpX_hasGaussianLaw` — each `gpX f` has a Gaussian law under `iidStdGaussian`.
+* `gpX_cov` — `∫ gpX f · gpX g = P(fg) − Pf·Pg`, the Brownian-bridge covariance.
+
+## Hypotheses
+
+The construction assumes `hF_meas` (measurability of `F`'s members), `hH_inf`
+(infinite-dimensionality of the centred span), and `hH_sep` (separability of the
+centred span). Thus `gpH` is a separable infinite-dimensional Hilbert space, the
+setting of `HilbertBasis.exists_hilbertBasis_nat`.
 
 Reference: van der Vaart, *Asymptotic Statistics* (Cambridge, 1998), §18.1, §19.2.
 -/
@@ -107,17 +129,16 @@ def gpBasis (hH_inf : ¬ FiniteDimensional ℝ ↥(gpH hF_env hF_meas))
   letI : TopologicalSpace.SeparableSpace ↥(gpH hF_env hF_meas) := hH_sep
   exact (@HilbertBasis.exists_hilbertBasis_nat ↥(gpH hF_env hF_meas) _ _ hcs hH_sep hH_inf).some
 
-/-- The isonormal process represented by a family `↥F → (ℕ → ℝ) → ℝ`.
-For each fixed `f`, `gpX f` is the measurable representative (`.mk`) of the
-isonormal image of `f - P f` in `L²(iidStdGaussian)`.
--/
+/-- **The isonormal `F`-indexed Gaussian process `G_P`** as a genuine measurable
+family `↥F → (ℕ → ℝ) → ℝ`. For each `f`, `gpX f` is the measurable representative
+(`.mk`) of the isonormal image `W (f − Pf)`, an element of `L²(iidStdGaussian)`. -/
 def gpX (hH_inf : ¬ FiniteDimensional ℝ ↥(gpH hF_env hF_meas))
     (hH_sep : TopologicalSpace.SeparableSpace ↥(gpH hF_env hF_meas)) (f : ↥F) :
     (ℕ → ℝ) → ℝ :=
   (Lp.aestronglyMeasurable
     (isonormal (gpBasis hF_env hF_meas hH_inf hH_sep) (gpEmbed hF_env hF_meas f))).mk
 
-/-! ## Coordinatewise measurability and a.e. identification -/
+/-! ## Measurability, a.e. identification, Gaussian law -/
 
 /-- Each `gpX f` is measurable. -/
 theorem gpX_measurable (f : ↥F) :
@@ -135,6 +156,14 @@ theorem gpX_aeeq (f : ↥F) :
   exact ((Lp.aestronglyMeasurable
     (isonormal (gpBasis hF_env hF_meas hH_inf hH_sep) (gpEmbed hF_env hF_meas f))).ae_eq_mk).symm
 
+/-- **Gaussian law of `gpX f`.** Each `gpX f` has a Gaussian law under
+`iidStdGaussian`: the isonormal image `W (f − Pf)` does
+(`isonormal_hasGaussianLaw`), and `gpX f` agrees with it a.e.
+(`HasGaussianLaw.congr`). -/
+theorem gpX_hasGaussianLaw (f : ↥F) :
+    HasGaussianLaw (gpX hF_env hF_meas hH_inf hH_sep f) iidStdGaussian :=
+  (isonormal_hasGaussianLaw (gpBasis hF_env hF_meas hH_inf hH_sep)
+    (gpEmbed hF_env hF_meas f)).congr (gpX_aeeq hF_env hF_meas hH_inf hH_sep f).symm
 
 /-! ## Covariance: the Brownian-bridge structure -/
 
@@ -407,18 +436,58 @@ theorem eLpNorm_gpX_sub_le (s t : ↥F) :
 
 /-! ## Almost-sure uniform continuity from Gaussian chaining -/
 
+/-- **A.s. uniformly continuous, bounded paths of `gpX` on a dense countable
+skeleton.** Instantiating the Gaussian chaining theorem `gaussianChaining_UC` for
+the `F`-indexed process `gpX` on the `distL2`-pseudometric space `↥F`:
+
+* the sub-Gaussian increments come from `gpX_subgaussian_increment` (proxy
+  `(distL2 f g)² = 1² · dist f g ²` under the `distL2PseudoMetric` `letI`);
+* the Dudley dyadic net + summability come from `exists_dudley_net` (finite
+  bracketing-entropy integral).
+
+The conclusion is a countable dense `T₀ ⊆ ↥F` on which, almost surely, the path
+`f ↦ gpX f ω` is bounded and uniformly continuous. The hypothesis
+`hF_ne : F.Nonempty` supplies the nonempty carrier needed for the dense
+skeleton. -/
+theorem gpX_aeUC {G : Ω → ℝ} (hG_env : IsEnvelope F G) (hG : MemLp G 2 P)
+    (hF_meas : ∀ f ∈ F, Measurable f)
+    (hH_inf : ¬ FiniteDimensional ℝ ↥(gpH ⟨G, hG_env, hG⟩ hF_meas))
+    (hH_sep : TopologicalSpace.SeparableSpace ↥(gpH ⟨G, hG_env, hG⟩ hF_meas))
+    (hF_ent : bracketingEntropyIntegral 1 F P < ⊤) (hF_ne : F.Nonempty) :
+    letI inst := distL2PseudoMetric hG_env hG hF_meas
+    ∃ T₀ : Set ↥F, T₀.Countable
+        ∧ @Dense ↥F inst.toUniformSpace.toTopologicalSpace T₀ ∧
+      (∀ᵐ ω ∂iidStdGaussian,
+        (BddAbove (Set.range
+          (fun t : T₀ => |gpX ⟨G, hG_env, hG⟩ hF_meas hH_inf hH_sep t ω|))) ∧
+        @UniformContinuousOn ↥F ℝ inst.toUniformSpace _
+          (fun t => gpX ⟨G, hG_env, hG⟩ hF_meas hH_inf hH_sep t ω) T₀) := by
+  let inst := distL2PseudoMetric hG_env hG hF_meas
+  obtain ⟨net, hnet, hmono, hDud⟩ := exists_dudley_net hF_ent hF_ne
+  refine _root_.GaussianChaining.gaussianChaining_UC (μ := iidStdGaussian) (K := 1) zero_le_one
+    (gpX_measurable ⟨G, hG_env, hG⟩ hF_meas hH_inf hH_sep) net hnet hmono
+    (fun s t => ?_) hDud
+  -- Sub-Gaussian proxy: `dist s t = distL2 P s t` (defeq under the `letI`), and the
+  -- chaining wants `⟨1² · dist s t², _⟩ = ⟨distL2 P s t², _⟩` (`1² · x = x`).
+  refine (gpX_subgaussian_increment ⟨G, hG_env, hG⟩ hF_meas hH_inf hH_sep s t).mono_proxy ?_
+  erw [← NNReal.coe_le_coe]
+  simp only [NNReal.coe_mk, one_pow, one_mul]
+  -- `dist s t = distL2 P ↑s ↑t` (defeq under the `@[reducible]` pseudometric `letI`).
+  change distL2 P (s : Ω → ℝ) (t : Ω → ℝ) ^ 2 ≤ distL2 P (s : Ω → ℝ) (t : Ω → ℝ) ^ 2
+  exact le_refl _
 
 /-! ## The bounded `ℓ∞(F)`-valued path `gpPath`
 
-The arbitrary representatives `gpX f` provide coordinatewise measurability;
-this alone does not control their supremum over an uncountable class.
-`gpSkeleton` supplies a countable dense set, and `gpSkeleton_spec` proves almost
-sure boundedness and uniform continuity of the restriction to that set.
+`gpX f ω` is, for each fixed `f`, a measurable representative; but the naive path
+`fun f => gpX f ω` is not a.s. bounded over all of `↥F` (each `gpX f` is an
+arbitrary `.mk` representative, so the uncountable supremum is uncontrolled).
 
-On this good event, extend the restriction uniformly continuously to the totally
-bounded index space. The extension is bounded and defines an element of
-`ℓ∞(F)`. Off the good event, define the path to be zero.
--/
+We build the genuine path as the **uniformly-continuous extension** of the
+restriction of `f ↦ gpX f ω` to the countable dense skeleton `T₀` produced by
+`gpX_aeUC`. On the good set (where that restriction is bounded and uniformly
+continuous on `T₀`), the extension is uniformly continuous on the totally-bounded
+space `↥F`, hence bounded, hence an element of `ℓ∞(F)`. Off the good set, the path
+is `0`. -/
 
 section GpPath
 
@@ -453,7 +522,7 @@ theorem gpSkeleton_eq_iUnion_net (hF_meas : ∀ f ∈ F, Measurable f)
 
 /-- The specification of `gpSkeleton`: countable, dense (in the `distL2`
 pseudometric topology), and a.s. carrying bounded uniformly-continuous paths.
-Proved by instantiating `GaussianChaining.gaussianChaining_UC_iUnion` on the explicit Dudley net
+Proved by instantiating `gaussianChaining_UC` on the explicit Dudley net
 `gpSkeletonNet`, whose `T₀`-witness is exactly `⋃ j, net j = gpSkeleton`. -/
 theorem gpSkeleton_spec (hF_meas : ∀ f ∈ F, Measurable f)
     (hH_inf : ¬ FiniteDimensional ℝ ↥(gpH ⟨G, hG_env, hG⟩ hF_meas))
@@ -731,20 +800,20 @@ theorem gpPath_aeeq_coord (f : ↥F) :
   -- and `gpX (t (ns k)) ω → gpX f ω` (a.e. subsequence).
   exact tendsto_nhds_unique hgpX_tendsto_path hns_ae_ω
 
-/-! ## Strong measurability of `gpPath` and its law
+/-! ## Strong measurability of `gpPath` and its law `ν`
 
-The measurability argument uses `gpApprox n`, which records the Gaussian values
-at the first `n+1` skeleton points and assigns each index its nearest recorded
-value. Each approximation factors through a measurable finite-dimensional tuple
-and the continuous map `gpLin n`, so it is strongly measurable as an `ℓ∞(F)`-valued
-map. For each sample its coordinate range is finite; its range over all samples
-need not be finite.
-
-Total boundedness and density make nearest-skeleton distances vanish uniformly.
-On the good event, uniform continuity then gives `gpApprox n ω → gpPath ω` in
-sup norm. `aestronglyMeasurable_of_tendsto_ae` proves a.e. strong measurability of
-the limit, from which the path law is defined.
--/
+`gpPath` is **not** directly Borel-measurable into `ℓ∞(F)` (the UC extension
+`Dense.extend` is a choice-based cluster-point limit with no measurable-in-`ω`
+structure, and `ℓ∞(F)` over the uncountable `↥F` is not second-countable, so
+coordinatewise measurability does not imply Borel measurability). Instead we
+exhibit `gpPath` as an a.e. limit of **strongly-measurable simple functions**
+`approxₙ`, each of which sends `ω` to the finitely-many `gpX` values on the first
+`n+1` skeleton points, interpolated by nearest-skeleton-point assignment. Each
+`approxₙ` factors through a continuous (1-Lipschitz) map out of a finite-
+dimensional tuple, hence is strongly measurable; and `approxₙ ω → gpPath ω` in
+sup norm for every good `ω` (a.e.), because nearest-skeleton distances tend to
+`0` uniformly (total boundedness + density) and the UC extension is uniformly
+continuous. `aestronglyMeasurable_of_tendsto_ae` then gives the result. -/
 
 section GpPathMeasurable
 
@@ -791,7 +860,7 @@ theorem gpEnum_surjOn {t : ↥F}
 
 open scoped Classical in
 /-- The set of indices `{0, …, n}` whose enumeration points form the first
-`n+1` skeleton points — the support of the `n`-th finite-coordinate approximation. -/
+`n+1` skeleton points — the support of the `n`-th simple approximation. -/
 def gpFinset (n : ℕ) : Finset ↥F :=
   (Finset.range (n + 1)).image (gpEnum hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne)
 
@@ -846,7 +915,7 @@ theorem gpNearest_min (n : ℕ) (f : ↥F) {g : ↥F}
     (fun g => distL2 P (g : Ω → ℝ) (f : Ω → ℝ))
     (gpFinset_nonempty hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne n)).choose_spec.2 g hg
 
-/-! ### The finite-coordinate approximations `approxₙ` and their strong measurability
+/-! ### The simple approximations `approxₙ` and their strong measurability
 
 `approxₙ ω = gpLin n (gpTuple n ω)`, factoring through the finite-dimensional
 tuple `gpTuple n ω : ↥(gpFinset n) → ℝ` (Measurable in `ω`, hence StronglyMeasurable
@@ -854,8 +923,8 @@ since the codomain is second-countable) and the **1-Lipschitz** map
 `gpLin n : (↥(gpFinset n) → ℝ) → ℓ∞(F)` (Continuous). -/
 
 /-- `gpLin n x` sends each coordinate `f` to the `x`-value at the nearest skeleton
-point `gpNearest n f` (an element of `gpFinset n`). For fixed `x`, the coordinate
-values lie in the finite range of `x`, so the resulting path belongs to `ℓ∞(F)`. -/
+point `gpNearest n f` (an element of `gpFinset n`). The range is finite (`x`
+ranges over the finite `↥(gpFinset n)`), hence bounded, so this is in `ℓ∞(F)`. -/
 def gpLin (n : ℕ)
     (x : ↥(gpFinset hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne n) → ℝ) :
     LinfF F :=
@@ -906,7 +975,7 @@ theorem measurable_gpTuple (n : ℕ) :
   intro g
   exact gpX_measurable ⟨G, hG_env, hG⟩ hF_meas hH_inf hH_sep (g : ↥F)
 
-/-- The `n`-th **finite-coordinate approximation** `approxₙ ω = gpLin n (gpTuple n ω)`. For
+/-- The `n`-th **simple approximation** `approxₙ ω = gpLin n (gpTuple n ω)`. For
 each good `ω`, `approxₙ ω → gpPath ω` in `ℓ∞(F)`. -/
 def gpApprox (n : ℕ) (ω : ℕ → ℝ) : LinfF F :=
   gpLin hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne n
@@ -1042,7 +1111,7 @@ theorem tendsto_gpApprox_of_good {ω : ℕ → ℝ}
     _ < ε := by linarith
 
 /-- **`gpPath` is `AEStronglyMeasurable`** under `iidStdGaussian`. It is the a.e.
-limit of the strongly-measurable finite-coordinate approximations `approxₙ`: on the good
+limit of the strongly-measurable simple approximations `approxₙ`: on the good
 set (an a.s. event by `gpSkeleton_spec`), `approxₙ ω → gpPath ω` in `ℓ∞(F)`
 (`tendsto_gpApprox_of_good`), and `aestronglyMeasurable_of_tendsto_ae` lifts the
 per-`n` strong measurability through the a.e. limit. -/

@@ -1,0 +1,62 @@
+[
+  {
+    "theorem": "SAP.P046.T1",
+    "target_id": "P046-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The explicit continuous generative law, validity, uniform W, mu=3/5, exact strict undercoverage, lower comparisons and 1946 logarithmically failing states are faithful and arithmetically correct. The type omits the canonical K,S random variables, their multinomial probabilities, sample-statistic reductions, exclusion-test equivalences, logarithm-indexed probability sum, total-state count, and separate coverage and non-strict-tail conclusions. Its rational certifiedCut representation agrees with the logarithmic test on every feasible state, independently verified with exact rational logarithm enclosures. This is a partial counterexample theorem, not an assertion of the positive printed bound. The concrete generator supplies nonvacuity."
+  },
+  {
+    "theorem": "SAP.P046.T2",
+    "target_id": "P046-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The specified continuous design, mu=1/2, positive event mass 2^(-100), xi=100/81, radius and inequalities, and conditional tail equal to one almost everywhere on E match the counterexample. It does not assert the canonical pointwise outcome/HT/deviation statements for the generated covariate and treatment vectors, or E[HT|W]=muW=0 on E. Conditioning is on the full covariate vector under the original product law, as required. This refutes the population-centred conditional proof step; it does not refute unconditional coverage for this constant-propensity law."
+  },
+  {
+    "theorem": "SAP.P046.T3",
+    "target_id": "P046-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The universal corrected population-tail bound, strict radius upper bound, O(n^(-1/2)) width, and known-b alternative are correct renderings. The canonical statement explicitly makes proof assertions (i)-(iv) part of the target; none is asserted by this type. It also omits the separate sqrt(xi)<delta^(-1) assertion and the alternative interval's summand justification. No additional model assumptions or conclusion-as-hypothesis occur. A uniform W independent of Bernoulli(1/2) X with both potential outcomes zero, pi=1/2, m=0 and delta=1/4 is a valid nonvacuity instance."
+  },
+  {
+    "theorem": "SAP.P046.T4",
+    "target_id": "P046-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The explicit one-parameter treated-case weighted-loss witness, deterministic balanced fits, almost-sure empirical optimality on the actual opposite folds, L2 convergence, both finite-sample means and variances, estimator identity, normal limits, variance excess/ratio, weighted-norm formula and two risks are correct. Independent rational recomputation gives the stated moments. It omits the all-training-set loss decomposition and uniqueness analysis, population risk polynomial and uniqueness, summand table and probabilities/moments, bounded-iid assertion, explicit zero/closure exclusion, Var(Y1), and explicit risk-gap comparison. It refutes the treated-case weighted-loss reading specified in definitions_needed; the paper's loss is not an explicit printed formula. The generative construction is nonempty."
+  },
+  {
+    "theorem": "SAP.P046.T5",
+    "target_id": "P046-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The first working-family implication matches the corrected canonical family theorem, including the zero weighted-closure alternative, deterministic population minimizer, empirical optimization and L2-in-probability convergence. The second family-free direct implication adds L2 membership of the deterministic limit and almost-sure L2 membership of every fit at every n,j. These are genuine restrictions relative to the canonical direct reading, which permits positive-probability infinite-error events whose probabilities vanish. Under the added hypotheses the Bochner norm and risk integrals are finite, so the standard cross-fitting remainder argument and variance comparison apply. The direct risk inequality is the canonical direct hypothesis, not illicit circularity. The valid zero-outcome model with singleton zero family and deterministic zero fits satisfies all hypotheses."
+  },
+  {
+    "theorem": "SAP.P046.T6",
+    "target_id": "P046-T6",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem states the negation of the canonical printed universal population-centred tail assertion, rather than that assertion. It is a legitimate direct refutation: the actual printed random radius, population estimand, all valid laws, n>=1 and 0<alpha<1 are negated without changing their meanings. T1's independently checked strict noncoverage exceeds alpha and therefore also refutes this non-strict-tail bound. This is not merely a refutation of an optional interpretation of an unspecified loss or model. Nonvacuity is supplied by T1's concrete valid study."
+  },
+  {
+    "theorem": "SAP.P046.T7",
+    "target_id": "P046-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical statement together with definitions_needed asks for finite-sample unbiasedness, root-n tightness uniformly over all positive n and laws with a common delta, and the fixed-law normal limit with variance E[m/pi]-mu^2, allowing variance zero. These are all asserted with the right quantifiers. The common-delta convention is in definitions_needed and is not a hidden restriction imported from the note. Bounded summands ensure integrability and finite variance. The valid independent uniform-W, Bernoulli(1/2)-X, zero-outcome model provides an instance for delta=1/4 (and any delta in (0,1/2)); classes with delta>=1/2 being empty do not make the entire theorem vacuous."
+  },
+  {
+    "theorem": "SAP.P046.T8",
+    "target_id": "P046-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact finite-sample unbiasedness conclusion and opposite-fold observed-data dependence are faithful, but the theorem adds full-sample integrability of each evaluated fitted prediction. The note's integrability caveat is audit history and cannot silently add this to the canonical assertion. This is a sufficient restriction, stronger than integrability of the final estimator; cross-fold cancellations can make the latter integrable when individual predictions are not. The finite-sample theorem also allows arbitrary deterministic splits, a harmless true extension beyond roughly equal folds. Taking both fits identically zero in any valid study gives an explicit integrable instance."
+  },
+  {
+    "theorem": "SAP.P046.T9",
+    "target_id": "P046-T9",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two conclusions match the canonical meanings: root-n consistency with possibly different fold limits, and a normal limit at the explicit Hahn variance for L2-in-probability consistency to m. The statement restricts both parts to almost-sure L2 fits for every finite n,j. Part (b) also explicitly uses fixed L2 limits and integrable squared-error expectations tending to zero. The assumptions prevent zero-on-nonintegrable Bochner integrals from faking L2 convergence. The Hahn variance is exactly the one specified in definitions_needed, so no separate efficiency theory or known-F_W comparison is demanded by the canonical reading. The valid zero-outcome model with deterministic zero fits satisfies all assumptions."
+  },
+  {
+    "theorem": "SAP.P046.T10",
+    "target_id": "P046-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The quantifiers est; eps>0,c>0; every N; some n>=N,n>0; some valid M are equivalent to failure of uniform consistency over the canonical unrestricted model. Estimators are measurable functions only of observed triples and receive no propensity oracle. Replacing limsup/sup by bounded probabilities with explicit witnesses avoids unbounded-supremum conventions. The model allows each law its own positivity constant, as specified in the claim; the optional fixed-delta/uniform-W lower-bound construction is finite_lemmas history, not an extra target. The estimator class contains the identically zero sequence, and valid laws include the independent uniform-W/Bernoulli-X zero-outcome model. A two-law small-positive-propensity argument already verifies the asserted unrestricted-class impossibility."
+  }
+]

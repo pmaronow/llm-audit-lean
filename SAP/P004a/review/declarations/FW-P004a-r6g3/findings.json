@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P004-T11",
+    "theorem": "SAP.P004a.T11",
+    "fingerprint": "56fe117650804026099a6b59a019cf5332f76990b40e3741673e5643cd31904f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:27 independently constructs N=1, p=1/4, and the constant-one circle table, proves N>0 and strict overlap, and computes AME=0, printed expectation=-2, corrected expectation=0. scratch/exact_checks.py additionally checks unequal propensities and an interfering outcome table with exact rational expectations.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T12",
+    "theorem": "SAP.P004a.T12",
+    "fingerprint": "31ff495b1ca4602347d40c7000a4a05f55c13604218e053c4b4fdeb5e79b9769",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:36 proves the actual radius-zero regions are singletons; lines 41 and 45 independently prove the specified population satisfies SharpNull and WellDefined. Line 69 checks 128^101 < 20*eightNodeMCNumerator exactly. scratch/exact_checks.py enumerates all 256 assignments, confirms the observed and replicate values, the 128 equiprobable absolute ranks, the product-law probability 256^(-101) of the repeated-value realization, and independently derives the exact size 0.05549969550171698... > 1/20. There is no external hypothesis making the closed witness assertions vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T13",
+    "theorem": "SAP.P004a.T13",
+    "fingerprint": "c7317f33723b9fd67028b2bfdd27ff039d1af417e0c7f5de341e68a97031eb50",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:72 constructs a two-point assignment law with weights 1/3 and 2/3, a statistic with absolute values 2 and 1, P=3, and alpha=1/20; it proves every weight and normalization/count/alpha premise. scratch/exact_checks.py enumerates all 16 joint draw arrays and six alpha values, retaining ties, and checks the level bounds and exact correction identity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T14",
+    "theorem": "SAP.P004a.T14",
+    "fingerprint": "2b524868a62a4b2359f66749b4a8e53c694048dcabe929b19e79b233fe2ff986",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed conjunction of explicit witnesses, with no external premises. scratch/Check.lean:82 independently verifies all six two-node/atom distances from the Euclidean definitions. scratch/exact_checks.py reconstructs the atomic averages and product-law effects: circle AMEs 0,0 and band AME 1/6; it also checks the one-node 1/2 versus 2/3 and area 2/3 and 7/9 calculations. The finite atomic measures give measurable positive finite shell integrals; for area, every stated band has mass pi*(b^2-a^2)>0 and the radius effect has the certified continuous conditional-mean version r. See scratch/claim-audit.md for the printed-reading condition check.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T15",
+    "theorem": "SAP.P004a.T15",
+    "fingerprint": "3b0e932fba119c82b3603955718e7628a1074663439755b98c70116dc60a46fa",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:91 constructs a one-node Dirac population with outcome equal to its treatment bit; line 102 proves N>0, a valid endpoint propensity, WellDefined and measurable distance. Lines 119 onward independently check forced effects at both endpoint probabilities, finite-shell premises with unequal node masses, probability-measure premises for a common Dirac kernel, and full-disk area premises at a=0,b=1. The finite-shell effect array is arbitrary and can be chosen freely. The nonidentification conjunct has explicit populations with the same (0,0) circle AMEs and distinct band AMEs 1/6 and 0, checked by exact enumeration. No conclusion is assumed as a premise.",
+    "confidence": 0.98
+  }
+]

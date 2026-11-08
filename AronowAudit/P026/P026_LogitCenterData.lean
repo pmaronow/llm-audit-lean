@@ -6,7 +6,7 @@ open Finset
 set_option maxHeartbeats 0
 set_option maxRecDepth 4000
 /-- Rational lower centers for the actual opposite-block logistic predictions.
-The coordinatewise approximation tolerance for the exact rational-center sigmoid is 1e-12. -/
+Each coordinate is to be certified within1e-12 of the exact rational-center sigmoid. -/
 def logitApproxPrediction : Fin 16 → ℚ := ![47388535877/62500000000,245991334313/1000000000000,47388535877/62500000000,91213999621/250000000000,47388535877/62500000000,502852358951/1000000000000,440210663973/500000000000,787905836173/1000000000000,823519114231/1000000000000,225605980343/250000000000,440210663973/500000000000,787905836173/1000000000000,440210663973/500000000000,823519114231/1000000000000,823519114231/1000000000000,170851719779/200000000000]
 
 /-- Literal cluster sums of printed outcomes minus the rational center predictions. -/
@@ -16,8 +16,13 @@ lemma logitApproxResidual_aggregation : ∀ k,
     clusterTotal tableCluster (fun i=>tableY i-logitApproxPrediction i) k=logitApproxResidual k := by
   decide +kernel
 
+lemma logitApproxPrediction_range : ∀ i, 0≤logitApproxPrediction i∧logitApproxPrediction i≤1 := by
+  decide +kernel
 
 lemma logitApproxResidual_bound : ∀ k, |logitApproxResidual k|≤(999/1000:ℚ) := by
   decide +kernel
 
 end AronowAudit.P026.LogitCompletion
+#print axioms AronowAudit.P026.LogitCompletion.logitApproxResidual_aggregation
+#print axioms AronowAudit.P026.LogitCompletion.logitApproxPrediction_range
+#print axioms AronowAudit.P026.LogitCompletion.logitApproxResidual_bound

@@ -385,6 +385,16 @@ theorem tcLift_tagged_partition {K : ℕ} (w : (Fin K → Bool) → ℝ)
       split_ifs <;> simp [hw s]
   simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true, he2, he3, hu]
 
+/-- Positive passing submeasures normalize to the actual passer laws. -/
+theorem tcLift_normalized_passers {K d : ℕ} (μ : Measure (State K d))
+    (h : Assumptions μ) (a : Fin K) :
+    tcLift_normalize (tcLift_statusOutcome μ a true) = passerLaw μ a := by
+  have hp := (nonzero_passing_corrected μ h.1 h.2.1).2.mp h.2.2 a
+  rw [tcLift_normalize, tcLift_statusOutcome_mass]
+  change (if μ (potentialPass a) = 0 then Measure.dirac 0 else
+    (μ (potentialPass a))⁻¹ • (μ.restrict (potentialPass a)).map (potentialY a)) = _
+  rw [if_neg (ne_of_gt hp)]
+  exact conditional_law_consistency μ h a
 
 theorem tcLift_statusOutcome_false_mass {K d : ℕ} (μ : Measure (State K d))
     (h : Assumptions μ) (a : Fin K) :

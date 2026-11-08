@@ -142,6 +142,7 @@ lemma ab5_sum_assignment {R : Type*} [CommSemiring R] (v : Counts) (m : ℕ) (f 
   ring
 
 
+
 lemma ab5_sum_assignment_n {R : Type*} [CommSemiring R] (n : ℕ)
     (v : Counts) (hn : v.total=n) (m : ℕ) (f : Counts → R) :
     (∑ z : Assignment n m, f (canonicalObserved v z.val)) =
@@ -479,9 +480,10 @@ lemma ab5_exp_bound : 16*Real.exp (-4) < 48/103 := by
   nlinarith
 
 
-/-! Event trees for the chronological search. The
+
+/-! Record 6: event trees for the actual chronological search. The
 finite uniform law is proved by splitting the head coordinate from the tail.
-Closed kernel certificates reduce the four events to their trees. -/
+Closed kernel certificates reduce the four events to their retained trees. -/
 
 inductive api5_Tree (B : Type*) where
   | leaf : B → api5_Tree B
@@ -727,6 +729,7 @@ lemma api5_node_eval {A : Type*} {n : ℕ} (test : Counts → A → Bool)
     rw [← api5_eval_shift _ (api5_vecOracle test w) 1 0, api5_vecOracle_shift]
 
 
+
 lemma api5_branch_probability {A B : Type*} [Fintype A] [Nonempty A]
     [Fintype B] [Nonempty B] (test : A → Bool) (r a : B → Bool) :
     AronowAudit.P037.designProbability (ab5_uniform (A × B))
@@ -798,6 +801,8 @@ lemma api5_tree_probability {A : Type*} [Fintype A] [Nonempty A]
           (fun w : Fin n → A => api5_eval a (api5_vecOracle test w) 0),
           hr hrp n hrd, ha hap n had, hv, api5_weight]
         ring
+
+
 
 
 def api5_below (r : EndpointResult) : Bool := r.value.any (fun x => decide (x<10))
@@ -1130,6 +1135,7 @@ lemma api5_weight_cast (T : api5_Tree Bool) :
       Rat.cast_sub, Rat.cast_one, hr, ha]
 
 
+
 def api5_result (i : Fin 4) : api5_Tree Bool :=
   match i.val with
   | 0 => api5_result_0
@@ -1165,6 +1171,7 @@ set_option maxHeartbeats 6000000 in
 lemma api5_below_certificate :
     api5_reduce (api5_endpointTree 33 api5_cachedCandidates 2 16 2 16 (fun v => v.any (fun x => decide (x<10)))) = api5_result_0 := by
   decide +kernel
+
 
 
 set_option maxHeartbeats 6000000 in
@@ -1258,6 +1265,7 @@ lemma api5_uniform_congr {A : Type*} [Fintype A] {E F : A → Prop}
   exact propext (h w)
 
 
+
 theorem adaptive_probability_inequalities_proof :
     let a := upperRun false adaptiveData (exactRejectQ (1/20) adaptiveData)
     let a' := upperRun false adaptiveData (exactRejectQ (1/25) adaptiveData)
@@ -1299,7 +1307,10 @@ theorem adaptive_probability_inequalities_proof :
       _ < (api5_weight (R := ℚ) api5_p api5_result_2:ℝ) := by simpa only [Rat.cast_div, Rat.cast_ofNat] using ((Rat.cast_lt (K := ℝ)).mpr api5_mass_bounds.2.2.1)
       _ = _ := h2.symm.trans (api5_uniform_congr (fun pool : Fin (2*testBudget 30+1) → api5_Atom => api5_above_iff (run pool)))
 
-/-! The second-test aggregate counterexample. -/
+example : type_of% @AronowAudit.P003.adaptive_probability_inequalities := adaptive_probability_inequalities_proof
+
+
+/-! Record 9: the actual second-test aggregate counterexample. -/
 
 /-- The aggregate event uses the table actually selected after the first
 acceptance. Only coordinates zero and one of the pool enter the lower bound. -/
@@ -1324,5 +1335,7 @@ theorem aggregate_bound_counterexample_proof :
       (ab5_probability_pair (0 : Fin (2*testBudget 30+1)) 1 (by decide +kernel)
         ab5_good1 ab5_good2).symm
     _ ≤ _ := ab5_probability_mono ab5_good_subset
+
+example : type_of% @AronowAudit.P003.aggregate_bound_counterexample := aggregate_bound_counterexample_proof
 
 end AronowAudit.P003.Wave1

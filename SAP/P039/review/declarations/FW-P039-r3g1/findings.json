@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P039-T1",
+    "theorem": "SAP.P039.T1",
+    "fingerprint": "33637632d749ebc17b052d173ebba75f919eac6de260764c17d2c21e47e88ee3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: firstQuarterOnly has h1=1 and h2..h16=0; decay=1/2 and 9/10 both satisfy 0<decay<1, both denominators are positive, implemented growth is zero and described growth is respectively 3/131069 and 617673396283947/22440939433444477. scratch/exact_audit.py independently checks both exact rational witnesses and the quarter reindexing.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T2",
+    "theorem": "SAP.P039.T2",
+    "fingerprint": "8729b1e48953839402bbba80b4bfcc074d023c270c9c52fc51a780d5e8a09986",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: decay=1/2 with the constant-one history supplies admissible data, positive normalizations, and evaluations at decay=0 and 1. The only input constraint is nonnegative real decay. The definitions are the exact finite weighted sums, and scratch/exact_audit.py also verifies the endpoint denominator 43/3.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T3",
+    "theorem": "SAP.P039.T3",
+    "fingerprint": "1349ac5620e96f1655a56cc82e43a9d6addbc4fcc1ec4ba31389cfb870cc4f2d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: all five relevant six-row designs have full column rank, Z contains an intercept, v lies outside its span, and the baseline OLS residual is (3/2)v+w. Sigma=1 and arbitrary real nuisance coefficients inhabit the Gaussian hypothesis domain; identity noise under the product N(0,1) probability measure is measurable and has the required law. scratch/exact_audit.py independently verifies all four complete OLS fits, positive SSEs, conventional SE squared and t squared using exact rational elimination. Gaussian draws and the Student/chi-square factors are genuinely independent product coordinates; moments used are finite at df=3,4.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T4",
+    "theorem": "SAP.P039.T4",
+    "fingerprint": "91de50babbafa111aa3d85cb9d877a0bb07ca6a51149695d4fee165757aff1f2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: n=6,k=2,Z=[1,u],x=v satisfies every structural assumption; measurable identity noise on the product N(0,1) probability space with sigma=1 and gamma=0 satisfies every Gaussian assumption. Compiled scratch/CovarianceCheck.lean verifies all coordinate and product integrability hypotheses, zero means and identity vectorCovariance for the same noise, so the covariance premises are also jointly satisfied. Compiled scratch/EdgeCheck.lean constructs full-rank intercept designs and orthogonal regressors at n=4,k=2 and n=5,k=2, with the same Gaussian input construction, reaching residual df=1 and df=2. All checks import only Definitions, not Challenge theorems.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P039-T5",
+    "theorem": "SAP.P039.T5",
+    "fingerprint": "a32c598e79ccfa31c13fb8089a29a5085db8e975fab4bb91c734b0e71e9b2d57",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean proves the entire closed T5Statement directly from its finite rational definitions without using a Challenge theorem. scratch/exact_audit.py additionally compares every one of the 64 exact score values and all five finite year domains to claims.json, checks both positive magnitude gaps, all five unique positive signed maxima and the negative worked product. Every compared or selected year belongs to the relevant domain; no outside-domain zero placeholder is used.",
+    "confidence": "high"
+  }
+]

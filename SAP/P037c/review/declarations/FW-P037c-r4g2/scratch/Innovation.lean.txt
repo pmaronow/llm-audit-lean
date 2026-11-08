@@ -1,0 +1,14 @@
+import SAP.P037c.Challenge
+
+open scoped BigOperators
+open SAP.P037c
+
+-- The two notions of residual really are different on the stated certificate.
+example :
+    blockResidual whole43Design whole43Treatment whole43Composition
+      (fun k : Fin 0 => Fin.elim0 k) (fun k => Fin.elim0 k) (1/2) 0 (0,0) ≠
+    whole43Treatment 0 (0,0) * (whole43Composition 0 (0,0) - 1/2) := by
+  simp only [blockResidual, SAP.P037c.residual, treatmentProjection, cross,
+    designMean, SAP.P037c.inner, blockDemean, whole43Design,
+    Fintype.sum_prod_type, Fin.sum_univ_one, Fin.sum_univ_four]
+  norm_num [whole43Treatment, whole43Composition]

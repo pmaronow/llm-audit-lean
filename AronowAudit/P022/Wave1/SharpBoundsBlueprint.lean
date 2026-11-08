@@ -1,21 +1,32 @@
 import AronowAudit.P022.Wave1.RandomizationVarianceBlueprint
 
 /-!
-# P022-T13: unbiasedness, equation (2), and Lemma 1 for every coupling
+# Blueprint: P022-T13, unbiasedness, equation (2), and Lemma 1 for every coupling
 
-The statement includes both `N`-point pairings `z1, z0` with the given marginal
-multisets and all joint distributions with the empirical marginals `G_N, F_N`,
-as in Lemma 1 (p. 853; proof pp. 859–860).
+Record: P022-T13 / `AronowAudit.P022.sharp_bounds_and_variance`; resolution
+`repair_and_prove`.
 
-The proof combines: (1) actual randomization moments;
-(2) finite quantile quadrature on the rank cells `(j/N, (j+1)/N)`;
-(3) concentration of every coupling with the empirical marginal CDFs on the finite
-grid. After subtracting the marginal minima, its product moment is a nonnegative
-combination of joint upper-tail probabilities (in finite layer form,
-`x - a₍₁₎ = Σ_j Δ_j 1{a₍ⱼ₎ ≤ x}`). These probabilities lie between the Fréchet bounds
+The frozen draft quantifies only over `N`-point pairings `z1, z0` with the given marginal
+multisets, while Lemma 1 (p. 853; proof pp. 859–860) ranges over all joint distributions
+with the empirical marginals `G_N, F_N`.  The repaired contract (mapper record 9, accepted
+by both referees) is the conjunction of *every* conclusion of the frozen
+`sharp_bounds_and_variance` with *every* conclusion of the frozen (also drafted)
+`hoeffding_all_couplings`; the `example` below checks that `Target` is equivalent to that
+conjunction.
+
+Paper proof (map record 9): (1) actual randomization moments (shared
+`RandomizationVariance`); (2) finite quantile quadrature on the rank cells
+`(j/N, (j+1)/N)`; (3) every coupling with the empirical marginal CDFs is concentrated on the
+finite grid, and after subtracting the marginal minima its product moment is a nonnegative
+combination of joint upper-tail probabilities (here in the finite "layer" form
+`x - a₍₁₎ = Σ_j Δ_j 1{a₍ⱼ₎ ≤ x}`), which lie between the Fréchet bounds
 `max(0, p+q-1)` and `min(p, q)`, attained by the sorted and reverse-sorted pair laws;
-(4) each finite pairing is such a coupling, and equation (2) is increasing affine
-in the covariance.
+(4) each finite pairing is such a coupling, and (2) is increasing affine in the covariance.
+
+Nodes: shared `RandomizationVariance.N1`–`N4`, and `N1`–`N12` below.
+Writers prove `theorem nk_proof : Nk` in `AronowAudit/P022/Wave1/SharpBounds/Nk.lean`.
+Final file: `AronowAudit/P022/Wave1/SharpBounds.lean`, theorem
+`AronowAudit.P022.Wave1.sharp_bounds_variance_and_all_couplings`.
 -/
 
 set_option autoImplicit false
@@ -41,9 +52,8 @@ def sortedIncrement {N : ℕ} (y : Fin N → ℝ) (j : Fin N) : ℝ :=
     sortedValues y j - sortedValues y ⟨j.val - 1, lt_of_le_of_lt (Nat.sub_le _ _) j.isLt⟩
   else 0
 
-/-- **Target (P022-T13).** Unbiasedness, the randomization variance formula, and sharp
-bounds for finite pairings and all compatible couplings, with attainment
-(Section 2, p. 851; Lemma 1, p. 853). -/
+/-- **Target (P022-T13, repaired).** Every conclusion of `sharp_bounds_and_variance` and of
+`hoeffding_all_couplings` (Section 2, p. 851; Lemma 1, p. 853). -/
 def Target : Prop :=
   ∀ (d : Design) (y1 y0 : Fin d.N → ℝ),
     designExpectation d (estimatedEffect d y1 y0) = averageEffect d y1 y0 ∧
@@ -72,41 +82,71 @@ def Target : Prop :=
             f (empiricalQuantile y1 u, empiricalQuantile y0
               (if B = BoundSide.H then u else 1 - u)))
 
-/-! ## Component propositions -/
+/-- Fidelity check: `Target` is equivalent to the conjunction of the two frozen drafts'
+statements (only their *types* are read; their unfinished draft proofs are never used). -/
+example : Target ↔ (type_of% @AronowAudit.P022.sharp_bounds_and_variance) ∧
+    (type_of% @AronowAudit.P022.hoeffding_all_couplings) := by
+  constructor
+  · intro hT
+    exact ⟨fun d y1 y0 => ⟨(hT d y1 y0).1, (hT d y1 y0).2.1, (hT d y1 y0).2.2.1,
+        (hT d y1 y0).2.2.2.1, (hT d y1 y0).2.2.2.2.1⟩,
+      fun d y1 y0 => ⟨(hT d y1 y0).2.2.2.2.2.1, (hT d y1 y0).2.2.2.2.2.2⟩⟩
+  · rintro ⟨h1, h2⟩ d y1 y0
+    obtain ⟨a, b, c, e, f⟩ := h1 d y1 y0
+    obtain ⟨g, i⟩ := h2 d y1 y0
+    exact ⟨a, b, c, e, f, g, i⟩
 
-/-- Averages of any real function of an array are invariant under permutation
-of its entries. -/
+/-! ## Nodes -/
+
+/-- **Node N1** (map record 9, step 2/4: "Sorting permutes each marginal multiset,
+preserving means and variances"). Averages of any function of an array are invariant under
+permutation of its entries. Suggested route: `finiteMean v = (List.ofFn v).sum / N`
+(`Finset.expect_eq_sum_div_card`, `List.sum_ofFn`), `List.Perm.map`, `List.Perm.sum_eq`. -/
 def N1 : Prop :=
   ∀ {N : ℕ} (z y : Fin N → ℝ), List.Perm (List.ofFn z) (List.ofFn y) →
     ∀ g : ℝ → ℝ, finiteMean (fun i => g (z i)) = finiteMean (fun i => g (y i))
 
-/-- `sortedValues` is a monotone rearrangement retaining duplicates;
-its reversal is also a rearrangement. -/
+/-- **Node N2** (map record 9, step 2: "Let a_1≤...≤a_N ... be the sorted arrays,
+retaining duplicates"). `sortedValues` is a sorted rearrangement, and so is its reversal.
+Suggested route: `List.mergeSort_perm`, `List.length_mergeSort`, `List.sortedLE_mergeSort`
+(or `List.pairwise_mergeSort`), `List.ofFn_getElem`/`List.getD_eq_getElem`, and
+`Fin.revPerm` for the reversed list. -/
 def N2 : Prop :=
   ∀ {N : ℕ} (y : Fin N → ℝ),
     List.Perm (List.ofFn (sortedValues y)) (List.ofFn y) ∧
     List.Perm (List.ofFn (fun i => sortedValues y i.rev)) (List.ofFn y) ∧
     Monotone (sortedValues y)
 
-/-- On the open rank cell `(j/N, (j+1)/N)`,
-`empiricalQuantile y u = sortedValues y j` and
-`empiricalQuantile y (1 - u) = sortedValues y j.rev`. -/
+/-- **Node N3** (map record 9, step 2: "Except at the finitely many endpoints j/N,
+empiricalQuantile equals a_j on ((j-1)/N,j/N)"). Rank cells, zero-based: on
+`(j/N, (j+1)/N)` one has `⌈N u⌉ = j+1` and `⌈N(1-u)⌉ = N-j`, so the quantile is
+`sortedValues y j` and the reflected quantile is `sortedValues y j.rev`.
+Suggested route: `Nat.ceil_eq_iff`, `orderStatistic`, `List.getD`. -/
 def N3 : Prop :=
   ∀ {N : ℕ} (y : Fin N → ℝ) (j : Fin N) (u : ℝ),
     (j : ℝ) / N < u → u < ((j : ℝ) + 1) / N →
       empiricalQuantile y u = sortedValues y j ∧
       empiricalQuantile y (1 - u) = sortedValues y j.rev
 
-/-- For `N ≠ 0`, the integral over `[0,1]` of a function constant on each
-open rank cell is the finite mean of those constants. Values at the finitely
-many cell endpoints do not affect the integral. -/
+/-- **Node N4** (map record 9, step 2: "Endpoints have Lebesgue measure zero, so the
+totalized rank conventions do not affect any integral"). Interval integral of a function
+that is constant on each open rank cell. `F` is arbitrary off the cells (a finite null set).
+Suggested route: `intervalIntegral.sum_integral_adjacent_intervals` on the knots `j/N`, and
+on each cell `intervalIntegral.integral_congr_ae` (or `integral_Ioc` with
+`MeasureTheory.setIntegral_congr_ae` after removing the right endpoint) plus
+`intervalIntegral.integral_const`. -/
 def N4 : Prop :=
   ∀ {N : ℕ} [NeZero N] (F : ℝ → ℝ) (c : Fin N → ℝ),
     (∀ (j : Fin N) (u : ℝ), (j : ℝ) / N < u → u < ((j : ℝ) + 1) / N → F u = c j) →
       ∫ u in (0 : ℝ)..1, F u = finiteMean c
 
-/-- Integrals, marginal CDFs, joint upper-tail probabilities,
-and covariance of the empirical pair law `(1/N) Σ_i δ_(z1 i, z0 i)`. -/
+/-- **Node N5** (map record 9, step 3: "Explicit endpoint measures are
+J_H=(1/N)sum_j delta_(a_j,b_j) ... Borel probability measures"; step 4: "Any arrays z1,z0
+... define the probability measure (1/N)sum_i delta_(z1_i,z0_i)"). Integrals, marginal
+CDFs, joint upper-tail probabilities and covariance of an empirical pair law.
+Suggested route: `ProbabilityMeasure.toMeasure_map`, `integral_map` (every map out of
+`Fin N` is measurable: `measurable_of_finite`/`Measurable.of_discrete`), `PMF.integral_eq_sum`,
+`PMF.toMeasure_uniformOfFintype_apply`, `Measure.map_apply`, and `N12` for the covariance. -/
 def N5 : Prop :=
   ∀ {N : ℕ} [NeZero N] (z1 z0 : Fin N → ℝ),
     (∀ g : ℝ × ℝ → ℝ, Measurable g →
@@ -117,18 +157,25 @@ def N5 : Prop :=
       finiteMean (fun i => if c ≤ z1 i ∧ e ≤ z0 i then (1 : ℝ) else 0)) ∧
     lawCovariance (pairLaw z1 z0) = finiteCovariance z1 z0
 
-/-- The marginals of a joint law with the empirical marginal CDFs equal
-the empirical marginal measures. -/
+/-- **Node N6** (map record 9, step 3: "Equality of CDFs implies equality of the
+one-dimensional Borel marginal measures"). The marginals of a compatible law are the
+empirical laws. Suggested route: `MeasureTheory.Measure.ext_of_Iic` (finite measures on
+`ℝ`), `Measure.map_apply` with `measurable_fst`/`measurable_snd` and `measurableSet_Iic`,
+and `PMF.toMeasure_uniformOfFintype_apply` to evaluate `empiricalCDF`. -/
 def N6 : Prop :=
   ∀ {N : ℕ} [NeZero N] (y1 y0 : Fin N → ℝ) (J : JointLaw),
     J ∈ empiricalCompatibleLaws y1 y0 →
       (J : Measure (ℝ × ℝ)).map Prod.fst = ((unitLaw N : Measure (Fin N))).map y1 ∧
       (J : Measure (ℝ × ℝ)).map Prod.snd = ((unitLaw N : Measure (Fin N))).map y0
 
-/-- A joint law with the empirical marginals is almost surely
-supported on their finite product support. Every measurable real function is
-integrable under this law; its marginal means and upper-tail probabilities
-equal the corresponding finite means. -/
+/-- **Node N7** (map record 9, step 3: "Consequently its first coordinate lies almost
+surely in the finite support of y1 and its second in that of y0. Both coordinates and
+their product are bounded almost surely; all stated integrals exist and their marginal
+means equal the finite means"). Consequences of the marginal identification: a.e. finite
+support, integrability of every measurable function (it is bounded on the support), the
+marginal means, and the marginal upper-tail probabilities.
+Suggested route: `ae_map_iff`/`MeasureTheory.ae_of_ae_map` for the support,
+`Integrable.of_bound`-style bounds on the finite grid, `integral_map` for the means. -/
 def N7 : Prop :=
   ∀ {N : ℕ} [NeZero N] (y1 y0 : Fin N → ℝ) (J : JointLaw),
     (J : Measure (ℝ × ℝ)).map Prod.fst = ((unitLaw N : Measure (Fin N))).map y1 →
@@ -141,16 +188,21 @@ def N7 : Prop :=
       (∀ e : ℝ, ((J : Measure (ℝ × ℝ)) {p | e ≤ p.2}).toReal =
         finiteMean (fun i => if e ≤ y0 i then (1 : ℝ) else 0))
 
-/-- Assuming `N2`, sorted increments are nonnegative and every array value
-has the layer representation `x - a₍₀₎ = Σ_j Δ_j 1{a₍ⱼ₎ ≤ x}`. -/
+/-- **Node N8** (map record 9, step 3: "Subtract the finite marginal minima A,B, giving
+X'=X-A≥0 ... E[X'Y']=integral ... P(X'>s,Y'>t)"; finite layer form). For a value `x` of
+the array, `x - a₍₀₎ = Σ_j Δ_j 1{a₍ⱼ₎ ≤ x}` with nonnegative increments `Δ_j`
+(telescoping over the initial segment `{j | a₍ⱼ₎ ≤ x}`). Stated as a consequence of `N2`. -/
 def N8 : Prop :=
   N2 → ∀ {N : ℕ} [NeZero N] (y : Fin N → ℝ),
     (∀ j, 0 ≤ sortedIncrement y j) ∧
     ∀ x ∈ Set.range y, x - sortedValues y 0 =
       ∑ j, sortedIncrement y j * (if sortedValues y j ≤ x then (1 : ℝ) else 0)
 
-/-- Joint upper-tail frequencies of two monotone arrays attain
-the upper Fréchet bound. Reversing one array attains the lower Fréchet bound. -/
+/-- **Node N9** (map record 9, step 3: "For aligned quantiles, both upper-tail events are
+terminal intervals ... intersection has length min(p_s,q_t). For reversed quantiles, one
+is terminal and one initial, giving length max(0,p_s+q_t-1)"). Joint upper-tail
+frequencies of monotone (resp. monotone and antitone) arrays. Suggested route: the sets
+`{i | c ≤ s i}` are upper sets of `Fin N` (`Finset.filter`, `Fin.rev` is an involution). -/
 def N9 : Prop :=
   ∀ {N : ℕ} (s1 s0 : Fin N → ℝ), Monotone s1 → Monotone s0 → ∀ c e : ℝ,
     finiteMean (fun i => if c ≤ s1 i ∧ e ≤ s0 i then (1 : ℝ) else 0) =
@@ -160,9 +212,13 @@ def N9 : Prop :=
       max 0 (finiteMean (fun i => if c ≤ s1 i then (1 : ℝ) else 0) +
         finiteMean (fun i => if e ≤ s0 i then (1 : ℝ) else 0) - 1)
 
-/-- Given the two marginal layer identities, almost-sure finite-grid support,
-integrability and the marginal means, covariance equals the weighted sum of joint
-upper-tail probabilities minus the product of the shifted marginal means. -/
+/-- **Node N10** (map record 9, step 3: "By Tonelli applied to the bounded nonnegative
+indicators ... Adding back A E Y'+B E X'+AB preserves the bounds"). Layer representation of
+the covariance of a law concentrated on the grid, given the two layer identities (supplied
+by `N8`) and the marginal means. Integrate the a.e. identity
+`(p.1-a)(p.2-b) = Σ_j Σ_l Δ¹_j Δ⁰_l 1{a_j ≤ p.1} 1{b_l ≤ p.2}` (`integral_congr_ae`,
+`integral_finset_sum`, `integral_indicator_one`/`integral_indicator_const`), then expand
+`(p.1-μ1)(p.2-μ0)`. -/
 def N10 : Prop :=
   ∀ {N : ℕ} [NeZero N] (y1 y0 : Fin N → ℝ) (J : JointLaw),
     (∀ x ∈ Set.range y1, x - sortedValues y1 0 =
@@ -178,8 +234,10 @@ def N10 : Prop :=
             sortedValues y0 l ≤ p.2}).toReal) -
         (finiteMean y1 - sortedValues y1 0) * (finiteMean y0 - sortedValues y0 0)
 
-/-- Inclusion/exclusion bounds `P(c ≤ X, e ≤ Y)` above by `min(p,q)`
-and below by `p+q-1`, where `p = P(c ≤ X)` and `q = P(e ≤ Y)`. -/
+/-- **Node N11** (map record 9, step 3: "elementary inclusion/exclusion gives
+max(0,p_s+q_t-1)≤P(X'>s,Y'>t)≤min(p_s,q_t)"). Fréchet bounds for a joint upper-tail
+probability. Suggested route: `measure_mono`, `measure_union_le`, `prob_le_one`,
+`ENNReal.toReal_mono`. -/
 def N11 : Prop :=
   ∀ (J : JointLaw) (c e : ℝ),
     ((J : Measure (ℝ × ℝ)) {p | c ≤ p.1 ∧ e ≤ p.2}).toReal ≤
@@ -189,12 +247,13 @@ def N11 : Prop :=
         ((J : Measure (ℝ × ℝ)) {p | e ≤ p.2}).toReal - 1 ≤
       ((J : Measure (ℝ × ℝ)) {p | c ≤ p.1 ∧ e ≤ p.2}).toReal
 
-/-- Finite covariance is the mean of the products minus the product of the means. -/
+/-- **Node N12** (finite moment algebra, as `finite_variance_second_moment`). The finite
+covariance is the mean product minus the product of means. -/
 def N12 : Prop :=
   ∀ {N : ℕ} [NeZero N] (v w : Fin N → ℝ),
     finiteCovariance v w = finiteMean (fun i => v i * w i) - finiteMean v * finiteMean w
 
-/-! ## Consequences of the component statements -/
+/-! ## Glue (proved here from the nodes) -/
 
 theorem mean_perm (h1 : N1) {N : ℕ} {z y : Fin N → ℝ}
     (h : List.Perm (List.ofFn z) (List.ofFn y)) : finiteMean z = finiteMean y :=
@@ -226,8 +285,7 @@ theorem pair_compatible (h1 : N1) (h5 : N5) {N : ℕ} [NeZero N] {y1 y0 z1 z0 : 
   rw [((h5 z1 z0).2.1 x).1, ((h5 z1 z0).2.1 x).2, cdf_perm h1 hz1, cdf_perm h1 hz0]
   exact ⟨rfl, rfl⟩
 
-/-- The rank-cell identities `N3` and the step-integral identity `N4` imply
-finite quadrature for the paired empirical quantiles. -/
+/-- Quantile quadrature, assembled from the rank cells `N3` and the step integral `N4`. -/
 theorem quadrature (h3 : N3) (h4 : N4) {N : ℕ} [NeZero N] (y1 y0 : Fin N → ℝ)
     (B : BoundSide) (g : ℝ × ℝ → ℝ) :
     ∫ u in (0 : ℝ)..1, g (empiricalQuantile y1 u,
@@ -306,7 +364,7 @@ theorem compatible_facts (h1 : N1) (h2 : N2) (h6 : N6) (h7 : N7) (h8 : N8) (h10 
 
 /-! ## Assembly -/
 
-/-- The component propositions imply P022-T13. -/
+/-- **Assembly.** The nodes suffice for the repaired P022-T13 contract. -/
 theorem assemble (r1 : RandomizationVariance.N1) (r2 : RandomizationVariance.N2)
     (r3 : RandomizationVariance.N3) (r4 : RandomizationVariance.N4)
     (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7 : N7) (h8 : N8)

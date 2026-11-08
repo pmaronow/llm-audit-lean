@@ -2,7 +2,10 @@ import AronowAudit.P006.P006_CounterfactualMetrics
 import Mathlib.Topology.Order.Compact
 import Mathlib.Probability.Independence.Integration
 
-
+/-!
+Draft proofs for GP006B1. This file has deliberately not been run through Lean.
+The held declarations are used only by the two `type_of%` checks.
+-/
 
 namespace AronowAudit.P006.Wave1
 
@@ -249,6 +252,8 @@ theorem T2_finite_threshold_proof {K : ℕ} (hK : 0 < K) (n : ℕ) (hn : 0 < n)
   · exact T2_population_conditional_rule p m hp ⟨0, hK⟩
       (fun i => hm (show (⟨0, hK⟩ : Fin K) ≤ i from Nat.zero_le i.val))
 
+example : type_of% @AronowAudit.P006.T2_finite_threshold := T2_finite_threshold_proof
+
 /-! ## P006-T24: event means and the normalized untreated law -/
 
 private lemma T24_union_mixture {Ω : Type*} [MeasurableSpace Ω]
@@ -413,6 +418,9 @@ theorem T24_corrected_identification_proof {Ω : Type*} [MeasurableSpace Ω]
       hm.1 hnot hYν hindnot hpnot
     rw [hnotset, hνevent, hνint, hHA] at hmean
     exact hmean
+
+example : type_of% @AronowAudit.P006.T24_corrected_identification :=
+  T24_corrected_identification_proof
 
 end
 

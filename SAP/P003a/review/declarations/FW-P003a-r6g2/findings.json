@@ -1,0 +1,69 @@
+[
+  {
+    "target_id": "P003-T5",
+    "theorem": "SAP.P003a.T5",
+    "fingerprint": "2b76fc4ac2d2f8b39372cd2acf03d2e0cc31e9a83df25b4d4be6347199de741c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0). The threshold hypotheses are instantiated on [-2,2] with r=-1 and f(x)=decide(-1<x). Concrete runs check the interior threshold, both extreme sentinel thresholds, singleton domains, and time-dependent replies. A balanced observed vector (7,1,0,8), m=8, n=16 satisfies every balanced-design hypothesis, including n>=15; costs 34 at zero and 17 elsewhere satisfy both per-query premises for every possible reply sequence. All logarithm and statistical denominators are positive in the claimed uses.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T11",
+    "theorem": "SAP.P003a.T11",
+    "fingerprint": "bc79256095facd7b54a7d00f1c7a0cdc6c8bbb5fcd1ec3022362a64f33dd8ae7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0), independently of the Challenge theorems: n=2, m=1, alpha=1/2, y constantly (false,false), an explicit size-one assignment, assignment-space cardinality 2, SATE zero, and estimator zero at every assignment. Both the labeled and multiplicity-weighted count tails equal 1 for x<=0 and 0 for x>0. The rejecting set is exactly (0,infinity), with no least element. The printed-reading checklist in claim-stage.json verifies all conditions, including the uniform law of a fresh independent design draw; the canonical target explicitly asserts this counterexample and its universal generalization, so decision whole is correct.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T12",
+    "theorem": "SAP.P003a.T12",
+    "fingerprint": "9ce6785d82b4903b62519172c90cc903935e73ee70580dc254bc6fc337dd34b2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0). On Fin 2, weights (1/2,1/2), D=(0,1), and alpha=3/4 meet strict weight positivity, normalization, and interior-level hypotheses, with rejecting probability 1/2. A constant D gives the empty-rejection case. The finite-support measure hypothesis is instantiated by dirac 0 on carrier {0}. The actual-experiment hypotheses use the legal all-zero n=2,m=1,alpha=1/2 experiment, with a labeled possible true table, its count vector (0,0,0,2), observed counts (0,1,0,1), and exact p-value 1. Positive arms and normalization exclude all zero-denominator and toReal-infinity conventions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T13",
+    "theorem": "SAP.P003a.T13",
+    "fingerprint": "ef3d29c1707be1c0551798bb621f464301870b31054e8a114ddee1535ab72c78",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0). A twenty-label table with ten (true,true) and ten (false,false) pairs realizes (10,0,0,10) and has SATE 0. The constant (true,false) twenty-label table realizes (0,20,0,0) and has SATE 1. Both satisfy the positive-population hypothesis; both rational printed-numerator discrepancies are independently checked. The general statement connects unit sums and count marginals before identifying the effect, so the identity is not assumed by its premises.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T14",
+    "theorem": "SAP.P003a.T14",
+    "fingerprint": "cae41edbc4fa24231f045464b676005a53fe023335b434c38bd44770a052191b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0). The integer zero mass is a normalized summable pmf and violates unrestricted printed decrease at -1<0. For k=2, the actual source-lattice point mass at physical 1/2 is independently proved nonnegative, summable, normalized, and to have a summable first-moment family. Its correct rescaling is unit mass at integer 1; the printed rescaling is zero at every integer. The general pmf and pushforward statements require no moment, while the mean assertions are guarded by the ordinary absolute-first-moment condition. Positive k excludes lattice collapse and division by zero.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "The general source-lattice conjunct omitted the canonical lattice symmetry and SD clauses; adjacent W2LatticeSymmetric and W2LatticeSD definitions were unused and absent from the elaborated closure.",
+        "status": "fixed",
+        "reason": "SAP/P003a/Defs/WholeW2.lean:221 now quantifies over every integer twice-center and states the source-lattice symmetry clause; line 223 states the SD clause. Both definitions (lines 194 and 197) are now present in T14's closure.json entry and the independently inspected elaborated statement. Their definitional character is appropriate: the canonical claim itself defines lattice symmetry and SD through g(j)=f(j/k). The substantive pmf, pushforward, moment and mean clauses remain present at lines 219-228."
+      },
+      {
+        "earlier_issue": "The whole decision with no restriction and the docstrings overstated the source-lattice scope while the symmetry and SD definitions were absent from the audited statement.",
+        "status": "fixed",
+        "reason": "The added clauses at SAP/P003a/Defs/WholeW2.lean:221 and line 223 supply the formerly missing scope. SAP/P003a/Challenge/Part2.lean:15 and SAP/P003a/Defs/WholeW2.lean:210 now describe physical center c2/(2k), reflection through g, and SD through IsSD g accurately. The whole decision at record.json:87, null restriction at line 89, and scope note at line 101 agree with the current statement. No step-2 conclusion was changed after reading the record."
+      }
+    ]
+  }
+]

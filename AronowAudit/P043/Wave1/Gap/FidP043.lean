@@ -100,6 +100,12 @@ lemma mediationRepair_arm_probability {Ω : Type*} [MeasurableSpace Ω]
   rw [mediationRepair_arm_set, measureReal_prod_prod]
   simp [mediationRepair_bernoulli_arm_probability]
 
+lemma mediationRepair_assignment_independent {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (p : unitInterval) :
+    IndepFun (fun z : Ω × Bool => z.2) (fun z : Ω × Bool => z.1)
+      (randomizedLaw μ p) := by
+  exact (indepFun_prod (μ := μ) (ν := bernoulliMeasure true false p)
+    (X := id) (Y := id) measurable_id measurable_id).symm
 
 /-- Restrict the observed response to its assignment arm, then integrate the
 fixed potential branch against the restricted product law. -/
@@ -147,8 +153,8 @@ lemma mediationRepair_contrast_eq {Ω : Type*} [MeasurableSpace Ω]
   rw [lawContrast, mediationRepair_arm_mean_eq μ p hp true f (hf true),
     mediationRepair_arm_mean_eq μ p hp false f (hf false)]
 
-/-- Identification and the mediation comparison require exactly the five
-finite expectations specified by the hypotheses. -/
+/-- Identification and the mediation comparison use exactly the five finite
+expectations in the approved contract. -/
 lemma mediationRepair_comparison {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ]
     (p : unitInterval) (hp : 0 < (p : ℝ) ∧ (p : ℝ) < 1)

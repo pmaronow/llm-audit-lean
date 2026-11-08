@@ -14,8 +14,10 @@ import Mathlib.Data.Nat.Bits
 
 /-!
 P011: Confidence Intervals for Linear Unbiased Estimators under Constrained Dependence.
-Published EJS 12 (2018), pp. 2238–2252.
-Finite certificates are separate from the asymptotic claims they support.
+Published EJS 12 (2018), pp. 2238–2252. Target numbering is from targets.json.
+All declarations with `sorry` are drafts, including false printed claims.
+No named mathematical axioms are introduced. Finite certificates are separate
+from the asymptotic claims they support.
 -/
 namespace AronowAudit.P011
 
@@ -53,15 +55,15 @@ def centered {n : ℕ} (x : Fin n → ℝ) : Fin n → ℝ := fun i => x i - ave
 /-- Equation (3.1), p. 2242: "σ̂²_θ = n⁻¹ ∑ (θᵢYᵢ − β̂)²". -/
 def sampleVariance {n : ℕ} (x : Fin n → ℝ) : ℝ := (∑ i, centered x i ^ 2) / n
 
-/-- The quadratic form `xᵀMx`, with double sums over ordered pairs. -/
+/-- Audit notation S9: xᵀMx, with double sums over ordered pairs. -/
 def quadratic {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ) (x : Fin n → ℝ) : ℝ :=
   ∑ i, ∑ j, M i j * x i * x j
 
-/-- The oracle matrix `S = I + A`. -/
+/-- Audit notation S9: S = I + A. -/
 def oracleMatrix {n : ℕ} (A : Graph n) : Matrix (Fin n) (Fin n) ℝ :=
   1 + adjacency A
 
-/-- The centered variance form `V̂_M = n⁻² eᵀMe`, where `e = θY − β̂1`. -/
+/-- Correction (F1): V̂_M = n⁻² eᵀMe, e = θY − β̂1. -/
 def varianceForm {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ) (x : Fin n → ℝ) : ℝ :=
   quadratic M (centered x) / (n : ℝ)^2
 
@@ -80,19 +82,19 @@ def truncatedDegree {n : ℕ} (d : Fin n → ℕ) (i : Fin n) : ℕ := min (d i)
 def V2prime {n : ℕ} (d : Fin n → ℕ) (x : Fin n → ℝ) : ℝ :=
   sampleVariance x / n * (1 + (∑ i, (truncatedDegree d i : ℝ)) / n)
 
-/-- Degree correction: tᵢ = 1 − 1/dᵢ′ for dᵢ′ > 0, and 0 at dᵢ′ = 0. -/
+/-- Correction F2: tᵢ = 1 − 1/dᵢ′ for dᵢ′ > 0, and 0 at dᵢ′ = 0. -/
 def degreeCorrection {n : ℕ} (d : Fin n → ℕ) (i : Fin n) : ℝ :=
   if truncatedDegree d i = 0 then 0 else 1 - 1 / (truncatedDegree d i : ℝ)
 
-/-- The corrected matrix M_A = I + A + diag(tᵢ dᵢᴬ). -/
+/-- Correction F2: M_A = I + A + diag(tᵢ dᵢᴬ). -/
 def correctedMatrix {n : ℕ} (d : Fin n → ℕ) (A : Graph n) : Matrix (Fin n) (Fin n) ℝ :=
   oracleMatrix A + Matrix.diagonal (fun i => degreeCorrection d i * degree A i)
 
-/-- The corrected estimator V̂₁⁺ adds n⁻²∑tᵢdᵢᴬeᵢ² to (3.1). -/
+/-- Correction F2: V̂₁⁺ adds n⁻²∑tᵢdᵢᴬeᵢ² to (3.1). -/
 def V1plus {n : ℕ} (d : Fin n → ℕ) (A : Graph n) (x : Fin n → ℝ) : ℝ :=
   V1 A x + (∑ i, degreeCorrection d i * degree A i * centered x i ^ 2) / (n : ℝ)^2
 
-/-- The degree-weighted estimator V̂_Y′ = n⁻²∑(1+dᵢ′)eᵢ²; no homoskedasticity assumption. -/
+/-- Correction F3: V̂_Y′ = n⁻²∑(1+dᵢ′)eᵢ²; no homoskedasticity assumption. -/
 def VYoung {n : ℕ} (d : Fin n → ℕ) (x : Fin n → ℝ) : ℝ :=
   (∑ i, (1 + (truncatedDegree d i : ℝ)) * centered x i ^ 2) / (n : ℝ)^2
 
@@ -112,13 +114,13 @@ structure Model (n : ℕ) where
   R : Graph n
   d : Fin n → ℕ
 
-/-- "Xᵢ = θᵢYᵢ", with nonrandom coefficients from Assumption 1. -/
+/-- S9: "Xᵢ = θᵢYᵢ", with nonrandom coefficients from Assumption 1. -/
 def weighted {n : ℕ} (m : Model n) (y : Fin n → ℝ) : Fin n → ℝ := fun i => m.theta i * y i
 
 /-- Definition 3, p. 2240: the random linear estimator. -/
 def betaHat {n : ℕ} (m : Model n) (y : Fin n → ℝ) : ℝ := average (weighted m y)
 
-/-- Expectation with respect to the joint outcome law. -/
+/-- S10(a): expectation with respect to the joint outcome law. -/
 def expectation {n : ℕ} (m : Model n) (f : (Fin n → ℝ) → ℝ) : ℝ := ∫ y, f y ∂m.law
 
 /-- Definition 3, p. 2240: "E[β̂] = β". The target may depend on n. -/
@@ -129,13 +131,13 @@ All uses in bounded models have finite second moments. -/
 def var {n : ℕ} (m : Model n) (f : (Fin n → ℝ) → ℝ) : ℝ :=
   expectation m (fun y => (f y - expectation m f)^2)
 
-/-- C is the covariance matrix of the weighted outcomes. -/
+/-- S9: C is the covariance matrix of the weighted outcomes. -/
 def covariance {n : ℕ} (m : Model n) : Matrix (Fin n) (Fin n) ℝ := fun i j =>
   expectation m (fun y =>
     (weighted m y i - expectation m (fun z => weighted m z i)) *
     (weighted m y j - expectation m (fun z => weighted m z j)))
 
-/-- "δᵢ = E[Xᵢ] − β"; unbiasedness only forces their sum to be zero. -/
+/-- S9: "δᵢ = E[Xᵢ] − β"; unbiasedness only forces their sum to be zero. -/
 def delta {n : ℕ} (m : Model n) : Fin n → ℝ :=
   fun i => expectation m (fun y => weighted m y i) - beta m
 
@@ -173,7 +175,8 @@ structure Family where
   model : ∀ k, Model (size k)
 
 /-- Assumption 2's "nested graphs ... and observed data": observed vertices
-embed and the induced true graphs are nested. Each n has its own joint law; projective equality of the laws is not an added hypothesis. In
+embed and the induced true graphs are nested. Each n has its own joint law
+(S10(a)); projective equality of the laws is not an added hypothesis. In
 particular the triangular-array example T9(d) changes its raw outcomes with n. -/
 def Nested (F : Family) : Prop := Monotone F.size ∧ ∀ k,
   ∃ e : Fin (F.size k) ↪ Fin (F.size (k+1)),
@@ -190,10 +193,10 @@ def Scaling (F : Family) (c1 c2 c3 c4 : ℝ) : Prop :=
   Tendsto (fun k => (F.size k : ℝ) * var (F.model k) (betaHat (F.model k)))
     atTop (𝓝 c3) ∧ (∀ k i, |(F.model k).theta i| < c4)
 
-/-- Recruitment edges and supplied degree constraints are valid. -/
+/-- S10(h): recruitment edges and supplied degree constraints are valid. -/
 def Valid (F : Family) : Prop := ∀ k, Compatible (F.model k).R (F.model k).d (F.model k).G
 
-/-- Event probability under the joint law, as a real number. -/
+/-- S10(a),(c): event probability under the joint law, as a real number. -/
 def probability {n : ℕ} (m : Model n) (E : Set (Fin n → ℝ)) : ℝ := m.law.real E
 
 /-- Convergence in probability, with a possibly varying deterministic centre. -/
@@ -214,12 +217,12 @@ def Phi (t : ℝ) : ℝ := ProbabilityTheory.cdf (ProbabilityTheory.gaussianReal
 /-- z_{1−α/2} = Φ⁻¹(1−α/2), Section 4; generalized inverse of the normal cdf. -/
 def normalQuantile (α : ℝ) : ℝ := sInf {t : ℝ | 1 - α / 2 ≤ Phi t}
 
-/-- T39: coverage of the well-defined clipped interval
+/-- Corrected S10(d) and T39: coverage of the well-defined clipped interval
 β̂ ± z sqrt(max(V,0)). Printed V1 intervals use printedCoverage instead. -/
 def coverage {n : ℕ} (m : Model n) (V : (Fin n → ℝ) → ℝ) (α : ℝ) : ℝ :=
   probability m {y | |betaHat m y - beta m| ≤ normalQuantile α * Real.sqrt (max (V y) 0)}
 
-/-- Conditional Proposition 3: "at least ... coverage ...
+/-- Corrected S10(d) and conditional Proposition 3: "at least ... coverage ...
 in large n", pp. 2247–2248, as liminf coverage of the clipped interval. -/
 def ConservativeCoverage (F : Family) (V : ∀ k, (Fin (F.size k) → ℝ) → ℝ) : Prop :=
   ∀ α : ℝ, 0 < α → α < 1 →
@@ -239,19 +242,20 @@ def PrintedConservativeCoverage (F : Family) (V : ∀ k, (Fin (F.size k) → ℝ
     1-α ≤ Filter.liminf (fun k => printedCoverage (F.model k) (V k) α) atTop
 
 /-- Matrix positivity in the real setting: symmetric and nonnegative quadratic form.
-This is the positive semidefinite condition for the variance matrices. -/
+This is the positive semidefinite condition used in corrections F1–F4. -/
 def PSD {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ) : Prop :=
   (∀ i j, M i j = M j i) ∧ ∀ x, 0 ≤ quadratic M x
 
 /-- Euclidean vector norm in the residual correction. -/
 def l2 {n : ℕ} (x : Fin n → ℝ) : ℝ := Real.sqrt (∑ i, x i ^ 2)
 
-/-- The spectral operator norm of a matrix. -/
+/-- Spectral operator norm, not the entrywise matrix norm, in correction F1. -/
 def operatorNorm {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ) : ℝ :=
   ‖(Matrix.toEuclideanLin M).toContinuousLinearMap‖
 
-/-- Clip the eigenvalues of a symmetric matrix at zero using its
-orthonormal eigenbasis. For a nonsymmetric matrix, return the zero matrix. -/
+/-- Correction F4: clip the eigenvalues of a symmetric matrix at zero.
+Mathlib supplies the orthonormal eigenbasis. The zero fallback is used only
+for nonsymmetric matrices, which are excluded in every F4 statement. -/
 def positivePart {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ) : Matrix (Fin n) (Fin n) ℝ :=
   if h : M.IsHermitian then
     (h.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℝ) *
@@ -259,12 +263,13 @@ def positivePart {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ) : Matrix (Fin n) (Fi
       (h.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℝ)ᵀ
   else 0
 
-/-- The known-graph estimator using the positive part of the oracle matrix. -/
+/-- Corrected known-graph estimator F4. -/
 def VPositive {n : ℕ} (A : Graph n) (x : Fin n → ℝ) : ℝ :=
   varianceForm (positivePart (oracleMatrix A)) x
 
-
-
+/- Revised Proposition 1, T3(i), p. 2242, with the previously omitted mean term.
+This draft asserts the complete moving-target convergence under Assumption 2. -/
+/- The unchanged revised_oracle_convergence contract is proved in P011_OracleCompletion.lean. -/
 
 
 /-- A simple graph with no edges (used in T10, T11, T20 and T26). -/
@@ -440,22 +445,156 @@ def scaledTrue (F : Family) (k : ℕ) : ℝ := (F.size k : ℝ) * var (F.model k
 def scaledOracle (F : Family) (k : ℕ) (y : Fin (F.size k) → ℝ) : ℝ :=
   (F.size k : ℝ) * V1 (F.model k).G (weighted (F.model k) y)
 
+/-- T1(a)–(g): the complete concrete four-cycle counterexample, including every
+standing hypothesis, singleton compatibility, exact moments, failure probabilities,
+coverage loss, and the a=3 negative-estimate variant. Not claimed proved. -/
+theorem cycle_counterexample :
+    Scaling (cycleFamily (3/2)) (7/2) 2 4 2 ∧ Valid (cycleFamily (3/2)) ∧
+    (∀ k, Homoskedastic ((cycleFamily (3/2)).model k) ∧
+      (∀ i, expectation ((cycleFamily (3/2)).model k) (fun y => y i) =
+        (![3/2,-3/2,3/2,-3/2] : Fin 4 → ℝ) (localIndex (by decide) i)) ∧
+      (∀ i j, covariance ((cycleFamily (3/2)).model k) i j =
+        ((2 : ℝ) • (1 : Matrix (Fin ((cycleFamily (3/2)).size k))
+          (Fin ((cycleFamily (3/2)).size k)) ℝ) + adjacency ((cycleFamily (3/2)).model k).G) i j)) ∧
+    (∀ k, beta ((cycleFamily (3/2)).model k) = 0 ∧
+      scaledTrue (cycleFamily (3/2)) k = 4 ∧
+      meanBias ((cycleFamily (3/2)).model k) = -9/4 ∧
+      (∀ A, Compatible ((cycleFamily (3/2)).model k).R ((cycleFamily (3/2)).model k).d A
+        ↔ A = ((cycleFamily (3/2)).model k).G) ∧
+      expectation ((cycleFamily (3/2)).model k) (scaledOracle (cycleFamily (3/2)) k) =
+        7/4 - 12 / ((cycleFamily (3/2)).size k : ℝ) ∧
+      var ((cycleFamily (3/2)).model k) (scaledOracle (cycleFamily (3/2)) k) =
+        44 / ((cycleFamily (3/2)).size k : ℝ) - 96 / ((cycleFamily (3/2)).size k : ℝ)^2 -
+        288 / ((cycleFamily (3/2)).size k : ℝ)^3) ∧
+    InProbability (cycleFamily (3/2)) (scaledOracle (cycleFamily (3/2))) (fun _ => 7/4) ∧
+    (∀ ε : ℝ, 0 < ε → ε < 9/4 →
+      Tendsto (fun k => probability ((cycleFamily (3/2)).model k)
+        {y | |scaledOracle (cycleFamily (3/2)) k y - 4| > ε}) atTop (𝓝 1) ∧
+      Tendsto (fun k => probability ((cycleFamily (3/2)).model k)
+        {y | 4 - scaledOracle (cycleFamily (3/2)) k y > ε}) atTop (𝓝 1)) ∧
+    (∀ t : ℝ, Tendsto (fun k => probability ((cycleFamily (3/2)).model k)
+      {y | Real.sqrt ((cycleFamily (3/2)).size k : ℝ)*betaHat ((cycleFamily (3/2)).model k) y ≤ t})
+      atTop (𝓝 (Phi (t/2)))) ∧
+    (∀ α : ℝ, 0 < α → α < 1 →
+      Tendsto (fun k => coverage ((cycleFamily (3/2)).model k)
+        (fun y => V1 ((cycleFamily (3/2)).model k).G (weighted ((cycleFamily (3/2)).model k) y)) α)
+        atTop (𝓝 (2*Phi (normalQuantile α * Real.sqrt (7/16)) - 1)) ∧
+      2*Phi (normalQuantile α * Real.sqrt (7/16)) - 1 < 1-α) ∧
+    Scaling (cycleFamily 3) 5 2 4 2 ∧ Valid (cycleFamily 3) ∧
+    (∀ k, Homoskedastic ((cycleFamily 3).model k) ∧ beta ((cycleFamily 3).model k)=0 ∧
+      scaledTrue (cycleFamily 3) k=4) ∧
+    InProbability (cycleFamily 3) (scaledOracle (cycleFamily 3)) (fun _ => -5) ∧
+    probability (cycleModel 3 1) {y | y=(![5,-1,5,-1] : Fin 4 → ℝ)}=1/16 ∧
+    V1 cycleGraph (![5,-1,5,-1] : Fin 4 → ℝ) = -9/4 := by
+  sorry
+
+/-- T2(a)–(g): concrete path counterexample for t=1,2, including Assumptions 2,3,
+single compatible graph, exact expectation, limiting underestimate or negativity,
+and limiting undercoverage. Its regression representation is stated in path_ols below. -/
+theorem path_counterexample (t : ℝ) (ht : t = 1 ∨ t = 2) :
+    Scaling (pathFamily t) 6 2 (29/15) 2 ∧ Valid (pathFamily t) ∧
+    (∀ k, Homoskedastic ((pathFamily t).model k)) ∧
+    (∀ k, beta ((pathFamily t).model k) = 0 ∧ scaledTrue (pathFamily t) k = 29/15 ∧
+      (∀ A, Compatible ((pathFamily t).model k).R ((pathFamily t).model k).d A
+        ↔ A = ((pathFamily t).model k).G) ∧
+      expectation ((pathFamily t).model k) (scaledOracle (pathFamily t) k) =
+        (29-10*t^2)/15 - 217/(135*((k+1 : ℕ) : ℝ))) ∧
+    InProbability (pathFamily t) (scaledOracle (pathFamily t)) (fun _ => (29-10*t^2)/15) ∧
+    (t = 1 → (∀ ε : ℝ, 0 < ε → ε < 2/3 →
+      Tendsto (fun k => probability ((pathFamily t).model k)
+        {y | |scaledOracle (pathFamily t) k y - 29/15| > ε}) atTop (𝓝 1) ∧
+      Tendsto (fun k => probability ((pathFamily t).model k)
+        {y | 29/15-scaledOracle (pathFamily t) k y > ε}) atTop (𝓝 1)) ∧
+      (∀ α : ℝ, 0 < α → α < 1 →
+        Tendsto (fun k => coverage ((pathFamily t).model k)
+          (fun y => V1 ((pathFamily t).model k).G (weighted ((pathFamily t).model k) y)) α)
+          atTop (𝓝 (2*Phi (normalQuantile α * Real.sqrt (19/29)) - 1)) ∧
+        2*Phi (normalQuantile α * Real.sqrt (19/29)) - 1 < 1-α)) ∧
+    (t = 2 → Tendsto (fun k => probability ((pathFamily t).model k)
+      {y | V1 ((pathFamily t).model k).G (weighted ((pathFamily t).model k) y) < 0}) atTop (𝓝 1) ∧
+      (∀ α : ℝ, 0 < α → α < 1 →
+        Tendsto (fun k => coverage ((pathFamily t).model k)
+          (fun y => V1 ((pathFamily t).model k).G (weighted ((pathFamily t).model k) y)) α)
+          atTop (𝓝 0))) := by
+  sorry
+
+/-- T11(a)–(f): the alternating-means counterexample to both readings of the
+auxiliary consistency step, with positive-integer sample sizes including odd n.
+The finite residual moments are separately stated below. -/
+theorem alternating_counterexample :
+    Scaling alternatingFamily 2 1 1 2 ∧ Valid alternatingFamily ∧
+    (∀ k, Homoskedastic (alternatingFamily.model k) ∧ beta (alternatingFamily.model k) = 1 ∧
+      scaledTrue alternatingFamily k = alternatingWeight (k+1)^2) ∧
+    InProbability alternatingFamily
+      (fun k y => (k+1 : ℝ)*V2 (alternatingFamily.model k).G (weighted (alternatingFamily.model k) y)
+        - scaledTrue alternatingFamily k) (fun _ => 1) ∧
+    Tendsto (fun k => probability (alternatingFamily.model k)
+      {y | |(k+1 : ℝ)*V2 (alternatingFamily.model k).G (weighted (alternatingFamily.model k) y)
+        - scaledTrue alternatingFamily k| > 1/2}) atTop (𝓝 1) ∧
+    Tendsto (fun k => probability (alternatingFamily.model k)
+      {y | |(k+1 : ℝ)*V2 (alternatingFamily.model k).G (weighted (alternatingFamily.model k) y)
+        - scaledTrue alternatingFamily k| < 3/2}) atTop (𝓝 1) ∧
+    Conservative alternatingFamily
+      (fun k y => V2 (alternatingFamily.model k).G (weighted (alternatingFamily.model k) y)) := by
+  sorry
+
+/-- T15(a)–(f): saturated-star OLS intercept counterexample. The joint law is
+the exact conditional Bernoulli law in the target, realized by finite uniform draws.
+The comparison law shows the bias may also be positive. -/
+theorem star_counterexample :
+    Scaling (starFamily false) 1 3 (27/128) 2 ∧ Valid (starFamily false) ∧
+    (∀ k, Homoskedastic ((starFamily false).model k) ∧
+      (∀ᵐ y ∂((starFamily false).model k).law, ∀ i, y i=0 ∨ y i=1) ∧
+      (∀ i, expectation ((starFamily false).model k) (fun y => y i) =
+        (![3/4,1/4,1/4,1/4] : Fin 4 → ℝ) (localIndex (by decide) i)) ∧
+      (∀ i j, covariance ((starFamily false).model k) i j =
+        ((3/16 : ℝ) • (1 : Matrix (Fin ((starFamily false).size k))
+          (Fin ((starFamily false).size k)) ℝ) + (1/64 : ℝ) • adjacency ((starFamily false).model k).G) i j)) ∧
+    (∀ k, beta ((starFamily false).model k) = 3/8 ∧ scaledTrue (starFamily false) k = 27/128 ∧
+      meanBias ((starFamily false).model k) = -3/128 ∧
+      (∀ A, Compatible ((starFamily false).model k).R ((starFamily false).model k).d A
+        ↔ A = ((starFamily false).model k).G) ∧
+      expectation ((starFamily false).model k) (scaledOracle (starFamily false) k) =
+        3*(64*((k+1 : ℕ) : ℝ)-47)/(1024*((k+1 : ℕ) : ℝ))) ∧
+    InProbability (starFamily false) (scaledOracle (starFamily false)) (fun _ => 3/16) ∧
+    Tendsto (fun k => probability ((starFamily false).model k)
+      {y | 27/128 - scaledOracle (starFamily false) k y > 3/256}) atTop (𝓝 1) ∧
+    (∀ α : ℝ, 0 < α → α < 1 →
+      Tendsto (fun k => coverage ((starFamily false).model k)
+        (fun y => V1 ((starFamily false).model k).G (weighted ((starFamily false).model k) y)) α)
+        atTop (𝓝 (2*Phi (normalQuantile α * Real.sqrt (8/9)) - 1)) ∧
+      2*Phi (normalQuantile α * Real.sqrt (8/9)) - 1 < 1-α) ∧
+    Scaling (starFamily true) 1 3 (47/192) 2 ∧ Valid (starFamily true) ∧
+    (∀ k, beta ((starFamily true).model k) = 1/2 ∧ scaledTrue (starFamily true) k = 47/192) ∧
+    InProbability (starFamily true) (scaledOracle (starFamily true)) (fun _ => 53/192) ∧
+    (∀ upper : Bool,
+      InProbability (starFamily upper)
+        (fun k y => quadratic (oracleMatrix ((starFamily upper).model k).G)
+          (fun i => y i - (if upper then (![1/2,3/4,1/4,1/2] : Fin 4 → ℝ)
+            (localIndex (by decide) i) else (![3/4,1/4,1/4,1/4] : Fin 4 → ℝ)
+            (localIndex (by decide) i))) / ((starFamily upper).size k : ℝ))
+        (fun _ => if upper then 47/192 else 27/128)) := by
+  sorry
+
+/- T20(a)–(c): iid fair signs refute the printed '< ε ... → 0' display.
+Every standing hypothesis holds; the displayed probability actually tends to one. -/
+/- The unchanged printed_sign_counterexample contract is proved in P011_SignCompletion.lean. -/
 
 
-
-
-
-/-- Population-average marginal variance (not sample variance). -/
+/-- Audit notation: population-average marginal variance (not sample variance). -/
 def meanVariance {n : ℕ} (m : Model n) : ℝ := (∑ i, covariance m i i) / n
 
+/- T3(ii): the explicit O(1/n) expectation bound replacing the printed
+"asymptotic unbiasedness" step, with the mean term retained. -/
+/- The unchanged revised_oracle_expectation contract is proved in P011_ExpectationCompletion.lean. -/
 
+/- T3(iii): the plug-in sample variance concentrates about average marginal
+variance plus the between-unit mean variance, not about marginal variance alone. -/
+/- The unchanged revised_sample_variance contract is proved in P011_SampleCompletion.lean. -/
 
-
-
-
-
-
-
+/- T3(iv),(v): consistency iff bₙ→0; one-sided conservativeness of the oracle
+iff liminf bₙ≥0. Neither equivalence is asserted for the data-selected maximum. -/
+/- The unchanged oracle_mean_conditions contract is proved in P011_MeanCompletion.lean. -/
 
 /-- T3(vi): "a disjoint union of cliques" means that equality-or-adjacency is
 transitive; it is already reflexive and symmetric. Singleton cliques are included. -/
@@ -463,22 +602,27 @@ def CliqueUnion {n : ℕ} (A : Graph n) : Prop :=
   ∀ i j k, (i=j ∨ A.val i j = true) → (j=k ∨ A.val j k = true) →
     i=k ∨ A.val i k = true
 
+/- T3(vi): The unchanged clique_characterization statement is proved in
+P011_FiniteCompletion.lean, including the within-clique sum-of-squares identity. -/
 
-
-/-- The sample-centering projection `P = I − 11ᵀ/n`. -/
+/-- Correction F1: P = I − 11ᵀ/n is the sample-centering projection. -/
 def centeringMatrix (n : ℕ) : Matrix (Fin n) (Fin n) ℝ :=
   1 - (1/(n : ℝ)) • (fun _ _ => 1)
 
+/- T4(i): The unchanged quadratic_expectation contract is proved in
+P011_QuadraticCompletion.lean from weighted L2 moments, covariance bilinearity
+and finite centering/trace identities. -/
 
-
-
+/- T4(ii)–(iv): the unchanged deterministic_quadratic_expansion contract is proved
+in P011_DenseVarianceCompletion.lean, including the actual dense variance bound. -/
 
 /-- T4(v): the sample-dependent rank-one matrix XXᵀ/n of iid signs. -/
 def dataMatrix {n : ℕ} (x : Fin n → ℝ) : Matrix (Fin n) (Fin n) ℝ :=
   fun i j => x i*x j/n
 
-
-
+/- T4(v): bounded norm does not permit substitution of a data-dependent matrix
+into F1. The stochastic difference tends to 0, while its alleged bracket tends to −1. -/
+/- The unchanged data_dependent_expansion_failure contract is proved in P011_DataMatrixCompletion.lean. -/
 
 /-- Ordered representation of an unordered-edge sum, each edge counted once. -/
 def upperSum {n : ℕ} (f : Fin n → Fin n → ℝ) : ℝ := ∑ i, ∑ j with i < j, f i j
@@ -488,17 +632,21 @@ def maxAbs {n : ℕ} (x : Fin n → ℝ) : ℝ :=
   (Finset.univ.sup (fun i => (⟨|x i|, abs_nonneg (x i)⟩ : ℝ≥0)) : ℝ≥0)
 
 
-
-
+/- T5(b),(c),(h),(i): Assumption 2 and valid constraints suffice even when
+supplied degree bounds grow. All four repaired estimators are nonnegative and
+n-scaled conservative; constant degree caps make V̂_Y′ equal the paper's V̂₂′. -/
+/- The unchanged corrected_asymptotic contract is proved in P011_CorrectedAsymptoticCompletion.lean. -/
 
 /-- Frobenius squared norm used only for the nearest-PSD statement in T6. -/
 def frobeniusSq {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ) : ℝ := ∑ i, ∑ j, M i j^2
 
+/- T6(a)–(c): the positive part is a PSD majorant of I+A, bounded in spectral
+norm, and nearest in Frobenius norm; this does not assert a least Loewner majorant. -/
+/- The unchanged positive_part_finite contract is proved in P011_SpectralCompletion.lean. -/
 
-
-
-
-
+/- T6(b): known-graph spectral clipping is n-scaled conservative under exactly
+Assumption 2, without a condition on the unit means. -/
+/- The unchanged positive_part_conservative contract is proved in P011_SpectralCompletion.lean. -/
 
 /-- T6(d): cycle positive-part quadratic identity, exact for every real vector.
 The right side is a sum of squares, exposing the finite positivity argument. -/
@@ -509,15 +657,66 @@ theorem cycle_positive_identity (x : Fin 4 → ℝ) :
     Matrix.add_apply, Matrix.of_apply, Pi.add_apply, Pi.sub_apply, Matrix.one_apply]
   <;> ring
 
-/-- T6(c): the difference between the alternative PSD majorant and the oracle matrix. -/
+/-- T6(c): the exact alternative majorant specified by the correction. -/
 def cycleMajorantDifference : Matrix (Fin 4) (Fin 4) ℝ :=
   ![![17/20,-1/4,1/4,-17/20], ![-1/4,3/20,-3/20,1/4],
     ![1/4,-3/20,3/20,-1/4], ![-17/20,1/4,-1/4,17/20]]
 
+/-- T6(c),(d): the explicit majorant has δᵀMδ=3/5 while spectral clipping gives
+1 at δ=(0,1,−1,0); cycle F4 has expectation 4−12/n and tends to the true value 4. -/
+theorem positive_part_cycle_claims :
+    PSD (oracleMatrix cycleGraph + cycleMajorantDifference) ∧ PSD cycleMajorantDifference ∧
+    quadratic (oracleMatrix cycleGraph + cycleMajorantDifference) (![0,1,-1,0] : Fin 4 → ℝ) = 3/5 ∧
+    quadratic (positivePart (oracleMatrix cycleGraph)) (![0,1,-1,0] : Fin 4 → ℝ) = 1 ∧
+    (∀ k, expectation ((cycleFamily (3/2)).model k)
+      (fun y => ((cycleFamily (3/2)).size k : ℝ)*VPositive ((cycleFamily (3/2)).model k).G
+        (weighted ((cycleFamily (3/2)).model k) y)) = 4-12/((cycleFamily (3/2)).size k : ℝ)) ∧
+    InProbability (cycleFamily (3/2))
+      (fun k y => ((cycleFamily (3/2)).size k : ℝ)*VPositive ((cycleFamily (3/2)).model k).G
+        (weighted ((cycleFamily (3/2)).model k) y)) (fun _ => 4) := by
+  sorry
+
+/-- T7(a),(b),(e): degree-only finite comparison bounds, with the correction's
+explicit constants. B is max |eᵢ| and D bounds the supplied truncated degrees. -/
+theorem degree_only_finite {n : ℕ} (hn : 0 < n) (d : Fin n → ℕ) (D : ℕ)
+    (hd : ∀ i, truncatedDegree d i ≤ D) (x : Fin n → ℝ) (A Ap : Graph n)
+    (hm : Maximizes (emptyGraph n) d (fun B => V1 B x) A)
+    (hp : Maximizes (emptyGraph n) d (fun B => V1plus d B x) Ap) :
+    (∀ (B : Graph n) (z : Fin n → ℝ), quadratic (adjacency B) z =
+      (∑ i, (degree B i : ℝ)*z i^2) - upperSum (fun i j => adjacency B i j*(z i-z j)^2)) ∧
+    (0 ≤ (n : ℝ)*(VYoung d x-V1 A x) ∧
+      (n : ℝ)*(VYoung d x-V1 A x) ≤
+        (∑ r ∈ Finset.Icc 1 D, (3*(r : ℝ)^2+2*r))*maxAbs (centered x)^2/n) ∧
+    (0 ≤ (∑ i, max 1 (2*(truncatedDegree d i : ℝ))*centered x i^2)/n - (n : ℝ)*V1plus d Ap x ∧
+      (∑ i, max 1 (2*(truncatedDegree d i : ℝ))*centered x i^2)/n - (n : ℝ)*V1plus d Ap x ≤
+        maxAbs (centered x)^2/n*(∑ r ∈ Finset.Icc 1 D, (4*(r : ℝ)^2+r))) := by
+  sorry
+
+/-- T7(c): the original maximum is conservative when no recruitment edges are
+known. Only the true dependency degree must be bounded; supplied caps may grow. -/
+theorem degree_only_conservative (F : Family) (c1 c2 c3 c4 : ℝ)
+    (h : Scaling F c1 c2 c3 c4) (hv : Valid F) (hr : ∀ k, (F.model k).R = emptyGraph (F.size k))
+    (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k))
+    (hm : ∀ k y, Maximizes (F.model k).R (F.model k).d
+      (fun B => V1 B (weighted (F.model k) y)) (A k y)) :
+    Conservative F (fun k y => V1 (A k y) (weighted (F.model k) y)) := by
+  sorry
+
+/-- T7(d): unbounded supplied caps break equivalence of the original maximum and
+Young bound even without scaling. For fair signs they tend to 1/2 and 1. -/
+theorem unbounded_caps_gap (A : ∀ k, (Fin (k+1) → ℝ) → Graph (k+1))
+    (hm : ∀ k y, Maximizes (emptyGraph (k+1)) (fun _ => k)
+      (fun B => V1 B y) (A k y)) :
+    (∀ k y, (∀ i, y i = 1 ∨ y i = -1) →
+      V1 (A k y) y = (1-average y^2)^2/2 ∧
+      VYoung (fun _ => k) y = 1-average y^2) ∧
+    InProbability signFamily (fun k y => V1 (A k y) y) (fun _ => 1/2) ∧
+    InProbability signFamily (fun k y => VYoung (fun _ => k) y) (fun _ => 1) := by
+  sorry
 
 /-- T8: membership in the revised list C, with the condition for each estimator.
 Every selected matrix is an actual maximizer; data dependence is handled by
-samplewise domination. -/
+samplewise domination, not by the deterministic F1 expansion. -/
 def CorrectedClass (F : Family) (V : ∀ k, (Fin (F.size k) → ℝ) → ℝ) : Prop :=
   (Valid F ∧ ((V = fun k y => V1plus (F.model k).d (F.model k).G (weighted (F.model k) y)) ∨
     (V = fun k y => VYoung (F.model k).d (weighted (F.model k) y)) ∨
@@ -540,6 +739,12 @@ def CorrectedClass (F : Family) (V : ∀ k, (Fin (F.size k) → ℝ) → ℝ) : 
           (fun B => V1 B (weighted (F.model k) y)) (A k y)) ∧
         V = fun k y => V1 (A k y) (weighted (F.model k) y))))
 
+/-- T8: revised Corollaries 1 and 3 for every estimator in C. Coverage clips a
+possibly negative V1 at zero; homoskedasticity alone is not an admissibility condition. -/
+theorem revised_corollaries (F : Family) (c1 c2 c3 c4 : ℝ)
+    (h : Scaling F c1 c2 c3 c4) (V : ∀ k, (Fin (F.size k) → ℝ) → ℝ)
+    (hV : CorrectedClass F V) : Conservative F V ∧ ConservativeCoverage F V := by
+  sorry
 
 /-- The probability-theoretic meaning of O_p(1): eventual tightness. -/
 def Tight (F : Family) (T : ∀ k, (Fin (F.size k) → ℝ) → ℝ) : Prop :=
@@ -615,6 +820,72 @@ theorem residual_perturbation {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ)
         (mul_le_mul_of_nonneg_left hb (norm_nonneg _)) (norm_nonneg _)
     _ = _ := by simp only [hn]; dsimp [L,operatorNorm]; ring
 
+/-- T9(a),(c): bounded fixed-p covariates and root-n parameter consistency imply
+oracle residual consistency and conservative maximization under valid constraints. -/
+theorem residual_root_n (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1 c2 c3 c4)
+    (p : ℕ) (D : ∀ k, Matrix (Fin (F.size k)) (Fin p) ℝ) (γ : Fin p → ℝ)
+    (γhat : ∀ k, (Fin (F.size k) → ℝ) → (Fin p → ℝ))
+    (hmeas : ∀ k, Measurable (γhat k))
+    (hmean : ∀ k, MeanModel (F.model k) (D k) γ)
+    (hbound : ∃ B : ℝ, ∀ k i, l2 (D k i) ≤ B)
+    (hrate : Tight F (fun k y => Real.sqrt (F.size k : ℝ)*l2 (γhat k y-γ)))
+    (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k)) (hv : Valid F)
+    (hm : ∀ k y, Maximizes (F.model k).R (F.model k).d
+      (fun B => VResidual B (fittedResidual (F.model k) (D k) (γhat k) y)) (A k y)) :
+    (∀ k i, expectation (F.model k) (fun y => trueResidual (F.model k) (D k) γ y i) = 0) ∧
+    (∀ k i j, expectation (F.model k) (fun y =>
+      trueResidual (F.model k) (D k) γ y i*trueResidual (F.model k) (D k) γ y j) =
+      covariance (F.model k) i j) ∧
+    Tight F (fun k y => Real.sqrt (F.size k : ℝ)*maxAbs
+      (fittedResidual (F.model k) (D k) (γhat k) y-trueResidual (F.model k) (D k) γ y)) ∧
+    Tight F (fun k y => l2
+      (fittedResidual (F.model k) (D k) (γhat k) y-trueResidual (F.model k) (D k) γ y)) ∧
+    Tight F (fun k y => l2 (trueResidual (F.model k) (D k) γ y)/Real.sqrt (F.size k : ℝ)) ∧
+    InProbability F
+      (fun k y => (F.size k : ℝ)*VResidual (F.model k).G
+        (fittedResidual (F.model k) (D k) (γhat k) y)) (scaledTrue F) ∧
+    Conservative F (fun k y => VResidual (A k y)
+      (fittedResidual (F.model k) (D k) (γhat k) y)) := by
+  sorry
+
+/-- T9(c), weaker regularity: weighted prediction error o_p(√n) and bounded
+limiting residual summands suffice; no root-n estimator is inserted as an extra premise. -/
+theorem residual_prediction_stability (F : Family) (c1 c2 c3 c4 : ℝ)
+    (h : Scaling F c1 c2 c3 c4) (p : ℕ)
+    (D : ∀ k, Matrix (Fin (F.size k)) (Fin p) ℝ) (γ : Fin p → ℝ)
+    (γhat : ∀ k, (Fin (F.size k) → ℝ) → (Fin p → ℝ))
+    (hmeas : ∀ k, Measurable (γhat k))
+    (hmean : ∀ k, MeanModel (F.model k) (D k) γ)
+    (hz : ∃ B : ℝ, ∀ k, ∀ᵐ y ∂(F.model k).law, ∀ i, |trueResidual (F.model k) (D k) γ y i| ≤ B)
+    (herr : InProbability F (fun k y => l2
+      (fittedResidual (F.model k) (D k) (γhat k) y-trueResidual (F.model k) (D k) γ y)
+        /Real.sqrt (F.size k : ℝ)) (fun _ => 0))
+    (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k)) (hv : Valid F)
+    (hm : ∀ k y, Maximizes (F.model k).R (F.model k).d
+      (fun B => VResidual B (fittedResidual (F.model k) (D k) (γhat k) y)) (A k y)) :
+    InProbability F (fun k y => (F.size k : ℝ)*VResidual (F.model k).G
+      (fittedResidual (F.model k) (D k) (γhat k) y)) (scaledTrue F) ∧
+    Conservative F (fun k y => VResidual (A k y) (fittedResidual (F.model k) (D k) (γhat k) y)) := by
+  sorry
+
+/-- T9(e): a wrong mean model retains the deterministic mean quadratic term;
+residuals here are not additionally sample-centered. -/
+theorem misspecified_residual_limit (F : Family) (c1 c2 c3 c4 : ℝ)
+    (h : Scaling F c1 c2 c3 c4) (p : ℕ)
+    (D : ∀ k, Matrix (Fin (F.size k)) (Fin p) ℝ) (γstar : Fin p → ℝ)
+    (γhat : ∀ k, (Fin (F.size k) → ℝ) → (Fin p → ℝ))
+    (hmeas : ∀ k, Measurable (γhat k))
+    (hz : ∃ B : ℝ, ∀ k, ∀ᵐ y ∂(F.model k).law, ∀ i, |trueResidual (F.model k) (D k) γstar y i| ≤ B)
+    (herr : InProbability F (fun k y => l2
+      (fittedResidual (F.model k) (D k) (γhat k) y-trueResidual (F.model k) (D k) γstar y)
+        /Real.sqrt (F.size k : ℝ)) (fun _ => 0)) :
+    InProbability F
+      (fun k y => (F.size k : ℝ)*VResidual (F.model k).G
+        (fittedResidual (F.model k) (D k) (γhat k) y)-scaledTrue F k)
+      (fun k => quadratic (oracleMatrix (F.model k).G)
+        (fun i => expectation (F.model k) (fun y => weighted (F.model k) y i)
+          -(F.model k).theta i*(D k *ᵥ γstar) i) / (F.size k : ℝ)) := by
+  sorry
 
 /-- T12: Uₙ=n⁻¹∑(Xᵢ−β)² used in the direct repaired proof of Proposition 2. -/
 def U {n : ℕ} (m : Model n) (y : Fin n → ℝ) : ℝ :=
@@ -628,8 +899,9 @@ def gFactor {n : ℕ} (m : Model n) : ℝ := 1+(∑ i, ∑ j, adjacency m.G i j)
 def varianceRemainder {n : ℕ} (m : Model n) (y : Fin n → ℝ) : ℝ :=
   sampleVariance (weighted m y)-meanVariance m-meanSpread m
 
-
-
+/- T12(i)–(iv): the complete finite rate proof and unchanged Proposition 2.
+No auxiliary correlations, equal means, or separate variance/mean-spread limit is assumed. -/
+/- The unchanged homoskedastic_repair contract is proved in P011_HomoskedasticCompletion.lean. -/
 
 
 /-- Section 2, p. 2240: fixed-design OLS β̂=(XᵀX)⁻¹XᵀY. -/
@@ -640,8 +912,36 @@ def ols {n p : ℕ} (D : Matrix (Fin n) (Fin p) ℝ) (y : Fin n → ℝ) : Fin p
 def olsTheta {n p : ℕ} (D : Matrix (Fin n) (Fin p) ℝ) : Matrix (Fin p) (Fin n) ℝ :=
   (n : ℝ) • ((Dᵀ*D)⁻¹*Dᵀ)
 
+/-- T16(i),(ii),(iii): raw OLS mean term, exact residual shift invariance,
+and consistency of fitted residual products under fixed p, bounded rows and outcomes,
+and a uniform lower eigenvalue bound on the normalized Gram matrix. -/
+theorem ols_repair (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1 c2 c3 c4)
+    (p : ℕ) (j : Fin p) (D : ∀ k, Matrix (Fin (F.size k)) (Fin p) ℝ) (b : Fin p → ℝ)
+    (hrank : ∀ k, ((D k)ᵀ*D k).det ≠ 0)
+    (hmean : ∀ k, MeanModel (F.model k) (D k) b)
+    (hθ : ∀ k i, (F.model k).theta i = olsTheta (D k) j i) :
+    (∀ k i, delta (F.model k) i = olsTheta (D k) j i*(D k*ᵥb) i-b j) ∧
+    InProbability F (fun k y => scaledOracle F k y-scaledTrue F k)
+      (fun k => meanBias (F.model k)) ∧
+    (∀ k y c, fittedResidual (F.model k) (D k) (ols (D k)) (y+D k*ᵥc) =
+      fittedResidual (F.model k) (D k) (ols (D k)) y ∧
+      centered (weighted (F.model k) (y+D k*ᵥc)) =
+        centered (weighted (F.model k) y) +
+          (fun i => (F.model k).theta i*(D k*ᵥc) i-c j)) ∧
+    ((∃ Bx By lambdaMin : ℝ, 0 < lambdaMin ∧ (∀ k i, l2 (D k i) ≤ Bx) ∧
+      (∀ k, ∀ᵐ y ∂(F.model k).law, ∀ i, |y i| ≤ By) ∧
+      (∀ k z, lambdaMin*l2 z^2 ≤ quadratic ((1/(F.size k : ℝ)) • ((D k)ᵀ*D k)) z)) →
+      Tight F (fun k y => Real.sqrt (F.size k : ℝ)*l2 (ols (D k) y-b)) ∧
+      InProbability F (fun k y => (F.size k : ℝ)*VResidual (F.model k).G
+        (fittedResidual (F.model k) (D k) (ols (D k)) y)) (scaledTrue F) ∧
+      (∀ A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k), Valid F →
+        (∀ k y, Maximizes (F.model k).R (F.model k).d
+          (fun B => VResidual B (fittedResidual (F.model k) (D k) (ols (D k)) y)) (A k y)) →
+        Conservative F (fun k y => VResidual (A k y)
+          (fittedResidual (F.model k) (D k) (ols (D k)) y)))) := by
+  sorry
 
-
+/- The unchanged block_ols_representations contract is proved in P011_BlockOLSCompletion.lean. -/
 
 
 /-- T9(d): covariates (1,w), w=(1,0,−1,0), with high-variance observations
@@ -662,6 +962,25 @@ def unstableFamily : Family where
   grows := Filter.tendsto_atTop_mono (fun k => by change k ≤ _; omega) Filter.tendsto_id
   model := fun k => unstableModel (k+1)
 
+/-- T9(d): exact finite expectation n+2−7/n and lack of residual consistency.
+No inference of inconsistency from diverging expectations alone is made. -/
+theorem residual_missing_regularity :
+    Scaling unstableFamily 2 1 2 3 ∧
+    (∀ k, let D : Matrix (Fin (4*(k+1))) (Fin 2) ℝ := fun i j =>
+      if j=0 then 1 else (![1,0,-1,0] : Fin 4 → ℝ) (localIndex (by decide) i)
+      MeanModel (unstableFamily.model k) D 0 ∧
+      var (unstableFamily.model k) (fun y => ols D y 0) =
+        (unstableFamily.size k : ℝ)/2+1/(2*(unstableFamily.size k : ℝ)) ∧
+      expectation (unstableFamily.model k) (fun y => (unstableFamily.size k : ℝ)*
+        VResidual (unstableFamily.model k).G
+          (fittedResidual (unstableFamily.model k) D (ols D) y)) =
+        (unstableFamily.size k : ℝ)+2-7/(unstableFamily.size k : ℝ)) ∧
+    ¬ InProbability unstableFamily
+      (fun k y => let D : Matrix (Fin (4*(k+1))) (Fin 2) ℝ := fun i j =>
+        if j=0 then 1 else (![1,0,-1,0] : Fin 4 → ℝ) (localIndex (by decide) i)
+        (unstableFamily.size k : ℝ)*VResidual (unstableFamily.model k).G
+          (fittedResidual (unstableFamily.model k) D (ols D) y)) (fun _ => 2) := by
+  sorry
 
 /-- T10: P_s has deterministic infinite mean pattern s, not an n-dependent
 finite pattern. This quantifier is essential to the bounded-convergence argument. -/
@@ -697,11 +1016,29 @@ def mixtureFamily (a b : ℝ) : Family where
   grows := Filter.tendsto_atTop_mono (fun k => Nat.le_succ k) Filter.tendsto_id
   model := fun k => mixtureModel a b (k+1)
 
+/-- T10(i)–(iii): exact finite mixture identity and impossibility of n-scaled
+consistency over every deterministic infinite mean pattern and the mixture.
+The statistic is the same measurable function of observations in all models. -/
+theorem universal_consistency_impossible (a b : ℝ) (ha : 0 < a) (hb : 0 < b) :
+    (∀ s : ℕ → Bool, Scaling (fixedMeanFamily a b s) (2*a+b) 1 (b^2) 2) ∧
+    Scaling (mixtureFamily a b) (a+b) 1 (a^2+b^2) 2 ∧
+    (∀ n, (mixtureModel a b n).law =
+      ∑ s : (Fin n → Bool), ((2 : ℝ≥0∞)^n)⁻¹ •
+        (fixedMeanModel a b (fun i => if hi : i < n then s ⟨i,hi⟩ else false) n).law) ∧
+    ¬ (∃ T : ∀ n, (Fin (n+1) → ℝ) → ℝ,
+      (∀ n, Measurable (T n)) ∧
+      (∀ s : ℕ → Bool, InProbability (fixedMeanFamily a b s) T (fun _ => b^2)) ∧
+      InProbability (mixtureFamily a b) T (fun _ => a^2+b^2)) ∧
+    (∀ T : ∀ n, (Fin (n+1) → ℝ) → ℝ, (∀ n, Measurable (T n)) →
+      (∀ ε : ℝ, 0 < ε → Tendsto (fun k => probability (mixtureModel a b (k+1))
+        {y | a^2+b^2-T k y > ε}) atTop (𝓝 0)) →
+      ¬ (∀ s : ℕ → Bool, InProbability (fixedMeanFamily a b s) T (fun _ => b^2))) := by
+  sorry
 
 /-- T13: an unordered edge is represented exactly once by i<j. -/
 abbrev Edge (n : ℕ) := {ij : Fin n × Fin n // ij.1 < ij.2}
 
-/-- T13: (P), with rational weights and mandatory edges. -/
+/-- T13: (P), with rational weights and mandatory edges, exactly as in the validator. -/
 structure DegreeProblem (n : ℕ) where
   forced : Finset (Edge n)
   cap : Fin n → ℕ
@@ -773,6 +1110,27 @@ def decodeMatching {n : ℕ} (P : DegreeProblem n) (J : Finset (GadgetEdge P)) :
     (∃ s, GadgetEdge.external (P:=P) ⟨e,he⟩ false s ∈ J) ∧
     (∃ s, GadgetEdge.external (P:=P) ⟨e,he⟩ true s ∈ J))
 
+/-- T13(b)–(d): exact reduction to ordinary maximum-weight matching, including
+feasibility, objective recovery, and polynomial vertex/edge count bounds.
+The external algorithmic theorem about bit complexity is not formalized here. -/
+theorem matching_reduction {n : ℕ} (hn : 0 < n) (P : DegreeProblem n) :
+    ((∃ S, EdgeFeasible P S) ↔ ∀ i, edgeDegree P.forced i ≤ min (P.cap i) (n-1)) ∧
+    ((∀ i, edgeDegree P.forced i ≤ min (P.cap i) (n-1)) →
+      (∀ S, EdgeFeasible P S ↔ ∃ T : Finset (Edge n), T ⊆ optionalEdges P ∧
+        (∀ i, edgeDegree T i ≤ remainingCap P i) ∧ S=P.forced ∪ T) ∧
+      (∀ J : Finset (GadgetEdge P), IsMatching J →
+        (∀ J' : Finset (GadgetEdge P), IsMatching J' →
+          (∑ e ∈ J', gadgetWeight e) ≤ ∑ e ∈ J, gadgetWeight e) →
+        EdgeFeasible P (P.forced ∪ decodeMatching P J) ∧
+        (∀ S, EdgeFeasible P S → edgeObjective P S ≤ edgeObjective P (P.forced ∪ decodeMatching P J)) ∧
+        edgeObjective P (P.forced ∪ decodeMatching P J) =
+          edgeObjective P P.forced +
+            ((∑ e ∈ J, gadgetWeight e : ℤ) - 4*gadgetM P*(optionalEdges P).card : ℚ)
+              /(2*(denominatorLCM P : ℚ)))) ∧
+    (2*(optionalEdges P).card+∑ i, remainingCap P i ≤ 2*n*(n-1)) ∧
+    ((optionalEdges P).card+∑ e ∈ optionalEdges P,
+      (remainingCap P e.val.1+remainingCap P e.val.2) ≤ (optionalEdges P).card*(2*n-1)) := by
+  sorry
 
 /-- T22: candidate edges, not nonzero empirical covariances, are the decision variables. -/
 def fromUpper {n : ℕ} (a : Edge n → Bool) : Graph n :=
@@ -798,7 +1156,8 @@ def upperObjective {n : ℕ} (a : Edge n → Bool) (w : Edge n → ℝ) : ℝ :=
 def upperDegree {n : ℕ} (a : Edge n → Bool) (i : Fin n) : ℕ :=
   ∑ e, if a e && decide (e.val.1=i ∨ e.val.2=i) then 1 else 0
 
-
+/- T22: The unchanged upper_program_equivalence contract is proved in
+P011_FiniteCompletion.lean from the actual graph/edge-vector bijection. -/
 
 /-- T14: LP relaxation of (3.6), preserving mandatory edges and vertex degrees. -/
 def RelaxedFeasible {n : ℕ} (R : Graph n) (d : Fin n → ℕ) (a : Edge n → ℝ) : Prop :=
@@ -808,9 +1167,11 @@ def RelaxedFeasible {n : ℕ} (R : Graph n) (d : Fin n → ℕ) (a : Edge n → 
 /-- T14: real-valued objective of the relaxation. -/
 def relaxedObjective {n : ℕ} (a w : Edge n → ℝ) : ℝ := ∑ e, w e*a e
 
+/- T14(a): The unchanged relaxation_upper_bound statement is proved in
+P011_FiniteCompletion.lean using a Boolean feasible embedding and exact objectives. -/
 
-
-
+/- T14(b),(c): The unchanged relaxation_gaps contract is proved in
+P011_FiniteCompletion.lean with explicit fractional and integer witnesses. -/
 
 
 /-- Covariance expressed as E[fg]−E[f]E[g], for integrable mixed moments (T17).
@@ -824,15 +1185,16 @@ def pairMoment {Ω : Type} (E : (Ω → ℝ) → ℝ) (yi yj B : Ω → ℝ) (ti
     tj*E (fun y => yj y*B y)+E (fun y => B y^2)
 
 /-- T17: the 16 terms of the corrected fourth-moment block, grouped by power
-of β̂. `Xi`, `Xj`, `Xk` and `Xl` represent the full weighted coordinates
-θᵢYᵢ, θⱼYⱼ, θₖYₖ and θₗYₗ, respectively. -/
+of β̂. Xi here is the full θᵢYi, including the formerly missing θⱼ. -/
 def fourthMoment {Ω : Type} (E : (Ω → ℝ) → ℝ) (Xi Xj Xk Xl B : Ω → ℝ) : ℝ :=
   E (fun y => Xi y*Xj y*Xk y*Xl y) -
   E (fun y => B y*(Xi y*Xj y*Xk y+Xi y*Xj y*Xl y+Xi y*Xk y*Xl y+Xj y*Xk y*Xl y)) +
   E (fun y => B y^2*(Xi y*Xj y+Xi y*Xk y+Xi y*Xl y+Xj y*Xk y+Xj y*Xl y+Xk y*Xl y)) -
   E (fun y => B y^3*(Xi y+Xj y+Xk y+Xl y)) + E (fun y => B y^4)
 
-
+/- T17(i)-(iii): The unchanged corrected_covariance_expansion contract is
+proved in P011_CovarianceCompletion.lean with explicit L4 integrability
+and covariance bilinearity. The asymptotic remainder is outside this target. -/
 
 /-- T17 finite polynomial behind the 16 fourth-moment monomials, for all values.
 Taking any linear expectation preserves this identity when the moments exist. -/
@@ -893,7 +1255,8 @@ def cwPrintedLast : ℝ :=
         (fun y => y 2) (fun y => y 3) (betaHat constantWitness) 2 3 4 5)
 
 /-- T18(a)–(e): the exact constant-distribution refutation of both printed
-lines and the bracket-only repair. The fully literal final line is 93009/16. -/
+lines and the bracket-only repair. The fully literal final line is 93009/16,
+not the double-counted value in one validator file. -/
 theorem printed_expansion_counterexample :
     beta constantWitness = 7/2 ∧
     cwTrueCovariance = 0 ∧
@@ -918,11 +1281,13 @@ def rho {n : ℕ} (m : Model n) (i j : Fin n) : ℝ :=
 def V2star {n : ℕ} (m : Model n) (y : Fin n → ℝ) : ℝ :=
   sampleVariance (weighted m y)/n * (1+(∑ i, ∑ j, adjacency m.G i j*rho m i j)/n)
 
+/- T21(i),(ii): exact correlation-weighted variance identity, all ρ_ij≤1,
+and samplewise V̂₂*≤V̂₂, including the zero-variance convention. -/
+/- The unchanged pairwise_correlation_repair contract is proved in P011_CorrelationCompletion.lean. -/
 
-
-
-
-
+/- T19(i)–(iii): correcting '<' to '>' gives auxiliary consistency only with
+a vanishing between-unit mean variance; sign repair alone is insufficient. -/
+/- The unchanged auxiliary_corrected_display contract is proved in P011_AuxiliaryCompletion.lean. -/
 
 /-- T23: the invalid printed rule selects all nonzero pair products. -/
 def nonzeroRule {n : ℕ} (x : Fin n → ℝ) : Graph n :=
@@ -1051,18 +1416,16 @@ theorem corrected_notation {n : ℕ} (R G : Graph n) (d : Fin n → ℕ)
           norm_num [adjacency,hR,hA]
   exact ⟨hiff,(hiff G).mpr hv⟩
 
-/- The following Lean definitions specify what the published software computes. -/
-
-/-- T25: the V1 helper uses R's n−1 sample-variance divisor on the
-first term only (package source line 11), retaining the paper's edge term. -/
+/-- T25: the staged V1 helper uses R's n−1 sample-variance divisor on the
+first term only (R/depvar.r line 11), retaining the paper's edge term. -/
 def V1R {n : ℕ} (A : Graph n) (x : Fin n → ℝ) : ℝ :=
   (∑ i, centered x i^2)/((n : ℝ)*((n : ℝ)-1)) + quadratic (adjacency A) (centered x)/(n : ℝ)^2
 
-/-- T25: V2 helper (line 19), rescaling all of equation (3.7). -/
+/-- T25: staged V2 helper (line 19), rescaling all of equation (3.7). -/
 def V2R {n : ℕ} (A : Graph n) (x : Fin n → ℝ) : ℝ :=
   (∑ i, centered x i^2)/((n : ℝ)*((n : ℝ)-1))*(1+(∑ i, ∑ j, adjacency A i j)/n)
 
-/-- T25: V2′ helper (line 27), rescaling all of equation (3.9). -/
+/-- T25: staged V2′ helper (line 27), rescaling all of equation (3.9). -/
 def V2primeR {n : ℕ} (d : Fin n → ℕ) (x : Fin n → ℝ) : ℝ :=
   (∑ i, centered x i^2)/((n : ℝ)*((n : ℝ)-1))*(1+(∑ i, (truncatedDegree d i : ℝ))/n)
 
@@ -1117,8 +1480,9 @@ def threePointModel (n : ℕ) : Model n where
   R := emptyGraph n
   d := fun _ => 0
 
-
-
+/- T26(d): the witness triple has positive probability 1/27 under a model with
+β=1 and n Var(β̂)=2/3, so it is admissible statistical data. -/
+/- The unchanged helper_witness_law contract is proved in P011_ThreePointCompletion.lean. -/
 
 
 /-- T27(a),(b): a maximum exists over the finite nonempty compatible family;
@@ -1226,6 +1590,23 @@ theorem ols_linear_unbiased {n p : ℕ} (hn : 0 < n) (m : Model n)
       exact Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr hrank)
     rw [hCD,Matrix.one_mulVec]
 
+/-- T31: Proposition 1 exactly as printed, without a unit-mean condition.
+This is a false claim retained as an unproved draft, not an axiom or a correction. -/
+theorem printed_proposition_one (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1 c2 c3 c4) :
+    InProbability F (scaledOracle F) (scaledTrue F) := by
+  sorry
+
+/-- T32: printed Corollary 1 and its homoskedastic specialization on p. 2246.
+Both are false under these hypotheses; no mean condition or empty-edge condition
+is inserted into the printed statement. -/
+theorem printed_corollary_one (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1 c2 c3 c4)
+    (hv : Valid F) (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k))
+    (hm : ∀ k y, Maximizes (F.model k).R (F.model k).d
+      (fun B => V1 B (weighted (F.model k) y)) (A k y)) :
+    Conservative F (fun k y => V1 (A k y) (weighted (F.model k) y)) ∧
+    ((∀ k, Homoskedastic (F.model k)) → Conservative F
+      (fun k y => V1 (A k y) (weighted (F.model k) y))) := by
+  sorry
 
 /-- T32 finite step (A.1): domination gives the event inclusion, regardless
 of whether the oracle has a correct statistical limit. -/
@@ -1237,6 +1618,15 @@ theorem underestimation_event_inclusion {Ω : Type} (a n ε : ℝ) (hn : 0 ≤ n
   dsimp at *
   nlinarith
 
+/-- T33: printed Corollary 3, without additional hypotheses on means or known
+edges. The printed interval must be defined to cover β; negative-estimate
+realizations are explicitly undefined and uncovered, without clipping V1. -/
+theorem printed_corollary_three (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1 c2 c3 c4)
+    (hv : Valid F) (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k))
+    (hm : ∀ k y, Maximizes (F.model k).R (F.model k).d
+      (fun B => V1 B (weighted (F.model k) y)) (A k y)) :
+    PrintedConservativeCoverage F (fun k y => V1 (A k y) (weighted (F.model k) y)) := by
+  sorry
 
 /-- T34(P3): the unambiguous printed proof step "By Assumption 2,
 1 ≤ 1 + n⁻¹∑ Aᵒ_ij ≤ 1+c₂", p. 2246. The undefined rho_i and the
@@ -1264,28 +1654,47 @@ theorem printed_auxiliary_degree_bound (F : Family) (c1 c2 c3 c4 : ℝ)
       (div_le_iff₀ hn).mpr (by simpa [mul_comm] using hs)
     linarith
 
+/-- T35: the package's formal generic OLS guarantee, under exactly the paper's
+Assumption 2 and a correctly specified linear mean model. False as asserted. -/
+theorem printed_package_ols_guarantee (F : Family) (c1 c2 c3 c4 : ℝ)
+    (h : Scaling F c1 c2 c3 c4) (hv : Valid F) (p : ℕ) (j : Fin p)
+    (D : ∀ k, Matrix (Fin (F.size k)) (Fin p) ℝ) (b : Fin p → ℝ)
+    (hrank : ∀ k, ((D k)ᵀ*D k).det ≠ 0) (hmean : ∀ k, MeanModel (F.model k) (D k) b)
+    (hθ : ∀ k i, (F.model k).theta i=olsTheta (D k) j i)
+    (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k))
+    (hm : ∀ k y, Maximizes (F.model k).R (F.model k).d
+      (fun B => V1 B (weighted (F.model k) y)) (A k y)) :
+    Conservative F (fun k y => V1 (A k y) (weighted (F.model k) y)) ∧
+    PrintedConservativeCoverage F (fun k y => V1 (A k y) (weighted (F.model k) y)) := by
+  sorry
 
+/- T36: Proposition 2 as printed, p. 2246. The finite-rate repaired proof is
+homoskedastic_repair (T12); its unproved dependency remains visible in the axioms. -/
+/- The unchanged proposition_two contract is proved in P011_HomoskedasticCompletion.lean. -/
 
-
-
-
-
+/- T37: Corollary 2 exactly as printed, p. 2247. Supplied degree bounds are
+not required to be bounded; valid constraints and maximality suffice. -/
+/- The unchanged corollary_two contract is proved in P011_CorollariesCompletion.lean. -/
 
 /-- T38: the standardized estimator of Lemma 2. Zero-variance early terms use
 Lean's division convention; Assumption 2 makes the denominator eventually positive. -/
 def standardized {n : ℕ} (m : Model n) (y : Fin n → ℝ) : ℝ :=
   (betaHat m y-beta m)/Real.sqrt (var m (betaHat m))
 
-
+/- T38: The unchanged dependency_graph_clt contract is proved in
+P011_ProbabilityCompletion.lean by an audited dependency-graph CLT. -/
 
 /-- T38 finite normalized summands ζᵢ use each unit's own mean. -/
 def zeta {n : ℕ} (m : Model n) (i : Fin n) (y : Fin n → ℝ) : ℝ :=
   (weighted m y i-expectation m (fun z => weighted m z i))/
     ((n : ℝ)*Real.sqrt (var m (betaHat m)))
 
+/- T38: The unchanged clt_finite_normalization contract is proved in
+P011_ProbabilityCompletion.lean from finite integrals and affine independence. -/
 
-
-
+/- T39: The unchanged conditional_wald_coverage contract is proved in
+P011_CoverageCompletion.lean using the proved CLT, varying-law CDF squeeze,
+variance-limit algebra and the original truncation argument. -/
 
 /-- T39 finite step: U=min(V,v) has n-scaled absolute discrepancy equal to
 the positive part of the n-scaled underestimation; V≥U in every realization. -/
@@ -1321,8 +1730,9 @@ theorem interval_containment (a z U V : ℝ) (hz : 0 ≤ z) (hUV : U ≤ V)
     (ha : |a| ≤ z*Real.sqrt (max U 0)) : |a| ≤ z*Real.sqrt (max V 0) := by
   exact ha.trans (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt (max_le_max hUV le_rfl)) hz)
 
-
-
+/- T40: Corollary 4, p. 2248, for the maximized V2 and the closed degree bound,
+under exactly Assumptions 2 and 3 and valid constraints. -/
+/- The unchanged corollary_four contract is proved in P011_CorollariesCompletion.lean. -/
 
 
 /-- T1 finite enumeration: 16 equally likely states of the four independent
@@ -1377,9 +1787,8 @@ theorem cycle_negative_realization :
 /-- T2 finite enumeration: four equiprobable independent (U,V) sign states. -/
 def pathMean (f : ℝ → ℝ → ℝ) : ℝ := (f (-1) (-1)+f (-1) 1+f 1 (-1)+f 1 1)/4
 
-/-- T2 finite block identities for the outcome sum and oracle quadratic form,
-including the quadratic variance and mixed sum moment. No asymptotic or probability
-premise is assumed. -/
+/-- T2 finite block identities, with the covariance matrix and all moments of
+S, L and Q specified in the target. No asymptotic or probability premise is assumed. -/
 theorem path_block_moments (t : ℝ) :
     quadratic (oracleMatrix pathGraph) (![t,-2*t,t] : Fin 3 → ℝ)=-2*t^2 ∧
     pathMean (fun u v => ∑ i, pathBlock t u v i)=0 ∧
@@ -1444,7 +1853,7 @@ theorem cycle_spectral_certificate :
 
 /-- T6(c): PSD majorants are not ordered by the clipped matrix. Both M and M−S
 are PSD, yet at δ=(0,1,−1,0) the quadratic value is 3/5 versus clipping's 1.
-This certificate concerns cycleClipped; it does not identify it with positivePart. -/
+Identifying this candidate with Mathlib's positivePart remains a separate draft. -/
 theorem cycle_majorant_certificate :
     PSD cycleMajorantDifference ∧ PSD (oracleMatrix cycleGraph+cycleMajorantDifference) ∧
     quadratic (oracleMatrix cycleGraph+cycleMajorantDifference) (![0,1,-1,0] : Fin 4 → ℝ)=3/5 ∧
@@ -1551,8 +1960,9 @@ theorem covariance_expansion_linear {Ω : Type} (E : (Ω → ℝ) →ₗ[ℝ] �
   simp only [map_add,map_sub]
   rfl
 
-/-- T1 finite variance algebra: the displayed rational expression simplifies
-to `44/n−96/n²−288/n³` for every nonzero real `n`. -/
+/-- T1 finite variance algebra: the exact moment combination (D4) simplifies
+to 44/n−96/n²−288/n³ at every positive n. The block moment inputs themselves
+are separately proved in cycle_block_moments, not assumed by this algebra lemma. -/
 theorem cycle_variance_formula (n : ℝ) (hn : n ≠ 0) :
     176*(n/4)/n^2 + 9*(32/n^2-32/n^3)-6*(64/n^2) = 44/n-96/n^2-288/n^3 := by
   field_simp [hn]
@@ -1716,7 +2126,7 @@ theorem corrected_matrix_majorant {n : ℕ} (R A : Graph n) (d : Fin n → ℕ)
   exact div_nonneg (hp.2 _) (sq_nonneg _)
 
 
-
+/- The unchanged mixture_finite_moments contract is proved in P011_FiniteLawCompletion.lean. -/
 
 
 /-- T11(c): r=ceil(n/2)−floor(n/2), the parity imbalance (0 or 1). -/
@@ -1726,8 +2136,32 @@ def alternatingParity (n : ℕ) : ℕ := (n+1)/2-n/2
 def alternatingSpread (n : ℕ) : ℝ :=
   alternatingWeight n^2*(1-(alternatingParity n : ℝ)^2/(n : ℝ)^2)
 
+/-- T11(a)–(e): exact finite decomposition and remainder moments, including the
+odd sizes; the even-size specialization gives the validator's Chebyshev witnesses. -/
+theorem alternating_finite_moments (k : ℕ) :
+    let n := k+1
+    let m := alternatingModel n
+    let t := alternatingWeight n
+    1/2 ≤ t ∧ t ≤ 1 ∧ beta m=1 ∧
+    (∀ i, covariance m i i=t^2 ∧
+      delta m i=t*(if i.val%2=0 then 2 else 0)-1) ∧
+    meanSpread m=alternatingSpread n ∧
+    (∀ u : Fin n → Bool,
+      sampleVariance (weighted m (alternatingOutcome n u)) = t^2+meanSpread m+
+        2*t*(∑ i, delta m i*sign (u i))/(n : ℝ)-t^2*(∑ i, sign (u i))^2/(n : ℝ)^2) ∧
+    expectation m (varianceRemainder m)=-t^2/(n : ℝ) ∧
+    expectation m (fun y => varianceRemainder m y^2) =
+      4*t^2*meanSpread m/(n : ℝ)+t^4*(3/(n : ℝ)^2-2/(n : ℝ)^3) ∧
+    (Even n → t=1 ∧ meanSpread m=1 ∧
+      expectation m (fun y => ((n : ℝ)*V2 m.G (weighted m y)-1-1)^2)=
+        4/(n : ℝ)+3/(n : ℝ)^2-2/(n : ℝ)^3 ∧
+      1-4*(4/(n : ℝ)+3/(n : ℝ)^2-2/(n : ℝ)^3) ≤
+        probability m {y | |(n : ℝ)*V2 m.G (weighted m y)-1| > 1/2} ∧
+      1-4*(4/(n : ℝ)+3/(n : ℝ)^2-2/(n : ℝ)^3) ≤
+        probability m {y | |(n : ℝ)*V2 m.G (weighted m y)-1| < 3/2}) := by
+  sorry
 
-
+/- The unchanged path_correlation_instance contract is proved in P011_PathFiniteCompletion.lean. -/
 
 
 /-- T26(d): the complete iid uniform-three-point sample sequence. -/
@@ -1737,8 +2171,9 @@ def threePointFamily : Family where
   grows := Filter.tendsto_atTop_mono (fun k => Nat.le_succ k) Filter.tendsto_id
   model := fun k => threePointModel (k+1)
 
-
-
+/- T26(d): the numerical helper witness occurs in a full model satisfying
+Assumptions 2 and 3, with beta=1 and n Var(betaHat)=2/3 at every sample size. -/
+/- The unchanged helper_witness_scaling contract is proved in P011_ThreePointCompletion.lean. -/
 
 
 /-- Finite-law bridge for T1,T2,T10,T11,T15,T20,T21,T26: expectation under
@@ -1835,7 +2270,8 @@ theorem sample_variance_centering {n : ℕ} (hn : 0 < n) (x : Fin n → ℝ) (b 
   field_simp [h0]
   <;> ring
 
-
+/- T15(b): The unchanged star_relaxation_singleton contract is proved in
+P011_StarCompletion.lean from saturated fractional capacities and exact block degrees. -/
 
 /-- Definition 4 and programs (3.5),(3.8), pp. 2241,2244,2246: the numeric
 row and mandatory-edge inequalities are exactly graph compatibility. -/
@@ -1865,7 +2301,8 @@ theorem program_feasible_iff {n : ℕ} (R A : Graph n) (d : Fin n → ℕ) :
         norm_num [adjacency,hR,hA]
 
 /-- T27(c)–(e): programs (3.5) and (3.8) select the stated maximal estimators;
-the converse for V2 requires positive empirical variance. -/
+the converse for V2 requires positive empirical variance. Program (3.6)'s
+edge bijection and decision-variable count are upper_program_equivalence (T22). -/
 theorem integer_program_estimators {n : ℕ} (hn : 0 < n) (R : Graph n) (d : Fin n → ℕ) (x : Fin n → ℝ) :
     (∀ A, ProgramFeasible R d A ↔ Compatible R d A) ∧
     (∀ A, Maximizes R d (fun B => quadratic (adjacency B) (centered x)) A ↔
@@ -2052,6 +2489,8 @@ theorem printed_coverage_eq_of_nonnegative {n : ℕ} (m : Model n)
   congr 1
   ext y
   simp [hV y,max_eq_left (hV y)]
+
+
 
 
 /-- T5 and T7: split an ordered sum with zero diagonal into its two orientations. -/
@@ -2401,7 +2840,7 @@ theorem uniform_coordinate_dependency {n : ℕ} (A : Type) [Fintype A] [Nonempty
 
 /-- T1(g): the actual normalized uniform four-cycle law gives the explicit
 negative-variance realization probability 1/16; the estimator there is -9/4.
-This is a finite law certificate. -/
+This is a finite law certificate, not the unproved full asymptotic refutation. -/
 theorem cycle_negative_probability :
     probability (cycleModel 3 1) {y | y=(![5,-1,5,-1] : Fin 4 → ℝ)}=1/16 ∧
     V1 cycleGraph (![5,-1,5,-1] : Fin 4 → ℝ) = -9/4 := by
@@ -2439,7 +2878,7 @@ theorem cycle_negative_probability :
     simp [PMF.uniformOfFintype_apply,ENNReal.toReal_inv]
   · norm_num [V1,centered,average,quadratic,adjacency,cycleGraph,Fin.sum_univ_succ]
 
-/-- T13(e): an input is the finite rational-weight degree problem,
+/-- T13(e), validator §4: an input is the finite rational-weight degree problem,
 including its number of observed vertices, mandatory edges and degree caps. -/
 abbrev DegreeInput := Σ n : ℕ, DegreeProblem n
 
@@ -2473,6 +2912,15 @@ def encodeDegreeInput (I : DegreeInput) : BitWord :=
   (List.ofFn (fun i : Fin I.1 => encodeNatBits (I.2.cap i))).flatten ++
   ((edgeList I.1).map (fun e => [decide (e ∈ I.2.forced)] ++ encodeRatBits (I.2.weight e))).flatten
 
+/-- T13(e): an output graph is n followed by its upper-triangular edge flags. -/
+def encodeEdgeSolution (S : Σ n : ℕ, Finset (Edge n)) : BitWord :=
+  encodeNatBits S.1 ++ (edgeList S.1).map (fun e => decide (e ∈ S.2))
+
+/-- T13(e): none reports infeasibility; some reports an ordinary edge set. -/
+def encodeOptionalSolution (S : Option (Σ n : ℕ, Finset (Edge n))) : BitWord :=
+  match S with
+  | none => [false]
+  | some S => [true] ++ encodeEdgeSolution S
 
 /-- T13(e): an exact solver must detect infeasibility and return a feasible
 maximizer on every feasible input, including negative mandatory weights. -/
@@ -2481,7 +2929,12 @@ def ExactDegreeSolver (s : ∀ I : DegreeInput, Option (Finset (Edge I.1))) : Pr
     ∀ S, s I = some S → EdgeFeasible I.2 S ∧
       ∀ T, EdgeFeasible I.2 T → edgeObjective I.2 T ≤ edgeObjective I.2 S
 
-
+/-- T13(e): a genuine finite Turing machine computes the exact solver within
+a fixed polynomial in the length of the above binary input. -/
+def PolyDegreeSolver (s : ∀ I : DegreeInput, Option (Finset (Edge I.1))) : Prop :=
+  ExactDegreeSolver s ∧ Nonempty (Turing.TM2ComputableInPolyTime
+    encodeDegreeInput encodeOptionalSolution
+    (fun I => (s I).map (fun S => (⟨I.1,S⟩ : Σ n : ℕ, Finset (Edge n)))))
 
 /-- T13(e): ordinary weighted matching has an explicitly supplied simple graph
 and integer edge weights; no mandatory edges or vertex capacities other than 1. -/
@@ -2489,6 +2942,66 @@ structure WeightedMatchingData (n : ℕ) where
   present : Finset (Edge n)
   weight : Edge n → ℤ
 
+/-- T13(e): matching input with its vertex count. -/
+abbrev MatchingInput := Σ n : ℕ, WeightedMatchingData n
+
+/-- T13(e): the explicit bit encoding of an ordinary weighted matching input. -/
+def encodeMatchingInput (I : MatchingInput) : BitWord :=
+  encodeNatBits I.1 ++ ((edgeList I.1).map (fun e =>
+    [decide (e ∈ I.2.present)] ++ encodeIntBits (I.2.weight e))).flatten
+
+/-- T13(e): polynomial-time maximum-weight matching, with the usual matching
+constraint and exact optimality, represented by a finite Turing machine. -/
+def PolyMatchingSolver (s : ∀ I : MatchingInput, Finset (Edge I.1)) : Prop :=
+  (∀ I, s I ⊆ I.2.present ∧ (∀ i, edgeDegree (s I) i ≤ 1) ∧
+    ∀ T, T ⊆ I.2.present → (∀ i, edgeDegree T i ≤ 1) →
+      (∑ e ∈ T, I.2.weight e) ≤ ∑ e ∈ s I, I.2.weight e) ∧
+  Nonempty (Turing.TM2ComputableInPolyTime encodeMatchingInput encodeEdgeSolution
+    (fun I => (⟨I.1,s I⟩ : Σ n : ℕ, Finset (Edge n))))
+
+/-- T13(e), T30(C2): class P on binary languages, with polynomial time measured
+by Mathlib's finite TM2 model and the length of the input word. -/
+def BitP (L : Set BitWord) : Prop :=
+  ∃ d : BitWord → Bool,
+    Nonempty (Turing.TM2ComputableInPolyTime id (fun b : Bool => [b]) d) ∧
+    ∀ x, x ∈ L ↔ d x = true
+
+/-- A length prefix separates an input word from its nondeterministic witness. -/
+def encodeWordPair (p : BitWord × BitWord) : BitWord :=
+  encodeNatBits p.1.length ++ p.1 ++ p.2
+
+/-- T13(e), T30(C2): NP means acceptance by a polynomial-time verifier with a
+polynomially bounded binary witness. This is the usual language definition. -/
+def BitNP (L : Set BitWord) : Prop :=
+  ∃ v : BitWord × BitWord → Bool,
+    Nonempty (Turing.TM2ComputableInPolyTime encodeWordPair (fun b : Bool => [b]) v) ∧
+    ∃ C k : ℕ, ∀ x, x ∈ L ↔
+      ∃ w : BitWord, w.length ≤ C*(x.length+1)^k ∧ v (x,w) = true
+
+/-- T13(e), T30(C2): polynomial-time many-one reductions and NP-hardness. -/
+def BitNPHard (L : Set BitWord) : Prop :=
+  ∀ K : Set BitWord, BitNP K → ∃ r : BitWord → BitWord,
+    Nonempty (Turing.TM2ComputableInPolyTime id id r) ∧ ∀ x, x ∈ K ↔ r x ∈ L
+
+/-- T13(e): P = NP as equality of their binary language classes. -/
+def BitPEqualsNP : Prop := ∀ L : Set BitWord, BitP L ↔ BitNP L
+
+/-- T13(e): the decision version asks whether a feasible graph has objective
+at least the rational threshold. Invalid binary encodings are rejected. -/
+def degreeDecisionLanguage : Set BitWord :=
+  {x | ∃ I : DegreeInput, ∃ q : ℚ, x = encodeDegreeInput I ++ encodeRatBits q ∧
+    ∃ S, EdgeFeasible I.2 S ∧ q ≤ edgeObjective I.2 S}
+
+/-- T13(e): the corrected bit-complexity consequence. An exact polynomial solver
+exists; any polynomial matching algorithm suffices via the stated reduction;
+the decision version belongs to P, and its NP-hardness would imply P = NP.
+This is a faithful draft, not a certificate of the algorithmic theorem. -/
+theorem corrected_polynomial_complexity :
+    (∃ s, PolyDegreeSolver s) ∧
+    (∀ s, PolyMatchingSolver s → ∃ t, PolyDegreeSolver t) ∧
+    BitP degreeDecisionLanguage ∧
+    (BitNPHard degreeDecisionLanguage → BitPEqualsNP) := by
+  sorry
 
 /-- T30: actual rational residual data for program (3.5), rather than arbitrary
 unstructured knapsack weights. The graph constraints are exactly Definition 4. -/
@@ -2497,7 +3010,34 @@ structure ProgramData (n : ℕ) where
   forced : Finset (Edge n)
   cap : Fin n → ℕ
 
+/-- T30: construct the rank-one weights r_i r_j after empirical centering. -/
+def programDegreeProblem {n : ℕ} (P : ProgramData n) : DegreeProblem n where
+  forced := P.forced
+  cap := P.cap
+  weight := fun e =>
+    (P.x e.val.1 - (∑ i, P.x i)/(n : ℚ)) * (P.x e.val.2 - (∑ i, P.x i)/(n : ℚ))
 
+/-- T30: serialize the rational observations and exact graph constraints. -/
+def encodeProgramInput (I : Σ n : ℕ, ProgramData n) : BitWord :=
+  encodeNatBits I.1 ++ (List.ofFn (fun i : Fin I.1 => encodeRatBits (I.2.x i))).flatten ++
+    (List.ofFn (fun i : Fin I.1 => encodeNatBits (I.2.cap i))).flatten ++
+    (edgeList I.1).map (fun e => decide (e ∈ I.2.forced))
+
+/-- T30(C2): the threshold decision language of (3.5), equivalently (3.6). -/
+def programDecisionLanguage : Set BitWord :=
+  {x | ∃ I : (Σ n : ℕ, ProgramData n), ∃ q : ℚ,
+    x = encodeProgramInput I ++ encodeRatBits q ∧
+    ∃ S, EdgeFeasible (programDegreeProblem I.2) S ∧
+      q ≤ edgeObjective (programDegreeProblem I.2) S}
+
+/-- T30(C2), printed p. 2245: the paper's NP-hardness assertion, preserved
+as an unproved statement about its own degree-incidence, rank-one program. -/
+theorem printed_program_np_hard : BitNPHard programDecisionLanguage := by
+  sorry
+
+/- T6(c): the nearest PSD matrix in Frobenius norm is unique. This fills the
+uniqueness clause omitted from positive_part_finite without altering its type. -/
+/- The unchanged positive_part_nearest_unique contract is proved in P011_SpectralCompletion.lean. -/
 
 
 /-- T6(a): the spectral positive part is positive semidefinite; the fallback
@@ -2604,7 +3144,8 @@ def gadgetEdgeEquiv {n : ℕ} (P : DegreeProblem n) : GadgetEdge P ≃
   left_inv := by intro e; cases e <;> rfl
   right_inv := by intro e; rcases e with e | ⟨e,side,slot⟩ <;> rfl
 
-/-- T13(d): the exact vertex and edge counts of the matching gadget. -/
+/-- T13(d): the exact vertex and edge counts of the matching gadget, in addition
+to the polynomial inequalities already stated in matching_reduction. -/
 theorem matching_gadget_exact_counts {n : ℕ} (P : DegreeProblem n) :
     Nat.card (GadgetVertex P) = 2*(optionalEdges P).card+(∑ i, remainingCap P i) ∧
     Nat.card (GadgetEdge P) = (optionalEdges P).card+
@@ -2617,7 +3158,7 @@ theorem matching_gadget_exact_counts {n : ℕ} (P : DegreeProblem n) :
       Fintype.card_coe,Fintype.sum_bool,endpoint,Finset.sum_coe_sort,Finset.sum_attach,Nat.add_comm]
     exact Finset.sum_attach (optionalEdges P) (fun e => remainingCap P e.val.1 + remainingCap P e.val.2)
 
-/-- T13(f): the two exact four-vertex inputs, with centered data
+/-- T13(f): the two exact four-vertex validator inputs, with centered data
 (3/2,1/2,-1/2,-3/2), rational weights and the listed mandatory edges. -/
 def matchingWitness (second : Bool) : DegreeProblem 4 where
   forced := if second then {⟨(0,2),by decide⟩} else
@@ -2627,13 +3168,129 @@ def matchingWitness (second : Bool) : DegreeProblem 4 where
     (![3/2,1/2,-1/2,-3/2] : Fin 4 → ℚ) e.val.1 *
     (![3/2,1/2,-1/2,-3/2] : Fin 4 → ℚ) e.val.2
 
-/-- T13(f): the attaining sets are
+/-- T13(f), validator exact instances: the attaining sets are
 "{{1,2},{1,3},{3,4}}" and "F alone", respectively (one-based paper indices). -/
 def matchingWitnessSolution (second : Bool) : Finset (Edge 4) :=
   if second then (matchingWitness true).forced else
     (matchingWitness false).forced ∪ {⟨(0,1),by decide⟩}
 
+/-- T13(f): capacities, denominator, integer weight bound and both exact graph
+and matching optima of the validator's instances. No numeric certificate is
+silently substituted for the general reduction or its complexity conclusion. -/
+theorem matching_exact_instances :
+    (∀ i, remainingCap (matchingWitness false) i = (![1,1,0,2] : Fin 4 → ℕ) i) ∧
+    (∀ i, remainingCap (matchingWitness true) i = (![0,1,0,1] : Fin 4 → ℕ) i) ∧
+    (∀ second, denominatorLCM (matchingWitness second)=4 ∧ gadgetM (matchingWitness second)=10) ∧
+    (optionalEdges (matchingWitness false)).card=4 ∧
+    (optionalEdges (matchingWitness true)).card=5 ∧
+    (∀ second, EdgeFeasible (matchingWitness second) (matchingWitnessSolution second) ∧
+      edgeObjective (matchingWitness second) (matchingWitnessSolution second) =
+        (if second then -3/4 else 3/4) ∧
+      (∀ T, EdgeFeasible (matchingWitness second) T →
+        edgeObjective (matchingWitness second) T ≤
+          edgeObjective (matchingWitness second) (matchingWitnessSolution second))) ∧
+    (∀ second, ∃ J : Finset (GadgetEdge (matchingWitness second)), IsMatching J ∧
+      (∑ e ∈ J, gadgetWeight e) = (if second then 200 else 166) ∧
+      (∀ J' : Finset (GadgetEdge (matchingWitness second)), IsMatching J' →
+        (∑ e ∈ J', gadgetWeight e) ≤ ∑ e ∈ J, gadgetWeight e)) := by
+  sorry
 
 end
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.cycle_counterexample
+#print axioms AronowAudit.P011.path_counterexample
+#print axioms AronowAudit.P011.alternating_counterexample
+#print axioms AronowAudit.P011.star_counterexample
+#print axioms AronowAudit.P011.corrected_finite
+
+
+#print axioms AronowAudit.P011.cycle_positive_identity
+#print axioms AronowAudit.P011.positive_part_cycle_claims
+#print axioms AronowAudit.P011.degree_only_finite
+#print axioms AronowAudit.P011.degree_only_conservative
+#print axioms AronowAudit.P011.unbounded_caps_gap
+#print axioms AronowAudit.P011.revised_corollaries
+#print axioms AronowAudit.P011.residual_perturbation
+#print axioms AronowAudit.P011.residual_root_n
+#print axioms AronowAudit.P011.residual_prediction_stability
+#print axioms AronowAudit.P011.misspecified_residual_limit
+#print axioms AronowAudit.P011.ols_repair
+#print axioms AronowAudit.P011.residual_missing_regularity
+#print axioms AronowAudit.P011.universal_consistency_impossible
+#print axioms AronowAudit.P011.matching_reduction
+#print axioms AronowAudit.P011.fourth_polynomial
+#print axioms AronowAudit.P011.printed_expansion_counterexample
+#print axioms AronowAudit.P011.printed_variables_counterexample
+#print axioms AronowAudit.P011.printed_variables_optimum
+#print axioms AronowAudit.P011.degree_row_sum
+#print axioms AronowAudit.P011.simple_degree_bound
+#print axioms AronowAudit.P011.compatible_truncated_degree
+#print axioms AronowAudit.P011.corrected_notation
+#print axioms AronowAudit.P011.helper_denominators
+#print axioms AronowAudit.P011.helper_correction
+#print axioms AronowAudit.P011.helper_counterexamples
+#print axioms AronowAudit.P011.oracle_sharp_bound
+#print axioms AronowAudit.P011.integer_program_estimators
+#print axioms AronowAudit.P011.lemma_one
+#print axioms AronowAudit.P011.linear_variance_identity
+#print axioms AronowAudit.P011.ols_linear_unbiased
+#print axioms AronowAudit.P011.printed_proposition_one
+#print axioms AronowAudit.P011.printed_corollary_one
+#print axioms AronowAudit.P011.underestimation_event_inclusion
+#print axioms AronowAudit.P011.printed_corollary_three
+#print axioms AronowAudit.P011.printed_auxiliary_degree_bound
+#print axioms AronowAudit.P011.printed_package_ols_guarantee
+#print axioms AronowAudit.P011.truncation_identity
+#print axioms AronowAudit.P011.clipped_truncation
+#print axioms AronowAudit.P011.interval_containment
+#print axioms AronowAudit.P011.cycle_covariance_algebra
+#print axioms AronowAudit.P011.cycle_block_moments
+#print axioms AronowAudit.P011.cycle_negative_realization
+#print axioms AronowAudit.P011.path_block_moments
+#print axioms AronowAudit.P011.star_mean_terms
+#print axioms AronowAudit.P011.cycle_spectral_certificate
+#print axioms AronowAudit.P011.cycle_majorant_certificate
+#print axioms AronowAudit.P011.one_sided_algebra
+#print axioms AronowAudit.P011.sample_variance_nonnegative
+#print axioms AronowAudit.P011.homoskedastic_estimators_nonnegative
+#print axioms AronowAudit.P011.knapsack_encoding
+#print axioms AronowAudit.P011.covariance_expansion_linear
+#print axioms AronowAudit.P011.cycle_variance_formula
+#print axioms AronowAudit.P011.adjacency_quadratic_bound
+#print axioms AronowAudit.P011.young_bound_finite
+#print axioms AronowAudit.P011.quadratic_add
+#print axioms AronowAudit.P011.quadratic_diagonal
+#print axioms AronowAudit.P011.corrected_diagonal_bounds
+#print axioms AronowAudit.P011.corrected_matrix_majorant
+#print axioms AronowAudit.P011.alternating_finite_moments
+#print axioms AronowAudit.P011.uniform_integral
+#print axioms AronowAudit.P011.graph_three_cases
+#print axioms AronowAudit.P011.auxiliary_empty_identity
+#print axioms AronowAudit.P011.saturated_graph_singleton
+#print axioms AronowAudit.P011.delta_sum_zero
+#print axioms AronowAudit.P011.centered_sum_zero
+#print axioms AronowAudit.P011.sample_variance_centering
+#print axioms AronowAudit.P011.cycle_clipped_entries
+#print axioms AronowAudit.P011.program_feasible_iff
+#print axioms AronowAudit.P011.printed_coverage_eq_of_nonnegative
+#print axioms AronowAudit.P011.ordered_pair_sum
+#print axioms AronowAudit.P011.graph_laplacian_identity
+#print axioms AronowAudit.P011.degree_only_edge_identity
+#print axioms AronowAudit.P011.adjacency_upper_quadratic
+#print axioms AronowAudit.P011.degree_weight_sum
+#print axioms AronowAudit.P011.psd_diagonal
+#print axioms AronowAudit.P011.psd_add
+#print axioms AronowAudit.P011.graph_laplacian_psd
+#print axioms AronowAudit.P011.uniform_function_product
+#print axioms AronowAudit.P011.uniform_coordinate_dependency
+#print axioms AronowAudit.P011.corrected_polynomial_complexity
+#print axioms AronowAudit.P011.printed_program_np_hard
+
+#print axioms AronowAudit.P011.positive_part_objective_nonaffine
+#print axioms AronowAudit.P011.matching_gadget_exact_counts
+#print axioms AronowAudit.P011.matching_exact_instances
+#print axioms AronowAudit.P011.cycle_negative_probability
+#print axioms AronowAudit.P011.positive_part_psd
+#print axioms AronowAudit.P011.positive_part_of_psd
+#print axioms AronowAudit.P011.variance_form_oracle

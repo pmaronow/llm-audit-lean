@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P011b.T20",
+    "target_id": "P011-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical claim is the independent fair-sign counterexample to the strict-inside-event limit-zero display. signModel is the pushforward of the uniform distribution on all Boolean vectors, so its coordinates are independent fair signs; it does not repeat a single draw. signCertificate and signDetails include valid edgeless constraints, Assumptions 2 and 3 with the specified constants, equal zero unit means, unit coordinate variances, n Var(betaHat)=1, both estimator/error identities, E(betaHat^2)=1/n, the Markov lower bound and limit one for every positive epsilon, all three exact probabilities, and negation of the printed universal assertion. All quantities exist. The written reading and witness condition checks are in claim-audit.md; independent Lean and rational computations are in scratch/Check.lean and scratch/exact_checks.py."
+  },
+  {
+    "theorem": "SAP.P011b.T21",
+    "target_id": "P011-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The general statement gives all of (i) and (ii), with pair-indexed covariance/common-variance correlations, their explicitly canonical zero-variance convention, ordered adjacency sums, the exact scaled variance identity, all rho_ij <= 1, and the pointwise auxiliary-oracle bound. pathCorrelations supplies every number and dependence property in (iii) for the specified independent two-sign path witness. Its meanVariance equals the common variance under homoskedasticity. The only added hypothesis is finite second moments of weighted outcomes, an allowed usual measure-theoretic condition stated in the docstring. scratch/Check.lean constructs a model satisfying every outer hypothesis; exact path moments are checked independently in scratch/exact_checks.py."
+  },
+  {
+    "theorem": "SAP.P011b.T22",
+    "target_id": "P011-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "The Boolean function on Edge n represents precisely the n(n-1)/2 binary upper-triangle choices; fromUpper constructs the required symmetric zero-diagonal adjacency. The statement supplies the bijection, factor-two quadratic identity, incident-edge degree formula, forced-edge and cap feasibility equivalence, maximizer equivalence, the full variance identity n^2 V1=n sampleVariance+2 upperObjective, and the unit-coefficient edge-count identity. These give all clauses (i)-(v), including the two program objective values and the identification with the edge-count program. Arbitrary real x represents theta_i Y_i, so no restriction on the data or weights is imposed. n>0 is the sample-size setting; n=1 has the ordinary empty-edge interpretation."
+  },
+  {
+    "theorem": "SAP.P011b.T23",
+    "target_id": "P011-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "The two deterministic three-vertex instances reproduce all canonical clauses (a)-(d): the three nonzero products, assignment of every edge and degrees two under unit caps, the compatible edge23 of value 3/4 with universal optimality and equality uniqueness, and omission of the mandatory edge12 in the zero-product instance. The Boolean edge rule is the centered weighted-product rule with theta=1. The docstring accurately identifies the data-determined feasible/optimal-assignment interpretation being disproved; it does not assert that an otherwise unconditional printed definition is false. The relevant reading and conditions are checked in claim-audit.md; Lean checks both infeasibilities and the feasible optimizing edge, and independent enumeration checks all feasible objectives."
+  },
+  {
+    "theorem": "SAP.P011b.T24",
+    "target_id": "P011-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "ProgramFeasible versus Compatible is exactly canonical formal content (i), including binary/symmetric/zero-diagonal typing, element-wise non-strict degree and recruitment inequalities, and true-graph feasibility under valid constraints. The theorem does not state the observed-data tuple correction, observed-index scope of homoskedasticity, the covariance inequality or the scope of the statistical results in (ii), or the edge-set typography correction. The Challenge docstring explicitly discloses all these omissions. The validity hypothesis is satisfiable even with attained degree caps, as independently compiled in scratch/Check.lean."
+  }
+]

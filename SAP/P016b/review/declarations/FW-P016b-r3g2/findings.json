@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P016-T17",
+    "theorem": "SAP.P016b.T17",
+    "fingerprint": "64a6244739da8572a2f807bf1a258c843229ba3b8822b5955640438f4dee1a53",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:15 and :25 using Defs only: n=4, z=complete4 5 has both groups of size 2; Y=(0,1,12,13), t=10 adjusts to u4=(0,1,2,3); the corrected and imputed-treated contrasts are 2 and 12. No other hypotheses are required.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T18",
+    "theorem": "SAP.P016b.T18",
+    "fingerprint": "5cf99797e0396e9a13de59186f7dc7b66bba7726152ccf587d66c1e0ee8264d3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no antecedent hypotheses. Compiled scratch/Nonvacuity.lean:30 and :34 and scratch/Witness.lean:11: the actual calibration assignment has exactly 128 units per group, all inverse denominators are nonzero, and representatives of every discrepancy class have the stated values. scratch/exact_witness.py independently verifies all fixed 256-coordinate numerical assertions, including both means, population variance, all discrepancies, 127 unmatched treated units, sorted central median zero, generated/adjusted shifts and their ratio, using exact fractions; all 12 checks pass. Nonnegativity for all real a follows directly from sorting nonnegative absolute discrepancies, with both central indices in bounds.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T19",
+    "theorem": "SAP.P016b.T19",
+    "fingerprint": "689ef443cf6bb5218c18ee6230262e767f168e7de696d1860437cde1468982d5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:42 with m=1, y=(8,9), z=(true,false), t=34/99, j=0: m>0, balanced assignment, treated j, and y_j!=0. The inverse-adjustment clauses use nonzero a=413/396 and nonempty treated groups; :49 supplies mu=10, t=34/99, a=495/478 satisfying every matched-parameter hypothesis and equality. :93-107 proves the actual Balanced(2*m,m) type is nonempty for all m>0. scratch/Witness.lean:22 checks a zero sorted median with unequal treated outcomes. The entire fixed witness in clause (f) is additionally verified by the exact-fraction checker used for T18.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T20",
+    "theorem": "SAP.P016b.T20",
+    "fingerprint": "313279118151d93c6d2ee30398479d336574a3bb9aa225b121bcfdae34820f70",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:54: y0=3, y1=5, Y=5, tau=2, z=true satisfies both scalar premises. :60 constructs n=2, S_ij=0 on the diagonal and 1 otherwise, beta=2, tau=1/2, y0=(3,4), and the full family y(z)_i=modelMultiplier(S,2,1/2,z,i)*y0_i. It verifies every network premise including nonnegative entries, positive beta, and the all-assignments model equation. Additive generation/adjustment identities have no additional hypotheses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P016-T21",
+    "theorem": "SAP.P016b.T21",
+    "fingerprint": "5bfcc26e79d72413ffdff0fa48991bb2023498f79d89b0ecaa1f23fc63643ecc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:74-136 from Defs only: a bijection with cardinality-128 subsets proves card(Balanced 256 128)=choose(256,128)>0; uniformLaw then constructs a normalized FiniteLaw with exactly weight 1/choose(256,128). The same example supplies S_ij=0 when i=j and 1 otherwise (symmetric, binary and nonzero), y0_i=i+1, and T=meanDifference. Thus every input hypothesis is jointly satisfied. iidMass uses the full product of this law for all 1001 or 10001 draws, so no dependent-reference substitution is involved.",
+    "confidence": 0.99
+  }
+]

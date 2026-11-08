@@ -1,7 +1,8 @@
 import Mathlib
 
-/-! Exact balanced-subset leading-run counts for P041-T5,
-expressed through binomial coefficients. -/
+/-! Exact balanced-subset leading-run counts for P041-T5.
+This module proves the actual prefix-count bridge independently of the
+remaining expectation and removal-count assertions in P041_Order. -/
 
 noncomputable section
 open scoped BigOperators

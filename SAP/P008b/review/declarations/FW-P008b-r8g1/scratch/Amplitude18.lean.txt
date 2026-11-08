@@ -1,0 +1,81 @@
+import SAP.P008b.Challenge
+
+open scoped BigOperators
+open SAP.P008b
+
+set_option maxHeartbeats 2000000
+set_option maxRecDepth 10000
+
+noncomputable section
+namespace Review18
+
+lemma kernel_zero : toyKernel 0 = 2 := by norm_num [toyKernel]
+
+-- Independent bound from Mathlib's certified exp(-1) enclosures.
+lemma kernel_one_lt : toyKernel 1 < -(21/50 : ℝ) := by
+  let u := Real.exp (-1)
+  have hlo : (9/25 : ℝ) < u := lt_trans (by norm_num) Real.exp_neg_one_gt_d9
+  have hhi : u < (37/100 : ℝ) := lt_trans Real.exp_neg_one_lt_d9 (by norm_num)
+  have hslo : (81/625 : ℝ) < u^2 := by nlinarith [sq_nonneg (u - 9/25)]
+  have hshi : u^2 < (1369/10000 : ℝ) := by nlinarith [sq_nonneg (u - 37/100)]
+  have hflo : (6561/390625 : ℝ) < (u^2)^2 := by
+    nlinarith [sq_nonneg (u^2 - 81/625)]
+  have htwo : Real.exp (-2) = u^2 := by
+    rw [show (-2 : ℝ) = -1 + -1 by norm_num, Real.exp_add]
+    simp only [u, pow_two]
+  have hfour : Real.exp (-4) = (u^2)^2 := by
+    rw [show (-4 : ℝ) = -2 + -2 by norm_num, Real.exp_add, htwo]
+    ring
+  norm_num only [toyKernel, mul_one, one_pow]
+  rw [htwo, hfour]
+  nlinarith
+
+lemma explicit_mixture : ∃ t : ℝ, 0 < t ∧ t < 1 ∧
+    3 * (t * toyKernel 1 + (1-t) * toyKernel 0) = -63/50 := by
+  let t := (121/50 : ℝ) / (2-toyKernel 1)
+  have hd : 0 < 2 - toyKernel 1 := by linarith [kernel_one_lt]
+  refine ⟨t, div_pos (by norm_num) hd, (div_lt_one hd).mpr ?_, ?_⟩
+  · linarith [kernel_one_lt]
+  · rw [kernel_zero]
+    dsimp only [t]
+    field_simp
+    ring
+
+lemma marginal_effect (Q : FiniteLaw (Assignment 4)) (a : ℝ) (base : Fin 2 → ℝ)
+    (r : Fin 4 → Fin 2 → ℝ) (i : Fin 4) (c : Fin 2) :
+    marginal Q (toyRasterOutcome a base r c) i true -
+      marginal Q (toyRasterOutcome a base r c) i false = a * toyKernel (r i c) := by
+  have he (z : Assignment 4) :
+      toyRasterOutcome a base r c (Function.update z i true) -
+        toyRasterOutcome a base r c (Function.update z i false) = a * toyKernel (r i c) := by
+    fin_cases i <;>
+      simp [toyRasterOutcome, Fin.sum_univ_succ, Function.update_apply, bit]
+  unfold marginal FiniteLaw.expect
+  rw [← Finset.sum_sub_distrib]
+  simp_rw [← mul_sub, he]
+  rw [← Finset.sum_mul, Q.total, one_mul]
+
+-- The exact convex combination is realized by actual data of the statement's
+-- finite raster model, with all normalized-weight and distance hypotheses.
+example : ∃ (Q : FiniteLaw (Assignment 4)) (base : Fin 2 → ℝ)
+    (r w : Fin 4 → Fin 2 → ℝ),
+    (∀ i c, 0 ≤ w i c) ∧ (∀ i, ∑ c, w i c = 1) ∧
+    (∀ i c, 0 ≤ r i c) ∧ toyRasterAMR Q 3 base r w = -63/50 := by
+  obtain ⟨t, ht0, ht1, he⟩ := explicit_mixture
+  let Q := uniformLaw (Assignment 4)
+  let base : Fin 2 → ℝ := fun _ => 0
+  let r : Fin 4 → Fin 2 → ℝ := fun _ => ![1,0]
+  let w : Fin 4 → Fin 2 → ℝ := fun _ => ![t,1-t]
+  refine ⟨Q, base, r, w, ?_, ?_, ?_, ?_⟩
+  · intro i c
+    fin_cases c <;> dsimp [w] <;> linarith
+  · intro i
+    simp [w, Fin.sum_univ_two]
+  · intro i c
+    fin_cases c <;> norm_num [r]
+  · unfold toyRasterAMR
+    simp_rw [marginal_effect]
+    simp [r, w, Fin.sum_univ_succ]
+    linarith [he]
+
+end Review18

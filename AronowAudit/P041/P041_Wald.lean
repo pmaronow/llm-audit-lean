@@ -14,16 +14,17 @@ open scoped BigOperators
 error from a printed HR and standard error on the HR scale (S6/S9). -/
 def logHazardSE (h s : ℝ) : ℝ := s/h
 
-/-- "z(h,s)=h log(h)/s", P041-T2 / P041-T8, calculated
+/-- "z(h,s)=h log(h)/s", P041-T2 / P041-T8, validator Wald calculation
 from the S6/S9 printed pairs. This is not a formula printed in the paper. -/
 def hazardWald (h s : ℝ) : ℝ := h * Real.log h / s
 
-/-- "p=2 Φ(-|z|)": Φ is the CDF of the
+/-- "p=2 Φ(-|z|)", validator Wald calculation: Φ is the CDF of the
 actual mean-zero variance-one Gaussian probability measure in Mathlib. -/
 def normalTwoSided (z : ℝ) : ℝ :=
   2 * ProbabilityTheory.cdf (ProbabilityTheory.gaussianReal 0 1) (-|z|)
 
-/-- Closed three-decimal rounding interval, allowing either rounding endpoint. -/
+/-- "Each printed value v ... [v-0.0005,v+0.0005]", targets S7.
+The closed interval accommodates either rounding endpoint. -/
 def printedInterval (v x : ℝ) : Prop := v-0.0005 ≤ x ∧ x ≤ v+0.0005
 
 /-- "exp(log h ± (49/25)σF)", P041-T2(b): a 95% Wald interval using
@@ -39,7 +40,7 @@ def betweenHazardWald (hF sF hA sA : ℝ) : ℝ :=
     Real.sqrt ((logHazardSE hF sF)^2 + (logHazardSE hA sA)^2)
 
 /-- Rational partial series for half log((1+x)/(1-x)), as used in
-Mathlib's sum_range_le_log_div. -/
+E012's certificate and Mathlib's sum_range_le_log_div. -/
 def logSeries (x : ℝ) (n : ℕ) : ℝ :=
   ∑ j ∈ Finset.range n, x^(2*j+1)/(2*j+1)
 
@@ -99,6 +100,14 @@ theorem abs_hazard_wald (h s : ℝ) (h0 : 0 < h) (h1 : h < 1) (hs : 0 < s) :
   have hn := Real.log_neg h0 h1
   simp [hazardWald, abs_div, abs_mul, abs_of_pos h0, abs_of_neg hn, abs_of_pos hs]
 
+/-- Example endpoint certificate for the former-senator printed ratio,
+P041-T2(a)-(c), using ten terms with rational arithmetic. -/
+theorem neg_log_former_lower :
+    (0.37033:ℝ) < -Real.log (0.6905) ∧ -Real.log (0.6905) < 0.37034 := by
+  have hc := neg_log_certificate 0.6905 (by norm_num) (by norm_num) 10
+  norm_num [logSeries, Finset.sum_range_succ] at hc
+  constructor <;> linarith
+
 
 /-- Rational endpoint logarithm enclosure for former, targets P041-T2/T8/T11. -/
 theorem log_former_l :
@@ -149,6 +158,26 @@ theorem log_active_u :
   norm_num [logSeries, Finset.sum_range_succ] at hc
   constructor <;> linarith
 
+/-- Wald bounds throughout the rounding rectangle of (0.629,0.091),
+targets P041-T2/T8/T11; proved by numerator monotonicity and endpoint certificates. -/
+theorem wald_active_rounding (h s : ℝ)
+    (hh : printedInterval 0.629 h) (hs : printedInterval 0.091 s) :
+    3.17 < |hazardWald h s| ∧ |hazardWald h s| < 3.24 := by
+  rcases hh with ⟨hlo,hhi⟩
+  rcases hs with ⟨slo,shi⟩
+  have h0 : 0 < h := by linarith
+  have h1 : h < 1 := by linarith
+  have s0 : 0 < s := by linarith
+  have hl := log_active_l
+  have hu := log_active_u
+  have hn := wald_numerator_above (1257/2000:ℝ) (1259/2000:ℝ) h (by norm_num)
+    (by linarith) (by linarith) (by linarith [log_active_l])
+  rw [abs_hazard_wald h s h0 h1 s0]
+  constructor
+  · apply (lt_div_iff₀ s0).2
+    nlinarith [hn.1, hu.1]
+  · apply (div_lt_iff₀ s0).2
+    nlinarith [hn.2, hl.2]
 
 /-- Rational endpoint logarithm enclosure for pooled_adjusted, targets P041-T2/T8/T11. -/
 theorem log_pooled_adjusted_l :
@@ -800,6 +829,28 @@ theorem corrected_star_wald_bounds :
     wald_cited_first_half_rounding, wald_positive_second_half_rounding,
     wald_northeast_rounding⟩
 
+/-- P041-T8, corrected *** / ** / ** / ** using the actual normal CDF.
+This is faithfully drafted: normal-tail certificate translation is unfinished.
+No rational surrogate for the normal distribution is substituted. -/
+theorem corrected_normal_star_tiers :
+    (∀ h s : ℝ, printedInterval 0.670 h → printedInterval 0.095 s →
+      normalTwoSided (hazardWald h s) < 0.01 ∧ significanceTier (hazardWald h s) = 3) ∧
+    (∀ h s : ℝ, printedInterval 0.480 h → printedInterval 0.174 s →
+      0.01 < normalTwoSided (hazardWald h s) ∧ normalTwoSided (hazardWald h s) < 0.05 ∧
+      significanceTier (hazardWald h s) = 2) ∧
+    (∀ h s : ℝ, printedInterval 0.274 h → printedInterval 0.162 s →
+      0.01 < normalTwoSided (hazardWald h s) ∧ normalTwoSided (hazardWald h s) < 0.05 ∧
+      significanceTier (hazardWald h s) = 2) ∧
+    (∀ h s : ℝ, printedInterval 0.316 h → printedInterval 0.149 s →
+      0.01 < normalTwoSided (hazardWald h s) ∧ normalTwoSided (hazardWald h s) < 0.05 ∧
+      significanceTier (hazardWald h s) = 2) := by
+  -- Arithmetic automation does not evaluate the genuine normal CDF.
+  fail_if_success (solve | norm_num [normalTwoSided, significanceTier])
+  -- Exposing the half-line Gaussian measure leaves an analytic integral.
+  fail_if_success (solve | (simp only [normalTwoSided, ProbabilityTheory.cdf_eq_real]; norm_num))
+  -- The proved statistic enclosures alone do not certify normal critical values.
+  fail_if_success (solve | (have hz := corrected_star_wald_bounds; aesop))
+  sorry
 
 /-- P041-T8(v), literal nested significance versus strongest-tier reading:
 the first three printed tiers assert weaker true cutoffs, whereas the Northeast
@@ -827,6 +878,95 @@ theorem former_subgroup_nondetections :
   · intro h s hh hs
     exact lt_trans (wald_deceased_rounding h s hh hs).2 (by norm_num)
 
+/-- P041-T11(P1), the normal p-value enclosures behind the correct
+0.42,0.70,0.47 nondetection passage (p. 5/8), at the precision permitted
+by the rounded S6 C pairs. Faithfully drafted using the Gaussian CDF. -/
+theorem printed_former_normal_p_enclosures :
+    (∀ h s : ℝ, printedInterval 0.691 h → printedInterval 0.318 s →
+      0.4205 ≤ normalTwoSided (hazardWald h s) ∧ normalTwoSided (hazardWald h s) ≤ 0.4232) ∧
+    (∀ h s : ℝ, printedInterval 0.775 h → printedInterval 0.503 s →
+      0.6936 ≤ normalTwoSided (hazardWald h s) ∧ normalTwoSided (hazardWald h s) ≤ 0.6954) ∧
+    (∀ h s : ℝ, printedInterval 0.627 h → printedInterval 0.406 s →
+      0.4700 ≤ normalTwoSided (hazardWald h s) ∧ normalTwoSided (hazardWald h s) ≤ 0.4720) ∧
+    abs (abs (hazardWald 0.691 0.318) - 0.8032) ≤ 0.00005 ∧
+    abs (abs (hazardWald 0.775 0.503) - 0.3927) ≤ 0.00005 ∧
+    abs (abs (hazardWald 0.627 0.406) - 0.7209) ≤ 0.00005 ∧
+    |normalTwoSided (hazardWald 0.691 0.318) - 0.4219| ≤ 0.00005 ∧
+    |normalTwoSided (hazardWald 0.775 0.503) - 0.6945| ≤ 0.00005 ∧
+    |normalTwoSided (hazardWald 0.627 0.406) - 0.4710| ≤ 0.00005 := by
+  sorry
+
+/-- P041-T2(a),(c), parenthetical p-value approximations at the printed
+pairs: 0.42 for former-senator nondetection and 0.845 for the independent
+between-sample comparison. This is drafted using the actual normal CDF;
+the nonrejection and imprecision inequalities are separately proved. -/
+theorem corrected_normal_p_approximations :
+    |normalTwoSided (hazardWald 0.691 0.318) - 0.42| ≤ 0.005 ∧
+    |normalTwoSided (betweenHazardWald 0.691 0.318 0.629 0.091) - 0.845| ≤ 0.0005 := by
+  sorry
 
 end AronowAudit.P041
 
+#print axioms AronowAudit.P041.neg_log_certificate
+#print axioms AronowAudit.P041.wald_numerator_above
+#print axioms AronowAudit.P041.wald_numerator_below
+#print axioms AronowAudit.P041.abs_hazard_wald
+#print axioms AronowAudit.P041.neg_log_former_lower
+#print axioms AronowAudit.P041.log_former_l
+#print axioms AronowAudit.P041.log_former_u
+#print axioms AronowAudit.P041.wald_former_rounding
+#print axioms AronowAudit.P041.log_active_l
+#print axioms AronowAudit.P041.log_active_u
+#print axioms AronowAudit.P041.wald_active_rounding
+#print axioms AronowAudit.P041.log_pooled_adjusted_l
+#print axioms AronowAudit.P041.log_pooled_adjusted_u
+#print axioms AronowAudit.P041.wald_pooled_adjusted_rounding
+#print axioms AronowAudit.P041.log_cited_first_half_l
+#print axioms AronowAudit.P041.log_cited_first_half_u
+#print axioms AronowAudit.P041.wald_cited_first_half_rounding
+#print axioms AronowAudit.P041.log_positive_second_half_l
+#print axioms AronowAudit.P041.log_positive_second_half_u
+#print axioms AronowAudit.P041.wald_positive_second_half_rounding
+#print axioms AronowAudit.P041.log_northeast_l
+#print axioms AronowAudit.P041.log_northeast_u
+#print axioms AronowAudit.P041.wald_northeast_rounding
+#print axioms AronowAudit.P041.log_living_l
+#print axioms AronowAudit.P041.log_living_u
+#print axioms AronowAudit.P041.wald_living_rounding
+#print axioms AronowAudit.P041.log_deceased_l
+#print axioms AronowAudit.P041.log_deceased_u
+#print axioms AronowAudit.P041.wald_deceased_rounding
+#print axioms AronowAudit.P041.neg_log_rectangle
+#print axioms AronowAudit.P041.corrected_former_nondetection
+#print axioms AronowAudit.P041.former_active_log_se_enclosures
+#print axioms AronowAudit.P041.corrected_former_imprecision
+#print axioms AronowAudit.P041.corrected_between_relative_effects
+#print axioms AronowAudit.P041.wald_exponents_cell
+#print axioms AronowAudit.P041.wald_log279
+#print axioms AronowAudit.P041.wald_log282
+#print axioms AronowAudit.P041.wald_log_inv1700
+#print axioms AronowAudit.P041.wald_log_inv1706
+#print axioms AronowAudit.P041.wald_cell_log_0
+#print axioms AronowAudit.P041.wald_cell_log_1
+#print axioms AronowAudit.P041.wald_cell_log_2
+#print axioms AronowAudit.P041.wald_cell_log_3
+#print axioms AronowAudit.P041.wald_cell_log_4
+#print axioms AronowAudit.P041.wald_cell_log_5
+#print axioms AronowAudit.P041.wald_cell_log_6
+#print axioms AronowAudit.P041.wald_cell_log_7
+#print axioms AronowAudit.P041.wald_cell_log_8
+#print axioms AronowAudit.P041.former_interval_cell_0
+#print axioms AronowAudit.P041.former_interval_cell_1
+#print axioms AronowAudit.P041.former_interval_cell_2
+#print axioms AronowAudit.P041.former_interval_cell_3
+#print axioms AronowAudit.P041.former_interval_cell_4
+#print axioms AronowAudit.P041.former_interval_cell_5
+#print axioms AronowAudit.P041.former_interval_cell_6
+#print axioms AronowAudit.P041.former_interval_cell_7
+#print axioms AronowAudit.P041.former_wald_endpoint_enclosures
+#print axioms AronowAudit.P041.corrected_star_wald_bounds
+#print axioms AronowAudit.P041.corrected_normal_star_tiers
+#print axioms AronowAudit.P041.nested_significance_reading
+#print axioms AronowAudit.P041.former_subgroup_nondetections
+#print axioms AronowAudit.P041.printed_former_normal_p_enclosures
+#print axioms AronowAudit.P041.corrected_normal_p_approximations

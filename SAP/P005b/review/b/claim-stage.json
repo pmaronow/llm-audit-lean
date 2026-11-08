@@ -1,0 +1,80 @@
+[
+  {
+    "theorem": "SAP.P005b.T15",
+    "target_id": "P005-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three coefficient equalities and the assignmentwise covariance combination match canonical parts (a)-(c). The arm-size hypotheses t,c >= 2 guard every denominator; arbitrary positive-dimensional populations, including the regular P6 example in scratch/Nonvacuity.lean, supply instances."
+  },
+  {
+    "theorem": "SAP.P005b.T16",
+    "target_id": "P005-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The arrays are scalar, fixed and separately zero-sum, the design is uniform over m-subsets with 0 < m < n, and all corrected double/triple indicator calculations, coefficient identities, third moments and complement identities are included. For example n=3,m=1,a=b=c=(1,1,-2) has a nonzero third moment and nonempty design."
+  },
+  {
+    "theorem": "SAP.P005b.T17",
+    "target_id": "P005-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "The matching-index contraction, centering inequality, exact scalar factors, leverage upper bound, and both deterministic orders reproduce canonical (a)-(e). The finite extra 4K bound is valid because the common slopes cancel in the residual difference. The first quadratic-form variance inequality is expressly excluded by the canonical finite_lemmas. The grid sequence described in the audit evidence satisfies the sequence hypotheses with d=1 and nonzero outcomes."
+  },
+  {
+    "theorem": "SAP.P005b.T18",
+    "target_id": "P005-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "The weighted normal equation and all three bracketed vectors have the printed factors in the correct scope. The standardized common residuals give the actual observed-residual star term; the extra normalization of the normal equation is equivalent since n>0. P6,m=2 and every 2-subset give nonvacuous instances."
+  },
+  {
+    "theorem": "SAP.P005b.T19",
+    "target_id": "P005-T19",
+    "my_reading_vs_claim": "different",
+    "reason": "This is a refutation, not the positive canonical statement: it negates precisely the complete uncentered expectation/variance conjunction for n>=4 and nonempty arms. It genuinely refutes the printed reading. Example n=19,m=18,treated,a=(1,1,2,4,...,4) with sixteen 4s,b_i=1/a_i has Var=2483/2807136 > covarianceBound=1703/1994544; ab=1 throughout. The expectation identity remains true. Exact calculation is in scratch/audit_checks.py."
+  },
+  {
+    "theorem": "SAP.P005b.T20",
+    "target_id": "P005-T20",
+    "my_reading_vs_claim": "different",
+    "reason": "This certifies the valid exact part and refutes the printed third-component universal identity, rather than affirming that identity. It also refutes the printed stochastic expansion (which the canonical note treats separately). P6 with x=(-11,-5,-1,1,5,11)/7,yT=x^2,yC=0,m=2 satisfies standardization and all-assignment interacted regularity; actual third component is 192/1715 versus printed -192/1715. A d=1 centered/standardized spike-plus-distinct-bulk sequence satisfies the literal log condition and eventual regularity but has remainder at least n-2 with probability at least 1/2, so the second negation also concerns the printed reading."
+  },
+  {
+    "theorem": "SAP.P005b.T21",
+    "target_id": "P005-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The main unbiasedness assertions, inverse-free identity, bias decomposition and inverse-component identification have the full canonical n>=3,0<m<n scope. Only the (11)/(12) expectation statements, the alternative third-bias formula through E(biasPart12), and coefficient collection are placed behind m>=2 and n-m>=2. This is a real restriction of the proof-step clauses and correctly prevents division by zero. P6,m=2 satisfies all hypotheses; exact rational checks also confirm the unrestricted assertions for singleton arms m=1 and m=5."
+  },
+  {
+    "theorem": "SAP.P005b.T22",
+    "target_id": "P005-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "Includes the bias-estimator and corrected-ATE expectations, inverse-free formula, both armwise expectations, and the separately quantified centered-covariate-only variants with the relevant arm size >=2. All-assignment regularity is the standing footnote assumption, not an added condition. P6,m=2 is a positive-dimensional, regular instance with nonzero outcomes."
+  },
+  {
+    "theorem": "SAP.P005b.T23",
+    "target_id": "P005-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "The common slope and bias decompositions, both exact moments, covariance interpretation and both Remark 1 implications are all present under precisely the canonical finite-sample hypotheses. The asymptotic part is explicitly a different target. P6,m=2 and the balanced m=3 variant satisfy the hypotheses; rational enumeration verifies the assertions, including singleton-arm cases where permitted."
+  },
+  {
+    "theorem": "SAP.P005b.T24",
+    "target_id": "P005-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both interacted slopes, the bias expression, the individual first-component moments and their difference match the exact valid part isolated in this target. P6,m=2 is standardized with all treatment and control sample variances strictly positive. The false third component and asymptotic expansion are outside T24."
+  },
+  {
+    "theorem": "SAP.P005b.T25",
+    "target_id": "P005-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "The main stochastic expansion and its scale match. Importantly, canonical_claim.definitions_needed, paragraph [Reading of the order symbols], expressly requires 1 <= d_n <= n for every n (up to an irrelevant initial prefix); therefore standingAssumptions positivity for n>=3 is not an extra restriction relative to the complete supplied canonical claim. The Challenge docstring assertion that the canonical claim imposes only d_n <= n conflicts with that paragraph. The main canonical statement/standing-assumption transcription alone would allow d=0, so the source is ambiguous in this respect. The standardized distinct grid with d=1,m=floor(n/2),yT=x^2,yC=0 is a nontrivial admissible sequence."
+  },
+  {
+    "theorem": "SAP.P005b.T26",
+    "target_id": "P005-T26",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The conditional little-o expansion matches, but the canonical statement additionally includes the O_p(sqrt(kappa/n)) order without leverage decay and exact identification of the remainder with star on p.1516; neither appears in this theorem. Positive dimension is already explicit in the target definitions_needed [Reading of the order symbols], although the docstring calls it added relative to the main statement-only reading. The d=1 standardized grid satisfies standing assumptions, eventual noninteracted regularity, and kappa->0."
+  },
+  {
+    "theorem": "SAP.P005b.T27",
+    "target_id": "P005-T27",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The conditional arm-specific little-o expansion matches, but the canonical statement also includes O_p(sqrt(kappa/n)) without leverage decay, absent here. Positive dimension is already explicit in definitions_needed [Reading of the order symbols], although the docstring calls it added relative to the main statement-only reading. The d=1 standardized distinct grid has both arms regular eventually and kappa->0; it does not use an empty covariate index set."
+  }
+]

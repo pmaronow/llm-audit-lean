@@ -1,0 +1,143 @@
+[
+ {
+  "target_id": "P011-T15",
+  "decision": "whole",
+  "theorem": "SAP.P011b.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.Wave1.star_counterexample_proof",
+   "AronowAudit.P011.block_ols_representations",
+   "AronowAudit.P011.saturated_graph_singleton",
+   "AronowAudit.P011.star_mean_terms",
+   "AronowAudit.P011.star_relaxation_singleton",
+   "AronowAudit.P011.BlockOLSCompletion.local_sum",
+   "AronowAudit.P011.Wave1.star_binary",
+   "AronowAudit.P011.Wave1.star_compatible",
+   "AronowAudit.P011.Wave1.star_mean",
+   "AronowAudit.P011.Wave1.star_beta",
+   "AronowAudit.P011.Wave1.star_limit",
+   "AronowAudit.P011.NewFiniteCompletion.uniformLaw_equiv",
+   "AronowAudit.P011.Wave1.star_source_map",
+   "AronowAudit.P011.Wave1.star_uniform_pi",
+   "AronowAudit.P011.Wave1.uci_uniform_apply",
+   "AronowAudit.P011.BlockOLSCompletion.star_leaves_mean",
+   "AronowAudit.P011.BlockOLSCompletion.star_center_sum"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011b.T15WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P011.Wave1.star_binary",
+   "AronowAudit.P011.Wave1.star_compatible"
+  ],
+  "credit_note": "The saturated_graph_singleton row is used through the existing star_compatible result; all components of narrower rows are used only as stated.",
+  "decision_note": "The theorem states the whole canonical binary-star counterexample, including the independent leaf and block laws, full-rank regression identities, saturated graph constraints, and both clipped and printed-domain coverage. No canonical target clauses are omitted."
+ },
+ {
+  "target_id": "P011-T16",
+  "decision": "whole",
+  "theorem": "SAP.P011b.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.Wave1.ols_repair_proof",
+   "AronowAudit.P011.BlockOLSCompletion.local_sum",
+   "AronowAudit.P011.CorollaryCompletion.conservative_mono",
+   "AronowAudit.P011.CoverageCompletion.rowCP_continuous_pair",
+   "AronowAudit.P011.CoverageCompletion.rowCP_det",
+   "AronowAudit.P011.DenseCompletion.l2_nonneg",
+   "AronowAudit.P011.OracleCompletion.rowCP_dominated",
+   "AronowAudit.P011.OracleCompletion.row_moving_add_error",
+   "AronowAudit.P011.ProbabilityCompletion.own_centred_bound",
+   "AronowAudit.P011.ProbabilityCompletion.weighted_memLp",
+   "AronowAudit.P011.SpectralConfidence.operatorNorm_le_abs_row_sum",
+   "AronowAudit.P011.SpectralConfidence.oracle_nonneg",
+   "AronowAudit.P011.SpectralConfidence.oracle_row_sum",
+   "AronowAudit.P011.SpectralConfidence.oracle_symmetric",
+   "AronowAudit.P011.Wave1.msr_quadratic_concentration",
+   "AronowAudit.P011.Wave1.olsr_add",
+   "AronowAudit.P011.Wave1.olsr_error_bound",
+   "AronowAudit.P011.Wave1.olsr_score_norm_moment",
+   "AronowAudit.P011.Wave1.olsr_target",
+   "AronowAudit.P011.Wave1.olsr_tight_of_moment",
+   "AronowAudit.P011.Wave1.rps_maximum_conservative",
+   "AronowAudit.P011.Wave1.rps_true_eq",
+   "AronowAudit.P011.Wave1.rps_weighted_mean",
+   "AronowAudit.P011.Wave1.rrn_error_norm_bounds",
+   "AronowAudit.P011.Wave1.rrn_l2_div_bound",
+   "AronowAudit.P011.Wave1.rrn_tight_div_sqrt",
+   "AronowAudit.P011.Wave1.rrn_tight_dominated",
+   "AronowAudit.P011.Wave1.star_beta",
+   "AronowAudit.P011.Wave1.star_covariance_primary",
+   "AronowAudit.P011.Wave1.star_mean",
+   "AronowAudit.P011.Wave1.star_meanBias",
+   "AronowAudit.P011.Wave1.star_scaledTrue",
+   "AronowAudit.P011.Wave1.star_scaling",
+   "AronowAudit.P011.Wave1.star_valid",
+   "AronowAudit.P011.block_ols_representations",
+   "AronowAudit.P011.oracle_mean_conditions",
+   "AronowAudit.P011.oracle_sharp_bound",
+   "AronowAudit.P011.residual_perturbation",
+   "AronowAudit.P011.revised_oracle_convergence",
+   "AronowAudit.P011.revised_sample_variance"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011b.T16WholeStatement_W2",
+  "credit_note": "The existing ols_repair_proof binds one coefficient vector across all sizes. Its fixed-b domain is retained and now disclosed explicitly; no generalized coefficient-sequence result is asserted."
+ },
+ {
+  "target_id": "P011-T17",
+  "decision": "whole",
+  "theorem": "SAP.P011b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.Wave1.corrected_covariance_expansion_moments"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P011.covariance_expansion_linear",
+    "reason": "The complete moment-domain result already supplies the covariance expansion; this abstract algebra row is not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P011.fourth_polynomial",
+    "reason": "The complete moment-domain result already supplies the fourth-moment identity; this polynomial row is not needed separately."
+   }
+  ],
+  "statement_definition": "SAP.P011b.T17Statement"
+ },
+ {
+  "target_id": "P011-T18",
+  "decision": "refuted",
+  "theorem": "SAP.P011b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.printed_expansion_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011b.T18Statement",
+  "supporting_declarations": [
+   "AronowAudit.P011.Wave1.fid2_covariance_eq_sub",
+   "MeasureTheory.integrable_dirac"
+  ],
+  "decision_note": "Revision 2 rule 2 classifies the explicit refutation as refuted.",
+  "credit_note": "All canonical parts (a)-(e) are stated, including the named bracket-only repaired moment expression, its value -70, and its disagreement with Mathlib covariance. The new identification is Dirac substitution and rational arithmetic; its value uses the existing certificate."
+ },
+ {
+  "target_id": "P011-T19",
+  "decision": "whole",
+  "theorem": "SAP.P011b.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.auxiliary_corrected_display",
+   "AronowAudit.P011.ProbabilityCompletion.weighted_memLp",
+   "AronowAudit.P011.pairwise_correlation_repair",
+   "AronowAudit.P011.printed_auxiliary_degree_bound",
+   "AronowAudit.P011.Wave1.afm_weight_bounds",
+   "AronowAudit.P011.Wave1.afm_meanVariance",
+   "AronowAudit.P011.Wave1.afm_beta",
+   "AronowAudit.P011.Wave1.afm_spread",
+   "AronowAudit.P011.Wave1.alternating_counterexample_proof",
+   "AronowAudit.P011.auxiliary_empty_identity"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011b.T19WholeStatement"
+ }
+]

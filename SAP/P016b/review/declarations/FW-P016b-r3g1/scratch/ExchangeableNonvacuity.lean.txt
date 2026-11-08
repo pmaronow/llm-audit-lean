@@ -1,0 +1,57 @@
+import SAP.P016b.Defs.WholeW1
+
+open scoped BigOperators Classical ENNReal
+open MeasureTheory SAP.P016b
+noncomputable section
+
+-- A uniform finite orbit of a vector of distinct reals. The coordinates are
+-- exchangeable and pairwise distinct for every B, including 1000 and 10000.
+-- This construction is independent of the Challenge's theorem stubs.
+def distinctOrbit (B : ℕ) : Measure (ReferenceVector B) :=
+  (Fintype.card (Equiv.Perm (Fin (B+1))) : ℝ≥0∞)⁻¹ •
+    ∑ σ : Equiv.Perm (Fin (B+1)),
+      Measure.dirac (fun i => ((σ i).val : ℝ))
+
+instance distinctOrbit_probability (B : ℕ) : IsProbabilityMeasure (distinctOrbit B) := by
+  constructor
+  simp [distinctOrbit, Measure.finsetSum_apply, ENNReal.inv_mul_cancel,
+    Fintype.card_ne_zero]
+
+theorem distinctOrbit_exchangeable (B : ℕ) : Exchangeable (distinctOrbit B) := by
+  intro π
+  have hm : Measurable (fun t : ReferenceVector B => fun i => t (π i)) := by
+    fun_prop
+  unfold distinctOrbit
+  rw [Measure.map_smul, Measure.map_finset_sum' hm.aemeasurable]
+  swap
+  · exact hm.aemeasurable
+  simp only [Measure.map_dirac' hm]
+  congr 1
+  apply Fintype.sum_equiv (Equiv.mulRight π)
+  intro σ
+  rfl
+
+theorem distinctOrbit_noTies (B : ℕ) : ∀ᵐ t ∂distinctOrbit B, Function.Injective t := by
+  unfold distinctOrbit
+  apply Measure.ae_smul_measure
+  simp only [ae_finsetSum_measure_iff]
+  intro σ _
+  simp only [ae_dirac_eq, Filter.eventually_pure]
+  intro i j hij
+  apply σ.injective
+  apply Fin.val_injective
+  change ((σ i).val : ℝ) = ((σ j).val : ℝ) at hij
+  exact_mod_cast hij
+
+example (B : ℕ) : ∃ μ : Measure (ReferenceVector B),
+    IsProbabilityMeasure μ ∧ Exchangeable μ ∧ (∀ᵐ t ∂μ, Function.Injective t) := by
+  exact ⟨distinctOrbit B, inferInstance,
+    distinctOrbit_exchangeable B, distinctOrbit_noTies B⟩
+
+example : (0 : ℝ) ≤ 1/20 ∧
+    (25 : ℕ) = Nat.floor ((1/20 : ℝ)*1000/2) ∧ 2*(25 : ℕ) < 1000 := by
+  norm_num
+
+example : (0 : ℝ) ≤ 1/20 ∧
+    (250 : ℕ) = Nat.floor ((1/20 : ℝ)*10000/2) ∧ 2*(250 : ℕ) < 10000 := by
+  norm_num

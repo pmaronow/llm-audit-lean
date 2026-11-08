@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P006-T16",
+    "theorem": "SAP.P006b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Standing.lean: n=1, Omega=Bool, public and private covariates both Unit, covariate law dirac ((),()), constant Markov kernel dirac (), potential outcomes and estimator zero. For every admissible policy the treatment law is Bernoulli(pi((),())), so every Standing field holds, including random treatment probabilities. Take PiSet={0}, both maximizing policies zero, gamma=0. The joint-law identity, policy admissibility, both maximizer hypotheses, estimator identity, positive untreated mass q=1, fiber integrability, attained extrema and integrable maximum deviation zero are also compiled. Both probability spaces and the feasible set are inhabited.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P006-T17",
+    "theorem": "SAP.P006b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "K=3, p=(1/3,1/3,1/3), m=(0,1,3), j=0. Strictly positive normalized masses and the leave-only untreated denominator 1/3 are compiled in scratch/Check.lean. Treat-only leaves mass 2/3 and selected mean 2; leave-only selects mean 0. Thus the extra-type implication has a true antecedent and neither denominator is zero. The omitted outcome-law identification and clause (d) are disclosed in Challenge/Part1.lean:12 and record.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T18",
+    "theorem": "SAP.P006b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The statement is an explicit, hypothesis-free finite experiment: two fair binary draws, deterministic treated outcomes (0,1), untreated means (-1,4), full feasible square. Both (0,1) and (1,0) are feasible. Expected ATO is b(4-a-b)/4, attaining 3/4 at (0,1); welfare is a/2-3b/2, bounded between -3/2 and 1/2. Hence the welfare supremum is genuine and regret is 2. All omitted auxiliary claims are enumerated in the restriction at Challenge/Part1.lean:17.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T19",
+    "theorem": "SAP.P006b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "p=1/2, beta=4 gives effects (1,-3), optimal welfare 1/2, selected welfare -3/2, actual regret 2 and discrepancy 3 from the printed -1. These strict parameter hypotheses are compiled in scratch/Check.lean. The feasible square is nonempty and the affine welfare is bounded. For every fixed 0<p<1 the positive slope p gives the asserted divergence; m>1/2 is exactly the range beta=2m>1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T20",
+    "theorem": "SAP.P006b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four cells (y0,y1) have masses 1/8 or 3/8, all strictly positive; strict positivity is compiled in scratch/Check.lean. They total one and realize the canonical joint signed-outcome law. A constant public covariate, intercept 0, treatment coefficient -log 3 and zero feature coefficients realize the two logistic probabilities. The signed means 0 and -1/2 differ from the probabilities 1/2 and 1/4, and the two treatment decisions differ.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T21",
+    "theorem": "SAP.P006b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take d=1, all four coefficient blocks zero and x=0. Each treatment arm has success probability 1/2 and signed mean 0, and 0 differs from 1/2. More generally the finite +/-1 expectation expands to p-(1-p); exp(-z)>0 makes every logistic denominator positive and its probability strictly between zero and one. Positive d shows the result does not depend on an empty feature index.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T22",
+    "theorem": "SAP.P006b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=2, C=Nat, X constantly zero, m=(1,3), with enclosing interval [1,3]. Group nonemptiness is compiled in scratch/Check.lean. Its cardinality is two, group mean is two, centered sum is zero, and both overall means equal two. All asserted statistical ratios have positive denominators; no claim about an unobserved group's zero-division value is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T23",
+    "theorem": "SAP.P006b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two explicit laws have normalized nonnegative mass on Bool cubed, treatment probability 1/2 independent of the potential outcomes, and observed and unobserved untreated mass 1/4 each. Positivity of both untreated observation states in both worlds is compiled in scratch/Check.lean. The common observed-record masses are (1/4,1/16,3/16,1/2), whereas target means are 1/2 and 3/4. The constant covariate and treated potential outcome one complete the canonical worlds.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T24",
+    "theorem": "SAP.P006b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use Omega=Bool with fair Bernoulli law, Y0 constantly 1, Y1 constantly 2, T constantly false and R the identity. All variables are measurable and integrable; treatment is independent of both outcomes. Untreated mass is 1, observed untreated mass 1/2, and q=1/2, so the mixture branch applies. Representativeness and the stronger observation-independence condition both hold. The probability law, positive event masses, observed event mean 1 and independence conditions are compiled in scratch/Check.lean. An arbitrary supplied stratum law is the local form of the canonical covariate-conditioned assertion.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P006-T25",
+    "theorem": "SAP.P006b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the unperturbed family take n=1, alpha=1, beta=1/4, fair private type, Y0=(1,-1), Y1=(1/4,0), estimator zero and constant public covariate. Reward maximizers have first policy coordinate one; the exhibited (1,0) has regret 7/8 and heterogeneity one. For any alpha,epsilon>0, beta=min(epsilon,alpha/2) satisfies the existence branch; delta=min(epsilon,alpha/2) makes the perturbed reward uniquely maximized at (1,0) with regret alpha-delta at least alpha-epsilon. The full data-law and parameter restrictions, unspecified parameter choices and omitted general perturbed regret formula are disclosed at Challenge/Part1.lean:46.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T26",
+    "theorem": "SAP.P006b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This verdict accepts record.json's refuted decision, not the positive printed proposition. A full-support finite counterexample is n=1, fair binary covariate, deterministic Y0=0 and Y1=(1,2), estimator zero, and conditionally Bernoulli treatment for every admissible policy. Standing and fixed-query unbiasedness hold. The printed maximizing-type rule (0,1) earns 1 and treating both types earns 3/2, for both ATO and ATT. These two finite reward values are compiled in scratch/Check.lean. The theorem only needs failure of the conjunction, exactly as its docstring states.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T27",
+    "theorem": "SAP.P006b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This verdict accepts record.json's refuted decision. Let n=1, X be fair binary, Y0=0, Y1=1/2, and h(sample,query)=1 if sample=query and -1 otherwise. Under every conditionally Bernoulli policy each fixed query has estimator expectation zero, while the sampled query has estimator one. Expected TT is -(a+b)/4 and welfare is (a+b)/4; the zero policy is the reward maximizer and its regret is 1/2. Fixed-query unbiasedness, the general reward polynomial and the rewards at the zero and all-treatment policies are compiled in scratch/Check.lean. Every quantity is integrable on a finite space. This refutes the actual printed reading without adding estimator independence.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T28",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to an omitted theorem. The target concerns two particular fitted analysis samples. The supplied Defs and Challenge contain neither those fitted effects nor a theorem connecting their beneficiary sums to the reported numerical summaries. On the record's description, the only credited row negates a universal implication about hypothetical summaries, which cannot certify a refutation for these two actual analyses. Omitting that unsupported result is justified on the visible evidence; this does not endorse the printed beneficiary means or assert that no future formalization could refute them.",
+    "confidence": 0.90
+  },
+  {
+    "target_id": "P006-T29",
+    "theorem": "SAP.P006b.T29",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every M>0 use p=1/2, alpha=-2(M+1), deterministic treated outcomes (0,1) and untreated outcomes (alpha,0). At n=2 the feasible policy (0,1) maximizes ATO, (1,1) maximizes welfare, and regret is M+1>M. The family remains nonvacuous for all n>0, including the distinct n=1 response set; finite real affine welfare is bounded on the unit square. Deterministic treated outcomes restrict the family characterization, as disclosed at Challenge/Part1.lean:59, while the explicit family suffices for the entire arbitrary-threshold existential headline.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T30",
+    "theorem": "SAP.P006b.T30",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two concrete agents have fair binary covariates, deterministic Y0=0 and Y1=1, estimator zero, full policy square and sample sizes 1 and 2. Their expected TT scores are (a+b)/2 and a+b, with maxima 1 and 2 at the feasible all-treatment policy. Both effects are identically one, so pointwise and reference-population dominance hold with equality while the score inequality reverses. This is a genuine existential violation of both ranking properties. The omitted general maximum identity and sufficient sample-size condition are disclosed at Challenge/Part1.lean:64.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,136 @@
+[
+  {
+    "target_id": "P041-T1",
+    "theorem": "SAP.P041.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "qA=4/5 and qF=99/100. scratch/Check.lean compiles witnesses in (0,1) with strictly positive hazards and a general positive-binomial-mass lemma for k<=n and 0<p<1. Each of the four fixed indices satisfies k<=n. Exact rational checks give D(qA)=16/125, D(qF)=9801/1000000 and D(qA)>13 D(qF)>0. All logarithm, hazard-ratio and binomial computations occur on their intended domains.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T2",
+    "theorem": "SAP.P041.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The centers hF=0.691,sF=0.318,hA=0.629,sA=0.091 satisfy all four closed rounding intervals, as compiled in scratch/Check.lean; every h and s in those intervals is positive. qA=4/5,qF=99/100 realizes the existential common-ratio countermodel. Exact pooled contrasts are checked independently. Numerical checks give central between-group p=0.84549178155, inside the stated tolerance, and the conservative interval bound 0.1912179<z_d<0.1985483 inside (0.18,0.21).",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P041-T3",
+    "theorem": "SAP.P041.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The three fixed reference risks 52/150,69/150,32/100 are positive. a=2,b=1 inhabits the universal a>b>0 domain, compiled in scratch/Check.lean. Rational checks verify all values, roundings and gaps; Lean independently proves the three individual failed directional roundings. With a>b>0 the gap formula has b(a+b)>0 and a nonzero numerator.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T4",
+    "theorem": "SAP.P041.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is unconditional finite arithmetic at the supplied nonzero sample sizes and positive reference counts. The stored-count and 76-removal variant computations are separate expressions, not conflicting hypotheses about the same count. Independent rational checks verify their exact percentages and roundings, including 600/13 rounding to 46 with the stated two-decimal tolerance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T5",
+    "theorem": "SAP.P041.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean proves Bal(m) nonempty for every m, and its cardinalities 2 and 6 at m=1,2. The substantive formulas require m>=1, so all averaging and arm-size divisors are positive. All 6 orders at m=2 give the specified table. Exact independent enumeration for m=1 through 8 verifies the leading-run law, its mean and the positive contrast 1/(m(m+1)); all 16 independent four-rank assignments give zero HT expectation. At m=1 and k<=1, and generally k<=m,m>=1, the natural subtractions in the binomial formula have their ordinary nonnegative values.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T6",
+    "theorem": "SAP.P041.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "m=1 or m=2 gives a nonempty positive-size balanced law; g can be any real rank/own-treatment function, including a varying rank effect. Each rank is cited with probability 1/2, which gives the stated average direct effect by finite-sum linearity. The scrutiny construction supplies zero own-treatment direct effects on all assignments, while its balanced expectation is positive. The all-assignments quantifier avoids the artificial impossibility of changing just one coordinate while preserving balance. Independent exact checks cover varying g at m=1 through 8.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T7",
+    "theorem": "SAP.P041.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "An actual binary dataset is obtained by repeating each of the four design rows 50 times and assigning respectively 12,25,23,42 responses equal to 1. This has n=200,k=3 and the specified cross-products. The Gram determinant is 500000 (also compiled in Lean). The exact positive HC1 variance is 2047/492500; its square root is approximately 0.06446972295 in [0.0635,0.0645). Exact rational verification reproduces all four SSRs and the squared statistic. No retained tail or significance assertion is being silently certified.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T8",
+    "theorem": "SAP.P041.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All four printed centers inhabit their rounding rectangles, compiled in scratch/Check.lean. Those rectangles have strictly positive h,s. The absolute Wald function is monotone in h on each of these rectangles (each lies entirely on one side of exp(-1)) and is decreasing in s, so its extrema occur at corners. Independent numerical checks give absolute-z ranges approximately [2.80649,2.84254], [2.01818,2.03135], [2.18203,2.19737], [2.43451,2.45194], with p values in the asserted tiers. The final four-p premise has the compiled witness (0.005,0.02,0.02,0.02).",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P041-T9",
+    "theorem": "SAP.P041.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Lean compiles n=2,k=1,j0=0 with the all-ones intercept design as a full-rank k<n witness; S may be (0,1). The P model is realized by three study blocks of 100 rows, 50 per treatment in each; C by the four cell rows repeated 50 times; F by 75 treated and 76 untreated intercept/treatment rows. Independent exact checks give their Gram determinants 75000000,500000,5700. Taking S=0 and all response sufficient statistics zero jointly satisfies each conditional slope theorem's premises. The ten distinct supplied nonzero count contrasts and their rounding/sign checks pass exact arithmetic. The HC1 divisor is subtraction in the reals and positive under k<n; full rank prevents a singular-inverse convention from doing the work.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T10",
+    "theorem": "SAP.P041.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All unrestricted algebraic identities admit arbitrary ordinary real inputs, and the hazard instance can take h0=1,T in {0,1}. Each reciprocal interval contains its printed center and is strictly positive. The variance clause has the compiled witness g=0,V=1,s=1. Exact reciprocal checks verify all four enclosures; exp(g) is always positive. The positive-variance restriction is stated in both the record and docstring.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T11",
+    "theorem": "SAP.P041.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The three printed centers satisfy their interval premises, compiled in Lean, and every hazard ratio and standard error is positive throughout. Independent numerical checks reproduce the three central (absolute z,p) pairs, approximately (0.8031581,0.4218834), (0.3927266,0.6945214), (0.7209091,0.4709655), all inside the stated approximation tolerances, and the three uniform p enclosures. The living-group rectangle spans values below and above 0.695; no assertion that its central p rounds to 0.70 is made.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P041-T12",
+    "theorem": "SAP.P041.T12",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "SAP/P041/Challenge/Part1.lean:69 opens with 'The printed claim is false'. Canonical P041-T12 already asserts that the symmetric arithmetic and directions are correct and that all three directional readings are false. T12Statement proves part of that diagnosis and does not contradict the canonical assertion. Its negated conjunction refutes only the specified directional-relative-increase reading of the quoted percentages. The task explicitly forbids the blanket phrase for a refutation of a reading. The subsequent Restriction paragraph and the record correctly describe the mathematical weakening, but do not cure this opening overstatement."
+    ],
+    "fix": "/-- P041-T12; Abstract, p. 1/8 (PDF p. 1); Effects of Citations on Survival, PDF pp. 4-5.\nThe symmetric percentages round as printed and have the claimed directions. For the reading of 'k% more likely ... than' as the directional relative increase 100(p_comparison/p_reference - 1), the conjunction of the three printed directional rounding assertions is false. This verifies a restricted part of the canonical arithmetic diagnosis.\nRestriction: Retains P1 symmetric arithmetic and roundings, P3 directions, and the refutation of the conjunction under the specified directional reading. Omits the three separate directional equalities 575/13, 100/3, 375/4 and the conjunction of the three individual negations in P2. Makes no assertion about the quoted Cox hazard ratio, p value, or empirical inferential conclusions.\n-/",
+    "nonvacuity": "This is unconditional arithmetic on positive sample sizes and reference counts. Independent exact checks verify all symmetric values, roundings and directions; scratch/Check.lean proves even the three individual directional negations, so the retained negated conjunction is true. The issue concerns disclosure and the object of refutation, not falsity of the Lean proposition.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T13",
+    "theorem": null,
+    "verdict": "omission_questionable",
+    "severity": "minor",
+    "issues": [
+      "record.json:169 justifies omission partly because the 'unqualified assurance names no estimand or mathematical bias definition'. This describes the raw quotation, but not the full canonical claim: claims.json:204 explicitly supplies a universal random-order/adaptive-schedule reading and names the expected implemented contrast, expected planned contrast, and direct effect. It also explicitly identifies T5's counterexample and T6's sufficient condition. Thus a restricted, mathematically precise result is already available. The record's lack of a separately credited T13 declaration is a provenance limitation, not evidence that this canonical mathematical content is absent or unformalizable. The no_lean metadata does not remove the formalizable paragraph from the stipulated canonical assertion."
+    ],
+    "fix": "Add a restricted T13 theorem restating the existing scrutiny counterexample: for every m>=1, every controlled own-citation direct effect is zero, the planned balanced contrast has expectation 0, and the implemented balanced contrast has expectation 1/(m(m+1))>0. A docstring should say: 'Verifies the counterexample to the canonical reading that independent uniform random order alone forces the adaptive-protocol expectation to equal the planned-protocol expectation and direct effect. Does not assert that the actual Wikipedia estimates are biased. Restriction: formalizes this supplied sufficient-condition reading only; makes no empirical claim about the unqualified assurance or the particular S5 conversion protocol.' Credit an appropriate reuse of T5/T6, or explicitly identify the missing credit as the remaining provenance obstacle rather than dismissing the canonical estimand.",
+    "nonvacuity": "The m=2 balanced law has six assignments and gives expected implemented contrast 1/6, planned contrast 0, and zero controlled direct effects. These are the same concrete nonempty objects already used by T5/T6 and checked independently. This target supplies no additional independent empirical assertion that can be resolved from the provided files; the concern is the omitted explicit mathematical reading, and its content is present elsewhere in the package.",
+    "confidence": 0.87
+  }
+]

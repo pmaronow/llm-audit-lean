@@ -1,7 +1,3 @@
-/-
-Upstream project: Causalean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 module
 public import AronowAudit.External.Causalean.Stat.OrderStatistic.Basic
 public import Mathlib.LinearAlgebra.Matrix.Block
@@ -40,6 +36,29 @@ def firstNSpacings (n : ℕ) (x : Fin n → ℝ) (i : Fin n) : ℝ :=
 def spacingSimplex (n : ℕ) : Set (Fin n → ℝ) :=
   {z | (∀ i, 0 ≤ z i) ∧ (∑ i, z i) ≤ 1}
 
+/-- Given [a finite dimension](hyp:n) and [a spacing vector](hyp:z), [successive differences of its prefix coordinates recover that vector](goal). -/
+theorem orderedSpacings_prefixCoordinates (n : ℕ) (z : Fin n → ℝ) :
+    orderedSpacings n (prefixCoordinates n z) = z := by
+  funext i
+  by_cases hi : i.val = 0
+  · have hset : Finset.Iic i = {i} := by
+      ext j
+      simp only [Finset.mem_Iic, Finset.mem_singleton]
+      constructor
+      · intro hj
+        exact Fin.ext (by omega)
+      · intro h
+        subst j
+        exact le_refl _
+    simp [orderedSpacings, prefixCoordinates, hi, hset]
+  · have hset : Finset.Iic (⟨i.val - 1, by omega⟩ : Fin n) = Finset.Iio i := by
+      ext j
+      simp only [Finset.mem_Iic, Finset.mem_Iio, Fin.le_def, Fin.lt_def]
+      omega
+    have hsum := Finset.sum_Iio_add_eq_sum_Iic (f := z) i
+    rw [← hset] at hsum
+    simp only [orderedSpacings, prefixCoordinates, hi, ↓reduceIte]
+    linarith
 
 /-- Given [a finite dimension](hyp:n) and [a real tuple](hyp:y), [prefix sums of its successive differences recover that tuple](goal). -/
 theorem prefixCoordinates_orderedSpacings (n : ℕ) (y : Fin n → ℝ) :

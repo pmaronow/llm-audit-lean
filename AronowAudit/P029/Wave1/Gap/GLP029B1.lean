@@ -20,7 +20,8 @@ set_option maxRecDepth 4096
 set_option maxHeartbeats 2000000
 set_option backward.isDefEq.respectTransparency false
 
-/-- Finite measurable profiles partition every integrable moment. -/
+/-- Finite measurable profiles partition every integrable moment. The
+indicator calculation also appears in `GP029B4.cwl_profile_integral`. -/
 lemma wcl_profile_integral {Ω X : Type*} [MeasurableSpace Ω] [Fintype X]
     [MeasurableSpace X] [MeasurableSingletonClass X]
     {μ : Measure Ω} {T : Ω → X} (hT : Measurable T)
@@ -313,7 +314,8 @@ lemma wcl_cell_integral {Ω X : Type*} [MeasurableSpace Ω]
       setIntegral_congr_fun (hT (measurableSet_singleton x)) (fun ω hω => by rw [hω])
     _ = _ := by simp [mP, measureReal_def]
 
-/-- Restricting an event indicator to a profile intersects the two events. -/
+/-- Restricting an event indicator to a profile intersects the two events.
+This is the same indicator calculation as `GP029B4.cwl_event_cell_integral`. -/
 lemma wcl_event_cell_integral {Ω X : Type*} [MeasurableSpace Ω]
     [MeasurableSpace X] [MeasurableSingletonClass X]
     {μ : Measure Ω} {T : Ω → X} (hT : Measurable T)
@@ -425,7 +427,7 @@ lemma wcl_A1_identification {Ω X : Type*} [MeasurableSpace Ω] [Fintype X]
     change mCE μ (fun ω => (U ω).tau) {ω | (U ω).x = x} = complierAt μ U x at ht
     rw [ht]
 
-/-- P029-T16: the corrected Winsorization limit. -/
+/-- P029-T16, with precisely the frozen statement. -/
 theorem winsorization_corrected_limit_proof {Ω X : Type*} [MeasurableSpace Ω]
     [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (U : ℕ → Ω → PotentialUnit X)
@@ -459,6 +461,8 @@ theorem winsorization_corrected_limit_proof {Ω X : Type*} [MeasurableSpace Ω]
   · simpa only [hfinite] using hi
   · simpa only [hfinite] using hw
   · exact wcl_A1_identification (h.iv 0)
+
+example : type_of% @AronowAudit.P029.winsorization_corrected_limit := winsorization_corrected_limit_proof
 
 end
 

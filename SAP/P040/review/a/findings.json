@@ -1,0 +1,52 @@
+[
+  {
+    "target_id": "P040-T1",
+    "theorem": "SAP.P040.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The multiplier z=49/25 lies in [1.9599,1.9601]. At p=4/5 the 16 binomial masses are nonnegative and sum to 1, with count-14 mass 805306368/6103515625>1/20. The rule I(k)=empty for k=14 and all reals otherwise satisfies the exclusion premise and attains coverage 5298209257/6103515625. The function ell(k)=1 satisfies the lower-bound premise. These are simultaneous concrete instances in the ordinary finite binomial model. scratch/Check.lean compiled the inhabited count type, multiplier inequalities, rule-premise witnesses, and count-14 mass; scratch/audit.py checked normalization and exact coverage. The sole omitted quantile assertion is accurately identified in record.json and Challenge/Part1.lean:9-11.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P040-T3",
+    "theorem": "SAP.P040.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is unconditional arithmetic on the fixed count 14 of 15, with positive sample-variance quantity 14/3375 and multiplier 49/25. The observed proportion rounds to .93 (compiled in scratch/Check.lean), and the reconstructed endpoints are approximately .8070973403443053 and 1.0595693263223613. They lie in the asserted strict brackets and rounding cells. No sampling or coverage premise occurs. The canonical claim explicitly retains P1 and P2 rather than asserting exact finite-sample coverage.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P040-T2",
+    "theorem": "SAP.P040.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The binomial model is realized on the finite product of 15 Bernoulli(4/5) trials. The resulting inclusive upper and lower tails at count 14 are 5100273664/30517578125 and 29443836301/30517578125, placing 4/5 in both exact confidence sets. Continuity, the positive derivative on (0,1), and the boundary values give actual unique roots L, L_one and U in (0,1); exact rational bisection gives approximately .6805154334216966, .7206038063871234 and .9983135697586473. Thus the endpoint-rounding implications have actual instances. Coverage also holds for the nonempty parameter domain including p=0 and p=1; the finite-tail rejection/union-bound argument establishes the general guarantee. Selected premises and arithmetic compile in scratch/Check.lean; scratch/audit.py supplies independent exact finite-sum and root-bracket checks.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P040-T4",
+    "theorem": "SAP.P040.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed 30-row data match standing assumption S6(d) exactly. Independent rational calculation gives det(X_adjusted^T X_adjusted)=323086400>0, ranks 9 for both adjusted designs, and the exact asserted cafe and bulk coefficients and positive HC1 variances. The squared statistics round to .303040 and 1.190109, with residual df 21. The scalar divisions, real powers and finite interval integrals therefore have their ordinary statistical meanings. Decimal series corroborate normal p values .5819829880911029 and .2753076064646941 and Student-21 values .5877916744183641 and .2876669431144772. scratch/Check.lean independently compiled positivity and witness-statistic identities; scratch/audit-results.json records the actual-fit computations.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P040-T5",
+    "theorem": "SAP.P040.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both Boolean designs and all four outcomes are concrete nonempty finite objects. Exact rational calculation gives Gram determinants 224 and 323086400 for the two- and nine-column designs, original adjusted rank 9, residual degrees of freedom 28 and 21, and strictly positive HC1 variances for all eight fits. All eight actual squared statistics equal the asserted rationals and lie in (0,8/5). The seven centered weekday columns sum to zero, so the original and reduced adjusted column spaces agree. The Student reference densities at df 21 and 28 are continuous with positive bases and Gamma denominators, hence integrable on every used finite interval. Independent Decimal series give minima .2253392840949789 (Student-28) and .2150487417072658 (normal), both attained by unadjusted bulk; all eight pairs exceed .10. These checks and their exact-rational components are saved in scratch/audit-results.json.",
+    "confidence": 0.99
+  }
+]

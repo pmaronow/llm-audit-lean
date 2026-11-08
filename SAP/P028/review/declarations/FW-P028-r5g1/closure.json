@@ -1,0 +1,1549 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P028.T1",
+   "target_id": "P028-T1",
+   "fingerprint": "0a00d2447de4391374e7a4efcb6b73698a044b7e5ea59863a4671ef2b276ae5a",
+   "module": "SAP.P028.Challenge.Part1",
+   "line": 8,
+   "closure": [
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.d0"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.d1"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.mk"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.r0"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.r1"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.y0"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.y1"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryLaw"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryLaw.atom"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryLaw.mass"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryLaw.mk"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P028.Defs.Part5",
+     "name": "SAP.P028.T1Statement"
+    },
+    {
+     "line": 158,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.T1WholeStatement"
+    },
+    {
+     "line": 151,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.armCount"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.assignmentMass"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.bit"
+    },
+    {
+     "line": 166,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.corollaryPair"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fc"
+    },
+    {
+     "line": 163,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fcellmean"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fcy"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fd"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fexpect"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fey"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P028.Defs.Part5",
+     "name": "SAP.P028.finiteMeanDomain"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.finiteValid"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fmean"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fpc"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fprob"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fr"
+    },
+    {
+     "line": 160,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.ftakeup"
+    },
+    {
+     "line": 169,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fullCorollary"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fy"
+    },
+    {
+     "line": 29,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.jointMass"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.lowerLaw"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part5",
+     "name": "SAP.P028.missingAssumptions"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.missingCell"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P028.Defs.Part5",
+     "name": "SAP.P028.missingCells"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P028.Defs.Part5",
+     "name": "SAP.P028.missingCorollaryComparison"
+    },
+    {
+     "line": 149,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.missingCount"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P028.Defs.Part5",
+     "name": "SAP.P028.missingCounterexample"
+    },
+    {
+     "line": 47,
+     "module": "SAP.P028.Defs.Part5",
+     "name": "SAP.P028.missingJointProbability"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P028.Defs.Part5",
+     "name": "SAP.P028.missingMoments"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.observedLaw"
+    },
+    {
+     "line": 56,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.recordedCell"
+    },
+    {
+     "line": 145,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.recordedCount"
+    },
+    {
+     "line": 153,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.respondentArmMean"
+    },
+    {
+     "line": 156,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.respondentCellMean"
+    },
+    {
+     "line": 173,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.respondentCorollary"
+    },
+    {
+     "line": 109,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.upperLaw"
+    },
+    {
+     "line": 117,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeA"
+    },
+    {
+     "line": 118,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeB"
+    },
+    {
+     "line": 123,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeBern"
+    },
+    {
+     "line": 114,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCompletedCount"
+    },
+    {
+     "line": 111,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCompletion"
+    },
+    {
+     "line": 135,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCompletionFacts"
+    },
+    {
+     "line": 125,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeConstructedMass"
+    },
+    {
+     "line": 154,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_6"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_7"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_8"
+    },
+    {
+     "line": 119,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMu"
+    },
+    {
+     "line": 122,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeQ"
+    },
+    {
+     "line": 145,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceTotals"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P028.T2",
+   "target_id": "P028-T2",
+   "fingerprint": "47cefa73bd69d7a665a1a364685a539ece30af059e2303f276d1bd12575366f1",
+   "module": "SAP.P028.Challenge.Part1",
+   "line": 17,
+   "closure": [
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.d0"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.d1"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.mk"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.r0"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.r1"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.y0"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryAtom.y1"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryLaw"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryLaw.atom"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryLaw.mass"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.BinaryLaw.mk"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.S"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.Y"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.Z"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.mk"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.μ"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.Response"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.Response.R"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.Response.mk"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.T2Statement"
+    },
+    {
+     "line": 247,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.T2WholeStatement"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.armEvent"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.armMean"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.assignmentConditionalLaw"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.assignmentConditionalLaw._proof_1"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.assignmentMass"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.bit"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.boundedOutcomes"
+    },
+    {
+     "line": 74,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.cellEvent"
+    },
+    {
+     "line": 80,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.cellMean"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.cellProbability"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.cellReweighting"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.complierEvent"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.complierMean"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.complierProbability"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.eventMean"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fd"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fprob"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fr"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.fy"
+    },
+    {
+     "line": 83,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.jointOutcomeMoment"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.lowerLaw"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.missingOutcomeProbability"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.mixedIdentification"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.mixedMeanEqualities"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.mixedResponsePositive"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.observedD"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P028.Defs.Part3",
+     "name": "SAP.P028.observedLaw"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.observedY"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.realBit"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.recordedOutcomeMoment"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.responseArmMean"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.responseCellMean"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.responseEvent"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P028.Defs.Part4",
+     "name": "SAP.P028.reweightedCellMoment"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sensitivityBounds"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_10"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_11"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_12"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_13"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_14"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_15"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_16"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_17"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_18"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_19"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_20"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_21"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_22"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_23"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_24"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_25"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_26"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_27"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_28"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_29"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_30"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_31"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_32"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_33"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_34"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_35"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_36"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_37"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_38"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_39"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_40"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_6"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_7"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_8"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part7",
+     "name": "SAP.P028.sourceTableCalculations._proof_9"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.treatment"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.treatment._proof_1"
+    },
+    {
+     "line": 211,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellCounterexample"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellCounterexample._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellCounterexample._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellCounterexample._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellCounterexample._proof_4"
+    },
+    {
+     "line": 207,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellIgnorable"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeFiniteMeasure._proof_1"
+    },
+    {
+     "line": 187,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeFiniteObservedLaw"
+    },
+    {
+     "line": 154,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_6"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_7"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMixedRounding._proof_8"
+    },
+    {
+     "line": 176,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeObservation"
+    },
+    {
+     "line": 179,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeObservedLaw"
+    },
+    {
+     "line": 199,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSensitivityLower"
+    },
+    {
+     "line": 202,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSensitivityUpper"
+    },
+    {
+     "line": 221,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceAttainment"
+    },
+    {
+     "line": 205,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceLower"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceLower._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceLower._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceLower._proof_3"
+    },
+    {
+     "line": 238,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_10"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_6"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_7"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_8"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceRounding._proof_9"
+    },
+    {
+     "line": 228,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceSharpness"
+    },
+    {
+     "line": 206,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceUpper"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceUpper._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeSourceUpper._proof_2"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P028.T4",
+   "target_id": "P028-T4",
+   "fingerprint": "65ae44e9e0205a7134a8c2c1db40a5b9f77d15824b8d0f5506a0eaba6d49e14c",
+   "module": "SAP.P028.Challenge.Part1",
+   "line": 27,
+   "closure": [
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part6",
+     "name": "SAP.P028.T4Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part6",
+     "name": "SAP.P028.T4Statement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part6",
+     "name": "SAP.P028.T4Statement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part6",
+     "name": "SAP.P028.T4Statement._proof_3"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.correctedSystem"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.effect"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.lowerControl"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.lowerTreated"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.mixtureSystem"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.printedSystem"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.upperControl"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.upperTreated"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P028.T5",
+   "target_id": "P028-T5",
+   "fingerprint": "6e6f8f24757582640f1eec32fb7cf3907963c8f459de8636e7837fdfbb3a678f",
+   "module": "SAP.P028.Challenge.Part1",
+   "line": 33,
+   "closure": [
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.S"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.Y"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.Z"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.mk"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.μ"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part6",
+     "name": "SAP.P028.T4Statement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part6",
+     "name": "SAP.P028.T4Statement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part6",
+     "name": "SAP.P028.T4Statement._proof_3"
+    },
+    {
+     "line": 285,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.T5WholeStatement"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.armEvent"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.armMean"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.boundedOutcomes"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.complierEvent"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.complierMean"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.complierProbability"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.correctedSystem"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.effect"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.eventMean"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.lowerControl"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.lowerTreated"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P028.Defs.Part6",
+     "name": "SAP.P028.misprintFacts"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.mixtureSystem"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.neverEvent"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.observedD"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.observedY"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.printedSystem"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.realBit"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.treatment"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.treatment._proof_1"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.upperControl"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.upperTreated"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellCounterexample._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellCounterexample._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellCounterexample._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeComplier._proof_1"
+    },
+    {
+     "line": 271,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCoordinate"
+    },
+    {
+     "line": 274,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMisprintRealization"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeMisprintRealization._proof_1"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P028.T6",
+   "target_id": "P028-T6",
+   "fingerprint": "81ca15bd23767f6beb90f7137c920575b1572f42f72481c52fe3af1256c275b1",
+   "module": "SAP.P028.Challenge.Part1",
+   "line": 42,
+   "closure": [
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.S"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.Y"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.Z"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.mk"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.CausalModel.μ"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P028.Defs.Part8",
+     "name": "SAP.P028.T6Statement"
+    },
+    {
+     "line": 301,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.T6WholeStatement"
+    },
+    {
+     "line": 38,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.alwaysEvent"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.armEvent"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.armMean"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P028.Defs.Part8",
+     "name": "SAP.P028.boundaryRepair"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.boundedOutcomes"
+    },
+    {
+     "line": 74,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.cellEvent"
+    },
+    {
+     "line": 80,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.cellMean"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.cellProbability"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.complierEvent"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.complierMean"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.complierProbability"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.effect"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.eventMean"
+    },
+    {
+     "line": 83,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.jointOutcomeMoment"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.lowerControl"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.lowerTreated"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.neverEvent"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.noncomplierContribution"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.noncomplierEvent"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.noncomplierMean"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.observedD"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.observedY"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P028.Defs.Part8",
+     "name": "SAP.P028.potentialMeanBounds"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.realBit"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P028.Defs.Part8",
+     "name": "SAP.P028.singletonEndpoints"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.treatment"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.Part2",
+     "name": "SAP.P028.treatment._proof_1"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.upperControl"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P028.Defs.Part1",
+     "name": "SAP.P028.upperTreated"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P028.Defs.WholeW1",
+     "name": "SAP.P028.wholeCellCounterexample._proof_2"
+    }
+   ]
+  }
+ ]
+}

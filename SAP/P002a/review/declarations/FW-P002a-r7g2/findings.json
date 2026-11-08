@@ -1,0 +1,59 @@
+[
+  {
+    "target_id": "P002-T6",
+    "theorem": "SAP.P002a.T6",
+    "fingerprint": "0ba0f3afb49e88706860ab13ada4e1222fe9cfbc2d3e8d3286961297edae3a45",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteChecks.lean:12 directly checks the n=8 near-singular witness has a valid balanced design, monotone receipt, all units as compliers, LATE 0, 70 assignments and centered covariates. Independently, scratch/witness_checks.py uses exact fractions to check every Xi condition at n=8, all 70 full-rank arm fits, the population fit and residual bounds, rare-block statistics, feasible variance lower bound, all estimator/variance ratios and conditional error probability 1; it also checks the odd n=9 extension in the same Xi class. The theorem has no external hypotheses and supplies the entire m>=4 family. No undefined denominator or singular-fit completion drives its failure. Printed-reading conditions are checked individually in scratch/RefutationAudit.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T7",
+    "theorem": "SAP.P002a.T7",
+    "fingerprint": "c22d240e7514c897001b47d0d56f06f2fc2b437ec6c194654b221481319eba95",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "record.json:47 says 'so T7 is restricted and the dropped models are disclosed'. This is an inaccurate restriction description for the current target: strictly positive population OLS residual variances are explicitly required by the corrected canonical P002-T7 statement and definitions_needed. SAP/P002a/Defs/WholeW4.lean:42 states exactly that premise, and the Challenge docstring at SAP/P002a/Challenge/Part1.lean:69 accurately describes the current claim. The record's decision='whole' at record.json:24 and restriction=null at record.json:26 are correct. The defect is confined to the contradictory scope description in row_use_note; the mathematical declaration is whole."
+    ],
+    "fix": "Replace record.json:47 row_use_note with: 'The proof row establishes the four limits under strictly positive population OLS residual variances in both arms. That premise is explicitly part of the corrected canonical P002-T7 claim dated 2026-11-04. SAP.P002a.T7 therefore states that claim wholly, with no additional restriction. The earlier wrong-credit assessment concerned the superseded unqualified claim.' No theorem, definition, docstring or decision change is needed.",
+    "nonvacuity": "Compiled scratch/Checks.lean constructs a model at every size n=4(j+1) by repeating the four cells x=(-1,1,-1,1), y(0)=y(1)=(-1,-1,1,1); all units comply and both arms have 2(j+1) units. It proves Xi(0,1,1,1,1/2), both population residual variances >=1 and strictly positive, strict size increase, all constant guards, a probability measure on the infinite product of finite assignment spaces with exact complete-randomization marginals, and the identity strict subsequence. Thus every T7 hypothesis holds jointly. The construction and proofs do not invoke any reviewed Challenge theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T8",
+    "theorem": "SAP.P002a.T8",
+    "fingerprint": "f4d3cd67e73116fe8c5d4f9b9d665a64be435c32912f3b43a10da71a98a78422",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteChecks.lean:23 constructs the genuine n=2, k=1 alternating witness x=(-2,2), proves centering and fourth moment 16, covariate Gram [4], augmented Gram diag(1,4), and a unit intercept vector with quadratic value 1<2. These matrices have smallest eigenvalues 4 and 1 respectively, so the covariate bound e=2 holds while its proposed augmented counterpart fails. Both Rayleigh sets have unit vectors and are bounded below. Exact-fraction checks additionally cover sizes 4,6,10. No reviewed Challenge theorem is invoked.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T9",
+    "theorem": "SAP.P002a.T9",
+    "fingerprint": "c04e23b30eda805f26a5ba74dfd33c34db6a231bc25d788934910f19220f2606",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Checks.lean gives a finite n=4, k=1, e=1 instance with centered covariates and leastRayleigh=1, proving all finite spectral hypotheses jointly. The same file constructs the strictly increasing four-cell Xi sequence n=4(j+1), all fixed admissible constants, an explicit infinite-product probability measure with the required exact measurable randomization marginals, and an identity strict subsequence. These satisfy every sequence hypothesis (and even T7 residual positivity). No reviewed Challenge theorem is invoked.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T10",
+    "theorem": "SAP.P002a.T10",
+    "fingerprint": "0afd85dd90e5f0059da8209b98aca4d026f9c93527f2756f30ace0187f4b89b7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteChecks.lean:50 proves Theta membership independently from definitions, and the example at line 62 independently proves the complete T10Statement, including all six assignments, the values 0 versus -24, expected squares 49/3 versus 1/3, corrected evaluations and S1 squared=1/12>0. It uses finite calculations and Mathlib arithmetic, not SAP.P002a.T10. scratch/witness_checks.py independently enumerates the same population with exact fractions. Every condition of the printed equalities is checked in scratch/RefutationAudit.md.",
+    "confidence": 0.99
+  }
+]

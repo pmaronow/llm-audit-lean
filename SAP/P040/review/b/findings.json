@@ -1,0 +1,52 @@
+[
+  {
+    "target_id": "P040-T1",
+    "theorem": "SAP.P040.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "p=4/5 gives 16 strictly positive binomial masses summing to 1. z=49/25 lies in [19599/10000,19601/10000]. The nonempty constant intervals I(k)=[81/100,106/100] and the constant lower rule ell(k)=81/100 satisfy the two exclusion antecedents; l=81/100 satisfies the rounding antecedent. All these basic instances and mass normalization are checked in scratch/Check.lean. Independently, the actual Wald rule has nonzero coverage 24866193408/30517578125, so the obstruction is substantive.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P040-T3",
+    "theorem": "SAP.P040.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional arithmetic assertion at the existing element 14 of Fin 16. 14/15 rounds to .93; the variance input is 14/3375>0, and the positive radius has square 33614/2109375. Exact rational square-root enclosures independently verify both endpoint brackets and both rounding assertions. No sampling, empty-type, or coverage antecedent is used.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P040-T2",
+    "theorem": "SAP.P040.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The model has the concrete p=4/5 instance from T1; p=0 and p=1 are also allowed, each with exact-interval coverage 1. Continuous strictly increasing g(p)=p^14(15-14p) has g(0)=0 and g(1)=1, so the endpoint equations at 1/40 and 1/20 have actual roots. Exact rational bisection encloses L=0.6805154334216966..., U=0.9983135697586473..., L_one=0.7206038063871234..., satisfying all brackets and rounding. At p=4/5 the two coverages are 29966467072/30517578125 and 29443836301/30517578125; see scratch/check-results.json. The universal coverage assertion is justified by finite tail-test inversion, not merely these instances.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P040-T4",
+    "theorem": "SAP.P040.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The defined 30-row data are a concrete instance and match canonical S6(d) entry for entry. Exact rational linear algebra gives det(adjustedDesign^T adjustedDesign)=323086400, ranks 9 for both adjusted designs, and exactly the two positive HC1 variances and coefficients claimed. All integral evaluations use positive squared statistics and nu=21; scratch/Check.lean checks reference-integrand interval integrability for every positive nu. Thus neither a singular matrix inverse nor a zero or nonintegrable denominator produces the stated witness.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P040-T5",
+    "theorem": "SAP.P040.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The concrete unadjusted and reduced adjusted Gram determinants are 224 and 323086400, giving ranks 2 and 9 and residual df 28 and 21. The seven centered weekday columns sum to zero and the omitted column is minus the other six, so the original adjusted design has the same range and rank. Every one of the eight independently recomputed HC1 variances and squared statistics is strictly positive; both reference integrands are integrable at the used positive df. Exact alternating-series bounds confirm all eight p>.10 and identify unadjusted bulk as the minimum under both references.",
+    "confidence": "high"
+  }
+]

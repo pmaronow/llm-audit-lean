@@ -1,0 +1,194 @@
+{
+  "unit_id": "P014",
+  "work_id": "P014",
+  "targets": [
+    {
+      "target_id": "P014-T2",
+      "decision": "whole",
+      "theorem": "SAP.P014.T2",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.armCounts_add", "AronowAudit.P014.armMass_as_prob", "AronowAudit.P014.armMasses_add", "AronowAudit.P014.expectation_fixed_counts", "AronowAudit.P014.moment_identity", "AronowAudit.P014.weighted_unbiasedness", "AronowAudit.P014.corrected_local_randomization", "AronowAudit.P014.outside_function_gives_discrete_full_law"],
+      "rows_not_used": [
+        {"lean_name": "AronowAudit.P014.expect_map", "reason": "Narrower row used nowhere: it supplies pushforward change of variables, not standalone linearity; expectation_fixed_counts already exports the required assignment-law linearity calculation."},
+        {"lean_name": "AronowAudit.P014.mem_map_support_iff", "reason": "Not separately invoked; the retained assignment-law statement does not construct a law from running scores."},
+        {"lean_name": "AronowAudit.P014.prob_map", "reason": "Not separately invoked; the score-to-assignment application is omitted from T2."}
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T2WholeStatement",
+      "bridge": "SAP.P014.Bridge.T2_proof",
+      "cross_target_rows_used": []
+    },
+    {
+      "target_id": "P014-T8",
+      "decision": "whole",
+      "theorem": "SAP.P014.T8",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.bracketed_contrast"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T8Statement",
+      "bridge": "SAP.P014.Bridge.T8_proof",
+      "cross_target_rows_used": []
+    },
+    {
+      "target_id": "P014-T3",
+      "decision": "whole",
+      "theorem": "SAP.P014.T3",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.arm_nonempty_of_mass_ne_zero", "AronowAudit.P014.conditional_uniform_necessary", "AronowAudit.P014.conditional_uniform_of_full_uniform", "AronowAudit.P014.constant_arm_means", "AronowAudit.P014.fixed_outside_uniform_assignments", "AronowAudit.P014.means_equal_of_conditional_uniform", "AronowAudit.P014.printed_unbiasedness_no_interference", "AronowAudit.P014.printed_unbiasedness_under_U", "AronowAudit.P014.bracketed_contrast", "AronowAudit.P014.armMasses_add"],
+      "rows_not_used": [
+        {"lean_name": "AronowAudit.P014.assignment_matching_iff", "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."},
+        {"lean_name": "AronowAudit.P014.assignment_permutation_count", "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."},
+        {"lean_name": "AronowAudit.P014.assignment_permutation_fiber_count", "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."},
+        {"lean_name": "AronowAudit.P014.assignment_permutation_mass", "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."},
+        {"lean_name": "AronowAudit.P014.assignment_permutation_propensity", "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."},
+        {"lean_name": "AronowAudit.P014.assignment_with_count_obtainable", "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."},
+        {"lean_name": "AronowAudit.P014.map_mass_zero_off_support", "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."},
+        {"lean_name": "AronowAudit.P014.matching_permutation_count", "reason": "Its counting or pushforward component is already exported in fixed_outside_uniform_assignments; no separate invocation is needed."},
+        {"lean_name": "AronowAudit.P014.means_equal_without_interference", "reason": "Not separately invoked; constant_arm_means supplies the stronger equality to the common value required in T3(d)."}
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T3Statement",
+      "bridge": "SAP.P014.Bridge.T3_proof",
+      "declaration_review_round_1": {"status": "fixed", "finding": "The docstring misnamed the fixed-count assignment law.", "change": "Describes the uniform law on choose(n,m) full assignments with exactly m treated window subjects; statement, definitions, proof and whole decision unchanged."},
+      "cross_target_rows_used": [{"lean_name": "AronowAudit.P014.bracketed_contrast", "credited_to": "P014-T8"}, {"lean_name": "AronowAudit.P014.armMasses_add", "credited_to": "P014-T2"}]
+    },
+    {
+      "target_id": "P014-T7",
+      "decision": "whole",
+      "theorem": "SAP.P014.T7",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.no_ties_diagonal_general", "AronowAudit.P014.no_ties_quantifier_decomposition", "AronowAudit.P014.corrected_no_ties_witnesses", "AronowAudit.P014.corrected_local_randomization"],
+      "rows_not_used": [
+        {"lean_name": "AronowAudit.P014.printed_no_ties_iff_empty", "reason": "Narrower finite-law version is redundant here because no_ties_diagonal_general supplies the unrestricted probability-law equivalence."}
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T7Statement",
+      "bridge": "SAP.P014.Bridge.T7_proof",
+      "cross_target_rows_used": [{"lean_name": "AronowAudit.P014.corrected_local_randomization", "credited_to": "P014-T6"}]
+    },
+    {
+      "target_id": "P014-T4",
+      "decision": "refuted",
+      "theorem": "SAP.P014.T4",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.t1_counterexample", "AronowAudit.P014.all_local_permutations_equiprobable", "AronowAudit.P014.witness_threshold", "AronowAudit.P014.witness_counts_propensities", "AronowAudit.P014.armMasses_add"],
+      "rows_not_used": [
+        {"lean_name": "AronowAudit.P014.Refutations.printed_unbiasedness_intended_local_refuted", "reason": "This row negates the universal printed assertion; the package instead states its explicit positive-arm counterexample, using the same six-row witness exported for T1."},
+        {"lean_name": "AronowAudit.P014.Refutations.printed_unbiasedness_refuted", "reason": "This row negates the universal printed assertion; the package instead states its explicit positive-arm counterexample, using the same six-row witness exported for T1."}
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T4Statement",
+      "bridge": "SAP.P014.Bridge.T4_proof",
+      "cross_target_rows_used": [{"lean_name": "AronowAudit.P014.t1_counterexample", "credited_to": "P014-T1"}, {"lean_name": "AronowAudit.P014.all_local_permutations_equiprobable", "credited_to": "P014-T1"}, {"lean_name": "AronowAudit.P014.witness_threshold", "credited_to": "P014-T9"}, {"lean_name": "AronowAudit.P014.witness_counts_propensities", "credited_to": "P014-T1"}, {"lean_name": "AronowAudit.P014.armMasses_add", "credited_to": "P014-T2"}]
+    },
+    {
+      "target_id": "P014-T1",
+      "decision": "whole",
+      "theorem": "SAP.P014.T1",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.witness_printed_local", "AronowAudit.P014.witness_local_arrangements", "AronowAudit.P014.witness_support", "AronowAudit.P014.witness_masses", "AronowAudit.P014.witness_counts_propensities", "AronowAudit.P014.t1_arithmetic", "AronowAudit.P014.all_local_permutations_equiprobable", "AronowAudit.P014.witness_threshold", "AronowAudit.P014.map_support_card_of_injective", "AronowAudit.P014.armMasses_add"],
+      "rows_not_used": [
+        {"lean_name": "AronowAudit.P014.rows_exhaust_permutations", "reason": "Not separately invoked for this target; all_local_permutations_equiprobable already quantifies over every permutation."},
+        {"lean_name": "AronowAudit.P014.score_rows_are_permutations", "reason": "Not separately invoked for this target; the complete explicit score table and all_local_permutations_equiprobable supply its local arrangements."},
+        {"lean_name": "AronowAudit.P014.sum_three_window", "reason": "Not separately invoked; the exported witness computations already provide the numerical contrasts."},
+        {"lean_name": "AronowAudit.P014.t1_counterexample", "reason": "T1 uses t1_arithmetic together with the separately exported local conditions, threshold linkage and full permutation statement."}
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T1Statement",
+      "bridge": "SAP.P014.Bridge.T1_proof",
+      "cross_target_rows_used": [{"lean_name": "AronowAudit.P014.witness_threshold", "credited_to": "P014-T9"}, {"lean_name": "AronowAudit.P014.map_support_card_of_injective", "credited_to": "P014-T6"}, {"lean_name": "AronowAudit.P014.armMasses_add", "credited_to": "P014-T2"}]
+    },
+    {
+      "target_id": "P014-T9",
+      "decision": "whole",
+      "theorem": "SAP.P014.T9",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.t9_counterexample", "AronowAudit.P014.t9_hudgens_halloran_comparison", "AronowAudit.P014.witness_threshold", "AronowAudit.P014.witness_support", "AronowAudit.P014.witness_masses", "AronowAudit.P014.witness_counts_propensities", "AronowAudit.P014.all_local_permutations_equiprobable", "AronowAudit.P014.map_support_card_of_injective", "AronowAudit.P014.hhMean_eq_weighted", "AronowAudit.P014.armMasses_add"],
+      "rows_not_used": [
+        {"lean_name": "AronowAudit.P014.comparison_printed_local", "reason": "The complete printed conditions are exported as the first conjunct of t9_counterexample."}
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T9Statement",
+      "bridge": "SAP.P014.Bridge.T9_proof",
+      "cross_target_rows_used": [{"lean_name": "AronowAudit.P014.witness_support", "credited_to": "P014-T1"}, {"lean_name": "AronowAudit.P014.witness_masses", "credited_to": "P014-T1"}, {"lean_name": "AronowAudit.P014.witness_counts_propensities", "credited_to": "P014-T1"}, {"lean_name": "AronowAudit.P014.all_local_permutations_equiprobable", "credited_to": "P014-T1"}, {"lean_name": "AronowAudit.P014.map_support_card_of_injective", "credited_to": "P014-T6"}, {"lean_name": "AronowAudit.P014.hhMean_eq_weighted", "credited_to": "P014-T10"}, {"lean_name": "AronowAudit.P014.armMasses_add", "credited_to": "P014-T2"}]
+    },
+    {
+      "target_id": "P014-T5",
+      "decision": "whole",
+      "theorem": "SAP.P014.T5",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.t5_counterexample", "AronowAudit.P014.constant_arm_means", "AronowAudit.P014.map_support_card_of_injective"],
+      "rows_not_used": [
+        {"lean_name": "AronowAudit.P014.defective_printed_local", "reason": "The complete printed conditions are exported as the first conjunct of t5_counterexample."}
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T5Statement",
+      "bridge": "SAP.P014.Bridge.T5_proof",
+      "cross_target_rows_used": [{"lean_name": "AronowAudit.P014.constant_arm_means", "credited_to": "P014-T3"}, {"lean_name": "AronowAudit.P014.map_support_card_of_injective", "credited_to": "P014-T6"}]
+    },
+    {
+      "target_id": "P014-T10",
+      "decision": "whole",
+      "theorem": "SAP.P014.T10",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.conditional_full_average_eq_weighted", "AronowAudit.P014.corrected_target_hh_sign", "AronowAudit.P014.estimator_hh_sign", "AronowAudit.P014.hhMean_eq_weighted", "AronowAudit.P014.t9_counterexample", "AronowAudit.P014.t9_hudgens_halloran_comparison", "AronowAudit.P014.witness_counts_propensities", "AronowAudit.P014.armMasses_add"],
+      "rows_not_used": [
+        {"lean_name": "AronowAudit.P014.withOwn_others", "reason": "Reconstruction is already internal to hhMean_eq_weighted; it is not a separate clause of T10."}
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T10Statement",
+      "bridge": "SAP.P014.Bridge.T10_proof",
+      "cross_target_rows_used": [{"lean_name": "AronowAudit.P014.t9_counterexample", "credited_to": "P014-T9"}, {"lean_name": "AronowAudit.P014.t9_hudgens_halloran_comparison", "credited_to": "P014-T9"}, {"lean_name": "AronowAudit.P014.witness_counts_propensities", "credited_to": "P014-T1"}, {"lean_name": "AronowAudit.P014.armMasses_add", "credited_to": "P014-T2"}]
+    },
+    {
+      "target_id": "P014-T6",
+      "decision": "whole",
+      "theorem": "SAP.P014.T6",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P014.corrected_local_randomization", "AronowAudit.P014.outside_function_gives_discrete_full_law", "AronowAudit.P014.corrected_law_allows_outside_randomness", "AronowAudit.P014.extended_law_support_and_outside", "AronowAudit.P014.rows_exhaust_permutations", "AronowAudit.P014.score_rows_are_permutations", "AronowAudit.P014.uniform_partition_covers", "AronowAudit.P014.uniform_joint_iff_injective_local", "AronowAudit.P014.uniform_finite_support_card", "AronowAudit.P014.injective_local_iff_reconstructible"],
+      "rows_not_used": [
+        {"lean_name": "AronowAudit.P014.ae_event_of_probability_one", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.ae_not_of_probability_zero", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.extended_scores_injective", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.factorial_propensity_ratio", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.injective_local_iff_reconstructible", "reason": "Supports the omitted forward/finite-fiber portion of T6(d); it does not itself identify the local marginal from the general-space corrected score hypotheses."},
+        {"lean_name": "AronowAudit.P014.map_mass_of_injective", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.map_support_card_of_injective", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.permutation_count", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.permutation_no_ties", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.probability_from_uniform_partition", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.uniform_finite_support_card", "reason": "Supports the omitted forward/finite-fiber portion of T6(d); it does not itself identify the local marginal from the general-space corrected score hypotheses."},
+        {"lean_name": "AronowAudit.P014.uniform_joint_iff_injective_local", "reason": "Supports the omitted forward/finite-fiber portion of T6(d); it does not itself identify the local marginal from the general-space corrected score hypotheses."},
+        {"lean_name": "AronowAudit.P014.uniform_joint_support_card", "reason": "Supports the omitted forward/finite-fiber portion of T6(d); it does not itself identify the local marginal from the general-space corrected score hypotheses."},
+        {"lean_name": "AronowAudit.P014.uniform_partition_covers", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.uniform_permutation_average", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."},
+        {"lean_name": "AronowAudit.P014.uniform_permutation_propensity", "reason": "Its supporting probability/counting component is already exported in the selected general randomization, full-law converse, or outside-example row."}
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P014.T6WholeStatement",
+      "bridge": "SAP.P014.Bridge.T6_proof",
+      "cross_target_rows_used": [{"lean_name": "AronowAudit.P014.rows_exhaust_permutations", "credited_to": "P014-T1"}, {"lean_name": "AronowAudit.P014.score_rows_are_permutations", "credited_to": "P014-T1"}]
+    }
+  ]
+}

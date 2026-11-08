@@ -1,0 +1,131 @@
+import SAP.P005b.Defs.WholeW1
+
+set_option autoImplicit false
+set_option maxRecDepth 4000
+set_option maxHeartbeats 2000000
+
+open scoped BigOperators Matrix
+open Finset Filter
+open SAP.P005b
+
+namespace ReviewSequence
+noncomputable section
+
+def xs (n : ℕ) (i : Fin n) : ℝ :=
+  if i.val = 0 then Real.sqrt ((n : ℝ)/2)
+  else if i.val = 1 then -Real.sqrt ((n : ℝ)/2) else 0
+
+def pops (n : ℕ) : Population n 1 where
+  x := fun i _ => xs n i
+  yT := 0
+  yC := 0
+
+lemma sum_xs (n : ℕ) (hn : 2 ≤ n) : (∑ i, xs n i) = 0 := by
+  obtain ⟨k, rfl⟩ : ∃ k, n = k + 2 := ⟨n - 2, by omega⟩
+  simp [Fin.sum_univ_succ, xs]
+
+lemma sum_xs_sq (n : ℕ) (hn : 2 ≤ n) : (∑ i, (xs n i)^2) = (n : ℝ) := by
+  obtain ⟨k, rfl⟩ : ∃ k, n = k + 2 := ⟨n - 2, by omega⟩
+  have hs := Real.sq_sqrt (by positivity : (0 : ℝ) ≤ (k+2 : ℝ)/2)
+  simp [Fin.sum_univ_succ, xs, -Real.sqrt_div, -Real.sqrt_div']
+  nlinarith [hs]
+
+lemma pops_standardized (n : ℕ) (hn : 2 ≤ n) : standardized (pops n) := by
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  constructor
+  · funext k
+    simp [xMean, mean, pops, sum_xs n hn]
+  · ext k l
+    fin_cases k
+    fin_cases l
+    simp [gram, popMean, mean, pops, ← pow_two, sum_xs_sq n hn, hn0]
+
+lemma ratio_bounds (n : ℕ) (hn : 3 ≤ n) :
+    (1/4 : ℝ) < pT n (n/2) ∧ pT n (n/2) < 3/4 := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hlo : (n : ℝ) < 4 * ((n/2 : ℕ) : ℝ) := by
+    exact_mod_cast (by omega : n < 4 * (n/2))
+  have hhi : 4 * ((n/2 : ℕ) : ℝ) < 3 * n := by
+    exact_mod_cast (by omega : 4 * (n/2) < 3*n)
+  constructor
+  · apply (lt_div_iff₀ hn0).2
+    nlinarith
+  · apply (div_lt_iff₀ hn0).2
+    nlinarith
+
+-- This satisfies every sequence hypothesis with dimension constantly one,
+-- including uniform (not population-dependent) moment and proportion constants.
+lemma positive_dimension_sequence :
+    wholeW1Standing (fun _ => 1) (fun n => n/2) pops := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro n hn
+    change 1 ≤ n ∧ 0 < n/2 ∧ n/2 < n
+    omega
+  · refine ⟨1, by norm_num, ?_⟩
+    intro n hn
+    have hn2 : 2 ≤ n := by omega
+    have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+    refine ⟨?_, ?_, ?_⟩
+    · simp [popMean, mean, pops]
+    · simp [popMean, mean, pops]
+    · intro k
+      simp [popMean, mean, pops, sum_xs_sq n hn2, hn0]
+  · exact eventually_atTop.2 ⟨2, fun n hn => pops_standardized n hn⟩
+  · refine ⟨1/4, 3/4, by norm_num, by norm_num, by norm_num, ?_⟩
+    exact fun n hn => ratio_bounds n hn
+
+-- The original T17Statement's sequence premise is definitionally the same.
+example :
+    (∀ n, 3 ≤ n → (1 : ℕ) ≤ n ∧ 0 < n/2 ∧ n/2 < n) ∧
+    (∃ K : ℝ, 0 ≤ K ∧ ∀ n, 3 ≤ n →
+      popMean (fun i => (pops n).yT i^2) ≤ K ∧
+      popMean (fun i => (pops n).yC i^2) ≤ K ∧
+      ∀ k, popMean (fun i => (pops n).x i k^2) ≤ K) ∧
+    (∀ᶠ n in atTop, standardized (pops n)) ∧
+    (∃ lo hi : ℝ, 0 < lo ∧ lo < hi ∧ hi < 1 ∧
+      ∀ n, 3 ≤ n → lo < pT n (n/2) ∧ pT n (n/2) < hi) :=
+  positive_dimension_sequence
+
+-- The documented zero-dimensional case is genuine, even at a zero rate.
+def zeroPops (n : ℕ) : Population n 0 where
+  x := fun _ _ => 0
+  yT := 0
+  yC := 0
+
+lemma zero_standardized (n : ℕ) : standardized (zeroPops n) := by
+  constructor
+  · funext k
+    exact Fin.elim0 k
+  · ext k
+    exact Fin.elim0 k
+
+lemma zero_dimension_sequence :
+    wholeW1Standing (fun _ => 0) (fun n => n/2) zeroPops := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro n hn
+    change 0 ≤ n ∧ 0 < n/2 ∧ n/2 < n
+    omega
+  · refine ⟨0, by norm_num, ?_⟩
+    intro n hn
+    simp [zeroPops, popMean, mean]
+  · exact Eventually.of_forall zero_standardized
+  · refine ⟨1/4, 3/4, by norm_num, by norm_num, by norm_num, ?_⟩
+    exact fun n hn => ratio_bounds n hn
+
+lemma zero_star (n m : ℕ) (S : Finset (Fin n)) :
+    wholeW1Star (zeroPops n) m S = 0 := by
+  simp [wholeW1Star, residualStarTerm, dot]
+
+example (n : ℕ) (hn : 0 < n) : kappa (zeroPops n) = 0 := by
+  letI : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  simp [kappa, leverage, dot]
+
+example : stochasticO (fun n => n/2) (fun n => wholeW1Star (zeroPops n) (n/2))
+    (fun _ => 0) := by
+  intro ε hε
+  refine ⟨1, by norm_num, 0, ?_⟩
+  intro n hn
+  simpa [probability, zero_star] using hε
+
+end
+end ReviewSequence

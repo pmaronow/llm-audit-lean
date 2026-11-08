@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P006-T6",
+    "theorem": "SAP.P006a.T6",
+    "fingerprint": "c98371d4a5a78c00aebed486e222a7db88acf03febcc3018059a766dac0cd062",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:122: the constructed Experiment Bool Unit 1 has a genuine Bernoulli treatment draw, potential outcomes 0 and 1, oracle estimator 0, and the full admissible policy class containing the zero and one policies. The compiled example supplies every main and independent-implementation hypothesis, including PolicyDesign, selected-residual L1, TreatedUnbiased, PointwiseUnbiased and IndependentEstimator. Its welfare is 0 and 1 at those two policies. /home/ubuntu/sap/tools/sap-lean scratch/Nonvacuity.lean exited 0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T7",
+    "theorem": "SAP.P006a.T7",
+    "fingerprint": "208946ab03c27c0823571ea8ddd8345bec7031c043b2de862feddc9d29c41d02",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:143: the Bernoulli/oracle experiment with effect 1 and g=1 satisfies Standing for the zero-estimator update and all selected-residual, conditional-moment, g*tau and individual weighted-summand integrability conditions for every admissible policy. The example constructs all hypotheses together; the policy class contains policies with welfare 0 and 1. /home/ubuntu/sap/tools/sap-lean scratch/Nonvacuity.lean exited 0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T8",
+    "theorem": "SAP.P006a.T8",
+    "fingerprint": "b85851b3e1527df27f27a4e542e0b3e721a14056166cf89e08dde85950ec9a9f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:171: the same experiment on public/private covariates Unit x Unit supplies a nonempty full policy class, marginal baseline 0, public oracle estimator, all selected residual moments, and actual reward/welfare maximizers. Later examples independently construct CoinMomentW2 and a common evaluation law, fixed independent auxiliary-data witnesses with finite error, and the per-policy independent-unbiased implementation. The final example uses a Bernoulli half-coin on standard Borel Bool and H=a=0, p=1/2 to satisfy every selected-equivalence and conditional-factorization premise with positive treated mass. /home/ubuntu/sap/tools/sap-lean scratch/Nonvacuity.lean exited 0.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P006-T9",
+    "theorem": "SAP.P006a.T9",
+    "fingerprint": "b7efedf5313c06151563dbfb815dcfd3117e2104b3e7ecb89437cbc4fb5da98d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Arithmetic.lean:10: the fitted-effects vector [1,0] has n=2, k=1, whole-sample mean 1/2 and beneficiary mean 1. The next compiled example sets vH=146954/1000000, vS=25186/1000000, bH=vH*(255/62), bS=vS*(7264/1360), rH=62/255 and rS=1360/7264; it checks all numerical premise sets and conclusions by exact rational arithmetic. /home/ubuntu/sap/tools/sap-lean scratch/Arithmetic.lean exited 0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T10",
+    "theorem": "SAP.P006a.T10",
+    "fingerprint": "c7145984b6d003beba409417fb40d96e135b5421ad32fd18f0f4af6612a2f1bf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Arithmetic.lean:66: for every B>0 the compiled witness is D=dirac((),(1+B,1)) and the singleton feasible class containing the admissible always-treated policy. It verifies finite moments, a reward best response, expected treatment 1, welfare and its feasible supremum both -B, zero regret for every real objective, infeasibility of zero treatment, and failure of 0>=B. Separate compiled results prove general one-unit ATO expectation/invariance and NondegenerateReward directly. REPORT.md checks every condition of the quoted printed theorem. /home/ubuntu/sap/tools/sap-lean scratch/Arithmetic.lean exited 0.",
+    "confidence": 0.99
+  }
+]

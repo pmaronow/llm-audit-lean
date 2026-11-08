@@ -7,9 +7,10 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Topology.Instances.ENNReal.Lemmas
 
 /-!
-The corrected Proposition 2 limit step.
+Proof of the corrected Proposition 2 limit step (record 11).
 The finite covariance/CDF identity is proved on a common rank grid, using
-only the sorting and empirical rank-cell integration lemmas.
+only the established sorting and empirical rank-cell integration lemmas.
+The final statement and its existing hypotheses are preserved verbatim.
 -/
 
 namespace AronowAudit.P022.Wave1
@@ -673,7 +674,7 @@ private theorem GP022B3b_coefficient_nonneg (S : ExperimentSequence) (H : JointL
   intro i
   fin_cases i <;> simp [termRateCoefficient] <;> positivity
 
-
+/-! The final theorem retains the held binders and conclusion verbatim. -/
 
 theorem proposition2_corrected_limit_proof (S : ExperimentSequence) (H : JointLaw) (θ ρ C : ℝ)
     (h : Conditions123 S H θ ρ) (hC : 0 < C)
@@ -826,6 +827,9 @@ theorem proposition2_corrected_limit_proof (S : ExperimentSequence) (H : JointLa
       simp [Fin.sum_univ_succ, r]
       <;> ring
     simpa only [hrsum] using hbound
+
+example : type_of% @AronowAudit.P022.proposition2_corrected_limit := proposition2_corrected_limit_proof
+
 
 end
 end AronowAudit.P022.Wave1

@@ -1,0 +1,449 @@
+{
+  "unit_id": "P001f",
+  "work_id": "P001",
+  "targets": [
+    {
+      "target_id": "P001-T96",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T96",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.causal_ipw_logit_ml_counterexample",
+        "AronowAudit.P001.causal_ipw_not_poststratified"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T97",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T97",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.causal_ipw_saturation_necessary",
+        "SAP.P001f.WH.W1.T97_whole",
+        "SAP.P001f.WH.W1.T97_assembly",
+        "SAP.P001f.WH.W1.T97_L1_proof",
+        "SAP.P001f.WH.W1.T97_L2_proof",
+        "SAP.P001f.Bridge.transportT97"
+      ],
+      "rows_not_used": [
+        {
+          "lean_name": "AronowAudit.P001.causal_ipw_saturated_cells",
+          "reason": "The all-outcome-sum iff already supplies sufficiency; this separate sufficient unnormalized identity is redundant."
+        }
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "statement_definition": "SAP.P001f.T97WholeStatement"
+    },
+    {
+      "target_id": "P001-T98",
+      "decision": "restricted",
+      "theorem": "SAP.P001f.T98",
+      "restriction": "Retains only true-score conditional/unconditional arm-weight mean-one identities, all positive-size sample mean-one identities, and strict mean-above-one comparisons for the erroneous reciprocal weights. Omits the full stabilized outcome-estimator formula, fitted-score denominator convergence, and efficiency assertions. Binarity and uniform two-sided overlap are required pointwise for the entire sequence.",
+      "rows_used": [
+        "AronowAudit.P001.treatment_weight_sample_means",
+        "AronowAudit.P001.treatment_weights_denominators_correction"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T99",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T99",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.att_counterexample_with_ignorability",
+        "AronowAudit.P001.att_normalization_counterexample"
+      ],
+      "rows_not_used": [
+        {
+          "lean_name": "AronowAudit.P001.constant_potential_ignorability_finite",
+          "reason": "The selected counterexample theorem already includes the conditional-independence fact; the general constant-variable helper is redundant."
+        }
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T100",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T100",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.Wave1.att_normalized_propensity_mean_integrable_effect"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T101",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T101",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.relative_complement",
+        "SAP.P001f.WH.W1.T101_whole",
+        "SAP.P001f.WH.W1.T101_assembly"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "statement_definition": "SAP.P001f.T101WholeStatement"
+    },
+    {
+      "target_id": "P001-T102",
+      "decision": "restricted",
+      "theorem": "SAP.P001f.T102",
+      "restriction": "Refutes distributional uniqueness of the PDA at the covariate mean even with a joint density, globally differentiable versions of the same eventwise CEF, and the standing range condition X(Ω)=Supp[X], where Supp[X] is the chosen marginal PDF-positive set by printed Definition 1.2.20. The explicit conull subtype witness has its mean in the PDF-support gap. The chosen-estimator plug-in equality is definitional; its positive-size and differentiability guards describe the printed domain but are idle in that equality. This does not refute the derivative of a fixed chosen extension or address discrete partial slopes.",
+      "rows_used": [
+        "AronowAudit.P001.Wave1.GapLaw.n1_proof",
+        "AronowAudit.P001.Wave1.GapLaw.n2_proof",
+        "AronowAudit.P001.Wave1.GapLaw.n3_proof",
+        "AronowAudit.P001.Wave1.GapLaw.n4_proof",
+        "AronowAudit.P001.Wave1.GapLaw.n5_proof",
+        "AronowAudit.P001.Wave1.fidT102_joint_pdf",
+        "SAP.P001f.Bridge.T102_pdf_positive_set_measurable",
+        "SAP.P001f.Bridge.T102_sample_support_measurable",
+        "SAP.P001f.Bridge.T102_sample_support_conull",
+        "SAP.P001f.Bridge.T102_restricted_map_eq",
+        "SAP.P001f.Bridge.T102_restricted_probability",
+        "SAP.P001f.Bridge.T102_restricted_covariate_range",
+        "SAP.P001f.Bridge.T102_restricted_preserving",
+        "SAP.P001f.Bridge.T102_restricted_measurable_X",
+        "SAP.P001f.Bridge.T102_restricted_measurable_Y",
+        "SAP.P001f.Bridge.T102_restricted_scalar_joint_pdf",
+        "SAP.P001f.Bridge.T102_restricted_cef",
+        "SAP.P001f.Bridge.T102_restricted_vector_joint_pdf",
+        "SAP.P001f.Bridge.T102_pdf_support_identification_refuted",
+        "AronowAudit.P001.printed_pda_plugin_formula"
+      ],
+      "rows_not_used": [
+        {
+          "lean_name": "AronowAudit.P001.Wave1.printed_pda_continuous_cef_counterexample_printed_negation",
+          "reason": "Its old coordinate-only regularity permits an interior null-set artifact; the new proof uses the positive gap-law lemmas and exact PDF-range subtype directly."
+        },
+        {
+          "lean_name": "AronowAudit.P001.Wave1.printed_pda_continuous_cef_counterexample",
+          "reason": "This high-level positive witness has the unrestricted sample range; its underlying gap-law lemmas are used directly to prove the range-saturated subtype witness."
+        },
+        {
+          "lean_name": "AronowAudit.P001.Wave1.printed_pda_local_support_contract_refuted",
+          "reason": "The enlarged-domain old negation lacks the joint-PDF premise and cannot certify the printed support contract."
+        }
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "statement_definition": "SAP.P001f.T102Statement"
+    },
+    {
+      "target_id": "P001-T103",
+      "decision": "refuted",
+      "theorem": "SAP.P001f.T103",
+      "restriction": "Refutes only universal maximizer existence, assertion (A), in the actual unrestricted normal/lognormal/exponential mixture. Omits assertion (B): full-parameter consistency and asymptotic efficiency, and any assessment of the plotted approximation.",
+      "rows_used": [
+        "AronowAudit.P001.Wave1.printed_unrestricted_mixture_maximum_refuted"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T104",
+      "decision": "refuted",
+      "theorem": "SAP.P001f.T104",
+      "restriction": "Only negates the unrestricted equivalence of complete positive-mass overlap and uniform two-sided positivity for countable joint-mass distributions. Does not prove assertion (A), separately isolate the directed failure asserted in (B), resolve (C) with its unspecified support conditions, or assert the regional propensity values in Example 7.3.3.",
+      "rows_used": [
+        "AronowAudit.P001.PrintedConfidence.printed_overlap_uniform_positivity_converse_refuted"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T105",
+      "decision": "omitted",
+      "theorem": null,
+      "restriction": "Omitted: the only credited row negates a larger structural-rule contract with arbitrary real treatment and no predicate for the printed informational-completeness premise. Its exported type does not certify an admissible refutation of the printed binary-treatment implication. Proof-only witness facts and uncredited certificates cannot repair that type by glue.",
+      "rows_used": [],
+      "rows_not_used": [
+        {
+          "lean_name": "AronowAudit.P001.Wave1.printed_complete_description_contract_refuted",
+          "reason": "The larger-domain negation omits binary treatment and an exported informational-completeness premise; it cannot refute this printed implication by glue."
+        }
+      ],
+      "proof_status": null,
+      "proof_plan": null,
+      "axioms": null
+    },
+    {
+      "target_id": "P001-T106",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T106",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.chebyshev_standard_deviations",
+        "AronowAudit.P001.expectation_linearity",
+        "AronowAudit.P001.standard_deviation_rules",
+        "AronowAudit.P001.variance_affine_rules"
+      ],
+      "rows_not_used": [
+        {
+          "lean_name": "AronowAudit.P001.chebyshev_probability",
+          "reason": "The selected standardized Chebyshev row states the exact printed bound; its generalized auxiliary bound is redundant."
+        }
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T107",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T107",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.iterated_expectation",
+        "SAP.P001f.WH.W1.T107_whole",
+        "SAP.P001f.WH.W1.T107_assembly",
+        "SAP.P001f.WH.W1.T107_L1V2_proof",
+        "AronowAudit.P001.isCEF_condExp",
+        "AronowAudit.P001.cef_residual_orthogonality_correction",
+        "AronowAudit.P001.cef_residual_conditional_variance"
+      ],
+      "rows_not_used": [
+        {
+          "lean_name": "AronowAudit.P001.total_variance_and_cef_best_prediction",
+          "reason": "Final status wrong_credit: excluded for all components of this target, including total variance."
+        }
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "statement_definition": "SAP.P001f.T107WholeStatement"
+    },
+    {
+      "target_id": "P001-T108",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T108",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.Wave1.sample_mean_paper_contract",
+        "SAP.P001f.WH.W1.T108_whole",
+        "SAP.P001f.WH.W1.T108_assembly",
+        "AronowAudit.P001.chebyshev_probability"
+      ],
+      "rows_not_used": [
+        {
+          "lean_name": "AronowAudit.P001.iid_sample_mean_chebyshev",
+          "reason": "The selected paper contract already contains the printed positive-variance Chebyshev component."
+        },
+        {
+          "lean_name": "AronowAudit.P001.iid_sample_mean_expectation_integrable",
+          "reason": "The selected paper contract already contains the first-moment-only expectation identity."
+        },
+        {
+          "lean_name": "AronowAudit.P001.iid_sample_mean_finite_moments",
+          "reason": "The common-second-moment restriction is unnecessary; the selected paper contract separates the moment scopes."
+        }
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "statement_definition": "SAP.P001f.T108WholeStatement"
+    },
+    {
+      "target_id": "P001-T109",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T109",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.Wave1.polynomial_blp_paper_support_approximation",
+        "AronowAudit.P001.weierstrass_approximation"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T110",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T110",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.bernoulli_ml_unique_sample_fraction",
+        "AronowAudit.P001.three_coin_flips_maximum"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T111",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T111",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.Wave1.mar_discrete_paper_support_identification",
+        "AronowAudit.P001.Wave1.mar_vector_paper_support_cef",
+        "AronowAudit.P001.Wave1.mcar_paper_support_mean",
+        "AronowAudit.P001.missing_mcar_mar_sample_estimates",
+        "SAP.P001f.WH.W1.T111_whole",
+        "SAP.P001f.WH.W1.T111_assembly",
+        "SAP.P001f.WH.W1.T111_L1_proof",
+        "SAP.P001f.WH.W1.T111_L2_proof",
+        "AronowAudit.P001.isCEF_condExp"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "statement_definition": "SAP.P001f.T111WholeStatement"
+    },
+    {
+      "target_id": "P001-T112",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T112",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.Wave1.mar_propensity_paper_support_balance"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target_id": "P001-T113",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T113",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.Wave1.missing_double_robustness_paper_support",
+        "SAP.P001f.WH.W2.T113_whole",
+        "SAP.P001f.WH.W2.T113_assembly",
+        "SAP.P001f.WH.W2.T113_L1_proof",
+        "SAP.P001f.WH.W2.T113_L2_proof",
+        "SAP.P001f.WH.W2.T113_L3_proof",
+        "SAP.P001f.Bridge.transportT113",
+        "AronowAudit.P001.isCEF_condExp"
+      ],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "statement_definition": "SAP.P001f.T113WholeStatement"
+    },
+    {
+      "target_id": "P001-T114",
+      "decision": "whole",
+      "theorem": "SAP.P001f.T114",
+      "restriction": null,
+      "rows_used": [
+        "AronowAudit.P001.Wave1.ate_sharp_paper_bounds_same_observable_law",
+        "AronowAudit.P001.binary_causal_sample_bound_estimates",
+        "SAP.P001f.WH.W2.T114_whole",
+        "SAP.P001f.WH.W2.T114_assembly",
+        "SAP.P001f.Bridge.transportT114"
+      ],
+      "rows_not_used": [
+        {
+          "lean_name": "AronowAudit.P001.ate_bounds_width_finite",
+          "reason": "The selected population theorem already exports the bound width; the pointwise algebra is redundant."
+        }
+      ],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "statement_definition": "SAP.P001f.T114WholeStatement"
+    }
+  ]
+}

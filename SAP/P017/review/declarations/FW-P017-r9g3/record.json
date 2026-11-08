@@ -1,0 +1,110 @@
+[
+ {
+  "target_id": "P017-T11",
+  "decision": "whole",
+  "theorem": "SAP.P017.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P017.Wave1.normal_tail_identity_proof",
+   "AronowAudit.P017.Wave1.normal_tail_limits_proof",
+   "SAP.P017.WH.W2.T11_whole",
+   "SAP.P017.WH.W2.T11_assembly",
+   "SAP.P017.WH.W2.T11_L1_proof",
+   "SAP.P017.WH.W2.T11_L2_proof",
+   "SAP.P017.WH.W2.T11_L3_proof",
+   "SAP.P017.Bridge.T11_correspondence"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P017.Bridge.T11_correspondence",
+  "statement_definition": "SAP.P017.T11WholeStatement",
+  "measure_theoretic_conditions": "The usual measure-theoretic conditions are assumed. These are presuppositions already explicit in the Lean statement, not additional restrictions."
+ },
+ {
+  "target_id": "P017-T12",
+  "decision": "whole",
+  "theorem": "SAP.P017.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P017.Wave1.arbitrary_outlier_sequence_proof",
+   "AronowAudit.P017.Wave1.slow_outlier_counterexample_proof",
+   "AronowAudit.P017.rare_estimator_finite",
+   "SAP.P017.WH.W2.T12_whole",
+   "SAP.P017.WH.W2.T12_assembly",
+   "SAP.P017.WH.W2.T12_L1_proof",
+   "SAP.P017.Bridge.T12_correspondence",
+   "AronowAudit.P017.slow_probability_positive_limit",
+   "AronowAudit.P017.clipReal_bounds",
+   "AronowAudit.P017.clipReal_eq_self_iff",
+   "AronowAudit.P017.Wave1.normal_shift_probability_counterexample_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P017.slow_probability_numbers",
+    "reason": "Its component is supplied by the selected composite declaration; no separate application is needed."
+   }
+  ],
+  "bridge": "SAP.P017.Bridge.T12_correspondence",
+  "statement_definition": "SAP.P017.T12WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P017.clipReal_bounds",
+   "AronowAudit.P017.clipReal_eq_self_iff",
+   "AronowAudit.P017.Wave1.normal_shift_probability_counterexample_proof"
+  ]
+ },
+ {
+  "target_id": "P017-T13",
+  "decision": "whole",
+  "theorem": "SAP.P017.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P017.Wave1.arbitrary_outlier_sequence_proof",
+   "AronowAudit.P017.Wave1.normal_plus_remainder_failure_bound_proof",
+   "AronowAudit.P017.corrected_zero_error_sentence"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P017.sum_failure_union_bound",
+    "reason": "Its component is supplied by the selected composite declaration; no separate application is needed."
+   }
+  ],
+  "bridge": "SAP.P017.Bridge.T13_correspondence",
+  "statement_definition": "SAP.P017.T13Statement",
+  "measure_theoretic_conditions": "The usual measure-theoretic conditions are assumed. These are presuppositions already explicit in the Lean statement, not additional restrictions."
+ },
+ {
+  "target_id": "P017-T14",
+  "decision": "refuted",
+  "theorem": "SAP.P017.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P017.proposition3",
+   "SAP.P017.WH.W1.T14_whole",
+   "SAP.P017.WH.W1.T14_assembly",
+   "SAP.P017.Bridge.T5_correspondence",
+   "SAP.P017.Bridge.T14_correspondence",
+   "AronowAudit.P017.Wave1.normal_shift_probability_counterexample_proof"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P017.Bridge.T14_correspondence",
+  "statement_definition": "SAP.P017.T14WholeStatement",
+  "measure_theoretic_conditions": "The usual measure-theoretic conditions are assumed. These are presuppositions already explicit in the Lean statement, not additional restrictions."
+ },
+ {
+  "target_id": "P017-T15",
+  "decision": "refuted",
+  "theorem": "SAP.P017.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P017.Wave1.proposition4_proof",
+   "SAP.P017.WH.W1.T15_whole",
+   "SAP.P017.WH.W1.T15_assembly",
+   "AronowAudit.P017.Wave1.normal_shift_mse_counterexample_proof",
+   "AronowAudit.P017.Wave1.normal_shift_probability_counterexample_proof",
+   "AronowAudit.P017.clipReal_bounds"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P017.Bridge.T15_correspondence",
+  "statement_definition": "SAP.P017.T15WholeStatement",
+  "measure_theoretic_conditions": "The usual measure-theoretic conditions are assumed. These are presuppositions already explicit in the Lean statement, not additional restrictions."
+ }
+]

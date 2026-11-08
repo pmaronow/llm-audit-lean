@@ -1,0 +1,21 @@
+import SAP.P039.Challenge
+open SAP.P039 MeasureTheory ProbabilityTheory
+open scoped Matrix NNReal
+set_option autoImplicit false
+example : WholeGaussianRegressionStatement =
+  (∀ {Ω : Type} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+    {n k : ℕ} (Z : Matrix (Fin n) (Fin k) ℝ) (x : Fin n → ℝ)
+    (γ : Fin k → ℝ) (ε : Ω → Fin n → ℝ) (σ : ℝ≥0),
+    0 < σ → FullColumnRank Z → (∃ c, Z *ᵥ c = fun _ => 1) →
+    (¬ ∃ c, Z *ᵥ c = x) → k + 1 < n → Measurable ε →
+    μ.map ε = Measure.pi (fun _ : Fin n => gaussianReal 0 (σ ^ 2)) →
+    let Y := fun ω => Z *ᵥ γ + ε ω
+    let tf := fun ω => olsT (fullDesign Z x) (Y ω) (Fin.last k)
+    let tr := fun ω => olsT (residualLine x) (residualMaker Z *ᵥ Y ω) 1
+    (μ.map tf = studentLaw (n - k - 1)) ∧
+    (∀ᵐ ω ∂μ, 0 < olsSSE (fullDesign Z x) (Y ω)) ∧
+    (∀ᵐ ω ∂μ, 0 < olsSSE (residualLine x) (residualMaker Z *ᵥ Y ω)) ∧
+    ((controlProjection Z *ᵥ (x - ((∑ i, x i) / (n : ℝ)) • (fun _ => 1))) = 0 →
+      ((μ.map tr = (studentLaw (n - k - 1)).map
+        (fun t => Real.sqrt (((n : ℝ) - 2) / ((n : ℝ) - k - 1)) * t)) ∧
+       (2 ≤ k → μ.map tr ≠ studentLaw (n - 2))))) := rfl

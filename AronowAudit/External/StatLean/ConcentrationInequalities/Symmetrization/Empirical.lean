@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.MeasureTheory.Order.Group.Lattice
 import AronowAudit.External.StatLean.ConcentrationInequalities.Symmetrization.Symmetrization
 import AronowAudit.External.StatLean.ConcentrationInequalities.Symmetrization.GaussianMax
@@ -18,8 +14,9 @@ $$ \mathbb{E}\,\sup_{k}\Bigl|\frac1n \sum_{i=1}^n f_k(X_i)
    \;\le\; 2\, \mathbb{E}\,\sup_{k}\Bigl|\frac1n \sum_{i=1}^n
      \varepsilon_i f_k(X_i)\Bigr|, $$
 with the book's factor `2` exactly; the signs live on the product extension
-`μ.prod (signVec n)`. Finite-index core plus a `Countable`-index lift.
-**The RHS is deliberately uncentered** — this is the point of the exercise.
+`μ.prod (signVec n)`. Finite-index core plus a `Countable`-index lift per the
+batch sup policy. **The RHS is deliberately uncentered** — this is the point
+of the exercise.
 
 **Reference.** Roman Vershynin, *High-Dimensional Probability*, 2nd ed.,
 Cambridge University Press, §8.3, Exercise 8.11 (Symmetrization for empirical
@@ -31,19 +28,23 @@ finite Pi type *is* the sup norm — no `PiLp ∞` machinery) and vectors
 `Zᵢ(ω) := fun k => n⁻¹ · f_k(Xᵢ(ω))`: the centering constant cancels in
 `Zᵢ − Zᵢ'`, which is exactly the book's "modify the proof of Lemma 6.3.2" and
 why the RHS is uncentered. Transport by `ForMathlib/IndepTransport`; norm ↔
-`iSup` bridge as in `pi_norm_eq_ciSup_abs`; coordinates of the
+`iSup` bridge as in `GaussianMax.pi_norm_eq_ciSup_abs`; coordinates of the
 Bochner mean via `ContinuousLinearMap.proj` + `integral_comp_comm`. The
 i.i.d. hypothesis is `iIndepFun X μ` + per-index pushforward `μ.map (Xᵢ) = P`
-with `P` explicit, since
+with `P` explicit (Mathlib's `HasLaw` is absent at our pin), since
 `∫ f_k dP` appears in the statement. `[NeZero n]` is genuine: the statement
 is **false** at `n = 0` (LHS is the sup of population means, RHS is `0`).
 We state `|f_k| ≤ 1` rather than `{0,1}`-valued — free mild generality over
 the book's Boolean class. Countable lift by `exists_surjective_nat` +
 monotone convergence of finite sups (`tendsto_atTop_ciSup`) + dominated
 convergence with constant dominators `2` resp. `1` from the class bound.
-A `Finset` class can be represented by the subtype `↥s` with `F := Subtype.val`;
-Fubini (`integral_prod`) separates the RHS integral over `μ.prod (signVec n)`
-into integrals over the data and sign coordinates.
+Consumer note (VC cluster, Theorem 8.3.15): a `Finset` class is consumed as
+the subtype `↥s` with `F := Subtype.val`; the RHS integral over
+`μ.prod (signVec n)` is designed to be Fubini'd (`integral_prod`) and
+attacked per-`ω` by `FiniteMaximal` over the sign coordinate. Named-sorry
+fallback of this work item: `empirical_symmetrization_countable` (the
+finite-index core — the VC cluster's actual consumption shape — fully
+proven).
 
 **Bibliographic comments.** Symmetrization of empirical processes is the
 Giné–Zinn school's basic tool, going back to V. N. Vapnik and A. Ya.
@@ -199,9 +200,10 @@ private lemma biSup_coe_finset_eq_sup' {ι : Type*} {s : Finset ι} (hne : s.Non
   · exact Finset.sup'_le hne f (fun x hx => le_ciSup hbdd ⟨x, hx⟩)
 
 /-- **Symmetrization for empirical processes, countable class** (HDP §8.3,
-Exercise 8.11): the `Countable ι` lift of `empirical_symmetrization`, by
-exhaustion along a surjective enumeration + dominated convergence
-(constant dominators from the class bound). -/
+Exercise 8.11): the `Countable ι` lift of `empirical_symmetrization` per the
+batch sup policy, by exhaustion along a surjective enumeration + dominated
+convergence (constant dominators from the class bound). Named-sorry debt
+candidate of this work item. -/
 theorem empirical_symmetrization_countable {α : Type*} [MeasurableSpace α]
     {ι : Type*} [Countable ι] [Nonempty ι] {μ : Measure Ω}
     [IsProbabilityMeasure μ] {n : ℕ} [NeZero n] {X : Fin n → Ω → α}

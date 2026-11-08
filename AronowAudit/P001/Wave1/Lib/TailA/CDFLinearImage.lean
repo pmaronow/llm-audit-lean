@@ -66,6 +66,14 @@ theorem ta18_centered_gaussian_closed (ρ : Measure ℝ) [IsProbabilityMeasure �
       tendsto_nhds_unique (by simpa only [ta18_gaussian_charFun] using hc s) hs
     _ = charFun (gaussianReal 0 w) s := (ta18_gaussian_charFun w s).symm
 
+/-- In particular, centered real Gaussian probability measures are closed
+under weak sequential convergence, including a degenerate limiting law. -/
+theorem ta18_centered_gaussian_weak_closed (ρ : ProbabilityMeasure ℝ) (v : ℕ → ℝ≥0)
+    (hw : Tendsto (fun n => (gaussianReal 0 (v n)).toProbabilityMeasure)
+      atTop (𝓝 ρ)) :
+    ∃ w : ℝ≥0, (ρ : Measure ℝ) = gaussianReal 0 w := by
+  exact ta18_centered_gaussian_closed ρ v
+    (ProbabilityMeasure.tendsto_iff_tendsto_charFun.mp hw)
 
 /-- Almost-sure scalar convergence of centered Gaussians gives a centered
 Gaussian law. The characteristic integrands have the constant bound one. -/
@@ -124,5 +132,14 @@ theorem cdf_bridge_linear_gaussian [MeasurableSpace KolmogorovSpace]
     rw [← variance_id_map L.continuous.aemeasurable, hw, variance_id_gaussianReal]
   rw [hvar, Real.toNNReal_coe]
   exact hw
+
+-- Exact universal library interface from CDF_LINEAR_IMAGE in plan.json.
+example [MeasurableSpace KolmogorovSpace] [BorelSpace KolmogorovSpace] :
+    ∀ (P : Measure ℝ) [IsProbabilityMeasure P]
+      (ν : Measure KolmogorovSpace) [IsProbabilityMeasure ν],
+      IsCDFBridge (cdf P id) ν → ∀ L : KolmogorovSpace →L[ℝ] ℝ,
+      MemLp (fun h => L h) 2 ν →
+      ν.map L = gaussianReal 0 (var ν (fun h => L h)).toNNReal :=
+  @cdf_bridge_linear_gaussian _ _
 
 end AronowAudit.P001.Wave1.TailA

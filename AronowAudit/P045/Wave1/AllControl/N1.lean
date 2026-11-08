@@ -1,8 +1,6 @@
 import AronowAudit.P045.Wave1.AllControlBlueprint
 
-/-!
-P045-T27: the two-unit counterexample to the all-untreated indicator.
--/
+/-! Node N1 of the P045-T27 refutation blueprint (trivial; proved by the blueprint author). -/
 
 set_option autoImplicit false
 
@@ -10,7 +8,7 @@ namespace AronowAudit.P045.Wave1.AllControl
 
 open AronowAudit.P045
 
-/-- At `edge2`, `(true,false)`, unit `0`, the coded indicator holds but the
+/-- Node N1: at `edge2`, `(true,false)`, unit `0`, the coded indicator holds but the
 documented all-untreated condition fails. -/
 theorem n1_proof : N1 :=
   ⟨(full_neighborhood_counterexample.2.1 0).1,

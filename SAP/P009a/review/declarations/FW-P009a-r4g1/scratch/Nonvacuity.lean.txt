@@ -1,0 +1,173 @@
+import SAP.P009a.Challenge
+
+open Filter MeasureTheory
+open scoped BigOperators Topology ENNReal NNReal
+open SAP.P009a
+
+noncomputable section
+namespace Audit
+
+-- Enumerate the four assignment vectors, independently of the target theorems.
+lemma cube2_sum (f : TreatmentVector 2 → ℝ) :
+    (∑ z, f z) = f ![true,true] + f ![true,false] +
+      (f ![false,true] + f ![false,false]) := by
+  rw [Fintype.sum_equiv (finTwoArrowEquiv Bool) f
+    (fun p => f ![p.1,p.2]) (by intro z; congr 1; ext i; fin_cases i <;> rfl)]
+  simp [Fintype.sum_prod_type]
+
+def unevenDesign : FiniteDistribution (TreatmentVector 2) where
+  mass z := (if z 0 then 1/4 else 3/4) * (if z 1 then 3/4 else 1/4)
+  nonneg z := by split_ifs <;> norm_num
+  total := by rw [cube2_sum]; norm_num
+
+def countDesign : FiniteDistribution (TreatmentVector 2) where
+  mass z := if z 0 ∧ ¬ z 1 then 1/4 else if ¬ z 0 ∧ z 1 then 3/4 else 0
+  nonneg z := by split_ifs <;> norm_num
+  total := by rw [cube2_sum]; norm_num
+
+def signedE : FiniteExperiment 2 :=
+  ⟨unevenDesign, fun i z => if i = 0 then treatmentValue (z 1) else -treatmentValue (z 0)⟩
+def countE : FiniteExperiment 2 := ⟨countDesign, fun _ _ => 1⟩
+def squareE : FiniteExperiment 2 :=
+  ⟨unevenDesign, fun i z => if i = 0 then 1 else 1-treatmentValue (z 0)⟩
+
+lemma uneven_marginals (E : FiniteExperiment 2) (h : E.design = unevenDesign)
+    (i : Fin 2) (b : Bool) :
+    armProbability E i b = if i = 0 then (if b then 1/4 else 3/4)
+      else (if b then 3/4 else 1/4) := by
+  unfold armProbability probability expectation
+  rw [h, cube2_sum]
+  fin_cases i <;> cases b <;> norm_num [unevenDesign]
+
+lemma bounded_reg {n : ℕ} (E : FiniteExperiment n) (k q s : ℝ)
+    (hk : 1 ≤ k) (hq : 2 ≤ q) (hs : 1 ≤ s)
+    (hp : ∀ i, k⁻¹ ≤ armProbability E i true ∧ armProbability E i true ≤ 1-k⁻¹)
+    (hb : ∀ i z, |E.outcome i z| ≤ 1) : Regularity E k q s := by
+  have hmoment (f : TreatmentVector n → ℝ) (r : ℝ) (hr : 0 ≤ r)
+      (hf : ∀ z, |f z| ≤ 1) :
+      expectation E.design (fun z => Real.rpow |f z| r) ≤ Real.rpow k r := by
+    unfold expectation
+    calc
+      _ ≤ ∑ z, E.design.mass z * Real.rpow k r := by
+        apply Finset.sum_le_sum
+        intro z _
+        exact mul_le_mul_of_nonneg_left
+          (Real.rpow_le_rpow (abs_nonneg _) (le_trans (hf z) hk) hr) (E.design.nonneg z)
+      _ = Real.rpow k r := by rw [← Finset.sum_mul, E.design.total, one_mul]
+  refine ⟨by linarith, hq, hs, hp, ?_, ?_⟩
+  · intro i; exact hmoment _ q (by linarith) (hb i)
+  · intro i b; exact hmoment _ s (by linarith) (fun z => hb i _)
+
+lemma signed_bound (i : Fin 2) (z : TreatmentVector 2) : |signedE.outcome i z| ≤ 1 := by
+  fin_cases i <;> cases h0 : z 0 <;> cases h1 : z 1 <;>
+    norm_num [signedE, treatmentValue, h0, h1]
+lemma square_bound (i : Fin 2) (z : TreatmentVector 2) : |squareE.outcome i z| ≤ 1 := by
+  fin_cases i <;> cases h : z 0 <;> norm_num [squareE, treatmentValue, h]
+
+lemma uneven_product (E : FiniteExperiment 2) (h : E.design = unevenDesign) : ProductDesign E := by
+  constructor
+  · intro i; rw [uneven_marginals E h]; fin_cases i <;> norm_num
+  · intro z
+    simp only [h, unevenDesign, Fin.prod_univ_two, uneven_marginals E h]
+    cases h0 : z 0 <;> cases h1 : z 1 <;> norm_num [h0, h1]
+
+-- T3: every hypothesis of the finite examples, at arbitrary real orders.
+lemma examples_regular (q s : ℝ) (hq : 2 ≤ q) (hs : 1 ≤ s) :
+    Regularity signedE 4 q s ∧ ProductDesign signedE ∧
+    Regularity countE 4 q s ∧ Regularity squareE 4 q s ∧ ProductDesign squareE := by
+  have hp (E : FiniteExperiment 2) (h : E.design = unevenDesign) :
+      ∀ i, (4:ℝ)⁻¹ ≤ armProbability E i true ∧ armProbability E i true ≤ 1-(4:ℝ)⁻¹ := by
+    intro i; rw [uneven_marginals E h]; fin_cases i <;> norm_num
+  refine ⟨bounded_reg signedE 4 q s (by norm_num) hq hs (hp _ rfl) signed_bound,
+    uneven_product _ rfl, ?_,
+    bounded_reg squareE 4 q s (by norm_num) hq hs (hp _ rfl) square_bound,
+    uneven_product _ rfl⟩
+  apply bounded_reg countE 4 q s (by norm_num) hq hs
+  · intro i
+    unfold armProbability probability expectation
+    rw [cube2_sum]
+    fin_cases i <;> norm_num [countE, countDesign]
+  · intro i z; norm_num [countE]
+
+-- Independent exact moment computations for all three counterexamples.
+example : variance signedE.design (estimatedArmMean signedE true) = 13/48 := by
+  norm_num [variance, covariance, expectation, cube2_sum, estimatedArmMean,
+    Fin.sum_univ_two, uneven_marginals, signedE, unevenDesign, treatmentValue]
+
+example : variance countE.design (fun z => estimatedArmSize countE true z / 2) = 1/3 := by
+  norm_num [variance, covariance, expectation, probability, armProbability, cube2_sum,
+    estimatedArmSize, Fin.sum_univ_two, countE, countDesign]
+
+example : variance squareE.design (squareWeightedSum squareE) = 367/9 := by
+  norm_num [variance, covariance, expectation, cube2_sum, squareWeightedSum,
+    armResponse, Fin.sum_univ_two, armProbability, probability,
+    squareE, unevenDesign, treatmentValue]
+
+example : (∑ i, ∑ j, covariance signedE.design
+    (armResponse signedE true 1 i) (armResponse signedE true 1 j)) = 0 ∧
+    (∑ i, ∑ j, covariance countE.design
+      (fun z => treatmentValue (z i)) (fun z => treatmentValue (z j))) = 0 ∧
+    (4:ℝ)^4 * (∑ i, ∑ j, covariance squareE.design
+      (armResponse squareE true 2 i) (armResponse squareE true 2 j)) = 39 := by
+  norm_num [covariance, expectation, cube2_sum, Fin.sum_univ_two, armResponse,
+    signedE, countE, squareE, unevenDesign, countDesign, treatmentValue]
+
+-- T1: a nonempty member has positive variance and an ordinary degenerate interval.
+lemma sparse2_marginals (i : Fin 2) (b : Bool) :
+    armProbability (sparsePopulation 2) i b = 1/2 := by
+  unfold armProbability probability expectation
+  rw [cube2_sum]
+  fin_cases i <;> cases b <;> norm_num [sparsePopulation, fairPopulation, fairDistribution]
+
+example (q s : ℝ) (hq : 2 ≤ q) (hs : 1 ≤ s) :
+    Regularity (sparsePopulation 2) 2 q s ∧ ProductDesign (sparsePopulation 2) ∧
+    NoSpillovers (sparsePopulation 2) := by
+  refine ⟨bounded_reg _ 2 q s (by norm_num) hq hs ?_ ?_, ?_, ?_⟩
+  · intro i; rw [sparse2_marginals]; norm_num
+  · intro i z
+    fin_cases i <;> cases h : z 0 <;>
+      norm_num [sparsePopulation, fairPopulation, treatmentValue, h]
+  · constructor
+    · intro i; rw [sparse2_marginals]; norm_num
+    · intro z
+      simp only [Fin.prod_univ_two, sparse2_marginals]
+      change (1/(2:ℝ)^2) = _
+      cases h0 : z 0 <;> cases h1 : z 1 <;> norm_num [h0, h1]
+  · intro i z z' h
+    simp only [sparsePopulation, fairPopulation]
+    rw [h]
+
+example : variance (sparsePopulation 2).design (htEstimate (sparsePopulation 2)) = 1/4 ∧
+    ¬ IntervalCovers (htEstimate (sparsePopulation 2) (fun _ => false))
+      (expectedATE (sparsePopulation 2))
+      (bernoulliVarianceEstimate (sparsePopulation 2) (fun _ => false)) (1/20) := by
+  norm_num [variance, covariance, expectation, cube2_sum, htEstimate, estimatedArmMean,
+    sparse2_marginals, Fin.sum_univ_two, sparsePopulation, fairPopulation,
+    fairDistribution, treatmentValue, IntervalCovers, bernoulliVarianceEstimate,
+    expectedATE, assignmentATE, individualEffect, potentialResponse, armProbability,
+    probability]
+
+-- T5: the cluster is a real finite experiment, and the strict gap starts at n=5.
+example : clusterDensity 1 = 1 ∧ clusterDensity 2 = 1/2 ∧
+    clusterDensity 3 = 1/3 ∧ clusterDensity 4 = 1/4 ∧ clusterDensity 5 = 1/5 := by
+  norm_num [clusterDensity, clusterSize]
+
+example : Affects (clusterPopulation 5 (by decide)) 0 0 ∧
+    ¬ Affects (clusterPopulation 5 (by decide)) 0 1 := by
+  constructor
+  · exact Or.inl rfl
+  · simp [Affects, clusterPopulation, fairPopulation, clusterSize]
+
+-- T4: every experiment hypothesis is satisfiable, including infinite orders
+-- and the q>=4 and Bernoulli hypotheses of the square chains.
+example : WholeRegularity signedE 4 ⊤ ⊤ ∧ ProductDesign signedE := by
+  refine ⟨⟨by norm_num, by simp, by simp, ?_, ?_, ?_⟩, uneven_product _ rfl⟩
+  · intro i; rw [uneven_marginals signedE rfl]; fin_cases i <;> norm_num
+  · intro i
+    simp only [OrderBound, ite_true]
+    intro z _; exact (signed_bound i z).trans (by norm_num)
+  · intro i b
+    simp only [OrderBound, ite_true]
+    intro z _; exact (signed_bound i (Function.update z i b)).trans (by norm_num)
+
+end Audit

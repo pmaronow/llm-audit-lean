@@ -1,0 +1,150 @@
+import SAP.P007.Defs
+
+open scoped BigOperators
+open SAP.P007
+open Classical
+
+noncomputable def countArray : ObservedArray 8580 1205 :=
+  fun i => Finset.Iio (if i.val < 7633 then (406 : Fin 1205) else 405)
+
+lemma countArray_card (i : Fin 8580) : (countArray i).card = if i.val < 7633 then 406 else 405 := by
+  simp only [countArray, Fin.card_Iio]
+  split <;> rfl
+
+lemma first_rows_card : (Finset.univ.filter (fun i : Fin 8580 => i.val < 7633)).card = 7633 := by
+  have hf : Finset.univ.filter (fun i : Fin 8580 => i.val < 7633) =
+      Finset.Iio (7633 : Fin 8580) := by
+    ext i
+    simp [Fin.lt_def]
+  rw [hf, Fin.card_Iio]
+  rfl
+
+lemma other_rows_card : (Finset.univ.filter (fun i : Fin 8580 => ¬i.val < 7633)).card = 947 := by
+  have hh := Finset.card_filter_add_card_filter_not (s := (Finset.univ : Finset (Fin 8580)))
+    (fun i => i.val < 7633)
+  rw [first_rows_card] at hh
+  rw [Finset.card_univ, Fintype.card_fin] at hh
+  omega
+
+lemma countArray_total_nat : (∑ i, (countArray i).card) = 3482533 := by
+  simp only [countArray_card]
+  rw [Finset.sum_ite]
+  simp only [Finset.sum_const, first_rows_card, other_rows_card, nsmul_eq_mul]
+  norm_num
+
+example : ∃ m : ObservedArray 8580 1205, (∑ i, ((m i).card : ℤ)) = 3482533 := by
+  refine ⟨countArray, ?_⟩
+  exact_mod_cast countArray_total_nat
+
+noncomputable def pointLaw {α : Type*} [Fintype α] [DecidableEq α] (a : α) : Law α where
+  weight x := if x = a then 1 else 0
+  nonneg x := by split <;> norm_num
+  total := by simp
+
+lemma point_probability {α : Type*} [Fintype α] [DecidableEq α]
+    (a : α) (P : α → Prop) :
+    probability (pointLaw a) P = if P a then 1 else 0 := by
+  classical
+  unfold probability pointLaw
+  have he : ∀ x, (if P x then (if x = a then (1:ℝ) else 0) else 0) =
+      if x = a then (if P a then 1 else 0) else 0 := by
+    intro x
+    by_cases h : x = a <;> simp_all
+  simp_rw [he]
+  simp
+
+noncomputable def firstNull : Law (SAP.P007.Array 1 2) :=
+  pointLaw (fun _ j => decide (j.val = 0))
+
+lemma firstNull_s1 : survival firstNull 0 1 = 0 := by
+  simp [survival, firstNull, point_probability, prefixObserved, Fin.forall_fin_two]
+
+lemma firstNull_s2 : survival firstNull 0 2 = 0 := by
+  simp [survival, firstNull, point_probability, prefixObserved, Fin.forall_fin_two]
+
+#print axioms point_probability
+
+lemma point_rowIndependent {n h : ℕ} (a : SAP.P007.Array n h) :
+    rowIndependent (pointLaw a) := by
+  intro E
+  simp only [point_probability]
+  by_cases hh : ∀ i, E i (a i)
+  · simp only [if_pos hh]
+    symm
+    apply Finset.prod_eq_one
+    intro i _
+    exact if_pos (hh i)
+  · obtain ⟨i, hi⟩ := not_forall.mp hh
+    rw [if_neg hh]
+    symm
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+
+lemma firstNull_weight : firstNull.weight = nullFirstWeights := by
+  funext x
+  simp [firstNull, pointLaw, nullFirstWeights, funext_iff]
+
+lemma firstNull_bound (q : ℝ) (hq : 0 ≤ q) (hqlt : q < 1) : observationBound firstNull q := by
+  refine ⟨hq, hqlt, ?_⟩
+  intro i
+  have hi : i = 0 := Fin.eq_zero i
+  subst i
+  refine ⟨by simp [firstNull_s1, hq], ?_⟩
+  intro j hj hjlt hpos
+  have he : j = 1 := by omega
+  subst j
+  rw [firstNull_s1] at hpos
+  norm_num at hpos
+
+example : ∃ L : Law (SAP.P007.Array 1 2), L.weight = nullFirstWeights ∧
+    rowIndependent L ∧ observationBound L 0 ∧ survival L 0 1 = 0 ∧
+    survival L 0 2 = 0 ∧ probability L (fun x => x 0 1 = false) = 1 ∧
+    probability L (fun x => x 0 1 = true) = 0 ∧
+    allDeleted L = 1 ∧ (1 - (0 : ℝ)^2)^1 = 1 := by
+  refine ⟨firstNull, firstNull_weight, point_rowIndependent _, firstNull_bound 0 (by norm_num) (by norm_num),
+    firstNull_s1, firstNull_s2, ?_, ?_, ?_, by norm_num⟩
+  · simp [firstNull, point_probability]
+  · simp [firstNull, point_probability]
+  · simp [allDeleted, firstNull, point_probability, prefixObserved]
+
+noncomputable def allNull : Law (SAP.P007.Array 1 2) := pointLaw (fun _ _ => true)
+
+lemma allNull_bound (q : ℝ) (hq : 0 ≤ q) (hqlt : q < 1) : observationBound allNull q := by
+  refine ⟨hq, hqlt, ?_⟩
+  intro i
+  have hi : i = 0 := Fin.eq_zero i
+  subst i
+  have hs : ∀ j, 0 < j → survival allNull 0 j = 0 := by
+    intro j hj
+    simp [survival, allNull, point_probability, prefixObserved, Fin.forall_fin_two, hj]
+  refine ⟨by simp [hs 1 (by norm_num), hq], ?_⟩
+  intro j hj hjlt hpos
+  rw [hs j (by omega)] at hpos
+  norm_num at hpos
+
+example : ∃ L : Law (SAP.P007.Array 1 2), L.weight = fullyMissingWeights ∧
+    ∀ q : ℝ, 0 ≤ q → q < 1 → rowIndependent L ∧ observationBound L q ∧
+      ∀ j : Fin 2, probability L (fun x => x 0 j = true) = 1 := by
+  refine ⟨allNull, ?_, ?_⟩
+  · funext x
+    simp [allNull, pointLaw, fullyMissingWeights, funext_iff]
+  · intro q hq hqlt
+    refine ⟨point_rowIndependent _, allNull_bound q hq hqlt, ?_⟩
+    intro j
+    simp [allNull, point_probability]
+
+example : ∃ L : Law (SAP.P007.Array 1 2), L.weight = nullFirstWeights ∧
+    rowIndependent L ∧ observationBound L (1/2) ∧
+    survival L 0 1 = 0 ∧ survival L 0 2 = 0 ∧
+    (∀ v : ℝ, 0 ≤ v → v ≤ 1 → survival L 0 2 = v * survival L 0 1) ∧
+    (1/2 : ℝ) < 1 ∧ survival L 0 2 ≤ (1/2 : ℝ)^2 ∧
+    allDeleted L = 1 ∧ (3/4 : ℝ) ≤ allDeleted L := by
+  refine ⟨firstNull, firstNull_weight, point_rowIndependent _,
+    firstNull_bound (1/2) (by norm_num) (by norm_num), firstNull_s1, firstNull_s2, ?_⟩
+  simp only [firstNull_s1, firstNull_s2]
+  norm_num [allDeleted, firstNull, point_probability, prefixObserved]
+
+-- All hypotheses of T5, including the independence needed by its final clause.
+example : ∃ (n h : ℕ), 0 < n ∧ 0 < h ∧ ∃ (L : Law (SAP.P007.Array n h)) (q : ℝ),
+    observationBound L q ∧ rowIndependent L := by
+  exact ⟨1, 2, by norm_num, by norm_num, firstNull, 1/2,
+    firstNull_bound (1/2) (by norm_num) (by norm_num), point_rowIndependent _⟩

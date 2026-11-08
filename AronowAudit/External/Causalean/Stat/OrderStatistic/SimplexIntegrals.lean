@@ -1,7 +1,3 @@
-/-
-Upstream project: Causalean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 module
 public import AronowAudit.External.Causalean.Stat.OrderStatistic.Dirichlet
 public import Mathlib.Analysis.SpecialFunctions.Gamma.Beta

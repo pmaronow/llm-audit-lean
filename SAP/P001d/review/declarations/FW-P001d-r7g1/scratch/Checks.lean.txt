@@ -1,0 +1,116 @@
+import SAP.P001d.Challenge
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators ENNReal NNReal Topology
+open SAP.P001d
+
+noncomputable section
+
+-- The coordinates of an actual countable product law satisfy all three IID clauses.
+theorem product_iid (P : Measure ℝ) [IsProbabilityMeasure P] :
+    IID (Measure.infinitePi (fun _ : ℕ => P)) (fun i ω => ω i) := by
+  refine ⟨fun i => measurable_pi_apply i, ?_, ?_⟩
+  · exact iIndepFun_infinitePi (X := fun (_ : ℕ) (x : ℝ) => x)
+      (fun _ => measurable_id)
+  · intro i
+    exact ⟨(measurable_pi_apply i).aemeasurable,
+      (measurable_pi_apply 0).aemeasurable, by simp [Measure.infinitePi_map_eval]⟩
+
+-- T58: all probabilistic premises have a genuine IID realization.
+example : ∃ μ : Measure (ℕ → ℝ), IsProbabilityMeasure μ ∧
+    IID μ (fun i ω => ω i) ∧ μ.map (fun ω => ω 0) = wholeTriangleLaw := by
+  rcases SAP.P001d.T58.{0} with ⟨_, _, _, _, _, _, _, hp, _⟩
+  letI : IsProbabilityMeasure wholeTriangleLaw := hp
+  exact ⟨Measure.infinitePi (fun _ : ℕ => wholeTriangleLaw), inferInstance,
+    product_iid _, Measure.infinitePi_map_eval _ 0⟩
+
+-- A finite interior sample for the triangular-density branch of T58.
+example : 0 < (3 : ℕ) ∧
+    ∀ i : Fin 3, (fun _ : Fin 3 => (3/2 : ℝ)) i ∈ Set.Icc (5/4 : ℝ) (7/4) := by
+  norm_num
+
+theorem rectangle_indicator : rectangleKernel =
+    (Set.Icc (-1 : ℝ) 1).indicator (fun _ : ℝ => (1/2 : ℝ)) := by
+  funext t
+  simp [rectangleKernel, Set.indicator, abs_le]
+
+theorem rectangle_integrable : Integrable rectangleKernel volume := by
+  rw [rectangle_indicator, integrable_indicator_iff measurableSet_Icc]
+  exact integrableOn_const (by simp [Real.volume_Icc])
+
+theorem rectangle_integral : (∫ t, rectangleKernel t) = 1 := by
+  rw [rectangle_indicator, integral_indicator measurableSet_Icc]
+  norm_num [integral_const, Measure.real, Real.volume_Icc]
+
+-- T59: every input hypothesis, with nonempty data, unit bandwidth and a genuine kernel.
+example : 0 < (2 : ℕ) ∧
+    (∀ᵐ t ∂volume, 0 ≤ rectangleKernel t) ∧
+    (∫ t, rectangleKernel t) = 1 ∧
+    (∀ t, rectangleKernel t = rectangleKernel (-t)) ∧ 0 < (1 : ℝ) := by
+  refine ⟨by norm_num, Filter.Eventually.of_forall ?_, rectangle_integral, ?_, by norm_num⟩
+  · intro t
+    unfold rectangleKernel
+    split_ifs <;> norm_num
+  · intro t
+    simp [rectangleKernel, abs_neg]
+
+-- T60: a two-point sample, a nonzero kernel, and a cutoff away from the excluded endpoint.
+example : 0 < (2 : ℕ) ∧ 0 < (1/2 : ℝ) ∧ Integrable rectangleKernel volume ∧
+    (∀ i : Fin 2, (![0, 2] : Fin 2 → ℝ) i ≠ (1 : ℝ)-1/2) := by
+  refine ⟨by norm_num, by norm_num, rectangle_integrable, ?_⟩
+  intro i
+  fin_cases i <;> norm_num
+
+-- T61: the heavy-tailed population also has a genuine infinite IID sample.
+example : ∃ μ : Measure (ℕ → ℝ), IsProbabilityMeasure μ ∧
+    IID μ (fun i ω => ω i) ∧ μ.map (fun ω => ω 0) = heavyBootstrapLaw := by
+  letI : IsProbabilityMeasure heavyBootstrapLaw := SAP.P001d.T61.{0}.1
+  exact ⟨Measure.infinitePi (fun _ : ℕ => heavyBootstrapLaw), inferInstance,
+    product_iid _, Measure.infinitePi_map_eval _ 0⟩
+
+-- T62, sample-mean branch: actual Gaussian IID data, L² and positive variance.
+example : ∃ μ : Measure (ℕ → ℝ), IsProbabilityMeasure μ ∧
+    IID μ (fun i ω => ω i) ∧ MemLp (fun ω => ω 0) 2 μ ∧
+      0 < variance (fun ω => ω 0) μ := by
+  let μ := Measure.infinitePi (fun _ : ℕ => gaussianReal 0 1)
+  have hi : IdentDistrib (fun ω : ℕ → ℝ => ω 0) id μ (gaussianReal 0 1) :=
+    ⟨(measurable_pi_apply 0).aemeasurable, measurable_id.aemeasurable,
+      by simp [μ, Measure.infinitePi_map_eval]⟩
+  refine ⟨μ, inferInstance, product_iid _, ?_, ?_⟩
+  · exact hi.memLp_iff.mpr (memLp_id_gaussianReal 2)
+  · rw [hi.variance_eq, variance_id_gaussianReal]
+    norm_num
+
+-- The same Gaussian sample mean also satisfies the general criterion's entire
+-- observed/resampled composite-measurability premise (this premise is independent of μ).
+example : WholeResampleMeasurable (fun i (ω : ℕ → ℝ) => ω i)
+    (fun {n} => @finiteSampleMean n) := by
+  intro n a
+  simp only [finiteSampleMean, firstSample, Function.comp_def]
+  fun_prop
+
+-- Endpoint conventions are substantive: the rectangle formula really fails at X=x-h.
+example : kernelDensity rectangleKernel 1 (fun _ : Fin 1 => (0 : ℝ)) 1 = 1/2 ∧
+    ((((1 : ℝ)/1)-((1 : ℝ)/1))/(2*1)) = 0 := by
+  norm_num [kernelDensity, rectangleKernel]
+
+-- At positive even sizes the two median choices are distinct and both are genuine order statistics.
+example : sampleMedian (![0, 2] : Fin 2 → ℝ) = 2 ∧
+    wholeLowerMedian (![0, 2] : Fin 2 → ℝ) = 0 := by
+  norm_num [sampleMedian, wholeLowerMedian, List.ofFn_succ, List.mergeSort]
+
+-- Constant-label outcomes retain their correct independent-label probabilities.
+example : wholeResampleProb (fun a : Fin 2 → Fin 2 => a = fun _ => 0) = 1/4 := by
+  classical
+  have hs : (∑ a : Fin 2 → Fin 2,
+      if a = (fun _ => 0) then (1 : ℝ) else 0) = 1 := by
+    rw [Finset.sum_eq_single (fun _ : Fin 2 => (0 : Fin 2))]
+    · simp
+    · intro b _ hb
+      simp [hb]
+    · simp
+  norm_num [wholeResampleProb, hs]
+  convert hs using 1
+  apply Finset.sum_congr rfl
+  intro a _
+  split_ifs <;> rfl

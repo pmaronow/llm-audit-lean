@@ -1,0 +1,171 @@
+import SAP.P003b.Challenge
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxRecDepth 8192
+set_option maxHeartbeats 2000000
+
+namespace Review
+open SAP.P003b
+open scoped BigOperators
+
+-- T36: a positive design with genuine bases and two legal reuse steps.
+def smallObserved : Counts := ⟨1, 1, 1, 1⟩
+def smallBase : Counts := ⟨2, 0, 0, 2⟩
+
+example : smallObserved.total = 4 ∧
+    0 < smallObserved.a + smallObserved.b ∧
+    0 < smallObserved.c + smallObserved.d := by decide
+
+example : Possible smallObserved smallBase ∧
+    firstOnLine smallObserved 0 2 = some smallBase ∧
+    wholeFastBase smallObserved 0 2 = some smallBase ∧
+    reuseLine smallObserved smallBase = [1, 2] ∧
+    wholeCostReuse smallObserved 0 2 smallBase = [1, 2] := by decide
+
+example : 0 < wholeCostDraws false smallObserved 2 ∧
+    0 < wholeCostDraws true smallObserved 2 ∧
+    0 < wholeCostUpdates false smallObserved 2 ∧
+    0 < wholeCostUpdates true smallObserved 2 := by decide
+
+example : (0 : ℝ) ≤ 1 ∧ (0 : ℝ) ≤ 1 ∧ (0 : ℝ) ≤ 1 := by norm_num
+
+def observedFamily (n : ℕ) : Counts := ⟨0, n / 2, 0, n - n / 2⟩
+
+theorem family_total (n : ℕ) : (observedFamily n).total = n := by
+  simp only [observedFamily, Counts.total, zero_add, add_zero]
+  omega
+
+example : ∃ o : ℕ × ℕ → Counts,
+    (∀ p, (o p).total = p.1) ∧
+    ∀ᶠ p in Filter.atTop,
+      0 < (o p).a + (o p).b ∧ 0 < (o p).c + (o p).d := by
+  refine ⟨fun p => observedFamily p.1, fun p => family_total p.1, ?_⟩
+  apply Filter.eventually_atTop.mpr
+  refine ⟨(2, 0), ?_⟩
+  rintro ⟨n, K⟩ h
+  have hn : 2 ≤ n := h.1
+  dsimp [observedFamily]
+  omega
+
+example : (∀ n, (observedFamily n).total = n) ∧
+    ∀ᶠ n : ℕ in Filter.atTop, 1 ≤ (fun _ : ℕ => 1) n :=
+  ⟨family_total, Filter.Eventually.of_forall (by intro n; rfl)⟩
+
+-- T18: a nonzero balanced test sequence satisfying every upper-bound premise.
+theorem linear_tests :
+    ∀ᶠ n : ℕ in Filter.atTop, (n : ℝ) ≤ 4 * (n : ℝ) * logTwo n := by
+  apply Filter.eventually_atTop.mpr
+  refine ⟨2, ?_⟩
+  intro n hn
+  have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hl2 : 0 < Real.log (2 : ℝ) := Real.log_pos (by norm_num)
+  have hlog : Real.log (2 : ℝ) ≤ Real.log (n : ℝ) :=
+    Real.log_le_log (by norm_num) hn2
+  have hratio : (1 : ℝ) ≤ logTwo n := by
+    unfold logTwo
+    exact (le_div_iff₀ hl2).mpr (by simpa using hlog)
+  have hn0 : (0 : ℝ) ≤ n := by positivity
+  nlinarith
+
+example : ∃ (α ε c : ℝ) (tests : ℕ → ℕ) (operations : ℕ → ℝ),
+    (0 < α ∧ α < 1) ∧ (0 < ε ∧ ε < α) ∧ 0 ≤ c ∧
+    (∀ n, 0 ≤ operations n) ∧
+    (∀ᶠ n in Filter.atTop, (tests n : ℝ) ≤ 4 * (n : ℝ) * logTwo n) ∧
+    (∀ᶠ n in Filter.atTop,
+      operations n ≤ (tests n : ℝ) * recommendedK ε n * (c * n)) := by
+  refine ⟨1/2, 1/8, 1, id,
+    (fun n => (n : ℝ) * recommendedK (1/8) n * n), ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num
+  · norm_num
+  · norm_num
+  · intro n; positivity
+  · exact linear_tests
+  · exact Filter.Eventually.of_forall (by intro n; simp)
+
+theorem logTwo16 : logTwo 16 = 4 := by
+  unfold logTwo
+  rw [show (16 : ℝ) = 2 ^ (4 : ℕ) by norm_num, Real.log_pow]
+  have h : Real.log (2 : ℝ) ≠ 0 := ne_of_gt (Real.log_pos (by norm_num))
+  apply (div_eq_iff h).mpr
+  norm_num
+
+example : (0 : ℝ) ≤ 1 ∧ (16 : ℝ) ≤ 4 * 16 * logTwo 16 ∧
+    (512 : ℝ) ≤ 16 * 2 * (1 * 16) := by
+  rw [logTwo16]
+  norm_num
+
+-- The expected-cost clause's lower threshold on K is satisfiable.
+example : ∃ r K : ℕ, 6 ≤ r ∧ 0 < K ∧
+    (K : ℝ) ≥ 32 * Real.log (32 * (2^r : ℕ) * logTwo (2^r : ℕ)) := by
+  let x : ℝ := 32 * Real.log (32 * (2^6 : ℕ) * logTwo (2^6 : ℕ))
+  obtain ⟨K, hK⟩ := exists_nat_gt (max 1 x)
+  refine ⟨6, K, by decide, ?_, ?_⟩
+  · have h : (0 : ℝ) < K := lt_of_lt_of_le (by norm_num)
+      (le_trans (le_max_left 1 x) (le_of_lt hK))
+    exact_mod_cast h
+  · exact le_trans (le_max_right 1 x) (le_of_lt hK)
+
+-- An explicit support point of the iid-uniform pool, not a law equating its draws.
+def centeredAssignment (t : Fin 5) : Assignment 16 8 :=
+  ⟨Finset.univ.filter (fun i : Fin 16 => i.val < t.val + 2 ∨ t.val + 10 ≤ i.val), by
+    fin_cases t <;> decide⟩
+
+def pool16 : Fin (2 * testBudget 16 + 1) → Fin 2 → Assignment 16 8 :=
+  fun idx _ => centeredAssignment (if h : idx.val < 5 then ⟨idx.val, h⟩ else 0)
+
+def zeroObservation : Counts := ⟨0, 8, 0, 8⟩
+
+example : canonicalObserved (⟨0, 0, 0, 16⟩ : Counts)
+    (centeredAssignment 0).val = zeroObservation := by decide
+
+example : candidates zeroObservation 4 =
+    [⟨0,4,0,12⟩, ⟨0,5,1,10⟩, ⟨0,6,2,8⟩, ⟨0,7,3,6⟩, ⟨0,8,4,4⟩] := by decide
+
+def rationalReject (v : Counts) (idx : ℕ) : Bool :=
+  decide (monteMean v zeroObservation (batch pool16 idx) < (3/8 : ℚ))
+
+theorem reject_eq (v : Counts) (idx : ℕ) :
+    approximateReject (1/2) (1/8) zeroObservation pool16 v idx = rationalReject v idx := by
+  unfold approximateReject rationalReject
+  congr 1
+  apply propext
+  have h : (monteMean v zeroObservation (batch pool16 idx) : ℝ) + 1/8 < 1/2 ↔
+      (monteMean v zeroObservation (batch pool16 idx) : ℝ) < (3/8 : ℝ) := by
+    constructor <;> intro h <;> linarith
+  rw [h]
+  rw [show (3/8 : ℝ) = ((3/8 : ℚ) : ℝ) by norm_num]
+  exact Rat.cast_lt
+
+example : (upperRun true zeroObservation rationalReject).trace.length ≥ 5 := by native_decide
+
+theorem cost_witness :
+    150 ≤ upperShuffleCost (1/2) (1/8) zeroObservation pool16 := by
+  unfold upperShuffleCost
+  have hfun : approximateReject (1/2) (1/8) zeroObservation pool16 = rationalReject :=
+    funext fun v => funext fun idx => reject_eq v idx
+  rw [hfun]
+  native_decide
+
+theorem positive_uniform_event {Ω : Type*} [Fintype Ω] (E : Ω → Prop)
+    (ω : Ω) (hω : E ω) : 0 < uniformProb E := by
+  classical
+  unfold uniformProb
+  apply div_pos
+  · have h : 0 < (Finset.univ.filter E).card :=
+      Finset.card_pos.mpr ⟨ω, by simp [hω]⟩
+    exact_mod_cast h
+  · have h : 0 < Fintype.card Ω := Fintype.card_pos_iff.mpr ⟨ω⟩
+    exact_mod_cast h
+
+-- All pool coordinates are iid uniform in this probability. The support point
+-- pool16 has positive probability even though its two realized replicates agree.
+example : 0 < uniformProb (fun pool :
+    Fin (2 * testBudget 16 + 1) → Fin 2 → Assignment 16 8 =>
+    (16/4+1) * 2 * (16-1) ≤ upperShuffleCost (1/2) (1/8) zeroObservation pool) :=
+  positive_uniform_event _ pool16 cost_witness
+
+#print axioms cost_witness
+#print axioms positive_uniform_event
+
+end Review

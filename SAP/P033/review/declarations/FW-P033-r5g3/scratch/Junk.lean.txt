@@ -1,0 +1,13 @@
+import SAP.P033.Defs
+
+#eval do IO.println "Definitions imported"; (← IO.getStdout).flush
+example : sInf (∅ : Set ℝ) = 0 := by simp
+#eval do IO.println "Empty infimum checked"; (← IO.getStdout).flush
+example : sInf (Set.univ : Set ℝ) = 0 := by simp
+#eval do IO.println "Unbounded infimum checked"; (← IO.getStdout).flush
+example : SAP.P033.sampleMean (fun i : Fin 0 => Fin.elim0 i) = 0 := by
+  simp [SAP.P033.sampleMean]
+example : SAP.P033.sampleVariance (fun _ : Fin 1 => (7 : ℝ)) = 0 := by
+  norm_num [SAP.P033.sampleVariance]
+example : Real.sqrt (-1 : ℝ) = 0 := by norm_num
+#eval do IO.println "Remaining junk conventions checked"; (← IO.getStdout).flush

@@ -1,0 +1,57 @@
+import SAP.P045b.Defs
+open Finset
+open scoped BigOperators
+namespace ReviewP045b
+open SAP.P045b
+noncomputable section
+
+def pathFourDistance (i j : Fin 4) : ℕ∞ := (Nat.dist i.val j.val : ℕ)
+
+lemma univ_four : (Finset.univ : Finset (Fin 4)) = {0, 1, 2, 3} := by decide
+
+lemma marked_empty : marked pathFourDistance 3 ∅ = ∅ := by
+  ext v
+  simp [marked]
+
+lemma marked_zero : marked pathFourDistance 3 {0} = {0, 1, 2} := by
+  ext v
+  fin_cases v <;> norm_num [marked, pathFourDistance, Nat.dist]
+
+lemma marked_zero_one : marked pathFourDistance 3 {0, 1} = univ := by
+  ext v
+  fin_cases v <;> norm_num [marked, pathFourDistance, Nat.dist] <;> decide
+
+lemma draw_initial : centreDraw pathFourDistance 3 true ∅ 0 = (1/4 : ℝ) := by
+  unfold centreDraw
+  rw [marked_empty]
+  norm_num [univ_four]
+
+lemma draw_after_zero : centreDraw pathFourDistance 3 true {0} 1 = (1/4 : ℝ) := by
+  have hr : (univ \ marked pathFourDistance 3 {0}) = ({3} : Finset (Fin 4)) := by
+    rw [marked_zero]
+    decide
+  unfold centreDraw
+  rw [hr]
+  norm_num
+
+example : traceMass pathFourDistance 3 true [0, 1] = (1/16 : ℝ) := by
+  have guard : (∀ k : Fin 2,
+      marked pathFourDistance 3 ([0, 1].take k.val).toFinset ≠ univ) ∧
+      marked pathFourDistance 3 [0, 1].toFinset = univ := by
+    constructor
+    · intro k
+      fin_cases k <;> norm_num [marked_empty, marked_zero, univ_four] <;> decide
+    · simpa using marked_zero_one
+  unfold traceMass
+  split_ifs with h
+  · change (∏ k : Fin 2, centreDraw pathFourDistance 3 true
+      (([0, 1] : List (Fin 4)).take k.val).toFinset
+      (([0, 1] : List (Fin 4)).get k)) = (1/16 : ℝ)
+    norm_num [Fin.prod_univ_succ, draw_initial, draw_after_zero]
+  · exact (h guard).elim
+
+example : ¬ epsilonNet pathFourDistance 3 ({0, 1} : Finset (Fin 4)) := by
+  norm_num [epsilonNet, separated, covers, pathFourDistance, Fin.forall_fin_succ, Nat.dist]
+
+end
+end ReviewP045b

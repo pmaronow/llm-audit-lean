@@ -56,7 +56,7 @@ lemma rcm_kernel_map {A B C : Type*} [MeasurableSpace A] [StandardBorelSpace A]
   rw [Measure.map_apply hX hs]
   simpa only [Kernel.map_apply _ hX, Measure.map_apply hX hs] using ha.symm
 
-/-- The observed vector generating the training σ-algebra. -/
+/-- The observed vector generating the frozen training σ-algebra. -/
 def rcm_training {n : ℕ} (F : CrossFit n) (j : Bool) (a : Sample n) : Fin n → Observed :=
   fun i => if F.fold i ≠ j then observe (a i) else (0, (0, 0))
 
@@ -191,7 +191,8 @@ lemma rcm_kernel_eval (M : Study) (hM : ValidStudy M) (n : ℕ)
   filter_upwards [hc, hk] with a ha hb
   exact hb.trans ha
 
-/-- Exact second moment, before the upper bound in `rcheb_multiplier_second`. -/
+/-- Exact second moment. The calculation refines `rcheb_multiplier_second`
+from `GP046B5`, stopping before that lemma's final upper bound. -/
 lemma rcm_multiplier_second_measurable (M : Study) (hM : ValidStudy M)
     (h : ℝ → ℝ) (hm : Measurable h) (hL : MemLp (fun o => h (W o)) 2 M.law) :
     (∫ o, ((1 - X o / M.pi (W o)) * h (W o))^2 ∂M.law) =
@@ -387,6 +388,8 @@ theorem remainder_conditional_moments_proof (M : Study) (hM : ValidStudy M)
           (l2Sq M (fun w => F.g j a w - g w) / M.delta) :=
         mul_le_mul_of_nonneg_left hb (div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))
       _ = _ := by simp only [div_eq_mul_inv, mul_inv_rev]; ring
+
+example : type_of% @AronowAudit.P046.remainder_conditional_moments := remainder_conditional_moments_proof
 
 end
 end AronowAudit.P046.Wave1

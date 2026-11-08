@@ -4,7 +4,7 @@ import Mathlib.MeasureTheory.Measure.Real
 
 /-! Assembly of the fixed-design probability estimate.  A useful simplification
 is to prove `sigma2 > 2 * N` directly; this avoids dividing by the empirical
-sum of squares. -/
+sum of squares.  Draft only: no Lean process has been run on this file. -/
 
 set_option autoImplicit false
 

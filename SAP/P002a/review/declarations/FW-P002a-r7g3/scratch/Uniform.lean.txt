@@ -1,0 +1,54 @@
+import SAP.P002a.Challenge
+open Filter MeasureTheory
+open scoped BigOperators ENNReal Classical Topology
+noncomputable section
+namespace AuditUniform
+open SAP.P002a
+
+variable {sizes : ℕ → ℕ} (P : ∀ j, Population (sizes j))
+  (hA : ∀ j, (assignments (P j)).Nonempty)
+
+local instance (j : ℕ) : MeasurableSpace (Finset (Fin (sizes j))) := ⊤
+
+def marg (j : ℕ) : Measure (Finset (Fin (sizes j))) :=
+  (PMF.uniformOfFinset (assignments (P j)) (hA j)).toMeasure
+
+instance marg_prob (j : ℕ) : IsProbabilityMeasure (marg P hA j) := by
+  dsimp [marg]
+  infer_instance
+
+def spaceMeasure : Measure (∀ j, Finset (Fin (sizes j))) :=
+  Measure.infinitePi (marg P hA)
+
+instance space_prob : IsProbabilityMeasure (spaceMeasure P hA) := by
+  dsimp [spaceMeasure]
+  infer_instance
+
+theorem randomization : RandomizationSequence P (spaceMeasure P hA) (fun j ω => ω j) := by
+  intro j E
+  have hE : MeasurableSet {S : Finset (Fin (sizes j)) | E S} := trivial
+  constructor
+  · exact hE.preimage (measurable_pi_apply j)
+  · change Measure.infinitePi (marg P hA) ((Function.eval j) ⁻¹' {S | E S}) = _
+    rw [(measurePreserving_eval_infinitePi (marg P hA) j).measure_preimage
+      hE.nullMeasurableSet]
+    rw [marg, PMF.toMeasure_uniformOfFinset_apply (hA j) {S | E S} hE]
+    simp only [probability]
+    rw [ENNReal.ofReal_div_of_pos (by exact_mod_cast Finset.card_pos.mpr (hA j))]
+    simp only [ENNReal.ofReal_natCast, Set.mem_ofPred_eq]
+
+theorem independence :
+    IndependentAssignments (spaceMeasure P hA) sizes (fun j ω => ω j) := by
+  intro I E
+  have hE (j : ℕ) : MeasurableSet {S : Finset (Fin (sizes j)) | E j S} := trivial
+  have hset : {ω : ∀ j, Finset (Fin (sizes j)) | ∀ j ∈ I, E j (ω j)} =
+      Set.pi (I : Set ℕ) (fun j => {S | E j S}) := rfl
+  change Measure.infinitePi (marg P hA) _ = _
+  rw [hset, Measure.infinitePi_pi (marg P hA) (fun j _ => hE j)]
+  apply Finset.prod_congr rfl
+  intro j _
+  symm
+  exact (measurePreserving_eval_infinitePi (marg P hA) j).measure_preimage
+    (hE j).nullMeasurableSet
+
+end AuditUniform

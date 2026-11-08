@@ -12,7 +12,7 @@ namespace AronowAudit.P001.Wave1.TailA
 set_option maxHeartbeats 800000
 
 /-- The indicator-majorant outer mass is the measure's value even on an
-arbitrary set. This allows outer portmanteau to control `CP`. -/
+arbitrary set. This allows outer portmanteau to control the audit's `CP`. -/
 theorem delta_outer_mass_eq {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (A : Set Ω) : μ.outerMeasureStar A = μ A := by
   classical
@@ -196,5 +196,21 @@ theorem outer_hadamard_delta_real {Ω E : Type*} [MeasurableSpace Ω]
     simpa only [heq, Measure.real, prob, X, Y] using hCP δ hδ
   have hY := hL.slutsky_of_tendstoInOuterProbability_dist hdist
   exact outer_weak_real_CD μ Y (ν.map L) ((outer_weak_donor_iff μ Y (ν.map L)).mpr hY)
+
+-- Exact universal interface from OUTER_HADAMARD_DELTA in plan.json.
+example {Ω E : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E] [BorelSpace E] :
+    ∀ (μ : Measure Ω) [IsProbabilityMeasure μ] (D H : Set E) (θ : E),
+      θ ∈ D → IsClosed H → TopologicalSpace.IsSeparable H →
+      ∀ (T : E → ℝ) (L : E →L[ℝ] ℝ), HadamardAt D H T θ L →
+      ∀ (Z : ℕ → Ω → E), (∀ᶠ n in atTop, ∀ ω, Z n ω ∈ D) →
+      ∀ (r : ℕ → ℝ), Tendsto r atTop atTop →
+      ∀ (ν : Measure E) [IsProbabilityMeasure ν],
+      ν Hᶜ = 0 → IsTightMeasureSet ({ν} : Set (Measure E)) →
+      OuterWeakLimit μ (fun n ω => r n • (Z n ω - θ)) ν →
+      (∀ n, Measurable (fun ω => T (Z n ω))) →
+      CP μ (fun n ω => r n * (T (Z n ω) - T θ) - L (r n • (Z n ω - θ))) 0 ∧
+      CD μ (fun n ω => r n * (T (Z n ω) - T θ)) (ν.map L) :=
+  @outer_hadamard_delta_real Ω E _ _ _ _ _
 
 end AronowAudit.P001.Wave1.TailA

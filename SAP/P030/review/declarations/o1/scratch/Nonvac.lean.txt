@@ -1,0 +1,31 @@
+import SAP.P030.Defs.WholeW1
+open SAP.P030
+
+-- T3: the outer universal is over finite laws; one exists (uniform law on Fin 2),
+-- and the inner hypotheses on u and alpha are satisfiable.
+example : Nonempty (FiniteLaw (Fin 2)) := ⟨uniformLaw Finset.univ Finset.univ_nonempty⟩
+example : ∃ u : ℝ, 0 ≤ u ∧ u ≤ 1 := ⟨1/2, by norm_num, by norm_num⟩
+example : ∃ α : ℝ, 0 < α ∧ α < 1 := ⟨1/20, by norm_num, by norm_num⟩
+-- T3 clause (f) needs alpha < 1: at alpha = 1 the equivalence fails for pL = pU = 1.
+example : ¬ (twoTailP 1 1 ≤ (1:ℝ) ↔ (1:ℝ) ≤ 1/2 ∨ (1:ℝ) ≤ 1/2) := by
+  unfold twoTailP; norm_num
+
+-- T1/T2: alpha ranges (0,1), (0,2/3], (0,1/2) nonempty.
+example : ∃ α : ℝ, 0 < α ∧ α ≤ 2/3 := ⟨1/20, by norm_num, by norm_num⟩
+example : ∃ α : ℝ, 0 < α ∧ α < 1/2 := ⟨1/20, by norm_num, by norm_num⟩
+
+-- T5 final clauses: a nonempty finset with a constant statistic exists.
+example : ∃ (Ω : Finset (Fin 3)) (t : Fin 3 → ℝ), Ω.Nonempty ∧ (∀ z ∈ Ω, ∀ z' ∈ Ω, t z = t z') :=
+  ⟨Finset.univ, fun _ => 0, Finset.univ_nonempty, fun _ _ _ _ => rfl⟩
+
+-- Indices: tenAssignment 6 treats unit 7 (1-based); tableTreatment 0 / 3 are units 2 / 5.
+example : (tableTreatment 0).val + 1 = 2 ∧ (tableTreatment 3).val + 1 = 5 ∧ (tableTreatment 5).val + 1 = 7 := by
+  decide
+-- Fixed set is units 1,8,9,10 and tenFixed lists them in that order.
+example : (List.finRange 10).filter (fun i => tenS i) = [0,7,8,9] := by decide
+example : tenFixed = ![0,7,8,9] := rfl
+-- Five-unit design: fixed units 1,2,3; fiveAssignment 0/1 treats unit 4/5.
+example : (List.finRange 5).filter (fun i => fiveS i) = [0,1,2] := by decide
+example : (List.finRange 5).filter (fun i => fiveAssignment 0 i) = [3] ∧
+    (List.finRange 5).filter (fun i => fiveAssignment 1 i) = [4] := by decide
+

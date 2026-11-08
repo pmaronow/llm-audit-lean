@@ -1,0 +1,100 @@
+[
+ {
+  "target_id": "P009-T35",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T35",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.estimand_identities"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.eate_finite_identity",
+    "reason": "The estimand bundle already contains this identity."
+   },
+   {
+    "lean_name": "AronowAudit.P009.marginal_partition",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.mean_add",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.mean_const",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.mean_const_mul",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.mean_div",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.mean_sub",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.mean_sum",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.no_interference_eate",
+    "reason": "The estimand bundle already contains both no-interference conclusions."
+   }
+  ],
+  "statement_definition": "SAP.P009c.T35Statement"
+ },
+ {
+  "target_id": "P009-T36",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T36",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.interference_count_bounds"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009c.T36Statement"
+ },
+ {
+  "target_id": "P009-T37",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T37",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.external_validity_total_variation"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009c.T37Statement"
+ },
+ {
+  "target_id": "P009-T38",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T38",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.assignment_ATE_lipschitz"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.assignment_ATE_hamming",
+    "reason": "Supporting weighted-Hamming bound; the credited Lipschitz theorem already exports the complete result."
+   }
+  ],
+  "statement_definition": "SAP.P009c.T38Statement"
+ },
+ {
+  "target_id": "P009-T39",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T39",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.external_validity_wasserstein"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009c.T39Statement",
+  "bridge": "SAP.P009c.Bridge.wasserstein_toLaw"
+ }
+]

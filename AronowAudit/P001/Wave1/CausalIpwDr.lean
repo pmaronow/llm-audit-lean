@@ -47,6 +47,8 @@ theorem causal_ipw_and_dr_paper_contract :
       MarSelection.n4_proof, MarSelection.n5_proof, MarSelection.n6_proof, MarSelection.n7_proof⟩
     CausalIpwDr.n1_proof CausalIpwDr.n2_proof
 
+example : AronowAudit.P001.Wave1.CausalIpwDr.Target := causal_ipw_and_dr_paper_contract
+
 end
 
 end AronowAudit.P001.Wave1

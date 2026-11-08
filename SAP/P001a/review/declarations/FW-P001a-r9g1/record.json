@@ -1,0 +1,146 @@
+[
+ {
+  "target_id": "P001-T1",
+  "decision": "refuted",
+  "theorem": "SAP.P001a.T1",
+  "restriction": "States the normalized finite-second-moment mass/CDF witness, mean quotients, variance limit and uniform vanishing directions. Does not separately assert the base variance value, explicit equality of the two supports, the shifted-CDF/decomposition identities, the exact sup-norm equality or its finite 1/n bound, or a generic negation of Hadamard differentiability.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.geometric_mean_perturbation_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.geometric_partial_first_moment",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.geometric_partial_mass",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.geometric_partial_second_moment",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T1Statement",
+  "bridge": "SAP.P001a.Bridge.T1_correspondence"
+ },
+ {
+  "target_id": "P001-T2",
+  "decision": "whole",
+  "theorem": "SAP.P001a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.sample_mean_clt_correction"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.empirical_mean_fixed_sample",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T2Statement",
+  "bridge": "SAP.P001a.Bridge.T2_correspondence",
+  "supporting_declarations": [
+   "AronowAudit.P001.Wave1.geometric_mean_perturbation_proof"
+  ]
+ },
+ {
+  "target_id": "P001-T3",
+  "decision": "restricted",
+  "theorem": "SAP.P001a.T3",
+  "restriction": "States the fixed gap-support extension witness and negates the stronger global-extension contract pda_at_mean_printed_contract. Drops the claim of refuting the printed PDA definition under the domain/existence reading: the mean in this example is outside the positive-density CEF domain, and the unequal derivatives are those of global extensions. No counterexample with an admissible PDA evaluation point is asserted.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.pda_at_mean_printed_contract_refuted",
+   "AronowAudit.P001.Wave1.pda_extrapolation_witness_proof",
+   "AronowAudit.P001.Wave1.pda_joint_cef_counterexample_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001a.T3Statement",
+  "bridge": "SAP.P001a.Bridge.T3_correspondence"
+ },
+ {
+  "target_id": "P001-T4",
+  "decision": "whole",
+  "theorem": "SAP.P001a.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.pda_unique_on_open_support",
+   "SAP.P001a.WH.W1.T4_whole",
+   "SAP.P001a.WH.W1.T4_assembly",
+   "SAP.P001a.WH.W1.T4_L1_proof",
+   "SAP.P001a.WH.W1.local_continuous_eq",
+   "SAP.P001a.WH.W1.cef_eq_on_positive_open",
+   "SAP.P001a.WH.W1.derivative_of_eqOn"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.pda_derivative_transfers_on_open_support",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T4WholeStatement",
+  "bridge": "SAP.P001a.Bridge.T4_correspondence"
+ },
+ {
+  "target_id": "P001-T5",
+  "decision": "whole",
+  "theorem": "SAP.P001a.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.TailB_sieve_degree_counterexample",
+   "SAP.P001a.WH.W3.T5_whole",
+   "SAP.P001a.WH.W3.T5_assembly",
+   "SAP.P001a.WH.W3.T5_L1_proof",
+   "SAP.P001a.WH.W3.T5_L2_proof",
+   "SAP.P001a.WH.W3.T5_L3_proof",
+   "SAP.P001a.WH.W3.borel_selection",
+   "SAP.P001a.WH.W3.model_facts",
+   "SAP.P001a.WH.W3.kernel_properties",
+   "SAP.P001a.WH.W3.not_local_consistent",
+   "SAP.P001a.WH.W3.endpoint_failure",
+   "SAP.P001a.WH.W3.finite_endpoint_failure",
+   "AronowAudit.P001.Wave1.SieveRate.n3_proof",
+   "AronowAudit.Shared.MapTailB.TailB_gaussian_small_ball",
+   "SAP.P001a.WH.W4.T5W4_whole",
+   "SAP.P001a.WH.W4.T5_assembly",
+   "SAP.P001a.WH.W4.borel_selection",
+   "SAP.P001a.WH.W4.model_facts",
+   "SAP.P001a.WH.W4.kernel_properties",
+   "SAP.P001a.WH.W4.not_local_consistent",
+   "SAP.P001a.WH.W4.endpoint_failure",
+   "SAP.P001a.WH.W4.finite_endpoint_failure",
+   "SAP.P001a.WH.W4.ridge_limit_minimizer",
+   "SAP.P001a.WH.W4.measurable_ridge",
+   "SAP.P001a.WH.W4.coefficient_degree",
+   "SAP.P001a.WH.W4.polynomial_of_coefficients",
+   "SAP.P001a.WH.W4.uniform_restrict",
+   "SAP.P001a.WH.W4.uniform_probability",
+   "SAP.P001a.WH.W4.legendre_degree",
+   "SAP.P001a.WH.W4.legendre_at_one",
+   "SAP.P001a.WH.W4.orthogonal_endpoint_norm",
+   "SAP.P001a.WH.W4.shifted_legendre_orthogonal",
+   "SAP.P001a.WH.W4.legendre_norm",
+   "SAP.P001a.WH.W4.legendre_inner",
+   "SAP.P001a.WH.W4.odd_sum",
+   "SAP.P001a.WH.W4.good_design_mass",
+   "SAP.P001a.WH.W4.measurable_goodDesign",
+   "SAP.P001a.WH.W4.sample_endpoint_tail",
+   "SAP.P001a.WH.W4.finite_endpoint_tail",
+   "SAP.P001a.WH.W4.product_endpoint_tail",
+   "SAP.P001a.WH.W4.fixed_endpoint_tail",
+   "SAP.P001a.WH.W4.gaussian_tail_half",
+   "SAP.P001a.WH.W4.ols_endpoint",
+   "SAP.P001a.WH.W4.measurable_ols_endpoint",
+   "AronowAudit.P001.Wave1.SieveRate.n5_proof",
+   "AronowAudit.P001.Wave1.SieveRate.n6_proof",
+   "AronowAudit.P001.Wave1.SieveRate.n8_proof",
+   "AronowAudit.P001.Wave1.SieveRate.n9_proof",
+   "AronowAudit.P001.Wave1.SieveRate.n13_proof",
+   "AronowAudit.P001.Wave1.TailBSieveEscape.tb02_meas_ols",
+   "AronowAudit.P001.Wave1.TailBSieveEscape.tb02_first_law"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001a.T5WholeStatementW4",
+  "bridge": "SAP.P001a.Bridge.T5_correspondence"
+ }
+]

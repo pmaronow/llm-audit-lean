@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P020.T11",
+  "target_id": "P020-T11",
+  "round": 6,
+  "verdict": "label_wrong",
+  "severity": "major",
+  "issues": [
+   "SAP/P020/Defs/Part4.lean:62: The standalone ratio identity in canonical clause (a), equation (7), is asserted for random variables in general with positive denominator and existing expectations. Here it quantifies only FiniteLaw; SAP/P020/Defs/Part1.lean:12 and :19 make this a finite-support distribution with finite-sum expectation. Infinite-support laws are omitted, rather than handled under the permitted usual measure-theoretic conditions. For example, X uniform on [0,1], U=X and V=1+X are bounded measurable variables with V>0 and finite covariance but have a non-atomic joint law outside this model. The exact cluster-design expectation and bias in clause (b) are fully covered.",
+   "record.json:4: The decision is whole and record.json:6 declares no restriction, despite the finite-support restriction on equation (7). SAP/P020/Challenge/Part1.lean:61 describes the ratio identity without disclosing this scope. The formulas themselves are correct; the whole label and scope disclosure are inaccurate."
+  ]
+ }
+]

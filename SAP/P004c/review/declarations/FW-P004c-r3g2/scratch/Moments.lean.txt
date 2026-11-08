@@ -1,0 +1,144 @@
+import SAP.P004c.Defs
+
+open scoped BigOperators Classical
+open SAP.P004c
+noncomputable section
+namespace ReviewMoments
+
+lemma expect_prod (N : ℕ) (f : Fin N → Bool → ℝ) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => ∏ i, f i (z i)) =
+      ∏ i, ((f i false + f i true) / 2) := by
+  unfold expect designWeight
+  simp only [coin]
+  have hc (a : Bool) : (if a then (1/2 : ℝ) else 1-1/2) = 1/2 := by
+    cases a <;> norm_num
+  simp_rw [hc, ← Finset.prod_mul_distrib]
+  rw [← Fintype.prod_sum (fun i a => (1/2 : ℝ) * f i a)]
+  congr 1
+  funext i
+  simp [Fintype.sum_bool]
+  ring
+
+lemma expect_const (N : ℕ) (a : ℝ) : expect (fun _ : Fin N => (1/2 : ℝ)) (fun _ => a) = a := by
+  have hh := expect_prod N (fun _ _ => 1)
+  simp only [Finset.prod_const_one, add_self_div_two] at hh
+  simp only [expect, ← Finset.sum_mul] at hh ⊢
+  simpa using congrArg (fun x : ℝ => x*a) hh
+
+def sign (a : Bool) : ℝ := if a then 1 else -1
+
+lemma expect_sign (N : ℕ) (i : Fin N) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => sign (z i)) = 0 := by
+  have he (z : Assignment N) :
+      sign (z i) = ∏ j : Fin N, (if j = i then sign (z j) else 1) := by simp
+  simp_rw [he]
+  rw [expect_prod N (fun j a => if j = i then sign a else 1)]
+  apply Finset.prod_eq_zero (Finset.mem_univ i)
+  norm_num [sign]
+
+lemma expect_pair (N : ℕ) (i j : Fin N) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => sign (z i) * sign (z j)) =
+      if i=j then 1 else 0 := by
+  by_cases hij : i = j
+  · subst j
+    have he (z : Assignment N) : sign (z i)*sign (z i) = 1 := by
+      cases z i <;> norm_num [sign]
+    simp_rw [he]
+    exact expect_const N 1
+  · have he (z : Assignment N) :
+        sign (z i)*sign (z j) =
+          ∏ k : Fin N, ((if k=i then sign (z k) else 1) *
+            (if k=j then sign (z k) else 1)) := by
+      rw [Finset.prod_mul_distrib]
+      simp
+    simp_rw [he]
+    rw [expect_prod N (fun k a => (if k=i then sign a else 1) *
+      (if k=j then sign a else 1)), if_neg hij]
+    apply Finset.prod_eq_zero (Finset.mem_univ i)
+    norm_num [hij, sign]
+
+lemma expect_sum {N : ℕ} (U : Fin N → Assignment N → ℝ) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => ∑ i, U i z) =
+      ∑ i, expect (fun _ => (1/2 : ℝ)) (U i) := by
+  simp only [expect, Finset.mul_sum]
+  rw [Finset.sum_comm]
+
+lemma expect_mul_const {N : ℕ} (U : Assignment N → ℝ) (a : ℝ) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => U z * a) =
+      expect (fun _ => (1/2 : ℝ)) U * a := by
+  simp only [expect, ← mul_assoc, Finset.sum_mul]
+
+lemma variance_sum_sign {N : ℕ} (a : Fin N → ℝ) :
+    variance (fun _ => (1/2 : ℝ)) (fun z => ∑ i, sign (z i) * a i) = ∑ i, (a i)^2 := by
+  have hmean : expect (fun _ => (1/2 : ℝ)) (fun z => ∑ i, sign (z i)*a i) = 0 := by
+    rw [expect_sum]
+    simp only [expect_mul_const, expect_sign, zero_mul, Finset.sum_const_zero]
+  unfold variance cov
+  rw [hmean]
+  simp only [mul_zero, sub_zero]
+  simp_rw [Finset.sum_mul, Finset.mul_sum]
+  rw [expect_sum]
+  simp_rw [expect_sum]
+  have he (i j : Fin N) (z : Assignment N) :
+      sign (z i)*a i*(sign (z j)*a j) =
+        (sign (z i)*sign (z j))*(a i*a j) := by ring
+  simp_rw [he, expect_mul_const, expect_pair]
+  simp [ite_mul, sq]
+
+lemma expect_coordinate (N : ℕ) (i : Fin N) (f : Bool → ℝ) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => f (z i)) = (f false+f true)/2 := by
+  have he (z : Assignment N) : f (z i) =
+      ∏ j : Fin N, (if j=i then f (z j) else 1) := by simp
+  simp_rw [he]
+  rw [expect_prod N (fun j a => if j=i then f a else 1)]
+  have he' (j : Fin N) :
+      ((if j=i then f false else 1)+(if j=i then f true else 1))/2 =
+        if j=i then (f false+f true)/2 else 1 := by split_ifs <;> norm_num
+  simp_rw [he']
+  simp
+
+lemma prob_agree (N : ℕ) (J : Finset (Fin N)) (z : Assignment N) :
+    expect (fun _ => (1/2 : ℝ))
+      (fun z' => if ∀ j ∈ J, z' j=z j then (1 : ℝ) else 0) = (1/2 : ℝ)^J.card := by
+  have he (z' : Assignment N) :
+      (if ∀ j ∈ J, z' j=z j then (1 : ℝ) else 0) =
+        ∏ k : Fin N, (if k ∈ J then if z' k=z k then 1 else 0 else 1) := by
+    by_cases h : ∀ j ∈ J, z' j=z j
+    · simp only [if_pos h]
+      symm
+      apply Finset.prod_eq_one
+      intro k hk
+      by_cases hkj : k ∈ J
+      · simp [hkj, h k hkj]
+      · simp [hkj]
+    · simp only [if_neg h]
+      push_neg at h
+      obtain ⟨j, hj, hdiff⟩ := h
+      symm
+      apply Finset.prod_eq_zero (Finset.mem_univ j)
+      simp [hj, hdiff]
+  simp_rw [he]
+  rw [expect_prod N (fun k a => if k ∈ J then if a=z k then 1 else 0 else 1)]
+  have he' (k : Fin N) :
+      ((if k ∈ J then if false=z k then (1:ℝ) else 0 else 1) +
+       (if k ∈ J then if true=z k then (1:ℝ) else 0 else 1))/2 =
+         if k ∈ J then (1/2 : ℝ) else 1 := by
+    by_cases hk : k ∈ J <;> cases z k <;> norm_num [hk]
+  simp_rw [he']
+  simp
+
+lemma condition_const (N : ℕ) (J : Finset (Fin N)) (a : ℝ) (z : Assignment N) :
+    conditionOn (fun _ => (1/2 : ℝ)) J (fun _ => a) z = a := by
+  have he (z' : Assignment N) :
+      (if ∀ j ∈ J, z' j=z j then a else 0) =
+        (if ∀ j ∈ J, z' j=z j then (1:ℝ) else 0)*a := by split_ifs <;> simp
+  unfold conditionOn
+  simp_rw [he]
+  rw [expect_mul_const, prob_agree]
+  have hc (j : Fin N) : coin (1/2 : ℝ) (z j) = 1/2 := by cases z j <;> norm_num [coin]
+  simp_rw [hc]
+  simp only [Finset.prod_const]
+  have hpos : (0:ℝ) < (1/2 : ℝ)^J.card := by positivity
+  exact mul_div_cancel_left₀ a (ne_of_gt hpos)
+
+end ReviewMoments

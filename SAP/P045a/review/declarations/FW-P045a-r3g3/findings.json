@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P045-T11",
+    "theorem": "SAP.P045a.T11",
+    "fingerprint": "e068678fc36af24776fce85c0dd414946fdf843763662865f4ec05e0159a7d0e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:8 using only SAP.P045a.Defs: n=1, the one-vertex simple graph, and cs=[0] satisfy n>0, admissibility and complete marking. The empty initial set also admits a choice, so the progress hypothesis has actual instances. Scalar epsilon is fixed at 3; disconnected distances use the intended infinity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T12",
+    "theorem": "SAP.P045a.T12",
+    "fingerprint": "7718101a9767f212541ae8b2c47b856413cbf35d626a00c33965f71bb89b3289",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:14 and :26: treatmentPairs is nonempty, has exactly 45 elements, and every supported pairAssignment treats exactly two distinct units. The uniform weight 1/45 is positive and sums to one. scratch/check_witnesses.py independently enumerates all 45 assignments using exact rational arithmetic and verifies every exposure probability, positivity, 10/35 split, L/R/H value, expectation and bias. The cycle, exposure-consistent outcomes and all-treated target satisfy every condition of the printed equality being contradicted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T13",
+    "theorem": "SAP.P045a.T13",
+    "fingerprint": "a17051bd971174630391226c68d9803ede6add482d03fc1c54d9efb3868c1422",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:29 constructs a normalized nonnegative independent fair Design on two adjacent units; :63 verifies positive own and both treated-exposure probabilities and no isolated units. :81 independently proves the cancellation-schedule expectation and mu(d11) both equal 3/2. Its four values 0,2,1,3 are also checked by exact enumeration. The sign hypotheses are satisfiable with this same design: choose equal treated-exposure outcomes for both weak-sign premises, or constant strictly ordered treated-exposure outcomes for either sign separately.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T14",
+    "theorem": "SAP.P045a.T14",
+    "fingerprint": "b100d62afba789f8b42e0975d2dfc280d80dff72238d0cda8f125b9d4c54f025",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:91 proves the actual witness group counts 50 or 25 out of 75; :104 proves H={0,1,2} is admissible and all six second-stage assignment masses are strictly positive. Thus the 450-unit witness is genuine. Exact rational enumeration in scratch/check_witnesses.py verifies its actual arm means and pooled/printed contrasts and all 20 first-stage choices, including eight with a=0,b=3 and twelve with a=2,b=1. Positive scalar-domain instances include a=2,b=1,A=9/2,B=2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T15",
+    "theorem": "SAP.P045a.T15",
+    "fingerprint": "733f6a71203efdef05557b0d9b9e1d8c335bf9083b3961f76b863fda98549948",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:113 constructs the full pair (H={0,1,2}, w=tractWitnessAssignment), proves strictly positive tractTwoStageMass and every prescribed count, using neither Challenge nor Solution theorems. The same H gives nonempty subclasses of sizes 2 and 1; choices such as H={0,2,4} give the empty-first-subclass branch with b=3. Each group fixed-count law has nonempty support and uniform reciprocal-cardinality weights, so its sum is one; their product and the uniform first-stage law are normalized. Under the all-psi reference law every own-treatment event has probability 2/3 or 1/3, so all conditional means exist with positive denominator. Exact rational checks verify all 20 first-stage direct effects, shares, expectation 4/5 and bias -3/40.",
+    "confidence": 0.99
+  }
+]

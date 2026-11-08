@@ -238,5 +238,7 @@ theorem ht_variance_bound {N : ℕ} (p b : ℝ) (R : CircleTable N)
     rw [he,variance_div,variance_sum,hsplit,add_div]
     linarith [(abs_le.mp hoff).2]
 
+#print axioms ht_variance_components
+#print axioms ht_variance_bound
 end
 end AronowAudit.P004

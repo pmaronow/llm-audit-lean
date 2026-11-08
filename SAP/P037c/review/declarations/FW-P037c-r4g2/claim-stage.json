@@ -1,0 +1,14 @@
+[
+  {
+    "theorem": "SAP.P037c.T34",
+    "target_id": "P037-T34",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part5.lean:11-60 states all of canonical (a)-(c): pooled fitted means, printed constant-effect imputation, its residual-plus-design decomposition, the WLS coefficient shift, and equal variances for both means and contrasts, with fixed units/controls and assignment-dependent positive weights. Defs/WholeW1.lean:139-173 supplies (d): the projected omitted contribution, a strict collapse of the separate probability-control space, a genuine contribution outside the reduced design, and an actual unequal-variance instance. Defs/WholeW1.lean:176-206 covers the definitions_needed clause about full-rank bases, unique fitted values, and estimable functionals for aliased presentations. The finite law is no restriction because the exposure assignments of a fixed finite population form a finite set. Positive weights and rank are canonical premises, and neither variance equality nor a fitted-coefficient shift is assumed. scratch/Nonvacuity.lean compiled examples of all universal premise families; scratch/check_t34.py independently checked all 96 states of the concrete example with exact fractions, including normalization, category marginals, Gram invertibility, coefficient shifts, and unequal variances. No undefined inverse or zero-denominator behavior supplies the result."
+  },
+  {
+    "theorem": "SAP.P037c.T43",
+    "target_id": "P037-T43",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part6.lean:10-92 and Defs/WholeW1.lean:225-290 match the canonical finite normalized design, complete four-school block demeaning, both raw first moments, mean-spanning fixed controls, ratio-of-expected-cross-products projection, positive residual energy, actual expected normal equations, arbitrary fixed untreated levels, fixed moderation, the exact bias formula, and the eta=0 corollary. Whole43Orthogonality explicitly concludes all four required orthogonality/energy identities; it does not assume them. Whole43Certificate explicitly gives the binary complementary two-of-four four-state instance, compositions 1/4 or 3/4, nonconstant untreated levels, E[t't]=1, K=1/16, and a normal-equation solution. Real-valued T is expressly permitted by the canonical statement. Conditioning on normal-equation solutions and assuming the raw moments are canonical clauses, not hidden restrictions or assumptions of the desired slope conclusion. scratch/Nonvacuity.lean independently compiled the complete certificate, the structural outcome equation with eta=0, and strict/nonzero denominators, without using either target theorem."
+  }
+]

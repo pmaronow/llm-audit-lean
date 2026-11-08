@@ -1,0 +1,117 @@
+[
+ {
+  "target_id": "P011-T39",
+  "decision": "whole",
+  "theorem": "SAP.P011c.T39",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.conditional_wald_coverage",
+   "SAP.P011c.WH.W1.T39_whole",
+   "SAP.P011c.WH.W1.T39_assembly",
+   "SAP.P011c.WH.W1.T38_L1_proof",
+   "SAP.P011c.WH.W1.T39_L1_proof",
+   "SAP.P011c.Bridge.toModel",
+   "AronowAudit.P011.ProbabilityCompletion.weighted_memLp",
+   "AronowAudit.P011.ProbabilityCompletion.modelDep_degree",
+   "AronowAudit.P011.ProbabilityCompletion.own_centred_bound",
+   "AronowAudit.P011.ProbabilityCompletion.sum_variance",
+   "AronowAudit.P011.ProbabilityCompletion.depSum_standardized",
+   "AronowAudit.P011.ProbabilityCompletion.betaHat_measurable",
+   "Causalean.Mathlib.Probability.SteinMethod.bounded_degree_dependency_clt_ae",
+   "AronowAudit.P011.CoverageCompletion.rowCP_moving_center",
+   "AronowAudit.P011.CoverageCompletion.rowCP_det",
+   "AronowAudit.P011.CoverageCompletion.rowCP_continuous_pair",
+   "AronowAudit.P011.CoverageCompletion.row_random_width_interval",
+   "AronowAudit.P011.CoverageCompletion.quantile_positive",
+   "AronowAudit.P011.CoverageCompletion.quantile_mass",
+   "AronowAudit.P011.CoverageCompletion.scaled_width",
+   "AronowAudit.P053.NormalCompletion.cdf_continuousAt",
+   "AronowAudit.P011.truncation_identity",
+   "AronowAudit.P011.interval_containment"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P011.clipped_truncation",
+    "reason": "Auxiliary clipping comparison already incorporated in the primary conditional coverage theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P011.printed_coverage_eq_of_nonnegative",
+    "reason": "A finite nonnegative-estimate comparison, not needed separately for this target conclusion."
+   }
+  ],
+  "statement_definition": "SAP.P011c.T39WholeStatement"
+ },
+ {
+  "target_id": "P011-T40",
+  "decision": "whole",
+  "theorem": "SAP.P011c.T40",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.corollary_four",
+   "AronowAudit.P011.homoskedastic_estimators_nonnegative",
+   "SAP.P011c.WH.W1.T40_whole",
+   "SAP.P011c.WH.W1.T40_assembly",
+   "SAP.P011c.WH.W1.T38_L1_proof",
+   "SAP.P011c.WH.W1.T39_L1_proof",
+   "SAP.P011c.WH.W1.T40_L1_proof",
+   "SAP.P011c.Bridge.toModel",
+   "SAP.P011c.Bridge.toFamily",
+   "AronowAudit.P011.ProbabilityCompletion.weighted_memLp",
+   "AronowAudit.P011.ProbabilityCompletion.modelDep_degree",
+   "AronowAudit.P011.ProbabilityCompletion.own_centred_bound",
+   "AronowAudit.P011.ProbabilityCompletion.sum_variance",
+   "AronowAudit.P011.ProbabilityCompletion.depSum_standardized",
+   "AronowAudit.P011.ProbabilityCompletion.betaHat_measurable",
+   "Causalean.Mathlib.Probability.SteinMethod.bounded_degree_dependency_clt_ae",
+   "AronowAudit.P011.CoverageCompletion.rowCP_moving_center",
+   "AronowAudit.P011.CoverageCompletion.rowCP_det",
+   "AronowAudit.P011.CoverageCompletion.rowCP_continuous_pair",
+   "AronowAudit.P011.CoverageCompletion.row_random_width_interval",
+   "AronowAudit.P011.CoverageCompletion.quantile_positive",
+   "AronowAudit.P011.CoverageCompletion.quantile_mass",
+   "AronowAudit.P011.CoverageCompletion.scaled_width",
+   "AronowAudit.P053.NormalCompletion.cdf_continuousAt",
+   "AronowAudit.P011.truncation_identity",
+   "AronowAudit.P011.interval_containment",
+   "AronowAudit.P011.degree_row_sum",
+   "AronowAudit.P011.pairwise_correlation_repair",
+   "AronowAudit.P011.CorrelationCompletion.meanVariance_nonneg",
+   "AronowAudit.P011.HomoskedasticCompletion.remainder_memLp_two",
+   "AronowAudit.P011.HomoskedasticCompletion.remainder_second_bound",
+   "AronowAudit.P011.HomoskedasticCompletion.second_moment_tail",
+   "AronowAudit.P011.lemma_one",
+   "AronowAudit.P011.CorollaryCompletion.conservative_mono",
+   "AronowAudit.P011.CorollaryCompletion.maximum_measurable",
+   "AronowAudit.P011.CorollaryCompletion.V2prime_measurable",
+   "SAP.P011c.Bridge.printedCoverage_iff",
+   "AronowAudit.P011.printed_coverage_eq_of_nonnegative"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P011.sample_variance_nonnegative",
+    "reason": "Used inside the estimator nonnegativity declaration; no separate invocation is needed."
+   }
+  ],
+  "statement_definition": "SAP.P011c.T40WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P011.printed_coverage_eq_of_nonnegative"
+  ],
+  "glue": "Use everywhere nonnegativity of both specified estimators to identify the clipped and printed events, then transport their identical coverage sequences through liminf."
+ },
+ {
+  "target_id": "P011-T41",
+  "decision": "whole",
+  "theorem": "SAP.P011c.T41",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.recruitmentCapacityMatrix_psd",
+   "AronowAudit.P011.maximizes_add_constant_iff",
+   "SAP.P011c.WH.W1.T41_whole",
+   "SAP.P011c.WH.W1.T41_assembly",
+   "AronowAudit.P011.recruitmentCapacityMatrix_decomposition"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011c.T41WholeStatement",
+  "glue": "Divide the exported nonnegative quadratic form by the nonnegative natural sample size; the statement requires positive sample size for this normalization."
+ }
+]

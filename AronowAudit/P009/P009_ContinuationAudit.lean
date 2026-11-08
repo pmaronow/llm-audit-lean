@@ -1,0 +1,14 @@
+import AronowAudit.P009.P009_AtomCompletion
+import AronowAudit.P009.P009_MinimizerCompletion
+import AronowAudit.P009.P009_CommonCompletion
+import AronowAudit.P009.P009_DiagonalCompletion
+import AronowAudit.P009.P009_LimsupCompletion
+import AronowAudit.P009.P009_SharpnessRefutation
+
+#print axioms AronowAudit.P009.three_point_atom_approximation
+#print axioms AronowAudit.P009.corrected_three_point_minimizer
+#print axioms AronowAudit.P009.common_assignment_mixing
+#print axioms AronowAudit.P009.diagonal_omission_family
+#print axioms AronowAudit.P009.limsup_interference_counterexample
+#print axioms AronowAudit.P009.SharpnessRefutation.printed_fixed_construction_false
+#print axioms AronowAudit.P009.CommonCompletion.common_assignment_mixing_sequence

@@ -91,9 +91,8 @@ lemma proposition1_observe_measurable : Measurable observe := by
   have my1 : Measurable Y1 := mb.comp measurable_snd.snd.snd
   exact measurable_fst.prodMk ((((measurable_const.sub mx).mul my0).add (mx.mul my1)).prodMk mx)
 
-/-- P046: impossibility of uniform consistency with unknown propensity.
-The varying positivity constant allows treatment to become rare as the
-adversarial sample size grows. -/
+/-- Exact statement of the held P046 proposition. The varying positivity constant
+allows treatment to become rare as the adversarial sample size grows. -/
 theorem proposition1_proof (est : ObservationalEstimator) (hmeas : ∀ n, Measurable (est n)) :
     ∃ eps > 0, ∃ c > 0, ∀ N : ℕ, ∃ n ≥ N, 0 < n ∧ ∃ M : Study,
       ValidStudy M ∧ (sampleLaw M n
@@ -185,6 +184,9 @@ theorem proposition1_proof (est : ObservationalEstimator) (hmeas : ∀ n, Measur
         (measurable_pi_apply i)))).sub_const (bit b)).abs
   rw [← hg b, Measure.map_apply (mg b) me]
   exact hb
+
+example : type_of% @AronowAudit.P046.proposition1 := proposition1_proof
+
 
 lemma htcentre_unit (M : Study) (hM : ValidStudy M) :
     condExp covariateSigma M.law (fun o => htTerm (M.pi (W o)) (X o) (Y o))
@@ -321,6 +323,9 @@ theorem ht_conditional_centre_proof (M : Study) (hM : ValidStudy M) (n : ℕ) (h
   have hall := ae_all_iff.2 (fun i => htcentre_coordinate M hM n i)
   filter_upwards [hs, hc, hall] with a ha hb hh
   simpa only [muW, div_eq_mul_inv, smul_eq_mul, Pi.smul_apply, Finset.sum_apply, hh, mul_comm] using hb.trans (congrArg (fun x : ℝ => (n : ℝ)⁻¹ * x) ha)
+
+example : type_of% @AronowAudit.P046.ht_conditional_centre := ht_conditional_centre_proof
+
 
 lemma p3_product_conditional (M : Study) (hM : ValidStudy M) (n : ℕ)
     (f : Fin n → Unit → ℝ) (k : Fin n → ℝ → ℝ)
@@ -705,6 +710,8 @@ theorem proposition3_corrected_proof (M : Study) (hM : ValidStudy M)
   ext a
   dsimp [correctedRadius, t]
   rw [add_mul, one_mul]
+
+example : type_of% @AronowAudit.P046.proposition3_corrected := proposition3_corrected_proof
 
 end
 end AronowAudit.P046.Wave1

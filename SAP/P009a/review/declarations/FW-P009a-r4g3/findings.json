@@ -1,0 +1,65 @@
+[
+  {
+    "target_id": "P009-T11",
+    "theorem": "SAP.P009a.T11",
+    "fingerprint": "c7a61530c234c440d2035ce015c12d3754313894356c48d5def76587e3a6e8c0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Instances.lean independently compiles SequenceRegularity wholeStarSequence 2 4 1 and ProductDesign at every index. The nonvacuity argument in nonvacuity.md checks the remaining hypotheses by exact graph counts: m=t+2, n=m^2, C1=2, d_AVG=m, d_AVG/n=1/m -> 0 and d_AVG/C1=m/2 -> infinity. Outcomes are in [0,2], tau_MSQ=1, B1=2/m^2>0 and B2=0, so magnitude dominance fails at every index. scratch/finite_audit.py checks the actual finite definitions at m=2 and m=3 with exact rationals. The general graph-counting identities and asymptotic limits are justified mathematically rather than reproved in Lean.",
+    "confidence": "high",
+    "resolved": [
+      "Fixed through an accurate restriction, rather than adding the omitted mathematics: SAP/P009a/Defs/WholeW2.lean:175 still states only the negative universal. Its absent specified witness, full-cube bounds, all moment orders, graphs, exact constants, spillover/covariance identities, comparison/equality case and every-n extension are now all expressly disclosed at SAP/P009a/Challenge/Part2.lean:29 and SAP/P009a/Defs/WholeW2.lean:162, and in record.json:6. This is a correct restricted package under the rule allowing correct lesser statements.",
+      "Fixed: record.json:4 now labels T11 restricted and record.json:6 supplies the matching restriction. It no longer labels a theorem refuted relative to a canonical claim that already asserts its counterexample component.",
+      "Fixed: SAP/P009a/Challenge/Part2.lean:25 and SAP/P009a/Defs/WholeW2.lean:158 identify eventual largest-in-absolute-value dominance as the reading refuted. SAP/P009a/Challenge/Part2.lean:39 and SAP/P009a/Defs/WholeW2.lean:172 expressly preserve the printed big-O bounds and Proposition 7. The former broad printed-claim-is-false wording is absent from both T11 docstrings."
+    ]
+  },
+  {
+    "target_id": "P009-T12",
+    "theorem": "SAP.P009a.T12",
+    "fingerprint": "cbe1c1b867058f415d64225cf417e0a5476334f5bfd7f203b3926d0129672f92",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The additive star family above simultaneously satisfies uniform regularity (2,4,1), independent Bernoulli assignment, d_AVG/C1 -> infinity, restricted interference, and B2=0 with B1 and tau_MSQ/d_AVG positive. Uniform regularity and design are independently compiled in scratch/Instances.lean; exact finite instances are in scratch/finite-audit.json. The added sufficient-condition branches are nonvacuous too: for m=t+3 blocks of size m, hub y_0=z_0 and leaves y_i=z_i*z_0 give C1=2-1/m, d_AVG=m, B2=(m-1)(m-2)/(4m^2)>=1/18 and C1/(d_AVG*|B2|)<=36/m -> 0. nonvacuity.md derives the formulas and checks every hypothesis; the m=3 instance is independently enumerated.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T13",
+    "theorem": "SAP.P009a.T13",
+    "fingerprint": "aef0e8e05e2d2a90a03c3be7b92a55c635a27b464af2694db3b2e23beea56051",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Instances.lean independently proves ProductDesign cancellingPopulation, full-cube absolute outcome bound 1, Regularity with k=2 at every real q>=2 and s>=1, an explicit pair of assignments witnessing Affects 0 1, both zero expected spillovers, and the zero weighted spillover. The witness is n=3, p(z)=1/8, y_1=z_0*(2*z_2-1), others zero. Its bounded-endpoint condition follows from the same full-cube bound, including forced-coordinate outcomes. nonvacuity.md lists the printed reading and checks its distinctness, assignment, regularity, interference and expectation conditions.",
+    "confidence": "high",
+    "resolved": [
+      "Fixed: record.json:33 now labels T13 whole, with null restriction at record.json:35. SAP/P009a/Defs/WholeW2.lean:237 states the complete canonical three-unit cancellation counterexample. The retained docstring correctly identifies the specific printed interference implication that the canonical counterexample refutes; it does not claim that the canonical counterexample assertion is false."
+    ]
+  },
+  {
+    "target_id": "P009-T14",
+    "theorem": "SAP.P009a.T14",
+    "fingerprint": "e5227f5e42418771d7fe24206dcafa6c729a9596620bad28b5f3c6616ef5bed4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Instances.lean constructs the n=4 fair identity model with positive size, NoSpillovers, and strictly positive probabilities for both arms of every unit, and proves that distinct units 0 and 1 have no directed interference. The independently compiled three-unit cancellation witness gives the actual converse failure. A fair two-unit model with y_1=z_0+z_1 has weighted spillover 1, making the nonzero-spillover implication nonvacuous as well; this last simple instance is checked mathematically in nonvacuity.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T15",
+    "theorem": "SAP.P009a.T15",
+    "fingerprint": "0de6426206f1bb91f3dce339a812ae99fa4836921f2218cee6ce9e9567b2d86f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Instances.lean independently proves diagonal structural interference and d_AVG=1 for every positive-size identity model, and simultaneously proves SequenceRegularity identitySequence 2 4 1, ProductDesign at every index and SparseDependence. It directly computes fullAssignmentSum(identityPopulation 4)=1/4 and the normalized estimated-arm-size variance=1/4 from the 16 assignments. nonvacuity.md checks every printed condition for all n>=1: full support, fair independence, bounded observed/forced outcomes and maximal orders top, zero external/internal mixing from disjoint coordinate independence and a constant other-treatment vector, and all three asymptotic restrictions. The full sum is 1/n while the omitted-diagonal sum is zero, giving a genuine contradiction on a nonzero-denominator domain.",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P032-T4",
+    "theorem": "SAP.P032.T4",
+    "fingerprint": "cadd11f0577336ad4bb86b00bf9984fbc67745fd06d1aa4bdc213c223d9ef8b2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AlgebraChecks.lean (exit 0): four records with dyads [{0,1},{0,1},{0,2},{2,3}] and one-dimensional unit scores realize all four coefficient cases. Subject ids [0,0,1,2] give V0=4, Vid=6 and (N-2)(V0-Vid)=-4. Compiled scratch/SurvivalChecks.lean (exit 0) independently verifies the fixed ten-record survival witness: V0=19/432, Vid=VD=5/144, sum_i Vci=17/108, and wrong subtractions 23/432 and 103/2160 differ strictly from 5/144. All sets have exactly two distinct members and all indices are nonempty.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T2",
+    "theorem": "SAP.P032.T2",
+    "fingerprint": "f3557e347d257eac5abfdec1c1f7b10c9cf16c91f7fd8f2c5e1dac0c6cb369e9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ProbabilityChecks.lean (exit 0): the normalized four-atom negativePairDistribution induces a genuine probability measure on Fin 4; errors are the two coordinates of [(-1,-1),(-1,1),(1,-1),(1,1)], with L2 membership, mean zero and actual errorMoments equal to [[1,-1/2],[-1/2,1]]. pairDyads consists of two disjoint two-member sets, X=pairIntercept has nonzero Gram determinant 2, and beta=0. Thus every universal model hypothesis holds with nonzero error variance and covariance. The two finite weight structures also directly certify nonnegative weights and total mass one for the stated sign witnesses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T11",
+    "theorem": "SAP.P032.T11",
+    "fingerprint": "dbabed4c52682b664f51e2d3eedb1c414e3add9a472bdd4702728afa1903d63a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AlgebraChecks.lean (exit 0), existential example at line 34: R=Fin 4, M=Fin 4, P=Fin 1, dyads [{0,1},{0,1},{0,2},{2,3}], the all-one design, and response [1,-1,1,-1]. The Gram determinant is 4, every member occurs, and the fitted residual is the nonzero response vector. This constructs every hypothesis simultaneously and includes repeated, overlapping and disjoint dyads.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T7",
+    "theorem": "SAP.P032.T7",
+    "fingerprint": "a7a6b7d8e1ccf28522af88c259c009ff8165ae760f0e2ec38cc78188a4a745c8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AlgebraChecks.lean (exit 0): in dimension two, Q=I and eigenvalues [2,-1] satisfy both orthogonality hypotheses, reconstruct diag(2,-1), and clip to diag(2,0). The symmetric matrix [[1,2],[2,1]] has strictly positive diagonal and a negative quadratic form at [1,-1], certifying a genuine gate-failure example. The same file independently calculates tenCovariance=(1/3655808)[[460765,-79681],[-79681,7157]], verifies that the specified bread inverts its actual design Gram matrix and that the specified residual is orthogonal to the design, and proves the eigenvalue discriminant strictly positive. A real symmetric two-by-two matrix with negative determinant has the two opposite-sign eigenvalues used in the certified rank-one conclusion; no square-root default or singular inverse is involved.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T12",
+    "theorem": "SAP.P032.T12",
+    "fingerprint": "0102d188f5cc3965a3e3ad0674c42fbda4416ce19771a82ef03c45ade7fedd0f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ProbabilityChecks.lean (exit 0): a fair measure on Fin 2, Z0=[-1,1], and Z1=Z2=Z3=Z4=0 satisfy probability, L2 and all distinct-pair zero-covariance hypotheses, with Var(Z0)=1. For a=c=1 and b=d=0, the actual variance is 1 and the naive value is 1/2. For a=1,c=-1 and b=d=0, they are 0 and 1/2 respectively. Both strict sign branches therefore have genuine nondegenerate shared-variance instances; zero coefficients are also allowed for the equality branch.",
+    "confidence": 0.99
+  }
+]

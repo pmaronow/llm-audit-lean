@@ -1,0 +1,290 @@
+[
+  {
+    "target_id": "P025-T1",
+    "decision": "whole",
+    "theorem": "SAP.P025a.T1",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.printed_lower_rule_always_zero",
+      "AronowAudit.P025.printed_lower_vector_not_optimal",
+      "AronowAudit.P025.sample_counterexample_range",
+      "AronowAudit.P025.sample_sign_counterexample",
+      "AronowAudit.P025.two_design_realizes_example",
+      "SAP.P025a.WH.W1.T1_whole",
+      "SAP.P025a.WH.W1.T1_assembly",
+      "SAP.P025a.WH.W1.T1_L1_proof",
+      "SAP.P025a.WH.W1.T1_L2V2_proof",
+      "AronowAudit.P025.le_ratio",
+      "AronowAudit.P025.ratio_scale_weights",
+      "AronowAudit.P025.threshold_den_update",
+      "AronowAudit.P025.threshold_increment",
+      "SAP.P025a.Bridge.ratio_eq",
+      "SAP.P025a.Bridge.populationMean_eq",
+      "SAP.P025a.Bridge.threshold_lower"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P025a.T1WholeStatement"
+  },
+  {
+    "target_id": "P025-T10",
+    "decision": "whole",
+    "theorem": "SAP.P025a.T10",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.tail_design_realizes_example",
+      "AronowAudit.P025.tail_index_counterexample",
+      "SAP.P025a.WH.W1.T10_whole",
+      "SAP.P025a.WH.W1.T10_assembly",
+      "SAP.P025a.WH.W1.T10_L1_proof",
+      "SAP.P025a.WH.W1.T10_L2_proof"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P025a.T10WholeStatement"
+  },
+  {
+    "target_id": "P025-T11",
+    "decision": "whole",
+    "theorem": "SAP.P025a.T11",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.Wave1.gamma_stationarity_certificate",
+      "AronowAudit.P025.equal_probability_thresholds",
+      "AronowAudit.P025.pair_boundary_repair",
+      "AronowAudit.P025.pair_difference_identities",
+      "AronowAudit.P025.upper_cut_persistence",
+      "SAP.P025a.WH.W1.T11_whole",
+      "SAP.P025a.WH.W1.T11_assembly",
+      "SAP.P025a.WH.W1.T11_L1_proof",
+      "SAP.P025a.WH.W1.T11_L2_proof",
+      "SAP.P025a.WH.W1.T11_L3_proof",
+      "AronowAudit.P025.class_mean_ratio",
+      "AronowAudit.P025.denominator_pos",
+      "AronowAudit.P025.equal_probability_box_and_endpoints",
+      "AronowAudit.P025.ratio_le",
+      "AronowAudit.P025.ratio_scale_weights",
+      "AronowAudit.P025.threshold_cut_exists",
+      "AronowAudit.P025.upper_threshold_optimal",
+      "SAP.P025a.Bridge.upperValue_eq",
+      "SAP.P025a.Bridge.upperWeights_eq"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P025a.T11WholeStatement"
+  },
+  {
+    "target_id": "P025-T2",
+    "decision": "whole",
+    "theorem": "SAP.P025a.T2",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.class_sign_counterexample",
+      "SAP.P025a.WH.W1.T2_whole",
+      "SAP.P025a.WH.W1.T2_assembly",
+      "SAP.P025a.WH.W1.T2_L1_proof",
+      "AronowAudit.P025.joint_replications_iid",
+      "AronowAudit.P025.two_design_realizes_example",
+      "AronowAudit.P025.printed_lower_rule_always_zero",
+      "AronowAudit.P025.printed_lower_vector_not_optimal",
+      "AronowAudit.P025.le_ratio",
+      "AronowAudit.P025.ratio_scale_weights"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P025a.T2WholeStatement"
+  },
+  {
+    "target_id": "P025-T3",
+    "decision": "whole",
+    "theorem": "SAP.P025a.T3",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.Wave1.ratio_segment_attains_certificate",
+      "AronowAudit.P025.corrected_weighted_bounds",
+      "AronowAudit.P025.denominator_pos",
+      "AronowAudit.P025.lower_threshold_optimal",
+      "AronowAudit.P025.normalize_box",
+      "AronowAudit.P025.ratio_difference_residual",
+      "AronowAudit.P025.ratio_le",
+      "AronowAudit.P025.ratio_scale_weights",
+      "AronowAudit.P025.threshold_increment",
+      "AronowAudit.P025.threshold_separator",
+      "SAP.P025a.WH.W1.T3_whole",
+      "SAP.P025a.WH.W1.T3_assembly",
+      "SAP.P025a.WH.W1.T3_L1_proof",
+      "SAP.P025a.Bridge.ratio_eq",
+      "SAP.P025a.Bridge.threshold_lower",
+      "SAP.P025a.Bridge.threshold_upper",
+      "SAP.P025a.WH.W1.P.T3_L1.segment_in_box"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.attainable_normalization",
+        "reason": "The selected weighted-bounds theorem already exports the original probability-box range; the segment is scaled directly with normalize_box and ratio_scale_weights."
+      },
+      {
+        "lean_name": "AronowAudit.P025.corrected_proposition_one",
+        "reason": "The selected corrected_weighted_bounds theorem exports the sample result together with the prescribed vectors and endpoint identities."
+      },
+      {
+        "lean_name": "AronowAudit.P025.le_ratio",
+        "reason": "The numerical and general counterexample rows already contain the needed lower-mean conclusions."
+      },
+      {
+        "lean_name": "AronowAudit.P025.ratio_residual_zero",
+        "reason": "The selected ratio_difference_residual theorem already contains this residual calculation."
+      },
+      {
+        "lean_name": "AronowAudit.P025.ratio_scale_masses",
+        "reason": "Unit masses are used throughout the sample claim."
+      },
+      {
+        "lean_name": "AronowAudit.P025.threshold_cut_exists",
+        "reason": "The selected bounds, increment, or separator theorem already exports the needed consequence of this supporting result."
+      },
+      {
+        "lean_name": "AronowAudit.P025.threshold_den_update",
+        "reason": "The selected bounds, increment, or separator theorem already exports the needed consequence of this supporting result."
+      },
+      {
+        "lean_name": "AronowAudit.P025.threshold_shift",
+        "reason": "The selected bounds, increment, or separator theorem already exports the needed consequence of this supporting result."
+      },
+      {
+        "lean_name": "AronowAudit.P025.threshold_sum_update",
+        "reason": "The selected bounds, increment, or separator theorem already exports the needed consequence of this supporting result."
+      },
+      {
+        "lean_name": "AronowAudit.P025.upper_threshold_optimal",
+        "reason": "Global upper optimality is already exported by corrected_weighted_bounds."
+      }
+    ],
+    "statement_definition": "SAP.P025a.T3WholeStatement"
+  },
+  {
+    "target_id": "P025-T4",
+    "decision": "whole",
+    "theorem": "SAP.P025a.T4",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.corrected_proposition_two",
+      "SAP.P025a.WH.W2.T4_whole",
+      "SAP.P025a.WH.W2.T4_assembly",
+      "AronowAudit.P025.corrected_weighted_bounds",
+      "AronowAudit.P025.denominator_pos",
+      "AronowAudit.P025.ratio_le",
+      "AronowAudit.P025.threshold_increment",
+      "AronowAudit.P025.threshold_partition",
+      "SAP.P025a.Bridge.ratio_eq",
+      "SAP.P025a.Bridge.threshold_lower",
+      "SAP.P025a.Bridge.threshold_upper"
+    ],
+    "rows_not_used": [],
+    "statement_definition": "SAP.P025a.T4WholeStatement"
+  },
+  {
+    "target_id": "P025-T5",
+    "decision": "whole",
+    "theorem": "SAP.P025a.T5",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.application_counterexample_designs",
+      "AronowAudit.P025.application_counterexample_numbers",
+      "AronowAudit.P025.application_rounded_counterexamples",
+      "AronowAudit.P025.quota_design_valid",
+      "SAP.P025a.WH.W2.T5_whole",
+      "SAP.P025a.WH.W2.T5_assembly",
+      "SAP.P025a.WH.W2.T5_L1_proof",
+      "SAP.P025a.WH.W2.T5_L2_proof",
+      "AronowAudit.P025.quota_marginal_eq"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.quota_marginal_eq",
+        "reason": "The seven required marginal values are already exported by application_counterexample_designs."
+      }
+    ],
+    "statement_definition": "SAP.P025a.T5WholeStatement"
+  },
+  {
+    "target_id": "P025-T6",
+    "decision": "whole",
+    "theorem": "SAP.P025a.T6",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.common_cap_product",
+      "AronowAudit.P025.equal_estimates_product",
+      "AronowAudit.P025.overlap_criterion",
+      "AronowAudit.P025.overlap_threshold_numbers",
+      "AronowAudit.P025.reweighted_formula"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.binaryLower_monotone",
+        "reason": "The overlap_criterion theorem already incorporates the monotonicity needed for overlap."
+      },
+      {
+        "lean_name": "AronowAudit.P025.binary_denominators",
+        "reason": "The overlap_criterion theorem incorporates denominator positivity; all remaining denominators are guarded by positive inputs."
+      },
+      {
+        "lean_name": "AronowAudit.P025.binary_endpoints_order",
+        "reason": "The overlap_criterion theorem already incorporates endpoint ordering."
+      }
+    ]
+  },
+  {
+    "target_id": "P025-T7",
+    "decision": "refuted",
+    "theorem": "SAP.P025a.T7",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.printed_proposition_one_refuted",
+      "AronowAudit.P025.printed_proposition_one_upper"
+    ],
+    "rows_not_used": []
+  },
+  {
+    "target_id": "P025-T8",
+    "decision": "refuted",
+    "theorem": "SAP.P025a.T8",
+    "restriction": null,
+    "rows_used": [
+      "SAP.P025a.WH.W1.T10_whole",
+      "SAP.P025a.T8_realizable_counterexample",
+      "SAP.P025a.T8_not_printedClassFormulaClaim",
+      "SAP.P025a.T8_luna_assembly",
+      "AronowAudit.P025.printed_proposition_two_upper"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.printed_proposition_two_formula_refuted",
+        "reason": "The old exported negation is vulnerable to an undefined Option display and is not used for the new feasible non-minimizer proof."
+      },
+      {
+        "lean_name": "AronowAudit.P025.printed_sharpness_absolute_information_refuted",
+        "reason": "Concerns separate sharpness with fixed absolute totals, outside this lower-optimizer refutation."
+      }
+    ],
+    "statement_definition": "SAP.P025a.T8Statement"
+  },
+  {
+    "target_id": "P025-T9",
+    "decision": "whole",
+    "theorem": "SAP.P025a.T9",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P025.corrected_lower_display_at_cut",
+      "AronowAudit.P025.lower_partition_original_box",
+      "AronowAudit.P025.printed_partition_discrepancy",
+      "AronowAudit.P025.threshold_partition"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.duplicated_classes_difference",
+        "reason": "The selected printed_partition_discrepancy theorem already exports the exact duplicated-class residual."
+      },
+      {
+        "lean_name": "AronowAudit.P025.printed_tail_overlap",
+        "reason": "The selected printed_partition_discrepancy theorem already incorporates the two duplicated classes."
+      }
+    ]
+  }
+]

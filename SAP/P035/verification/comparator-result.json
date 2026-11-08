@@ -1,0 +1,122 @@
+{
+ "work": "P035",
+ "control": false,
+ "stamp": "20261103T230238Z",
+ "source_worktree": "/home/ubuntu/sap/wt/ARCH-P035",
+ "steps": [
+  {
+   "step": "rebuild-from-snapshot",
+   "rc": 0,
+   "out": "rebuilt 9 modules of SAP/P035; token scan clean\n"
+  },
+  {
+   "step": "export-challenge",
+   "rc": 0,
+   "seconds": 4.7,
+   "bytes": 21592686,
+   "sha256": "83a03ea67caec04801ff98b983492be3c702f382fe266fbd8bc1ff502e9f5e70"
+  },
+  {
+   "step": "export-solution",
+   "rc": 0,
+   "seconds": 4.9,
+   "bytes": 36278656,
+   "sha256": "9d80eb317dd541cab0fad8c0db58cd131251c829961921c2c0e9f2c9b2b843e9"
+  },
+  {
+   "step": "comparator",
+   "rc": 0,
+   "seconds": 16.8
+  }
+ ],
+ "snapshot_sha256": {
+  "SAP/P035/Bridge/Part1.lean": "bfbf8855e9b8fb41420193e565b4b279c8cc8146c1631b979898b1b1f20401db",
+  "SAP/P035/Bridge.lean": "c463b9c2f99922375923dd47a046749784dd2864ec3e1aeb340d84b79c8bc6ce",
+  "SAP/P035/Challenge/Part1.lean": "99ab856c0ba810ffab616fc8e3701da973eb41f8ed5ae40befb0a1eaf99851b4",
+  "SAP/P035/Challenge.lean": "5bbaf329a4f295a098c5a72dc0eb9e8d258b3440396f72bd57bc6a70a6bc6288",
+  "SAP/P035/Defs/Part1.lean": "51b0a841fc8c2860ece1de307f1bed399f1fcab64a08a81118afa8ea02b5339e",
+  "SAP/P035/Defs/Part2.lean": "76731a612a91aa5cfe0294e632265d02b9970826e89d1f2690911087fe2278f5",
+  "SAP/P035/Defs/Part3.lean": "c64df19ad436b70ac446e364b30dfe667cc1474992281c80c81720fb9fa31467",
+  "SAP/P035/Defs.lean": "2af334af5f2e44f9e7fc76d0fd1b78a418c606c3e55b6382ba2130ee486edd25",
+  "SAP/P035/Solution.lean": "fd530f585cc1a5bf5d472bb86c3975ac9d62151f06129f08c17196193b0f2923",
+  "SAP/P035/comparator.json": "da1f98ffc46508116d02362bd5546094d0713401e26191cec619af6a85803797",
+  "SAP/P035/manifest.json": "1a00bcd0e2e4c9ef843fae075f1adfe5bdc42017da31fbd88f860e7ce94cbaa2"
+ },
+ "base": {
+  "repo2_head": "e5f65537d7cf736a6381967285fc8e63c834f754",
+  "lean_path_sha256": "106b6c29e452ac414675c33d9be3b3ca08fda5aa00dd817881bd77da11dd963f",
+  "toolchain_434": "/home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1",
+  "toolchain_435": "/home/ubuntu/.elan/toolchains/leanprover--lean4---v4.35.0-rc2"
+ },
+ "cert_worktree": "/home/ubuntu/sap/wt/CERT-P035-20261103T230238Z",
+ "olean_sha256": {
+  "Bridge/Part1.olean": "489af992d05fbb687f80aa473c6a8c1799574311f9513a166034f4d57b971ac4",
+  "Bridge.olean": "dc031d96531e5983ccbef259722d60413024d80075c9abd476824ca423cddd32",
+  "Challenge/Part1.olean": "8428d3311a9c605e32b347125ccae8419b1b1b47e68656a31b7c6701e71f8711",
+  "Challenge.olean": "ce28b48e6ccb80aa5c9b7bc55d2736b698ae90af4ef61b85aecf99513a67b22c",
+  "Defs/Part1.olean": "431607d3386adced2e675ca227a9100ac995252b1f3e9340fbc345a0d63a2f4d",
+  "Defs/Part2.olean": "5bf06ad5bb6fc242250e84ccf53797d58e421391fddb336e4e0e94a9b7c6afa9",
+  "Defs/Part3.olean": "e16ecc13845d6fb769e9082504ae6f7c1c7dec84c7ab27b0d98e3d47813c9085",
+  "Defs.olean": "ea8e7b80d19abad9722eb96787893c8a7a108f32ec1cb7af8acb341a205845bb",
+  "Solution.olean": "c96bc73fb1b31f6cd686eb16655b3f69310636d4137abc06dd65547772f52ca4"
+ },
+ "config": {
+  "challenge_module": "SAP.P035.Challenge",
+  "solution_module": "SAP.P035.Solution",
+  "theorem_names": [
+   "SAP.P035.T1",
+   "SAP.P035.T2"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+   "propext",
+   "Quot.sound",
+   "Classical.choice"
+  ],
+  "external_kernels": {
+   "con-ron": [
+    "con-ron",
+    "--verified",
+    "--jobs=2"
+   ],
+   "nanoda": [
+    "nanoda_bin"
+   ]
+  }
+ },
+ "config_sha256": "da1f98ffc46508116d02362bd5546094d0713401e26191cec619af6a85803797",
+ "manifest_sha256": "1a00bcd0e2e4c9ef843fae075f1adfe5bdc42017da31fbd88f860e7ce94cbaa2",
+ "targets": {
+  "listed": 3,
+  "certified": 2,
+  "omitted": 1
+ },
+ "closures": {
+  "solution": 10752,
+  "challenge": 10750,
+  "solution_sap": [
+   "SAP.P035.Bridge",
+   "SAP.P035.Bridge.Part1",
+   "SAP.P035.Defs",
+   "SAP.P035.Defs.Part1",
+   "SAP.P035.Defs.Part2",
+   "SAP.P035.Defs.Part3",
+   "SAP.P035.Solution"
+  ]
+ },
+ "exporter": {
+  "path": "/home/ubuntu/sap/deps/lean4export/.lake/build/bin/lean4export",
+  "sha256": "8c5d64ba68f4d3a68b3bcb7e1c5f188e35ae573b29470b8d4530a62324c9ddd1",
+  "version": "lean4export v4.34.0 built with Lean 4.34.1"
+ },
+ "comparator_log": "/home/ubuntu/sap/cert/P035-20261103T230238Z/comparator.log",
+ "markers": {
+  "con-ron kernel accepts the solution": true,
+  "nanoda kernel accepts the solution": true,
+  "Lean default kernel accepts the solution": true,
+  "Your solution is okay!": true
+ },
+ "challenge_export_sha256": "83a03ea67caec04801ff98b983492be3c702f382fe266fbd8bc1ff502e9f5e70",
+ "solution_export_sha256": "9d80eb317dd541cab0fad8c0db58cd131251c829961921c2c0e9f2c9b2b843e9",
+ "accepted": true
+}

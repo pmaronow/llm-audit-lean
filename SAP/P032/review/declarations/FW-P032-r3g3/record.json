@@ -1,0 +1,36 @@
+[
+ {
+  "target_id": "P032-T8",
+  "decision": "restricted",
+  "theorem": "SAP.P032.T8",
+  "restriction": "Retains the exact logit fits, components, completed-data decomposition values and five-imputation average, Rubin terms, pooled totals, coefficient, gap, positivity and inactive scalar clipping. Omits the separate equalities of the two completed-data decomposition values with direct ordered-pair covariance sums.",
+  "rows_used": [
+   "AronowAudit.P032.mi_between_certificate",
+   "AronowAudit.P032.mi_completed_data_certificate",
+   "AronowAudit.P032.mi_partition_counts",
+   "AronowAudit.P032.mi_pooling_counterexample"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P032-T10",
+  "decision": "whole",
+  "theorem": "SAP.P032.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P032.study_neighboring_counts",
+   "AronowAudit.P032.study_threshold_counts",
+   "AronowAudit.P032.study_unique_rational_recovery"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P032.rounding_consistent_iff_rational",
+    "reason": "The rational-recovery declaration already incorporates this integer-rounding step; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P032.study_unique_integer_recovery",
+    "reason": "The rational-recovery declaration already incorporates this integer-rounding step; not separately invoked."
+   }
+  ]
+ }
+]

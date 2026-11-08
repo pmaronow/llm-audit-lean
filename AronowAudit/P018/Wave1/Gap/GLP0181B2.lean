@@ -270,4 +270,6 @@ theorem negative_sample_population_proof :
     negative_population_target, negative_population_targetPosDef, negative_population_atom,
     negative_population_eventCertificate⟩
 
+example : type_of% @AronowAudit.P018.negative_sample_population := negative_sample_population_proof
+
 end AronowAudit.P018.Wave1

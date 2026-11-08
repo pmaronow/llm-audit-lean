@@ -1,0 +1,86 @@
+[
+ {
+  "target_id": "P001-T92",
+  "decision": "refuted",
+  "theorem": "SAP.P001e.T92",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.causal_example_ols_fit",
+   "AronowAudit.P001.misprinted_imputation_table_disagreement"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.misprinted_imputation_counterexample_full",
+    "reason": "The actual fit and exact discrepancy rows already give this counterexample; full imputation cancels by finite arithmetic."
+   }
+  ]
+ },
+ {
+  "target_id": "P001-T93",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T93",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.corrected_imputation_table_agreement",
+   "AronowAudit.P001.pooled_ols_imputation_identity",
+   "AronowAudit.P001.causal_example_ols_fit",
+   "SAP.P001e.WH.W4.T93_whole",
+   "SAP.P001e.WH.W4.T93_assembly",
+   "SAP.P001e.WH.W4.T93_L1_proof",
+   "SAP.P001e.WH.W4.T93_L2_proof",
+   "SAP.P001e.WH.W4.armTransferW4",
+   "SAP.P001e.WH.W4.conditionalMeanSubW4",
+   "SAP.P001e.WH.W4.populationW4",
+   "SAP.P001e.WH.W4.finiteW4",
+   "SAP.P001e.WH.W4.correctedExampleW4",
+   "AronowAudit.P001.isCEF_condExp",
+   "AronowAudit.P001.Wave1.CausalIpwDr.n1_proof",
+   "AronowAudit.P001.Wave1.CausalIpwDr.n2_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n1_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n2_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n3_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n4_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n5_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001e.T93WholeStatement_W4"
+ },
+ {
+  "target_id": "P001-T94",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T94",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.ml_potential_mean_population_identity_proof",
+   "AronowAudit.P001.ml_potential_mean_observed_covariates",
+   "SAP.P001e.WH.W2.T94_whole",
+   "SAP.P001e.WH.W2.T94_assembly",
+   "SAP.P001e.WH.W2.T94_L1_proof",
+   "SAP.P001e.WH.W2.T94_L2_proof",
+   "SAP.P001e.WH.W2.T94_L3_proof",
+   "SAP.P001e.WH.W2.T94_L4_proof",
+   "SAP.P001e.WH.W2.T94_L5_proof",
+   "SAP.P001e.WH.W2.mean_of_conditionalMean",
+   "SAP.P001e.WH.W2.potential_observed_integrable",
+   "SAP.P001e.Bridge.fitted_formula",
+   "SAP.P001e.Bridge.IsConditionalMean_eq",
+   "AronowAudit.P001.Wave1.MarSelection.n1_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n2_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n3_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n4_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n5_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001e.T94WholeStatement"
+ },
+ {
+  "target_id": "P001-T95",
+  "decision": "whole",
+  "theorem": "SAP.P001e.T95",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.matching_correct_donor_comparison"
+  ],
+  "rows_not_used": []
+ }
+]

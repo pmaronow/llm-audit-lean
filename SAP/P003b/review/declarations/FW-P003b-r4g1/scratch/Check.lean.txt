@@ -1,0 +1,94 @@
+import SAP.P003b.Challenge
+
+open SAP.P003b
+open scoped BigOperators
+set_option maxRecDepth 4096
+set_option maxHeartbeats 2000000
+
+-- T24: a genuinely varying estimator in a positive balanced experiment.
+def auditW : PotentialTable 2 := fun i => if i.val = 0 then (true,true) else (false,false)
+def auditZ : Finset (Fin 2) := {0}
+
+example : 0 < (1 : ℕ) ∧ (2 : ℕ) = 2*1 ∧ auditZ.card = 1 := by
+  norm_num [auditZ]
+
+example : tableCounts auditW = ⟨1,0,0,1⟩ := by native_decide
+example : tableTau auditW = 0 := by
+  rw [tableTau, Fin.sum_univ_two]
+  norm_num [auditW, bit]
+example : tableEstimator auditW auditZ = 1 := by
+  norm_num [tableEstimator, auditW, auditZ, bit, Fin.sum_univ_two]
+example : tableEstimator auditW auditZᶜ = -1 := by
+  norm_num [tableEstimator, auditW, auditZ, bit, Fin.sum_univ_two, Finset.card_compl]
+example : randomStates ⟨1,0,0,1⟩ 1 = [⟨0,0,0,1⟩,⟨1,0,0,0⟩] := by native_decide
+example : SAP.P003b.multiplicity ⟨1,0,0,1⟩ ⟨0,0,0,1⟩ = 1 ∧
+    SAP.P003b.multiplicity ⟨1,0,0,1⟩ ⟨1,0,0,0⟩ = 1 := by native_decide
+
+-- T25: balanced and genuinely unbalanced general-clause hypotheses.
+example : 0 < (⟨0,2,0,2⟩ : Counts).a + (⟨0,2,0,2⟩ : Counts).b ∧
+    (⟨0,2,0,2⟩ : Counts).a + (⟨0,2,0,2⟩ : Counts).b =
+    (⟨0,2,0,2⟩ : Counts).c + (⟨0,2,0,2⟩ : Counts).d ∧
+    (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1 := by norm_num
+
+example : let o : Counts := ⟨1,0,1,1⟩
+    0 < o.a+o.b ∧ 0 < o.c+o.d ∧ o.a+o.b ≠ o.c+o.d ∧
+    (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1 := by norm_num
+
+example : Possible wholeT25Data ⟨0,0,2,2⟩ ∧
+    tauQ ⟨0,0,2,2⟩ = -1/2 ∧ pValue ⟨0,0,2,2⟩ wholeT25Data = 1/3 := by native_decide
+example : ¬ Possible wholeT25Data ⟨1,0,2,1⟩ ∧
+    pValue ⟨1,0,2,1⟩ wholeT25Data = 2/3 ∧
+    ¬ Possible wholeT25Data ⟨1,2,0,1⟩ ∧
+    pValue ⟨1,2,0,1⟩ wholeT25Data = 2/3 := by native_decide
+example : ∀ e ∈ ([-2,-1,0,1,2] : List ℤ),
+    ∃ v : Counts, Possible wholeT25Data v ∧ v.effect = e := by
+  intro e he
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at he
+  rcases he with rfl | rfl | rfl | rfl | rfl
+  · exact ⟨⟨0,0,2,2⟩, by native_decide, by native_decide⟩
+  · exact ⟨⟨0,0,1,3⟩, by native_decide, by native_decide⟩
+  · exact ⟨⟨0,0,0,4⟩, by native_decide, by native_decide⟩
+  · exact ⟨⟨0,1,0,3⟩, by native_decide, by native_decide⟩
+  · exact ⟨⟨0,2,0,2⟩, by native_decide, by native_decide⟩
+
+-- T19: an actual fixed 2+2 split and nonempty sequences of stratum sizes.
+def auditX : Fin 4 → Bool := fun i => decide (2 ≤ i.val)
+example : wholeStratumSize auditX false = 2 ∧ wholeStratumSize auditX true = 2 := by native_decide
+example : (wholeStratumImage auditX).card = 100 := by native_decide
+example : (wholeTotalEight 4).card = 330 ∧
+    (⟨3,0,0,0⟩,⟨1,0,0,0⟩) ∈ wholeTotalEight 4 := by native_decide
+example : ∀ n : ℕ, n/2+(n-n/2) = n := by omega
+example : (allCounts 0).card = 1 ∧ (stratifiedCounts 0 4).Nonempty := by native_decide
+
+-- T20: feasible off-minimum vector with a positive discordant selected vector.
+example : let o : Counts := ⟨1,1,1,1⟩
+    let u : Counts := ⟨0,2,1,1⟩
+    let v : Counts := ⟨1,1,0,2⟩
+    (0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) ∧
+    Possible o u ∧ firstOnLine o u.effect (u.a+u.b) = some v ∧
+    1 ≤ v.b+v.c ∧ u ≠ v ∧ (u.b : ℤ)-v.b = 1 := by native_decide
+example : let o : Counts := ⟨1,1,1,1⟩
+    pValue ⟨0,2,1,1⟩ o ≤ pValue ⟨1,1,0,2⟩ o := by native_decide
+-- A legal nontrivial instance also satisfying the nested rejection antecedent.
+example : let o : Counts := ⟨0,3,1,2⟩
+    let u : Counts := ⟨0,2,2,2⟩
+    let v : Counts := ⟨1,1,1,3⟩
+    (0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) ∧
+    Possible o u ∧ firstOnLine o u.effect (u.a+u.b) = some v ∧
+    1 ≤ v.b+v.c ∧ u ≠ v ∧
+    pValue u o = 2/5 ∧ pValue v o = 7/10 ∧
+    pValue v o < (17/20 : ℚ) ∧ (0 : ℚ) < 17/20 ∧ (17/20 : ℚ) < 1 := by native_decide
+example : let u : Counts := ⟨0,2,0,2⟩
+    Possible u u ∧ u.total = 4 ∧ u.effect = 2 ∧ u.a+u.c = 0 ∧ u.a+u.b = 2 := by
+  native_decide
+example : let v : Counts := ⟨1,1,0,2⟩
+    1 ≤ v.a ∧ 1 ≤ v.d ∧ reuseVector v 1 = ⟨0,2,1,1⟩ := by native_decide
+example : (1 : ℤ)+2+1 = 4 ∧ ((1 : ℤ)+2+1)%2 = 0 := by norm_num
+example : Nonempty (Assignment 2 1) := ⟨⟨{0}, by simp⟩⟩
+example : Nonempty (wholeBinaryAssignments 2 1) :=
+  ⟨⟨fun i => decide (i.val = 0), by native_decide⟩⟩
+example : tableCounts (wholeT20Table false) = tableCounts (wholeT20Table true) ∧
+    wholeT20Assignment.card = 1 := by native_decide
+example : tableEstimator (wholeT20Table false) wholeT20Assignment = 1 ∧
+    tableEstimator (wholeT20Table true) wholeT20Assignment = -1 := by
+  norm_num [tableEstimator, wholeT20Table, wholeT20Assignment, bit, Fin.sum_univ_two]

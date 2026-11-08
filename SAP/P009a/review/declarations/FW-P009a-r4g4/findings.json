@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P009-T16",
+    "theorem": "SAP.P009a.T16",
+    "fingerprint": "1675b4384d7ee4150f1d99fb5e45e43633247576a81d9b2ebe2391b8185fcf92",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using /home/ubuntu/sap/tools/sap-lean. The instance n=1, E=identityPopulation 1 (fair binary assignment with identity outcome), b=true, k=2 satisfies every hypothesis. A separate example computes its indicator covariance as 1/4, demonstrating a nonempty, nondeterministic instance. FiniteDistribution enforces nonnegative normalized masses, and no conclusion is a hypothesis.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T17",
+    "theorem": "SAP.P009a.T17",
+    "fingerprint": "9cee640da2a18a623711f0508dd799d3eb395d84263733b840a9ba658aaf6904",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using /home/ubuntu/sap/tools/sap-lean, importing only SAP.P009a.Defs and independently constructing reviewE/reviewF. Their common design assigns mass 1/6 to each assignment treating exactly two of four units. The compiled checks establish normalization, both full-cube outcome schedules, both FixedSizeDesign predicates, Regularity with k=2,q=4,s=1, every marginal probability 1/2, and NoSpillovers for reviewF. Exact-rational exhaustive checks in scratch/check_witness.py additionally verify all interference edges and incoming counts, C_i<=min(m,n-m), T_i excluding self, all six true/printed table rows, the positive denominators, ratios 4/3 and 2, ratio-minus-one 1/3 versus printed RHS 1, and the second instance's masses 1 versus 1/2. Results are saved in scratch/witness-check.json. These witnesses satisfy the printed reading and refute its actual probability laws and ratio identity.",
+    "confidence": "high"
+  }
+]

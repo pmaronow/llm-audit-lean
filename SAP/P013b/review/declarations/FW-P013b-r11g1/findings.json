@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P013-T15",
+    "theorem": "SAP.P013b.T15",
+    "fingerprint": "a1eeebdbdd72f12eef4b8bcefd83c1b06f18562b074bb1ffcc4ec832daef2367",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:23: N=2, two independent fair binary exposures on four positive-weight assignments, signed outcomes 2 and -3 equal across exposures within each unit. It satisfies N>0, distinct selected exposures, both marginal positivities, every off-diagonal cross-joint positivity (1/4), and the equality-case hypothesis. This supplies all four conjuncts' hypotheses jointly.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T16",
+    "theorem": "SAP.P013b.T16",
+    "fingerprint": "755a146c17891d0141e3f456dcda326b4d07fdb07fd17d330e327899accc7ab0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:35 and :43 with the same four-point design, exposure 1, and fixed prediction vector (7,-2). The all-zero assignment has positive mass, inverse-probability count zero, and Hajek value zero. Direct finite evaluation gives E[Hajek]=-3/8 and potentialMean=-1/2, so the ratio-bias example is nontrivial.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T17",
+    "theorem": "SAP.P013b.T17",
+    "fingerprint": "a2d2345153d4334852129b2a97700cde1442f642bc87857fc5b230aca0de080e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:53 and :62: two units with independent fair binary exposures; randomization outcome of each unit is the other unit's exposure. Assignments (0,0) and (0,1) give unit 0 the same exposure but different outcomes. Both selected exposures have probability 1/2, and the weighted total and HT expectation both evaluate to 1; the contrast expectation is 0. Population.outcome imposes no relation on this randomization-outcome array.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T18",
+    "theorem": "SAP.P013b.T18",
+    "fingerprint": "3875090c722f9911e220dc13e5525cbe9f437ab8c40b2d575ccdc40130ecd839",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/CoverageWitness.lean. For every N=n+1, one fair common coin gives every unit exposure 0 or 1. Fixed outcomes are y_i(1)=sqrt(i+1)-sqrt(i), y_i(0)=0 for i starting at 0. Identity exposure labels give nesting; c1=1,c2=2 give Condition 3; the diagonal Boolean matrix has row bound 1 and satisfies the literal printed dependency predicate; N*Var(HT effect)=1 gives Condition 6. Every estimated variance is nonnegative. The coin-0 interval has width zero and misses target 1/sqrt(N), so coverage is at most 1/2 for every N. At alpha=1/4 the compiled existential witness has liminf coverage strictly below 3/4. It satisfies all printed conditions and does not use an undefined interval.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P013-T19",
+    "theorem": "SAP.P013b.T19",
+    "fingerprint": "cb1925f9c2acd4e86b30a79f5cdceb486a9ab539a847556dec908eabccb9ee30",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ConsistencyWitness.lean:152: N independent fair binary exposures on the full 2^N-point support, encoded into Fin(2^N); fixed potentials y_i(1)=1,y_i(0)=0 with identity nesting labels. All marginal probabilities are 1/2; c1=1,c2=2. The diagonal dependency indicator is valid because all distinct-coordinate joint probabilities are 1/4, and its N marked entries give N/N^2=1/N tending to 0. Every theorem hypothesis holds for one explicit sequence with a nonconstant HT effect estimator.",
+    "confidence": "high"
+  }
+]

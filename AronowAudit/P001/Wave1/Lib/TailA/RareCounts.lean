@@ -286,6 +286,36 @@ theorem rare_counts_singleton_limit
   rw [rare_counts_singleton (q n) (hq0 n) (hq1 n) v hn, hres]
   simp only [Nat.cast_prod]
 
+/-- The finite-dimensional law of small numbers, with the exact changing-row
+sample spaces and the residual category specified in the proof program. -/
+theorem rare_categorical_counts
+  (k : ℕ) (m : ℕ → ℕ) (hm : Tendsto m atTop atTop)
+  (q : ℕ → Fin (k+1) → ℝ) (hq0 : ∀ n i, 0 ≤ q n i)
+  (hq1 : ∀ n, ∑ i, q n i = 1) («λ» : Fin k → ℝ≥0)
+  (hRate : ∀ i, Tendsto (fun n => (m n : ℝ)*q n i.castSucc)
+    atTop (nhds («λ» i : ℝ))) :
+  AronowAudit.Literature.RowWeak
+    (fun n => Measure.pi (fun _ : Fin (m n) => StatLean.ComputationalStatistics.categorical (q n)))
+    (fun n a i => (Finset.univ.filter (fun j => a j = i.castSucc)).card)
+    (Measure.pi (fun i => ProbabilityTheory.poissonMeasure («λ» i))) := by
+  haveI instProbabilityRareCategorical (n : ℕ) :
+      IsProbabilityMeasure (StatLean.ComputationalStatistics.categorical (q n)) :=
+    StatLean.ComputationalStatistics.isProbabilityMeasure_categorical (hq0 n) (hq1 n)
+  intro f _ hf
+  have hμ (n : ℕ) : IsProbabilityMeasure
+      ((Measure.pi fun _ : Fin (m n) =>
+        StatLean.ComputationalStatistics.categorical (q n)).map rareCounts) :=
+    inferInstance
+  have hlim (v : Fin k → ℕ) :=
+    (ENNReal.tendsto_toReal (measure_ne_top
+      (Measure.pi fun i => poissonMeasure («λ» i)) {v})).comp
+      (rare_counts_singleton_limit k m hm q hq0 hq1 «λ» hRate v)
+  have htest := rare_counts_bounded_tests _ (Measure.pi fun i => poissonMeasure («λ» i))
+    hμ hlim f hf
+  convert htest using 1
+  funext n
+  exact (integral_map Measurable.of_discrete.aemeasurable
+    (measurable_of_countable f).aestronglyMeasurable).symm
 
 /-- A measurable statistic on changing sample spaces is determined for weak
 convergence by its countable singleton laws and their total mass. -/
@@ -312,6 +342,26 @@ theorem rare_counts_categorical_singleton {d : ℕ} (q : Fin d → ℝ) (i : Fin
     StatLean.ComputationalStatistics.categorical q {i} = ENNReal.ofReal (q i) := by
   simp [StatLean.ComputationalStatistics.categorical, Pi.single_apply, mul_ite]
 
+/-- Merge untracked original labels into a residual category. -/
+def rareLabelCategory {k N : ℕ} (labels : Fin k ↪ Fin N) (j : Fin N) : Fin (k + 1) :=
+  if h : ∃ i, labels i = j then (Classical.choose h).castSucc else Fin.last k
+
+theorem rare_label_category_fiber {k N : ℕ} (labels : Fin k ↪ Fin N)
+    (j : Fin N) (i : Fin k) :
+    rareLabelCategory labels j = i.castSucc ↔ j = labels i := by
+  unfold rareLabelCategory
+  split_ifs with h
+  · rw [Fin.castSucc_inj]
+    constructor
+    · intro hi
+      simpa [hi] using (Classical.choose_spec h).symm
+    · intro hj
+      apply labels.injective
+      exact (Classical.choose_spec h).trans hj
+  · constructor
+    · exact fun hfalse => False.elim (Fin.castSucc_ne_last i hfalse.symm)
+    · intro hj
+      exact False.elim (h ⟨i, hj.symm⟩)
 
 /-- The categorical probabilities of `k` distinct original labels. -/
 def rareLabelProbabilities (k N : ℕ) : Fin (k + 1) → ℝ :=
@@ -335,6 +385,133 @@ theorem rare_label_probabilities_sum (k N : ℕ) :
     Fin.snoc_last, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   ring
 
+/-- The exact categorical law obtained by merging untracked labels. -/
+theorem rare_label_category_law {k N : ℕ} (hN : 0 < N) (labels : Fin k ↪ Fin N) :
+    (StatLean.ComputationalStatistics.categorical (fun _ : Fin N => (N : ℝ)⁻¹)).map
+      (rareLabelCategory labels) =
+      StatLean.ComputationalStatistics.categorical (rareLabelProbabilities k N) := by
+  have hreal : (N : ℝ) ≠ 0 := by positivity
+  haveI instProbabilityRareUniformLabel : IsProbabilityMeasure
+      (StatLean.ComputationalStatistics.categorical (fun _ : Fin N => (N : ℝ)⁻¹)) :=
+    StatLean.ComputationalStatistics.isProbabilityMeasure_categorical (fun _ => by positivity)
+      (by simp [mul_inv_cancel₀ hreal])
+  let μ := (StatLean.ComputationalStatistics.categorical
+    (fun _ : Fin N => (N : ℝ)⁻¹)).map (rareLabelCategory labels)
+  haveI instProbabilityRareMergedLabels : IsProbabilityMeasure μ :=
+    inferInstance
+  have hfirst (i : Fin k) : (μ {i.castSucc}).toReal = (N : ℝ)⁻¹ := by
+    have hfiber : rareLabelCategory labels ⁻¹' {i.castSucc} = {labels i} := by
+      ext j
+      exact rare_label_category_fiber labels j i
+    rw [Measure.map_apply Measurable.of_discrete (measurableSet_singleton _),
+      hfiber, rare_counts_categorical_singleton, ENNReal.toReal_ofReal (by positivity)]
+  have hsum : ∑ j, (μ {j}).toReal = 1 := by
+    simpa only [tsum_fintype] using (rare_counts_hasSum_singletons μ).tsum_eq
+  have hlast : (μ {Fin.last k}).toReal = 1 - (k : ℝ) / (N : ℝ) := by
+    rw [Fin.sum_univ_castSucc] at hsum
+    simp only [hfirst, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      nsmul_eq_mul] at hsum
+    rw [div_eq_mul_inv]
+    linarith
+  apply Measure.ext_of_singleton
+  intro j
+  rw [rare_counts_categorical_singleton,
+    ← ENNReal.ofReal_toReal (measure_ne_top μ {j})]
+  congr 1
+  refine Fin.lastCases ?_ (fun i => ?_) j
+  · simpa only [rareLabelProbabilities, Fin.snoc_last] using hlast
+  · simpa only [rareLabelProbabilities, Fin.snoc_castSucc] using hfirst i
+
+/-- The finite count law for any fixed set of distinct original labels. -/
+theorem fixed_original_label_count_law {k N : ℕ} (hN : 0 < N) (labels : Fin k ↪ Fin N) :
+    (UniformResampling N).map
+      (fun a i => (Finset.univ.filter (fun j => a j = labels i)).card) =
+    (Measure.pi (fun _ : Fin N =>
+      StatLean.ComputationalStatistics.categorical (rareLabelProbabilities k N))).map
+      rareCounts := by
+  rw [uniform_resampling_eq_pi hN]
+  have hreal : (N : ℝ) ≠ 0 := by positivity
+  haveI instProbabilityRareUniformLabel : IsProbabilityMeasure
+      (StatLean.ComputationalStatistics.categorical (fun _ : Fin N => (N : ℝ)⁻¹)) :=
+    StatLean.ComputationalStatistics.isProbabilityMeasure_categorical (fun _ => by positivity)
+      (by simp [mul_inv_cancel₀ hreal])
+  haveI instProbabilityRareMappedUniformLabel : IsProbabilityMeasure
+      ((StatLean.ComputationalStatistics.categorical (fun _ : Fin N => (N : ℝ)⁻¹)).map
+        (rareLabelCategory labels)) :=
+    inferInstance
+  have hmap := Measure.pi_map_pi (μ := fun _ : Fin N =>
+    StatLean.ComputationalStatistics.categorical (fun _ : Fin N => (N : ℝ)⁻¹))
+    (f := fun _ => rareLabelCategory labels) (fun _ => Measurable.of_discrete.aemeasurable)
+  rw [rare_label_category_law hN labels] at hmap
+  rw [← hmap, Measure.map_map Measurable.of_discrete Measurable.of_discrete]
+  congr 1
+  funext a i
+  simp only [Function.comp_apply, rareCounts, rare_label_category_fiber]
+
+/-- Singleton version of the fixed-original-label bootstrap mark limit. -/
+theorem fixed_original_label_singleton_limit
+    (k : ℕ) (m : ℕ → ℕ) (hm : Tendsto m atTop atTop)
+    (labels : (n : ℕ) → Fin k ↪ Fin (m n)) (v : Fin k → ℕ) :
+    Tendsto (fun n => ((UniformResampling (m n)).map
+      (fun a i => (Finset.univ.filter (fun j => a j = labels n i)).card)) {v})
+      atTop (𝓝 ((Measure.pi (fun _ : Fin k => poissonMeasure 1)) {v})) := by
+  have hk (n : ℕ) : k ≤ m n := by
+    simpa using Fintype.card_le_of_injective (labels n) (labels n).injective
+  have hRate (i : Fin k) : Tendsto (fun n =>
+      (m n : ℝ) * rareLabelProbabilities k (m n) i.castSucc) atTop (𝓝 (1 : ℝ)) := by
+    apply (tendsto_const_nhds (x := (1 : ℝ))).congr'
+    filter_upwards [hm.eventually (eventually_ge_atTop 1)] with n hn
+    simp only [rareLabelProbabilities, Fin.snoc_castSucc]
+    have hreal : (m n : ℝ) ≠ 0 := by positivity
+    exact (mul_inv_cancel₀ hreal).symm
+  apply (rare_counts_singleton_limit k m hm (fun n => rareLabelProbabilities k (m n))
+    (fun n => rare_label_probabilities_nonneg (hk n))
+    (fun n => rare_label_probabilities_sum k (m n)) (fun _ => 1) hRate v).congr'
+  filter_upwards [hm.eventually (eventually_ge_atTop 1)] with n hn
+  rw [fixed_original_label_count_law (by omega : 0 < m n) (labels n)]
+
+/-- Fixed original labels acquire independent Poisson(1) bootstrap marks. -/
+theorem fixed_original_label_counts
+    (k : ℕ) (m : ℕ → ℕ) (hm : Tendsto m atTop atTop)
+    (labels : (n : ℕ) → Fin k ↪ Fin (m n)) :
+    AronowAudit.Literature.RowWeak (fun n => UniformResampling (m n))
+      (fun n a i => (Finset.univ.filter (fun j => a j = labels n i)).card)
+      (Measure.pi (fun _ : Fin k => poissonMeasure 1)) := by
+  apply rare_counts_rowWeak_of_singletons _ _ (fun _ => inferInstance)
+    (fun _ => Measurable.of_discrete)
+  exact fixed_original_label_singleton_limit k m hm labels
+
+/-- Any fixed finite collection of independent resampling replicas has
+independent Poisson(1) marks, while retaining the same original labels. -/
+theorem fixed_original_label_replicas
+    (r k : ℕ) (m : ℕ → ℕ) (hm : Tendsto m atTop atTop)
+    (labels : (n : ℕ) → Fin k ↪ Fin (m n)) :
+    AronowAudit.Literature.RowWeak
+      (fun n => Measure.pi (fun _ : Fin r => UniformResampling (m n)))
+      (fun n a t i => (Finset.univ.filter (fun j => a t j = labels n i)).card)
+      (Measure.pi (fun _ : Fin r => Measure.pi (fun _ : Fin k => poissonMeasure 1))) := by
+  apply rare_counts_rowWeak_of_singletons _ _ (fun _ => inferInstance)
+    (fun _ => Measurable.of_discrete)
+  intro v
+  have hmap (n : ℕ) := Measure.pi_map_pi
+    (μ := fun _ : Fin r => UniformResampling (m n))
+    (f := fun _ a i => (Finset.univ.filter (fun j => a j = labels n i)).card)
+    (fun _ => Measurable.of_discrete.aemeasurable)
+  simp_rw [hmap]
+  have ht := ENNReal.tendsto_finsetProd_of_ne_top Finset.univ
+    (fun t _ => fixed_original_label_singleton_limit k m hm labels (v t))
+    (fun t _ => measure_ne_top (Measure.pi fun _ : Fin k => poissonMeasure 1) {v t})
+  simpa only [Measure.pi_singleton] using ht
+
+/-- The explicit two-replica specialization used for cross moments. -/
+theorem fixed_original_label_two_replicas
+    (k : ℕ) (m : ℕ → ℕ) (hm : Tendsto m atTop atTop)
+    (labels : (n : ℕ) → Fin k ↪ Fin (m n)) :
+    AronowAudit.Literature.RowWeak
+      (fun n => Measure.pi (fun _ : Fin 2 => UniformResampling (m n)))
+      (fun n a t i => (Finset.univ.filter (fun j => a t j = labels n i)).card)
+      (Measure.pi (fun _ : Fin 2 => Measure.pi (fun _ : Fin k => poissonMeasure 1))) :=
+  fixed_original_label_replicas 2 k m hm labels
 
 /-- First-order probability mass in a shrinking interval from its density.
 The interval endpoints may lie on either side of the fixed score. -/
@@ -502,8 +679,8 @@ theorem rare_partition_counts {E : Type*} [MeasurableSpace E]
   rfl
 
 /-- Finite-window interval-category approximation: the counts in disjoint
-intervals with endpoints `p + a i / m n` and `p + b i / m n` converge to the
-product Poisson law with rates `(b i - a i) * f p`. -/
+intervals of width `1 / m` converge to the product Poisson law with the
+local-density rates. -/
 theorem finite_window_interval_category_counts
     (k : ℕ) (m : ℕ → ℕ) (hm : Tendsto m atTop atTop)
     (P : Measure ℝ) [IsProbabilityMeasure P]
@@ -556,5 +733,33 @@ theorem rare_counts_scaled_interval_probability_local
   rw [hdensity _ _ ha hb
     (add_le_add (le_refl p) (div_le_div_of_nonneg_right hab (by positivity)))]
 
+/-- Local-density version of the finite-window count approximation. -/
+theorem finite_window_interval_category_counts_local
+    (k : ℕ) (m : ℕ → ℕ) (hm : Tendsto m atTop atTop)
+    (P : Measure ℝ) [IsProbabilityMeasure P]
+    (f : ℝ → ℝ) (hf : Continuous f) (p δ : ℝ) (hδ : 0 < δ)
+    (hdensity : ∀ u v : ℝ, u ∈ Metric.ball p δ → v ∈ Metric.ball p δ → u ≤ v →
+      (P (Set.Ioc u v)).toReal = ∫ x in u..v, f x)
+    (a b : Fin k → ℝ) (hab : ∀ i, a i ≤ b i)
+    (hdis : ∀ n i j, i ≠ j → Disjoint
+      (Set.Ioc (p + a i / (m n : ℝ)) (p + b i / (m n : ℝ)))
+      (Set.Ioc (p + a j / (m n : ℝ)) (p + b j / (m n : ℝ))))
+    (rates : Fin k → ℝ≥0) (hrates : ∀ i, (rates i : ℝ) = (b i - a i) * f p) :
+    AronowAudit.Literature.RowWeak
+      (fun n => Measure.pi (fun _ : Fin (m n) => P))
+      (fun n x i => (Finset.univ.filter (fun j =>
+        x j ∈ Set.Ioc (p + a i / (m n : ℝ)) (p + b i / (m n : ℝ)))).card)
+      (Measure.pi (fun i => poissonMeasure (rates i))) := by
+  have hlim := rare_partition_counts k m hm (fun _ => P) (fun _ => inferInstance)
+    (fun n i => Set.Ioc (p + a i / (m n : ℝ)) (p + b i / (m n : ℝ)))
+    (fun _ _ => measurableSet_Ioc) hdis rates (fun i => by
+      rw [hrates i]
+      exact rare_counts_scaled_interval_probability_local m hm P f hf p δ hδ hdensity
+        (a i) (b i) (hab i))
+  convert hlim using 1
+  funext n x i
+  congr 1
+  ext j
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and]
 
 end AronowAudit.P001.TailA

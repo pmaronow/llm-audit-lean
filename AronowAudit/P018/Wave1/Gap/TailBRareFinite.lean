@@ -4,7 +4,7 @@ import Mathlib.MeasureTheory.Integral.Lebesgue.Countable
 /-!
 Finite-sample calculations for the actual countable rare-category model.
 The coordinates used below are (intercept + slope, slope); the reported
-coefficients and sandwich use the original model definitions.
+coefficients and sandwich are always the original audit definitions.
 -/
 
 noncomputable section
@@ -403,7 +403,7 @@ theorem TailB_rare_event_variance {N m : ℕ} (hN : 2 ≤ N) {ω : Fin N → Rar
   <;> ring
 
 /-! Category counts.  Counting all pairs in one group is sufficient; the
-geometric envelope permits the global number of nonsmall pairs to be used. -/
+geometric envelope lets us use the global number of nonsmall pairs. -/
 
 theorem TailB_rare_category_count {N k : ℕ} (hk : 1 ≤ k)
     (p : Fin N → Prop) [DecidablePred p] (f : Fin N → Fin k) (G : ℝ) (hG : 0 ≤ G)
@@ -806,6 +806,35 @@ theorem TailB_rare_row_atom {N : ℕ} (ω : Fin N → RareUnit) :
   rw [Measure.pi_singleton]
   simp_rw [TailB_rare_atom]
 
+theorem TailB_rare_category_lintegral (m : ℕ) (f : RareUnit → ℝ≥0∞) :
+    (∫⁻ u in {u : RareUnit | u.m = m}, f u ∂rareLaw) =
+      ENNReal.ofReal (TailB_rare_p m) *
+        (∑ c : Fin (m+1), ∑ a : Bool, ∑ b : Bool, f ⟨m,c,a,b⟩) := by
+  rw [← lintegral_indicator (show MeasurableSet {u : RareUnit | u.m = m} from trivial),
+    TailB_rare_lintegral, tsum_eq_single m]
+  · simp only [Set.indicator_apply, Set.mem_setOf_eq, if_true, TailB_rare_p]
+  · intro n hn
+    simp [Set.indicator_apply, hn]
+
+theorem TailB_rare_category_sign_lintegral (m : ℕ) (f g : Bool → ℝ≥0∞) :
+    (∫⁻ u in {u : RareUnit | u.m = m}, f u.A * g u.B ∂rareLaw) =
+      ENNReal.ofReal ((2 : ℝ)^(-(m+1 : ℤ))/4) * (∑ a : Bool, f a) * (∑ b : Bool, g b) := by
+  rw [TailB_rare_category_lintegral]
+  have hw : ENNReal.ofReal (TailB_rare_p m)*(m+1 : ℝ≥0∞) =
+      ENNReal.ofReal ((2 : ℝ)^(-(m+1 : ℤ))/4) := by
+    have hm : (m+1 : ℝ) ≠ 0 := by positivity
+    rw [show (m+1 : ℝ≥0∞) = ENNReal.ofReal (m+1 : ℝ) by
+      rw [ENNReal.ofReal_add (Nat.cast_nonneg m) (by norm_num)]; simp]
+    rw [← ENNReal.ofReal_mul (TailB_rare_p_pos m).le]
+    congr 1
+    unfold TailB_rare_p
+    field_simp
+  simp only [← Finset.mul_sum, ← Finset.sum_mul, sum_const, card_univ,
+    Fintype.card_fin, nsmul_eq_mul]
+  calc
+    _ = (ENNReal.ofReal (TailB_rare_p m)*(m+1 : ℝ≥0∞)) * (∑ a : Bool, f a) *
+        (∑ b : Bool, g b) := by simp only [Nat.cast_add, Nat.cast_one]; ring
+    _ = _ := by rw [hw]
 
 theorem TailB_rare_point_integral_bound {N m : ℕ} (f : (Fin N → RareUnit) → ℝ)
     (ω : Fin N → RareUnit) (hω : ∀ i, (ω i).m = m) :
@@ -1020,5 +1049,18 @@ theorem TailB_rare_finite_pathologies :
     exact ⟨TailB_rare_gram_pos hN ω, TailB_rare_residual_bound hN ω⟩
   · intro N hN
     exact ⟨TailB_rare_positive_part_integral N hN, TailB_rare_negative_part_integral N hN⟩
+
+example :
+    IsProbabilityMeasure rareLaw ∧ RepeatedStanding rareRepeated ∧
+    (∀ N : ℕ, 2 ≤ N → ∀ ω : Fin N → RareUnit, (repeatedGram rareRepeated ω).det > 0 ∧
+      (∀ d : Dyad N, ∀ t : Fin 2, |repeatedY rareRepeated ω d t -
+        dot (repeatedX rareRepeated ω d t) (repeatedOLS rareRepeated ω)| ≤ 8)) ∧
+    (∀ N : ℕ, 3 ≤ N →
+      (∫⁻ ω, ENNReal.ofReal ((repeatedOLS rareRepeated ω 1)^2) ∂ repeatedLaw rareRepeated N) = ∞ ∧
+      (∫⁻ ω, ENNReal.ofReal |repeatedOLS rareRepeated ω 1| ∂ repeatedLaw rareRepeated N) = ∞) ∧
+    (∀ N : ℕ, 4 ≤ N →
+      (∫⁻ ω, ENNReal.ofReal (max ((repeatedVariance rareRepeated ω) 1 1) 0) ∂ repeatedLaw rareRepeated N) = ∞ ∧
+      (∫⁻ ω, ENNReal.ofReal (max (-((repeatedVariance rareRepeated ω) 1 1)) 0) ∂ repeatedLaw rareRepeated N) < ∞) :=
+  TailB_rare_finite_pathologies
 
 end AronowAudit.P018.Wave1

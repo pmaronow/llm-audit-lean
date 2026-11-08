@@ -15,6 +15,84 @@ noncomputable section
 
 local instance instDecidableGLP0012B3 (p : Prop) : Decidable p := Classical.propDecidable p
 
+/-- A CEF transforms with the complementary response indicator. -/
+lemma T22_complement_cef {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (D : Ω → ℝ)
+    (p : E → ℝ) (hp : IsCEF μ X D p) :
+    IsCEF μ X (fun ω => 1 - D ω) (fun x => 1 - p x) := by
+  refine ⟨measurable_const.sub hp.1, (integrable_const 1).sub hp.2.1,
+    (integrable_const 1).sub hp.2.2.1, ?_⟩
+  intro A hA
+  change (∫ ω in X ⁻¹' A, 1 - D ω ∂μ) = ∫ ω in X ⁻¹' A, 1 - (p ∘ X) ω ∂μ
+  rw [integral_sub (integrable_const 1).integrableOn hp.2.1.integrableOn,
+    integral_sub (integrable_const 1).integrableOn hp.2.2.1.integrableOn,
+    hp.2.2.2 A hA]
+  rfl
+
+/-- The mean of a discrete-covariate CEF is its weighted countable sum. -/
+lemma T22_mean_sum {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
+    [Countable E] [MeasurableSingletonClass E]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+    (Y : Ω → ℝ) (m : E → ℝ) (hm : IsCEF μ X Y m) :
+    mean μ Y = ∑' x : E, m x * prob μ {ω | X ω = x} := by
+  have heq := hm.2.2.2 Set.univ MeasurableSet.univ
+  simp only [Set.preimage_univ, Measure.restrict_univ] at heq
+  exact heq.trans (MarDiscrete.n1_proof μ X hX m hm.2.2.1).2
+
+theorem explicit_ignorability_discrete_ate_proof {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace E] [Countable E] [MeasurableSingletonClass E]
+   (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+   (Y0 Y1 D : Ω → ℝ) (h0 : Measurable Y0) (h1 : Measurable Y1) (hD : Measurable D)
+   (hi0 : Integrable Y0 μ) (hi1 : Integrable Y1 μ) (hbinary : ∀ ω,D ω=0 ∨ D ω=1)
+   (p : E → ℝ) (hp : IsCEF μ X D p) (ε : ℝ) (hε : 0 < ε)
+   (hpos : ∀ ω,ε < p (X ω) ∧ p (X ω) < 1-ε)
+   (hCI : CI μ X hX (fun ω => (Y0 ω,Y1 ω)) D)
+   (m0 m1 : E → ℝ)
+   (hm0 : IsCEF (μ.restrict {ω | D ω=0}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m0)
+   (hm1 : IsCEF (μ.restrict {ω | D ω=1}) X (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) m1)
+   (hmi0 : Integrable (m0 ∘ X) μ) (hmi1 : Integrable (m1 ∘ X) μ) : mean μ (fun ω => Y1 ω-Y0 ω)=
+   (∑' x : E,m1 x*prob μ {ω | X ω=x})-(∑' x : E,m0 x*prob μ {ω | X ω=x}) := by
+  have hm1pop : IsCEF μ X Y1 m1 := by
+    exact MarSelection.n5_proof MarSelection.n1_proof MarSelection.n4_proof
+      MarSelection.n3_proof MarSelection.n2_proof μ X hX (fun ω => (Y0 ω, Y1 ω)) D
+      (fun z : E × (ℝ × ℝ) => z.2.2)
+      (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) p m1
+      (h0.prodMk h1) hD (measurable_snd.comp measurable_snd)
+      (ae_of_all _ hbinary) hCI hp ⟨ε, hε, ae_of_all _ (fun ω => (hpos ω).1)⟩ hi1
+      (ae_of_all _ (fun ω hω => by simp [observedOutcome, hω])) hm1 hmi1
+  have hD0 : Measurable (fun ω => 1 - D ω) := measurable_const.sub hD
+  have hCI0 : CI μ X hX (fun ω => (Y0 ω, Y1 ω)) (fun ω => 1 - D ω) := by
+    intro A B hA hB
+    exact hCI A ((fun d : ℝ => 1 - d) ⁻¹' B) hA
+      (hB.preimage (measurable_const.sub measurable_id))
+  have hset : {ω | 1 - D ω = 1} = {ω | D ω = 0} := by
+    ext ω
+    simp only [Set.mem_setOf_eq]
+    constructor <;> intro h <;> linarith
+  have hm0pop : IsCEF μ X Y0 m0 := by
+    apply MarSelection.n5_proof MarSelection.n1_proof MarSelection.n4_proof
+      MarSelection.n3_proof MarSelection.n2_proof μ X hX
+      (fun ω => (Y0 ω, Y1 ω)) (fun ω => 1 - D ω)
+      (fun z : E × (ℝ × ℝ) => z.2.1)
+      (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) (fun x => 1 - p x) m0
+      (h0.prodMk h1) hD0 (measurable_fst.comp measurable_snd)
+    · exact ae_of_all _ (fun ω => by
+        rcases hbinary ω with h | h <;> simp [h])
+    · exact hCI0
+    · exact T22_complement_cef μ X D p hp
+    · exact ⟨ε, hε, ae_of_all _ (fun ω => by linarith [(hpos ω).2])⟩
+    · exact hi0
+    · exact ae_of_all _ (fun ω hω => by
+        have hd : D ω = 0 := by linarith
+        simp [observedOutcome, hd])
+    · rw [hset]
+      exact hm0
+    · exact hmi0
+  change (∫ ω, Y1 ω - Y0 ω ∂μ) = _
+  rw [integral_sub hi1 hi0]
+  exact congrArg₂ (· - ·) (T22_mean_sum μ X hX Y1 m1 hm1pop)
+    (T22_mean_sum μ X hX Y0 m0 hm0pop)
+
+example : type_of% @AronowAudit.P001.explicit_ignorability_discrete_ate := explicit_ignorability_discrete_ate_proof
 
 /-- Every atom in the specified dyadic series has strictly positive mass. -/
 lemma T27_mass_pos (i : Σ m : ℕ, Fin (2 ^ m)) : 0 < dyadicMass i := by
@@ -148,6 +226,8 @@ theorem dense_discrete_cdf_counterexample_proof : Summable dyadicMass ∧ (∑' 
   have hlt := T27_strict_increase (1 / 3) (1 / 3 + t) (by norm_num)
     (by linarith) (by linarith)
   exact hlt.ne heq.symm
+
+example : type_of% @AronowAudit.P001.dense_discrete_cdf_counterexample := dense_discrete_cdf_counterexample_proof
 
 end
 

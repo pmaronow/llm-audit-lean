@@ -1,0 +1,17 @@
+[
+  {
+    "target_id": "P019-T22",
+    "theorem": "SAP.P019b.T22",
+    "fingerprint": "72f0a122f3794c3aabec14d321ae7410c086227ec5d5088163c3da1c77cda67e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean successfully with /home/ubuntu/sap/tools/sap-lean. T22Audit.nullStudy is the eight-atom model with independent R~Bernoulli(1/4), fair independent B,Z, W=B, X=true, Y=R, and V=B+Z. The example at scratch/Check.lean:40 proves monotonicity, the no-liars count equation, full treatment independence for every test function, nondegeneracy, both arm probabilities equal to 1/2, and delta=0. Thus every hypothesis of both universal branches is jointly satisfiable, even with all standing assumptions. Further examples independently verify the additional protocol's nondegeneracy, cell probabilities, conditional variances, randomization factorization, marginal variances, delta=1/2, failure of treatment independence, and complete event schedule. The checks do not invoke SAP.P019b.T22. Empty-sample completions and division by the square root of a negative completed variance are also checked.",
+    "confidence": "high",
+    "resolved": [
+      "Fixed by correcting scope: the first earlier issue correctly observed that the protocol discloses assignment before recording Y and delays only physical list display. The protocol is unchanged, but SAP/P019b/Challenge/Part1.lean:97 and SAP/P019b/Defs/WholeW1.lean:261 now describe that exact reading and explicitly state that it does not refute the printed design assertion. Its genuine delta=1/2 is retained as an ancillary protocol fact, not as a counterexample satisfying the printed timing condition.",
+      "Fixed: the second earlier issue concerned the refuted label, the wording that the printed claim was false, and undisclosed missing causal/design assertions. record.json:4 now labels T22 restricted; record.json:6, SAP/P019b/Challenge/Part1.lean:94, and SAP/P019b/Defs/WholeW1.lean:258 disclose the finite-space domain and omission of the arbitrary-space extension, general randomized causal-effect interpretation, and positive delayed-treatment implication. Both current docstrings expressly withdraw the refutation interpretation."
+    ]
+  }
+]

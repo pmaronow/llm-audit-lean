@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P019-T12",
+    "theorem": "SAP.P019b.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The normalized Fin 12 CNN study has all four standing assumptions, hence Assumptions 1–3; its Y=1 control and treatment cells each have probability 1/8. Referee.cnn_standing in scratch/Nonvacuity.lean compiled using only Defs. The canonical note explicitly scopes T12 to the corrected population identity and assigns inference to T21; the record's restricted label is conservative relative to that scope.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T13",
+    "theorem": "SAP.P019b.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This hypothesis-free conjunction concerns a concrete normalized law on Fin 12. Its standing assumptions were independently checked by the compiled Referee.cnn_standing. The three respondent classes have probabilities 1/4, 1/4, 1/2; W is independently uniform on {1,2} and Z is an independent fair bit. The two watching labels have probabilities 1/4 and 1/2 on exactly the same observable random variables, so the identification counterexample is substantive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T14",
+    "theorem": "SAP.P019b.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use cnnWitness, R=cnnReading false and Q=cnnWatching false. Then Y=Q pointwise, X=R or Q, P(Z=1)=1/2, P(Q=1)=1/4, and a=P(R=1,Q=0)=1/4. Referee.cnn_truthful_reading_hypotheses compiled all hypotheses, including full factorization for every function of (W,R,Q). Thus this example also exercises a positive reader-only excess.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T15",
+    "theorem": "SAP.P019b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The parameters n=50, p1=p2=1/2, alpha=1/20 satisfy every antecedent; the arithmetic hypotheses were compiled in scratch/Nonvacuity.lean. S=V=1/2>0, and the normal quantile is evaluated at 39/40 in (0,1). Off-null instances also exist, for example n=50, p1=3/4, p2=1/4, alpha=1/20, with S=3/8 and V=1/2. Both tails are probabilities of nonempty normal half-lines.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T16",
+    "theorem": "SAP.P019b.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The five masses (81,216,216,96,16)/625 are nonnegative and sum to one. Every rho in [0,1] is allowed, including an interior affected share rho=1/5. The exact value ceilingBeta printedAffected (1/5)=3109/3125 was compiled in scratch/Nonvacuity.lean. Only w=4 loses an increment under the printed ceiling rule; its mass is 16/625. The formula asserts no rejection probability.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T17",
+    "theorem": "SAP.P019b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The first branch has the compiled CNN standing instance. For the strict branch, scratch/Nonvacuity.lean defines a uniform Fin 8 study with independent fair bits determining W in {1,2}, Y and Z, with X always false and V=W. Referee.false_confession_hypotheses compiles Assumptions 2–4 and false-confession probability 1/2; Referee.false_confession_values compiles mu=0 and combined=1/2. Positive false-confession probability is equivalent to failure of the defined almost-sure monotonicity, not an additional substantive premise.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T18",
+    "theorem": "SAP.P019b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled CNN standing instance has mu=1/2, truthRate=1/2, gamma=1/2, Var(V|Z=1,Y=0)=17/36 and Var(V|Z=0,Y=0)=1/4, giving sigmaSq=7/6. Fixed empty-cell completions can for example both be zero; the theorem allows every fixed real pair. All actual finite-sample variances exist because the sample spaces and estimator ranges are finite.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P019-T19",
+    "theorem": "SAP.P019b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled CNN standing instance has sigmaSq=7/6>0 and every population conditioning cell positive. One may take c1=c0=cV=0 and alpha=1/20, or any other fixed real completions and interior alpha. Positive cell probabilities make deficient sample cells exponentially rare. The variance-estimator consistency is for n times the estimate, and the coverage limit is taken over the entire IID sample law.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P019-T20",
+    "theorem": "SAP.P019b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled CNN standing instance has sigmaSq=7/6 and standardSigmaSq=3/2, with positive gap 1/3. Thus both the hypotheses and strict comparison are nontrivial. All four fixed completions can be zero. More generally, positive confessor probability and positive confessor-cell variances enforce a positive component of the variance gap; strictness is not assumed as a premise.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P019-T21",
+    "theorem": "SAP.P019b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled CNN standing instance has confessor-cell probabilities 1/8 each and conditional variances 1/4 each. Consequently its root-n beta-estimator variance coefficient is 4>0, with beta=1. One may choose all fixed completions zero and any u in (0,1). Positive cell variances ensure that zero estimated standard errors do not persist with positive limiting probability.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P019-T22",
+    "theorem": "SAP.P019b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled CNN standing instance supplies treatment independence and nondegeneracy, hence also the population branch's positive arms. P(Z=1)=1/2 and P(Y=1)=1/4 give a positive root-n delta-estimator variance coefficient 3/4. The compiled false-confession study is an additional Assumptions 3–4 instance, demonstrating that no monotonicity premise is needed. Fixed completions may be zero, and all u in (0,1) are permitted.",
+    "confidence": 0.98
+  }
+]

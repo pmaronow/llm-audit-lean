@@ -1,0 +1,17 @@
+import SAP.P011a.Defs
+open SAP.P011a
+open scoped Matrix BigOperators
+set_option maxHeartbeats 1000000
+
+example (t : ℝ) (ht : t = 1 ∨ t = 2) :
+    let D : Matrix (Fin 3) (Fin 2) ℝ :=
+      fun i j => if j = 0 then 1 else (![t,-2*t,t] : Fin 3 → ℝ) i
+    Matrix.det (Dᵀ * D) ≠ 0 := by
+  intro D
+  have hD : Dᵀ * D = (!![3,0;0,6*t^2] : Matrix (Fin 2) (Fin 2) ℝ) := by
+    ext i j
+    change (∑ r : Fin 3, D r i * D r j) = _
+    fin_cases i <;> fin_cases j <;>
+      simp [D, Fin.sum_univ_succ] <;> ring
+  rw [hD, Matrix.det_fin_two]
+  rcases ht with rfl | rfl <;> norm_num

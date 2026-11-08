@@ -1,0 +1,334 @@
+import SAP.P002a.Defs
+
+namespace Review
+noncomputable section
+open SAP.P002a MeasureTheory Filter
+open scoped BigOperators ENNReal Matrix Classical Topology
+
+def Y (i : Fin 4) : ℝ := if i.val % 2 = 0 then -1 else 1
+def X (i : Fin 4) (_ : Fin 1) : ℝ := if i.val < 2 then -1 else 1
+def P : CovPopulation 4 1 :=
+  {pop := {y := fun i _ => Y i, d := fun _ a => a, n1 := 2}, x := X}
+
+lemma late_zero : late P.pop = 0 := by
+  simp [late, groupMean, P]
+
+lemma w_eq (a : Bool) : w P.pop a (late P.pop) = Y := by
+  ext i
+  rw [late_zero]
+  simp [w, P]
+
+lemma gram_one : gram X Finset.univ = 1 := by
+  ext s t
+  cases s with
+  | none =>
+    cases t with
+    | none => norm_num [gram, groupMean, augmented, Matrix.one_apply, Fin.sum_univ_succ]
+    | some t => fin_cases t; norm_num [gram, groupMean, augmented, X, Matrix.one_apply,
+        Fin.sum_univ_succ]
+  | some s =>
+    fin_cases s
+    cases t with
+    | none => norm_num [gram, groupMean, augmented, X, Matrix.one_apply, Fin.sum_univ_succ]
+    | some t => fin_cases t; norm_num [gram, groupMean, augmented, X, Matrix.one_apply,
+        Fin.sum_univ_succ]
+
+lemma score_zero : score X Finset.univ Y = 0 := by
+  ext s
+  cases s with
+  | none => norm_num [score, groupMean, augmented, Y, Fin.sum_univ_succ]
+  | some s => fin_cases s; norm_num [score, groupMean, augmented, X, Y, Fin.sum_univ_succ]
+
+lemma psi_zero (a : Bool) : psi P a (late P.pop) = 0 := by
+  change ols X Finset.univ (w P.pop a (late P.pop)) = 0
+  rw [w_eq, ols, gram_one, score_zero]
+  simp
+
+lemma residual_eq (a : Bool) : residual P a (late P.pop) = Y := by
+  ext i
+  simp only [SAP.P002a.residual, psi_zero, dotProduct_zero, sub_zero]
+  exact congrFun (w_eq a) i
+
+lemma mean_zero : mean Y = 0 := by
+  norm_num [mean, Y, Fin.sum_univ_succ]
+
+lemma var_eq : popVar Y = 4/3 := by
+  norm_num [popVar, mean_zero, Y, Fin.sum_univ_succ]
+
+lemma fourth_eq : fourthNorm Y = 1 := by
+  norm_num [fourthNorm, mean, Y, Fin.sum_univ_succ]
+
+lemma sqrt_var_ge_one : 1 ≤ Real.sqrt (popVar Y) := by
+  rw [var_eq]
+  exact (Real.le_sqrt (by norm_num) (by norm_num)).2 (by norm_num)
+
+lemma theta : Theta P.pop 0 (1/2) 2 := by
+  refine ⟨by norm_num [ValidDesign, P], ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i h; simpa [P] using h
+  · exact ⟨0, by simp [compliers, P]⟩
+  · norm_num [P]
+  · norm_num [P]
+  · rw [w_eq, w_eq]
+    have hC : compliers P.pop = Finset.univ := by ext i; simp [compliers, P]
+    rw [hC]
+    norm_num [groupCov, groupMean, Y, Fin.sum_univ_succ]
+  · intro a
+    have hv : v P.pop a (late P.pop) = Y := by
+      ext i
+      simp only [v, w_eq, mean_zero, sub_zero]
+    rw [hv, w_eq, fourth_eq]
+    nlinarith [sqrt_var_ge_one]
+
+lemma xi : Xi P 0 1 1 2 (1/2) := by
+  refine ⟨by norm_num [ValidDesign, P], ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i h; simpa [P] using h
+  · exact ⟨0, by simp [compliers, P]⟩
+  · norm_num [P]
+  · norm_num [P]
+  · rw [residual_eq, residual_eq]
+    simp only [popCov, ← pow_two, var_eq, zero_mul, neg_zero, mul_zero]
+    norm_num [mean_zero, mean, Y, Fin.sum_univ_succ]
+  · intro a
+    rw [residual_eq, fourth_eq]
+    nlinarith [sqrt_var_ge_one]
+  · intro s; fin_cases s
+    norm_num [P, X, Fin.sum_univ_succ]
+  · intro s; fin_cases s
+    norm_num [P, X, mean, Fin.sum_univ_succ]
+  · intro b
+    simp [P, X, normSq, mean, dotProduct, Fin.sum_univ_succ]
+
+theorem finite_nonvacuity : (0:ℝ) < 1 ∧ (0:ℝ) < 1 ∧ (0:ℝ) < 2 ∧
+    (0 < (1/2:ℝ) ∧ (1/2:ℝ) ≤ 1/2) ∧
+    Theta P.pop 0 (1/2) 2 ∧ Xi P 0 1 1 2 (1/2) ∧
+    (∀ a, 0 < popVar (residual P a (late P.pop))) := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num, theta, xi, ?_⟩
+  intro a
+  rw [residual_eq, var_eq]
+  norm_num
+
+-- The negative-delta inclusion premises also have nondegenerate instances.
+theorem negative_delta_nonvacuity : (-1/2 : ℝ) < 0 ∧ Theta P.pop (-1/2) (1/2) 2 ∧
+    Xi P (-1/2) 1 1 2 (1/2) := by
+  have hbound : -(-1/2 : ℝ) * Real.sqrt (popVar Y) * Real.sqrt (popVar Y)
+      ≤ popVar Y := by
+    have hs := Real.sq_sqrt (show 0 ≤ popVar Y by rw [var_eq]; norm_num)
+    nlinarith [show 0 ≤ popVar Y by rw [var_eq]; norm_num]
+  refine ⟨by norm_num, ?_, ?_⟩
+  · rcases theta with ⟨hd, hm, hc, hl, hu, _, hf⟩
+    refine ⟨hd, hm, hc, hl, hu, ?_, hf⟩
+    rw [w_eq, w_eq]
+    have hC : compliers P.pop = Finset.univ := by ext i; simp [compliers, P]
+    rw [hC]
+    have hg : groupCov (Finset.univ : Finset (Fin 4)) Y Y = popVar Y := by
+      norm_num [groupCov, groupMean, popVar, mean_zero, Y, Fin.sum_univ_succ]
+    change _ ≤ groupCov _ Y Y
+    rw [hg]
+    change -(-1/2 : ℝ) * Real.sqrt (groupCov _ Y Y) * Real.sqrt (groupCov _ Y Y) ≤ _
+    rw [hg]
+    exact hbound
+  · rcases xi with ⟨hd, hm, hc, hl, hu, _, hf, hx, h4, hq⟩
+    refine ⟨hd, hm, hc, hl, hu, ?_, hf, hx, h4, hq⟩
+    rw [residual_eq, residual_eq]
+    simpa only [popCov, popVar, pow_two] using hbound
+
+lemma quadratic_eq (b : Fin 1 → ℝ) :
+    mean (fun i => (dotProduct (X i) b)^2) = normSq b := by
+  simp [mean, X, dotProduct, normSq, Fin.sum_univ_succ]
+
+lemma least_eq : leastRayleigh X = 1 := by
+  have hset : {t | ∃ b : Fin 1 → ℝ, normSq b = 1 ∧
+      mean (fun i => (dotProduct (X i) b)^2) = t} = ({1} : Set ℝ) := by
+    ext t
+    simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]
+    constructor
+    · rintro ⟨b, hb, ht⟩
+      rw [quadratic_eq, hb] at ht
+      exact ht.symm
+    · intro ht
+      subst t
+      refine ⟨fun _ => 1, ?_, ?_⟩
+      · norm_num [normSq]
+      · rw [quadratic_eq]; norm_num [normSq]
+  unfold leastRayleigh
+  rw [hset, csInf_singleton]
+
+-- T9 finite hypotheses, including a genuine nonempty Rayleigh sphere.
+theorem spectral_nonvacuity : (0 : ℕ) < 4 ∧ (0 : ℕ) < 1 ∧ (0 : ℝ) < 1 ∧
+    (∀ s, ∑ i, X i s = 0) ∧ (1 : ℝ) ≤ leastRayleigh X := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, by rw [least_eq]⟩
+  intro s; fin_cases s
+  norm_num [X, Fin.sum_univ_succ]
+
+def cell (j : ℕ) (i : Fin (4*(j+1))) : Fin 4 :=
+  ((finProdFinEquiv (m := 4) (n := j+1)).symm i).1
+
+lemma sum_lift (j : ℕ) (f : Fin 4 → ℝ) :
+    (∑ i : Fin (4*(j+1)), f (cell j i)) =
+      ((j+1 : ℕ) : ℝ) * ∑ i : Fin 4, f i := by
+  calc
+    _ = ∑ p : Fin 4 × Fin (j+1), f p.1 :=
+      (finProdFinEquiv (m := 4) (n := j+1)).symm.sum_comp _
+    _ = _ := by simp [Fintype.sum_prod_type, Finset.sum_mul, mul_comm]
+
+lemma mean_lift (j : ℕ) (f : Fin 4 → ℝ) :
+    mean (fun i : Fin (4*(j+1)) => f (cell j i)) = mean f := by
+  unfold mean
+  rw [sum_lift]
+  have hm : (j : ℝ)+1 ≠ 0 := by positivity
+  push_cast
+  field_simp
+
+def R (j : ℕ) : CovPopulation (4*(j+1)) 1 :=
+  {pop := {y := fun i _ => Y (cell j i), d := fun _ a => a, n1 := 2*(j+1)},
+   x := fun i s => X (cell j i) s}
+
+lemma rlate (j : ℕ) : late (R j).pop = 0 := by simp [late, groupMean, R]
+
+lemma rw_eq (j : ℕ) (a : Bool) :
+    w (R j).pop a (late (R j).pop) = fun i => Y (cell j i) := by
+  rw [rlate]
+  ext i; simp [w, R]
+
+lemma rgram (j : ℕ) : gram (R j).x Finset.univ = 1 := by
+  rw [← gram_one]
+  ext s t
+  simpa [gram, groupMean, mean, R, augmented] using
+    mean_lift j (fun i => augmented X i s * augmented X i t)
+
+lemma rscore (j : ℕ) : score (R j).x Finset.univ (fun i => Y (cell j i)) = 0 := by
+  rw [← score_zero]
+  ext s
+  simpa [score, groupMean, mean, R, augmented] using
+    mean_lift j (fun i => augmented X i s * Y i)
+
+lemma rpsi (j : ℕ) (a : Bool) : psi (R j) a (late (R j).pop) = 0 := by
+  unfold psi
+  rw [rw_eq, ols, rgram, rscore]
+  simp
+
+lemma rres (j : ℕ) (a : Bool) :
+    SAP.P002a.residual (R j) a (late (R j).pop) = fun i => Y (cell j i) := by
+  ext i
+  simp only [SAP.P002a.residual, rpsi, dotProduct_zero, sub_zero, rw_eq]
+
+lemma rmean (j : ℕ) : mean (fun i => Y (cell j i)) = 0 := by
+  rw [mean_lift, mean_zero]
+
+lemma rvar (j : ℕ) : popVar (fun i => Y (cell j i)) =
+    ((4*(j+1) : ℕ) : ℝ) / (((4*(j+1) : ℕ) : ℝ)-1) := by
+  unfold popVar
+  rw [rmean]
+  simp only [sub_zero]
+  rw [sum_lift j (fun i => Y i ^ 2)]
+  norm_num [Y, Fin.sum_univ_succ]
+  ring
+
+lemma rfourth (j : ℕ) : fourthNorm (fun i => Y (cell j i)) = 1 := by
+  unfold fourthNorm
+  rw [mean_lift j (fun i => Y i ^ 4)]
+  norm_num [mean, Y, Fin.sum_univ_succ]
+
+lemma rvar_pos (j : ℕ) : 0 < popVar (fun i => Y (cell j i)) := by
+  rw [rvar]
+  apply div_pos <;> push_cast <;> nlinarith [Nat.cast_nonneg (α := ℝ) j]
+
+lemma rsqrt_ge_one (j : ℕ) : 1 ≤ Real.sqrt (popVar (fun i => Y (cell j i))) := by
+  apply (Real.le_sqrt (by norm_num) (rvar_pos j).le).2
+  norm_num only [one_pow]
+  rw [rvar]
+  apply (le_div_iff₀ ?_).2
+  · linarith
+  · push_cast
+    nlinarith [Nat.cast_nonneg (α := ℝ) j]
+
+lemma rxi (j : ℕ) : Xi (R j) 0 1 1 2 (1/2) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [ValidDesign, R]; omega
+  · intro i h; simpa [R] using h
+  · exact ⟨0, by simp [compliers, R]⟩
+  · norm_num [R]; push_cast; linarith
+  · norm_num [R]; push_cast; linarith
+  · rw [rres, rres]
+    simpa only [popCov, popVar, pow_two, zero_mul, mul_zero, neg_zero]
+      using (rvar_pos j).le
+  · intro a
+    rw [rres, rfourth]
+    nlinarith [rsqrt_ge_one j]
+  · intro s
+    change (∑ i, X (cell j i) s) = 0
+    rw [sum_lift j (fun i => X i s)]
+    fin_cases s
+    norm_num [X, Fin.sum_univ_succ]
+  · intro s
+    change mean (fun i => X (cell j i) s ^ 4) ≤ 1
+    rw [mean_lift j (fun i => X i s ^ 4)]
+    fin_cases s
+    norm_num [mean, X, Fin.sum_univ_succ]
+  · intro b
+    change 1 * normSq b ≤ mean (fun i => (dotProduct (X (cell j i)) b)^2)
+    rw [mean_lift j (fun i => (dotProduct (X i) b)^2), quadratic_eq]
+    simp
+
+theorem family_nonvacuity : StrictMono (fun j : ℕ => 4*(j+1)) ∧
+    (∀ j, Xi (R j) 0 1 1 2 (1/2)) ∧
+    (∀ j a, 0 < popVar (SAP.P002a.residual (R j) a (late (R j).pop))) := by
+  refine ⟨?_, rxi, ?_⟩
+  · intro i j hij
+    change 4*(i+1) < 4*(j+1)
+    omega
+  · intro j a
+    rw [rres]
+    exact rvar_pos j
+
+instance assignmentSpace (n : ℕ) : MeasurableSpace (Finset (Fin n)) := ⊤
+
+lemma randomization_exists (sizes : ℕ → ℕ) (F : ∀ j, Population (sizes j))
+    (hF : ∀ j, ValidDesign (F j)) :
+    ∃ μ : Measure (∀ j, Finset (Fin (sizes j))), IsProbabilityMeasure μ ∧
+      RandomizationSequence F μ (fun j ω => ω j) := by
+  have hD (j : ℕ) : (assignments (F j)).Nonempty := by
+    apply Finset.powersetCard_nonempty.mpr
+    simpa using (hF j).2.2.le
+  let ν : ∀ j, Measure (Finset (Fin (sizes j))) :=
+    fun j => (PMF.uniformOfFinset (assignments (F j)) (hD j)).toMeasure
+  haveI : ∀ j, IsProbabilityMeasure (ν j) := fun j => by dsimp [ν]; infer_instance
+  refine ⟨Measure.infinitePi ν, inferInstance, ?_⟩
+  intro j E
+  have hE : MeasurableSet {S | E S} := MeasurableSet.of_discrete
+  refine ⟨hE.preimage (measurable_pi_apply j), ?_⟩
+  change Measure.infinitePi ν ((fun ω => ω j) ⁻¹' {S | E S}) = _
+  rw [← Measure.map_apply (measurable_pi_apply j) hE, Measure.infinitePi_map_eval]
+  change (PMF.uniformOfFinset (assignments (F j)) (hD j)).toMeasure {S | E S} = _
+  rw [PMF.toMeasure_uniformOfFinset_apply _ _ hE]
+  have hcard : (0 : ℝ) < ((assignments (F j)).card : ℝ) := by
+    exact_mod_cast (hD j).card_pos
+  rw [probability, ENNReal.ofReal_div_of_pos hcard]
+  simp
+
+-- All T7 sequence hypotheses, also satisfying T9's weaker sequence premises.
+theorem full_sequence_nonvacuity : ∃ μ : Measure (∀ j, Finset (Fin (4*(j+1)))), IsProbabilityMeasure μ ∧
+    StrictMono (fun j : ℕ => 4*(j+1)) ∧
+    (0 : ℕ) < 1 ∧ (0 : ℝ) < 1 ∧ (0 : ℝ) < 2 ∧
+    (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) ≤ 1/2) ∧
+    (∀ j, Xi (R j) 0 1 1 2 (1/2)) ∧
+    (∀ j a, 0 < popVar (SAP.P002a.residual (R j) a (late (R j).pop))) ∧
+    RandomizationSequence (fun j => (R j).pop) μ (fun j ω => ω j) ∧
+    StrictMono (fun j : ℕ => j) := by
+  obtain ⟨μ, hμ, hZ⟩ := randomization_exists (fun j => 4*(j+1))
+    (fun j => (R j).pop) (fun j => (rxi j).1)
+  refine ⟨μ, hμ, ?_, by norm_num, by norm_num, by norm_num, by norm_num,
+    rxi, ?_, hZ, fun _ _ hij => hij⟩
+  · intro i j hij
+    change 4*(i+1) < 4*(j+1)
+    omega
+  · intro j a
+    rw [rres]
+    exact rvar_pos j
+end
+end Review
+
+#print axioms Review.finite_nonvacuity
+#print axioms Review.negative_delta_nonvacuity
+#print axioms Review.spectral_nonvacuity
+#print axioms Review.full_sequence_nonvacuity

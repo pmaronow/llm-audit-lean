@@ -47,5 +47,8 @@ lemma ae_kernel_constant {Ω : Type*} {m : MeasurableSpace Ω} [mΩ : Measurable
   exact ae_of_ae_trim hm (Measure.ae_ae_of_ae_compProd hh)
 
 
+#print axioms ae_indep_condExpKernel
+#print axioms condExp_product
+#print axioms ae_kernel_constant
 end
 end AronowAudit.P015.ConditionalCompletion

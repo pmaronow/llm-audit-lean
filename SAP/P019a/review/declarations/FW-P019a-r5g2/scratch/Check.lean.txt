@@ -1,0 +1,96 @@
+import SAP.P019a.Challenge
+
+open SAP.P019a
+open scoped BigOperators
+open Classical
+noncomputable section
+
+set_option maxRecDepth 20000
+set_option maxHeartbeats 2000000
+
+namespace Audit
+
+theorem distribution_monotone : distributionWitness.monotone := by
+  intro ω hp hy
+  exact hy
+
+theorem distribution_noLiars : distributionWitness.noLiarsDesign := by
+  intro ω hp
+  fin_cases ω <;> norm_num [distributionWitness, bitVal, fairBit]
+
+theorem distribution_independent : distributionWitness.treatmentIndependent := by
+  intro f z
+  cases z <;>
+    norm_num [distributionWitness, FiniteLaw.mean, FiniteLaw.prob, uniformFin,
+      fairBit, Fin.sum_univ_succ] <;> ring
+
+theorem distribution_cells :
+    0 < distributionWitness.law.prob (distributionWitness.cell false true) ∧
+    0 < distributionWitness.law.prob (distributionWitness.cell true true) := by
+  norm_num [distributionWitness, Study.cell, FiniteLaw.prob, FiniteLaw.mean,
+    uniformFin, fairBit, Fin.sum_univ_succ]
+
+-- All hypotheses of T6, including the genuine triple-independence premise.
+example : ∃ S : Study (Fin 8), S.monotone ∧ S.noLiarsDesign ∧
+    S.treatmentIndependent ∧ 0 < S.law.prob (S.cell false true) ∧
+    0 < S.law.prob (S.cell true true) :=
+  ⟨distributionWitness, distribution_monotone, distribution_noLiars,
+    distribution_independent, distribution_cells⟩
+
+-- All premises occurring in T8's strongest branch hold in the same example.
+-- Its beta≠1 branch is independently tested below with the diagnostic witness.
+theorem diagnosis_monotone : diagnosisWitness.monotone := by
+  intro ω hp hy
+  change fairBit ω 2 = true
+  change (fairBit ω 2 && decide (fairBit ω 1 = fairBit ω 3)) = true at hy
+  cases hx : fairBit ω 2 <;> simp_all
+
+theorem diagnosis_noLiars : diagnosisWitness.noLiarsDesign := by
+  intro ω hp
+  fin_cases ω <;> norm_num [diagnosisWitness, bitVal, fairBit]
+
+theorem diagnosis_nondegenerate : diagnosisWitness.nondegenerate := by
+  constructor
+  · intro z y
+    cases z <;> cases y <;>
+      norm_num [Study.cell, FiniteLaw.prob, FiniteLaw.mean, FiniteLaw.ce,
+        FiniteLaw.cv, diagnosisWitness, uniformFin, fairBit, Fin.sum_univ_succ]
+  · norm_num [FiniteLaw.variance, FiniteLaw.mean, diagnosisWitness, uniformFin,
+      fairBit, bitVal, Fin.sum_univ_succ]
+
+theorem diagnosis_values : diagnosisWitness.delta = 0 ∧ diagnosisWitness.beta = 2 := by
+  norm_num [Study.delta, Study.beta, Study.listMean, Study.cell, FiniteLaw.prob,
+    FiniteLaw.mean, FiniteLaw.ce, diagnosisWitness, uniformFin, fairBit, bitVal,
+    Fin.sum_univ_succ]
+
+theorem diagnosis_not_independent : ¬ diagnosisWitness.treatmentIndependent := by
+  intro h
+  have hf := h (fun w x y => if w = 0 ∧ x = true ∧ y = false then 1 else 0) false
+  norm_num [diagnosisWitness, FiniteLaw.mean, FiniteLaw.prob, uniformFin, fairBit,
+    Fin.sum_univ_succ] at hf
+
+-- Complete base T7 proposition, proved directly from its witness definitions.
+example : T7Statement := by
+  exact ⟨diagnosis_monotone, diagnosis_noLiars, diagnosis_nondegenerate,
+    diagnosis_values.1, diagnosis_values.2, by rw [diagnosis_values.2]; norm_num,
+    diagnosis_not_independent⟩
+
+-- T7's explicit failed factorization, computed without using the audited theorem.
+example :
+    diagnosisWitness.law.prob (fun ω => diagnosisWitness.W ω = 0 ∧
+      diagnosisWitness.X ω = true ∧ diagnosisWitness.Y ω = false ∧
+      diagnosisWitness.Z ω = false) = 0 ∧
+    diagnosisWitness.law.prob (fun ω => diagnosisWitness.W ω = 0 ∧
+      diagnosisWitness.X ω = true ∧ diagnosisWitness.Y ω = false) *
+      diagnosisWitness.law.prob (fun ω => diagnosisWitness.Z ω = false) = 1/32 := by
+  norm_num [FiniteLaw.prob, FiniteLaw.mean, diagnosisWitness, uniformFin,
+    fairBit, Fin.sum_univ_succ]
+
+example : ∃ S : Study (Fin 16), 0 < S.law.prob (S.cell false true) ∧
+    0 < S.law.prob (S.cell true true) ∧ S.monotone ∧ S.noLiarsDesign ∧ S.beta ≠ 1 := by
+  refine ⟨diagnosisWitness, (diagnosis_nondegenerate.1 false true).1,
+    (diagnosis_nondegenerate.1 true true).1, diagnosis_monotone, diagnosis_noLiars, ?_⟩
+  rw [diagnosis_values.2]
+  norm_num
+
+end Audit

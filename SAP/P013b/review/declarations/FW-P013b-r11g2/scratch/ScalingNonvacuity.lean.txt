@@ -1,0 +1,42 @@
+import SAP.P013b.Defs
+
+open SAP.P013b Finset
+open scoped BigOperators
+
+namespace ReviewScaling
+
+def sample : Finset (Fin 2050) := univ
+def item : Finset (Fin 2050) := univ.map (Fin.castLEEmb (show 1708 ≤ 2050 by decide))
+def survey : Finset (Fin 2050) := univ.map (Fin.castLEEmb (show 1899 ≤ 2050 by decide))
+def score (i : Fin 2050) : ℝ := if i = 0 then 1 else 0
+
+lemma zero_mem_item : (0 : Fin 2050) ∈ item := by
+  exact Finset.mem_map.mpr ⟨0, mem_univ _, rfl⟩
+
+lemma zero_mem_survey : (0 : Fin 2050) ∈ survey := by
+  exact Finset.mem_map.mpr ⟨0, mem_univ _, rfl⟩
+
+-- Every assumption of T24's numeric scaling clause, with a nonzero score.
+example :
+    item ⊆ sample ∧ survey ⊆ sample ∧
+    sample.card = 2050 ∧ item.card = 1708 ∧ survey.card = 1899 ∧
+    (∀ i ∈ sample, 0 < (2 : ℝ)) ∧
+    (∀ i ∈ sample, score i ≠ 0 → i ∈ item) ∧
+    (∀ i ∈ sample, score i ≠ 0 → i ∈ survey) ∧
+    score 0 = 1 := by
+  refine ⟨subset_univ _, subset_univ _, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simp [sample]
+  · simp [item]
+  · simp [survey]
+  · norm_num
+  · intro i hi h
+    by_cases h0 : i = 0
+    · simpa [h0] using zero_mem_item
+    · simp [score, h0] at h
+  · intro i hi h
+    by_cases h0 : i = 0
+    · simpa [h0] using zero_mem_survey
+    · simp [score, h0] at h
+  · simp [score]
+
+end ReviewScaling

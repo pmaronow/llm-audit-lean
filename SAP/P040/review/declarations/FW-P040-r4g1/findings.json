@@ -1,0 +1,68 @@
+[
+  {
+    "target_id": "P040-T1",
+    "theorem": "SAP.P040.T1",
+    "fingerprint": "499dbc39ad3839cf00553cfef2c6fca7debceeb6caec4fb1ce4b3515d475552a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses. scratch/ModelChecks.lean compiled successfully: constructs the probability product of fifteen Bernoulli(4/5) responses, proves coordinate independence and common marginals, identifies every binomialMass value with the corresponding Mathlib binomial singleton probability, and checks p0 in [0,1], positive mass at 14, and z=49/25 in the robustness range. The implication premises have explicit witnesses I(k)=empty and ell(k)=1. It also proves the actual normal-quantile defining set nonempty and bounded below independently of T1. The canonical witness satisfies the independence and common-probability conditions.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "Round 3: the dependency docstring attributed the omission of the actual normal-quantile clauses to exported T1 rather than to its base component T1Statement.",
+        "status": "fixed",
+        "reason": "SAP/P040/Defs/Part1.lean:76-77 now says that T1Statement is the base binomial/Wald component and that T1WholeStatement adds the actual normal-quantile clauses. The exported theorem at SAP/P040/Challenge/Part1.lean:20 uses T1WholeStatement, whose conjuncts at SAP/P040/Defs/WholeW1.lean:113-114 include the quantile specification and endpoints. The architect accurately describes this as a documentation-only repair; the current wording describes the statement correctly."
+      }
+    ]
+  },
+  {
+    "target_id": "P040-T3",
+    "theorem": "SAP.P040.T3",
+    "fingerprint": "40b0dec269f81e45cc53d3fb0e818d3923eb868a63b02b347dd2843b246e5764",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses; the asserted arithmetic has the fixed valid count 14 out of 15. scratch/ModelChecks.lean compiled a check that 14 is in range, the proportion rounds to .93, the Wald variance factor is positive, and z=49/25 is positive; it also proves nonnegativity of the variance factor at every count. The roots and interval endpoints are ordinary real square roots of nonnegative quantities, not defaults.",
+    "confidence": 0.99,
+    "resolved": []
+  },
+  {
+    "target_id": "P040-T2",
+    "theorem": "SAP.P040.T2",
+    "fingerprint": "ead1f9ca5511759c1e02407144dddd40e829a978e2d63f1e35d41bc3f5812cee",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses. scratch/ModelChecks.lean compiled the independent common-probability model and the equality of the stated mass function with Mathlib binomial probabilities. It independently constructs all three endpoint roots by the intermediate value theorem in their respective millionth-width brackets. Those disjoint brackets make the lower-endpoint ordering consistent, and actual root equations prevent the universal root-rounding clauses from being vacuous. No hypothesis of monotonicity or coverage is assumed.",
+    "confidence": 0.99,
+    "resolved": []
+  },
+  {
+    "target_id": "P040-T4",
+    "theorem": "SAP.P040.T4",
+    "fingerprint": "5d03561ce61c6e6a272acfb95dc6c56d6f842073c98e57f911093ba000e29600",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses; data and designs are fixed. scratch/RegressionChecks.lean compiled direct proofs of adjusted and unadjusted design injectivity and ranks 9 and 2, checks positivity and the coefficient-squared/variance identities of the two exact witnesses, and proves reference-kernel interval integrability and positive Student normalizing denominators. scratch/data_check.py independently verifies all 30 rows against the canonical input, computes ranks 2/9/9 and exact rational OLS/HC1 fits, reproducing both cafe/bulk coefficients, variances and statistics; results are in scratch/data-check.json. Supplementary floating-point reference evaluations agree but are not used as a proof certificate.",
+    "confidence": 0.99,
+    "resolved": []
+  },
+  {
+    "target_id": "P040-T5",
+    "theorem": "SAP.P040.T5",
+    "fingerprint": "cda0c43b615108f2295dc2b38ccc783a3171667802b6f65e9da9ba514bd04dd2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses. scratch/RegressionChecks.lean compiled full-rank checks of both fitted designs, positivity of all eight displayed statistics, positive Student denominators, and interval integrability for every positive degree of freedom. scratch/data_check.py verifies every fixed input row and independently recomputes all eight exact rational OLS/HC1 statistics, which match the statement, with design ranks 2/9/9 and residual df 28/21. Its supplementary numerical reference evaluations confirm the minimum is unadjusted bulk and all p values exceed .10; the numerical checks do not replace the certified proof.",
+    "confidence": 0.99,
+    "resolved": []
+  }
+]

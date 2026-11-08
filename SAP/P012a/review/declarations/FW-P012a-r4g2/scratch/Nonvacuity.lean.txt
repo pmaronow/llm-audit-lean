@@ -1,0 +1,78 @@
+import SAP.P012a.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 4000
+set_option maxHeartbeats 800000
+
+open SAP.P012a
+open Finset
+open scoped Classical
+noncomputable section
+
+attribute [local simp] Finset.filter_insert Finset.filter_singleton
+  Finset.image_insert Finset.image_singleton Finset.sdiff_eq_filter
+  Finset.erase_insert Finset.erase_insert_of_ne
+
+private theorem pair_eq_iff (a b c d : Vertex) :
+    ({a,b} : Finset Vertex) = {c,d} ↔
+      (a=c ∧ b=d) ∨ (a=d ∧ b=c) := by
+  rw [← Finset.coe_inj, Finset.coe_pair, Finset.coe_pair]
+  exact Set.pair_eq_pair_iff
+
+attribute [local simp] pair_eq_iff
+
+-- These checks use definitions and concrete finite calculations, not T6--T10.
+
+example : Admissible proofStepData := by
+  norm_num [Admissible, proofStepData, nonseeds, recruitmentDegree,
+    recruitmentEdges, s]
+
+example : 0 < sampledTraitDegree proofStepData false ∧
+    0 < sampledTraitDegree proofStepData true := by
+  norm_num [sampledTraitDegree, proofStepData]
+
+example : proofStepData.seeds.card < proofStepData.sampled.card ∧
+    WholeChronological proofStepData [1,2,3] ∧
+    W2Enumerates proofStepData [3,1,2] [3,2] := by
+  norm_num [proofStepData, WholeChronological, W2Enumerates, nonseeds]
+  decide
+
+example : Compatible proofStepData result1BadStart := by
+  norm_num [Compatible, Augmented, Simple, proofStepData, result1BadStart,
+    sampledVertices, recruitmentEdges, nonseeds, graphDegree, s, u,
+    Finset.subset_iff]
+  all_goals aesop
+
+example : Compatible proofStepData result2BadStart := by
+  norm_num [Compatible, Augmented, Simple, proofStepData, result2BadStart,
+    sampledVertices, recruitmentEdges, nonseeds, graphDegree, s, u,
+    Finset.subset_iff]
+  all_goals aesop
+
+-- All antecedents of the repaired Result 1, together in a single instance.
+example : Admissible proofStepData ∧ 1 ∈ proofStepData.sampled ∧
+    3 ∈ proofStepData.sampled ∧ proofStepData.time 1 < proofStepData.time 3 ∧
+    ¬ (3 ∈ nonseeds proofStepData ∧ proofStepData.parent 3 = 1) ∧
+    recruitmentDegree proofStepData 1 < proofStepData.degree 1 ∧
+    recruitmentDegree proofStepData 3 < proofStepData.degree 3 ∧
+    (∀ k ∈ proofStepData.sampled,
+      result1BadStart.trait (s k) = proofStepData.trait k) := by
+  norm_num [Admissible, proofStepData, nonseeds, recruitmentDegree,
+    recruitmentEdges, result1BadStart, s]
+
+example : ¬ Compatible proofStepData result1BadEnd ∧
+    (induced proofStepData result1BadStart).edges =
+      (induced proofStepData result1BadEnd).edges := by
+  norm_num [Compatible, Augmented, Simple, proofStepData, result1BadStart,
+    result1BadEnd, cleanup, addEdge, removeEdge, induced, sampledVertices,
+    recruitmentEdges, nonseeds, graphDegree, s, u, Finset.subset_iff]
+  all_goals aesop
+
+example : ¬ Compatible proofStepData result2BadEnd ∧
+    hDenominator result2BadStart = (35 / 12 : ℝ) ∧
+    hDenominator result2BadEnd = (15 / 8 : ℝ) := by
+  norm_num [Compatible, Augmented, Simple, proofStepData, result2BadStart,
+    result2BadEnd, addEdge, removeEdge, sampledVertices,
+    recruitmentEdges, nonseeds, graphDegree, hDenominator, z,
+    s, u, Finset.subset_iff]
+  all_goals aesop

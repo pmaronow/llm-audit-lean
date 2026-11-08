@@ -558,4 +558,6 @@ theorem concentrated_weights_counterexample_proof :
     fun N hN => concentrated_weights_deviation_probability hN,
     concentrated_weights_no_target⟩
 
+example : type_of% @AronowAudit.P018.concentrated_weights_counterexample := concentrated_weights_counterexample_proof
+
 end AronowAudit.P018.Wave1

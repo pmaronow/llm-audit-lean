@@ -1,6 +1,4 @@
 /-
-Documentation corrected for llm-audit-lean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -11,7 +9,7 @@ import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.WeakConverg
 /-!
 # Theorem 18.14 sufficiency (⟸): finite-net discretization
 
-Finite-net ingredients for the hard direction of van der Vaart, *Asymptotic Statistics* Theorem 18.14
+The hard direction of van der Vaart, *Asymptotic Statistics* Theorem 18.14
 (book p.261): marginal CLT (`IsMarginalCLT`) + asymptotic equicontinuity
 (`IsAsymptoticallyEquicontinuous`) ⟹ the empirical process converges weakly in
 the outer sense `⇝ₒ` to the tight `P`-Brownian bridge `G_P = gaussianPBridge` in
@@ -30,13 +28,14 @@ triangle inequality.
 
 ## Main results
 
+* `weakConvergesOuter_findim_proj` — the `m`-projected empirical process
+  converges `⇝ₒ` to the `m`-projected `G_P` marginal (finite-dim CLT).
 * `empirical_proj_error_outer` — the empirical discretization error
   `‖𝔾ₙ − πₘ𝔾ₙ‖_{ℓ∞(F)}` is asymptotically negligible as `m → ∞` (outer prob).
-* `tendsto_finiteNetProj_of_ucPath` — finite-net projections converge to each
-  uniformly continuous path.
-* `tendsto_outerReadout_of_pieces` — the ε/3 combination of readouts.
-* `empirical_readout_tail_outer` — the bounded-Lipschitz empirical readout
-  tail vanishes.
+* `limit_proj_error` — the limit discretization error
+  `∫ |f(πₘ z) − f z| dG_P` → 0 as `m → ∞` (a.s. UC paths + tightness + DCT).
+* `isPDonsker'_of_marginalCLT_and_asymptoticallyEquicontinuous_aux` — the
+  ε/3 combination for a bounded-Lipschitz test function.
 
 Reference: van der Vaart, *Asymptotic Statistics* (Cambridge, 1998), Theorem
 18.14 (book p.261), §19.2.
@@ -217,9 +216,14 @@ each measurable since `X i` is measurable and `g` is Borel) and the constant
 The full carrier map
 `ξ ↦ 𝔾ₙ ξ` into `ℓ∞(F)` is in general **NOT** Borel measurable for uncountable
 `F` — this non-measurability is precisely why the abstract-Donsker theory uses
-outer expectation `E*`. The *projected* map reads finitely many functions
-`s ∈ Sₘ ⊆ F`, each measurable by `hF_meas`. This lemma is the measurable-readout
-core of `measurable_projectedEmpirical`. -/
+outer expectation `E*`. Even the *projected* map reads finitely many functions
+`s ∈ Sₘ ⊆ F`, but those are only `AEStronglyMeasurable s P` (via `hF_meas`), so
+`ξ ↦ s (X i ξ)` is only `μ`-a.e. measurable — Borel measurability of
+`measurable_projectedEmpirical` therefore requires passing to measurable
+representatives `s' =ᵐ[P] s` and using that pushforward laws are insensitive to
+`μ`-a.e. modification (the same representative machinery as
+`marginalCLT_fdd_of_iid` in `Donsker.lean`). This lemma is the measurable-readout
+core of that argument. -/
 theorem measurable_empiricalProcess_coord
     {Ξ : Type} [MeasurableSpace Ξ] (X : ℕ → Ξ → Ω) (hX_meas : ∀ i, Measurable (X i))
     (n : ℕ) (g : Ω → ℝ) (hg : Measurable g) :
@@ -238,8 +242,8 @@ theorem measurable_empiricalProcess_coord
 /-! ### Shared finite-net factorization
 
 The projected map `πₘ` factors through the finite coordinate space `Sₘ → ℝ`, where
-`Sₘ = Set.range (netRep m)` is finite (`finite_range_netRep`). The shared components
-are the finite index type `netIndex m`, the continuous coordinate-collapse
+`Sₘ = Set.range (netRep m)` is finite (`finite_range_netRep`). We package this
+once: the finite index type `netIndex m`, the continuous coordinate-collapse
 reconstruction `netRecon m`, and the factorization
 `finiteNetProj m z = netRecon m (fun s => z s.1)`. -/
 
@@ -383,7 +387,7 @@ Unlike the un-projected `𝔾ₙ`, the projected map reads only the FINITE net
 `Sₘ = range (netRep m)` (finite by `finite_range_netRep`): `(πₘ (𝔾ₙ ξ)) t`
 equals `(𝔾ₙ ξ) (netRep m t)`, which takes values in the finite set of coordinates
 `{(𝔾ₙ ξ) s : s ∈ Sₘ}`. The map therefore factors through the finite-dimensional
-coordinate space `ℝ^{Sₘ}` as `(ℝ^{Sₘ}-recon) ∘ (finite coordinate restriction)`;
+coordinate space `ℝ^{Sₘ}` as `(finite coordinate restriction) ∘ (ℝ^{Sₘ}-recon)`;
 the restriction is measurable because each coordinate `ξ ↦ (𝔾ₙ ξ) s` is measurable
 (`measurable_empiricalProcess_coord`) and the reconstruction
 `ℝ^{Sₘ} → LinfF F` is continuous (so the Borel σ-algebra obstruction that defeats
@@ -543,6 +547,255 @@ theorem marginalCovMatrix_netPhi_posSemidef (m : ℕ) :
   rw [hgram]
   exact Matrix.posSemidef_gram ℝ _
 
+/-- **Gaussianity of the Euclidean bridge readout.** The Euclidean `ψ`-readout pushforward of
+`G_P` is an `IsGaussian` measure: it is the CLE-transport (`WithLp.toLp 2`, i.e.
+`(EuclideanSpace.equiv).symm`) of the Pi-readout law, which is Gaussian by the
+`isGaussian_fdd` field (`pBridge_isGaussian_fdd`). -/
+theorem gaussianPBridge_readout_isGaussian (m : ℕ) :
+    ProbabilityTheory.IsGaussian
+      ((gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+        (fun z : LinfF F => (WithLp.toLp 2
+          (fun i => z ((netEnum hG_env hG hF_meas hF_ent m).symm i).1) :
+          EuclideanSpace ℝ (Fin (Fintype.card ↥(Set.range
+              (netRep hG_env hG hF_meas hF_ent m))))))) := by
+  classical
+  set k := Fintype.card ↥(Set.range (netRep hG_env hG hF_meas hF_ent m)) with hk
+  set ψ : Fin k → ↥F := fun i => ((netEnum hG_env hG hF_meas hF_ent m).symm i).1 with hψ
+  set ν := gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne with hν
+  -- The Pi-readout law is Gaussian (the `isGaussian_fdd` field of `G_P`).
+  have hpi : ProbabilityTheory.HasGaussianLaw (fun z : LinfF F => (fun j => z (ψ j))) ν :=
+    (isPBrownianBridge_gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).isGaussian_fdd
+      k ψ
+  -- The Euclidean readout is the CLE `(EuclideanSpace.equiv).symm` applied to the Pi-readout.
+  set L := (EuclideanSpace.equiv (Fin k) ℝ).symm with hL
+  have hcomp : (fun z : LinfF F => (WithLp.toLp 2 (fun j => z (ψ j)) : EuclideanSpace ℝ (Fin k)))
+      = L ∘ (fun z : LinfF F => (fun j => z (ψ j))) := rfl
+  have hpi_gauss : ProbabilityTheory.IsGaussian
+      (ν.map (fun z : LinfF F => (fun j => z (ψ j)))) := hpi.isGaussian_map
+  rw [hcomp, ← AEMeasurable.map_map_of_aemeasurable
+    (L.continuous.measurable.aemeasurable) hpi.aemeasurable]
+  exact ProbabilityTheory.isGaussian_map_equiv L
+
+/-- **Mean of the Euclidean bridge readout.** The means of the two measures agree
+(both `0`): RHS by `integral_id_multivariateGaussian`; LHS coordinatewise by the
+mean-zero field `gaussianPBridge_mean`. -/
+theorem gaussianPBridge_readout_mean (m : ℕ) :
+    ∫ x, id x
+        ∂((gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+          (fun z : LinfF F => (WithLp.toLp 2
+            (fun i => z ((netEnum hG_env hG hF_meas hF_ent m).symm i).1) :
+            EuclideanSpace ℝ (Fin (Fintype.card ↥(Set.range
+                (netRep hG_env hG hF_meas hF_ent m)))))))
+      = ∫ x, id x
+        ∂(ProbabilityTheory.multivariateGaussian (0 : EuclideanSpace ℝ
+            (Fin (Fintype.card ↥(Set.range (netRep hG_env hG hF_meas hF_ent m)))))
+          (marginalCovMatrix P (netPhi hG_env hG hF_meas hF_ent m))) := by
+  classical
+  set k := Fintype.card ↥(Set.range (netRep hG_env hG hF_meas hF_ent m)) with hk
+  set ψ : Fin k → ↥F := fun i => ((netEnum hG_env hG hF_meas hF_ent m).symm i).1 with hψ
+  set ν := gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne with hν
+  set R : LinfF F → EuclideanSpace ℝ (Fin k) :=
+    fun z => (WithLp.toLp 2 (fun i => z (ψ i)) : EuclideanSpace ℝ (Fin k)) with hR
+  -- LHS and RHS both reduce to a single Euclidean integral, then to `0`.
+  -- RHS mean = `0` (`integral_id_multivariateGaussian'`, the `[id]` form).
+  rw [ProbabilityTheory.integral_id_multivariateGaussian']
+  -- LHS: `∫ id ∂(ν.map R) = ∫ z, R z ∂ν`; show this Euclidean integral is `0`.
+  have hLHS_gauss : ProbabilityTheory.IsGaussian (ν.map R) :=
+    gaussianPBridge_readout_isGaussian hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne m
+  have hcont_eval : ∀ i : ↥F, Continuous (fun z : LinfF F => z i) := by
+    intro i
+    have hlip : LipschitzWith 1 (fun z : LinfF F => z i) := by
+      apply LipschitzWith.of_dist_le_mul
+      intro z w
+      rw [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm]
+      have hsub : (z : ↥F → ℝ) i - (w : ↥F → ℝ) i = (z - w) i := by
+        rw [lp.coeFn_sub z w]; rfl
+      rw [show ‖(z : ↥F → ℝ) i - (w : ↥F → ℝ) i‖ = ‖(z - w) i‖ from by rw [hsub]]
+      exact lp.norm_apply_le_norm ENNReal.top_ne_zero (z - w) i
+    exact hlip.continuous
+  have hR_meas : Measurable R :=
+    ((PiLp.continuous_toLp 2 _).comp
+      (continuous_pi (fun i => hcont_eval (ψ i)))).measurable
+  have hR_int : Integrable R ν :=
+    (MeasureTheory.integrable_map_measure aestronglyMeasurable_id
+      hR_meas.aemeasurable).mp ProbabilityTheory.IsGaussian.integrable_id
+  rw [integral_map hR_meas.aemeasurable aestronglyMeasurable_id]
+  simp only [id_eq]
+  -- Coordinatewise (via `PiLp.ext`): each coordinate of the vector integral is `0`.
+  refine PiLp.ext (fun i => ?_)
+  -- The `i`-th coordinate is the CLM `EuclideanSpace.proj i`, which commutes with `∫`.
+  have hproj : (∫ z, R z ∂ν).ofLp i = ∫ z, (R z).ofLp i ∂ν := by
+    have := ContinuousLinearMap.integral_comp_comm (EuclideanSpace.proj (𝕜 := ℝ) i) hR_int
+    simpa only [EuclideanSpace.coe_proj] using this.symm
+  -- `(R z).ofLp i = z (ψ i)`, so each coordinate integral is `0` by `gaussianPBridge_mean`.
+  have hcoord : ∀ z : LinfF F, (R z).ofLp i = z (ψ i) := fun z => rfl
+  rw [show (0 : EuclideanSpace ℝ (Fin k)).ofLp i = 0 from rfl, hproj]
+  simp_rw [hcoord]
+  exact gaussianPBridge_mean hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne (ψ i)
+
+/-- **Covariance of the Euclidean bridge readout.** The covariance bilinear forms of the two
+measures agree, reducing on basis pairs (`covariance_eval_multivariateGaussian`)
+to the `cov` field of `G_P` (`pBridge_cov`) matching `marginalCovEntry`. -/
+theorem gaussianPBridge_readout_covarianceBilin (m : ℕ)
+    (hS_psd : (marginalCovMatrix P (netPhi hG_env hG hF_meas hF_ent m)).PosSemidef) :
+    ProbabilityTheory.covarianceBilin
+        ((gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+          (fun z : LinfF F => (WithLp.toLp 2
+            (fun i => z ((netEnum hG_env hG hF_meas hF_ent m).symm i).1) :
+            EuclideanSpace ℝ (Fin (Fintype.card ↥(Set.range
+                (netRep hG_env hG hF_meas hF_ent m)))))))
+      = ProbabilityTheory.covarianceBilin
+          (ProbabilityTheory.multivariateGaussian (0 : EuclideanSpace ℝ
+              (Fin (Fintype.card ↥(Set.range (netRep hG_env hG hF_meas hF_ent m)))))
+            (marginalCovMatrix P (netPhi hG_env hG hF_meas hF_ent m))) := by
+  classical
+  set k := Fintype.card ↥(Set.range (netRep hG_env hG hF_meas hF_ent m)) with hk
+  set ψ : Fin k → ↥F := fun i => ((netEnum hG_env hG hF_meas hF_ent m).symm i).1 with hψ
+  set ν := gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne with hν
+  set S := marginalCovMatrix P (netPhi hG_env hG hF_meas hF_ent m) with hS
+  set R : LinfF F → EuclideanSpace ℝ (Fin k) :=
+    fun z => (WithLp.toLp 2 (fun i => z (ψ i)) : EuclideanSpace ℝ (Fin k)) with hR
+  have hν_prob : IsProbabilityMeasure ν :=
+    (isPBrownianBridge_gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent
+        hF_ne).isProbabilityMeasure
+  -- Measurability + Gaussianity + L²-membership of the readout `R`.
+  have hcont_eval : ∀ i : ↥F, Continuous (fun z : LinfF F => z i) := by
+    intro i
+    have hlip : LipschitzWith 1 (fun z : LinfF F => z i) := by
+      apply LipschitzWith.of_dist_le_mul
+      intro z w
+      rw [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm]
+      have hsub : (z : ↥F → ℝ) i - (w : ↥F → ℝ) i = (z - w) i := by
+        rw [lp.coeFn_sub z w]; rfl
+      rw [show ‖(z : ↥F → ℝ) i - (w : ↥F → ℝ) i‖ = ‖(z - w) i‖ from by rw [hsub]]
+      exact lp.norm_apply_le_norm ENNReal.top_ne_zero (z - w) i
+    exact hlip.continuous
+  have hR_meas : Measurable R :=
+    ((PiLp.continuous_toLp 2 _).comp
+      (continuous_pi (fun i => hcont_eval (ψ i)))).measurable
+  have hLHS_gauss : ProbabilityTheory.IsGaussian (ν.map R) :=
+    gaussianPBridge_readout_isGaussian hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne m
+  -- L²-membership: `id` on `ν.map R` (Gaussian) and each `R`-coordinate on `ν`.
+  have hMemLp_map : MeasureTheory.MemLp id 2 (ν.map R) :=
+    ProbabilityTheory.IsGaussian.memLp_two_id
+  have hMemLp_R : MeasureTheory.MemLp R 2 ν :=
+    (MeasureTheory.memLp_map_measure_iff aestronglyMeasurable_id
+      hR_meas.aemeasurable).mp hMemLp_map
+  have hMemLp_coord : ∀ i : Fin k, MeasureTheory.MemLp (fun z : LinfF F => z (ψ i)) 2 ν := by
+    intro i
+    have heq : (fun z : LinfF F => z (ψ i)) = (EuclideanSpace.proj (𝕜 := ℝ) i) ∘ R := by
+      funext z; rw [EuclideanSpace.coe_proj]; rfl
+    rw [heq]
+    exact (EuclideanSpace.proj (𝕜 := ℝ) i).lipschitzWith.comp_memLp (map_zero _) hMemLp_R
+  -- `⟪basisFun a, u⟫ = u a` for the Euclidean basis.
+  have hbasis : ∀ (a : Fin k),
+      (fun u : EuclideanSpace ℝ (Fin k) =>
+        (inner ℝ ((EuclideanSpace.basisFun (Fin k) ℝ).toBasis a) u : ℝ))
+        = fun u => u.ofLp a := by
+    intro a; funext u
+    rw [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply, PiLp.inner_apply]
+    have hpt : ∀ x : Fin k,
+        (inner ℝ ((EuclideanSpace.single a (1 : ℝ)).ofLp x) (u.ofLp x) : ℝ)
+          = u.ofLp x * (if x = a then (1 : ℝ) else 0) := by
+      intro x; rw [PiLp.single_apply]; rfl
+    simp_rw [hpt]
+    simp [Finset.sum_ite_eq']
+  -- Reduce the bilinear-form equality to its values on the `basisFun` basis pairs.
+  rw [← ContinuousLinearMap.toBilinForm_inj]
+  refine LinearMap.BilinForm.ext_basis (EuclideanSpace.basisFun (Fin k) ℝ).toBasis
+    fun i j => ?_
+  rw [ContinuousLinearMap.toBilinForm_apply, ContinuousLinearMap.toBilinForm_apply]
+  -- RHS first: `covarianceBilin (mvG 0 S) eᵢ eⱼ = cov[(·)ᵢ,(·)ⱼ] = S i j`.
+  rw [ProbabilityTheory.covarianceBilin_apply_eq_cov
+        (μ := ProbabilityTheory.multivariateGaussian 0 S)
+        ProbabilityTheory.IsGaussian.memLp_two_id,
+    ProbabilityTheory.covarianceBilin_apply_eq_cov (μ := ν.map R) hMemLp_map]
+  rw [hbasis i, hbasis j]
+  -- `u.ofLp ·` is defeq to coordinate application `u ·`; rewrite RHS to `S i j`.
+  rw [ProbabilityTheory.covariance_eval_multivariateGaussian hS_psd]
+  -- LHS: pull the coordinate covariance through `R` (`covariance_map`).
+  have hcoord_meas : ∀ a : Fin k,
+      MeasureTheory.AEStronglyMeasurable
+        (fun u : EuclideanSpace ℝ (Fin k) => u.ofLp a) (ν.map R) := by
+    intro a
+    have h : (fun u : EuclideanSpace ℝ (Fin k) => u.ofLp a)
+        = ⇑(EuclideanSpace.proj (𝕜 := ℝ) a) := by funext u; rw [EuclideanSpace.coe_proj]
+    rw [h]
+    exact (EuclideanSpace.proj (𝕜 := ℝ) a).continuous.measurable.aestronglyMeasurable
+  rw [ProbabilityTheory.covariance_map (hcoord_meas i) (hcoord_meas j) hR_meas.aemeasurable]
+  -- The pulled-back coordinates are exactly the bridge evaluations `z ↦ z (ψ ·)`.
+  have hLcoord : ((fun u : EuclideanSpace ℝ (Fin k) => u.ofLp i) ∘ R)
+      = fun z : LinfF F => z (ψ i) := rfl
+  have hRcoord : ((fun u : EuclideanSpace ℝ (Fin k) => u.ofLp j) ∘ R)
+      = fun z : LinfF F => z (ψ j) := rfl
+  rw [hLcoord, hRcoord]
+  -- `cov = E[XY] − EX·EY` (mean-zero ⟹ second moment) = `pBridge_cov` = `S i j`.
+  rw [ProbabilityTheory.covariance_eq_sub (hMemLp_coord i) (hMemLp_coord j)]
+  -- Flatten the `Pi`-product integrand `X * Y` to a pointwise product.
+  simp only [Pi.mul_apply]
+  -- The means vanish (`gaussianPBridge_mean`); the mixed second moment is the `cov` field.
+  have hmi := gaussianPBridge_mean hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne (ψ i)
+  have hmj := gaussianPBridge_mean hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne (ψ j)
+  have hcov := (isPBrownianBridge_gaussianPBridge hG_env hG hF_meas hH_inf hH_sep
+    hF_ent hF_ne).cov (ψ i) (ψ j)
+  rw [hmi, hmj, hcov]
+  simp only [mul_zero, sub_zero]
+  -- `S i j = marginalCovEntry P (netPhi m) i j`, and `(ψ ·) = netPhi m ·` pointwise.
+  simp only [hS, marginalCovMatrix, marginalCovEntry, netPhi, hψ]
+
+/-- **Euclidean Gaussian identity.** The `ψ`-readout
+pushforward of the `P`-Brownian bridge `G_P`, where `ψ i = (netEnum m).symm i ∈ ↥F`,
+equals the marginal Gaussian `multivariateGaussian 0 (marginalCovMatrix P (netPhi m))`
+on `EuclideanSpace ℝ (Fin k)`.
+
+Both are centred Gaussian (mean 0): the readout law is Gaussian by
+`pBridge_isGaussian_fdd`; the multivariate Gaussian by construction. Their
+covariances agree entrywise: `cov[z(ψ i), z(ψ j); G_P] = P(ψi·ψj) − Pψi·Pψj`
+(`pBridge_cov`, plus mean-zero) `= marginalCovEntry P (netPhi m) i j` (since
+`(netPhi m) i = ψ i` as `Ω → ℝ`). Two centred Gaussians with equal covariance are
+equal (`IsGaussian.ext`) on `EuclideanSpace ℝ (Fin k)`:
+* **IsGaussian (LHS).** `pBridge_isGaussian_fdd m ψ` gives `IsGaussian` of the
+  `Fin k → ℝ` (Pi) readout law `ν.map (fun z => fun i => z (ψ i))`; transport to
+  the `EuclideanSpace` readout via `WithLp.toLp 2` (a continuous linear equiv, so
+  pushforward preserves Gaussianity: `map_map` + `IsGaussian.map` of a CLE).
+* **Mean 0.** `μ[id] = 0` for both, by `gaussianPBridge_mean` and
+  `integral_id_multivariateGaussian'`.
+* **Covariance.** `covarianceBilin` equality reduces (basis pairs) to
+  `cov[xᵢ,xⱼ]` matching: `covariance_eval_multivariateGaussian` gives `S i j =
+  marginalCovEntry P (netPhi m) i j`; for the bridge, `cov = second moment` (by
+  mean-zero) `= pBridge_cov (ψ i) (ψ j) = marginalCovEntry`. -/
+theorem gaussianPBridge_readout_eq_multivariateGaussian (m : ℕ) :
+    (gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+        (fun z : LinfF F => (WithLp.toLp 2
+          (fun i => z ((netEnum hG_env hG hF_meas hF_ent m).symm i).1) :
+          EuclideanSpace ℝ (Fin (Fintype.card ↥(Set.range (netRep hG_env hG hF_meas hF_ent m))))))
+      = ProbabilityTheory.multivariateGaussian 0
+          (marginalCovMatrix P (netPhi hG_env hG hF_meas hF_ent m)) := by
+  classical
+  -- Abbreviations: net cardinality `k`, enumerated net tuple `ψ : Fin k → ↥F`,
+  -- the bridge law `ν`, the covariance matrix `S`, and the Euclidean readout `R`.
+  set k := Fintype.card ↥(Set.range (netRep hG_env hG hF_meas hF_ent m)) with hk
+  set ψ : Fin k → ↥F := fun i => ((netEnum hG_env hG hF_meas hF_ent m).symm i).1 with hψ
+  set ν := gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne with hν
+  set S := marginalCovMatrix P (netPhi hG_env hG hF_meas hF_ent m) with hS
+  -- The Pi-readout `Rpi z = (z (ψ j))ⱼ` and the Euclidean readout `R = toLp ∘ Rpi`.
+  set Rpi : LinfF F → (Fin k → ℝ) := fun z j => z (ψ j) with hRpi
+  -- `S` is positive-semidefinite (covariance matrix).
+  have hS_psd : S.PosSemidef :=
+    marginalCovMatrix_netPhi_posSemidef hG_env hG hF_meas hF_ent m
+  -- The two measures are `IsGaussian`: RHS by construction, LHS by CLE-transport.
+  have hRHS_gauss : ProbabilityTheory.IsGaussian
+      (ProbabilityTheory.multivariateGaussian 0 S) := inferInstance
+  have hLHS_gauss : ProbabilityTheory.IsGaussian
+      (ν.map (fun z : LinfF F => (WithLp.toLp 2 (Rpi z) : EuclideanSpace ℝ (Fin k)))) :=
+    gaussianPBridge_readout_isGaussian hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne m
+  -- `IsGaussian.ext`: equal means + equal covariance bilinear forms.
+  refine ProbabilityTheory.IsGaussian.ext ?_ ?_
+  · -- Means: both `0`.
+    exact gaussianPBridge_readout_mean hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne m
+  · -- Covariances: `covarianceBilin` agree (reduced on basis pairs to `cov = S`).
+    exact gaussianPBridge_readout_covarianceBilin hG_env hG hF_meas hH_inf hH_sep
+      hF_ent hF_ne m hS_psd
 
 /-- **Standardized-form reconciliation and enumeration.** The net-coordinate
 empirical readout equals the reindexed `IsMarginalCLT`-standardised vector,
@@ -654,6 +907,261 @@ theorem netTuple_empirical_eq_reindex_std (h_clt : IsMarginalCLT F P)
     set B := ∫ x, (s.1 : Ω → ℝ) x ∂P with hB
     linear_combination A * h1 + B * h2
 
+/-- **Gaussian limit identification.** The `netTuple`-pushforward of
+the `P`-Brownian bridge `G_P` equals the `netReindex`-pushforward of the marginal
+Gaussian `multivariateGaussian 0 (marginalCovMatrix P (netPhi m))`.
+
+Both are centred Gaussian laws on `↥Sₘ → ℝ`; they have equal covariance because the
+`G_P` covariance `cov(z s, z t) = P(s·t) − Ps·Pt` (`pBridge_cov`) matches
+`marginalCovEntry P (netPhi m)` (the `(netEnum s, netEnum t)` entry of
+`marginalCovMatrix`). Two centred finite-dim Gaussians with equal covariance are
+equal (`IsGaussian.ext` on the pushed-forward Euclidean laws, via the enumeration
+isometry). `pBridge_isGaussian_fdd` supplies the Gaussianity of the `G_P` marginal. -/
+theorem gaussianPBridge_map_netTuple_eq (m : ℕ) :
+    (gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+        (netTuple hG_env hG hF_meas hF_ent m)
+      = (ProbabilityTheory.multivariateGaussian 0
+            (marginalCovMatrix P (netPhi hG_env hG hF_meas hF_ent m))).map
+          (netReindex hG_env hG hF_meas hF_ent m) := by
+  -- It suffices to compare the `netReindexInv`-pushforwards (a measurable equiv with
+  -- measurable left-inverse `netReindex`): both equal the marginal Gaussian on `ℝ^k`.
+  set ν := gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne with hν
+  set mvg := ProbabilityTheory.multivariateGaussian 0
+    (marginalCovMatrix P (netPhi hG_env hG hF_meas hF_ent m)) with hmvg
+  -- Recover each side from its `netReindexInv`-pushforward via `netReindex ∘ netReindexInv = id`.
+  have hrecover : ∀ ρ : Measure (↥(Set.range (netRep hG_env hG hF_meas hF_ent m)) → ℝ),
+      (ρ.map (netReindexInv hG_env hG hF_meas hF_ent m)).map
+        (netReindex hG_env hG hF_meas hF_ent m) = ρ := by
+    intro ρ
+    rw [Measure.map_map (measurable_netReindex hG_env hG hF_meas hF_ent m)
+      (measurable_netReindexInv hG_env hG hF_meas hF_ent m),
+      netReindex_netReindexInv, Measure.map_id]
+  rw [← hrecover (ν.map (netTuple hG_env hG hF_meas hF_ent m)),
+    ← hrecover (mvg.map (netReindex hG_env hG hF_meas hF_ent m))]
+  congr 1
+  -- `(ν.map netTuple).map netReindexInv = ν.map (netReindexInv ∘ netTuple) = readout`.
+  rw [Measure.map_map (measurable_netReindexInv hG_env hG hF_meas hF_ent m)
+      (measurable_netTuple hG_env hG hF_meas hF_ent m),
+    Measure.map_map (measurable_netReindexInv hG_env hG hF_meas hF_ent m)
+      (measurable_netReindex hG_env hG hF_meas hF_ent m),
+    netReindexInv_netReindex, Measure.map_id]
+  -- `netReindexInv ∘ netTuple = ψ-readout`; identify with the marginal Gaussian (core lemma).
+  have hcomp : (netReindexInv hG_env hG hF_meas hF_ent m) ∘
+      (netTuple hG_env hG hF_meas hF_ent m)
+      = fun z : LinfF F => (WithLp.toLp 2
+          (fun i => z ((netEnum hG_env hG hF_meas hF_ent m).symm i).1) :
+          EuclideanSpace ℝ (Fin (Fintype.card ↥(Set.range
+              (netRep hG_env hG hF_meas hF_ent m))))) := by
+    funext z
+    rfl
+  rw [hcomp]
+  exact gaussianPBridge_readout_eq_multivariateGaussian hG_env hG hF_meas hH_inf hH_sep
+    hF_ent hF_ne m
+
+/-- **Finite-dimensional CLT on the net coordinate space `Sₘ → ℝ`.** The
+pushforward laws of the net-coordinate empirical process `μ.map (netTuple ∘ 𝔾ₙ)`
+converge weakly to `gaussianPBridge.map netTuple` on `Sₘ → ℝ`.
+
+This is the genuine finite-dimensional CLT, isolated from the `LinfF F`-valued
+transport (`netRecon` continuous-mapping, done in
+`weakConverges_findim_proj_of_marginalCLT`). The proof enumerates `Sₘ` as a tuple
+`φ : Fin k → ↥F` (the `netIndexFintype` enumeration), applies the marginal-CLT
+clause `h_clt.2` (= `IsMarginalCLT.fdd`, via `marginalCLT_fdd_of_iid`) to obtain
+`TendstoInDistribution (standardised empirical vector) → multivariateGaussian 0
+(marginalCovMatrix P (φ ·))`, bridges `TendstoInDistribution` to `WeakConverges`
+of pushforwards (`ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`), and
+identifies the limit `gaussianPBridge.map netTuple` with the same Gaussian via the
+covariance match `pBridge_cov` + the Gaussian-marginal field `pBridge_isGaussian_fdd`
+(two centred Gaussians with equal covariance are equal). The `empiricalProcess`
+centring `√n(Pₙ − P)f` and the `IsMarginalCLT` standardisation
+`(√n)⁻¹•(∑ tupleVec − n•E)` coincide coordinatewise (`empiricalProcess` /
+`tupleVec` unfolding).
+
+vdV p.261 (⟸), step 1: finite-dimensional convergence. -/
+theorem weakConverges_netTuple_of_marginalCLT (h_clt : IsMarginalCLT F P)
+    (m : ℕ) {Ξ : Type} [MeasurableSpace Ξ] (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (X : ℕ → Ξ → Ω) (hX_meas : ∀ i, Measurable (X i))
+    (hX_indep : ProbabilityTheory.iIndepFun X μ)
+    (hX_id : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P) :
+    WeakConverges
+      (fun n => μ.map (fun ξ => netTuple hG_env hG hF_meas hF_ent m
+        (empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+          (memℓp_empiricalProcess
+            ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+            (fun i : Fin n => X i.val ξ)))))
+      ((gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+        (netTuple hG_env hG hF_meas hF_ent m)) := by
+  classical
+  -- Abbreviations: the enumerated net tuple `φ = netPhi m` and the marginal Gaussian.
+  set φ := netPhi hG_env hG hF_meas hF_ent m with hφ
+  have hφ_mem : ∀ i, φ i ∈ F := netPhi_mem hG_env hG hF_meas hF_ent m
+  -- The standardised CLT vector.
+  set stdVec : ℕ → Ξ → EuclideanSpace ℝ (Fin _) := fun n ξ =>
+    (Real.sqrt n)⁻¹ • (∑ i ∈ Finset.range n, tupleVec φ (X i ξ)
+      - n • ∫ ζ, tupleVec φ (X 0 ζ) ∂μ) with hstdVec
+  -- Apply the marginal CLT (`IsMarginalCLT.fdd`) to the enumerated net tuple.
+  obtain ⟨Y, hY, hTID⟩ := h_clt.2 μ X hX_meas hX_indep hX_id hX_law φ hφ_mem
+  -- `WeakConverges (μ.map stdVec) (multivariateGaussian 0 (marginalCovMatrix P φ))`.
+  have hWC_euclid : WeakConverges (fun n => μ.map (stdVec n))
+      (ProbabilityTheory.multivariateGaussian 0 (marginalCovMatrix P φ)) := by
+    -- The `ProbabilityMeasure`-valued limit point is `⟨mvg.map Y, _⟩ = ⟨mvg, _⟩`.
+    have hlim_eq : (⟨(ProbabilityTheory.multivariateGaussian 0 (marginalCovMatrix P φ)).map Y,
+          (by infer_instance)⟩ :
+          ProbabilityMeasure (EuclideanSpace ℝ (Fin _)))
+        = ⟨ProbabilityTheory.multivariateGaussian 0 (marginalCovMatrix P φ),
+            inferInstance⟩ :=
+      Subtype.ext hY.map_eq
+    intro g
+    -- Bridge `TendstoInDistribution.tendsto` (in `ProbabilityMeasure`) to integrals.
+    have hbridge := (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (hlim_eq ▸ hTID.tendsto)) g
+    exact hbridge
+  -- Map both sides by the continuous reindexing `netReindex` (continuous-mapping).
+  have hWC_net := hWC_euclid.map (continuous_netReindex hG_env hG hF_meas hF_ent m)
+    (measurable_netReindex hG_env hG hF_meas hF_ent m)
+  -- Rewrite the limit via Gaussian identification.
+  rw [← gaussianPBridge_map_netTuple_eq hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne m] at hWC_net
+  -- Rewrite the sequence: `(μ.map stdVec).map netReindex = μ.map (netTuple ∘ 𝔾ₙ)`.
+  have hseq : ∀ n : ℕ,
+      (μ.map (stdVec n)).map (netReindex hG_env hG hF_meas hF_ent m)
+        = μ.map (fun ξ => netTuple hG_env hG hF_meas hF_ent m
+            (empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+              (memℓp_empiricalProcess
+                ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+                (fun i : Fin n => X i.val ξ)))) := by
+    intro n
+    rw [Measure.map_map (measurable_netReindex hG_env hG hF_meas hF_ent m)
+      (by
+        -- `stdVec n` is measurable: finite affine combination of `tupleVec φ ∘ X i`.
+        have htv : Measurable (tupleVec φ) := by
+          have hpi : Measurable (fun ω => (fun i => φ i ω) : Ω → (Fin _ → ℝ)) :=
+            measurable_pi_iff.mpr (fun i => hF_meas (φ i) (hφ_mem i))
+          exact (EuclideanSpace.equiv _ ℝ).symm.continuous.measurable.comp hpi
+        exact Measurable.const_smul
+          ((Finset.measurable_sum _ (fun i _ => htv.comp (hX_meas i))).sub measurable_const)
+          ((Real.sqrt (n : ℝ))⁻¹))]
+    -- Pointwise: `netReindex (stdVec n ξ) = netTuple (𝔾ₙ ξ)`.
+    refine Measure.map_congr (Filter.Eventually.of_forall (fun ξ => ?_))
+    rw [Function.comp_apply]
+    exact (netTuple_empirical_eq_reindex_std hG_env hG hF_meas hF_ent h_clt m μ X hX_meas
+      hX_id hX_law n ξ).symm
+  rw [funext hseq] at hWC_net
+  exact hWC_net
+
+/-- **Finite-dimensional CLT through the net, in law form.** The pushforward
+laws of the projected empirical process `μ.map (πₘ ∘ 𝔾ₙ)` converge weakly to the
+`πₘ`-pushforward of `G_P = gaussianPBridge`.
+
+The projected map `πₘ z` depends only on
+the values of `z` on the finite net `Sₘ = range (netRep m)` (finite by
+`finite_range_netRep`), so both `μ.map (πₘ ∘ 𝔾ₙ)` and `gaussianPBridge.map πₘ`
+factor through the finite-dimensional coordinate space `ℝ^{Sₘ}`. On that space the
+convergence is exactly the finite-dim CLT: enumerate `Sₘ` as a tuple
+`φ : Fin k → ↥F`, apply `IsMarginalCLT.fdd` to get
+`TendstoInDistribution → multivariateGaussian 0 (marginalCovMatrix P (φ ·))`, and
+identify that Gaussian with the `φ`-readout of `gaussianPBridge` via the covariance
+match `pBridge_cov = marginalCovEntry` + `pBridge_isGaussian_fdd` (two centred
+Gaussians with equal covariance are equal). The continuous reconstruction
+`ℝ^{Sₘ} → LinfF F` (a coordinate-collapse, continuous) then transports the
+finite-tuple weak convergence to the `LinfF F`-valued statement via the
+continuous-mapping theorem `WeakConverges.map`.
+
+vdV p.261 (⟸), step 1 core: the finite-dimensional distributions converge. -/
+theorem weakConverges_findim_proj_of_marginalCLT (h_clt : IsMarginalCLT F P)
+    (m : ℕ) {Ξ : Type} [MeasurableSpace Ξ] (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (X : ℕ → Ξ → Ω) (hX_meas : ∀ i, Measurable (X i))
+    (hX_indep : ProbabilityTheory.iIndepFun X μ)
+    (hX_id : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P) :
+    WeakConverges
+      (fun n => μ.map (fun ξ => finiteNetProj hG_env hG hF_meas hF_ent m
+        (empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+          (memℓp_empiricalProcess
+            ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+            (fun i : Fin n => X i.val ξ)))))
+      ((gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+        (finiteNetProj hG_env hG hF_meas hF_ent m)) := by
+  -- Reduce to weak convergence on the finite coordinate space `Sₘ → ℝ` via the
+  -- factorization `πₘ = netRecon ∘ netTuple` and continuous-mapping (`netRecon`
+  -- continuous). Both pushforwards split through `netTuple` by `Measure.map_map`.
+  have hμmap : ∀ n : ℕ,
+      μ.map (fun ξ => finiteNetProj hG_env hG hF_meas hF_ent m
+        (empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+          (memℓp_empiricalProcess
+            ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+            (fun i : Fin n => X i.val ξ))))
+        = (μ.map (fun ξ => netTuple hG_env hG hF_meas hF_ent m
+            (empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+              (memℓp_empiricalProcess
+                ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+                (fun i : Fin n => X i.val ξ))))).map
+          (netRecon hG_env hG hF_meas hF_ent m) := by
+    intro n
+    have hcomp : (fun ξ => finiteNetProj hG_env hG hF_meas hF_ent m
+        (empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+          (memℓp_empiricalProcess
+            ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+            (fun i : Fin n => X i.val ξ))))
+        = (netRecon hG_env hG hF_meas hF_ent m) ∘
+          (fun ξ => netTuple hG_env hG hF_meas hF_ent m
+            (empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+              (memℓp_empiricalProcess
+                ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+                (fun i : Fin n => X i.val ξ)))) := by
+      funext ξ
+      rw [Function.comp_apply, finiteNetProj_eq_comp, Function.comp_apply]
+    rw [hcomp, ← Measure.map_map (continuous_netRecon hG_env hG hF_meas hF_ent m).measurable
+      (measurable_projectedEmpirical' hG_env hG hF_meas hF_ent m X hX_meas n)]
+  have hgmap :
+      (gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+        (finiteNetProj hG_env hG hF_meas hF_ent m)
+        = ((gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+            (netTuple hG_env hG hF_meas hF_ent m)).map
+          (netRecon hG_env hG hF_meas hF_ent m) := by
+    rw [Measure.map_map (continuous_netRecon hG_env hG hF_meas hF_ent m).measurable
+      (measurable_netTuple hG_env hG hF_meas hF_ent m), finiteNetProj_eq_comp]
+  rw [funext hμmap, hgmap]
+  exact (weakConverges_netTuple_of_marginalCLT hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne
+    h_clt m μ X hX_meas hX_indep hX_id hX_law).map
+    (continuous_netRecon hG_env hG hF_meas hF_ent m)
+    (continuous_netRecon hG_env hG hF_meas hF_ent m).measurable
+
+/-- **Finite-dimensional CLT through the net `Sₘ`.** For each fixed scale
+`m`, the `πₘ`-projected empirical process converges weakly in the outer sense to
+the pushforward of `G_P = gaussianPBridge` under `πₘ`.
+
+The projected map `ξ ↦ finiteNetProj m (𝔾ₙ ξ)` factors through the finite-
+dimensional coordinate space `ℝ^{Sₘ}`, hence is Borel-measurable
+(`measurable_projectedEmpirical`); so `weakConvergesOuter_of_measurable`
+reduces the `⇝ₒ` claim to ordinary weak convergence of pushforwards
+(`weakConverges_findim_proj_of_marginalCLT`), which is exactly the
+finite-dim CLT `IsMarginalCLT.fdd` evaluated on the net tuple. Covariance
+identification of the limit with the `πₘ`-pushforward of the `G_P` marginal
+uses `pBridge_cov` and `pBridge_isGaussian_fdd`.
+
+vdV p.261 (⟸), step 1: the finite-dimensional distributions converge. -/
+theorem weakConvergesOuter_findim_proj (h_clt : IsMarginalCLT F P) (m : ℕ)
+    {Ξ : Type} [MeasurableSpace Ξ] (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (X : ℕ → Ξ → Ω) (hX_meas : ∀ i, Measurable (X i))
+    (hX_indep : ProbabilityTheory.iIndepFun X μ)
+    (hX_id : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P) :
+    WeakConvergesOuter (fun _ => μ)
+      (fun n ξ => finiteNetProj hG_env hG hF_meas hF_ent m
+        (empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+          (memℓp_empiricalProcess
+            ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+            (fun i : Fin n => X i.val ξ))))
+      ((gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).map
+        (finiteNetProj hG_env hG hF_meas hF_ent m)) := by
+  -- Reduce the `⇝ₒ` goal to ordinary weak convergence of pushforwards via the
+  -- measurable-reduction lemma.
+  rw [weakConvergesOuter_of_measurable
+    (fun n => measurable_projectedEmpirical hG_env hG hF_meas hF_ent m X hX_meas n)]
+  -- The reduced goal is exactly the finite-dimensional CLT in law form.
+  exact weakConverges_findim_proj_of_marginalCLT hG_env hG hF_meas hH_inf hH_sep
+    hF_ent hF_ne h_clt m μ X hX_meas hX_indep hX_id hX_law
 
 /-- **Empirical discretization error is asymptotically negligible.** For
 every `ε > 0`, the outer probability that the `ℓ∞(F)`-distance between the
@@ -661,10 +1169,12 @@ empirical process `𝔾ₙ` and its net projection `πₘ𝔾ₙ` exceeds `ε` t
 `m → ∞`, uniformly in `n` in the `limsupₙ` sense.
 
 The sup-norm error is majorized by `supNormOver (localized 2⁻ᵐ-class) 𝔾ₙ` via
-linearity of the empirical process (the coordinates of `𝔾ₙ − πₘ𝔾ₙ` are differences
+`empiricalProcess_sub` (the coordinates of `𝔾ₙ − πₘ𝔾ₙ` are differences
 `𝔾ₙ f − 𝔾ₙ (netRep m f)` of `2⁻ᵐ`-close pairs). The `m → ∞` vanishing of its
-`limsupₙ` uses the asymptotic equicontinuity hypothesis `h_eq` in
-**outer probability** `P*`.
+`limsupₙ` is the chaining content of `hF_ent`
+(`localizedChainBound_of_finiteEntropy` / `equicontinuity_chaining_assembly_brick`
+in `ChainingAssembly.lean`), followed here by passage from that real-valued
+`∫⁻` bound to the **outer probability** `E*`/`P*`.
 
 vdV p.261 (⟸), step 2: the empirical process is asymptotically uniformly close
 to its finite-net discretization. -/
@@ -831,13 +1341,236 @@ theorem tendsto_finiteNetProj_of_ucPath (z : LinfF F)
         ≤ ε / 2 := lp.norm_le_of_forall_le (by linarith) hbound
       _ < ε := by linarith
 
+/-- **Limit discretization error vanishes.** For every bounded continuous
+readout `f : LinfF F →ᵇ ℝ`, the integral of `|f(πₘ z) − f z|` against
+`G_P = gaussianPBridge` tends to `0` as `m → ∞`.
+
+`G_P` concentrates on the `distL2 P`-uniformly-continuous paths
+(`IsPBrownianBridge.ucPaths` of `isPBrownianBridge_gaussianPBridge`): for a.e.
+path `z` the values `z (netRep m t)` converge to `z t` uniformly in `t` (the net
+is `2⁻ᵐ`-fine), so `πₘ z → z` in `ℓ∞(F)` pointwise a.e., whence
+`f (πₘ z) → f z` by continuity of `f`. The integrand is bounded by `2‖f‖` and
+`G_P` is a probability measure (tightness gives finiteness), so DCT closes it.
+
+vdV p.261 (⟸), step 3: the limit's net discretization converges to the limit. -/
+theorem limit_proj_error (f : LinfF F →ᵇ ℝ) :
+    Tendsto
+      (fun m => ∫ z, |f (finiteNetProj hG_env hG hF_meas hF_ent m z) - f z|
+        ∂(gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne))
+      atTop (𝓝 0) := by
+  set ν := gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne with hν
+  -- `G_P` is a probability measure (so the constant dominator is integrable).
+  have hprob : IsProbabilityMeasure ν :=
+    (isPBrownianBridge_gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent
+      hF_ne).isProbabilityMeasure
+  -- `G_P`-a.e. path is `distL2 P`-uniformly continuous.
+  have hucp := (isPBrownianBridge_gaussianPBridge hG_env hG hF_meas hH_inf hH_sep
+    hF_ent hF_ne).ucPaths
+  -- The integrand sequence, written as a function of `m`.
+  set Φ : ℕ → LinfF F → ℝ :=
+    fun m z => |f (finiteNetProj hG_env hG hF_meas hF_ent m z) - f z| with hΦ
+  -- Rewrite the target `𝓝 0` as `𝓝 (∫ z, (0 : ℝ) ∂ν)` so DCT's limit form matches.
+  have hzero : (0 : ℝ) = ∫ _ : LinfF F, (0 : ℝ) ∂ν := by simp
+  rw [hzero]
+  -- DCT: dominator `2‖f‖`, measurable integrands, a.e. pointwise convergence to `0`.
+  apply MeasureTheory.tendsto_integral_of_dominated_convergence (fun _ => 2 * ‖f‖)
+  · -- Each `Φ m` is `AEStronglyMeasurable`: `f ∘ πₘ` (continuous ∘ measurable) and
+    -- `f` (continuous) are measurable, so their difference's absolute value is.
+    intro m
+    have h1 : Measurable (fun z : LinfF F => f (finiteNetProj hG_env hG hF_meas hF_ent m z)) :=
+      f.continuous.measurable.comp (measurable_finiteNetProj hG_env hG hF_meas hF_ent m)
+    have h2 : Measurable (fun z : LinfF F => f z) := f.continuous.measurable
+    exact ((h1.sub h2).abs).aestronglyMeasurable
+  · -- The constant dominator `2‖f‖` is integrable (finite measure × constant).
+    exact integrable_const _
+  · -- Pointwise bound `|Φ m z| ≤ 2‖f‖`: each `|f w| ≤ ‖f‖`.
+    intro m
+    refine Filter.Eventually.of_forall (fun z => ?_)
+    rw [Real.norm_eq_abs, abs_abs]
+    have hb1 : |f (finiteNetProj hG_env hG hF_meas hF_ent m z)| ≤ ‖f‖ := by
+      rw [← Real.norm_eq_abs]; exact f.norm_coe_le_norm _
+    have hb2 : |f z| ≤ ‖f‖ := by rw [← Real.norm_eq_abs]; exact f.norm_coe_le_norm _
+    calc |f (finiteNetProj hG_env hG hF_meas hF_ent m z) - f z|
+          ≤ |f (finiteNetProj hG_env hG hF_meas hF_ent m z)| + |f z| := abs_sub _ _
+        _ ≤ ‖f‖ + ‖f‖ := add_le_add hb1 hb2
+        _ = 2 * ‖f‖ := by ring
+  · -- A.e. pointwise convergence `Φ m z → 0`: for a UC path `z`,
+    -- `πₘ z → z` (`tendsto_finiteNetProj_of_ucPath`), so `f (πₘ z) → f z`
+    -- (continuity of `f`), so `|f (πₘ z) − f z| → 0`.
+    filter_upwards [hucp] with z hz
+    have htproj : Tendsto (fun m => finiteNetProj hG_env hG hF_meas hF_ent m z) atTop (𝓝 z) :=
+      tendsto_finiteNetProj_of_ucPath hG_env hG hF_meas hF_ent z hz
+    have hf_tendsto : Tendsto (fun m => f (finiteNetProj hG_env hG hF_meas hF_ent m z))
+        atTop (𝓝 (f z)) :=
+      (f.continuous.tendsto z).comp htproj
+    -- `|f (πₘ z) − f z| → |f z − f z| = 0`.
+    have hsub : Tendsto (fun m => f (finiteNetProj hG_env hG hF_meas hF_ent m z) - f z)
+        atTop (𝓝 (0 : ℝ)) := by
+      have := hf_tendsto.sub (tendsto_const_nhds (x := f z))
+      simpa using this
+    have := (continuous_abs.tendsto (0 : ℝ)).comp hsub
+    simpa [Φ] using! this
 
 /-! ### The ε/3 argument
 
-The ε/3 readout split (vdV p.261) uses the outer-expectation bound
-`abs_outerReadout_diff_le_readout_abs` and the combiner
-`tendsto_outerReadout_of_pieces`. -/
+The ε/3 readout split (vdV p.261) uses two generic outer-expectation lemmas,
+`outerReadout_le_of_modulus` and `abs_outerReadout_diff_le`, together with the
+combiner `tendsto_outerReadout_of_pieces`. -/
 
+omit [IsProbabilityMeasure P] hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne in
+/-- **One-sided readout majorant (real form).** For probability `μ`, a
+bounded continuous readout `f`, two maps `X Y : Ξ → D`, a net scale `δ` and a
+continuity modulus `η ≥ 0` with `f (X ξ) ≤ f (Y ξ) + η` on the *good* event
+`{dist (X ξ) (Y ξ) ≤ δ}`, the shifted outer readout of `f ∘ X` is bounded by the
+readout of `f ∘ Y` plus `η` plus `2‖f‖ · (outer measure of the bad event)`.
+
+This is the real-valued `.toReal` packaging of `outerExpectation_readout_triangle`:
+the error is `η + 2‖f‖ · 1_{δ < dist}`, with `Lip = 1`; finiteness of
+both readouts (each `≤ 2‖f‖ · μ univ < ⊤`) lets `.toReal` distribute. -/
+theorem outerReadout_le_of_modulus {Ξ D : Type*} [MeasurableSpace Ξ]
+    [MeasurableSpace D] [PseudoMetricSpace D] (μ : Measure Ξ)
+    [IsProbabilityMeasure μ] (f : D →ᵇ ℝ) (X Y : Ξ → D) {δ η : ℝ} (hη : 0 ≤ η)
+    (hmod : ∀ ξ, dist (X ξ) (Y ξ) ≤ δ → f (X ξ) ≤ f (Y ξ) + η) :
+    (outerExpectation μ (fun ξ => ENNReal.ofReal (f (X ξ) + ‖f‖))).toReal
+      ≤ (outerExpectation μ (fun ξ => ENNReal.ofReal (f (Y ξ) + ‖f‖))).toReal
+        + η + 2 * ‖f‖ *
+          (outerExpectation μ
+            ({ξ | δ < dist (X ξ) (Y ξ)}.indicator (fun _ => (1 : ℝ≥0∞)))).toReal := by
+  classical
+  set badSet : Set Ξ := {ξ | δ < dist (X ξ) (Y ξ)} with hbadSet
+  set ind : Ξ → ℝ≥0∞ := badSet.indicator (fun _ => (1 : ℝ≥0∞)) with hind
+  set EX := outerExpectation μ (fun ξ => ENNReal.ofReal (f (X ξ) + ‖f‖)) with hEX
+  set EY := outerExpectation μ (fun ξ => ENNReal.ofReal (f (Y ξ) + ‖f‖)) with hEY
+  set I := outerExpectation μ ind with hI
+  -- `0 ≤ ‖f‖` and the pointwise `±‖f‖` bounds on `f`.
+  have hnorm : (0 : ℝ) ≤ ‖f‖ := norm_nonneg _
+  -- The error term is `err = η + 2‖f‖ · 1_bad`.
+  set err : Ξ → ℝ≥0∞ := fun ξ =>
+    ENNReal.ofReal η + ENNReal.ofReal (2 * ‖f‖) * ind ξ with herr
+  -- Pointwise majorant `hmaj`.
+  have hmaj : ∀ ξ, ENNReal.ofReal (f (X ξ) + ‖f‖)
+      ≤ ENNReal.ofReal (f (Y ξ) + ‖f‖) + ENNReal.ofReal 1 * err ξ := by
+    intro ξ
+    rw [ENNReal.ofReal_one, one_mul, herr]
+    -- Reduce to a real inequality `f(Xξ)+‖f‖ ≤ (f(Yξ)+‖f‖) + (η + 2‖f‖·1_bad)`.
+    have hYnn : (0 : ℝ) ≤ f (Y ξ) + ‖f‖ := by
+      have := (abs_le.1 (f.norm_coe_le_norm (Y ξ))).1; linarith
+    have hreal : f (X ξ) + ‖f‖
+        ≤ (f (Y ξ) + ‖f‖) + (η + 2 * ‖f‖ * (ind ξ).toReal) := by
+      by_cases hg : dist (X ξ) (Y ξ) ≤ δ
+      · -- Good event: `ind = 0`, use the modulus bound.
+        have hind0 : ind ξ = 0 := by
+          rw [hind, Set.indicator_of_notMem]
+          rw [hbadSet]; simp only [Set.mem_ofPred_eq, not_lt]; exact hg
+        rw [hind0]; simp only [ENNReal.toReal_zero, mul_zero, add_zero]
+        have := hmod ξ hg; linarith
+      · -- Bad event: `ind = 1`, slack `≥ 2‖f‖ ≥ f(Xξ) − f(Yξ)`.
+        have hind1 : ind ξ = 1 := by
+          rw [hind, Set.indicator_of_mem]
+          rw [hbadSet]; simp only [Set.mem_ofPred_eq]; exact lt_of_not_ge hg
+        rw [hind1]; simp only [ENNReal.toReal_one, mul_one]
+        have hfX := (abs_le.1 (f.norm_coe_le_norm (X ξ))).2
+        have hfY := (abs_le.1 (f.norm_coe_le_norm (Y ξ))).1
+        linarith
+    -- Lift the real inequality through `ENNReal.ofReal`.
+    calc ENNReal.ofReal (f (X ξ) + ‖f‖)
+        ≤ ENNReal.ofReal ((f (Y ξ) + ‖f‖) + (η + 2 * ‖f‖ * (ind ξ).toReal)) :=
+          ENNReal.ofReal_le_ofReal hreal
+      _ = ENNReal.ofReal (f (Y ξ) + ‖f‖)
+            + (ENNReal.ofReal η + ENNReal.ofReal (2 * ‖f‖) * ind ξ) := by
+          have hind_ne : ind ξ ≠ ⊤ := by
+            rw [hind]; exact ne_top_of_le_ne_top ENNReal.one_ne_top
+              (Set.indicator_le_self _ _ ξ)
+          rw [ENNReal.ofReal_add hYnn (by positivity),
+            ENNReal.ofReal_add hη (by positivity), ENNReal.ofReal_mul (by positivity),
+            ENNReal.ofReal_toReal hind_ne]
+  -- Apply `outerExpectation_readout_triangle` at `Lip = 1`.
+  have hS5 := outerExpectation_readout_triangle μ f X Y 1 err hmaj
+  rw [ENNReal.ofReal_one, one_mul] at hS5
+  -- `E*[err] ≤ ofReal η + ofReal(2‖f‖)·I`.
+  have hEerr : outerExpectation μ err
+      ≤ ENNReal.ofReal η + ENNReal.ofReal (2 * ‖f‖) * I := by
+    have hsplit : outerExpectation μ err
+        ≤ outerExpectation μ (fun _ => ENNReal.ofReal η)
+          + outerExpectation μ (fun ξ => ENNReal.ofReal (2 * ‖f‖) * ind ξ) := by
+      have := outerExpectation_add_le (μ := μ) (fun _ => ENNReal.ofReal η)
+        (fun ξ => ENNReal.ofReal (2 * ‖f‖) * ind ξ)
+      simpa [herr, Pi.add_apply] using! this
+    have hconst : outerExpectation μ (fun _ => ENNReal.ofReal η)
+        = ENNReal.ofReal η := by rw [outerExpectation_const]; simp
+    have hsmul : outerExpectation μ (fun ξ => ENNReal.ofReal (2 * ‖f‖) * ind ξ)
+        = ENNReal.ofReal (2 * ‖f‖) * I := by
+      have : (fun ξ => ENNReal.ofReal (2 * ‖f‖) * ind ξ)
+          = (ENNReal.ofReal (2 * ‖f‖)) • ind := by
+        funext ξ; simp [Pi.smul_apply, smul_eq_mul]
+      rw [this, outerExpectation_const_smul _ ENNReal.ofReal_ne_top, smul_eq_mul, hI]
+    rw [hconst, hsmul] at hsplit; exact hsplit
+  -- Chain: `EX ≤ EY + ofReal η + ofReal(2‖f‖)·I`.
+  have hchain : EX ≤ EY + (ENNReal.ofReal η + ENNReal.ofReal (2 * ‖f‖) * I) := by
+    calc EX ≤ EY + outerExpectation μ err := hS5
+      _ ≤ EY + (ENNReal.ofReal η + ENNReal.ofReal (2 * ‖f‖) * I) :=
+          add_le_add (le_refl EY) hEerr
+  -- Finiteness of all terms (each readout `≤ ofReal(2‖f‖)`, `I ≤ 1`).
+  have hI_le : I ≤ 1 := by
+    rw [hI]
+    calc outerExpectation μ ind ≤ outerExpectation μ (fun _ => (1 : ℝ≥0∞)) :=
+          outerExpectation_mono (fun ξ => Set.indicator_le_self _ _ ξ)
+      _ = 1 := by rw [outerExpectation_const]; simp
+  have hI_top : I ≠ ⊤ := ne_top_of_le_ne_top ENNReal.one_ne_top hI_le
+  have hEY_le : EY ≤ ENNReal.ofReal (2 * ‖f‖) := by
+    rw [hEY]
+    calc outerExpectation μ (fun ξ => ENNReal.ofReal (f (Y ξ) + ‖f‖))
+        ≤ outerExpectation μ (fun _ => ENNReal.ofReal (2 * ‖f‖)) := by
+          refine outerExpectation_mono (fun ξ => ENNReal.ofReal_le_ofReal ?_)
+          have := (abs_le.1 (f.norm_coe_le_norm (Y ξ))).2; linarith
+      _ = ENNReal.ofReal (2 * ‖f‖) := by rw [outerExpectation_const]; simp
+  have hEY_top : EY ≠ ⊤ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hEY_le
+  have hRHS_top : EY + (ENNReal.ofReal η + ENNReal.ofReal (2 * ‖f‖) * I) ≠ ⊤ := by
+    refine ENNReal.add_ne_top.2 ⟨hEY_top, ENNReal.add_ne_top.2 ⟨ENNReal.ofReal_ne_top, ?_⟩⟩
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hI_top
+  -- Convert the ENNReal bound to `.toReal`.
+  have := (ENNReal.toReal_le_toReal (ne_top_of_le_ne_top hRHS_top hchain) hRHS_top).2
+    hchain
+  rw [ENNReal.toReal_add hEY_top (by
+        exact ENNReal.add_ne_top.2 ⟨ENNReal.ofReal_ne_top,
+          ENNReal.mul_ne_top ENNReal.ofReal_ne_top hI_top⟩),
+    ENNReal.toReal_add ENNReal.ofReal_ne_top
+      (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hI_top),
+    ENNReal.toReal_mul, ENNReal.toReal_ofReal hη,
+    ENNReal.toReal_ofReal (by positivity)] at this
+  calc EX.toReal
+      ≤ EY.toReal + (η + 2 * ‖f‖ * I.toReal) := this
+    _ = EY.toReal + η + 2 * ‖f‖ * I.toReal := by ring
+
+omit [IsProbabilityMeasure P] hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne in
+/-- **Two-sided readout difference bound.** The absolute readout difference is
+controlled by the modulus `η` plus the `2‖f‖`-scaled bad-event outer measure,
+applying `outerReadout_le_of_modulus` in both directions (the bad event
+`{δ < dist (X ξ) (Y ξ)}` is symmetric in `X, Y`). -/
+theorem abs_outerReadout_diff_le {Ξ D : Type*} [MeasurableSpace Ξ]
+    [MeasurableSpace D] [PseudoMetricSpace D] (μ : Measure Ξ)
+    [IsProbabilityMeasure μ] (f : D →ᵇ ℝ) (X Y : Ξ → D) {δ η : ℝ} (hη : 0 ≤ η)
+    (hmodXY : ∀ ξ, dist (X ξ) (Y ξ) ≤ δ → f (X ξ) ≤ f (Y ξ) + η)
+    (hmodYX : ∀ ξ, dist (X ξ) (Y ξ) ≤ δ → f (Y ξ) ≤ f (X ξ) + η) :
+    |(outerExpectation μ (fun ξ => ENNReal.ofReal (f (X ξ) + ‖f‖))).toReal
+        - (outerExpectation μ (fun ξ => ENNReal.ofReal (f (Y ξ) + ‖f‖))).toReal|
+      ≤ η + 2 * ‖f‖ *
+          (outerExpectation μ
+            ({ξ | δ < dist (X ξ) (Y ξ)}.indicator (fun _ => (1 : ℝ≥0∞)))).toReal := by
+  -- The bad event is symmetric in `X, Y` (`dist_comm`).
+  have hsymm : {ξ | δ < dist (Y ξ) (X ξ)} = {ξ | δ < dist (X ξ) (Y ξ)} := by
+    ext ξ; simp only [Set.mem_ofPred_eq, dist_comm]
+  rw [abs_sub_le_iff]
+  constructor
+  · -- `EX.toReal − EY.toReal ≤ η + 2‖f‖·I.toReal`.
+    have := outerReadout_le_of_modulus μ f X Y hη hmodXY
+    linarith
+  · -- `EY.toReal − EX.toReal ≤ η + 2‖f‖·I.toReal` (swap roles; same `I` by `dist_comm`).
+    have hmodYX' : ∀ ξ, dist (Y ξ) (X ξ) ≤ δ → f (Y ξ) ≤ f (X ξ) + η := by
+      intro ξ hd; exact hmodYX ξ (by rw [dist_comm] at hd; exact hd)
+    have := outerReadout_le_of_modulus μ f Y X hη hmodYX'
+    rw [hsymm] at this
+    linarith
 
 omit [IsProbabilityMeasure P] hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne in
 /-- **Unconditional readout-difference bound via the absolute-value tail.** With no
@@ -847,7 +1580,8 @@ modulus hypothesis at all, the absolute `.toReal`-readout difference of `f ∘ X
 
 `|EX.toReal − EY.toReal| ≤ (E*[ ofReal |f∘X − f∘Y| ]).toReal`.
 
-The bound follows by applying `outerExpectation_readout_triangle` at `Lip = 1` with
+This is the `η = 0` / no-bad-event specialisation of `abs_outerReadout_diff_le`:
+applying `outerExpectation_readout_triangle` at `Lip = 1` with
 `err ξ = ofReal |f (X ξ) − f (Y ξ)|` in both directions (the pointwise majorant
 `f (X ξ) + ‖f‖ ≤ (f (Y ξ) + ‖f‖) + |f (X ξ) − f (Y ξ)|` holds since
 `f (X ξ) − f (Y ξ) ≤ |f (X ξ) − f (Y ξ)|`). Finiteness of all readouts
@@ -1004,8 +1738,9 @@ vanishes as `m → ∞` by `empirical_proj_error_outer`, leaving
 `limsupₘ limsupₙ Dtail ≤ K·ε`. Since `ε > 0` is arbitrary, the tail tends to `0`.
 
 The Lipschitz hypothesis is essential: a merely bounded-*continuous* `f` on the
-non-compact `ℓ∞(F)` has no global modulus, so this bound fails for it. An upgrade
-to all bounded-continuous test functions requires an additional portmanteau argument.
+non-compact `ℓ∞(F)` has no global modulus, so this bound fails for it. The upgrade
+to all bounded-continuous test functions happens at the headline theorem via the
+inf-convolution portmanteau `weakConvergesOuter_of_lipschitz_readout`.
 
 vdV p.261-262 (⟸): the readout-difference step for bounded-Lipschitz test
 functions, controlled by empirical equicontinuity alone. -/
@@ -1043,7 +1778,7 @@ theorem empirical_readout_tail_outer
   change Tendsto (fun m => limsup (fun n => Dtail m n) atTop) atTop (𝓝 0)
   -- It suffices to prove the `ε/0`-squeeze: `limsupₘ limsupₙ Dtail ≤ K·ε` for every
   -- fixed oscillation threshold `ε > 0`, with `0 ≤ Dtail`. Send `ε → 0`.
-  -- The `m`-limsup of `Dtail m ·` is dominated, for each fixed `ε`,
+  -- We package this as: the `m`-limsup of `Dtail m ·` is dominated, for each fixed `ε`,
   -- by `K·ε + 2‖f‖·limsupₙ P*{ε < ‖𝔾ₙ − πₘ𝔾ₙ‖}`, whose `m`-limit is `K·ε`.
   -- Reduce to `Tendsto … (𝓝 0)` via the `Metric` ε-bound: prove the
   -- limsup function is eventually `< ε'` (in norm) for every `ε' > 0`.
@@ -1253,6 +1988,158 @@ theorem empirical_readout_tail_outer
   rw [Real.norm_eq_abs, abs_of_nonneg hnonneg]
   exact lt_of_le_of_lt (hlimsup_bound m) hm
 
+/-- **The ε/3 argument for Theorem 18.14 sufficiency (⟸).** Under the marginal
+CLT and asymptotic equicontinuity, the empirical process converges `⇝ₒ` to
+`G_P` in `ℓ∞(F)`.
+
+For each `f : LinfF F →ᵇ ℝ`, split the readout error into three pieces:
+the `n → ∞` finite-dimensional convergence at fixed `m`, the empirical tail
+`‖𝔾ₙ − πₘ𝔾ₙ‖` lifted through the subadditive `E*` triangle inequality,
+and the limit tail `∫|f(πₘ·) − f·| dG_P`. Choosing `m` large
+(controls both tails) then `n` large (controls the middle) gives the ε/3 bound.
+
+The conclusion is the `WeakConvergesOuter` readout convergence for a fixed
+bounded-Lipschitz `f`; `weakConvergesOuter_of_lipschitz_readout` upgrades this to
+all bounded-continuous test functions. The Lipschitz hypothesis enters only in
+the empirical-tail bound.
+
+vdV p.261 (⟸): the readout-difference + finite-dim CLT + limit-tail step, at a single
+bounded-Lipschitz test function. -/
+theorem isPDonsker'_of_marginalCLT_and_asymptoticallyEquicontinuous_aux
+    (h_clt : IsMarginalCLT F P) (h_eq : IsAsymptoticallyEquicontinuous F P)
+    {Ξ : Type} [MeasurableSpace Ξ] (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (X : ℕ → Ξ → Ω) (hX_meas : ∀ i, Measurable (X i))
+    (hX_indep : ProbabilityTheory.iIndepFun X μ)
+    (hX_id : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P) (f : LinfF F →ᵇ ℝ)
+    (hf_lip : ∃ K, LipschitzWith K f) :
+    Tendsto (fun n =>
+        (outerExpectation μ (fun ξ => ENNReal.ofReal
+          (f (empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+              (memℓp_empiricalProcess
+                ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+                (fun i : Fin n => X i.val ξ))) + ‖f‖))).toReal
+          - ‖f‖ * (μ Set.univ).toReal) atTop
+      (𝓝 (∫ y, f y ∂(gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne))) := by
+  -- The empirical process and the projected process, abbreviated.
+  set 𝔾 : ℕ → Ξ → LinfF F := fun n ξ =>
+    empiricalProcessLinf (fun i : Fin n => X i.val ξ)
+      (memℓp_empiricalProcess
+        ⟨G, hG_env, hG.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)⟩
+        (fun i : Fin n => X i.val ξ)) with h𝔾
+  set GP := gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne with hGP
+  -- Abbreviations for the four readout pieces.
+  set R : ℕ → ℝ := fun n =>
+    (outerExpectation μ (fun ξ => ENNReal.ofReal (f (𝔾 n ξ) + ‖f‖))).toReal
+      - ‖f‖ * (μ Set.univ).toReal with hR
+  set Rproj : ℕ → ℕ → ℝ := fun m n =>
+    (outerExpectation μ (fun ξ =>
+        ENNReal.ofReal (f (finiteNetProj hG_env hG hF_meas hF_ent m (𝔾 n ξ))
+          + ‖f‖))).toReal
+      - ‖f‖ * (μ Set.univ).toReal with hRproj
+  set Lproj : ℕ → ℝ := fun m =>
+    ∫ z, f (finiteNetProj hG_env hG hF_meas hF_ent m z) ∂GP with hLproj
+  set L : ℝ := ∫ y, f y ∂GP with hL
+  -- `Dtail m n = E*[ |f(𝔾ₙ) − f(πₘ𝔾ₙ)| ]`, the pointwise-gap readout at scale `(m,n)`.
+  set Dtail : ℕ → ℕ → ℝ := fun m n =>
+    (outerExpectation μ (fun ξ => ENNReal.ofReal
+        |f (𝔾 n ξ) - f (finiteNetProj hG_env hG hF_meas hF_ent m (𝔾 n ξ))|)).toReal
+    with hDtail
+  change Tendsto R atTop (𝓝 L)
+  -- Assemble via the abstract ε/3 combiner.
+  refine tendsto_outerReadout_of_pieces R Rproj Lproj L Dtail
+    ?_middle ?_limtail ?_hdiff ?_Dtail ?_hDbdd
+  case _middle =>
+    -- Apply `weakConvergesOuter_findim_proj` to `f`, with the
+    -- limit pushforward identified via `integral_map`.
+    intro m
+    have hS2 := weakConvergesOuter_findim_proj hG_env hG hF_meas hH_inf hH_sep
+      hF_ent hF_ne h_clt m μ X hX_meas hX_indep hX_id hX_law f
+    -- `∫ f d(GP.map πₘ) = ∫ f(πₘ z) dGP = Lproj m` via `integral_map`.
+    have hmap : ∫ y, f y ∂((gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent
+        hF_ne).map (finiteNetProj hG_env hG hF_meas hF_ent m))
+        = Lproj m := by
+      rw [integral_map
+        (measurable_finiteNetProj hG_env hG hF_meas hF_ent m).aemeasurable
+        f.continuous.aestronglyMeasurable, hLproj, hGP]
+    rw [hRproj, ← hmap]
+    -- The readout is exactly `Rproj m n`; the limit is the pushforward integral.
+    convert! hS2 using 2
+  case _limtail =>
+    -- The theorem `limit_proj_error` gives `∫|f(πₘ·) − f·| → 0`, hence
+    -- `Lproj m = ∫ f(πₘ·) → ∫ f· = L`.
+    have hS4 := limit_proj_error hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne f
+    -- `GP` is a probability measure (so `f` and `f ∘ πₘ` are integrable).
+    have hprob : IsProbabilityMeasure GP := by
+      rw [hGP]
+      exact (isPBrownianBridge_gaussianPBridge hG_env hG hF_meas hH_inf hH_sep
+        hF_ent hF_ne).isProbabilityMeasure
+    -- `|Lproj m − L| ≤ ∫ |f(πₘ·) − f·| dGP`, and the RHS → 0; squeeze.
+    rw [tendsto_iff_dist_tendsto_zero]
+    have hbound : ∀ m, dist (Lproj m) L
+        ≤ ∫ z, |f (finiteNetProj hG_env hG hF_meas hF_ent m z) - f z| ∂GP := by
+      intro m
+      -- `dist (Lproj m) L = |Lproj m − L| = |∫ (f(πₘ·) − f·)| ≤ ∫ |f(πₘ·) − f·|`.
+      rw [Real.dist_eq, hLproj, hL]
+      have hf_int : Integrable f GP := f.integrable _
+      have hfπ_int : Integrable
+          (fun z => f (finiteNetProj hG_env hG hF_meas hF_ent m z)) GP :=
+        Integrable.of_bound
+          (f.continuous.measurable.comp
+            (measurable_finiteNetProj hG_env hG hF_meas hF_ent m)).aestronglyMeasurable
+          ‖f‖ (Eventually.of_forall (fun z => f.norm_coe_le_norm _))
+      rw [← integral_sub hfπ_int hf_int]
+      exact abs_integral_le_integral_abs
+    refine squeeze_zero (fun m => dist_nonneg) hbound ?_
+    -- The right-hand side `∫ |f(πₘ·) − f·| dGP → 0`.
+    simpa only [hGP] using hS4
+  case _hdiff =>
+    -- Readout diff (UNCONDITIONAL): the `‖f‖·(μ univ).toReal` shifts in `R` and
+    -- `Rproj` cancel, so `|R n − Rproj m n|` is exactly the abs `.toReal`-readout
+    -- difference of `f∘𝔾ₙ` and `f∘πₘ𝔾ₙ`, bounded by the pointwise-gap readout
+    -- `Dtail m n` via `abs_outerReadout_diff_le_readout_abs`.
+    intro m n
+    have hbnd := abs_outerReadout_diff_le_readout_abs μ f (𝔾 n)
+      (fun ξ => finiteNetProj hG_env hG hF_meas hF_ent m (𝔾 n ξ))
+    -- `R n − Rproj m n = EX.toReal − EY.toReal` (the `‖f‖·(μ univ).toReal` cancel).
+    have hsub : R n - Rproj m n
+        = (outerExpectation μ (fun ξ => ENNReal.ofReal (f (𝔾 n ξ) + ‖f‖))).toReal
+          - (outerExpectation μ (fun ξ => ENNReal.ofReal
+              (f (finiteNetProj hG_env hG hF_meas hF_ent m (𝔾 n ξ)) + ‖f‖))).toReal := by
+      rw [hR, hRproj]; ring
+    rw [hsub, hDtail]
+    exact hbnd
+  case _Dtail =>
+    -- Tail vanishing follows from `empirical_readout_tail_outer`; unfold `𝔾`
+    -- to identify its integrand with `Dtail`.
+    have hHP4 := empirical_readout_tail_outer hG_env hG hF_meas hF_ent
+      h_eq μ X hX_meas hX_indep hX_id hX_law f hf_lip
+    simpa only [hDtail, h𝔾] using hHP4
+  case _hDbdd =>
+    -- Boundedness: `Dtail m n = (E*[ofReal |…|]).toReal ≤ 2‖f‖`, the constant
+    -- bound (`|f∘𝔾ₙ − f∘πₘ𝔾ₙ| ≤ 2‖f‖`, probability measure ⇒ `E* ≤ ofReal 2‖f‖`).
+    intro m
+    refine Filter.isBoundedUnder_of ⟨2 * ‖f‖, fun n => ?_⟩
+    rw [hDtail]
+    have hE_le : outerExpectation μ (fun ξ => ENNReal.ofReal
+        |f (𝔾 n ξ) - f (finiteNetProj hG_env hG hF_meas hF_ent m (𝔾 n ξ))|)
+        ≤ ENNReal.ofReal (2 * ‖f‖) := by
+      calc outerExpectation μ (fun ξ => ENNReal.ofReal
+            |f (𝔾 n ξ) - f (finiteNetProj hG_env hG hF_meas hF_ent m (𝔾 n ξ))|)
+          ≤ outerExpectation μ (fun _ => ENNReal.ofReal (2 * ‖f‖)) := by
+            refine outerExpectation_mono (fun ξ => ENNReal.ofReal_le_ofReal ?_)
+            have hfX := abs_le.1 (f.norm_coe_le_norm (𝔾 n ξ))
+            have hfY := abs_le.1 (f.norm_coe_le_norm
+              (finiteNetProj hG_env hG hF_meas hF_ent m (𝔾 n ξ)))
+            rw [abs_le]
+            constructor <;> [linarith [hfX.1, hfY.2]; linarith [hfX.2, hfY.1]]
+        _ = ENNReal.ofReal (2 * ‖f‖) := by
+            rw [outerExpectation_const, measure_univ, mul_one]
+    calc (outerExpectation μ (fun ξ => ENNReal.ofReal
+            |f (𝔾 n ξ) - f (finiteNetProj hG_env hG hF_meas hF_ent m (𝔾 n ξ))|)).toReal
+        ≤ (ENNReal.ofReal (2 * ‖f‖)).toReal :=
+          ENNReal.toReal_mono ENNReal.ofReal_ne_top hE_le
+      _ = 2 * ‖f‖ := ENNReal.toReal_ofReal (by positivity)
 
 end Discretization
 

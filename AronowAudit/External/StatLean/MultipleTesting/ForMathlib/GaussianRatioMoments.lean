@@ -1,10 +1,7 @@
-/-
-Local file of llm-audit-lean, not taken from StatLean; it builds on the vendored StatLean code in this directory tree.
--/
 import AronowAudit.External.StatLean.MultipleTesting.ForMathlib.ChiSquaredInverseMoment
 import AronowAudit.External.Causalean.Stat.CLT.ChiSquaredProjection
 
-/-! Exact Student ratio moment using product-coordinate splitting.
+/-! New local exact Student ratio moment proof using product-coordinate splitting.
 No distributional law or moment identity is assumed. -/
 
 namespace AronowAudit.GaussianCompletion
@@ -61,5 +58,7 @@ theorem gaussian_ratio_law_second_moment {ν : ℕ} (hν : 2<ν) :
     (by fun_prop)]
   exact integral_gaussian_ratio_sq hν
 
+#print axioms integral_gaussian_ratio_sq
+#print axioms gaussian_ratio_law_second_moment
 end
 end AronowAudit.GaussianCompletion

@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.Probability.Distributions.Gamma
 import Mathlib.Probability.Moments.Basic
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral

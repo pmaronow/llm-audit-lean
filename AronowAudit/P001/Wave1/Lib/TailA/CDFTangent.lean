@@ -113,6 +113,51 @@ theorem cdf_tangent_separable (F : ℝ → ℝ)
   funext x
   exact hg x
 
+/-- The tangent paths form a real submodule, with the original tangent set as carrier. -/
+def cdf_tangent_submodule (F : ℝ → ℝ) : Submodule ℝ KolmogorovSpace where
+  carrier := CDFTangent F
+  zero_mem' := by
+    constructor
+    · intro ε hε
+      exact ⟨1, zero_lt_one, fun x y _ => by simpa using hε⟩
+    · intro x hx; rfl
+  add_mem' := by
+    intro h g hh hg
+    constructor
+    · intro ε hε
+      obtain ⟨δh, hδh, hhd⟩ := hh.1 (ε / 2) (by positivity)
+      obtain ⟨δg, hδg, hgd⟩ := hg.1 (ε / 2) (by positivity)
+      refine ⟨min δh δg, lt_min hδh hδg, ?_⟩
+      intro x y hxy
+      have h1 := hhd x y (hxy.trans_le (min_le_left _ _))
+      have h2 := hgd x y (hxy.trans_le (min_le_right _ _))
+      change |(h x + g x) - (h y + g y)| < ε
+      calc
+        _ = |(h x - h y) + (g x - g y)| := by congr 1; ring
+        _ ≤ |h x - h y| + |g x - g y| := abs_add_le _ _
+        _ < ε := by linarith
+    · intro x hx
+      change h x + g x = 0
+      rw [hh.2 x hx, hg.2 x hx, add_zero]
+  smul_mem' := by
+    intro a h hh
+    by_cases ha : a = 0
+    · subst a
+      simpa only [zero_smul] using (show (0 : KolmogorovSpace) ∈ CDFTangent F from by
+        exact ⟨fun ε hε => ⟨1, zero_lt_one, fun x y _ => by simpa using hε⟩,
+          fun x hx => rfl⟩)
+    have ha' : 0 < |a| := abs_pos.mpr ha
+    constructor
+    · intro ε hε
+      obtain ⟨δ, hδ, hd⟩ := hh.1 (ε / |a|) (div_pos hε ha')
+      refine ⟨δ, hδ, ?_⟩
+      intro x y hxy
+      change |a * h x - a * h y| < ε
+      rw [← mul_sub, abs_mul]
+      simpa only [mul_comm] using (lt_div_iff₀ ha').mp (hd x y hxy)
+    · intro x hx
+      change a * h x = 0
+      rw [hh.2 x hx, mul_zero]
 
 /-- A finite law carried by the closed separable tangent is tight in the full path space. -/
 theorem cdf_tangent_tight [MeasurableSpace KolmogorovSpace] [BorelSpace KolmogorovSpace]
@@ -192,5 +237,17 @@ theorem cdf_bridge_unique [MeasurableSpace KolmogorovSpace] [BorelSpace Kolmogor
     cdf_evaluation_separates inferInstance inferInstance
     (cdf_bridge_tight P ν hν) (cdf_bridge_tight P κ hκ)
     (cdf_bridge_finite_laws (cdf P id) ν κ hν hκ)
+
+-- Exact library-interface checks from OUTER_READOUT / CDF_TANGENT in plan.json.
+example : ∀ F : ℝ → ℝ, IsClosed (CDFTangent F) := cdf_tangent_closed
+
+example : ∀ (F : ℝ → ℝ), TotallyBounded (Set.range F) →
+    TopologicalSpace.IsSeparable (CDFTangent F) := cdf_tangent_separable
+
+example [MeasurableSpace KolmogorovSpace] [BorelSpace KolmogorovSpace] :
+    ∀ (P : Measure ℝ) [IsProbabilityMeasure P]
+      (ν κ : Measure KolmogorovSpace) [IsProbabilityMeasure ν] [IsProbabilityMeasure κ],
+      IsCDFBridge (cdf P id) ν → IsCDFBridge (cdf P id) κ → ν = κ :=
+  @cdf_bridge_unique _ _
 
 end AronowAudit.P001.Wave1.TailA

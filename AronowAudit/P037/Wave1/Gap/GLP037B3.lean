@@ -408,4 +408,6 @@ theorem collapsed_controls_variance_counterexample_proof :
       collapsed_controls_certificate_inequalities.2.2.1,
       collapsed_controls_certificate_inequalities.2.2.2.1⟩
 
+example : type_of% @AronowAudit.P037.collapsed_controls_variance_counterexample := collapsed_controls_variance_counterexample_proof
+
 end AronowAudit.P037.Wave1

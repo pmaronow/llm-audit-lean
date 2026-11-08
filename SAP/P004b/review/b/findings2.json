@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P004-T16",
+    "theorem": "SAP.P004b.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem is an explicit conjunction, without premises. The three nonempty rectangles have positive finite area; at d=0 the first two averages are the same Bernoulli(1/2) bit and have covariance 1/4. In the crowding family n=1 already gives two disjoint area-one rectangles, while arbitrary n gives arbitrarily large neighborhood cardinality. All retained distances and integrals are genuine.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T17",
+    "theorem": "SAP.P004b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the cutoff take any finite collection of separated singleton nodes in the Euclidean plane, counting measure on those nodes, disk bands [0,d], and bounded coordinate-local outcomes; compactness, finite source range, diameter D=0, and positive finite average denominators hold. For the count theorem take separated closed unit squares, a=1 and D=2, with pairwise disjoint interiors. Thus neither geometric implication has inconsistent premises.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T18",
+    "theorem": "SAP.P004b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For each N take singleton nodes x_i=(i,0), the sum of their Dirac measures, disk bands, and deterministic outcomes c_i=(-1)^i at the nodes and zero elsewhere. At d=0 the averages are c_i and all are well-defined. Outcomes are bounded by 2; synthetic interference has only self sources, so h(d)=0 works for every d. Node balls contain at most 3(1+r^2) nodes uniformly. Take p=1/2. The N=2 table has Var(linearHajek)=2, checked in scratch/Check.lean, so the example need not have a constant estimator.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T19",
+    "theorem": "SAP.P004b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no hypotheses. For every positive N the assignment space has 2^N points of positive equal weight, V_0 is a genuine fair sign, all other variables are zero, and the standardized sum has variance one and probabilities 1/2 at each of -1 and 1. Its nonnormality does not use zero variance or an empty array.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T20",
+    "theorem": "SAP.P004b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let Omega_N={-1,1}^N with the uniform product probability measure, V_Ni the i-th coordinate, and B_Ni={i}. All coordinates are measurable, centered, independent and bounded by 1. The sum has variance N, so M=1, D=1 and v=1 satisfy the hypotheses, including the variance lower bound.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T21",
+    "theorem": "SAP.P004b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=2, p=1/2, R_0(z)=1 and R_1(z)=-1, and B_i={i}. Only synthetic self sources exist, and the neighborhoods are symmetric and self-containing. The population arm centers are zero, linearHajek=2(z_0-z_1), and its variance is 2. The positive variance is compiled in scratch/Check.lean; the bound and corrected node variance were also checked by exact enumeration on a nonlocal three-node table.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T22",
+    "theorem": "SAP.P004b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=2, p_i=1/2, R_i(z)=z_i, g_i(a)=0, and B_i={i}. Interference sources are local; the hypotheses hold without any zero denominators. The augmented estimator is z_0+z_1, with variance 1/2, secondMomentBound=1 and homophilyQ=1, giving 1-1/2=1/2. Additional exact enumeration uses three unequal interior probabilities and arbitrary unequal fits.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T23",
+    "theorem": "SAP.P004b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use N=4, assignment (1,1,0,0), arbitrary real outcome and fit vectors, and propensities (1/3,2/5,3/4,4/7). Both arm counts are 2, the Gram determinant is 4, and every propensity denominator is nonzero. Exact rational arithmetic verifies the weighted-residual identity and identifies lambda as the actual inverse-Gram treatment row. The kernel neighborhoods may be singleton sets.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T24",
+    "theorem": "SAP.P004b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use N=4, assignment (1,1,0,0), e=(1,-1,1,-1), and Q=I_4. Both arms have count 2; the residual maker is nonzero and the Gram matrix is invertible. The kernel variance equals 1, and the positive-valid-interval instance is compiled in scratch/Check.lean. Thus the matrix assertions are not being satisfied through the singular-inverse convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T25",
+    "theorem": "SAP.P004b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=8, p_i=1/2, R_i(z)=z_i, and mu_1=mu_0=0. Each node effect is 1, the corrected summand is (2z_i-1)/8 and has mean zero, whereas the printed summand has mean -7/8. All normalizing denominators are positive. Exact finite enumeration additionally checks the retained identities with heterogeneous probabilities and nonzero shifts.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T26",
+    "theorem": "SAP.P004b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take singleton nodes at x_0=(0,0), x_1=(1,0), and x_i=(3i,0) for i>=2, with counting measure on the nodes, d=0 disk averages, p=1/2, and outcomes z_0 at node 0, -z_1 at node 1, zero elsewhere (omit absent nodes when N<2). For N>=2 the centered effects are (1,-1,0,...). The metric and quadratic spacing hold. Let phi(s)=1 for 0<=s<=1 and zero otherwise, K=uniformKernel, and b_N=N+1. The pairwise envelope holds and every diverging exterior-tail sum is eventually zero. All averages and positive bandwidths are genuine. Nonzero effect heterogeneity is allowed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T27",
+    "theorem": "SAP.P004b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an explicit witness without antecedents. At N=10, use either z=(1,1,1,1,1,0,0,0,0,0) or its complement. Both are in SparseGood and have nonempty arms. The arm containing node 0 has q=5, so HAC variance is (q-1)/q^3 when treated and (q-1)/(16q^3) when controlled, both positive; the first case covers at +/-2 and the second does not. Exact enumeration verifies every balanced assignment for N=10,11,12 and the exact sparse variance for N=3..12. No undefined studentized statistic supplies the undercoverage.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T28",
+    "theorem": "SAP.P004b.T28",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use singleton nodes x_i=(i,0), counting measure, disk bands at d=0, p=1/2 and deterministic node outcomes c_i=(-1)^i, with zero outcome elsewhere. Every average is well-defined, the outcomes are bounded, the distances are metric, and ball counts are at most 3(1+s^2). Since outcomes are deterministic, NED holds with psi=0 and g=1. Take K=uniformKernel and b_N=(N+1)^(1/12), positive for every N, diverging and o(N^(1/6)). All node effects and homophily are zero, but N Var(linearHajek)=4(1-cbar_N^2)>=3 for N>=2. Thus the additional coverage branch has jointly satisfiable hypotheses and real, interior Gaussian quantiles.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P004-T29",
+    "theorem": "SAP.P004b.T29",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the far-pair bound use the singleton line population with deterministic alternating outcomes, p=1/2, d=0, K=uniformKernel, bandwidth identically 1, and psi=0. Metric distances, uniform spacing, well-definedness and the conditional approximation bound hold. Far pairs exist for every N>=5, for example nodes 0 and 4; their random row sums depend on disjoint sets of Bernoulli coordinates and have covariance zero. The algebraic conjuncts admit N=4 and balanced arms, with arbitrary real outcomes. EpsilonMeans admits any N>0 and p=1/2.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P004-T30",
+    "theorem": "SAP.P004b.T30",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=4, n1=2 and any node. Each conditioning support and each remainder support has cardinality 3 for both arms; there are real admissible conditioning assignments and no truncated-subtraction underflow. Exact enumeration verifies all such probabilities for N=2 through 6. The Bernoulli and class identities admit p=1/2 and any nonzero outcome table; the positive support guards are also compiled at N=2 in scratch/Check.lean.",
+    "confidence": 0.99
+  }
+]

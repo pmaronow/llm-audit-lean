@@ -27,9 +27,9 @@ local instance GP0022B2b_normalNullSingleton :
     NullSingletonClass (ProbabilityTheory.gaussianReal 0 1) :=
   ProbabilityTheory.nullSingletonClass_gaussianReal (by norm_num : (1 : NNReal) ≠ 0)
 
-/-! ## Constant effects and limits inferior on a restricted set of sizes -/
+/-! ## Record 6: independent constant-effect and sparse-filter steps -/
 
-/-- A constant treatment-receipt effect is the complier average treatment-receipt effect. -/
+/-- SH.1: a constant receipt effect is the complier average receipt effect. -/
 theorem GP0022B2b_SH_late_constant {n} (P : Population n) (β : ℝ)
     (hc : (compliers P).Nonempty) (hy : ∀ i, P.y i true = P.y i false + β) :
     late P = β := by
@@ -37,7 +37,7 @@ theorem GP0022B2b_SH_late_constant {n} (P : Population n) (β : ℝ)
     exact_mod_cast (Finset.card_ne_zero.mpr hc)
   simp [late, groupMean, hy, hcard]
 
-/-- Under constant effects, adjustment at the LATE gives the fixed baseline response. -/
+/-- SH.1 at the actual LATE; no compliance-case averaging remains. -/
 theorem GP0022B2b_SH_observedW_baseline {n} (P : Population n)
     (hc : (compliers P).Nonempty)
     (hy : ∃ β, ∀ i, P.y i true = P.y i false + β)
@@ -104,7 +104,7 @@ private theorem GP0022B2b_SH_probability_mono {n} (P : Population n)
     rcases Finset.mem_filter.mp hS with ⟨hS, hE⟩
     exact Finset.mem_filter.mpr ⟨hS, hEF S hS hE⟩)
 
-/-- Finite-support quantile bracket, including an upper endpoint not itself attained.
+/-- Finite-support UC.4/SH.3 bracket, including an upper endpoint not itself attained.
 This uses precisely the attainable-minimum quantile in P002, with no change to ties. -/
 theorem GP0022B2b_SH_quantile_bracket {n} (P : Population n) (hP : ValidDesign P)
     (g : Finset (Fin n) → ℝ≥0∞) (α : ℝ) (hα : 0 < α ∧ α < 1)
@@ -166,7 +166,7 @@ theorem GP0022B2b_SH_quantile_bracket {n} (P : Population n) (hP : ValidDesign P
     exact Finset.min'_le C t htC
   exact ⟨hlower, hqt.trans htb⟩
 
-/-- Continuous-law CDF bracketing gives nominal probability at the actual
+/-- SH.3: continuous-law CDF bracketing gives nominal probability at the actual
 finite quantile. This is a generic analytic lemma, not an assumption that the
 constant-effect population sequence has the required CDF limit. -/
 theorem GP0022B2b_SH_nominal_of_cdf_limits (sizes : ℕ → ℕ) (P : ∀ j, Population (sizes j))
@@ -212,7 +212,7 @@ theorem GP0022B2b_SH_nominal_of_cdf_limits (sizes : ℕ → ℕ) (P : ∀ j, Pop
 def GP0022B2b_SH_absNormalCDF (t : ℝ) : ℝ :=
   2 * ProbabilityTheory.cdf (ProbabilityTheory.gaussianReal 0 1) t - 1
 
-/-- The CDF bracketing premise for the absolute normal law.
+/-- The exact bracketing premise used by SH.3 for the absolute normal law.
 Surjectivity of the normal CDF avoids a separate epsilon/delta cutoff argument. -/
 theorem GP0022B2b_SH_normal_bracket (α : ℝ) (hα : 0 < α ∧ α < 1) (ε : ℝ) (hε : 0 < ε) :
     ∃ a b : ℝ, 0 < a ∧ 0 < b ∧ GP0022B2b_SH_absNormalCDF a < 1 - α ∧
@@ -246,8 +246,8 @@ theorem GP0022B2b_SH_normal_bracket (α : ℝ) (hα : 0 < α ∧ α < 1) (ε : �
     rw [hb]
     linarith
 
-/-- Nominal constant-effect coverage and conversion to `ENNReal`, conditional on the
-studentized CDF limit. -/
+/-- All of SH.1/SH.3 and the ENNReal conversion, conditional only on the
+studentized CDF limit that SH.2 must independently establish. -/
 theorem GP0022B2b_SH_constant_nominal_of_cdf (sizes : ℕ → ℕ) (P : ∀ j, Population (sizes j))
     (δ r A α : ℝ) (hα : 0 < α ∧ α < 1) (hP : ∀ j, Theta (P j) δ r A)
     (hconstant : ∀ j, ∃ β, ∀ i, (P j).y i true = (P j).y i false + β)
@@ -270,7 +270,8 @@ theorem GP0022B2b_SH_constant_nominal_of_cdf (sizes : ℕ → ℕ) (P : ∀ j, P
   rw [hfun]
   exact hnom
 
-/-- The lower bound uses the same `q` as the sequential upper limit.
+/-- SH.4, corrected as required by both referees.
+The lower bound is explicitly by the SAME q as the sequential upper limit.
 In particular, mere boundedness below of the full liminf is not a premise here. -/
 theorem GP0022B2b_SH_sparse_liminf (E : Set ℕ) (a : ℕ → ℝ≥0∞) (q : ℝ≥0∞)
     (sizes : ℕ → ℕ) (hsizes : StrictMono sizes) (hE : ∀ j, sizes j ∈ E)
@@ -299,8 +300,8 @@ theorem GP0022B2b_SH_infCoverage_le {n} (P : Population n) (δ r A α : ℝ)
     (iInf_le_of_le (⟨P, hP, rfl⟩ : {Q : Population n // Theta Q δ r A ∧ late Q = late P})
       le_rfl))
 
-/-- The worst-case coverage liminf equals nominal coverage, conditional on a
-full-class lower bound and an admissible sequence with nominal limiting coverage. -/
+/-- SH.5's order-theoretic assembly. The two substantive statistical inputs are
+explicit here; this helper does not claim the frozen unconditional theorem. -/
 theorem GP0022B2b_SH_liminf_from_coverage (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
     (P : ∀ j, Population (sizes j)) (δ r A α : ℝ)
     (hP : ∀ j, Theta (P j) δ r A)
@@ -320,9 +321,9 @@ theorem GP0022B2b_SH_liminf_from_coverage (sizes : ℕ → ℕ) (hsizes : Strict
   · exact hseq
 
 
-/-! The variance and CLT lemmas below are adapted from the fixed-response
-lemmas of `GLP0022B2.lean`. They use the finite-population CLT and finite
-variance-ratio bound without an extra statistical premise. -/
+/-! The variance and CLT adapters below are adapted from the private fixed-response
+machinery of `GLP0022B2.lean`. The public finite-population CLT and the public
+finite variance-ratio bound are reused without any extra statistical premise. -/
 
 private lemma GP0022B2b_probability_union {n} (P : Population n)
     (E F : Finset (Fin n) → Prop) :
@@ -724,6 +725,8 @@ theorem corrected_remark3_sharpness_proof (sizes : ℕ → ℕ) (hsizes : Strict
   have hseq := GP0022B2b_SH_constant_nominal_of_cdf sizes P δ r A α hα hP hconstant hCDF
   exact ⟨hseq, GP0022B2b_SH_liminf_from_coverage sizes hsizes P δ r A α hP
     (corrected_theorem1_proof δ r A α hδ hr hA hα) hseq⟩
+
+example : type_of% @AronowAudit.P002.corrected_remark3_sharpness := corrected_remark3_sharpness_proof
 
 end
 end AronowAudit.P002.Wave1

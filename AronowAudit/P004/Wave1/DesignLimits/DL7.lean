@@ -4,9 +4,12 @@ import Mathlib.Topology.Order.Basic
 import Mathlib.Topology.Algebra.GroupWithZero
 
 /-!
-Deterministic rescaling by fixed-threshold CDF sandwiches.
-The argument uses continuity of the Gaussian CDF. Strict-threshold probability
-limits follow without assuming that the finite distributions have no atoms.
+Deterministic rescaling, proved by fixed-threshold CDF sandwiches.
+
+Only continuity of the genuine Gaussian CDF is needed from the NF node. It is
+derived directly from the existing proved P053 lemmas so this file does not
+depend on an as-yet unwritten NF proof file. The additional CDF helpers are
+used by DL6 and DL8. This draft was written without running Lean.
 -/
 
 namespace AronowAudit.P004.Wave1.DesignLimits

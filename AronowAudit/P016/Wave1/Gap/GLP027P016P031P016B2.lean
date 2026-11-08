@@ -1,7 +1,8 @@
 import AronowAudit.P016.P016_Interference
 import Mathlib.Order.Interval.Finset.Fin
 
-/-! KS prefix and raw-separation helpers. -/
+/-! KS prefix and raw-separation helpers adapted from the earlier project draft
+`lw-GLP027P016P031P016B2`, then checked in this module. -/
 
 namespace AronowAudit.P016.Wave1
 
@@ -479,5 +480,7 @@ theorem t7_ks_witness_proof :
         rw [(t7_raw_separation z).2, t7_extreme_masses.2]
         norm_num
       _ = 1 := t7_mass_all
+
+example : type_of% @AronowAudit.P016.t7_ks_witness := t7_ks_witness_proof
 
 end AronowAudit.P016.Wave1

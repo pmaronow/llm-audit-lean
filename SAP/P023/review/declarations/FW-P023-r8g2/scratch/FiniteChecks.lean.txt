@@ -1,0 +1,153 @@
+import SAP.P023.Defs
+
+open MeasureTheory Set Filter
+open scoped BigOperators ENNReal Topology
+open SAP.P023
+namespace Audit
+noncomputable section
+
+def x : Fin 4 → ℝ := ![-3/4, -1/4, 1/4, 3/4]
+def d : Fin 4 → ℝ := ![0, 0, 1, 1]
+def y : Fin 4 → ℝ := fun _ => 1/2
+def y' : Fin 4 → ℝ := ![51/100, 1/2, 1/2, 1/2]
+
+lemma data : TwoParty x d := by
+  refine ⟨?_, ?_, ?_, ?_⟩ <;> intro i <;> fin_cases i <;> norm_num [x, d]
+
+lemma party_agrees : ∀ i, d i = party (x i) := by
+  intro i; fin_cases i <;> norm_num [x, d, party]
+
+lemma interior : Condition1 (1/2) x := by
+  constructor
+  · exact ⟨2, by norm_num [x]⟩
+  · exact ⟨1, by norm_num [x]⟩
+
+lemma rank : FullRank (polynomialDesign 1 x d) := by
+  intro c hc
+  have h0 := hc 0
+  have h1 := hc 1
+  have h2 := hc 2
+  norm_num [predict, polynomialDesign, x, d, Fin.sum_univ_succ] at h0 h1 h2
+  ext j
+  fin_cases j
+  · change c 0 = 0; linarith
+  · change c 1 = 0; linarith
+  · change c 2 = 0; linarith
+
+lemma positive_model : ∃ c : Fin 3 → ℝ,
+    (∀ i, 0 < predict (polynomialDesign 1 x d) c i ∧
+      predict (polynomialDesign 1 x d) c i < 1) ∧
+    y = predict (polynomialDesign 1 x d) c := by
+  refine ⟨![1/2,0,0], ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num [predict, polynomialDesign, x, d, Fin.sum_univ_succ]
+  · ext i; fin_cases i <;> norm_num [y, predict, polynomialDesign, x, d, Fin.sum_univ_succ]
+
+lemma bounded_outcomes : ∀ i, 0 < y i ∧ y i < 1 ∧ 0 < y' i ∧ y' i < 1 := by
+  intro i; fin_cases i <;> norm_num [y, y']
+
+lemma close_agrees : ∀ i ∈ close (1/2) x, y i = y' i := by
+  intro i hi
+  fin_cases i <;> norm_num [close, x, y, y'] at *
+
+lemma ols_value (v : Fin 4 → ℝ) (c : Fin 3 → ℝ)
+    (hc : IsOLS (polynomialDesign 1 x d) v c) :
+    c 1 = v 0/2-3*v 1/2+3*v 2/2-v 3/2 := by
+  have h0 := hc 0
+  have h1 := hc 1
+  have h2 := hc 2
+  norm_num [IsOLS, dot, predict, polynomialDesign, x, d, Fin.sum_univ_succ] at h0 h1 h2
+  linarith
+
+lemma chosen_zero : polynomialOLS 1 x d y = 0 := by
+  have hc : IsOLS (polynomialDesign 1 x d) y ![1/2,0,0] := by
+    intro j; fin_cases j <;> norm_num [dot, predict, polynomialDesign, x, d, y, Fin.sum_univ_succ]
+  have hspec : IsOLS (polynomialDesign 1 x d) y
+      (olsCoefficients (polynomialDesign 1 x d) y) := Classical.epsilon_spec ⟨_,hc⟩
+  have hv := ols_value y _ hspec
+  simpa [polynomialOLS, y] using hv
+
+lemma chosen_changed : polynomialOLS 1 x d y' = 1/200 := by
+  have hc : IsOLS (polynomialDesign 1 x d) y' ![1/2,1/200,-1/100] := by
+    intro j; fin_cases j <;> norm_num [dot, predict, polynomialDesign, x, d, y', Fin.sum_univ_succ]
+  have hspec : IsOLS (polynomialDesign 1 x d) y'
+      (olsCoefficients (polynomialDesign 1 x d) y') := Classical.epsilon_spec ⟨_,hc⟩
+  have hv := ols_value y' _ hspec
+  norm_num [polynomialOLS, y'] at hv ⊢
+  exact hv
+
+example : TwoParty x d ∧ Condition1 (1/2) x ∧
+    FullRank (polynomialDesign 1 x d) ∧
+    (∃ c : Fin 3 → ℝ, ∀ i,
+      0 < predict (polynomialDesign 1 x d) c i ∧ predict (polynomialDesign 1 x d) c i < 1) ∧
+    (∀ i ∈ close (1/2) x, y i = y' i) ∧
+    polynomialOLS 1 x d y ≠ polynomialOLS 1 x d y' := by
+  refine ⟨data, interior, rank, ?_, close_agrees, ?_⟩
+  · obtain ⟨c,hc,-⟩ := positive_model; exact ⟨c,hc⟩
+  · rw [chosen_zero, chosen_changed]; norm_num
+
+example : ¬ Localized (1/2) x (polynomialOLS 1 x d) := by
+  intro hl
+  have hh := hl y y' close_agrees
+  rw [chosen_zero, chosen_changed] at hh
+  norm_num at hh
+
+example : (0 < ∑ i ∈ close (1/2) x, d i) ∧
+    (0 < ∑ i ∈ close (1/2) x, (1-d i)) := by
+  have hc : close (1/2) x = {1,2} := by
+    ext i; fin_cases i <;> norm_num [close, x]
+  rw [hc]
+  norm_num [d]
+
+-- Full hypotheses of T7's finite conditional-bias clause, with a deterministic
+-- probability space. These checks do not use any Challenge declaration.
+example : ∃ (P : Measure Unit) (Y : Fin 4 → Unit → ℝ),
+    ProbabilityLaw P ∧ TwoParty x d ∧ (∀ i, d i = party (x i)) ∧
+    FullRank (polynomialDesign 1 x d) ∧
+    (∀ i, Integrable (Y i) P) ∧
+    (∀ i, (∫ ω, Y i ω ∂P) = (1/2 : ℝ) + 0*d i + (fun _ : ℝ => 0) (x i)) := by
+  refine ⟨Measure.dirac (), fun _ _ => 1/2, ?_, data, party_agrees, rank, ?_, ?_⟩
+  · simp [ProbabilityLaw]
+  · intro i; exact integrable_const _
+  · intro i; simp
+
+end
+end Audit
+
+namespace Audit
+noncomputable section
+
+def P4 : Measure (Fin 4) := (1/4 : ℝ≥0∞) • Measure.count
+
+lemma P4_prob : ProbabilityLaw P4 := by
+  norm_num [ProbabilityLaw, P4, Measure.smul_apply, Measure.count_apply_finite]
+  exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+instance P4_isprob : IsProbabilityMeasure P4 := ⟨P4_prob⟩
+
+lemma integral_P4 (f : Fin 4 → ℝ) : (∫ i, f i ∂P4) = (1/4 : ℝ) * ∑ i, f i := by
+  simp [P4, integral_smul_measure, integral_count]
+
+def modelY (i ω : Fin 4) : ℝ := if i=0 then ![49/100,1/2,1/2,51/100] ω else 1/2
+
+lemma model_mean (i : Fin 4) : (∫ ω, modelY i ω ∂P4) = 1/2 := by
+  rw [integral_P4]
+  by_cases hi : i=0 <;> norm_num [modelY, hi, Fin.sum_univ_succ]
+
+-- Correctly specified conditional-mean model with both of the outcome
+-- vectors from the nonlocality counterexample in its positive-probability support.
+example : ProbabilityLaw P4 ∧ (∀ i, Integrable (modelY i) P4) ∧
+    (∀ i, (∫ ω, modelY i ω ∂P4) = (1/2 : ℝ)+0*d i+0*x i) ∧
+    (fun i => modelY i 1) = y ∧ (fun i => modelY i 3) = y' ∧
+    0 < P4 {1} ∧ 0 < P4 {3} := by
+  refine ⟨P4_prob, fun _ => Integrable.of_finite, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i; simpa using model_mean i
+  · ext i; fin_cases i <;> norm_num [modelY, y]
+  · ext i; fin_cases i <;> norm_num [modelY, y']
+  · norm_num [P4, Measure.smul_apply]
+  · norm_num [P4, Measure.smul_apply]
+
+example : ∀ i ω, 0 < modelY i ω ∧ modelY i ω < 1 := by
+  intro i ω; fin_cases i <;> fin_cases ω <;> norm_num [modelY]
+
+end
+end Audit

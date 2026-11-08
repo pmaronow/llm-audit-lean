@@ -1,0 +1,984 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P005b.T20",
+   "target_id": "P005-T20",
+   "fingerprint": "d078e9ff022513dd36c847e23b43ec691e5560b1a16da60c5159f76b3c119f9f",
+   "module": "SAP.P005b.Challenge.Part1",
+   "line": 34,
+   "closure": [
+    {
+     "line": 64,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.NCCC"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.NTTT"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.mk"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.x"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yC"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yT"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P005b.Defs.Part5",
+     "name": "SAP.P005b.T20Statement"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P005b.Defs.Part5",
+     "name": "SAP.P005b.T24Statement"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armBetaHat"
+    },
+    {
+     "line": 90,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armL"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armLeading"
+    },
+    {
+     "line": 93,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armN"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu1"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu2"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu3"
+    },
+    {
+     "line": 68,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armResidual"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.ate"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.biasEstimate._proof_1"
+    },
+    {
+     "line": 41,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.centered"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.control"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.design"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.dot"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.expectation"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.gram"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.interactedATE"
+    },
+    {
+     "line": 114,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.interactedRegular"
+    },
+    {
+     "line": 75,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.kappa"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.leverage"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.leverageCov"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.mean"
+    },
+    {
+     "line": 80,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.pT"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.popCov"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.popMean"
+    },
+    {
+     "line": 84,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.populationSlope"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.probability"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.sampleCov"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.standardized"
+    },
+    {
+     "line": 88,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.standingAssumptions"
+    },
+    {
+     "line": 80,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.stochasticO"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.xMean"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P005b.T21",
+   "target_id": "P005-T21",
+   "fingerprint": "f747bacf61a81d818d7aae600cbfc34bc732484616e7b7b542e7dbf73444893a",
+   "module": "SAP.P005b.Challenge.Part1",
+   "line": 40,
+   "closure": [
+    {
+     "line": 97,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Lhat"
+    },
+    {
+     "line": 66,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.NTTC"
+    },
+    {
+     "line": 61,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.NTTT"
+    },
+    {
+     "line": 102,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Nhat"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.mk"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.x"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yC"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yT"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P005b.Defs.Part6",
+     "name": "SAP.P005b.T21Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P005b.Defs.Part6",
+     "name": "SAP.P005b.T21Statement._proof_1"
+    },
+    {
+     "line": 91,
+     "module": "SAP.P005b.Defs.WholeW1",
+     "name": "SAP.P005b.T21WholeStatement"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.adjustedATE"
+    },
+    {
+     "line": 93,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armN"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu1"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu3"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.ate"
+    },
+    {
+     "line": 105,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.betaHat"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.biasEstimate"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.biasEstimate._proof_1"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P005b.Defs.Part6",
+     "name": "SAP.P005b.biasPart11"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P005b.Defs.Part6",
+     "name": "SAP.P005b.biasPart12"
+    },
+    {
+     "line": 41,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.centered"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.control"
+    },
+    {
+     "line": 47,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.debiasedATE"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.design"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.dot"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.expectation"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.gram"
+    },
+    {
+     "line": 103,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.indicator"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.leverage"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.leverageCov"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.mean"
+    },
+    {
+     "line": 111,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.noninteractedRegular"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.nu1"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.nu2"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.nu3"
+    },
+    {
+     "line": 82,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.pC"
+    },
+    {
+     "line": 80,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.pT"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.popCov"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.popMean"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.sampleCov"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.standardized"
+    },
+    {
+     "line": 66,
+     "module": "SAP.P005b.Defs.WholeW1",
+     "name": "SAP.P005b.wholeW1Fit"
+    },
+    {
+     "line": 76,
+     "module": "SAP.P005b.Defs.WholeW1",
+     "name": "SAP.P005b.wholeW1Intercept"
+    },
+    {
+     "line": 71,
+     "module": "SAP.P005b.Defs.WholeW1",
+     "name": "SAP.P005b.wholeW1Loss"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P005b.Defs.WholeW1",
+     "name": "SAP.P005b.wholeW1OLS"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P005b.Defs.WholeW1",
+     "name": "SAP.P005b.wholeW1Observed"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.xMean"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P005b.T22",
+   "target_id": "P005-T22",
+   "fingerprint": "c012c0cea4c5498333de79656c926010cf7c839f14c366a0d2904cebf742093b",
+   "module": "SAP.P005b.Challenge.Part1",
+   "line": 49,
+   "closure": [
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.mk"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.x"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yC"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yT"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P005b.Defs.Part6",
+     "name": "SAP.P005b.T21Statement._proof_1"
+    },
+    {
+     "line": 56,
+     "module": "SAP.P005b.Defs.Part6",
+     "name": "SAP.P005b.T22Main"
+    },
+    {
+     "line": 71,
+     "module": "SAP.P005b.Defs.Part6",
+     "name": "SAP.P005b.T22Statement"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armBetaHat"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armDebiased"
+    },
+    {
+     "line": 90,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armL"
+    },
+    {
+     "line": 93,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armN"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu2"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.ate"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.biasEstimate._proof_1"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.control"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.design"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.dot"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.expectation"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.gram"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.interactedATE"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.interactedBiasEstimate"
+    },
+    {
+     "line": 56,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.interactedDebiasedATE"
+    },
+    {
+     "line": 114,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.interactedRegular"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.leverage"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.mean"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.popMean"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.sampleCov"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.standardized"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.xMean"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P005b.T23",
+   "target_id": "P005-T23",
+   "fingerprint": "f302ebaf8b07fdcc1c9f5a656d41409aac094b950b93c219de6be3ee200e799d",
+   "module": "SAP.P005b.Challenge.Part1",
+   "line": 54,
+   "closure": [
+    {
+     "line": 97,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Lhat"
+    },
+    {
+     "line": 87,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.N"
+    },
+    {
+     "line": 102,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Nhat"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.mk"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.x"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yC"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yT"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P005b.Defs.Part6",
+     "name": "SAP.P005b.T21Statement._proof_1"
+    },
+    {
+     "line": 79,
+     "module": "SAP.P005b.Defs.Part6",
+     "name": "SAP.P005b.T23Statement"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.adjustedATE"
+    },
+    {
+     "line": 93,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armN"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu1"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu3"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.ate"
+    },
+    {
+     "line": 105,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.betaHat"
+    },
+    {
+     "line": 41,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.centered"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.control"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.design"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.dot"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.expectation"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.gram"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.leverage"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.leverageCov"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.mean"
+    },
+    {
+     "line": 111,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.noninteractedRegular"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.nu1"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.nu2"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.nu3"
+    },
+    {
+     "line": 82,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.pC"
+    },
+    {
+     "line": 80,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.pT"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.popCov"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.popMean"
+    },
+    {
+     "line": 84,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.populationSlope"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.sampleCov"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.standardized"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.xMean"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P005b.T24",
+   "target_id": "P005-T24",
+   "fingerprint": "58120b3f1cfb0129cb7809265b402801d3e2dad18695c8874d17d1886e3b2897",
+   "module": "SAP.P005b.Challenge.Part1",
+   "line": 59,
+   "closure": [
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.mk"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.x"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yC"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.Population.yT"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P005b.Defs.Part5",
+     "name": "SAP.P005b.T24Statement"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armBetaHat"
+    },
+    {
+     "line": 90,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armL"
+    },
+    {
+     "line": 93,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.armN"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu1"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu2"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.armNu3"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.ate"
+    },
+    {
+     "line": 41,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.centered"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.control"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.design"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.dot"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.expectation"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.gram"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.interactedATE"
+    },
+    {
+     "line": 114,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.interactedRegular"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.leverage"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P005b.Defs.Part2",
+     "name": "SAP.P005b.leverageCov"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.mean"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.popCov"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.popMean"
+    },
+    {
+     "line": 84,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.populationSlope"
+    },
+    {
+     "line": 36,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.sampleCov"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.standardized"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P005b.Defs.Part1",
+     "name": "SAP.P005b.xMean"
+    }
+   ]
+  }
+ ]
+}

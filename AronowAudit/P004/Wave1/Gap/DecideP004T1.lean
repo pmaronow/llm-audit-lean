@@ -1,7 +1,7 @@
 import AronowAudit.P004.Wave1.Gap.TailBIpwThreeType
 import AronowAudit.P004.Wave1.Gap.GLP0042B1
 
-/-! The cyclic three-type IPW witness with the remainder computed in the natural numbers. -/
+/-! The natural-remainder repair of the cyclic three-type IPW witness. -/
 namespace AronowAudit.P004.Wave1
 
 open scoped BigOperators Matrix Topology
@@ -448,7 +448,7 @@ lemma DecideP004T1_not_little
   funext N z
   ring
 
-/-- The cyclic design meets the printed guards, but its printed
+/-- The repaired cyclic design meets the printed guards, but its printed
 linearization differs from the actual compact-set likelihood fit at root-N order. -/
 theorem ipw_linearization_counterexample_nat :
     ∃ θhat : ∀ N, Assignment N → Fin 2 → ℝ,

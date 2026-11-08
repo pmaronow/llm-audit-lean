@@ -1,4 +1,4 @@
-/- P011 T5: corrected-estimator conservativeness.
+/- Original P011 T5 corrected-estimator conservativeness with unchanged assumptions.
 Supplied degree caps may grow; bounded true-degree matrices and pointwise domination
 handle that case. Sample-chosen maximizers enter only through their actual maximizing
 property, not through the deterministic matrix expansion. -/
@@ -143,6 +143,12 @@ lemma corrected_asymptotic_from_norms (F : Family) (c1 c2 c3 c4 : ℝ)
   simpa only [he] using hY
 
 
+#print axioms corrected_row_bound
+#print axioms young_row_bound
+#print axioms conservative_min
+#print axioms young_true_psd
+#print axioms young_true_le
+#print axioms corrected_asymptotic_from_norms
 end
 end AronowAudit.P011.CorrectedAsymptoticCompletion
 
@@ -183,5 +189,6 @@ theorem corrected_asymptotic (F : Family) (c1 c2 c3 c4 : ℝ)
   exact CorrectedAsymptoticCompletion.corrected_asymptotic_from_norms F c1 c2 c3 c4 h hv A hm hCN hYN
 
 
+#print axioms corrected_asymptotic
 end
 end AronowAudit.P011

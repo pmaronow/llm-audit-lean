@@ -1,5 +1,4 @@
-/- Maximizing values are measurably represented as a finite supremum;
-the selector need not be measurable. -/
+/- Original P011 contracts with unchanged hypotheses. Maximizing values are measurably represented as a finite supremum; the selector need not be measurable. The auxiliary repair retains its original positive marginal variance and vanishing mean-spread premises. -/
 import AronowAudit.P011.P011_HomoskedasticCompletion
 import AronowAudit.P011.P011_CoverageCompletion
 import Mathlib.MeasureTheory.Order.Lattice
@@ -105,3 +104,5 @@ theorem corollary_four (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1 c2 c3 
 
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.corollary_two
+#print axioms AronowAudit.P011.corollary_four

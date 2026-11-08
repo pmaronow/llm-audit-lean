@@ -3,7 +3,10 @@ import AronowAudit.External.StatLean.HypothesisTesting.ForMathlib.CombinatorialC
 import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.MeasureTheory.Function.Floor
 
-
+/-!
+Draft for dd-GP022B1. No Lean process was run by the drafter.
+The held declarations occur only in the three `type_of%` checks below.
+-/
 
 namespace AronowAudit.P022.Wave1
 
@@ -227,7 +230,7 @@ private lemma t12_sqrt_cauchy {Ω : Type*} [Fintype Ω] (A C : Ω → ℝ)
   nlinarith
 
 /-- Actual sharp-null randomization variance, proved from the same block
-moments and the centered cross moment. -/
+moments and the centered cross moment, with no appeal to the held formula. -/
 private lemma t12_sharp_null_variance (d : Design) (y : Fin d.N → ℝ) :
     trueVariance d y y = varianceExpression d.N d.m d.k
       (finiteVariance y) (finiteVariance y) (finiteVariance y) := by
@@ -323,10 +326,14 @@ theorem sharp_null_neyman_bias_proof (d : Design) (hn : d.m + d.k = d.N)
   unfold varianceExpression
   exact div_le_div_of_nonneg_right (by linarith) (le_of_lt hN1)
 
+example : type_of% @AronowAudit.P022.sharp_null_neyman_bias :=
+  sharp_null_neyman_bias_proof
+
 /-! ## P022-T14: finite quantile integration and covariance ordering
 
-The proof below uses only finite quantiles. The reflection argument for the two
-endpoint covariances avoids a bounded-support covariance/CDF identity.
+The proof below uses only finite quantiles. In particular it does not use the
+held all-couplings theorem. The reflection argument for the two endpoint
+covariances also avoids a bounded-support covariance/CDF identity.
 -/
 
 private def t14_Good (f : ℝ → ℝ) : Prop :=
@@ -708,6 +715,9 @@ theorem estimated_bound_ordering_proof (d : Design) (hn : d.m + d.k = d.N)
       rw [hdiff]
       exact div_nonneg (by linarith [sqrt_product_le_arithmetic A C hA hC]) (by linarith)
     linarith
+
+example : type_of% @AronowAudit.P022.estimated_bound_ordering :=
+  estimated_bound_ordering_proof
 
 end
 end AronowAudit.P022.Wave1

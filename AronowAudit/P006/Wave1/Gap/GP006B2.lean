@@ -4,7 +4,11 @@ import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut
 import Mathlib.Probability.Independence.Basic
 
-
+/-!
+Drafter dd-GP006B2. No Lean process has been run on this file.
+The preamble deliberately agrees with P006_CounterfactualMetrics.
+The held declarations are used only in the requested type checks.
+-/
 namespace AronowAudit.P006.Wave1
 
 open MeasureTheory ProbabilityTheory Filter
@@ -325,11 +329,249 @@ theorem T29_family_all_sizes_proof (n : ℕ) (hn : 0 < n) (p α : ℝ)
   subst n
   exact T29_one p hp π
 
+example : type_of% @AronowAudit.P006.T29_family_all_sizes := T29_family_all_sizes_proof
 
+/-! ## P006-T3
 
+The analytic prerequisites are the fixed-policy ATT identity and the actual-welfare identity
+assigned to the mapper's shared machinery. Neither proof is
+in this checkout. The following is the complete decision-theoretic assembly;
+its two hypotheses record those intermediate propositions, not additional
+hypotheses proposed for the frozen node. See the run report.
+-/
 
+lemma T3_assemble_from_policywise_identities {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] [Countable C] [MeasurableSingletonClass C] {n : ℕ}
+    (E : Experiment Ω C n) (hS : Standing E) (PiSet : Set (C → ℝ))
+    (hPiSet : ∀ π ∈ PiSet, Admissible π) (hz : (fun _ => 0) ∈ PiSet)
+    (b s : C → ℝ)
+    (hb : IsBest PiSet E.expectedATT b) (hs : IsBest PiSet E.V s)
+    (haverage : ∀ π ∈ PiSet,
+      E.expectedATT π = emptyFactor n (E.q π) * E.A E.τ π)
+    (hwelfare : ∀ π ∈ PiSet, E.V π = E.A E.τ π) :
+    (∀ π ∈ PiSet, E.V π = E.A E.τ π ∧
+      E.expectedATT π = emptyFactor n (E.q π)*E.V π ∧
+      1 ≤ emptyFactor n (E.q π)) ∧
+    E.expectedATT (fun _ => 0) = 0 ∧ E.V (fun _ => 0) = 0 ∧
+    0 ≤ E.expectedATT b ∧ 0 ≤ E.V b ∧ regret PiSet E.V b ≤ bestValue PiSet E.V := by
+  letI : IsProbabilityMeasure E.PX := hS.px_probability
+  have policywise (π : C → ℝ) (hπ : π ∈ PiSet) :
+      E.V π = E.A E.τ π ∧
+      E.expectedATT π = emptyFactor n (E.q π)*E.V π ∧
+      1 ≤ emptyFactor n (E.q π) := by
+    have ha := hPiSet π hπ
+    have hπint : Integrable π E.PX :=
+      (integrable_const (1 : ℝ)).mono' ha.1.aestronglyMeasurable
+        (Eventually.of_forall fun x => by
+          rw [Real.norm_eq_abs, abs_of_nonneg (ha.2 x).1]
+          exact (ha.2 x).2)
+    have hq : 0 ≤ E.q π ∧ E.q π ≤ 1 := by
+      constructor
+      · exact integral_nonneg fun x => (ha.2 x).1
+      · have hh := integral_mono hπint (integrable_const (1 : ℝ))
+          (fun x => (ha.2 x).2)
+        simpa [Experiment.q] using hh
+    refine ⟨hwelfare π hπ, ?_, emptyFactor_ge_one n E.hn (E.q π) hq⟩
+    rw [haverage π hπ, hwelfare π hπ]
+  have hVz : E.V (fun _ => 0) = 0 := by
+    rw [hwelfare _ hz]
+    simp [Experiment.A]
+  have hRz : E.expectedATT (fun _ => 0) = 0 := by
+    rw [(policywise _ hz).2.1, hVz, mul_zero]
+  have hRb : 0 ≤ E.expectedATT b := by
+    have hh := hb.2 (fun _ => 0) hz
+    rwa [hRz] at hh
+  have hbest : IsBest PiSet (fun π => emptyFactor n (E.q π)*E.V π) b := by
+    refine ⟨hb.1, ?_⟩
+    intro π hπ
+    dsimp only
+    rw [← (policywise π hπ).2.1, ← (policywise b hb.1).2.1]
+    exact hb.2 π hπ
+  have hfinish := positive_factor_regret PiSet E.V
+    (fun π => emptyFactor n (E.q π)) (fun _ => 0) b s hz hVz
+    (fun π hπ => (policywise π hπ).2.2) hbest hs
+  exact ⟨policywise, hRz, hVz, hRb, hfinish.1, hfinish.2⟩
 
+/-! ## P006-T6 independent estimation -/
 
+/-- Conditional integration with respect to an independent auxiliary draw.
+This is a direct set-integral uniqueness proof; the measurable spaces A and D
+are arbitrary. In particular, no regular conditional distribution is used. -/
+lemma T6_auxiliary_condExp {Ω A D : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace A] [MeasurableSpace D]
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (Z : Ω → A) (V : Ω → D) (hZ : Measurable Z) (hV : Measurable V)
+    (hI : IndepFun Z V μ) (F : A × D → ℝ) (g : D → ℝ)
+    (hF : Measurable F) (hg : Measurable g)
+    (hFi : Integrable (fun ω => F (Z ω, V ω)) μ)
+    (hgi : Integrable (fun ω => g (V ω)) μ)
+    (hmean : ∀ d, (∫ z, F (z,d) ∂μ.map Z) = g d) :
+    μ[(fun ω => F (Z ω,V ω)) | MeasurableSpace.comap V inferInstance]
+      =ᵐ[μ] (fun ω => g (V ω)) := by
+  let ν : Measure A := μ.map Z
+  let η : Measure D := μ.map V
+  let P : Ω → A × D := fun ω => (Z ω,V ω)
+  have hP : Measurable P := hZ.prodMk hV
+  have hmap : μ.map P = ν.prod η :=
+    hI.map_prod_eq_prod_map_map hZ.aemeasurable hV.aemeasurable
+  letI : IsProbabilityMeasure ν := inferInstance
+  letI : IsProbabilityMeasure η := inferInstance
+  have hFP : Integrable F (ν.prod η) := by
+    rw [← hmap]
+    exact (integrable_map_measure hF.aestronglyMeasurable hP.aemeasurable).mpr hFi
+  have hcomap : MeasurableSpace.comap V (inferInstance : MeasurableSpace D) ≤ (inferInstance : MeasurableSpace Ω) := hV.comap_le
+  have hgm : Measurable[MeasurableSpace.comap V inferInstance] (fun ω => g (V ω)) :=
+    hg.comp (comap_measurable V)
+  apply (ae_eq_condExp_of_forall_setIntegral_eq hcomap hFi
+    (fun s _ _ => hgi.integrableOn) ?_ hgm.stronglyMeasurable.aestronglyMeasurable).symm
+  intro s hs hfinite
+  rcases hs with ⟨t, ht, rfl⟩
+  let J : A × D → ℝ := (Prod.snd ⁻¹' t).indicator F
+  have hJ : Measurable J := hF.indicator (ht.preimage measurable_snd)
+  have hJi : Integrable J (ν.prod η) := hFP.indicator (ht.preimage measurable_snd)
+  have hslice (d : D) : (∫ z, J (z,d) ∂ν) = t.indicator g d := by
+    by_cases hd : d ∈ t
+    · simpa [J, hd, ν, Set.indicator_of_mem] using hmean d
+    · simp [J, hd]
+  have hJmap :
+      (∫ z, J z ∂ν.prod η) =
+        ∫ ω, (V ⁻¹' t).indicator (fun ω => F (Z ω,V ω)) ω ∂μ := by
+    rw [← hmap]
+    exact integral_map_of_stronglyMeasurable hP hJ.stronglyMeasurable
+  have hgmap :
+      (∫ d, t.indicator g d ∂η) =
+        ∫ ω, (V ⁻¹' t).indicator (fun ω => g (V ω)) ω ∂μ := by
+    exact integral_map_of_stronglyMeasurable hV (hg.indicator ht).stronglyMeasurable
+  calc
+    (∫ ω in V ⁻¹' t, g (V ω) ∂μ) = ∫ d, t.indicator g d ∂η := by
+      rw [hgmap, integral_indicator (ht.preimage hV)]
+    _ = ∫ z, J z ∂ν.prod η := by
+      rw [integral_prod_symm J hJi]
+      simp_rw [hslice]
+    _ = ∫ ω in V ⁻¹' t, F (Z ω,V ω) ∂μ := by
+      rw [hJmap, integral_indicator (ht.preimage hV)]
+
+/-- Derive full-design conditional unbiasedness from the frozen hypotheses.
+The stronger intermediate conclusion is proved here, not assumed. -/
+lemma T6_independent_vector {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n)
+    (hS : Standing E) (PiSet : Set (C → ℝ)) (hPiSet : ∀ π ∈ PiSet, Admissible π)
+    (hU : PointwiseUnbiased E PiSet) (hI : IndependentEstimator E PiSet) :
+    VectorUnbiased E PiSet := by
+  obtain ⟨A, mA, Z, f, hZ, hf⟩ := hI
+  letI : MeasurableSpace A := mA
+  intro π hπ i
+  have ha : Admissible π := hPiSet π hπ
+  letI : IsProbabilityMeasure (E.law π) := hS.law_probability π ha
+  let D := (Fin n → C) × (Fin n → Bool)
+  let V : Ω → D := fun ω => ((fun j => E.X j ω),(fun j => E.T π j ω))
+  let F : A × D → ℝ := fun z => f π z.1 (z.2.1 i)
+  let g : D → ℝ := fun d => E.μ0 (d.1 i)
+  obtain ⟨hfm,hrep,hi⟩ := hf π hπ
+  have hV : Measurable V :=
+    (measurable_pi_iff.mpr (fun j => (hS.measurable_units π ha j).1)).prodMk
+      (measurable_pi_iff.mpr (fun j => (hS.measurable_units π ha j).2.2.2))
+  have hF : Measurable F :=
+    hfm.comp (measurable_fst.prodMk ((measurable_pi_apply i).comp
+      (measurable_fst.comp measurable_snd)))
+  have hg : Measurable g :=
+    hS.means_measurable.1.comp ((measurable_pi_apply i).comp measurable_fst)
+  have hFi : Integrable (fun ω => F (Z ω,V ω)) (E.law π) := by
+    have heq : (fun ω => F (Z ω,V ω)) = (fun ω => E.μhat π ω (E.X i ω)) := by
+      funext ω
+      exact (hrep ω (E.X i ω)).symm
+    rw [heq]
+    exact (hS.integrable_units π ha i).2.2
+  have hgi : Integrable (fun ω => g (V ω)) (E.law π) := by
+    exact ((hS.covariate_law π ha i).comp hS.means_measurable.1).integrable_iff.mpr
+      hS.means_integrable.1
+  have hmean (d : D) :
+      (∫ z, F (z,d) ∂(E.law π).map Z) = g d := by
+    have hslice : Measurable (fun z : A => f π z (d.1 i)) :=
+      hfm.comp (measurable_id.prodMk measurable_const)
+    rw [integral_map_of_stronglyMeasurable hZ hslice.stronglyMeasurable]
+    calc
+      (∫ ω, f π (Z ω) (d.1 i) ∂E.law π) =
+          ∫ ω, E.μhat π ω (d.1 i) ∂E.law π := by
+        apply integral_congr_ae
+        exact Eventually.of_forall fun ω => (hrep ω (d.1 i)).symm
+      _ = E.μ0 (d.1 i) := (hU π hπ (d.1 i)).2
+  have hce := T6_auxiliary_condExp (E.law π) Z V hZ hV hi F g hF hg hFi hgi hmean
+  have heq : (fun ω => F (Z ω,V ω)) = (fun ω => E.μhat π ω (E.X i ω)) := by
+    funext ω
+    exact (hrep ω (E.X i ω)).symm
+  rw [heq] at hce
+  exact hce
+
+lemma T6_vector_to_treated {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n)
+    (hS : Standing E) (PiSet : Set (C → ℝ)) (hPiSet : ∀ π ∈ PiSet, Admissible π)
+    (hU : VectorUnbiased E PiSet) : TreatedUnbiased E E.μ0 PiSet := by
+  intro π hπ i
+  have ha := hPiSet π hπ
+  let μ : Measure Ω := E.law π
+  let V : Ω → (Fin n → C) × (Fin n → Bool) :=
+    fun ω => ((fun j => E.X j ω),(fun j => E.T π j ω))
+  let B : Ω → ℝ := fun ω => bit (E.T π i ω)
+  let H : Ω → ℝ := fun ω => E.μhat π ω (E.X i ω)
+  let G : Ω → ℝ := fun ω => E.μ0 (E.X i ω)
+  let R : Ω → ℝ := fun ω => B ω * (H ω-G ω)
+  letI : IsProbabilityMeasure μ := hS.law_probability π ha
+  have hV : Measurable V :=
+    (measurable_pi_iff.mpr (fun j => (hS.measurable_units π ha j).1)).prodMk
+      (measurable_pi_iff.mpr (fun j => (hS.measurable_units π ha j).2.2.2))
+  have hvle : E.vectorSigma π ≤ (inferInstance : MeasurableSpace Ω) := hV.comap_le
+  have hXv : Measurable[E.vectorSigma π] (E.X i) :=
+    ((measurable_pi_apply i).comp measurable_fst).comp (comap_measurable V)
+  have hTv : Measurable[E.vectorSigma π] (E.T π i) :=
+    ((measurable_pi_apply i).comp measurable_snd).comp (comap_measurable V)
+  have hBv : Measurable[E.vectorSigma π] B :=
+    (measurable_of_finite bit).comp hTv
+  have hGv : Measurable[E.vectorSigma π] G := hS.means_measurable.1.comp hXv
+  have hB : Measurable B := (measurable_of_finite bit).comp
+    (hS.measurable_units π ha i).2.2.2
+  have hHi : Integrable H μ := (hS.integrable_units π ha i).2.2
+  have hGi : Integrable G μ :=
+    ((hS.covariate_law π ha i).comp hS.means_measurable.1).integrable_iff.mpr
+      hS.means_integrable.1
+  have hres : Integrable (H-G) μ := hHi.sub hGi
+  have hRi : Integrable R μ := hres.bdd_mul (c := 1) hB.aestronglyMeasurable
+    (Eventually.of_forall fun ω => by dsimp [B]; cases E.T π i ω <;> norm_num [bit])
+  have hGce : μ[G | E.vectorSigma π] =ᵐ[μ] G := by
+    exact condExp_of_aestronglyMeasurable' hvle hGv.stronglyMeasurable.aestronglyMeasurable hGi
+  have hresce : μ[H-G | E.vectorSigma π] =ᵐ[μ] (fun _ => (0 : ℝ)) := by
+    filter_upwards [condExp_sub hHi hGi (E.vectorSigma π), hU π hπ i, hGce]
+      with ω hsub hH hG
+    change μ[H-G | E.vectorSigma π] ω = 0
+    change μ[H | E.vectorSigma π] ω = G ω at hH
+    change μ[H-G | E.vectorSigma π] ω = μ[H | E.vectorSigma π] ω -
+      μ[G | E.vectorSigma π] ω at hsub
+    rw [hsub, hH, hG]
+    simp [G]
+  have hRce : μ[R | E.vectorSigma π] =ᵐ[μ] (fun _ => (0 : ℝ)) := by
+    have hpull := condExp_mul_of_stronglyMeasurable_left
+      hBv.stronglyMeasurable hRi hres
+    filter_upwards [hpull, hresce] with ω h1 h2
+    change μ[R | E.vectorSigma π] ω = 0
+    change μ[R | E.vectorSigma π] ω = B ω * μ[H-G | E.vectorSigma π] ω at h1
+    rw [h1, h2, mul_zero]
+  have hsmall : E.covariateSigma i ≤ E.vectorSigma π := hXv.comap_le
+  have htower : μ[μ[R | E.vectorSigma π] | E.covariateSigma i]
+      =ᵐ[μ] μ[R | E.covariateSigma i] := condExp_condExp_of_le hsmall hvle
+  have hzero : μ[μ[R | E.vectorSigma π] | E.covariateSigma i]
+      =ᵐ[μ] (fun _ => (0 : ℝ)) := by
+    exact (condExp_congr_ae hRce).trans (by simp)
+  exact htower.symm.trans hzero
+
+theorem T6_independent_estimation_proof {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n)
+    (hS : Standing E) (PiSet : Set (C → ℝ)) (hPiSet : ∀ π ∈ PiSet, Admissible π)
+    (hU : PointwiseUnbiased E PiSet) (hI : IndependentEstimator E PiSet) :
+    TreatedUnbiased E E.μ0 PiSet := by
+  exact T6_vector_to_treated E hS PiSet hPiSet
+    (T6_independent_vector E hS PiSet hPiSet hU hI)
+
+example : type_of% @AronowAudit.P006.T6_independent_estimation := T6_independent_estimation_proof
 
 end
 end AronowAudit.P006.Wave1

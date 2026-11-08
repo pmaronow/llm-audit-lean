@@ -4,6 +4,7 @@ import Mathlib
 P013: Aronow and Samii (2017), Annals of Applied Statistics 11, 1912--1947.
 The design-based objects below use real weighted finite sums. No probabilities
 are estimated except in the explicitly labelled Monte Carlo statements.
+`sorry` marks an unproved statement, never an assumption of the paper.
 -/
 
 namespace AronowAudit.P013
@@ -664,7 +665,7 @@ def VectorIndependent {N K : ℕ} (P : Design Ω) (D : Ω → Fin N → Fin K)
       probability P (fun z => ∀ j ∈ B, D z j = b j)
 
 /-- The four clauses of the dependency antecedent *as printed*, p. 1925.
-All four clauses use nonmembership. -/
+All four occurrences of nonmembership are deliberately retained. -/
 def PrintedNoEdge {N : ℕ} (h : Fin N → Fin N → Bool) (A B : Finset (Fin N)) : Prop :=
   ¬ ∃ i j, h i j = true ∧
     ((i ∈ A ∧ j ∉ B) ∨ (j ∈ A ∧ i ∉ B) ∨
@@ -848,7 +849,7 @@ theorem graph_pair_count_symmetric {N : ℕ} (h : Fin N → Fin N → Bool) (m :
       exact (sum_le_sum fun i _ => hb i).trans_eq (by simp)
     _ = N*(m+1) := by ring
 
-/-- The shared Bernoulli assignment design (P013-T5(c)) has
+/-- The validator's shared Bernoulli assignment design (P013-T5(c)) has
 exactly the two assignments all-zero and all-one, each with probability 1/2. -/
 def sharedDesign : Design (Fin 2) where
   weight := fun _ => 1/2
@@ -1498,6 +1499,7 @@ def cancellationFactor {N K : ℕ} {P : Design Ω} (F : Population P N K) (d : F
   (∑ i, |F.outcome i d|) / |potentialTotal F d|
 
 
+
 /-- Exact triangle-inequality lemma behind the repaired bound: if
 0 ≤ q_i ≤ q_0 then |Σ_i y_i q_i| ≤ q_0 Σ_i |y_i| (P013-T4 finite lemma). -/
 theorem signed_bias_absolute_bound {ι : Type*} [Fintype ι] (y q : ι → ℝ)
@@ -1513,8 +1515,8 @@ theorem signed_bias_absolute_bound {ι : Type*} [Fintype ι] (y q : ι → ℝ)
       mul_le_mul_of_nonneg_left (hq i).2 (abs_nonneg _)
     _ = q0 * ∑ i, |y i| := by rw [← sum_mul]; ring
 
-/-- The power weights q_i=(1-π_i)^(R+1) satisfy 0 ≤ q_i ≤ (1-π_0)^(R+1)
-when π_0 is the minimum exposure probability (P013-T4 finite lemma). -/
+/-- The power weights q_i=(1-π_i)^(R+1) satisfy the bounds needed above
+when π_0 is their minimum (P013-T4 finite lemma). -/
 theorem simulated_power_bound {N K : ℕ} {P : Design Ω} (F : Population P N K)
     (d : Fin K) (hd : Positivity F d) (R : ℕ) (p0 : ℝ) (hmin : IsMinimumPi F d p0) :
     ∀ i, 0 ≤ (1-pi F i d)^(R+1) ∧ (1-pi F i d)^(R+1) ≤ (1-p0)^(R+1) := by
@@ -1523,15 +1525,21 @@ theorem simulated_power_bound {N K : ℕ} {P : Design Ω} (F : Population P N K)
   · exact pow_nonneg (by linarith [(hd i).2]) _
   · exact pow_le_pow_left₀ (by linarith [(hd i).2]) (by linarith [hmin.2 i]) _
 
+/- The false printed relative-bias bound of Proposition 4.1 on its natural
+domain y^T(d)≠0, with any nonnegative replicate count R (P013-T12, p. 1920).
+No outcome-sign premise repairs the printed claim; its proof remains absent. -/
+/- Historical false affirmative draft retired after exact full-contract refutation.
+   Full original source is archived in confidence-followup/batch02-small/source-integration/original-declarations.json. -/
 
-
-
-
-
+/- The false replicate rule drawn from printed Proposition 4.1, stated only
+where relative bias is defined, y^T(d)≠0 (P013-T12, p. 1920). R is any
+nonnegative integer, and no common-sign assumption is added. -/
+/- Historical false affirmative draft retired after exact full-contract refutation.
+   Full original source is archived in confidence-followup/batch02-small/source-integration/original-declarations.json. -/
 
 set_option exponentiation.threshold 11000 in
 set_option maxHeartbeats 4000000 in
-/-- In the numerical example, 10,593 replicates pass the printed
+/-- The numerical example is unchanged: 10,593 replicates pass the printed
 power criterion and 10,592 fail (p. 1920; P013-T4(f), P013-T12). -/
 theorem replicate_rule_numerical :
     ((1999/2000 : ℚ) ^ (10593+1)) ≤ 1/200 ∧
@@ -1546,7 +1554,7 @@ def signedReplicationDesign : Design (Fin 4) where
   positive := by intro z; fin_cases z <;> norm_num
   total := by norm_num [Fin.sum_univ_succ]
 
-/-- The two-unit experiment for T3: exposure is own assignment;
+/-- The two-unit validator experiment for T3: exposure is own assignment;
 unexposed outcomes are zero, exposed outcomes are (a,-1), with a=2 or a=1. -/
 def signedReplicationPopulation (a : ℝ) : Population signedReplicationDesign 2 2 where
   exposure z i := if i = 0 then (if z.val < 2 then 0 else 1) else
@@ -1606,7 +1614,7 @@ def ConvergesInProbability {L : ℕ → Type*} [∀ n : ℕ, Fintype (L n)]
   ∀ ε : ℝ, 0 < ε → Tendsto (fun n : ℕ => probability (P n) (fun z => ε < |X n z-a|)) atTop (𝓝 0)
 
 /-- The standard normal distribution function Φ, used by Proposition 6.2
-and the coverage statements (pp. 1926, 1943). -/
+and the validators' coverage statements (pp. 1926, 1943). -/
 def normalCDF (x : ℝ) : ℝ := ProbabilityTheory.cdf (ProbabilityTheory.gaussianReal 0 1) x
 
 /-- z_(1-α/2), the (1-α/2)-quantile of N(0,1), as the least x whose
@@ -1734,12 +1742,28 @@ def LowerTailCondition (S : ExperimentSequence) : Prop :=
       atTop (𝓝 0)
 
 /-- Wald coverage of τ_N using exactly expression (11). Negative estimated
-variance counts as noncoverage; under (L) together with Condition 6 its
-probability vanishes. Proposition 6.2, p. 1926; corrected P013-T2 and T8. -/
+variance counts as noncoverage; under (L) its probability vanishes
+(Proposition 6.2, p. 1926; corrected P013-T2 and T8). -/
 def seqCoverage (S : ExperimentSequence) (α : ℝ) (n : ℕ) :=
   probability (seqLaw S n) (fun z => 0 ≤ seqVarianceEstimate S n z ∧
     |seqEstimate S n z-seqTarget S n| ≤ normalCritical α * Real.sqrt (seqVarianceEstimate S n z))
 
+/-- Corrected Proposition 6.2: C3, genuine C5, C6 and the added lower-tail
+condition imply nominal lower-limit coverage of τ_N (P013-T2, p. 1926).
+No limit of the variance ratio or studentized statistic is asserted. -/
+theorem corrected_wald_coverage (S : ExperimentSequence) (hnested : NestedPopulationSetup S) (hc3 : ComparisonBounded S)
+    (hc5 : Condition5Genuine S) (hc6 : Condition6 S) (hL : LowerTailCondition S) :
+    ∀ α : ℝ, 0 < α → α < 1 → 1-α ≤ liminf (seqCoverage S α) atTop := by
+  sorry
+
+/-- Proposition 6.2 as printed, under literal Condition 5 and the natural
+liminf reading of "at least"; the undefined τ_HT target is read as τ
+(P013-T18, p. 1926). False: the fixed counterexample families below refute it. -/
+theorem printed_wald_coverage (S : ExperimentSequence) (hnested : NestedPopulationSetup S) (hp : StandingPositivity S)
+    (hc3 : Condition3 S)
+    (hc5 : Condition5Printed S) (hc6 : Condition6 S) :
+    ∀ α : ℝ, 0 < α → α < 1 → 1-α ≤ liminf (seqCoverage S α) atTop := by
+  sorry
 
 /-- Corrected algebraic display of Appendix A.7, centered at the population
 effect τ, valid when true and estimated variances are positive
@@ -1831,11 +1855,72 @@ def IsMinimumPositiveJoint (S : ExperimentSequence) (n : ℕ) (b : ℝ) : Prop :
     (0 < jointPi (seqPopulation S n) i j (S.treated n) (S.control n) →
       b ≤ jointPi (seqPopulation S n) i j (S.treated n) (S.control n)))
 
+/-- Uniform positive joints imply Var(N Vhat)=O(1/N), hence (L)
+(P013-T2 sufficient condition (R)); O is expanded into a uniform eventual bound. -/
+theorem uniform_joints_variance_rate (S : ExperimentSequence) (hnested : NestedPopulationSetup S) (hc3 : ComparisonBounded S)
+    (hc5 : Condition5Genuine S) (b : ℝ) (hb : 0 < b) (hj : JointLowerBound S b) :
+    (∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ n in atTop,
+      variance (seqLaw S n) (fun z => (n+1 : ℝ)*seqVarianceEstimate S n z) ≤ C/(n+1 : ℝ)) ∧
+      LowerTailCondition S := by
+  sorry
+
+/-- Rate variant (R'): b_N is the attained smallest positive joint used by
+(11) for distinct units. The rate is O(1/(N b_N)); if N b_N→∞ then (L)
+follows (P013-T2, corrected Appendix A.7). The minimum is required at every
+size where its positive-joint set is nonempty. Comparison C3 and positivity
+force nonemptiness at all sufficiently large sizes; values outside the
+minimum's natural domain do not affect these asymptotic conclusions. -/
+theorem shrinking_joints_variance_rate (S : ExperimentSequence) (hnested : NestedPopulationSetup S) (hc3 : ComparisonBounded S)
+    (hc5 : Condition5Genuine S) (b : ℕ → ℝ)
+    (hmin : ∀ n, PositiveJointDomain S n → IsMinimumPositiveJoint S n (b n)) :
+    (∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ n in atTop,
+      variance (seqLaw S n) (fun z => (n+1 : ℝ)*seqVarianceEstimate S n z) ≤ C/((n+1 : ℝ)*b n)) ∧
+    (Tendsto (fun n : ℕ => (n+1 : ℝ)*b n) atTop atTop → LowerTailCondition S) := by
+  sorry
+
+/-- Abstract corrected concentration and coverage argument (P013-T8(a)--(c),
+p. 1943): concentration is around E[W_N]; only liminf coverage is concluded. -/
+theorem corrected_concentration_coverage {L : ℕ → Type*} [∀ n : ℕ, Fintype (L n)]
+    (P : ∀ n : ℕ, Design (L n)) (estimate Vhat : ∀ n : ℕ, L n → ℝ) (target : ℕ → ℝ)
+    (V : ℕ → ℝ) (hV : ∀ n : ℕ, V n = variance (P n) (estimate n) ∧ 0 < V n)
+    (c : ℝ) (hc : 0 < c) (hv : Tendsto (fun n : ℕ => (n+1 : ℝ)*V n) atTop (𝓝 c))
+    (hclt : TendsNormal P (fun (n : ℕ) z => (estimate n z-target n)/Real.sqrt (V n)) 0 1)
+    (hex : ∀ n : ℕ, (n+1 : ℝ)*V n ≤ expectation (P n) (fun z => (n+1 : ℝ)*Vhat n z))
+    (hvar : Tendsto (fun n : ℕ => variance (P n) (fun z => (n+1 : ℝ)*Vhat n z)) atTop (𝓝 0)) :
+    ConvergesInProbability P (fun (n : ℕ) z => (n+1 : ℝ)*Vhat n z-
+      expectation (P n) (fun z => (n+1 : ℝ)*Vhat n z)) 0 ∧
+    (∀ α : ℝ, 0 < α → α < 1 →
+      (∀ ε : ℝ, 0 < ε → ε < 1 →
+        2*normalCDF (normalCritical α*Real.sqrt (1-ε))-1 ≤
+          liminf (fun n : ℕ => probability (P n) (fun z => 0 ≤ Vhat n z ∧
+            |estimate n z-target n| ≤ normalCritical α*Real.sqrt (Vhat n z))) atTop) ∧
+      1-α ≤ liminf (fun n : ℕ => probability (P n) (fun z => 0 ≤ Vhat n z ∧
+        |estimate n z-target n| ≤ normalCritical α*Real.sqrt (Vhat n z))) atTop) := by
+  sorry
+
+/-- A convergent expected scaled variance recovers the probability limit and
+studentized normal law, with variance c/s (P013-T8(d), corrected Appendix A.7). -/
+theorem corrected_studentized_limit {L : ℕ → Type*} [∀ n : ℕ, Fintype (L n)]
+    (P : ∀ n : ℕ, Design (L n)) (estimate Vhat : ∀ n : ℕ, L n → ℝ) (target V : ℕ → ℝ)
+    (hV : ∀ n : ℕ, V n = variance (P n) (estimate n) ∧ 0 < V n)
+    (c s : ℝ) (hc : 0 < c) (hsc : c ≤ s)
+    (hv : Tendsto (fun n : ℕ => (n+1 : ℝ)*V n) atTop (𝓝 c))
+    (hclt : TendsNormal P (fun (n : ℕ) z => (estimate n z-target n)/Real.sqrt (V n)) 0 1)
+    (hex : ∀ n : ℕ, (n+1 : ℝ)*V n ≤ expectation (P n) (fun z => (n+1 : ℝ)*Vhat n z))
+    (hvar : Tendsto (fun n : ℕ => variance (P n) (fun z => (n+1 : ℝ)*Vhat n z)) atTop (𝓝 0))
+    (hs : Tendsto (fun n : ℕ => expectation (P n) (fun z => (n+1 : ℝ)*Vhat n z)) atTop (𝓝 s)) :
+    ConvergesInProbability P (fun (n : ℕ) z => (n+1 : ℝ)*Vhat n z) s ∧
+    ConvergesInProbability P (fun (n : ℕ) z => Real.sqrt (V n / Vhat n z)) (Real.sqrt (c/s)) ∧
+    0 < Real.sqrt (c/s) ∧ Real.sqrt (c/s) ≤ 1 ∧
+    TendsNormal P (fun (n : ℕ) z => (estimate n z-target n)/Real.sqrt (Vhat n z)) 0
+      ⟨c/s, div_nonneg hc.le (le_trans hc.le hsc)⟩ := by
+  sorry
+
 
 /-- ε_N=N⁻², q_N=1/2-ε_N, t_N=1-2ε_N in the explicit paired
-counterexample P013-T1 (P013-E001). -/
+counterexample P013-T1 (validator P013-E001, derivation §§2--7). -/
 def pairEpsilon (N : ℕ) : ℝ := 1/(N : ℝ)^2
-/-- "t_N = 1-2ε_N", the probability that a pair is split (P013-T1). -/
+/-- "t_N = 1-2ε_N", the probability that a pair is split (P013-T1 validator derivation §§2--3). -/
 def pairSplitProbability (N : ℕ) : ℝ := 1-2*pairEpsilon N
 
 /-- The four within-pair assignment probabilities (00),(01),(10),(11) are
@@ -1875,7 +1960,7 @@ def pairedPopulation (r : ℕ) (hr : 2 ≤ r) : Population (pairedDesign r hr) (
   exposure z i := pairExposure (z (pairIndex r i)) (decide (i.val % 2 = 1))
   outcome i _ := if i.val % 2 = 0 then 1 else -1
 
-/-- Every marginal in the arbitrary-size paired counterexample equals 1/2.  Supporting finite lemma for the T1 counterexample to Proposition 6.2, p. 1926; P013-E001. -/
+/-- Every marginal in the arbitrary-size paired counterexample equals 1/2.  Supporting finite lemma for the T1 counterexample to Proposition 6.2, p. 1926; validator E001, Section 2. -/
 theorem paired_pi (r : ℕ) (hr : 2 ≤ r) (i : Fin (2*r)) (d : Fin 2) :
     pi (pairedPopulation r hr) i d = 1/2 := by
   change expectation (replicateDesign (pairAtomDesign (2*r) (by omega)) r)
@@ -1886,7 +1971,7 @@ theorem paired_pi (r : ℕ) (hr : 2 ≤ r) (i : Fin (2*r)) (d : Fin 2) :
     norm_num [expectation,pairAtomDesign,pairExposure,hi,Fin.sum_univ_succ] <;> ring
 
 /-- The arbitrary-size paired witness has precisely the claimed within-pair
-and between-pair joint exposure probabilities (T1(a)).  Supporting finite lemma for the T1 counterexample to Proposition 6.2, p. 1926; P013-E001. -/
+and between-pair joint exposure probabilities (T1(a)).  Supporting finite lemma for the T1 counterexample to Proposition 6.2, p. 1926; validator E001, Section 2. -/
 theorem paired_joint (r : ℕ) (hr : 2 ≤ r) (i j : Fin (2*r)) (d e : Fin 2) (hne : i ≠ j) :
     jointPi (pairedPopulation r hr) i j d e =
       if pairIndex r i = pairIndex r j then
@@ -1921,7 +2006,7 @@ theorem paired_joint (r : ℕ) (hr : 2 ≤ r) (i j : Fin (2*r)) (d e : Fin 2) (h
     norm_num
 
 /-- Exactly two units use each paired randomization coordinate, so every
-row of the genuine pair graph has sum two (T1(a), Condition 5).  Supporting finite lemma for Condition 5 of the T1 counterexample, pp. 1925--1926; P013-E001. -/
+row of the genuine pair graph has sum two (T1(a), Condition 5).  Supporting finite lemma for Condition 5 of the T1 counterexample, pp. 1925--1926; validator E001, Section 2. -/
 theorem paired_row_bound (r : ℕ) (hr : 2 ≤ r) :
     RowBound (fun i j : Fin (2*r) => decide (pairIndex r i = pairIndex r j)) 2 := by
   classical
@@ -2026,9 +2111,62 @@ theorem paired_finite_hypotheses (r : ℕ) (hr : 2 ≤ r) :
         exact hno ⟨i,i,by simp,Or.inr (Or.inr (Or.inl ⟨hj,hi⟩))⟩
       simp [hA,hB,probability,(pairedDesign r hr).total]
 
+/-- Exact finite reduction and moments of the *original* expressions (1),
+(3), (7), (10), (11) on the T1 design, plus the all-split event and the failed
+A.7 variance bound (P013-T1(a)--(d), for every even N=2r≥4). -/
+theorem paired_finite_identities (r : ℕ) (hr : 2 ≤ r) :
+    let F := pairedPopulation r hr
+    let P := pairedDesign r hr
+    let N := (2*r : ℕ)
+    let t := pairSplitProbability N
+    causalEffect F 1 0 = 0 ∧
+    (∀ z, htEffect F 1 0 z = (∑ a, pairScore (z a))/(N : ℝ) ∧
+      (N : ℝ)^2*effectVariance F 1 0 z = ∑ a, pairVarianceScore N (z a) ∧
+      0 < effectVariance F 1 0 z) ∧
+    variance P (htEffect F 1 0) = 8*t/(N : ℝ) ∧
+    expectation P (effectVariance F 1 0) = variance P (htEffect F 1 0) ∧
+    probability P (allPairsSplit r) = t^r ∧
+    probability P (fun z => ¬ allPairsSplit r z) ≤ 1/(N : ℝ) ∧
+    (∀ z, allPairsSplit r z → (N : ℝ)*effectVariance F 1 0 z = 8-2/t) ∧
+    variance P (fun z => (N : ℝ)*effectVariance F 1 0 z) =
+      4*((N : ℝ)-2)^4*((N : ℝ)+2)^4 / ((N : ℝ)^5*((N : ℝ)^2-2)) := by
+  sorry
+
+/-- Full asymptotic counterexample to Proposition 6.2: explicit paired
+designs satisfy the finite hypotheses; N Var→8 but N Vhat→6, their ratio→3/4,
+Var(N Vhat)~4N diverges, and normal Wald coverage tends strictly below nominal
+(P013-T1(c)--(e)). Limits run through r=n+2, hence even N≥4. -/
+theorem paired_asymptotic_counterexample :
+    (∀ r (hr : 2 ≤ r),
+      (∀ i d, pi (pairedPopulation r hr) i d = 1/2 ∧
+        |(pairedPopulation r hr).outcome i d| = 1) ∧
+      GenuineDependency (pairedDesign r hr) (pairedPopulation r hr).exposure
+        (fun i j => decide (pairIndex r i = pairIndex r j)) ∧
+      PrintedDependency (pairedDesign r hr) (pairedPopulation r hr).exposure
+        (fun i j => decide (pairIndex r i = pairIndex r j)) ∧
+      RowBound (fun i j : Fin (2*r) => decide (pairIndex r i = pairIndex r j)) 2) ∧
+    (let P := fun n : ℕ => pairedDesign (n+2) (by omega)
+     let F := fun n : ℕ => pairedPopulation (n+2) (by omega)
+     let N := fun n : ℕ => (2*(n+2) : ℝ)
+     let V := fun n : ℕ => variance (P n) (htEffect (F n) 1 0)
+     let W := fun (n : ℕ) z => N n*effectVariance (F n) 1 0 z
+     Tendsto (fun n : ℕ => N n*V n) atTop (𝓝 8) ∧
+     ConvergesInProbability P W 6 ∧
+     ConvergesInProbability P (fun (n : ℕ) z => effectVariance (F n) 1 0 z / V n) (3/4) ∧
+     Tendsto (fun n : ℕ => variance (P n) (W n) / (4*N n)) atTop (𝓝 1) ∧
+     Tendsto (fun n : ℕ => variance (P n) (W n)) atTop atTop ∧
+     TendsNormal P (fun (n : ℕ) z => Real.sqrt (N n)*htEffect (F n) 1 0 z) 0 8 ∧
+     (∀ α : ℝ, 0 < α → α < 1 →
+       Tendsto (fun n : ℕ => probability (P n) (fun z =>
+         |htEffect (F n) 1 0 z-causalEffect (F n) 1 0| ≤
+           normalCritical α*Real.sqrt (effectVariance (F n) 1 0 z))) atTop
+         (𝓝 (2*normalCDF (normalCritical α*Real.sqrt (3/4))-1)) ∧
+       2*normalCDF (normalCritical α*Real.sqrt (3/4))-1 < 1-α)) := by
+  sorry
+
 
 /-- Block endpoints n_0=0 and n_r=2^(2^r) for r≥1 in the fixed nested
-population of counterexample P013-T7 (P013-E007). -/
+population of counterexample P013-T7 (validator P013-E007, derivation §2). -/
 def blockEnd (r : ℕ) : ℕ := if r=0 then 0 else 2^(2^r)
 
 /-- The block of positive unit i is the least r≥1 with i≤n_r (P013-T7).
@@ -2083,6 +2221,43 @@ theorem block_unit_square_identities (z : Fin 2) :
     (if z=1 then (0 : ℝ) else 2)^2 = 2-2*rademacher z ∧ (1 : ℝ)^2 = 1 := by
   fin_cases z <;> norm_num [rademacher]
 
+/-- Full fixed-N hypotheses and identities for the T7 block experiment:
+bounded outcomes and inverse marginals, genuine degree-one graph, positive
+off-diagonal joints, true variance 4/N, expression (11)=4 ΣY_i²/N², expected
+scaled estimator 4+4b_N/N and variance 64b_N/N² (P013-T7(a,b)). -/
+theorem block_finite_identities (N : ℕ) (hN : 1 ≤ N) :
+    let F := blockPopulation N
+    let P := blockDesign N
+    let b := (blockBUnits N).card
+    (∀ i d, pi F i d = 1/2 ∧ |F.outcome i d| ≤ 2) ∧
+    (∀ i j d e, i ≠ j → jointPi F i j d e = 1/4) ∧
+    GenuineDependency P F.exposure (fun i j => decide (i=j)) ∧
+    RowBound (fun i j : Fin N => decide (i=j)) 1 ∧
+    |causalEffect F 1 0| ≤ 2/(N : ℝ) ∧
+    (∀ z, htEffect F 1 0 z-causalEffect F 1 0 =
+      (2/(N : ℝ))*∑ i, rademacher (z i)) ∧
+    variance P (htEffect F 1 0) = 4/(N : ℝ) ∧
+    (∀ z, effectVariance F 1 0 z = 4/(N : ℝ)^2*∑ i, observed F z i ^ 2) ∧
+    (∀ z, (N : ℝ)*effectVariance F 1 0 z = 4+4*(b : ℝ)/(N : ℝ) +
+      8/(N : ℝ)*∑ i ∈ blockBUnits N, blockSign (i.val+1)*rademacher (z i)) ∧
+    expectation P (fun z => (N : ℝ)*effectVariance F 1 0 z) = 4+4*(b : ℝ)/(N : ℝ) ∧
+    variance P (fun z => (N : ℝ)*effectVariance F 1 0 z) = 64*(b : ℝ)/(N : ℝ)^2 ∧
+    variance P (fun z => (N : ℝ)*effectVariance F 1 0 z) ≤ 64/(N : ℝ) := by
+  sorry
+
+/-- Finite endpoint bounds on the even-block fraction, and the exact
+ratio n_(r-1)/n_r=2^(-2^(r-1)), r≥2 (P013-T7(c)). -/
+theorem block_endpoint_bounds (r : ℕ) (hr : 1 ≤ r) :
+    (r % 2 = 1 →
+      0 ≤ ((blockBUnits (blockEnd r)).card : ℝ)/(blockEnd r : ℝ) ∧
+      ((blockBUnits (blockEnd r)).card : ℝ)/(blockEnd r : ℝ) ≤
+        (blockEnd (r-1) : ℝ)/(blockEnd r : ℝ)) ∧
+    (r % 2 = 0 →
+      0 ≤ 1-((blockBUnits (blockEnd r)).card : ℝ)/(blockEnd r : ℝ) ∧
+      1-((blockBUnits (blockEnd r)).card : ℝ)/(blockEnd r : ℝ) ≤
+        (blockEnd (r-1) : ℝ)/(blockEnd r : ℝ)) ∧
+    (2 ≤ r → (blockEnd (r-1) : ℝ)/(blockEnd r : ℝ) = 1/(2 : ℝ)^(2^(r-1))) := by
+  sorry
 
 /-- Convergence in distribution to an arbitrary probability law via its CDF
 at continuity points; used to assert that T7 has no single studentized limit. -/
@@ -2090,6 +2265,43 @@ def TendsDistribution {L : ℕ → Type*} [∀ n : ℕ, Fintype (L n)]
     (P : ∀ n : ℕ, Design (L n)) (X : ∀ n : ℕ, L n → ℝ) (μ : MeasureTheory.Measure ℝ) : Prop :=
   ∀ x : ℝ, ContinuousAt (fun t => ProbabilityTheory.cdf μ t) x →
     Tendsto (fun n : ℕ => probability (P n) (fun z => X n z ≤ x)) atTop (𝓝 (ProbabilityTheory.cdf μ x))
+
+/-- Full block-family counterexample to the fixed-limit claims of Appendix
+A.7: Var(N Vhat)→0 and E[N Vhat]≥4=N Var, but neither N Vhat nor the
+variance-ratio square root has a probability limit, and the studentized
+statistic has no limit in distribution (P013-T7(c,d)). The two endpoint
+subsequences have variance-estimator limits 4,8 and studentized normal
+variances 1,1/2. This refutes proof steps, not the liminf coverage guarantee. -/
+theorem block_asymptotic_counterexample :
+    let P := fun n : ℕ => blockDesign (n+1)
+    let F := fun n : ℕ => blockPopulation (n+1)
+    let W := fun (n : ℕ) z => (n+1 : ℝ)*effectVariance (F n) 1 0 z
+    let V := fun n : ℕ => variance (P n) (htEffect (F n) 1 0)
+    let T := fun (n : ℕ) z => (htEffect (F n) 1 0 z-causalEffect (F n) 1 0)/
+      Real.sqrt (effectVariance (F n) 1 0 z)
+    (∀ n : ℕ, (n+1 : ℝ)*V n = 4 ∧ 4 ≤ expectation (P n) (W n)) ∧
+    Tendsto (fun n : ℕ => variance (P n) (W n)) atTop (𝓝 0) ∧
+    TendsNormal P (fun (n : ℕ) z => (htEffect (F n) 1 0 z-causalEffect (F n) 1 0)/Real.sqrt (V n)) 0 1 ∧
+    ¬ (∃ s : ℝ, ConvergesInProbability P W s) ∧
+    ¬ (∃ s : ℝ, ConvergesInProbability P
+      (fun (n : ℕ) z => Real.sqrt (V n/effectVariance (F n) 1 0 z)) s) ∧
+    ¬ (∃ μ : MeasureTheory.Measure ℝ, MeasureTheory.IsProbabilityMeasure μ ∧ TendsDistribution P T μ) ∧
+    (let Po := fun n : ℕ => blockDesign (blockEnd (2*n+1))
+     let Fo := fun n : ℕ => blockPopulation (blockEnd (2*n+1))
+     let Pe := fun n : ℕ => blockDesign (blockEnd (2*n+2))
+     let Fe := fun n : ℕ => blockPopulation (blockEnd (2*n+2))
+     ConvergesInProbability Po (fun (n : ℕ) z => (blockEnd (2*n+1) : ℝ)*effectVariance (Fo n) 1 0 z) 4 ∧
+     ConvergesInProbability Pe (fun (n : ℕ) z => (blockEnd (2*n+2) : ℝ)*effectVariance (Fe n) 1 0 z) 8 ∧
+     ConvergesInProbability Po (fun (n : ℕ) z => Real.sqrt
+       (variance (Po n) (htEffect (Fo n) 1 0)/effectVariance (Fo n) 1 0 z)) 1 ∧
+     ConvergesInProbability Pe (fun (n : ℕ) z => Real.sqrt
+       (variance (Pe n) (htEffect (Fe n) 1 0)/effectVariance (Fe n) 1 0 z)) (1/Real.sqrt 2) ∧
+     TendsNormal Po (fun (n : ℕ) z => (htEffect (Fo n) 1 0 z-causalEffect (Fo n) 1 0)/
+       Real.sqrt (effectVariance (Fo n) 1 0 z)) 0 1 ∧
+     TendsNormal Pe (fun (n : ℕ) z => (htEffect (Fe n) 1 0 z-causalEffect (Fe n) 1 0)/
+       Real.sqrt (effectVariance (Fe n) 1 0 z)) 0 (1/2)) := by
+  sorry
+
 
 
 /-- "I_k = [I(f(z,θ_i)=d_k)]", the exact N×|Ω| exposure-indicator
@@ -2442,6 +2654,35 @@ theorem linear_count_is_little_o (a : ℕ → ℝ) (C : ℝ) (hC : 0 ≤ C)
     exact (ha n).2
   · simpa using (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul C
 
+/-- The corrected genuine bounded-degree Condition 5 implies Condition 4
+along the population sequence (P013-T6(c), pp. 1925--1926). Symmetry is
+unnecessary for this counting implication, but is included in repaired C5. -/
+theorem genuine_condition5_implies_condition4 (S : ExperimentSequence)
+    (hc5 : Condition5Genuine S) : Condition4 S := by
+  classical
+  obtain ⟨m,h,hb⟩ := hc5
+  let g : ∀ n : ℕ, Fin (n+1) → Fin (n+1) → Bool :=
+    fun n i j => decide (i=j ∨ h n i j=true ∨ h n j i=true)
+  refine ⟨g,?_,?_⟩
+  · intro n i j hx
+    have hn : i ≠ j ∧ h n i j = false ∧ h n j i = false := by
+      simpa [g] using hx
+    exact genuine_implies_pair_independent (seqPopulation S n) (h n)
+      (hb n).2.1 i j hn.1 hn.2.1 hn.2.2
+  · apply linear_count_is_little_o _ (2*m+1 : ℝ) (by positivity)
+    intro n
+    constructor
+    · apply sum_nonneg
+      intro i _
+      apply sum_nonneg
+      intro j _
+      split_ifs <;> norm_num
+    · have hcount := graph_pair_count (h n) m (hb n).2.2
+      have heq : (∑ i, ∑ j, (if g n i j = true then 1 else 0 : ℝ)) =
+          ((∑ i, ∑ j, graphPairIndicator (h n) i j : ℕ) : ℝ) := by
+        simp [g,graphPairIndicator]
+      rw [heq]
+      exact_mod_cast hcount
 
 /-- The shared-exposure witness violates little-o Condition 4 along every
 population size, since its normalized pair count is constantly 1 (P013-T5(c)). -/
@@ -2508,10 +2749,9 @@ theorem bounded_htMean_consistency {L : ℕ → Type*} [∀ n, Fintype (L n)]
       (div_le_div_of_nonneg_right (hbound n) (sq_nonneg ε))
   · simpa using hup.div_const (ε^2)
 
-/-- If v_N > 0 tends to c > 0, E[W_N] ≥ v_N at every N, and Var(W_N)
-tends to zero, then Pr(W_N < (1-ε)v_N) tends to zero for every ε > 0.
-In the variance-estimator application, v_N = N V_N and W_N = N Vhat_N.
-P013-T8(b), corrected Appendix A.7, p. 1943. -/
+/-- The corrected relative lower-tail probability tends to zero when
+scaled true variance tends to c>0 and Var(W_N) tends to zero
+(P013-T8(b), corrected Appendix A.7, p. 1943). -/
 theorem relative_lower_tail_tends_zero {L : ℕ → Type*} [∀ n : ℕ, Fintype (L n)]
     (P : ∀ n : ℕ, Design (L n)) (W : ∀ n : ℕ, L n → ℝ) (v : ℕ → ℝ)
     (hv : ∀ n, 0 < v n) (hc : ℝ) (hcpos : 0 < hc)
@@ -2722,7 +2962,7 @@ theorem pairSix_formulas (z : Fin 4 × Fin 4 × Fin 4) :
     norm_num [pairExposure,pairScore,pairVarianceScore,pairEpsilon,pairSplitProbability]
 
 set_option maxHeartbeats 8000000 in
-/-- Exact N=6 identities for P013-T1, computed from the original
+/-- All N=6 numerical checks of the T1 validator, computed from the original
 (1),(3),(7),(10),(11) on the 64-assignment weighted finite space. This is a
 finite lemma, not a finite-N refutation of the asymptotic coverage theorem. -/
 theorem pairSix_exact_enumeration :
@@ -3077,7 +3317,7 @@ def shiftPopulation {N K : ℕ} {P : Design Ω} (F : Population P N K) (c : ℝ)
   outcome i d := F.outcome i d + c
 
 /-- "w_ik = I(D_i=d_k)/π_i(d_k)" in the Section 7.1 correction
-(P013-T22, p. 1927). Its sum W_k is `htCount`. -/
+(P013-T22, p. 1927). Its sum W_k is the existing `htCount`. -/
 def exposureWeight {N K : ℕ} {P : Design Ω} (F : Population P N K)
     (d : Fin K) (z : Ω) (i : Fin N) : ℝ := indicator F.exposure i d z / pi F i d
 
@@ -3103,7 +3343,7 @@ theorem shift_population_objects {N K : ℕ} {P : Design Ω}
     (∀ z i, observed (shiftPopulation F c) z i = observed F z i + c) := by
   exact ⟨fun _ _ => rfl, fun _ _ => rfl⟩
 
-/-- Conditions 1--2 put (12)--(13) in the weighted residual
+/-- Conditions 1--2 put (12)--(13) in the validator's weighted residual
 form Σ_i w_ik(y_i(d_k)-g_ik)+Σ_i g_ik (P013-T22 definitions, p. 1927). -/
 theorem differenceTotal_weighted {N K : ℕ} {P : Design Ω}
     (F : Population P N K) (d : Fin K) (g : Fin N → ℝ) (z : Ω) :
@@ -3116,9 +3356,11 @@ theorem differenceTotal_weighted {N K : ℕ} {P : Design Ω}
   intro i _
   ring
 
-/-- Exact change of a difference total under any prediction changes h:
-T'_k-T_k=cW_k+Σ_i(1-w_ik)h_ik (P013-T22(a), Section 7.1 correction, p. 1927).
-This also holds without positive-marginal or nonempty-population assumptions. -/
+/-- Private finite algebra helper, valid also outside the correction's
+positive-marginal/nonempty domain. The public theorem with the original
+target name states the restricted T22 correction.
+ Exact change of a difference total under any prediction changes h:
+T'_k-T_k=cW_k+Σ_i(1-w_ik)h_ik (P013-T22(a), Section 7.1 correction, p. 1927). -/
 private theorem differenceTotal_shift_change_algebra {N K : ℕ} {P : Design Ω}
     (F : Population P N K) (d : Fin K) (g h : Fin N → ℝ) (c : ℝ) (z : Ω) :
     differenceTotal (shiftPopulation F c) d (fun i => g i + h i) z -
@@ -3136,9 +3378,11 @@ private theorem differenceTotal_shift_change_algebra {N K : ℕ} {P : Design Ω}
   ring
 
 
-/-- Exact translation error T'_k-T_k-cN equals Σ_i(1-w_ik)(h_ik-c)
-(P013-T22(a), Section 7.1 correction, p. 1927).
-This also holds without positive-marginal or nonempty-population assumptions. -/
+/-- Private finite algebra helper, valid also outside the correction's
+positive-marginal/nonempty domain. The public theorem with the original
+target name states the restricted T22 correction.
+ Exact translation error T'_k-T_k-cN equals Σ_i(1-w_ik)(h_ik-c)
+(P013-T22(a), Section 7.1 correction, p. 1927). -/
 private theorem differenceTotal_shift_error_algebra {N K : ℕ} {P : Design Ω}
     (F : Population P N K) (d : Fin K) (g h : Fin N → ℝ) (c : ℝ) (z : Ω) :
     differenceTotal (shiftPopulation F c) d (fun i => g i + h i) z -
@@ -3155,9 +3399,11 @@ private theorem differenceTotal_shift_error_algebra {N K : ℕ} {P : Design Ω}
   ring
 
 
-/-- Total equivariance on a supported assignment is equivalent to a zero
-translation error, including arbitrary prediction changes (P013-T22(c), p. 1927).
-This also holds without positive-marginal or nonempty-population assumptions. -/
+/-- Private finite algebra helper, valid also outside the correction's
+positive-marginal/nonempty domain. The public theorem with the original
+target name states the restricted T22 correction.
+ Total equivariance on a supported assignment is equivalent to a zero
+translation error, including arbitrary prediction changes (P013-T22(c), p. 1927). -/
 private theorem differenceTotal_equivariance_iff_algebra {N K : ℕ} {P : Design Ω}
     (F : Population P N K) (d : Fin K) (g h : Fin N → ℝ) (c : ℝ) (z : Ω) :
     (differenceTotal (shiftPopulation F c) d (fun i => g i + h i) z =
@@ -3166,9 +3412,11 @@ private theorem differenceTotal_equivariance_iff_algebra {N K : ℕ} {P : Design
   constructor <;> intro hh <;> linarith
 
 
-/-- Jointly translating predictions and outcomes gives T'_k=T_k+cN
-assignment by assignment (P013-T22(b), corrected Section 7.1 sentence, p. 1927).
-This also holds without positive-marginal or nonempty-population assumptions. -/
+/-- Private finite algebra helper, valid also outside the correction's
+positive-marginal/nonempty domain. The public theorem with the original
+target name states the restricted T22 correction.
+ Jointly translating predictions and outcomes gives T'_k=T_k+cN
+assignment by assignment (P013-T22(b), corrected Section 7.1 sentence, p. 1927). -/
 private theorem differenceTotal_joint_translation_algebra {N K : ℕ} {P : Design Ω}
     (F : Population P N K) (d : Fin K) (g : Fin N → ℝ) (c : ℝ) (z : Ω) :
     differenceTotal (shiftPopulation F c) d (fun i => g i + c) z =
@@ -3422,7 +3670,7 @@ theorem fixed_count_calibration {N K : ℕ} {P : Design Ω}
   linarith
 
 /-- The three supported own-treatment assignments (1,0,0), (0,1,0),
-(0,0,1) have weights 1/4,1/4,1/2 (P013-T21(a);
+(0,0,1) have weights 1/4,1/4,1/2 (P013-T21(a), validator Example B;
 Section 7.1, p. 1927). Index z names the unique treated unit. -/
 def locationDesign : Design (Fin 3) where
   weight z := if z = 2 then 1/2 else 1/4
@@ -3436,7 +3684,7 @@ def locationPrediction (i : Fin 3) : ℝ := if i = 0 then 2 else if i = 1 then 3
 
 /-- Own assignment D_i=Z_i: exposure 1 for the uniquely selected unit,
 exposure 0 otherwise. Both exposure potential-outcome vectors are (2,3,5)
-(P013-T21(a), p. 1927). Conditions 1--2 hold by construction. -/
+(P013-T21(a), validator Example B, p. 1927). Conditions 1--2 hold by construction. -/
 def locationPopulation : Population locationDesign 3 2 where
   exposure z i := if z = i then 1 else 0
   outcome i _ := locationPrediction i
@@ -3569,6 +3817,16 @@ theorem location_counterexample_joint_repair :
     rw [differenceTotal_joint_translation_algebra,location_counterexample_targets.2.2.2.1 z d]
     norm_num
   exact ⟨ht,by simp [differenceEffect,ht]⟩
+
+
+/-- The shared-exposure construction is a nonvacuous instance of the nested
+population and stable exposure-name setup of Section 6 (p. 1924). -/
+theorem sharedSequence_nested : NestedPopulationSetup sharedSequence := by
+  refine ⟨(fun _ => ⟨Fin.val,Fin.val_injective⟩),1,0,(fun _ _ => 0),by decide,?_,?_⟩
+  · intro n
+    exact ⟨rfl,rfl⟩
+  · intro n i a
+    rfl
 
 
 /-- Products of functions of the two independent design coordinates factor
@@ -3745,14 +4003,14 @@ theorem pairTerm_second_moment_bound {N K : ℕ} {P : Design Ω}
     (jointPi_bounds F i j d e).2 (pi_bounds F i d) (pi_bounds F j e) hC hx hy
 
 /-- Exact expectation of a fair Rademacher coordinate in the independent
-assignment design of the block witness (P013-T7).  Supporting finite lemma for the T7 counterexample to the Appendix A.7 limit claims, p. 1943. -/
+assignment design of the block witness (P013-T7, validator §3).  Supporting finite lemma for the T7 counterexample to the Appendix A.7 limit claims, p. 1943. -/
 theorem rademacher_coordinate_mean (N : ℕ) (i : Fin N) :
     expectation (replicateDesign sharedDesign N) (fun z => rademacher (z i)) = 0 := by
   rw [replicate_marginal sharedDesign N i rademacher]
   exact rademacher_moments.1
 
 /-- Rademacher coordinate covariance is one on the diagonal and zero off it
-for the block witness's exact randomization law (P013-T7).  Supporting finite lemma for the T7 counterexample to the Appendix A.7 limit claims, p. 1943. -/
+for the block witness's exact randomization law (P013-T7, validator §3).  Supporting finite lemma for the T7 counterexample to the Appendix A.7 limit claims, p. 1943. -/
 theorem rademacher_coordinate_covariance (N : ℕ) (i j : Fin N) :
     covariance (replicateDesign sharedDesign N) (fun z => rademacher (z i))
       (fun z => rademacher (z j)) = if i=j then 1 else 0 := by
@@ -3766,7 +4024,7 @@ theorem rademacher_coordinate_covariance (N : ℕ) (i j : Fin N) :
     simp [rademacher_moments.1,hij]
 
 /-- Variance of the sum of N independent fair Rademacher scores equals N
-(P013-T7, exact finite identity).  Supporting finite lemma for the T7 counterexample to the Appendix A.7 limit claims, p. 1943. -/
+(P013-T7, exact finite identity in validator §3).  Supporting finite lemma for the T7 counterexample to the Appendix A.7 limit claims, p. 1943. -/
 theorem rademacher_sum_variance (N : ℕ) :
     variance (replicateDesign sharedDesign N) (fun z => ∑ i, rademacher (z i)) = N := by
   unfold variance
@@ -3786,7 +4044,7 @@ theorem variance_sub_const (P : Design Ω) (X : Ω → ℝ) (c : ℝ) :
   ring
 
 /-- The fixed block outcomes and original HT effect estimator have true
-variance exactly 4/N at every nonempty size (P013-T7(a)).  Supporting finite lemma for Condition 6 (p. 1926) of the T7 counterexample, P013-E007. -/
+variance exactly 4/N at every nonempty size (P013-T7(a), validator §3).  Supporting finite lemma for Condition 6 (p. 1926) of the T7 counterexample, validator E007 Section 3. -/
 theorem block_true_variance (N : ℕ) (hN : 0 < N) :
     variance (blockDesign N) (htEffect (blockPopulation N) 1 0) = 4/(N : ℝ) := by
   rw [← variance_sub_const (blockDesign N) (htEffect (blockPopulation N) 1 0)
@@ -3803,7 +4061,7 @@ theorem block_true_variance (N : ℕ) (hN : 0 < N) :
   field_simp [hn] <;> ring
 
 /-- The block witness satisfies the nonzero limiting variance premise with
-c=4 along all population sizes (P013-T7(a), Condition 6, p. 1926).  Supporting finite lemma for Condition 6 (p. 1926) of the T7 counterexample, P013-E007. -/
+c=4 along all population sizes (P013-T7(a), Condition 6, p. 1926).  Supporting finite lemma for Condition 6 (p. 1926) of the T7 counterexample, validator E007 Section 3. -/
 theorem block_condition6_limit :
     Tendsto (fun n : ℕ => (n+1 : ℝ)*variance (blockDesign (n+1))
       (htEffect (blockPopulation (n+1)) 1 0)) atTop (𝓝 4) := by
@@ -3836,20 +4094,25 @@ theorem block_genuine_dependency (N : ℕ) :
 
 
 end
-/-!
-Recorded reports and wearing outcomes, P013-T23,T24,T27.
-The definitions use the finite design and population objects above.
--/
+#print axioms differenceTotal_shift_change_algebra
+#print axioms differenceTotal_shift_error_algebra
+#print axioms differenceTotal_equivariance_iff_algebra
+#print axioms differenceTotal_joint_translation_algebra
+
+
+/-! Later materials (6 October 2026): recorded reports, P013-T23,T24,T27.
+These additions reuse the original finite design and population objects. -/
 
 noncomputable section
 variable {Ω : Type*} [Fintype Ω]
 
-/-- R_i(d)∈{0,1}, represented by Bool: whether a report
-is recorded at exposure d (P013-N020). This is not a definition printed in the article. -/
+/-- Validator notation R_i(d)∈{0,1}, represented by Bool: whether a report
+is recorded at exposure d. P013-N020, doubt/artifact/derivation.md §5;
+not a definition printed in the article. -/
 abbrev Recording (N K : ℕ) := Fin N → Fin K → Bool
 
-/-- "g_i(d)=R_i(d)y_i(d)": an absent report is scored zero.
-P013-N020; corrected interpretation of Section 10, pp. 1934--1936. -/
+/-- "g_i(d)=R_i(d)y_i(d)": an absent report is scored zero. Validator
+P013-N020 §5; corrected interpretation of Section 10, pp. 1934--1936. -/
 def recordedPopulation {N K : ℕ} {P : Design Ω} (F : Population P N K)
     (R : Recording N K) : Population P N K where
   exposure := F.exposure
@@ -3857,7 +4120,7 @@ def recordedPopulation {N K : ℕ} {P : Design Ω} (F : Population P N K)
 
 /-- "L(d)=N⁻¹Σ_i(1-R_i(d))y_i(d)", the mean lost wearing outcome.
 The piecewise form is identical for a binary recording indicator.
-P013-N020, correction P013-T24(b). -/
+Validator P013-N020 §5, correction P013-T24(b). -/
 def lostMean {N K : ℕ} {P : Design Ω} (F : Population P N K)
     (R : Recording N K) (d : Fin K) : ℝ :=
   (∑ i, if R i d then 0 else F.outcome i d) / (N : ℝ)
@@ -3913,7 +4176,7 @@ theorem recorded_unbiased {N K : ℕ} {P : Design Ω}
   rfl
 
 /-- Recorded means equal wearing means minus lost means; the recorded contrast
-has the exact lost-outcome correction. P013-T24(b), P013-N020. -/
+has the exact lost-outcome correction. P013-T24(b), validator N020 §5. -/
 theorem recorded_mean_decomposition {N K : ℕ} {P : Design Ω}
     (F : Population P N K) (R : Recording N K) (d e : Fin K) :
     potentialMean (recordedPopulation F R) d = potentialMean F d - lostMean F R d ∧
@@ -3932,9 +4195,8 @@ theorem recorded_mean_decomposition {N K : ℕ} {P : Design Ω}
   simp only [causalEffect, hm]
   ring
 
-/-- Exact bias and necessary-and-sufficient conditions for the recorded HT
-estimators to be unbiased for wearing: L(d)=L(e) for a contrast, L(d)=0 for
-a mean. P013-T24(b,c). -/
+/-- Exact bias and necessary-and-sufficient identification conditions for
+wearing: L(d)=L(e) for a contrast, L(d)=0 for a mean. P013-T24(b,c). -/
 theorem recorded_wearing_identification {N K : ℕ} {P : Design Ω}
     (F : Population P N K) (R : Recording N K) (hN : 0 < N)
     (d e : Fin K) (hne : d ≠ e)
@@ -3990,22 +4252,20 @@ theorem no_lost_wearing_suffices {N K : ℕ} {P : Design Ω}
     (lost_mean_zero_iff F R hN e hye).2.mpr hze]
 
 /-- "A_d(T)=Σ_{i∈T:D_i=d}w_i G_i" with weights from the original design,
-not a new randomization after exclusions. P013-N020, P013-T24(e). -/
+not a new randomization after exclusions. Validator N020 §4, P013-T24(e). -/
 def recordedNumerator {N K : ℕ} (D : Fin N → Fin K) (w G : Fin N → ℝ)
     (d : Fin K) (T : Finset (Fin N)) : ℝ :=
   ∑ i ∈ T, if D i = d then w i * G i else 0
 
 /-- "B_d(T)=Σ_{i∈T:D_i=d}w_i", the Hajek denominator (15),
-p. 1928; P013-N020, P013-T24(e). -/
+p. 1928; validator N020 §4, P013-T24(e). -/
 def recordedDenominator {N K : ℕ} (D : Fin N → Fin K) (w : Fin N → ℝ)
     (d : Fin K) (T : Finset (Fin N)) : ℝ :=
   ∑ i ∈ T, if D i = d then w i else 0
 
-/-- Dropping only zero outcomes preserves every numerator. With N = S.card
-and n = SR.card, each full-sample HT mean or contrast equals n/N times its
-retained-sample counterpart. When the retained exposure weight is positive,
-the full-sample Hajek mean equals the retained-sample mean times its
-exposure-specific retained/full weight ratio. P013-T24(e), P013-N020. -/
+/-- Dropping only zero outcomes preserves every numerator and rescales each
+HT mean and contrast by n/N; the Hajek mean has its exposure-specific
+weight ratio instead. P013-T24(e), validator N020 §4. -/
 theorem dropping_zero_outcomes {N K : ℕ} (D : Fin N → Fin K)
     (w G : Fin N → ℝ) (S SR : Finset (Fin N)) (hsub : SR ⊆ S)
     (hS : 0 < S.card) (hSR : 0 < SR.card) (_hw : ∀ i ∈ S, 0 < w i)
@@ -4037,7 +4297,7 @@ theorem dropping_zero_outcomes {N K : ℕ} (D : Fin N → Fin K)
 
 /-- The two exclusion counts and exact HT factors in the reconstruction on
 the public data (ICPSR 37070 V2), not the authors' unavailable outcome files.
-P013-T24(f), P013-N020; the input counts are aggregates. -/
+P013-T24(f), validator N020 §4; the input counts are certified aggregates. -/
 theorem public_reconstruction_factors :
     2050 - 342 = (1708 : ℕ) ∧ 2050 - 151 = (1899 : ℕ) ∧
     (1708 : ℝ) / 2050 = 854 / 1025 ∧
@@ -4048,7 +4308,7 @@ theorem public_reconstruction_factors :
     78 + 11 + 26 + 13 + 23 = (151 : ℕ) := by norm_num
 
 /-- Two invented units, four assignments (00),(01),(10),(11), each of
-probability 1/4. P013-N020, counterexample P013-T23. -/
+probability 1/4. Validator N020 §5, counterexample P013-T23. -/
 def twoReportDesign : Design (Fin 2 × Fin 2) where
   weight _ := 1/4
   positive _ := by norm_num
@@ -4056,19 +4316,19 @@ def twoReportDesign : Design (Fin 2 × Fin 2) where
 
 /-- A always reports and has wearing potentials (0,1); B never reports and
 has potentials (0,0),(0,1),(1,0) in worlds 0,1,2. Exposure is own assignment.
-P013-N020, counterexample P013-T23, pp. 1934--1936. -/
+Validator N020 §5, counterexample P013-T23, pp. 1934--1936. -/
 def twoWearPopulation (world : Fin 3) : Population twoReportDesign 2 2 where
   exposure z i := if i = 0 then z.1 else z.2
   outcome i d := if i = 0 then (if d = 1 then 1 else 0)
     else if world = 1 then (if d = 1 then 1 else 0)
     else if world = 2 then (if d = 0 then 1 else 0) else 0
 
-/-- "R_A(0)=R_A(1)=1, R_B(0)=R_B(1)=0" (P013-N020,
-P013-T23). This records only A's reports in every assignment and world. -/
+/-- "R_A(0)=R_A(1)=1, R_B(0)=R_B(1)=0", validator N020 §5,
+P013-T23. This records only A's reports in every assignment and world. -/
 def twoRecording : Recording 2 2 := fun i _ => if i = 0 then true else false
 
 /-- Recorded data comprise exposures, zero-coded observed outcomes, and
-recording indicators on every assignment. P013-N020, P013-T23(b). -/
+recording indicators on every assignment. Validator N020 §5, P013-T23(b). -/
 def recordedData {N K : ℕ} {P : Design Ω} (F : Population P N K)
     (R : Recording N K) (z : Ω) (i : Fin N) : Fin K × ℝ × Bool :=
   (F.exposure z i, observed (recordedPopulation F R) z i, R i (F.exposure z i))
@@ -4093,7 +4353,7 @@ theorem two_report_hypotheses (world : Fin 3) :
   · intro z i; exact observed_exposure_sum _ z i
 
 /-- The recorded data on every assignment are identical in all three worlds.
-P013-T23(b), P013-N020. -/
+P013-T23(b), validator N020 §5. -/
 theorem two_report_data_same (world : Fin 3) :
     recordedData (twoWearPopulation world) twoRecording =
       recordedData (twoWearPopulation 0) twoRecording := by
@@ -4113,7 +4373,7 @@ theorem two_report_estimator (world : Fin 3) (z : Fin 2 × Fin 2) :
       Fin.sum_univ_two, Fintype.sum_prod_type]
 
 /-- Each world's recorded contrast has expectation 1/2, variance 1/4 and
-recorded-outcome estimand 1/2. P013-T23(c), P013-N020. -/
+recorded-outcome estimand 1/2. P013-T23(c), validator N020 §5. -/
 theorem two_report_moments (world : Fin 3) :
     expectation twoReportDesign
       (htEffect (recordedPopulation (twoWearPopulation world) twoRecording) 1 0) = 1/2 ∧
@@ -4153,7 +4413,7 @@ theorem two_report_biases (world : Fin 3) :
 
 /-- No function of all recorded data equals the wearing effect in all three
 worlds, even though every exposure and recording indicator is available.
-P013-T23(d), P013-N020: an identification counterexample. -/
+P013-T23(d), validator N020 §5: an identification counterexample. -/
 theorem two_report_nonidentification :
     ¬ ∃ h : ((Fin 2 × Fin 2) → Fin 2 → Fin 2 × ℝ × Bool) → ℝ,
       ∀ world : Fin 3,
@@ -4168,13 +4428,13 @@ theorem two_report_nonidentification :
   linarith
 
 /-- Respondent-only analysis keeps A alone with N=1 and the original
-assignment law and probabilities. P013-N020, P013-T23(f). -/
+assignment law and probabilities. Validator N020 §5, P013-T23(f). -/
 def twoRespondentPopulation : Population twoReportDesign 1 2 where
   exposure z _ := z.1
   outcome _ d := if d = 1 then 1 else 0
 
 /-- The respondent-only HT contrast is 2z_A with expectation 1, and the
-full-sample contrast is half of it. P013-T23(f), P013-N020. -/
+full-sample contrast is half of it. P013-T23(f), validator N020 §5. -/
 theorem two_respondent_comparison (world : Fin 3) :
     (∀ z, htEffect twoRespondentPopulation 1 0 z = 2 * (z.1.val : ℝ)) ∧
     expectation twoReportDesign (htEffect twoRespondentPopulation 1 0) = 1 ∧
@@ -4203,13 +4463,11 @@ No Exposure depends only on the school's hosting indicator. -/
 def section10Exposure (host own peer : Bool) : Fin 5 :=
   if host then (if own then (if peer then 4 else 3) else (if peer then 2 else 1)) else 0
 
-/-- Section 10 population constructor using school hosting and student assignments
-on the full frame of M students. The map `analysed` selects a frame index for
-each analysed unit, and `neighbors` supplies its peer set, including peers
-outside the analysed sample. Injectivity of `analysed`, a zero diagonal, symmetry
-and within-school peer membership are separate hypotheses of
-`section10_wearing_unbiased`; this constructor accepts arbitrary maps and peer sets.
-The table `y` supplies fixed wearing/reporting potential outcomes.
+/-- Section 10's known assignment contains school hosting and student
+assignments on the full frame of M students. The analysed N students are
+selected by an injective map into that frame; θ_i is the full zero-diagonal
+school network row, including peers outside the analysed sample.
+y_i(d) is a fixed wearing/reporting potential outcome for the analysed unit.
 Definition on p. 1934; Conditions 1--2 on p. 1918. -/
 def section10Population {N M : ℕ} (P : Design Ω) (analysed : Fin N → Fin M)
     (school : Fin M → Fin 56) (hosts : Ω → Fin 56 → Bool) (assigned : Ω → Fin M → Bool)
@@ -4248,12 +4506,11 @@ theorem section10_wearing_unbiased {N M : ℕ} (P : Design Ω) (hN : 0 < N)
     ht_positive_unbiased _ 0 (fun i => hpos i 0)]
   rfl
 
-/-- Complete finite-population bias and unbiasedness correction under the
-setting of P013-T24(a–d): positive comparison marginals, distinct exposures,
+/-- Complete finite-population identification correction under exactly the
+setting of P013-T24(a--d): positive comparison marginals, distinct exposures,
 N>0, and exposure-specific wearing and recording potentials. Recorded HT
-is unbiased for recorded reports; it is unbiased for the wearing contrast
-exactly when the two lost means agree. This correction is not a printed
-corrigendum. -/
+is unbiased for recorded reports; wearing is identified exactly by equality
+of lost means. This is the validator's correction, not a printed corrigendum. -/
 theorem corrected_recorded_outcome {N K : ℕ} {P : Design Ω}
     (F : Population P N K) (R : Recording N K) (hN : 0 < N)
     (d e : Fin K) (hne : d ≠ e)
@@ -4279,11 +4536,11 @@ theorem corrected_recorded_outcome {N K : ℕ} {P : Design Ω}
     (recorded_mean_decomposition F R d e).2,hi.1,hi.2.1,hi.2.2,
     fun a ha => lost_mean_zero_iff F R hN a ha⟩
 
-/-- Conditional on the aggregate counts of the reconstruction on
+/-- Conditional on the certified aggregate counts of the reconstruction on
 ICPSR 37070 V2 public data and on zero outcomes outside the retained sets,
 the original-design HT contrasts have exactly the factors 854/1025 and
 1899/2050. No student data, original-author outcome file, or empirical
-missingness condition is inferred by Lean. P013-T24(e,f), P013-N020. -/
+missingness condition is inferred by Lean. P013-T24(e,f), validator N020 §4. -/
 theorem public_reconstruction_HT_scaling {N K : ℕ} (D : Fin N → Fin K)
     (w G : Fin N → ℝ) (S item survey : Finset (Fin N))
     (hi : item ⊆ S) (hs : survey ⊆ S) (hS : S.card = 2050)
@@ -4304,7 +4561,7 @@ theorem public_reconstruction_HT_scaling {N K : ℕ} (D : Fin N → Fin K)
 /-- A three-unit exact instance shows why the Hajek contrasts in T24(e)
 have no universal scalar after exclusion: the full contrast is −1/2 and
 the retained contrast is zero. Weights 2 can arise from fair exposure
-marginals; the only excluded observed outcome is zero. P013-N020, (15) p. 1928. -/
+marginals; the only excluded observed outcome is zero. N020 §4, (15) p. 1928. -/
 theorem hajek_exclusion_no_common_factor :
     let D : Fin 3 → Fin 2 := fun i => if i = 2 then 0 else 1
     let w : Fin 3 → ℝ := fun _ => 2
@@ -4328,3 +4585,213 @@ theorem hajek_exclusion_no_common_factor :
 end
 end AronowAudit.P013
 
+#print axioms AronowAudit.P013.expectation_const
+#print axioms AronowAudit.P013.expectation_add
+#print axioms AronowAudit.P013.expectation_sub
+#print axioms AronowAudit.P013.expectation_mul_const
+#print axioms AronowAudit.P013.expectation_const_mul
+#print axioms AronowAudit.P013.expectation_sum
+#print axioms AronowAudit.P013.expectation_nonneg
+#print axioms AronowAudit.P013.expectation_mono
+#print axioms AronowAudit.P013.variance_centered
+#print axioms AronowAudit.P013.variance_nonneg
+#print axioms AronowAudit.P013.covariance_symm
+#print axioms AronowAudit.P013.covariance_sum_sum
+#print axioms AronowAudit.P013.covariance_mul_const
+#print axioms AronowAudit.P013.variance_sub_div
+#print axioms AronowAudit.P013.htTotal_observed
+#print axioms AronowAudit.P013.ht_unbiased
+#print axioms AronowAudit.P013.htMean_unbiased
+#print axioms AronowAudit.P013.htEffect_unbiased
+#print axioms AronowAudit.P013.htEffect_variance
+#print axioms AronowAudit.P013.ht_covariance_full
+#print axioms AronowAudit.P013.jointPi_self
+#print axioms AronowAudit.P013.jointPi_cross_self
+#print axioms AronowAudit.P013.sum_diag_off
+#print axioms AronowAudit.P013.ht_variance_formula
+#print axioms AronowAudit.P013.ht_covariance_formula
+#print axioms AronowAudit.P013.expectation_finset_sum
+#print axioms AronowAudit.P013.jointPi_nonneg
+#print axioms AronowAudit.P013.pairTerm_expectation
+#print axioms AronowAudit.P013.varianceHT_unbiased
+#print axioms AronowAudit.P013.varianceHT_bias
+#print axioms AronowAudit.P013.squareTerm_expectation
+#print axioms AronowAudit.P013.correctionA2_expectation
+#print axioms AronowAudit.P013.varianceHT_conservative
+#print axioms AronowAudit.P013.covarianceHT_expectation
+#print axioms AronowAudit.P013.covarianceHT_conservative
+#print axioms AronowAudit.P013.covarianceHT_unbiased_no_effect
+#print axioms AronowAudit.P013.covariance_split_zeros
+#print axioms AronowAudit.P013.covarianceA_expectation
+#print axioms AronowAudit.P013.covarianceA_conservative
+#print axioms AronowAudit.P013.effectVariance_conservative
+#print axioms AronowAudit.P013.printed_identity_vacuous
+#print axioms AronowAudit.P013.printed_identity_dependency
+#print axioms AronowAudit.P013.corrected_edge_equivalence
+#print axioms AronowAudit.P013.corrected_symmetric_equivalence
+#print axioms AronowAudit.P013.genuine_implies_pair_independent
+#print axioms AronowAudit.P013.graph_pair_count
+#print axioms AronowAudit.P013.graph_pair_count_symmetric
+#print axioms AronowAudit.P013.shared_exposure_counterexample
+#print axioms AronowAudit.P013.shared_pair_count
+#print axioms AronowAudit.P013.printed_triangles_vacuous
+#print axioms AronowAudit.P013.auxiliary_unbiased
+#print axioms AronowAudit.P013.differenceTotal_unbiased
+#print axioms AronowAudit.P013.differenceTotal_residual
+#print axioms AronowAudit.P013.htCount_unbiased
+#print axioms AronowAudit.P013.indicator_nonneg
+#print axioms AronowAudit.P013.htTotal_zero_of_count_zero
+#print axioms AronowAudit.P013.hajek_product_identity
+#print axioms AronowAudit.P013.covariance_centered
+#print axioms AronowAudit.P013.covariance_abs_bound
+#print axioms AronowAudit.P013.hajek_bias_covariance
+#print axioms AronowAudit.P013.hajek_bias_bound
+#print axioms AronowAudit.P013.misspecified_expectation
+#print axioms AronowAudit.P013.misspecified_contrast
+#print axioms AronowAudit.P013.simulated_expectation
+#print axioms AronowAudit.P013.simulated_bias_repaired
+#print axioms AronowAudit.P013.signed_bias_absolute_bound
+#print axioms AronowAudit.P013.simulated_power_bound
+#print axioms AronowAudit.P013.replicate_rule_numerical
+#print axioms AronowAudit.P013.signed_replication_counterexample
+#print axioms AronowAudit.P013.zero_total_replication_counterexample
+#print axioms AronowAudit.P013.condition3_implies_comparison
+#print axioms AronowAudit.P013.corrected_wald_coverage
+#print axioms AronowAudit.P013.printed_wald_coverage
+#print axioms AronowAudit.P013.studentized_identity
+#print axioms AronowAudit.P013.finite_chebyshev
+#print axioms AronowAudit.P013.conservative_lower_tail
+#print axioms AronowAudit.P013.conservative_relative_lower_tail
+#print axioms AronowAudit.P013.uniform_joints_variance_rate
+#print axioms AronowAudit.P013.shrinking_joints_variance_rate
+#print axioms AronowAudit.P013.corrected_concentration_coverage
+#print axioms AronowAudit.P013.corrected_studentized_limit
+#print axioms AronowAudit.P013.pair_score_moments
+#print axioms AronowAudit.P013.pair_variance_score_moments
+#print axioms AronowAudit.P013.paired_finite_hypotheses
+#print axioms AronowAudit.P013.paired_finite_identities
+#print axioms AronowAudit.P013.paired_asymptotic_counterexample
+#print axioms AronowAudit.P013.block_unit_score_identity
+#print axioms AronowAudit.P013.rademacher_moments
+#print axioms AronowAudit.P013.block_unit_square_identities
+#print axioms AronowAudit.P013.block_finite_identities
+#print axioms AronowAudit.P013.block_endpoint_bounds
+#print axioms AronowAudit.P013.block_asymptotic_counterexample
+#print axioms AronowAudit.P013.replicate_marginal
+#print axioms AronowAudit.P013.design_matrix_entry
+#print axioms AronowAudit.P013.replicate_matrix_entry
+#print axioms AronowAudit.P013.replicate_count_expectation
+#print axioms AronowAudit.P013.replicate_matrix_unbiased
+#print axioms AronowAudit.P013.integral_designMeasure
+#print axioms AronowAudit.P013.replicate_joint_strong_law
+#print axioms AronowAudit.P013.smoothed_average_limit
+#print axioms AronowAudit.P013.simulation_matrices_almost_sure
+#print axioms AronowAudit.P013.probability_nonneg
+#print axioms AronowAudit.P013.probability_mono
+#print axioms AronowAudit.P013.probability_inter_lower
+#print axioms AronowAudit.P013.wald_event_inclusion
+#print axioms AronowAudit.P013.finite_wald_coverage_bound
+#print axioms AronowAudit.P013.pi_bounds
+#print axioms AronowAudit.P013.jointPi_bounds
+#print axioms AronowAudit.P013.joint_covariance_abs_le_one
+#print axioms AronowAudit.P013.variance_div
+#print axioms AronowAudit.P013.htMean_variance_bound
+#print axioms AronowAudit.P013.htMean_chebyshev
+#print axioms AronowAudit.P013.linear_count_is_little_o
+#print axioms AronowAudit.P013.genuine_condition5_implies_condition4
+#print axioms AronowAudit.P013.shared_condition4_failure
+#print axioms AronowAudit.P013.variance_concentration
+#print axioms AronowAudit.P013.bounded_htMean_consistency
+#print axioms AronowAudit.P013.relative_lower_tail_tends_zero
+#print axioms AronowAudit.P013.both_means_consistent
+#print axioms AronowAudit.P013.difference_probability_bound
+#print axioms AronowAudit.P013.convergence_difference
+#print axioms AronowAudit.P013.corrected_mean_consistency
+#print axioms AronowAudit.P013.htEffect_consistency
+#print axioms AronowAudit.P013.centered_concentration_implies_lower_tail
+#print axioms AronowAudit.P013.vanishing_variance_implies_lower_tail
+#print axioms AronowAudit.P013.pairSix_pi
+#print axioms AronowAudit.P013.pairSix_joint
+#print axioms AronowAudit.P013.pairSix_formulas
+#print axioms AronowAudit.P013.pairSix_exact_enumeration
+#print axioms AronowAudit.P013.pairSix_on_split
+#print axioms AronowAudit.P013.graph_quadruple_count
+#print axioms AronowAudit.P013.binomial_inverse_moment
+#print axioms AronowAudit.P013.replicate_log_rule_equivalence
+#print axioms AronowAudit.P013.cancellation_factor_ge_one
+#print axioms AronowAudit.P013.common_sign_cancellation_factor
+#print axioms AronowAudit.P013.relative_bias_from_absolute
+#print axioms AronowAudit.P013.signed_log_rule_counterexample
+#print axioms AronowAudit.P013.replicate_pair_marginal
+#print axioms AronowAudit.P013.block_pi
+#print axioms AronowAudit.P013.block_joint
+#print axioms AronowAudit.P013.block_outcome_properties
+#print axioms AronowAudit.P013.block_effect_error
+#print axioms AronowAudit.P013.shared_sequence_counterexample
+#print axioms AronowAudit.P013.shift_population_objects
+#print axioms AronowAudit.P013.differenceTotal_weighted
+#print axioms AronowAudit.P013.differenceTotal_shift_change
+#print axioms AronowAudit.P013.differenceTotal_shift_error
+#print axioms AronowAudit.P013.differenceTotal_equivariance_iff
+#print axioms AronowAudit.P013.differenceTotal_joint_translation
+#print axioms AronowAudit.P013.difference_joint_translation_properties
+#print axioms AronowAudit.P013.differenceEffect_shift_error
+#print axioms AronowAudit.P013.difference_fixed_prediction_translation
+#print axioms AronowAudit.P013.exposureWeight_unbiased
+#print axioms AronowAudit.P013.translation_error_mean_zero
+#print axioms AronowAudit.P013.fixed_translation_mean_zero
+#print axioms AronowAudit.P013.fixed_count_calibration
+#print axioms AronowAudit.P013.location_counterexample_hypotheses
+#print axioms AronowAudit.P013.location_counterexample_targets
+#print axioms AronowAudit.P013.location_counterexample_enumeration
+#print axioms AronowAudit.P013.location_translation_counterexample
+#print axioms AronowAudit.P013.location_counterexample_moments
+#print axioms AronowAudit.P013.location_counterexample_joint_repair
+#print axioms AronowAudit.P013.ht_fixed_translation
+
+#print axioms AronowAudit.P013.replicate_reindex
+#print axioms AronowAudit.P013.replicate_cons_expectation
+#print axioms AronowAudit.P013.smoothed_inverse_success
+#print axioms AronowAudit.P013.replicate_probability_product
+#print axioms AronowAudit.P013.replicate_probability_by_units
+#print axioms AronowAudit.P013.coordinate_population_genuine_dependency
+#print axioms AronowAudit.P013.paired_pi
+#print axioms AronowAudit.P013.paired_joint
+#print axioms AronowAudit.P013.paired_row_bound
+#print axioms AronowAudit.P013.expectation_independent_product
+#print axioms AronowAudit.P013.pairTerm_second_moment_identity
+#print axioms AronowAudit.P013.positive_joint_second_moment_bound
+#print axioms AronowAudit.P013.pairTerm_second_moment_bound
+#print axioms AronowAudit.P013.rademacher_coordinate_mean
+#print axioms AronowAudit.P013.rademacher_coordinate_covariance
+#print axioms AronowAudit.P013.rademacher_sum_variance
+#print axioms AronowAudit.P013.variance_sub_const
+#print axioms AronowAudit.P013.block_true_variance
+#print axioms AronowAudit.P013.block_condition6_limit
+#print axioms AronowAudit.P013.block_genuine_dependency
+
+#print axioms AronowAudit.P013.sharedSequence_nested
+
+#print axioms AronowAudit.P013.recorded_pi
+#print axioms AronowAudit.P013.observed_exposure_sum
+#print axioms AronowAudit.P013.ht_positive_unbiased
+#print axioms AronowAudit.P013.recorded_unbiased
+#print axioms AronowAudit.P013.recorded_mean_decomposition
+#print axioms AronowAudit.P013.recorded_wearing_identification
+#print axioms AronowAudit.P013.lost_mean_zero_iff
+#print axioms AronowAudit.P013.no_lost_wearing_suffices
+#print axioms AronowAudit.P013.dropping_zero_outcomes
+#print axioms AronowAudit.P013.public_reconstruction_factors
+#print axioms AronowAudit.P013.two_report_hypotheses
+#print axioms AronowAudit.P013.two_report_data_same
+#print axioms AronowAudit.P013.two_report_estimator
+#print axioms AronowAudit.P013.two_report_moments
+#print axioms AronowAudit.P013.two_wearing_effects_and_losses
+#print axioms AronowAudit.P013.two_report_biases
+#print axioms AronowAudit.P013.two_report_nonidentification
+#print axioms AronowAudit.P013.two_respondent_comparison
+#print axioms AronowAudit.P013.section10_wearing_unbiased
+
+#print axioms AronowAudit.P013.corrected_recorded_outcome
+#print axioms AronowAudit.P013.public_reconstruction_HT_scaling
+#print axioms AronowAudit.P013.hajek_exclusion_no_common_factor

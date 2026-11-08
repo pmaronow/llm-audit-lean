@@ -43,7 +43,7 @@ theorem n3_proof : N3 := by
     rw [hfun, expectation_const_mul, variance_centered, htEffect_unbiased F d e hd he]
   refine ⟨hmean, hsum, hsecond, ?_⟩
   intro c1 c2 hb i z
-  -- These signs follow from the bounds at this unit.
+  -- These signs follow from the bounds at this unit; the node does not assume them.
   have hc1 : 0 ≤ c1 := (abs_nonneg (F.outcome i d)).trans (hb i).1
   have hc2 : 0 ≤ c2 := (abs_nonneg (1 / pi F i d)).trans (hb i).2.2.1
   have hterm (a : Fin K) (hy : |F.outcome i a| ≤ c1)

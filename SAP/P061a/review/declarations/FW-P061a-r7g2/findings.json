@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P061-T6",
+    "theorem": "SAP.P061a.T6",
+    "fingerprint": "3177309cbba65afd640d39b6301cb8b320494da154f680b8aac740bb42c444f2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean without importing Challenge: Review.fair on Fin 2 has mass 1/2 at each assignment, N=1, exposure g(i,z)=z.val, and outcomes y(i,z)=3+z.val. Both target probabilities are positive; EPOs at 1 and 0 are 4 and 3 and AEED=1. Review.cubeFair separately constructs the full one-unit binary cube with both positive target probabilities, covering the second quantified branch.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T7",
+    "theorem": "SAP.P061a.T7",
+    "fingerprint": "2fc59abcfc65dc7ee9718aae8159e5c421801a42f304171cf4085fb69bae0fd4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/GeometricCheck.lean without importing Challenge: independently constructs ReviewGeometric.design : AtomicDesign \u211d with mass realIntegerMass, proves normalization of the infinite geometric series, exact positive support, integer exposure and response values, and integerResponseTerm design k=(-1)^k for every natural k. Analytically the zero cell has mass 1/2 and the geometric positive tail has mass 1/2; each sign part has partial sums m and the HT sign parts have partial sums 2m. Thus both conditional sign integrals diverge and all claimed ordinary nonexistence assertions concern a genuine witness. scratch/witnesses.py additionally checks exact finite sign sums through 200 positive integers. No Challenge result is used for these checks.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T8",
+    "theorem": "SAP.P061a.T8",
+    "fingerprint": "853afa6e8bb09412e09ba6fd3e2d81d7ad7626c429ded7a241dc46f749c6a636",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean without importing Challenge: the same nonempty fair Fin 2 design with N=1 satisfies both sets of positive-cell and targeted-absolute-moment hypotheses, finite positive support, and stability in each targeted cell; EPOs are the ordinary real values 4 and 3. Infinite support is not excluded by the theorem: its hypotheses are precisely summability of each weighted targeted absolute outcome. Off-target responses are unrestricted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T9",
+    "theorem": "SAP.P061a.T9",
+    "fingerprint": "f62bfd7f47adfe56624160e78678f112f65edf14cc55bf70569011afc64cba17",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/SamplingCheck.lean without importing Challenge: independently constructs the two AtomicDesigns with the prescribed mass functions, proves each support has 12 assignments, proves their exact positive supports and support stability, and computes all four unitwise target-cell counts (3,3,3,6). It also proves failure of global stability using unit 0 and assignments (2,1,0,0) and (2,1,1,0). scratch/witnesses.py exhausts all 81 assignments with rational arithmetic, checking normalization, positivity, stability at every exposure, all target EPOs, and AEEDs 2 and 3.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T10",
+    "theorem": "SAP.P061a.T10",
+    "fingerprint": "3056adcf64774ac20daf8df359521aae7099d45bd304d265f80f8f66246f9528",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean without importing Challenge: nonzero constant sequences satisfy both pointwise nonnegativity hypotheses. The zero maximum- and average-degree sequences, realized by edgeless graphs, simultaneously satisfy all three rate predicates. The N=0 quotient is checked to be totalized zero; the first limit ignores that index and the third uniform bound excludes it explicitly.",
+    "confidence": 0.98
+  }
+]

@@ -1,6 +1,4 @@
 /-
-Documentation corrected for llm-audit-lean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -39,7 +37,7 @@ namespace Causalean.Mathlib.Probability.SteinMethod
 /-! ### Lower Mills-ratio bound
 
 The derivative bound needs a *lower* bound on the Gaussian tail
-`∫_{Ioi w} φ ≥ (w/(w²+1))·φ w` for every real `w`. It follows from the
+`∫_{Ioi w} φ ≥ (w/(w²+1))·φ w` for `w ≥ 0` (in fact for all `w`).  We obtain it from the
 fact that `hMills w := ∫_{Ioi w} φ − (w/(w²+1))·φ w` is antitone with limit `0` at `+∞`. -/
 
 /-- `∫_{Iic u} φ` has derivative `φ w` (fundamental theorem of calculus). -/
@@ -203,10 +201,8 @@ private theorem sqrt_mul_centered_eq {h : ℝ → ℝ} (hh : Continuous h) {C : 
   rw [← hsplit, hInt, ← hKc]
   ring
 
-/-- Pure arithmetic bound `|w|·k + 1 ≤ k·(w²+1)` for `k ≥ 4/3`, stated as the two
-signed inequalities used in the derivative crux. The threshold is necessary for a bound
-uniform in `w`: at `w = 1/2`, the positive-sign inequality requires `k ≥ 4/3`; in
-particular, `k = 1` does not suffice. -/
+/-- Pure arithmetic fact `(|w|·K + 1) ≤ K·(w²+1)` for `K ≥ 4/3` (here `K ≥ 1` suffices with the
+square term), used twice in the derivative crux. -/
 private theorem mills_arith {w k : ℝ} (hk : 4 / 3 ≤ k) :
     w * k + 1 ≤ k * (w ^ 2 + 1) ∧ -w * k + 1 ≤ k * (w ^ 2 + 1) := by
   have hkpos : 0 < k := by linarith

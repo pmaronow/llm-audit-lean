@@ -136,9 +136,9 @@ noncomputable def upperBound {K d} (μ : Measure (State K d)) (a : Fin K) : ℝ 
   eventMean μ observedY ((passEvent ∩ armEvent a) ∩
     {ω | quantile (passerLaw μ a) (trimRatio μ a) ≤ (observedY ω : EReal)})
 
-/-- “Sharp bounds” (Proposition 1, p. 575), interpreted over all joint laws
-satisfying Assumptions 1–3, positive all-pass mass, and the given complete law
-of the observables (Y,S,Z). Failers' outcome laws
+/-- “Sharp bounds” (Proposition 1, p. 575), with the audit's explicit usual
+meaning: all joint laws satisfying Assumptions 1–3, positive all-pass mass,
+and the given complete law of the observables (Y,S,Z). Failers' outcome laws
 are preserved as well. No independence of the whole potential vector is added. -/
 def Compatible {K d} (μ ν : Measure (State K d)) : Prop :=
   Assumptions ν ∧ 0 < ν alwaysPass ∧
@@ -247,6 +247,13 @@ theorem eventMean_sub {Ω} [MeasurableSpace Ω] (μ : Measure Ω) (f g : Ω → 
   unfold eventMean
   rw [integral_sub hf.integrableOn hg.integrableOn, sub_div]
 
+/-- Auxiliary conditional mean linearity for event means as used on p. 574.
+This lemma only requires the two first moments on the conditioning event. -/
+theorem eventMean_sub_on {Ω} [MeasurableSpace Ω] (μ : Measure Ω) (f g : Ω → ℝ)
+    (E : Set Ω) (hf : Integrable f (μ.restrict E)) (hg : Integrable g (μ.restrict E)) :
+    eventMean μ (fun ω => f ω-g ω) E = eventMean μ f E-eventMean μ g E := by
+  unfold eventMean
+  rw [integral_sub hf hg,sub_div]
 
 /-- Conditional-law and nested-event means are identical (the conditional
 outcome-law interpretation in Proposition 1, p. 575). This lemma proves the
@@ -394,6 +401,51 @@ theorem pair_covariate_balance {K d} (μ : Measure (State K d)) [IsProbabilityMe
   rw [← mul_assoc ((μ E)⁻¹) (μ E) _, ENNReal.inv_mul_cancel (ne_of_gt hb) (measure_ne_top μ E), one_mul]
   exact (mul_assoc _ _ _).symm
 
+/-- T4, corrected Proposition 1, p. 575, finite branch: valid passer-conditioned
+bounds, attained in compatible laws; union-bound identity and r=0 convention.
+Only the focal passer law needs to be atomless and integrable. -/
+theorem proposition_one_finite {K d : ℕ} (μ : Measure (State K d))
+    (h : Assumptions μ) (a : Fin K) (hA : 0 < μ alwaysPass)
+    (hc : Atomless (passerLaw μ a))
+    (hi : Integrable observedY (μ.restrict (passEvent ∩ armEvent a)))
+    (hr : trimRatio μ a < 1) :
+    lowerBound μ a ≤ eventMean μ (potentialY a) alwaysPass ∧
+    eventMean μ (potentialY a) alwaysPass ≤ upperBound μ a ∧
+    lowerBound μ a ∈ identifiedMeans μ a ∧ upperBound μ a ∈ identifiedMeans μ a ∧
+    (∀ m ∈ identifiedMeans μ a, lowerBound μ a ≤ m ∧ m ≤ upperBound μ a) ∧
+    passingRate μ a * (1 - trimRatio μ a) = 1 - ∑ b : Fin K, (1 - passingRate μ b) ∧
+    ((trimRatio μ a < 1) ↔ 0 < 1 - ∑ b : Fin K, (1 - passingRate μ b)) ∧
+    (trimRatio μ a = 0 → lowerBound μ a = eventMean μ observedY (passEvent ∩ armEvent a) ∧
+      upperBound μ a = eventMean μ observedY (passEvent ∩ armEvent a)) ∧
+    (let L := 1 - ∑ b : Fin K, (1 - passingRate μ b)
+     lowerBound μ a = passingRate μ a / L *
+       ∫ u in (0 : ℝ)..(L / passingRate μ a), quantileReal (passerLaw μ a) u) ∧
+    (let L := 1 - ∑ b : Fin K, (1 - passingRate μ b)
+     upperBound μ a = passingRate μ a / L *
+       ∫ u in (1 - L / passingRate μ a)..(1 : ℝ), quantileReal (passerLaw μ a) u) := by
+  sorry
+
+/-- T6, corrected Proposition 1, else-branch: bounds are essential passer
+endpoints, strict at finite endpoints, sharp as infimum/supremum and unattained
+when finite. Infinite sharp endpoints occur exactly with two-sided unbounded
+passer support, regardless of the unconditional outcome support. -/
+theorem proposition_one_else {K d : ℕ} (μ : Measure (State K d))
+    (h : Assumptions μ) (a : Fin K) (hA : 0 < μ alwaysPass)
+    (hc : Atomless (μ.map observedY))
+    (hi : Integrable observedY (μ.restrict (passEvent ∩ armEvent a)))
+    (hr : 1 ≤ trimRatio μ a) :
+    ((1 ≤ trimRatio μ a) ↔ (∑ b : Fin K, passingRate μ b) ≤ (K:ℝ)-1) ∧
+    (passerInf μ a ≤ (eventMean μ (potentialY a) alwaysPass : EReal) ∧
+      (eventMean μ (potentialY a) alwaysPass : EReal) ≤ passerSup μ a) ∧
+    (∀ l : ℝ, passerInf μ a = (l : EReal) → l < eventMean μ (potentialY a) alwaysPass) ∧
+    (∀ u : ℝ, passerSup μ a = (u : EReal) → eventMean μ (potentialY a) alwaysPass < u) ∧
+    IsGLB (extendedMeans μ a) (passerInf μ a) ∧ IsLUB (extendedMeans μ a) (passerSup μ a) ∧
+    (∀ l : ℝ, passerInf μ a = (l : EReal) → l ∉ identifiedMeans μ a) ∧
+    (∀ u : ℝ, passerSup μ a = (u : EReal) → u ∉ identifiedMeans μ a) ∧
+    ((IsGLB (extendedMeans μ a) ⊥ ∧ IsLUB (extendedMeans μ a) ⊤) ↔
+      ((∀ M : ℝ, 0 < passerLaw μ a (Iio M)) ∧
+       (∀ M : ℝ, 0 < passerLaw μ a (Ioi M)))) := by
+  sorry
 
 /-- T17, corrected Assumption 3, p. 574: under consistency and the printed
 per-arm ignorability, positive observed passing is equivalent to positive
@@ -727,6 +779,29 @@ theorem upper_tail_fixed_mass {Ω : Type*} [MeasurableSpace Ω]
   rw [← hmass]
   exact div_le_div_of_nonneg_right hIntegral ENNReal.toReal_nonneg
 
+/-- T14, corrected first upper-bound display, Appendix A, p. 580:
+upper-tail selection maximizes the mean at fixed p, tail means are
+nondecreasing in p, the union bound gives p_U0≤r, and r<1 gives the
+potential-variable upper bound with S(1)=1 restored. -/
+theorem upper_tail_proof_corrected {K d : ℕ} (μ : Measure (State K d))
+    (hp : IsProbabilityMeasure μ) (a : Fin K) (hA : 0 < μ alwaysPass)
+    (hc : Atomless (eventLaw μ (potentialY a) (potentialPass a)))
+    (hi : Integrable (potentialY a) (μ.restrict (potentialPass a))) :
+    (∀ p : ℝ, 0 ≤ p → p < 1 →
+      (∀ γ : Measure (ℝ × Bool), TailCoupling (eventLaw μ (potentialY a) (potentialPass a)) p γ →
+        eventMean γ Prod.fst {ω | ω.2 = true} ≤
+          tailUpper (eventLaw μ (potentialY a) (potentialPass a)) p) ∧
+      (let γ := (eventLaw μ (potentialY a) (potentialPass a)).map
+          (fun y : ℝ => (y, decide (quantile (eventLaw μ (potentialY a) (potentialPass a)) p ≤ (y : EReal))))
+       TailCoupling (eventLaw μ (potentialY a) (potentialPass a)) p γ ∧
+       eventMean γ Prod.fst {ω | ω.2 = true} = tailUpper (eventLaw μ (potentialY a) (potentialPass a)) p)) ∧
+    (∀ p q : ℝ, 0 ≤ p → p ≤ q → q < 1 →
+      tailUpper (eventLaw μ (potentialY a) (potentialPass a)) p ≤
+      tailUpper (eventLaw μ (potentialY a) (potentialPass a)) q) ∧
+    (μ ((otherPass a)ᶜ ∩ potentialPass a)).toReal / (μ (potentialPass a)).toReal ≤ potentialTrim μ a ∧
+    (potentialTrim μ a < 1 → eventMean μ (potentialY a) alwaysPass ≤
+      tailUpper (eventLaw μ (potentialY a) (potentialPass a)) (potentialTrim μ a)) := by
+  sorry
 
 /-- Corrected Proposition 1 proof, Appendix A, p. 580: the conditional
 potential outcome law given its own passing event equals the observed
@@ -815,6 +890,31 @@ theorem passer_tail_mean_formula {K d} (μ : Measure (State K d))
       {y | quantile (passerLaw μ a) (trimRatio μ a) ≤ (y : EReal)}
       (measurableSet_le measurable_const measurable_coe_real_ereal)).symm
 
+/-- T15, corrected final upper-bound display, Appendix A, p. 580:
+potential and observed passer laws and passing rates agree, the trimming
+ratio uses the focal-arm denominator, the two upper-tail means agree, and
+the finite-branch bound follows. Arm 0 denotes the paper's arm 1. -/
+theorem observable_upper_bound_corrected {K d : ℕ} (μ : Measure (State K d))
+    (h : Assumptions μ) (a : Fin K) (hA : 0 < μ alwaysPass)
+    (hc : Atomless (μ.map observedY))
+    (hi : Integrable observedY (μ.restrict (passEvent ∩ armEvent a))) :
+    eventLaw μ (potentialY a) (potentialPass a) = passerLaw μ a ∧
+    (∀ b, (μ (potentialPass b)).toReal = passingRate μ b) ∧
+    potentialTrim μ a = trimRatio μ a ∧
+    tailUpper (eventLaw μ (potentialY a) (potentialPass a)) (trimRatio μ a) = upperBound μ a ∧
+    (trimRatio μ a < 1 →
+      eventMean μ (potentialY a) alwaysPass = eventMean μ (potentialY a) (otherPass a ∩ potentialPass a) ∧
+      eventMean μ (potentialY a) alwaysPass ≤ upperBound μ a) := by
+  have hF := conditional_law_consistency μ h a
+  refine ⟨hF,?_,potential_trim_consistency μ h a,?_,?_⟩
+  · intro b
+    exact ((nonzero_passing_corrected μ h.1 h.2.1).1 b).symm
+  · rw [hF]
+    exact (passer_tail_mean_formula μ h a).2.symm
+  · intro hr
+    refine ⟨?_,?_⟩
+    · rw [always_pass_focal a]
+    · exact (proposition_one_finite μ h a hA (passer_atomless μ a hc) hi hr).2.1
 
 /-- Finite laws used for the paper's Appendix A witnesses (p. 580) and the
 T7 proof-step counterexample. This is an actual finite weighted probability
@@ -837,6 +937,17 @@ theorem finiteLaw_integral {n K d} (atoms : Fin n → State K d) (mass : Fin n �
     (∫ ω, f ω ∂finiteLaw atoms mass) = ∑ i : Fin n, (mass i).toReal*f (atoms i) := by
   simpa [finiteLaw, tsum_fintype, smul_eq_mul] using integral_sum_dirac (x := atoms) (c := mass) (f := f) hf
 
+/-- Finite conditional expectation uses the *same* atom weights in its
+numerator and conditioning probability (Appendix A, p. 580). -/
+theorem finiteLaw_mean {n K d} (atoms : Fin n → State K d) (mass : Fin n → ℝ≥0∞)
+    (hf : ∀ i, mass i ≠ ⊤) (f : State K d → ℝ) (E : Set (State K d))
+    (hE : MeasurableSet E) :
+    eventMean (finiteLaw atoms mass) f E =
+      (∑ i : Fin n, if atoms i ∈ E then (mass i).toReal*f (atoms i) else 0) /
+      (∑ i : Fin n, if atoms i ∈ E then mass i else 0).toReal := by
+  unfold eventMean
+  rw [← integral_indicator hE, finiteLaw_integral atoms mass hf, finiteLaw_apply]
+  simp [indicator, mul_ite]
 
 /-- Any property holding on all displayed atoms holds a.s. in their finite
 law, including zero unit effects and a constant covariate (Appendix A). -/
@@ -885,7 +996,7 @@ theorem finiteLaw_mean_real {n K d} (atoms : Fin n → State K d) (r : Fin n →
   intro i hi
   by_cases he : atoms i ∈ E <;> simp [he,indicator,ENNReal.toReal_ofReal (hr i)]
 
-/-- T7 witness, P010-E009: the four equiprobable primitive states
+/-- T7 witness, P010-E009 artifact: the four equiprobable primitive states
 are (Z,Y1,Y2,S1,S2)=(1,0,0,1,1),(1,1,1,1,1),(2,0,1,1,1),(2,1,0,1,1).
 The covariate vector is empty. -/
 def jointStepAtoms : Fin 4 → State 2 0 :=
@@ -893,7 +1004,7 @@ def jointStepAtoms : Fin 4 → State 2 0 :=
     (![1,1], ![true,true], 0, fun _ => 0),
     (![0,1], ![true,true], 1, fun _ => 0),
     (![1,0], ![true,true], 1, fun _ => 0)]
-/-- T7, P010-E009: four states, each of probability 1/4,
+/-- T7's named validator witness: “Four states, each of probability 1/4”,
 refuting the joint-independence step on pp. 579–580. -/
 noncomputable def jointStepLaw : Measure (State 2 0) := finiteLaw jointStepAtoms (fun _ => ENNReal.ofReal (1/4:ℝ))
 
@@ -1182,11 +1293,11 @@ theorem corollary_five : ∃ μ : Measure (State 2 1),
       eventMean_congr_set _ _ (hE alwaysPass),hContrast,hEA]
     norm_num
 
-/-- T3: W is exponential of rate 1 and V has density exp(-2|v|).
-Both are represented by densities with respect to Lebesgue measure. -/
+/-- T3's validator defines W exponential of rate 1 and V with density
+exp(-2|v|). These are specified as actual with-density Lebesgue measures. -/
 noncomputable def exponentialOne : Measure ℝ :=
   volume.withDensity (fun x => ENNReal.ofReal (if 0 < x then Real.exp (-x) else 0))
-/-- T3, P010-E001: “V” has density exp(-2|v|); this rate
+/-- T3's named E001 derivation: “V” has density exp(-2|v|); this rate
 parameterization also specifies the rate-one passer Laplace distribution. -/
 noncomputable def laplaceRate (r : ℝ) : Measure ℝ :=
   volume.withDensity (fun x => ENNReal.ofReal (r/2 * Real.exp (-r * |x|)))
@@ -1195,14 +1306,13 @@ assignment in the explicit two-arm continuous witnesses. -/
 noncomputable def fairAssignment : Measure (Fin 2) :=
   (1/2 : ℝ≥0∞) • Measure.dirac 0 + (1/2 : ℝ≥0∞) • Measure.dirac 1
 
-/-- Product-stratum law used in T3 and in T5’s endpoint-approaching families:
-potential outcomes are independent conditional on the stratum, followed by
-independent uniform treatment assignment. T5’s baseline uses `diagonalLaw` instead. -/
+/-- T3/T5 continuous witnesses: potential outcomes independent conditional
+on the stratum, followed by independent uniform treatment assignment. -/
 noncomputable def stratumLaw (s₁ s₂ : Bool) (F₁ F₂ : Measure ℝ) : Measure (State 2 0) :=
   ((F₁.prod F₂).prod fairAssignment).map
     (fun ω => (![ω.1.1,ω.1.2], ![s₁,s₂], ω.2, fun _ => 0))
 
-/-- T3, P010-E001 witness: strata 11 and 10 each have mass 1/4;
+/-- T3, P010-E001 validator witness: strata 11 and 10 each have mass 1/4;
 stratum 01 has mass 1/2. Arm-1 outcomes are ±W, swapped between the first
 strata by `upper`; failures have V of Laplace rate 2. Arm-2 is Laplace rate 1. -/
 noncomputable def missingPassLaw (upper : Bool) : Measure (State 2 0) :=
@@ -1212,27 +1322,48 @@ noncomputable def missingPassLaw (upper : Bool) : Measure (State 2 0) :=
     (if upper then exponentialOne.map (fun x => -x) else exponentialOne) (laplaceRate 1) +
   (1/2 : ℝ≥0∞) • stratumLaw false true (laplaceRate 2) (laplaceRate 1)
 
+/-- T3, counterexample to Proposition 1 as printed, p. 575: two explicit
+continuous full-support laws with finite moments and identical observables
+satisfy all hypotheses. Printed bounds are [-3/4,3/4], but the always-passer
+means are -1 and +1; the corrected passer bounds are [-1,1]. -/
+theorem missing_passing_condition_counterexample :
+    (∀ upper : Bool, let μ := missingPassLaw upper
+      Assumptions μ ∧ μ alwaysPass = 1/4 ∧ Atomless (μ.map observedY) ∧
+      FullRealSupport μ observedY ∧ AllMoments μ observedY ∧
+      passingRate μ 0 = 1/2 ∧ passingRate μ 1 = 3/4 ∧ trimRatio μ 0 = 1/2 ∧
+      passerLaw μ 0 = laplaceRate 1 ∧ quantile (passerLaw μ 0) (1/2) = 0 ∧
+      eventMean μ observedY ({ω | observedY ω ≤ 0} ∩ armEvent 0) = -3/4 ∧
+      eventMean μ observedY ({ω | 0 ≤ observedY ω} ∩ armEvent 0) = 3/4 ∧
+      eventMean μ (potentialY 0) alwaysPass = (if upper then 1 else -1) ∧
+      ¬ (eventMean μ observedY ({ω | observedY ω ≤ 0} ∩ armEvent 0) ≤
+          eventMean μ (potentialY 0) alwaysPass ∧
+        eventMean μ (potentialY 0) alwaysPass ≤
+          eventMean μ observedY ({ω | 0 ≤ observedY ω} ∩ armEvent 0)) ∧
+      lowerBound μ 0 = -1 ∧ upperBound μ 0 = 1) ∧
+    (missingPassLaw false).map (fun ω => (observedY ω, observedS ω, assignment ω)) =
+      (missingPassLaw true).map (fun ω => (observedY ω, observedS ω, assignment ω)) := by
+  sorry
 
-/-- T5 witness: beta(3,3) density b=30x²(1-x)² on (0,1),
+/-- T5's adjudication witness: beta(3,3) density b=30x²(1-x)² on (0,1),
 and heavy-tailed density h=5/(2(1+|v|)^6) on R. -/
 noncomputable def beta33 : Measure ℝ := volume.withDensity
   (fun x => ENNReal.ofReal (if 0 < x ∧ x < 1 then 30*x^2*(1-x)^2 else 0))
-/-- T5, P010-E002: “h(v)=5/[2(1+|v|)^6]”,
+/-- T5's named E002 adjudication derivation: “h(v)=5/[2(1+|v|)^6]”,
 the full-support failer density used to test Proposition 1 on p. 575. -/
 noncomputable def heavySix : Measure ℝ := volume.withDensity
   (fun x => ENNReal.ofReal (5 / (2*(1+|x|)^6)))
 
-/-- A common-status stratum: both passing indicators equal `s` and both
-potential outcomes equal one draw from `F`, with independent fair assignment.
-The T5 baseline mixes these strata in `boundedPassLaw` below. -/
+/-- T5 baseline: B has mass 1/3 on true; both passing indicators equal B;
+both potential outcomes are the same beta draw when B=true and the same
+heavy draw otherwise, with independent fair assignment. -/
 noncomputable def diagonalLaw (s : Bool) (F : Measure ℝ) : Measure (State 2 0) :=
   (F.prod fairAssignment).map (fun ω => (![ω.1,ω.1], ![s,s], ω.2, fun _ => 0))
-/-- T5, P010-E002 witness: common passers of mass “1/3”
+/-- T5's named E002 adjudication witness: common passers of mass “1/3”
 have the beta outcome; common failers of mass “2/3” have the heavy outcome. -/
 noncomputable def boundedPassLaw : Measure (State 2 0) :=
   (1/3 : ℝ≥0∞) • diagonalLaw true beta33 + (2/3 : ℝ≥0∞) • diagonalLaw false heavySix
 
-/-- T5 endpoint-approaching construction: q=F_beta(t),
+/-- T5 endpoint-approaching construction from its validator: q=F_beta(t),
 stratum masses q/3,(1-q)/3,(1-q)/3,(1+q)/3, and beta outcomes conditioned on
 (0,t) (or (1-t,1)) in always-passers and its complement in one-arm passers.
 Each failing potential response retains the heavySix law. -/
@@ -1246,13 +1377,65 @@ noncomputable def betaEndpointLaw (t : ℝ) (upper : Bool) : Measure (State 2 0)
   ENNReal.ofReal ((1-q)/3) • stratumLaw false true heavySix G +
   ENNReal.ofReal ((1+q)/3) • stratumLaw false false heavySix heavySix
 
+/-- T5, counterexample to infinite *sharp* endpoints in Proposition 1,
+p. 575: an explicit full-support continuous law with finite first three
+moments has r=2, yet every compatible target is strictly between 0 and 1.
+The sharp infimum and supremum are 0 and 1, approached by the specified
+compatible beta-tail laws; the printed infinite outer interval remains valid. -/
+theorem infinite_sharp_bounds_counterexample :
+    Assumptions boundedPassLaw ∧ boundedPassLaw alwaysPass = 1/3 ∧
+    Atomless (boundedPassLaw.map observedY) ∧ FullRealSupport boundedPassLaw observedY ∧
+    (∫ ω, observedY ω ∂boundedPassLaw) = 1/6 ∧
+    (∫ ω, observedY ω ^ 2 ∂boundedPassLaw) = 13/63 ∧
+    (∫ ω, |observedY ω| ^ 3 ∂boundedPassLaw) = 19/84 ∧
+    Integrable (fun ω => |observedY ω| ^ 3) boundedPassLaw ∧
+    (∀ R : ℝ, 1 ≤ R →
+      (boundedPassLaw {ω | R < observedY ω}).toReal = 1/(3*(1+R)^5) ∧
+      (boundedPassLaw {ω | observedY ω < -R}).toReal = 1/(3*(1+R)^5)) ∧
+    (∀ a : Fin 2, passingRate boundedPassLaw a = 1/3 ∧ trimRatio boundedPassLaw a = 2 ∧
+      (∀ m ∈ identifiedMeans boundedPassLaw a, 0 < m ∧ m < 1) ∧
+      IsGLB (extendedMeans boundedPassLaw a) 0 ∧ IsLUB (extendedMeans boundedPassLaw a) 1 ∧
+      ¬ IsGLB (extendedMeans boundedPassLaw a) ⊥ ∧ ¬ IsLUB (extendedMeans boundedPassLaw a) ⊤) ∧
+    (∀ t : ℝ, 0 < t → t < 1 →
+      (beta33 (Ioo 0 t)).toReal = 10*t^3 - 15*t^4 + 6*t^5 ∧
+      (∀ upper : Bool, Compatible boundedPassLaw (betaEndpointLaw t upper)) ∧
+      (∀ a : Fin 2,
+        eventMean (betaEndpointLaw t false) (potentialY a) alwaysPass =
+          t*(15/2-12*t+5*t^2)/(10-15*t+6*t^2) ∧
+        0 < eventMean (betaEndpointLaw t false) (potentialY a) alwaysPass ∧
+        eventMean (betaEndpointLaw t false) (potentialY a) alwaysPass < t ∧
+        eventMean (betaEndpointLaw t true) (potentialY a) alwaysPass =
+          1 - eventMean (betaEndpointLaw t false) (potentialY a) alwaysPass)) := by
+  sorry
 
-/-- T13 normal witness (P010-B02): independent Bernoulli(4/5)
+/-- T13's normal witness (P010-B02 derivation): independent Bernoulli(4/5)
 common passing and N(0,1) common potential outcome, with fair assignment. -/
 noncomputable def normalCommonLaw : Measure (State 2 0) :=
   (4/5 : ℝ≥0∞) • diagonalLaw true (gaussianReal 0 1) +
   (1/5 : ℝ≥0∞) • diagonalLaw false (gaussianReal 0 1)
 
+/-- T13, false lower-tail “upper bound,” Appendix A, p. 580: a centred normal
+always-passer mean 0 exceeds the printed lower-three-quarter mean, which is
+strictly negative. The corrected upper-three-quarter mean is positive.
+The normal density/quantile expression is exact; no decimal is an assumption. -/
+theorem lower_tail_upper_bound_counterexample :
+    Assumptions normalCommonLaw ∧ normalCommonLaw alwaysPass = 4/5 ∧
+    Atomless (normalCommonLaw.map observedY) ∧ FullRealSupport normalCommonLaw observedY ∧
+    (∀ a : Fin 2, passingRate normalCommonLaw a = 4/5 ∧
+      passerLaw normalCommonLaw a = gaussianReal 0 1) ∧
+    potentialTrim normalCommonLaw 0 = 1/4 ∧ trimRatio normalCommonLaw 0 = 1/4 ∧
+    eventMean normalCommonLaw (potentialY 0) alwaysPass = 0 ∧
+    eventMean normalCommonLaw (potentialY 0) (otherPass 0 ∩ potentialPass 0) = 0 ∧
+    (let q := (quantile (gaussianReal 0 1) (3/4)).toReal
+     eventMean normalCommonLaw (potentialY 0) {ω | potentialY 0 ω ≤ q} =
+       -gaussianPDFReal 0 1 q / (3/4) ∧
+     eventMean normalCommonLaw (potentialY 0) {ω | potentialY 0 ω ≤ q} < 0 ∧
+     ¬ (eventMean normalCommonLaw (potentialY 0) alwaysPass ≤
+       eventMean normalCommonLaw (potentialY 0) {ω | potentialY 0 ω ≤ q})) ∧
+    upperBound normalCommonLaw 0 =
+      gaussianPDFReal 0 1 ((quantile (gaussianReal 0 1) (1/4)).toReal) / (3/4) ∧
+    0 < upperBound normalCommonLaw 0 := by
+  sorry
 
 /-- Appendix C, p. 581: “Y(1)=Y(2)=lambda[S(2)-S(1)]+N(0,sigma).”
 The normal term and assignment are independent of the principal stratum.
@@ -1285,18 +1468,50 @@ endpoint. This is the target's deposited-code definition of Bound Width. -/
 noncomputable def effectBoundWidth (μ : Measure (State 2 0)) : ℝ :=
   (upperBound μ 1 - lowerBound μ 0) - (lowerBound μ 1 - upperBound μ 0)
 
-/-- Observable normal mixture (P010-E011): F_w is the law
+/-- Observable normal mixture in the P010-E011 derivation: F_w is the law
 of noise with mass 1-w and noise minus one with mass w. -/
 noncomputable def normalMixture (w : ℝ) : Measure ℝ :=
   ENNReal.ofReal (1-w) • gaussianReal 0 1 + ENNReal.ofReal w • gaussianReal (-1) 1
-/-- T9, P010-E011: “L_w”, the mean of the lower three
+/-- T9's named E011 derivation: “L_w”, the mean of the lower three
 quarters of the observable passer mixture in the p. 581 simulation. -/
 noncomputable def mixtureLower (w : ℝ) : ℝ :=
   eventMean (normalMixture w) id {y | (y : EReal) ≤ quantile (normalMixture w) (3/4)}
-/-- T9, P010-E011: “U_w”, the mean of the upper three
+/-- T9's named E011 derivation: “U_w”, the mean of the upper three
 quarters of the observable passer mixture in the p. 581 simulation. -/
 noncomputable def mixtureUpper (w : ℝ) : ℝ := tailUpper (normalMixture w) (1/4)
 
+/-- T9, counterexample to exact width invariance, Appendix C, p. 581:
+Table 1 rows 1 and 4 have the same p,lambda,sigma and different correlations;
+both meet all hypotheses. Their observable passer normal mixtures change,
+and the actual population effect-bound widths lie in the validator's exact
+rational enclosures, separated by a strictly positive gap. -/
+theorem simulation_width_counterexample :
+    (∀ ρ ∈ ({(1/4 : ℝ), 1/2} : Set ℝ), let μ := simulationLaw (4/5) (4/5) ρ 1 1
+      Assumptions μ ∧ 0 < μ alwaysPass ∧ Atomless (μ.map observedY) ∧
+      FullRealSupport μ observedY ∧ checkCorrelation μ 0 1 = ρ ∧
+      passingRate μ 0 = 4/5 ∧ passingRate μ 1 = 4/5 ∧ trimRatio μ 0 = 1/4 ∧ trimRatio μ 1 = 1/4) ∧
+    (simulationLaw (4/5) (4/5) (1/4) 1 1) alwaysPass = 17/25 ∧
+    (simulationLaw (4/5) (4/5) (1/2) 1 1) alwaysPass = 18/25 ∧
+    passerLaw (simulationLaw (4/5) (4/5) (1/4) 1 1) 0 = normalMixture (3/20) ∧
+    passerLaw (simulationLaw (4/5) (4/5) (1/2) 1 1) 0 = normalMixture (1/10) ∧
+    passerLaw (simulationLaw (4/5) (4/5) (1/4) 1 1) 1 = (normalMixture (3/20)).map (fun y => -y) ∧
+    passerLaw (simulationLaw (4/5) (4/5) (1/2) 1 1) 1 = (normalMixture (1/10)).map (fun y => -y) ∧
+    (∫ y, y ∂normalMixture (3/20)) = -3/20 ∧
+    (∫ y, y ∂normalMixture (1/10)) = -1/10 ∧
+    (∫ y, (y+3/20)^2 ∂normalMixture (3/20)) = 451/400 ∧
+    (∫ y, (y+1/10)^2 ∂normalMixture (1/10)) = 109/100 ∧
+    effectBoundWidth (simulationLaw (4/5) (4/5) (1/4) 1 1) =
+      2*(mixtureUpper (3/20)-mixtureLower (3/20)) ∧
+    effectBoundWidth (simulationLaw (4/5) (4/5) (1/2) 1 1) =
+      2*(mixtureUpper (1/10)-mixtureLower (1/10)) ∧
+    effectBoundWidth (simulationLaw (4/5) (4/5) (1/4) 1 1) ∈
+      Icc (1798577298898/1000000000000) (1798577299027/1000000000000) ∧
+    effectBoundWidth (simulationLaw (4/5) (4/5) (1/2) 1 1) ∈
+      Icc (1767983385194/1000000000000) (1767983385319/1000000000000) ∧
+    30593913580/1000000000000 <
+      effectBoundWidth (simulationLaw (4/5) (4/5) (1/4) 1 1) -
+      effectBoundWidth (simulationLaw (4/5) (4/5) (1/2) 1 1) := by
+  sorry
 
 /-- Corrected Proposition 1's endpoints as a function of observable inputs,
 Appendix C, p. 581, corrected T10(i). Finite branch uses the quantile tail
@@ -1374,5 +1589,103 @@ theorem simulation_mean_formula_injective (p₁ p₂ ρ ρ' lam : ℝ)
         ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)) := by linarith
     exact hρ (mul_right_cancel₀ (ne_of_gt hD) hc)
 
+/-- T10(ii–iii), corrected Appendix C, p. 581: in the specified simulation
+family cross-world correlation determines all-pass mass and hence the two
+observable normal mixture weights and their means. When lambda≠0 and the
+passing marginals are strictly interior, a change in feasible correlation
+changes those observable means. The row-1/row-4 widths differ, as in T9. -/
+theorem simulation_invariance_corrected (p₁ p₂ ρ lam σ : ℝ)
+    (hp₁ : 0 < p₁) (hp₁' : p₁ < 1) (hp₂ : 0 < p₂) (hp₂' : p₂ < 1)
+    (hσ : 0 ≤ σ)
+    (ha₀ : 0 ≤ 1-p₁-p₂+(p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂))))
+    (ha₁ : p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)) ≤ p₁)
+    (ha₂ : p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)) ≤ p₂)
+    (ha : 0 ≤ p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂))) :
+    (∀ (K d : ℕ) (μ ν : Measure (State K d)), Assumptions μ → Assumptions ν →
+      ∀ a : Fin K, passingRate μ = passingRate ν → passerLaw μ a = passerLaw ν a →
+        correctedBoundPair μ a = correctedBoundPair ν a) ∧
+    (let a := p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂))
+     let w₁ := 1-a/p₁
+     let w₂ := 1-a/p₂
+     let μ := simulationLaw p₁ p₂ ρ lam σ
+     Assumptions μ ∧ (μ alwaysPass).toReal = a ∧ checkCorrelation μ 0 1 = ρ ∧
+     passingRate μ 0 = p₁ ∧ passingRate μ 1 = p₂ ∧
+     passerLaw μ 0 = ENNReal.ofReal (1-w₁) • gaussianReal 0 ⟨σ^2,sq_nonneg σ⟩ +
+       ENNReal.ofReal w₁ • gaussianReal (-lam) ⟨σ^2,sq_nonneg σ⟩ ∧
+     passerLaw μ 1 = ENNReal.ofReal (1-w₂) • gaussianReal 0 ⟨σ^2,sq_nonneg σ⟩ +
+       ENNReal.ofReal w₂ • gaussianReal lam ⟨σ^2,sq_nonneg σ⟩ ∧
+     eventMean μ observedY (passEvent ∩ armEvent 0) = -lam*w₁ ∧
+     eventMean μ observedY (passEvent ∩ armEvent 1) = lam*w₂) ∧
+    (lam ≠ 0 → ∀ ρ' : ℝ, ρ' ≠ ρ →
+      -lam*(1-(p₁*p₂+ρ'*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)))/p₁) ≠
+      -lam*(1-(p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)))/p₁) ∧
+      lam*(1-(p₁*p₂+ρ'*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)))/p₂) ≠
+      lam*(1-(p₁*p₂+ρ*Real.sqrt (p₁*(1-p₁)*p₂*(1-p₂)))/p₂)) ∧
+    effectBoundWidth (simulationLaw (4/5) (4/5) (1/4) 1 1) ≠
+      effectBoundWidth (simulationLaw (4/5) (4/5) (1/2) 1 1) := by
+  sorry
+
+#print axioms measurable_potentialY
+#print axioms measurable_potentialS
+#print axioms measurable_assignment
+#print axioms measurable_covariates
+#print axioms measurable_observedY
+#print axioms measurable_observedS
+#print axioms measurableSet_arm
+#print axioms measurableSet_pass
+#print axioms measurableSet_potentialPass
+#print axioms measurableSet_common
+#print axioms measurableSet_always
+#print axioms pass_inter_arm
+#print axioms common_status_ae
+#print axioms eventMean_congr_set
+#print axioms eventMean_sub_on
+#print axioms eventMean_eventLaw
+#print axioms eventMean_sub
+#print axioms independent_arm_mean
+#print axioms finiteLaw_apply
+#print axioms finiteLaw_integral
+#print axioms finiteLaw_mean
+#print axioms finiteLaw_ae
+#print axioms pair_independent_selected_mean
+#print axioms finiteLaw_probability
+#print axioms finiteLaw_apply_real
+#print axioms finiteLaw_mean_real
+#print axioms selection_independent
+#print axioms constant_covariate_balance
+#print axioms pair_covariate_balance
+#print axioms always_passer_union_bound
+#print axioms trimming_mass_identity
+#print axioms proposition_one_finite
+#print axioms else_branch_criterion
+#print axioms proposition_one_else
+#print axioms nonzero_passing_corrected
+#print axioms lemma_one
+#print axioms corollary_two
+#print axioms corollary_one_corrected_proof
+#print axioms corollary_one
+#print axioms corollary_four
+#print axioms upper_tail_proof_corrected
+#print axioms upper_tail_fixed_mass
+#print axioms passing_event_positive
+#print axioms passer_atomless
+#print axioms passer_tail_mean_formula
+#print axioms conditional_law_consistency
+#print axioms always_pass_focal
+#print axioms potential_trim_consistency
+#print axioms other_arm_conditional_union_bound
+#print axioms observable_upper_bound_corrected
+#print axioms joint_independence_step_counterexample
+#print axioms selection_counterexample_corrected
+#print axioms corollary_three
+#print axioms corollary_five
+#print axioms missing_passing_condition_counterexample
+#print axioms infinite_sharp_bounds_counterexample
+#print axioms lower_tail_upper_bound_counterexample
+#print axioms simulation_width_counterexample
+#print axioms bounds_fixed_observables
+#print axioms bounds_fixed_observables_actual
+#print axioms simulation_mean_formula_injective
+#print axioms simulation_invariance_corrected
 
 end AronowAudit.P010

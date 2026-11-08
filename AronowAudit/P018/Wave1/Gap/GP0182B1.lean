@@ -2,8 +2,8 @@ import AronowAudit.P018.P018_Audit
 import Mathlib.Probability.HasLaw
 
 /-!
-Finite two-atom laws, shared-endpoint dyad counts, Gaussian moments,
-and incidence covariance identities.
+Draft for dd-GP0182B1. This file has deliberately not been checked by Lean.
+The held declarations are used only in the four `type_of%` statement checks.
 -/
 
 noncomputable section
@@ -130,6 +130,9 @@ theorem inverse_spike_counterexample_proof :
     filter_upwards [eventually_ge_atTop 1, hcast.eventually (eventually_ge_atTop (b + 3))]
       with N hN hb
     exact le_trans (by linarith : b ≤ (N : ℝ) - 3) (spike_variance_ge N hN)
+
+example : type_of% @AronowAudit.P018.inverse_spike_counterexample :=
+  inverse_spike_counterexample_proof
 
 /-! P018-T4: neighbors as one shared and one outside endpoint. -/
 
@@ -265,6 +268,8 @@ theorem dyad_counts_proof (N : ℕ) (hN : 2 ≤ N) :
             simp only [counts_overlap_fiber N hN, sum_const, card_univ, number_of_dyads,
               smul_eq_mul]
 
+example : type_of% @AronowAudit.P018.dyad_counts := dyad_counts_proof
+
 /-! P018-T5: Gaussian coordinate moments and independent translation noise. -/
 
 private lemma intercept_coordinate_moments {Ω : Type*} [MeasurableSpace Ω]
@@ -348,6 +353,9 @@ theorem random_intercept_lower_bound_proof {Ω : Type*} [MeasurableSpace Ω]
   refine ⟨hv, ?_⟩
   rw [hv]
   exact le_add_of_nonneg_left (ProbabilityTheory.variance_nonneg _ _)
+
+example : type_of% @AronowAudit.P018.random_intercept_lower_bound :=
+  random_intercept_lower_bound_proof
 
 /-! P018-T6: incidence products and the cross-role covariance witness. -/
 
@@ -486,5 +494,8 @@ theorem benchmark_covariance_correction_proof (N : ℕ) (hN : 2 ≤ N) :
     exact ⟨h11, h22, h12, h21, benchmark_shared_product d f⟩
   · intro hthree τ σ hτ t1 t2 s
     exact benchmark_no_match N hthree τ σ hτ t1 t2 s
+
+example : type_of% @AronowAudit.P018.benchmark_covariance_correction :=
+  benchmark_covariance_correction_proof
 
 end AronowAudit.P018.Wave1

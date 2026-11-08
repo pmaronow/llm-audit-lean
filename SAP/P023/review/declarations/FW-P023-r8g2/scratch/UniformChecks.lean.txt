@@ -1,0 +1,123 @@
+import SAP.P023.Defs
+open MeasureTheory Set Filter
+open scoped BigOperators ENNReal Topology
+open SAP.P023
+namespace Audit
+noncomputable section
+
+lemma uniform_prob : ProbabilityLaw uniformMargins := by
+  norm_num [ProbabilityLaw, uniformMargins, Measure.smul_apply, Real.volume_Icc]
+  exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+instance uniform_isprob : IsProbabilityMeasure uniformMargins := ⟨uniform_prob⟩
+
+lemma uniform_support : MarginSupport uniformMargins := by
+  simp [MarginSupport, uniformMargins, Measure.smul_apply,
+    Measure.restrict_apply measurableSet_Icc.compl]
+
+lemma uniform_zero : uniformMargins {0} = 0 := by
+  simp [uniformMargins, Measure.smul_apply, Measure.restrict_apply (measurableSet_singleton 0)]
+
+lemma uniform_lower : ∀ A : Set ℝ, MeasurableSet A → A ⊆ Icc (-1) 1 →
+    ENNReal.ofReal (1/2 : ℝ) * volume A ≤ uniformMargins A := by
+  intro A hA hsub
+  simp only [uniformMargins, Measure.smul_apply, smul_eq_mul, Measure.restrict_apply hA,
+    Set.inter_eq_left.mpr hsub]
+  norm_num [ENNReal.ofReal_div_of_pos]
+
+def zeroOutcome : Measure (ℝ × ℝ) := Measure.map (fun x : ℝ => (x, (0:ℝ))) uniformMargins
+
+lemma zero_margin : marginLaw zeroOutcome = uniformMargins := by
+  unfold marginLaw zeroOutcome
+  rw [Measure.map_map (f := fun x : ℝ => (x, (0:ℝ)))
+    (g := Prod.fst) (by fun_prop) (by fun_prop)]
+  exact Measure.map_id
+
+lemma zero_prob : ProbabilityLaw zeroOutcome := by
+  unfold ProbabilityLaw zeroOutcome
+  rw [Measure.map_apply (f := fun x : ℝ => (x, (0:ℝ))) (by fun_prop) MeasurableSet.univ]
+  simpa using uniform_prob
+
+instance zero_isprob : IsProbabilityMeasure zeroOutcome := ⟨zero_prob⟩
+
+lemma zero_y_ae : (fun z : ℝ × ℝ => z.2) =ᵐ[zeroOutcome] (fun _ => 0) := by
+  change ∀ᵐ z ∂Measure.map (fun x : ℝ => (x, (0:ℝ))) uniformMargins, z.2 = 0
+  rw [ae_map_iff (f := fun x : ℝ => (x, (0:ℝ))) (p := fun z => z.2 = 0)
+    (by fun_prop) (by measurability)]
+  simp
+
+lemma zero_sq_ae : (fun z : ℝ × ℝ => z.2^2) =ᵐ[zeroOutcome] (fun _ => 0) := by
+  filter_upwards [zero_y_ae] with z hz
+  simp [hz]
+
+lemma zero_second : Integrable (fun z : ℝ × ℝ => z.2^2) zeroOutcome :=
+  (integrable_congr zero_sq_ae).2 (integrable_zero _ _ _)
+
+lemma zero_mean : ConditionalMean zeroOutcome (fun _ => 0) := by
+  refine ⟨(integrable_congr zero_y_ae).2 (integrable_zero _ _ _), integrable_zero _ _ _, ?_⟩
+  intro t ht hb
+  apply integral_congr_ae
+  filter_upwards [zero_y_ae] with z hz
+  simp [hz]
+
+lemma zero_regularity : RepairedRegularity zeroOutcome 0 0 (fun _ => 0) (1/2) 1 0 0 := by
+  refine ⟨zero_prob, ?_, ?_, zero_second, by norm_num, by norm_num, by norm_num,
+    by norm_num, by norm_num, ?_, rfl, ?_, ?_, ?_⟩
+  · rw [zero_margin]; exact uniform_support
+  · rw [zero_margin]; exact uniform_zero
+  · rw [zero_margin]; exact uniform_lower
+  · intro x hx x' hx'; simp
+  · simpa using zero_mean
+  · intro A hA hsub
+    simp only [zero_mul, zero_add, sub_zero]
+    rw [integral_congr_ae (ae_restrict_of_ae zero_sq_ae)]
+    simp
+
+lemma zero_iid : IIDSample (Measure.infinitePi (fun _ : ℕ => zeroOutcome)) zeroOutcome
+    (fun i ω => ω i) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · exact measure_univ
+  · intro i; fun_prop
+  · intro i; exact Measure.infinitePi_map_eval _ i
+  · exact ProbabilityTheory.iIndepFun_infinitePi (X := fun _ z => z) (by fun_prop)
+
+def bandwidth (N : ℕ) : ℝ := if N = 0 then 1 else 1 / Real.sqrt N
+
+lemma bandwidth_pos : ∀ N, 0 < bandwidth N := by
+  intro N
+  by_cases hN : N=0
+  · simp [bandwidth,hN]
+  · have hn : (0:ℝ) < N := by exact_mod_cast Nat.pos_of_ne_zero hN
+    simp only [bandwidth, if_neg hN]
+    positivity
+
+lemma bandwidth_zero : Tendsto bandwidth atTop (nhds 0) := by
+  have hs : Tendsto (fun N : ℕ => Real.sqrt (N:ℝ)) atTop atTop :=
+    Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop
+  apply (tendsto_inv_atTop_zero.comp hs).congr'
+  filter_upwards [eventually_gt_atTop (0:ℕ)] with N hN
+  simp [bandwidth, Nat.ne_of_gt hN, one_div]
+
+lemma bandwidth_counts : Tendsto (fun N : ℕ => (N:ℝ)*bandwidth N) atTop atTop := by
+  have hs : Tendsto (fun N : ℕ => Real.sqrt (N:ℝ)) atTop atTop :=
+    Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop
+  apply hs.congr'
+  filter_upwards [eventually_gt_atTop (0:ℕ)] with N hN
+  simpa [bandwidth, Nat.ne_of_gt hN, div_eq_mul_inv] using (Real.div_sqrt (x := (N:ℝ))).symm
+
+-- Every hypothesis of T8, including true mutual independence and the
+-- bandwidth rate, for X uniform and Y identically zero.
+example : RepairedRegularity zeroOutcome 0 0 (fun _ => 0) (1/2) 1 0 0 ∧
+    IIDSample (Measure.infinitePi (fun _ : ℕ => zeroOutcome)) zeroOutcome (fun i ω => ω i) ∧
+    (∀ N, 0 < bandwidth N) ∧ Tendsto bandwidth atTop (nhds 0) ∧
+    Tendsto (fun N : ℕ => (N:ℝ)*bandwidth N) atTop atTop :=
+  ⟨zero_regularity, zero_iid, bandwidth_pos, bandwidth_zero, bandwidth_counts⟩
+
+-- The function class in T6's norm assertion is nonempty.
+example : ContinuousOn (fun _ : ℝ => (0:ℝ)) (Icc (-1) 1) ∧
+    (fun _ : ℝ => (0:ℝ)) 0 = 0 ∧
+    (∀ x ∈ Icc (-1:ℝ) 1, |(fun _ : ℝ => (0:ℝ)) x| ≤ 1) := by
+  exact ⟨continuous_const.continuousOn, rfl, by intro x hx; norm_num⟩
+
+end
+end Audit

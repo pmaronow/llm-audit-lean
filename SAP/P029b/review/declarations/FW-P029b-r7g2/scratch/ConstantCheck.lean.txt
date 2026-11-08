@@ -1,0 +1,43 @@
+import SAP.P029b.Defs
+import SAP.P029b.Defs.WholeW2
+
+open SAP.P029b MeasureTheory ProbabilityTheory Set
+open scoped BigOperators ENNReal
+
+noncomputable section
+namespace Review
+
+set_option maxHeartbeats 400000
+-- T21(a): all compliers, nondegenerate assignment, c=1, m=tau=2.
+def mu2 : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
+instance : IsProbabilityMeasure mu2 := by unfold mu2; infer_instance
+def constantU (_ : Bool) : PotentialUnit Unit := ⟨(), false, true, 0, 2⟩
+
+example : IVAssumptions mu2 constantU id ∧
+    ScoreVersions mu2 constantU (fun _ => 1) (fun _ => 2) ∧
+    (∀ᵐ w ∂mu2, (1/2 : ℝ) < (fun _ : Unit => (1 : ℝ)) (constantU w).x ∧
+      (fun _ : Unit => (1 : ℝ)) (constantU w).x ≤ 1) ∧
+    (∀ w, (constantU w).tau = 2) := by
+  constructor
+  · unfold IVAssumptions
+    refine ⟨measurable_const, measurable_const, measurable_const,
+      measurable_const, measurable_const, measurable_id,
+      integrable_const _, integrable_const _, ?_, ?_, ?_, ?_, ?_⟩
+    · exact indepFun_const_right (μ := mu2) id ((), false, true, (0 : ℝ), (2 : ℝ))
+    · norm_num [mP, mu2, PMF.toMeasure_apply_fintype, PMF.uniformOfFintype_apply]
+    · norm_num [mP, mu2, PMF.toMeasure_apply_fintype, PMF.uniformOfFintype_apply]
+    · simp [constantU, PotentialUnit.defier]
+    · norm_num [mCE, mP, constantU, PotentialUnit.receipt, bit, mu2,
+        PMF.integral_eq_sum,
+        PMF.toMeasure_apply_fintype, PMF.uniformOfFintype_apply]
+  · constructor
+    · unfold ScoreVersions
+      refine ⟨measurable_const, measurable_const, ?_, ?_⟩ <;>
+        simp [constantU, PotentialUnit.complier, PotentialUnit.tau,
+          covariateSigma, condExp_const]
+    · constructor
+      · filter_upwards [] with w; norm_num
+      · intro w; norm_num [constantU, PotentialUnit.tau]
+
+
+end Review

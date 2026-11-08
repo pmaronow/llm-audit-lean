@@ -1,0 +1,127 @@
+import SAP.P045b.Defs
+
+open Finset SAP.P045b
+open scoped BigOperators
+
+namespace Audit
+noncomputable section
+
+def fairOne : Design (Assignment 1) where
+  mass := fun _ => 1 / 2
+  nonneg := by intro z; norm_num
+  total := by norm_num [Assignment]
+
+lemma sum_assignment_one (f : Assignment 1 → ℝ) :
+    (∑ z, f z) = f (fun _ => true) + f (fun _ => false) := by
+  calc
+    (∑ z, f z) = ∑ b : Bool, f (fun _ => b) := by
+      apply Fintype.sum_equiv (Equiv.piUnique (fun _ : Fin 1 => Bool))
+      intro z
+      congr 1
+      funext i
+      have hi : i = default := Subsingleton.elim _ _
+      subst i
+      rfl
+    _ = _ := Fintype.sum_bool _
+
+def own : Assignment 1 → Fin 1 → Bool := fun z i => z i
+
+def outcomes : Fin 1 → Bool → ℝ := fun _ b => if b then 20 else 0
+
+lemma own_prob (i : Fin 1) (b : Bool) : exposureProb fairOne.mass own i b = 1/2 := by
+  unfold exposureProb prob SAP.P045b.expect
+  rw [sum_assignment_one]
+  cases b <;> norm_num [fairOne, own]
+
+-- T17: all top-level hypotheses, and all hypotheses of the conditional-bias clause.
+example : (0 : ℕ) < 1 ∧ (true : Bool) ≠ false ∧
+    (∀ i, 0 < exposureProb fairOne.mass own i true) ∧
+    (∀ i, 0 < exposureProb fairOne.mass own i false) ∧
+    (∀ i, own (fun _ => false) i ≠ true) ∧
+    0 < prob fairOne.mass (fun z => ∃ i, own z i = true) ∧
+    0 < prob fairOne.mass (fun z => ∀ i, own z i ≠ true) ∧
+    (∑ i, outcomes i true) ≠ 0 := by
+  refine ⟨by decide, by decide, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i; rw [own_prob]; norm_num
+  · intro i; rw [own_prob]; norm_num
+  · intro i; simp [own]
+  · unfold prob SAP.P045b.expect
+    rw [sum_assignment_one]
+    norm_num [fairOne, own]
+  · unfold prob SAP.P045b.expect
+    rw [sum_assignment_one]
+    norm_num [fairOne, own]
+  · norm_num [outcomes]
+
+example : htTotal fairOne.mass own outcomes true (fun _ => false) = 0 ∧
+    hajek fairOne.mass own outcomes true (fun _ => false) = none ∧
+    exposureSampleMean own outcomes true (fun _ => false) = none := by
+  norm_num [htTotal, hajek, exposureSampleMean, own]
+
+example : condMean fairOne.mass (fun z => ∃ i, own z i = true)
+    (htTotal fairOne.mass own outcomes true) = 40 := by
+  unfold condMean prob SAP.P045b.expect
+  simp only [sum_assignment_one]
+  norm_num [htTotal, own_prob, own, observed, outcomes, fairOne]
+  change 20 / exposureProb fairOne.mass own 0 true = 40
+  rw [own_prob]
+  norm_num
+
+-- T18: both endpoint deletions and the N=1 empty-vector boundary.
+example : withoutCoordinate (0 : Fin 4) ![true, false, true, false] = ![false, true, false] := by
+  decide
+
+example : withoutCoordinate (3 : Fin 4) ![true, false, true, false] = ![true, false, true] := by
+  decide
+
+example (z : Assignment 1) : withoutCoordinate (0 : Fin 1) z = (fun i => Fin.elim0 i) := by
+  ext i
+  exact Fin.elim0 i
+
+-- T18: a unique outcome reexpression, checked using coordinate insertion.
+example : ∃! f : Bool × Assignment 3 → ℝ, ∀ z : Assignment 4,
+    f (z 2, withoutCoordinate 2 z) = (if z 2 then 20 else 0) := by
+  refine ⟨fun x => if x.1 then 20 else 0, ?_, ?_⟩
+  · intro z; rfl
+  · intro f hf
+    funext x
+    have hx := hf (Fin.insertNth (2 : Fin 4) x.1 x.2)
+    simpa [withoutCoordinate] using hx
+
+-- T19: the exact fixed-saturation hypotheses and both kinds of individual.
+example : (2 : ℕ) ≤ 3 ∧ (0 : ℝ) < 2/3 ∧ (2/3 : ℝ) < 1 ∧
+    (2 : ℝ) = (2/3 : ℝ)*3 ∧
+    treatedCount ![true, true, false] = 2 ∧
+    coMembers (0 : Fin 3) ![true, true, false] = 1 ∧
+    coMembers (2 : Fin 3) ![true, true, false] = 2 := by
+  norm_num [treatedCount, coMembers, bit,
+    show (univ : Finset (Fin 3)) = {0, 1, 2} from by decide]
+  norm_cast
+
+-- T20 and T21: a genuine nonempty corrected path net, independently checked.
+example : epsilonNet pathDistance 3 ({1, 6} : Finset (Fin 9)) := by decide
+
+example : ¬withinThree ({1, 6} : Finset (Fin 9)) := by
+  unfold withinThree
+  decide
+
+example : covers pathDistance 3 ({1, 6} : Finset (Fin 9)) := by decide
+
+example : ¬covers pathDistance 3 (∅ : Finset (Fin 9)) := by decide
+
+example : ¬epsilonNet pathDistance 3 (∅ : Finset (Fin 9)) := by decide
+
+-- T21: a nonempty disconnected graph uses infinite distances as intended.
+example : greedyRun (⊥ : SimpleGraph (Fin 2)).edist 3 [0, 1] ∧
+    marked (⊥ : SimpleGraph (Fin 2)).edist 3 ({0, 1} : Finset (Fin 2)) = univ ∧
+    epsilonNet (⊥ : SimpleGraph (Fin 2)).edist 3 ({0, 1} : Finset (Fin 2)) := by
+  simp only [greedyRun, marked, epsilonNet, separated, covers, SimpleGraph.edist_bot]
+  decide
+
+example : greedyRun (⊥ : SimpleGraph (Fin 0)).edist 1 [] ∧
+    marked (⊥ : SimpleGraph (Fin 0)).edist 1 (∅ : Finset (Fin 0)) = univ ∧
+    epsilonNet (⊥ : SimpleGraph (Fin 0)).edist 1 (∅ : Finset (Fin 0)) := by
+  simp [greedyRun, marked, epsilonNet, separated, covers]
+
+end
+end Audit

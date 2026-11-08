@@ -1,0 +1,68 @@
+import SAP.P045b.Defs
+
+open scoped BigOperators
+namespace ReviewP045b
+open SAP.P045b
+
+def labels : Fin 4 ≃ Fin 4 := Equiv.refl _
+def cliqueF (r : Fin 66) : Fin 12 → Fin 4 :=
+  fourExposure labels cliqueAdj (cliqueAssignments r)
+
+def cliqueW (t : Fin 66) (i : Fin 12) (a : Fin 4) : ℚ :=
+  smoothedWeight (fun r : Fin 65 => cliqueF (t.succAbove r)) i a
+
+def cliqueQ (t : Fin 66) (i j : Fin 12) (a b : Fin 4) : ℚ :=
+  smoothedJoint (fun r : Fin 65 => cliqueF (t.succAbove r)) i j a b
+
+noncomputable def cliqueDesign : Design (Fin 66) where
+  mass _ := 1/66
+  nonneg _ := by norm_num
+  total := by norm_num
+
+example : (∀ i j, cliqueAdj i j = cliqueAdj j i) ∧
+    (∀ i, cliqueAdj i i = false ∧ ∃ j, cliqueAdj i j = true) := by
+  constructor
+  · intro i j
+    simp [cliqueAdj, eq_comm, and_comm]
+  · intro i
+    constructor
+    · simp [cliqueAdj]
+    · fin_cases i <;> decide
+
+example : cliqueAssignments 0 0 = true ∧ cliqueAssignments 0 1 = true ∧
+    cliqueAssignments 0 2 = false ∧
+    cliqueF 0 2 = 2 ∧ cliqueF 0 4 = 3 := by
+  decide
+
+example : ∀ t i a, 0 < cliqueW t i a := by
+  intro t i a
+  unfold cliqueW smoothedWeight
+  positivity
+
+example : ∀ included x, 0 ≤ cliqueJointMass included x := by
+  intro included x
+  unfold cliqueJointMass
+  split_ifs <;> norm_num
+
+example : exposureEffect (fun (_ : Fin 12) (_ : Fin 4) => (1 : ℚ)) 2 3 = 0 := by
+  simp [exposureEffect]
+
+-- The tables are constructed here, not postulated to satisfy estimator equations.
+-- Exhaustive counts, moments, support, and relabelings are in check_witness.py.
+example : ∃ (f : Fin 66 → Fin 12 → Fin 4)
+    (w : Fin 66 → Fin 12 → Fin 4 → ℚ)
+    (q : Fin 66 → Fin 12 → Fin 12 → Fin 4 → Fin 4 → ℚ),
+    f = (fun r => fourExposure labels cliqueAdj (cliqueAssignments r)) ∧
+    (∀ t i a, w t i a = smoothedWeight (fun r : Fin 65 => f (t.succAbove r)) i a) ∧
+    (∀ t i j a b, q t i j a b =
+      smoothedJoint (fun r : Fin 65 => f (t.succAbove r)) i j a b) ∧
+    (∀ t i, 0 < w t i 2 ∧ 0 < w t i 3) := by
+  refine ⟨cliqueF, cliqueW, cliqueQ, rfl, ?_, ?_, ?_⟩
+  · intros
+    rfl
+  · intros
+    rfl
+  · intro t i
+    constructor <;> unfold cliqueW smoothedWeight <;> positivity
+
+end ReviewP045b

@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P015-T1",
+    "theorem": "SAP.P015a.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified four atoms have masses 999999/2000000, 1/2000000, 1/4, 1/4, all strictly positive and summing to 1. Both profile masses are 1/2. The residual normalizer is 250000999999/2000000000000>0 and both propensities are interior. scratch/Check.lean compiles the probability-vector and positive-normalizer checks; scratch/exact_checks.py checks the IPW moments and population OLS coefficient with exact fractions. The family also has the ordinary instance epsilon=1/4, and n=1 satisfies every finite-sample size premise.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T2",
+    "theorem": "SAP.P015a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The uniform four-atom law has residual normalizer 5/8>0, profile masses 1/2, and effective masses (1/10,1/10,2/5,2/5). scratch/Check.lean compiles a concrete UniformIndependentSampling instance on Omega=(Nat->Fin 4), with the infinite product of the uniform PMF measure and coordinate evaluation draws. The estimator quantification is therefore not over an empty sampling class. Exact fractions verify the effective masses and effect means.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T3",
+    "theorem": "SAP.P015a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four-atom uniform population is genuine. The ordered draw (0,0,2,3) has product mass 1/256>0. scratch/Check.lean compiles this mass and det(W^T W)=2; the controls Gram determinant is 4. The fitted zeros do not arise from a singular-inverse convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T13",
+    "theorem": "SAP.P015a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Choose p=1/2. Then logOdds(p)=0, every logarithm defining the center has positive argument, the printed denominator is 1, and the correct derivative denominator is 4. For arbitrary real a, 1+exp(a)>0. There is no division-by-zero counterexample.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T12",
+    "theorem": "SAP.P015a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Choose p=1/2, c=0, r=pi/8 and rho=pi/4. scratch/DeltaReview.lean compiles these domain inequalities and proves that the actual circle norm image is nonempty and bounded above. On that circle |Im z|<=pi/4<pi/2 makes Re(exp(-z))>0, hence 1+exp(-z) is nonzero; the inverse-logit norm is continuous on a compact nonempty circle. Thus M is an ordinary finite supremum, both guards of the entire conjunction are simultaneously satisfied, and r/rho=1/2. The same file proves by rfl that the reconstructed original T12Statement equals the revised T12Statement; the earlier guard-scope objection was a reading error.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T8",
+    "theorem": "SAP.P015a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A nonempty Bernoulli instance is N=1,K=0, W=(1,0), Y=0, I=R, m=inverseLogit, theta=(0,0); all predictors and probabilities are admissible. scratch/Check.lean compiles the logistic differentiability and probability-domain premises. It also compiles a genuine normalized supported canonical family with nu=Dirac(0), kappa=0, s=1, carrier=0, I=R, support={0}; choose a singleton sample and a singleton intercept column with response 0. These witnesses use nonempty sample, parameter and support types. The named Bernoulli and Poisson laws are Mathlib probability distributions with positive/interior parameters.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T5",
+    "theorem": "SAP.P015a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six actual cells each have 12 trials and 7,6,10 successes, with both outcomes present. At theta=(1,0,1), predictors are 1,2,3 and means are 1/2,2/3,3/4. scratch/Check.lean compiles the positive-predictor and interior-count checks. Exact fractions verify R=0 and S=(2/3,1/3,-2/3). det(W^T W)=36>0. The issue is implication direction, not inconsistent hypotheses or a false numerical witness.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T6",
+    "theorem": "SAP.P015a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The unchanged six-cell probit dataset has eight trials in each cell, with 3,2,7 successes; each fitted mean at the specified parameter is 1/4,1/2,3/4. The actual standard-normal upper quartile is finite and lies in (0,7/10); its defining set is nonempty and bounded below as asserted, not an arbitrary unbounded infimum. The replicated design is nonsingular, det(8 W^T W)=18432. The numerical diagnostic gives q about 0.6744897501960816 and genuine treatment score about 0.1980785321>13/625. The theorem remains the same valid residual-root/nonmaximality witness; the restricted label and exact docstring now withdraw the unsupported necessary-implication refutation. No ML maximizer is used as an assumption.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T7",
+    "theorem": "SAP.P015a.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six strictly positive masses sum to 1; the actual unit law is their mixture of Dirac_(X,D) product Lebesgue_[0,1]. scratch/Check.lean compiles the probability-vector check and admissibility of theta0=(1/2,0,0). For a in {0,1/16} and |epsilon|<=1/16 all cell outcome probabilities are strictly between zero and one. Exact fraction checks verify the moment matrices, nonsingular score Jacobian, treatment derivative 120/119, outcome mean and OLS coefficient. Strict concavity on the nonempty positive-predictor domain and the nonsingular Jacobian justify the local unique maximizing branches mathematically; they are not hypotheses of the theorem.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P015-T16",
+    "theorem": "SAP.P015a.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The sample has D=(0,0,1,1), pre-spending 1, post-spending (1,1,0,3), so all logarithm arguments are (1,1,1/2,2)>0 and det(W^T W)=4. Both fitted group log means are zero whereas arithmetic post-spending means are 1 and 3/2. An 80-digit Decimal exponential diagnostic agrees with the two rational exp(0.077) bounds.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T4",
+    "theorem": "SAP.P015a.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Omega=R with P the fair Bernoulli measure on {0,1}, X identically the sole value of Unit, and D(y)=y. X has countable measurable-singleton codomain, D and X are measurable, D is in L2, P(X=())=1, v=1/4, and both endpoint probabilities are 1/2. The residual is integrable with positive mean 1/4; the effective law is the same Bernoulli law. scratch/Check.lean compiles L2 and cellVariance=1/4 for this concrete instance. The finite counterexample conjuncts have their actual positive probability laws.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T19",
+    "theorem": "SAP.P015a.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the same fair Bernoulli measure on R, D(y)=y, and constant Unit-valued X. It has an actual probability measure, measurable variables, L2 treatment, conditional propensity 1/2 and conditional variance 1/4; the binary antecedent holds. scratch/Check.lean compiles the L2 instance. All conditional expectations are integrable and the pulled-back sigma-algebra has finite trimmed measure.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,73 @@
+[
+ {
+  "target_id": "P010-T1",
+  "decision": "refuted",
+  "theorem": "SAP.P010.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.empirical_overlap_counterexample"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T1_correspondence",
+  "statement_definition": "SAP.P010.T1Statement"
+ },
+ {
+  "target_id": "P010-T2",
+  "decision": "whole",
+  "theorem": "SAP.P010.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.empirical_cutoff_certificate",
+   "AronowAudit.P010.empirical_exact_certificate",
+   "AronowAudit.P010.empirical_overlap_corrected"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T2_correspondence",
+  "statement_definition": "SAP.P010.T2Statement"
+ },
+ {
+  "target_id": "P010-T3",
+  "decision": "refuted",
+  "theorem": "SAP.P010.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.Wave1.missing_passing_condition_counterexample_proof"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T3_correspondence",
+  "statement_definition": "SAP.P010.T3Statement"
+ },
+ {
+  "target_id": "P010-T4",
+  "decision": "whole",
+  "theorem": "SAP.P010.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.Wave1.proposition_one_finite_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P010.always_passer_union_bound",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P010.trimming_mass_identity",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   }
+  ],
+  "bridge": "SAP.P010.Bridge.T4_correspondence",
+  "statement_definition": "SAP.P010.T4Statement"
+ },
+ {
+  "target_id": "P010-T5",
+  "decision": "refuted",
+  "theorem": "SAP.P010.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.Wave1.infinite_sharp_bounds_counterexample_proof"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T5_correspondence",
+  "statement_definition": "SAP.P010.T5Statement"
+ }
+]

@@ -303,6 +303,22 @@ lemma frc_joint_limit :
   simpa only [Function.comp_def, WithLp.ofLp_toLp] using
     h.continuous_comp (PiLp.continuous_ofLp 2 (fun _ : Fin 5 => ℝ))
 
+lemma frc_weakLimit {E : Type*} [PseudoEMetricSpace E] [MeasurableSpace E] [BorelSpace E]
+    (T : (n : ℕ) → (Fin n → Fin 128) → E) (Q : Measure E) [IsProbabilityMeasure Q]
+    (h : TendstoInDistribution (fun (n : ℕ) ω => T n (t19_sample n ω))
+      atTop id (fun _ => t19_product frc_law) Q) : WeakLimit frc_law T Q := by
+  intro f hf hbound
+  obtain ⟨C, hC⟩ := hbound
+  let F : BoundedContinuousFunction E ℝ :=
+    ⟨⟨f, hf⟩, ⟨2*C, fun x y => (dist_le_norm_add_norm _ _).trans (by
+      simpa only [Real.norm_eq_abs, two_mul] using add_le_add (hC x) (hC y))⟩⟩
+  have hh := (tendstoInDistribution_iff_forall_integral_rclike_tendsto ℝ
+    h.forall_aemeasurable h.aemeasurable_limit).mp h F
+  change Tendsto (fun (n : ℕ) => ∫ ω, f (T n (t19_sample n ω)) ∂t19_product frc_law)
+    atTop (nhds (∫ x, f x ∂Q)) at hh
+  convert hh using 1
+  funext n
+  exact (t19_sample_integral frc_law n (fun s => f (T n s))).symm
 
 local instance frc_uniform_probability :
     IsProbabilityMeasure (volume.restrict (Set.Icc (0 : ℝ) 1)) := by
@@ -916,6 +932,8 @@ theorem fisher_reference_counterexample_proof :
   have h := frc_limit_variance
   rw [heq, frc_chi_variance] at h
   exact (lt_irrefl _ h)
+
+example : type_of% @AronowAudit.P019.fisher_reference_counterexample := fisher_reference_counterexample_proof
 
 end
 end AronowAudit.P019.Wave1

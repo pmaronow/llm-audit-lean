@@ -1,0 +1,136 @@
+import SAP.P012a.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 4096
+set_option maxHeartbeats 2000000
+set_option synthInstance.maxSize 1000
+
+open SAP.P012a Finset
+
+namespace Review
+
+-- Independent checks of all four T1 inputs and the incompatible outputs.
+example : Admissible proposalData ∧ Compatible proposalData proposalStart ∧
+    HomophilyDefined proposalStart ∧ PreferentialDefined proposalData proposalStart := by
+  refine ⟨by native_decide, by native_decide, ?_, by decide⟩
+  have hne : ({Sum.inl 1, Sum.inl 2} : Finset Vertex) ≠ {Sum.inl 1, Sum.inr (3,0)} := by decide
+  norm_num [HomophilyDefined, hDenominator, z, graphDegree, proposalStart, s, u,
+    Finset.filter_insert, Finset.filter_singleton, Finset.card_insert_eq_ite, hne]
+
+example : Admissible proposalDataB ∧ Compatible proposalDataB proposalStartB ∧
+    (∀ t : Bool, ¬ Compatible proposalDataB (proposalBadB t)) := by
+  native_decide
+
+example : Admissible cleanupData ∧ Compatible cleanupData cleanupStart ∧
+    ¬ Compatible cleanupData (cleanup cleanupData false cleanupStart) := by
+  native_decide
+
+example : Admissible emptyPoolData ∧ Compatible emptyPoolData (dyad false true) ∧
+    unsampled emptyPoolData (dyad false true) = ∅ := by
+  native_decide
+
+example (t : Bool) : ¬ Compatible proposalData (proposalBad t) := by
+  cases t <;> native_decide
+
+example : homophily proposalStart = some (-1/3) := by
+  have hne : ({Sum.inl 1, Sum.inl 2} : Finset Vertex) ≠ {Sum.inl 1, Sum.inr (3,0)} := by decide
+  norm_num [homophily, HomophilyDefined, hValue, hNumerator, hDenominator,
+    adjacency, z, graphDegree, proposalStart, s, u, Finset.filter_insert,
+    Finset.filter_singleton, Finset.card_insert_eq_ite, hne]
+
+example : preferential proposalData proposalStart = some (-1/2) := by
+  have hJ : nonseeds proposalData = {2} := by decide
+  have hU : susceptible proposalData proposalStart 1 2 = {s 2, u 3 0} := by decide
+  have hM : sameSusceptible proposalData proposalStart 1 2 = {u 3 0} := by decide
+  have hdef : PreferentialDefined proposalData proposalStart := by decide
+  simp only [preferential, if_pos hdef]
+  congr 1
+  unfold pValue pSum
+  rw [hJ]
+  simp only [Finset.card_singleton, Finset.sum_singleton, Nat.cast_one, div_one]
+  change (0 : ℝ) - (sameSusceptible proposalData proposalStart 1 2).card /
+    ((susceptible proposalData proposalStart 1 2).card : ℝ) = -1/2
+  rw [hU, hM]
+  norm_num [s, u, Finset.card_insert_eq_ite]
+
+run_cmd IO.println "T1 finite input and functional checks complete"
+
+-- Every printed coin pair really has the claimed bad execution.
+example (c₁ c₂ : Bool) :
+    WholePrintedRun proposalData proposalStart 1 (u 3 0) c₁ c₂ (proposalBad false) := by
+  apply WholePrintedRun.deleteUnobserved (u 4 0)
+    (addVertex (removeEdge proposalStart (s 1) (u 3 0)) (u 4 0) false)
+  all_goals try decide
+  apply WholeCoinReplacement.fresh (u 4 0) _ _ false
+  · right; decide
+  · decide
+
+-- T2: the corrected unsampled deletion branch has actual executions.
+example : Admissible proposalData ∧ Compatible proposalData proposalStart ∧
+    GraphProposal proposalData true proposalStart
+      (cleanup proposalData true
+        (addEdge (addVertex (removeEdge proposalStart (s 1) (u 3 0))
+          (u 4 0) false) (s 1) (u 4 0))) := by
+  refine ⟨by native_decide, by native_decide, ?_⟩
+  apply GraphProposal.deleteUnobserved 1 (u 3 0) (u 4 0)
+    (addVertex (removeEdge proposalStart (s 1) (u 3 0)) (u 4 0) false)
+  all_goals try decide
+  exact Replacement.fresh (u 4 0) (by decide) false
+
+def observedDeletionData : Data :=
+  ⟨{1,2,3}, {1,2,3}, fun _ => 1, id, fun _ => 1, fun i => i == 2⟩
+
+def observedDeletionStart : State :=
+  ⟨{s 1,s 2,s 3,u 4 0}, {{s 1,s 2},{s 3,u 4 0}}, fun v => v == s 2⟩
+
+example : Admissible observedDeletionData ∧
+    Compatible observedDeletionData observedDeletionStart ∧
+    ∃ K, GraphProposal observedDeletionData true observedDeletionStart K := by
+  refine ⟨by native_decide, by native_decide, ?_⟩
+  refine ⟨_, GraphProposal.deleteObserved 1 2 (u 4 0) (u 4 0)
+    (removeEdge observedDeletionStart (s 1) (s 2))
+    (addEdge (removeEdge observedDeletionStart (s 1) (s 2)) (s 1) (u 4 0))
+    (by decide) (by decide) (by decide) (by decide) (by decide) ?_ ?_⟩
+  · exact Replacement.existing (u 4 0) (by decide)
+  · exact Replacement.existing (u 4 0) (by decide)
+
+def additionData : Data :=
+  ⟨{1,2}, {1,2}, fun _ => 1, id, fun _ => 1, fun i => i == 2⟩
+
+def additionStart : State :=
+  ⟨{s 1,s 2,u 3 0}, {{s 1,u 3 0},{s 2,u 3 0}}, fun v => v == s 2⟩
+
+example : Admissible additionData ∧ Compatible additionData additionStart ∧
+    ∃ K, GraphProposal additionData true additionStart K := by
+  refine ⟨by native_decide, by native_decide, ?_⟩
+  exact ⟨_, GraphProposal.addObserved 1 (s 2) (u 3 0) (u 3 0)
+    (by decide) (by decide) (by decide) (by decide) (by decide)
+    (by decide) (by decide) (by decide)⟩
+
+example : Admissible emptyPoolData ∧ Compatible emptyPoolData (dyad false true) ∧
+    GraphProposal emptyPoolData true (dyad false true)
+      (cleanup emptyPoolData true (dyad false true)) ∧
+    TraitProposal emptyPoolData true (dyad false true) (dyad false true) := by
+  refine ⟨by native_decide, by native_decide, ?_, ?_⟩
+  · apply GraphProposal.unchanged 1 (s 2)
+    all_goals decide
+  · exact TraitProposal.empty rfl (by decide)
+
+example : Admissible proposalData ∧ Compatible proposalData proposalStart ∧
+    TraitProposal proposalData true proposalStart (flipTrait proposalStart (u 3 0)) := by
+  exact ⟨by native_decide, by native_decide, TraitProposal.flip (u 3 0) (by decide)⟩
+
+run_cmd IO.println "T2 branch nonvacuity checks complete"
+
+-- Small independent T5 domain instance: positive spare degree, both h and p defined.
+example : Admissible proposalData ∧ 0 < totalSpare proposalData := by
+  native_decide
+
+-- The second alternative of T5's domain is also populated (zero spare, mixed edge).
+example : Admissible emptyPoolData ∧ totalSpare emptyPoolData = 0 ∧
+    0 < 2*a emptyPoolData + cR emptyPoolData ∧
+    0 < 2*b emptyPoolData + cR emptyPoolData := by
+  native_decide
+
+
+end Review

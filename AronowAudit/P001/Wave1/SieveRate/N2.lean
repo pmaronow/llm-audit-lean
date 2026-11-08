@@ -3,7 +3,8 @@ import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.Probability.Distributions.Gaussian.Real
 
-/-! The PDF, first moment, and zero CEF of the witness. -/
+/-! The PDF, first moment, and zero CEF of the witness.
+Drafted by source inspection only; Lean has not been run on this file. -/
 
 set_option autoImplicit false
 

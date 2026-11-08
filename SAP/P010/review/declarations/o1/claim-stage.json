@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P010.T1",
+    "target_id": "P010-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "Canonical claim (kind counterexample): the printed overlap sentence, formally 'for both outcomes I_s ∩ I_t ≠ ∅ for all s,t' (stronger reading: triple intersection nonempty), refuted by the unweighted Figure-2 preference intervals computed from the supplied counts N=(544,538,533), failures (35,182,40), prefer-among-passers (61,162,327) with the authors' rule (lower: j/n < 1−trim, upper: j/n > trim). T1Statement (Defs/Part4.lean:11) states I_0∩I_1=∅, I_0∩I_2=∅ and refutes both readings (¬∀ pairs overlap, ¬∃ common point). Definitions (Defs/Part1.lean:12–38) render the counts, trim_t = Σ_{s≠t} f_s/(1−f_t), the retained counts ⌈n(1−trim)⌉−1 = #{j: j/n<1−trim} and n−⌊n·trim⌋ = #{j: j/n>trim}, and the binary-outcome trimmed means exactly (computed values 284/285, 281/282, 278/279; I_0=[0,61/285], I_1=[87/281,27/47], I_2=[56/139,1]). Printed reading: the reported Panel D–E intervals pairwise intersect for both outcomes; conditions: intervals are the reported estimates from the data by the authors' rule, overlap of estimate intervals (not CIs); the witness (preference, Figure 2) meets each condition, with the counts as declared inputs. No junk value reachable."
+  },
+  {
+    "theorem": "SAP.P010.T2",
+    "target_id": "P010-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "Canonical corrected statement, formal content (a)–(d): all exact values (passers, trim proportions, retained counts, approval and preference intervals), 1/2 in all three approval intervals, 1/2 ∈ I_2∩I_3 for preference, 61/285 below 87/281 and 56/139 with gaps 7654/80085, 7481/39615 > 0, q = 40739821/77997088 > 0 and the fractional-trimming preference bounds [max(0,(a_t−Σ_{s≠t}f_s)/q), min(1,a_t/q)] with a_t = prefer/N and their gaps. T2Statement (Defs/Part4.lean:19–47) states every one of these, plus the characterisation of the retained counts by the j/n rule (Part4.lean:29–32). The qualitative sentences ('bounds remain wide', 'sampling uncertainty is distinct') have no formal content beyond (a)–(d); 'do not fully order all three' is the 1/2 ∈ I_2∩I_3 clause. fractionalPreference (Defs/Part1.lean:42) is exactly the (d) formula. All values re-verified by #eval (scratch/Check1.lean)."
+  },
+  {
+    "theorem": "SAP.P010.T3",
+    "target_id": "P010-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "Canonical counterexample to Proposition 1's printed finite-branch display (outer means without S=1, quantile Q_{Y|Z=z,S=1}). Printed reading: for every law satisfying Assumptions 1–3 with Pr[A]>0, Y continuous with unbounded support and r_z<1, E[Y|Y≤Q(1−r_z),Z=z] ≤ E[Y(z)|A] ≤ E[Y|Y≥Q(r_z),Z=z] (and these are sharp). Witness conditions, each certified in T3Statement (Defs/Part6.lean:11–26) for both models: populationAssumptions (Assumptions 1–3 with corrected Assumption 3; SUTVA built into response/check); Pr[A]=1/4; response law atomless; full real support; all moments; pass rates 1/2, 3/4, r=1/2<1; passer law Laplace(1), Q(1/2)=0; printed expressions −3/4 and 3/4 (sets {Y≤0}∩{Z=0}, {Y≥0}∩{Z=0}, no S=1); target ±1, so the printed inequality fails; corrected endpoints −1, 1; same law of (Y,S,Z). missingPassingPopulation (Defs/Part5.lean:109) matches the canonical strata exactly (index shift z=1 ↔ arm 0). The refutation contradicts the canonical statement's own (literal printed) assertion."
+  },
+  {
+    "theorem": "SAP.P010.T4",
+    "target_id": "P010-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "Canonical corrected Proposition 1, finite branch. Hypotheses match: Assumptions 1–3 (populationAssumptions, per-arm ignorability as in printed Assumption 2, corrected Assumption 3), Pr[A]>0 (hA), no atoms of the arm-z passer law (hc, exactly 'what is used'), E[|Y| | Z=z,S=1]<∞ (hi), r_z<1 (hr). Conclusions match: (i) both inequalities with S=1 in the outer events (lowerEndpoint/upperEndpoint, Defs/Part5.lean:36–42); (ii) attainment of both endpoints by compatible laws (compatibleMeans, Part5.lean:44–50: Assumptions 1–3, Pr[A]>0, same law of (Y,S,Z)) and every compatible mean in [lower,upper] (sharpness in the standing meaning); p_z(1−r_z)=L, r_z<1 ↔ L>0, r_z=0 → both = E[Y|Z=z,S=1], and both quantile-integral forms. meanOn junk (non-integrable AP integrand) is unreachable for compatible ν: by per-arm ignorability Y(z) on {S(z)=1} has the scaled observed passer law, integrable by hi, and A ⊆ {S(z)=1}. Extra feature coordinate in Population K d does not change the identified set. Nonvacuity compiled (scratch/NonvacT4.lean) from the T3 witness."
+  },
+  {
+    "theorem": "SAP.P010.T5",
+    "target_id": "P010-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "Canonical counterexample to the printed else-branch. Printed reading: for every law satisfying Assumptions 1–3, Pr[A]>0, Y continuous with unbounded support and r_z ≥ 1, the sharp bounds (inf/sup over compatible laws) for E[Y(z)|A] are −∞ and +∞. Witness conditions certified in T5Statement (Defs/Part6.lean:49–72): populationAssumptions; Pr[A]=1/3; Y atomless; full real support and two-sided tails 1/(3(1+R)^5); E[Y]=1/6, E[Y²]=13/63, E|Y|³=19/84 (means exist, finite third moments); p_z=1/3, r_z=2 ≥ 1 for both arms. Conclusion contradicts the printed assertion: every compatible mean in (0,1); GLB 0, LUB 1 of the identified set in EReal, not ⊥/⊤; the t-family betaEndpointPopulation (Defs/Part5.lean:128, matching the canonical stratum weights (q/3,(1−q)/3,(1−q)/3,(1+q)/3) and densities) is compatible with means t(15/2−12t+5t²)/(10−15t+6t²) ∈ (0,t) and one minus that. The witness satisfies the printed hypothesis 'Y ... unbounded support' literally (Y is the observed response); meanOn junk unreachable (compatible ν has Y(z) ∈ (0,1) a.s. on {S(z)=1})."
+  }
+]

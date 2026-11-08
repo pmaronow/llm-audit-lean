@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P045-T6",
+    "theorem": "SAP.P045a.T6",
+    "fingerprint": "78dda259eb6270f39064e0590785244e34f973796b41ad65eab6a2c4f4aa6bc5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:31: two adjacent units, the uniform law on all four assignments, and Y_i(z)=1+z_0+z_1 satisfy both extreme-event consistency hypotheses and all positive-probability and population-size hypotheses; the all-versus-none target is 2. The same design with threshold2 satisfies the additional complement-event sufficiency (line 68). A separate finite-event instance uses a fair Boolean, E={true}, and unequal outcomes (line 93). The file imports only SAP.P045a.Defs and does not invoke a Challenge theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T7",
+    "theorem": "SAP.P045a.T7",
+    "fingerprint": "51a88c1d57959078a98837700cc7d2ba1dcef0234c6d62e59b009de3e697c815",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No initial hypotheses; this is a closed, explicit counterexample. Compiled scratch/Nonvacuity.lean:143 verifies the actual single-edge input and erroneous lower entries and gives an admissible deletion probability q=1/2. Independent exact enumeration in scratch/enumerate.py checks all 64 upper triangles and finds exactly 32 asymmetric outputs. The full two-point deletion law follows from one Bernoulli deletion of the sole true edge; at q=0 the asymmetric output occurs surely.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T8",
+    "theorem": "SAP.P045a.T8",
+    "fingerprint": "6a156cf6da7e9af8de93b5a63ddde23f0b7ac6673ec457e9d0c382641df6d051",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No initial hypotheses; this is the canonical concrete witness. Compiled scratch/Nonvacuity.lean:152 checks the 20-edge graph and nonempty deletion populations. scratch/enumerate.py independently checks every one of the 10, 200 and 1900 equally likely (deleted-edge set, treated-vertex) cases, exact measured-exposure probabilities, positive ratio denominators, the target, all bias bounds and both strict absolute-bias comparisons. The nested uniform averages enforce independence of deletion and treatment. The unused treated-unit outcome entries extend to y_i(d10)=3b_i/2 and y_i(d11)=2b_i exactly as required by the canonical setting.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T9",
+    "theorem": "SAP.P045a.T9",
+    "fingerprint": "d338e2e83a4bf8c2adb3f2da17d536a377c6e521e584374d7581b9f264b03141",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:105 supplies symmetric binary zero-diagonal matrix inputs satisfying all matrix premises and the deletion/addition/recovery antecedents (take U=0 for deletion or U=A for addition/recovery). Line 125 supplies n=2, uniform independent fair treatment, S=T equal to the two-vertex edge, strictly positive d00/d01 probabilities for every unit and strictly positive spillovers, jointly satisfying every HT/sign hypothesis. The nontrivial deletion-based Hajek witness is independently verified across all its finite cases in scratch/enumerate.py. All checks import only Defs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T10",
+    "theorem": "SAP.P045a.T10",
+    "fingerprint": "a6d9a390cc28ad5758ccf32119b4a4e45c6b03180638f47760fff9cef579506d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No initial hypotheses; the finite four-path and p=1/2 are concrete. Compiled scratch/Nonvacuity.lean:161 verifies that {0,3} is a separated covering 3-net whereas the coded possible set {0,1} covers and is not separated. scratch/enumerate.py independently solves the finite centre-state law, including geometric self-retries with probability less than 1, and checks both complete terminal laws, every partition and treatment mass, failure probability 1/6, and exhaustive repaired-net characterization. T10WholeStatement explicitly asserts summability of every terminal-length series, so these are genuine probabilities rather than default tsums.",
+    "confidence": 0.99
+  }
+]

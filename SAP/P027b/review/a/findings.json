@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P027-T14",
+    "theorem": "SAP.P027b.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. The actual population is Fin 5 x Fin 2 and the sample space has 25 outcomes, each of weight 1/25. The prescribed deviations have mean 0 and divisor-5 variance 1. Exact enumeration for alpha=0 and alpha=2 verifies every retained expectation, variance and bias comparison. C2-C3 are explicitly outside this theorem's scope.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T15",
+    "theorem": "SAP.P027b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For any M>=2 take Xi={-1,1}^(Fin M x Fin 2) with the uniform product probability measure and epsilon_k(xi)=xi_k. These bounded, independent mean-zero signs satisfy NoiseMoments mu epsilon 1, including every product-integrability clause. Choose M=2 and alpha=0 for a concrete nonzero-variance instance. The design has M^2 equiprobable samples and positive inclusion 1/M. Model averages for M=2,3 and several alpha values also checked by exact enumeration.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T16",
+    "theorem": "SAP.P027b.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. The defined law has exactly eight points, each of weight 1/8. Its three coordinate signs are independent, centered and of variance 1. Both outcome variances are 5/4, so the Pearson-correlation denominator is strictly positive. Exact enumeration yields covariance 1/4, correlation 1/5, printed ratio 1/3 and difference 2/15. The docstring explicitly declares the discrete replacement, omission of a Gaussian-law witness, and omission of C3.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T17",
+    "theorem": "SAP.P027b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the uniform probability measure on {-1,1}^3 and let S, epsilon, epsilon' be its three coordinate projections. Every PairMoments integrability, second-moment and cross-moment condition holds. At alpha=1/2 the outcomes have variances 5/4 and covariance 1/4. For every finite real alpha, alpha^2+1 and 2*alpha^2+1 are positive, and heterogeneity(alpha) lies in [0,1), so every displayed conversion and correlation has a legitimate denominator.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T18",
+    "theorem": "SAP.P027b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "M=2 gives four units and four equiprobable samples, with pi=1/2, diagonal joint inclusion 1/2, distinct same-stratum joint inclusion 0 and cross-stratum joint inclusion 1/4. Positive first-order inclusions and a genuine zero pair were compiled in scratch/Referee.lean. M=1 is also allowed and gives the legitimate certainty sample. Exact enumeration checked M=1,2,3,5.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T19",
+    "theorem": "SAP.P027b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take r=2, m=2, beta=0, sigma2=1, Xi=R^8, the product of eight N(0,1) probability measures, and coordinate errors. Then NoiseMoments and GaussianNoise hold; all four component dimensions are ordinary finite dimensions, with within dimension 4 and low/high dimensions 1. E(V)=27/40>0, a=3/32>0, c=24/31>0 and E(T)=3/8>0. For tail assertions take K=1 and ell=1. For each printed row use the corresponding finite coordinate Gaussian product with variance 17.91; taking every population to reuse those coordinates supplies all K>=1 without any cross-population independence assumption. The exact GaussianNoise product-law instance was compiled generically in scratch/Referee.lean. Exact arithmetic checked the four row predictions, rounding tolerances, floors/ceilings and exponents. Zero-noise moment identities remain meaningful, while the quotient and Gaussian clauses carry precisely the canonical positive-variance guards.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P027-T20",
+    "theorem": "SAP.P027b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use cluster3: select {0,1} or {2}, each with probability 1/2. Every unit has pi=1/2. The zero pairs are the four ordered cross-cluster pairs. For yPos=(1,1,1), A=4; for yNeg=(1,1,-1/4), A=-1. Positivity and both exact bias values compiled in scratch/Referee.lean. Independent rational enumeration also checks both expectation differences against the true variances.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T21",
+    "theorem": "SAP.P027b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use cluster3 with y=(1,1,1) and all a_kl=b_kl=2. There are four actual ordered zero-inclusion pairs and every pi=1/2. The positive conjugacy of 2,2 was compiled. Here A=A*=4, Var(htTotal)=1, E(HT variance estimate)=5 and E(corrected estimate)=9. Hence the assumptions are satisfiable with nonzero bias and a strict conservative bound.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T22",
+    "theorem": "SAP.P027b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use strataDesign 2 and y(0,0)=3, y(1,0)=-3, y(0,1)=5, y(1,1)=-5, with all a_kl=b_kl=2. Each unit has inclusion 1/2 and distinct same-stratum units form actual zero pairs. Equal conjugate powers and the required opposite-sign equality hold on every such ordered pair. All these hypotheses and Var(htTotal)=136 compiled in scratch/Referee.lean, using only SAP.P027b.Defs and Mathlib. The corrected estimate is the constant 136.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T23",
+    "theorem": "SAP.P027b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cluster3 is a positive design with actual zero pairs. With outcomes (1,1,1), the true total variance is 1 and the quadratic estimate has expectation 9, giving strict conservativeness. With the T22 two-stratum population it instead gives equality at the nonzero variance 136. The exponent-two correction is the same function sample by sample because abs(y)^2=y^2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T24",
+    "theorem": "SAP.P027b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take cluster3, sample label 0 selecting {0,1}, and outcomes (4,9,1). The exponent domain includes 2,2 and 3,3/2, both positive conjugate pairs. Thus the minimum assertion ranges over a nonempty family and a nonempty zero-pair set. At 2,2 equality holds by definition; for 3,3/2 Young's inequality is strict for the selected outcome 4, so the comparison also has nontrivial instances. It uses nonnegative I_k/pi_k and ordered-pair symmetry, with no positive-weight assumption on the particular sample label.",
+    "confidence": 0.99
+  }
+]

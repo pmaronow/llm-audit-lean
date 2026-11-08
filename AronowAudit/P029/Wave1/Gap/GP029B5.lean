@@ -6,6 +6,10 @@ import Mathlib.MeasureTheory.Function.LpSeminorm.SMul
 
 /-!
 P029-T6: moments of the coded heterogeneous benchmark.
+
+Drafted by source inspection only; no Lean, Lake, or Beam process was run.
+The held theorem is used only in the final statement check. The proof uses
+the already proved `uniform_covariate_moments`, not the held benchmark proof.
 -/
 
 namespace AronowAudit.P029.Wave1
@@ -163,6 +167,9 @@ theorem heterogeneous_benchmark_moments_proof {Ω : Type*} [MeasurableSpace Ω]
   change (∫ ω, B ω ∂μ) = 5 ∧ mCov μ B B = 25 / (n : ℝ)
   rw [hBA]
   exact ⟨hAmean, hAcov⟩
+
+example : type_of% @AronowAudit.P029.heterogeneous_benchmark_moments :=
+  heterogeneous_benchmark_moments_proof
 
 end
 

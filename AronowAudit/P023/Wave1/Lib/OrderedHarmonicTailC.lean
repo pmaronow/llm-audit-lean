@@ -156,6 +156,14 @@ theorem tc09_remainder_summable (n : ℕ) (hn : 1 ≤ n) (t : ℝ) :
   rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (tc09_drop_nonneg _ (by omega))]
   exact mul_le_of_le_one_right (tc09_drop_nonneg _ (by omega)) (Real.abs_cos_le_one _)
 
+theorem tc09_remainder_continuous (n : ℕ) (hn : 1 ≤ n) :
+    Continuous (tc09_abelRemainder n) := by
+  apply continuous_tsum (fun k => ?_) (tc09_drop_summable n hn)
+  · intro k t
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (tc09_drop_nonneg _ (by omega))]
+    exact mul_le_of_le_one_right (tc09_drop_nonneg _ (by omega)) (Real.abs_cos_le_one _)
+  · dsimp [tc09_cosPhase]
+    fun_prop
 
 /-- Definition by the first Abel identity. Its sine-series interpretation is ordered. -/
 def tc09_harmonicTail (n : ℕ) (t : ℝ) : ℝ :=

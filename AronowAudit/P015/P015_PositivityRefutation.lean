@@ -64,10 +64,9 @@ lemma cell_variance_one : cellVar P X D 1=1 := by
 lemma weight_integrable : Integrable (discreteWeight P X D) P := by
   simpa using (IntegrableOn.of_finite (s:=Set.univ) (Set.toFinite _))
 
-/-- T17(C), p. 261: under the normalized withDensity effective law,
-both endpoints 0 and 1 occur nominally and E[w]>0, but the positive effective
-profile X=1 has zero probability at treatment 1. This refutes the printed
-automatic pair-specific positivity implication. -/
+/-- Literal normalized withDensity effective law: endpoints0 and1 both
+occur nominally, but the positive effective profile X=1 has zero probability
+at treatment1. This refutes the pair-specific printed implication. -/
 theorem printed_effective_positivity_refuted :
     Measurable X ∧ Measurable D ∧ MemLp D 2 P ∧
     (0:ℝ)≠1 ∧ 0<P {i|D i=0} ∧ 0<P {i|D i=1} ∧
@@ -100,5 +99,8 @@ theorem printed_effective_positivity_refuted :
       (by rw [cell_variance_one];norm_num) 1,hz]
     simp
 
+#print axioms printed_effective_positivity_refuted
+#print axioms cell_means
+#print axioms weight_integral
 end
 end AronowAudit.P015.PositivityRefutation

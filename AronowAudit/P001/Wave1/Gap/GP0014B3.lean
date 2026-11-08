@@ -13,8 +13,9 @@ set_option maxRecDepth 3000
 set_option autoImplicit false
 
 /-!
-The measure-equality argument below is the L¹ extension of event CI: it avoids
-both an L² assumption and a standard-Borel assumption on the original sample space.
+Draft for records 12 and 13. No Lean executable was run. The measure-equality
+argument below is the L¹ extension of event CI: it avoids both an L² assumption
+and a standard-Borel assumption on the original sample space.
 -/
 
 private theorem t91_ci_map_left {Ω E F G H : Type*}
@@ -300,7 +301,10 @@ theorem positive_mass_dose_identification_proof {Ω E : Type*} [MeasurableSpace 
     have hq : prob μ {ω | X ω = x} = 0 := by simp only [prob, hμ, ENNReal.toReal_zero]
     simp only [hq, mul_zero, Measure.restrict_eq_zero.mpr hμ, integral_zero_measure]
 
-/-! Population mean identification from conditional independence and positive propensity. -/
+example : type_of% @AronowAudit.P001.positive_mass_dose_identification :=
+  positive_mass_dose_identification_proof
+
+/-! Record 13: helpers, followed by the exact held statement. -/
 
 private theorem t94_ci_congr_left {Ω E F G : Type*}
     [MeasurableSpace Ω] [MeasurableSpace E] [MeasurableSpace F] [MeasurableSpace G]
@@ -570,6 +574,9 @@ theorem ml_potential_mean_population_identity_proof {Ω : Type*} [MeasurableSpac
   · exact t94_positive_arm_mean μ X hX D hD Y1 h1 hCI1 {1}
       (measurableSet_singleton 1) p f1 hp.1 hf1 hp.2.2.1 hf1I
       (fun ω => (hp01 ω).1) hpbound hCE1 hArm1
+
+example : type_of% @AronowAudit.P001.ml_potential_mean_population_identity :=
+  ml_potential_mean_population_identity_proof
 
 end
 end AronowAudit.P001.Wave1

@@ -1,0 +1,125 @@
+[
+ {
+  "target_id": "P029-T25",
+  "decision": "whole",
+  "theorem": "SAP.P029b.T25",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.Wave1.late_identity_paper_scope",
+   "AronowAudit.P029.gender_worked_example",
+   "AronowAudit.P029.sample_wald_bivariate_2sls"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.Wave1.late_identity_proof",
+    "reason": "Duplicate export of the same population identity; use the paper-scope declaration directly."
+   },
+   {
+    "lean_name": "AronowAudit.P029.Wave1.randomized_probability_independent",
+    "reason": "Randomization auxiliary is already included in the existing population identity proof."
+   },
+   {
+    "lean_name": "AronowAudit.P029.bernoulli_measure_probability",
+    "reason": "Probability-law auxiliary is already included in the existing population identity proof."
+   },
+   {
+    "lean_name": "AronowAudit.P029.bivariate_ratio_algebra",
+    "reason": "Algebraic auxiliary is already included in the sample coefficient identity."
+   },
+   {
+    "lean_name": "AronowAudit.P029.randomized_conditional_mean",
+    "reason": "Finite-arm auxiliary is already subsumed by the general population identity."
+   },
+   {
+    "lean_name": "AronowAudit.P029.randomized_valid",
+    "reason": "Finite-law auxiliary is already subsumed by the general population identity."
+   },
+   {
+    "lean_name": "AronowAudit.P029.sample_arm_unweighted_raw",
+    "reason": "Raw-sum auxiliary is already included in the sample coefficient identity."
+   },
+   {
+    "lean_name": "AronowAudit.P029.sample_cross_raw",
+    "reason": "Centering auxiliary is already included in the sample coefficient identity."
+   },
+   {
+    "lean_name": "AronowAudit.P029.unit_itt_identities",
+    "reason": "Unitwise auxiliary is already included in the population identity proof."
+   }
+  ],
+  "statement_definition": "SAP.P029b.T25Statement"
+ },
+ {
+  "target_id": "P029-T26",
+  "decision": "restricted",
+  "theorem": "SAP.P029b.T26",
+  "restriction": "Retains the general population weighted-moment identities and ATE consistency. Adds maximum-in-sample fitted-score consistency, measurable positive estimates in (0,1], iid joint draws, integrable potential outcomes, measurable conditional-mean versions, second-countable Borel covariates, and explicit support overlap and latent-ignorability conditions. Also requires the sample ratios to be eventually defined along almost every draw sequence. Does not derive the result from the paper's pointwise Assumption 2 alone. The sample conclusion states only consistency of the final Wald ratio; it omits the Appendix's two separate convergence assertions for the sample weighted outcome-arm difference and the sample weighted receipt-arm difference.",
+  "rows_used": [
+   "AronowAudit.P029.Wave1.appendix_population_identities_proof",
+   "AronowAudit.P029.Wave1.icsw_consistency_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.appendix_finite_identities",
+    "reason": "Finite-support specialization is unnecessary: the selected population theorem already supplies the general integral identities."
+   },
+   {
+    "lean_name": "AronowAudit.P029.profile_inverse_score_cancellation",
+    "reason": "Finite-sum cancellation auxiliary adds no coverage beyond the selected general population/limit statements."
+   },
+   {
+    "lean_name": "AronowAudit.P029.sample_arm_scale",
+    "reason": "Common-scale identity is an auxiliary, not a separate clause of the retained consistency claim."
+   },
+   {
+    "lean_name": "AronowAudit.P029.sample_wald_scale",
+    "reason": "Common-scale auxiliary is unnecessary for the selected direct constant-score identity and consistency statements."
+   }
+  ],
+  "statement_definition": "SAP.P029b.T26Statement"
+ },
+ {
+  "target_id": "P029-T27",
+  "decision": "refuted",
+  "theorem": "SAP.P029b.T27",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.Wave1.complier_covariate_distribution_proof",
+   "AronowAudit.P029.Wave1.icsw_complier_effect_limit_proof",
+   "AronowAudit.P029.constant_scores_equal_iv",
+   "SAP.P029b.WH.W2.T27_whole",
+   "SAP.P029b.WH.W2.T27_assembly",
+   "SAP.P029b.WH.W2.T27_L1_proof",
+   "SAP.P029b.WH.W2.T27_L2_proof",
+   "SAP.P029b.WH.W2.T27_L3_proof",
+   "SAP.P029b.WH.W2.T27_L4_proof",
+   "SAP.P029b.WH.W2.T27_L5_proof",
+   "SAP.P029b.WH.W2.T27_L6_proof",
+   "SAP.P029b.WH.W2.cancellation_population",
+   "AronowAudit.P029.randomized_valid",
+   "AronowAudit.P029.randomized_independent",
+   "AronowAudit.P029.Wave1.FiniteMeasure.n1_proof",
+   "AronowAudit.P029.Wave1.FiniteMeasure.n2_proof",
+   "AronowAudit.P029.Wave1.FiniteMeasure.n3_proof",
+   "AronowAudit.P029.saturated_weighted_objective_minimum",
+   "AronowAudit.P015.ConvergenceCompletion.div_limit",
+   "AronowAudit.P015.ConvergenceCompletion.sub_limit",
+   "AronowAudit.P053.NormalCompletion.exists_cdf_eq"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.complier_profile_bayes",
+    "reason": "Finite Bayes auxiliary is subsumed by the selected genuine complier pushforward law."
+   },
+   {
+    "lean_name": "AronowAudit.P029.profile_inverse_score_cancellation",
+    "reason": "Finite-sum cancellation auxiliary adds no coverage beyond the selected general population/limit statements."
+   },
+   {
+    "lean_name": "AronowAudit.P029.sample_wald_scale",
+    "reason": "Common-scale auxiliary is unnecessary for the selected direct constant-score identity and consistency statements."
+   }
+  ],
+  "statement_definition": "SAP.P029b.T27WholeStatement"
+ }
+]

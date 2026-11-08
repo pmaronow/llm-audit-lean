@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P020-T1",
+    "theorem": "SAP.P020.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicitly constructed population has M=3, t=1, c=2, n=(1,2,4), y0=(0,1,1), y1=(0,0,0), with exactly three supported assignments of weight 1/3. Its individual outcomes realize those totals. Exact enumeration gives bias -1/315, MSE(D)=131/33075, minimum fixed-k Des Raj MSE 3/686, and error probability 1 at epsilon=1/25. Every positive replication h exists; h=1 and k=0 already give a concrete instance, while the completed square proves the comparison for all k.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T2",
+    "theorem": "SAP.P020.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles the simultaneous hypotheses using a point-mass law with T=1, U=d=0 and b=1. A genuine growing cluster-design example also exists: two clusters, one treated, sizes (h+1,h+1), all potential outcomes zero, with estimators T=1 and U=0. Bias is always 1 and comparator MSE is always 0. The claimed comparison does not assume its conclusion. The explicit efficiency population supplies the counterexample when vanishing comparator MSE is dropped.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T3",
+    "theorem": "SAP.P020.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take two singleton clusters with one treated, two individuals in total, both size entries 1 and both control predictors 0. Each contrast is logistic(-1/2)-logistic(0)<0. N>0 prevents empty averaging; exp is positive, so the logistic denominator cannot vanish. The disclosed omission is the separately evaluated N=1 illustration, which cannot itself be an admissible two-arm cluster design. The general analytic inequalities still permit N=1; the docstring does not add an N>=2 hypothesis to them.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T4",
+    "theorem": "SAP.P020.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The positive-average case is realized by two singleton clusters with base predictors 0. The negative-average case is realized by two clusters of size 445, one treated, with all 890 individual size entries 445 and base predictors 0. Thus both antecedents are satisfiable by actual cluster populations. The real threshold 4000/9 lies strictly between integers 444 and 445. The theorem makes the intended conditional unit conversion without claiming recovery of the empirical 0.007.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T5",
+    "theorem": "SAP.P020.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use slopePopulation and khat=observedSlope. This coefficient is nonconstant over its three assignments, with covariance 1/2 against treated mean size and -1/4 against control mean size. The corrected bias is -3/8, so the covariance terms are substantive. The intermediate expectation and product-of-means equalities are omitted exactly as disclosed, while both arm-total expectations and corrected ATE expectation and bias remain. No intermediate equality appears as a hypothesis.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T6",
+    "theorem": "SAP.P020.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit three-cluster population has sizes (1,2,3), y0=(0,0,0), y1=(0,0,3), with nonzero size variance 2/3, verified in Lean. Individual controls may all be zero and treatment outcomes may be zero except for three ones in the last cluster. Exact enumeration independently gives slopes (0,0,3/2), fitted estimates (0,0,3/8), expectation 1/8 and ATE 1/2. The printed duplicated covariance would give zero bias and is actually refuted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T7",
+    "theorem": "SAP.P020.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the efficiency population, any supported singleton assignment, and b0=1, b1=2, k=1/3. All counts and denominators are positive. The summation identity transforms individual outcomes to the defined totals n_j*b0+b1*y_a,j; coefficient b0+b1*k then gives both potential identities and the corrected control-arm chain. Independent rational checks include nonzero shifts and negative scaling. Allowing n=0 in the standalone sum identity is harmless and does not empty any population assertion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T8",
+    "theorem": "SAP.P020.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example M=2, size=(1,2), v=(0,2), w=(1,4), k=1 is a nonempty instance with genuine variation. All seven corrected covariance equalities are explicit; both arm variance expansions are instances of the universally quantified vector identity. The moments have divisor M, and M>0 is a hypothesis in every general-vector assertion. No probability expectation is confused with the mean over clusters.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T9",
+    "theorem": "SAP.P020.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both witnesses have M=2, t=c=1 and sizes (1,2); assignment {0} is supported. The first has y0=(0,0), y1=(1,2), giving correct value 2/3 and printed control-subscript value -2/3. The second has y0=y1=(0,2), giving covariance 1 and printed bracket values (-1,1). The incorrect expression at the first cluster is the one refuted. All of these constants were checked by independent rational enumeration.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T10",
+    "theorem": "SAP.P020.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs a population with sizes (1,2,3), t=1, and y0=y1=(0,2,4), and constructs actual individual outcomes equal to y_a,j/n_j within each cluster. Both aggregation certificates and the individual sharp null compile, as does positive total variance 8/3 and admissibility of {0}. Thus the sharp-null hypotheses are jointly satisfiable without making the variance identically zero. Exact checks also confirm equality of actual HT variance and the observed-total null formula.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T11",
+    "theorem": "SAP.P020.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A point mass with v=2 satisfies the abstract positive-denominator hypothesis, as compiled in scratch/Check.lean. More substantively, the efficiency population has three supported assignments, positive realized arm sizes, and nonzero difference-in-means bias -1/315; exact enumeration matches both covariance terms. Normalization and nonnegative weights force E[v]>0, so the expectation identity uses no division-by-zero convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T12",
+    "theorem": "SAP.P020.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For subscriptPopulation with n=(1,2), y0=(0,0), y1=(1,2), assignment {0}, b0=b1=1, the realized arm mean sizes are 1 and 2. The added shift and size-inequality hypotheses hold simultaneously, as checked in Lean. Original HT is 2/3 whereas transformed HT is 0, supplying the existential non-invariance instance. Both total means and ATE unbiasedness hold on this nonempty design.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T13",
+    "theorem": "SAP.P020.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled four-cluster population with n=(1,2,3,4), t=c=2, y0=(0,1,0,2), y1=(1,-1,3,0). Take A=1, X_0,j=n_j^2, ks=1/3, and ka_0=1. scratch/Check.lean defines this genuinely nonempty covariate array. Every fixed real cluster covariate total has an individual realization because n_j>0. The A=0 option does not replace the universal positive-A assertions, and all coefficients are outside the assignment quantifier.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P020-T14",
+    "theorem": "SAP.P020.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The efficiency population has S(n)=14/9>0, arm optima (2/7,0), and common optimum 2/21; the positive-size-variance hypothesis compiles in Lean. Negating its two outcome vectors gives an admissible example with optimum -2/21, so both sign intervals are meaningful. All coefficient ratios in assertions are guarded by positive size variance; the unconditional actual-variance moment formula has no such ratios. The omitted expansion, derivatives and successive rearrangements are disclosed, and the coefficient results are expressly confined to the positive-variance domain.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T15",
+    "theorem": "SAP.P020.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled regularPopulation has M=4, t=c=2, n=(1,2,3,4) and positive size variance 5/4; {0,1} is an admissible assignment, so both sample-variance hypotheses hold. A two-block family of this population has a nonempty product of supported assignments; its actual combined estimators satisfy the per-block conservative premises. Independent exact checks verify HT components, both variance-estimator means and two-block product moments. B>0 and t,c>=2 rule out empty blocks and zero sample-variance denominators.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T16",
+    "theorem": "SAP.P020.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both branches compile in scratch/Check.lean: an unbalanced design with n=(1,2,4), t=1, y0=(0,1,1), y1=y0+2 has constant total effect; regularPopulation has t=c=2 and heterogeneous total effects (1,-2,3,-2). The inequality is in expectation. The excess is M^2*tau^2/[N^2(M-1)] for constant total effects, and M^2/[N^2(M-1)] times (mean(effect)^2+(M-2)Var(effect)/(M-1)) in the balanced case, both nonnegative. The hypothesis does not confuse individual and cluster-total effects.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T17",
+    "theorem": "SAP.P020.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every h the efficiency population has 3^(h+1) supported independent-copy assignment tuples; existence compiles in scratch/Check.lean. Independent exact product checks confirm each marginal average has its stated mean and variance proportional to 1/(h+1). The finite-copy laws yield the four weak laws and pooled ratio convergence with positive limiting arm sizes. Within-cluster replication has N=7(h+1), fixed bias -1/315 and error probability 1 at epsilon=1/25, so actual inconsistency occurs. Equality of replicated and original laws compiles by rfl for every population. The absence of strict-growth certificates and cross-index coupling is exactly disclosed.",
+    "confidence": 0.98
+  }
+]

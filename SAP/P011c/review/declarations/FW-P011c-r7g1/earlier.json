@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P011c.T33",
+  "target_id": "P011-T33",
+  "round": 6,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "Refutation recheck (weaker_reading): The printed claim and its finite proof concern real Wald intervals, and the task assumes existence of the quantities used (items.json:485; items.json:487). The supplied coverage definition instead appends a nonnegativity guard, while its path witness has n V1 tending to -11/15 and obtains zero coverage solely by counting undefined intervals as misses (/home/ubuntu/sap/wt/ARCH-P011c/SAP/P011c/Defs/Part2.lean:76; /home/ubuntu/sap/repo2/AronowAudit/P011/Wave1/CorollaryThreeBlueprint.lean:12). It therefore disproves that extension without supplying a counterexample inside the required real-square-root domain (scratch/DomainChecks.lean:20). This does not certify the remaining printed guarantee: coverage is plausible with Proposition 3's separate asymptotic-conservativeness premise, but the site's different path example has a positive limiting estimate 19/15 below true scale 29/15 and reports undercoverage (/home/ubuntu/sap/ref/llm-audit/data/works/P011.json:49). Violated conditions: ['The printed real Wald interval and its finite containment argument require a nonnegative variance estimate; this witness has a negative estimate with probability tending to one.', 'The proof uses an added uncovered-on-undefined convention, which is not a real interval defined by the printed formula.']. Printed reading: Under the dependency-graph setting and Assumption 2, the real Wald interval using a compatible maximizing V1 estimate has limiting inferior coverage at least 1-alpha for every 0<alpha<1, with the displayed square root required to exist."
+  ]
+ }
+]

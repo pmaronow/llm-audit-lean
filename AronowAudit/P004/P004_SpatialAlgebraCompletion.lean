@@ -124,5 +124,8 @@ theorem band_effect_identity {N : ℕ} {A : Type*} [MetricSpace A] [MeasurableSp
     rfl
   exact ⟨he,by simp only [ame,he]⟩
 
+#print axioms area_partition_identity
+#print axioms wrong_hajek_class_difference
+#print axioms band_effect_identity
 end
 end AronowAudit.P004

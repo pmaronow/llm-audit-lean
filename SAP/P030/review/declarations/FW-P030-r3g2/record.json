@@ -1,0 +1,159 @@
+[
+ {
+  "target_id": "P030-T6",
+  "decision": "whole",
+  "theorem": "SAP.P030.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.corrected_outcome_null"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P030.ten_design",
+   "AronowAudit.P030.ten_assignment_probabilities",
+   "AronowAudit.P030.table_y_vector",
+   "AronowAudit.P030.table_distances",
+   "AronowAudit.P030.table_correlations",
+   "AronowAudit.P030.table_value_order",
+   "AronowAudit.P030.worked_table_result",
+   "AronowAudit.P030.table_rounding",
+   "AronowAudit.P030.statistic_invariance_counterexample"
+  ],
+  "statement_definition": "SAP.P030.T6Statement"
+ },
+ {
+  "target_id": "P030-T7",
+  "decision": "whole",
+  "theorem": "SAP.P030.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.conditional_preserves_treatments",
+   "AronowAudit.P030.direct_effects_no_interference",
+   "AronowAudit.P030.fixed_dependence_implies_interference",
+   "AronowAudit.P030.no_effects_implies_no_interference",
+   "AronowAudit.P030.no_interference_fixed"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P030.T7Statement"
+ },
+ {
+  "target_id": "P030-T8",
+  "decision": "whole",
+  "theorem": "SAP.P030.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.printed_formula_counterexample",
+   "AronowAudit.P030.printed_ordering_counterexample",
+   "AronowAudit.P030.weak_monotonicity_counterexample",
+   "AronowAudit.P030.average_rank_weight",
+   "AronowAudit.P030.nonconstant_rank_variance",
+   "AronowAudit.P030.spearman_divisor",
+   "AronowAudit.P030.table_correlations",
+   "AronowAudit.P030.table_distances",
+   "AronowAudit.P030.table_rounding",
+   "AronowAudit.P030.table_value_order",
+   "AronowAudit.P030.table_y_vector",
+   "AronowAudit.P030.worked_table_result"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P030.ten_design",
+   "AronowAudit.P030.ten_assignment_probabilities",
+   "AronowAudit.P030.table_y_vector",
+   "AronowAudit.P030.table_distances",
+   "AronowAudit.P030.table_correlations",
+   "AronowAudit.P030.table_value_order",
+   "AronowAudit.P030.worked_table_result",
+   "AronowAudit.P030.table_rounding",
+   "AronowAudit.P030.nonconstant_rank_variance"
+  ],
+  "statement_definition": "SAP.P030.T8WholeStatement"
+ },
+ {
+  "target_id": "P030-T9",
+  "decision": "whole",
+  "theorem": "SAP.P030.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.corrected_spearman"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P030.average_rank_strict",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.average_rank_sum",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.average_rank_weight",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.nonconstant_rank_variance",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.rank_order_preserving",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.rank_order_reversing",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.rank_residual_squares",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.rank_weight_pair",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.spearman_bounds",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.spearman_divisor",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.spearman_perfect_implies_proportional",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.spearman_proportional",
+    "reason": "Its component is already exported by corrected_spearman; no separate helper conclusion is added."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P030.ten_design",
+   "AronowAudit.P030.ten_assignment_probabilities",
+   "AronowAudit.P030.table_y_vector",
+   "AronowAudit.P030.table_distances",
+   "AronowAudit.P030.table_correlations",
+   "AronowAudit.P030.table_value_order",
+   "AronowAudit.P030.worked_table_result",
+   "AronowAudit.P030.table_rounding",
+   "AronowAudit.P030.weak_monotonicity_counterexample"
+  ],
+  "statement_definition": "SAP.P030.T9Statement"
+ },
+ {
+  "target_id": "P030-T10",
+  "decision": "whole",
+  "theorem": "SAP.P030.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.exponential_finite_at_zero",
+   "AronowAudit.P030.inverse_square_decay",
+   "AronowAudit.P030.inverse_square_not_exponential",
+   "AronowAudit.P030.inverse_square_self_term_undefined",
+   "AronowAudit.P030.inverse_square_sums_defined",
+   "AronowAudit.P030.inverse_square_unbounded"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P030.T10Statement"
+ }
+]

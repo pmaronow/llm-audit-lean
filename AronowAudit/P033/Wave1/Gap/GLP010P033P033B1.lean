@@ -198,8 +198,8 @@ lemma pseudo_counter_tail_formula (b c : ℝ) :
   rw [show -c-b = -b-c by ring]
   ring
 
-/-! The next Taylor and integral lemmas adapt this repository's exponential-polynomial
-bounds for P041, P042, and P045. -/
+/-! The next Taylor and integral lemmas adapt the proved local module
+`P041/Wave1/Gap/GP041P042P045B1.lean`. -/
 
 def pseudo_counter_expPoly (n : ℕ) (u : ℝ) : ℝ :=
   ∑ j ∈ Finset.range (n+1), (-u)^j / (j.factorial:ℝ)
@@ -301,6 +301,7 @@ lemma pseudo_counter_cdf_integral_formula (x : ℝ) (hx : 0 ≤ x) :
   rw [P053.NormalCompletion.normal_cdf_neg]
   simp only [one_div]
   nlinarith only [he]
+
 
 
 lemma pseudo_counter_normalizer :
@@ -706,6 +707,8 @@ theorem pseudo_p_counterexample_proof :
     have h := hv (1/2) (by norm_num) (1/5) (by norm_num) (by norm_num)
     linarith only [h, hp.2.1]
 
+example : type_of% @AronowAudit.P033.pseudo_p_counterexample := pseudo_p_counterexample_proof
+
 lemma pseudo_correct_geometry (t h : ℝ) (hh : 0 < h) :
     ((|t|/(h/normalCritical)) = normalCritical*|t|/h) ∧
     (pseudoP t h < 1/20 ↔ h < |t|) ∧
@@ -910,6 +913,8 @@ theorem pseudo_p_correction_proof :
       pseudo_correct_aware_valid B hB,
       fun b α hb hα hα1 => pseudo_correct_aware_boundary B b α hb hα hα1,
       pseudo_correct_aware_five_percent B⟩
+
+example : type_of% @AronowAudit.P033.pseudo_p_correction := pseudo_p_correction_proof
 
 end
 end AronowAudit.P033.Wave1

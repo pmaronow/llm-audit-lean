@@ -1,0 +1,236 @@
+import SAP.P037b.Defs.WholeW1
+import SAP.P037b.Defs.WholeW2
+
+open SAP.P037b
+open scoped BigOperators
+
+-- All witnesses below are constructed from definitions, without Challenge stubs.
+def avoid12 : Finset (Fin 12) := {6,7,8,9,10,11}
+def nonref12 : Finset (Fin 12) := {1,6,7,8,9,10}
+def referent12 : Finset (Fin 12) := {0,6,7,8,9,10}
+def direct12 : Finset (Fin 12) := {2,3,4,5,6,7}
+
+example : avoid12 ∈ seedSubsets 12 6 ∧ nonref12 ∈ seedSubsets 12 6 ∧
+    referent12 ∈ seedSubsets 12 6 ∧ direct12 ∈ seedSubsets 12 6 := by
+  norm_num [seedSubsets, avoid12, nonref12, referent12, direct12]
+
+example : localTreatedLabel ∅ {0,1,2,3,4,5} {0} avoid12 = 1 ∧
+    localTreatedLabel ∅ {0,1,2,3,4,5} {0} nonref12 = 2 ∧
+    localTreatedLabel ∅ {0,1,2,3,4,5} {0} referent12 = 3 ∧
+    localTreatedLabel {2} {0,1} {0} direct12 = 4 := by
+  norm_num [localTreatedLabel, avoid12, nonref12, referent12, direct12,
+    Finset.disjoint_left]
+
+def w1Schedule (j : Fin 10000) : Fin 5 :=
+  if j.val < 5000 then 0 else if j.val < 5005 then 1
+  else if j.val < 7500 then 2 else 3
+
+def w1Count (k : Fin 4) : ℕ :=
+  (Finset.univ.filter (fun j : Fin 10000 => w1Schedule j = k.castSucc)).card
+
+example : ∀ k : Fin 4, w1Count k = (![5000,5,2495,2500] : Fin 4 → ℕ) k := by
+  native_decide
+
+def w1Draw (j : Fin 10000) : Bool × Finset (Fin 12) :=
+  if j.val < 5000 then (false, avoid12) else if j.val < 5005 then (true, avoid12)
+  else if j.val < 7500 then (true, nonref12) else (true, referent12)
+
+theorem w1Draw_supported (j : Fin 10000) : (w1Draw j).2 ∈ seedSubsets 12 6 := by
+  unfold w1Draw
+  split_ifs <;> norm_num [seedSubsets, avoid12, nonref12, referent12]
+
+theorem w1Draw_labels (j : Fin 10000) :
+    (if (w1Draw j).1 then localTreatedLabel ∅ {0,1,2,3,4,5} {0} (w1Draw j).2
+      else 0) = w1Schedule j := by
+  unfold w1Draw w1Schedule
+  split_ifs <;> norm_num [localTreatedLabel, avoid12, nonref12, referent12,
+    Finset.disjoint_left] at *
+
+-- The complete T21 existential frequency witness, including its support clause.
+example : ∃ z : Fin 10000 → Bool × Finset (Fin 12),
+    (∀ j, (z j).2 ∈ seedSubsets 12 6) ∧
+    (∀ k : Fin 4, ((Finset.univ.filter (fun j =>
+      (if (z j).1 then localTreatedLabel ∅ {0,1,2,3,4,5} {0} (z j).2
+        else 0) = k.castSucc)).card : ℝ) / 10000 =
+      (![1/2,1/2000,499/2000,1/4] : Fin 4 → ℝ) k) := by
+  refine ⟨w1Draw, w1Draw_supported, ?_⟩
+  have counts : ∀ k : Fin 4, w1Count k = (![5000,5,2495,2500] : Fin 4 → ℕ) k := by
+    native_decide
+  intro k
+  simp_rw [w1Draw_labels]
+  change (w1Count k : ℝ) / 10000 = _
+  rw [counts]
+  fin_cases k <;> norm_num
+
+-- A single strictly positive normalized law supports all five labels.
+noncomputable def fiveLaw : ProbabilityDesign (Fin 5) where
+  mass := fun _ => 1/5
+  positive := by intro z; norm_num
+  total := by norm_num [Fin.sum_univ_succ]
+
+def fiveExposure (z : Fin 5) (_i : Unit) : Fin 5 := z
+
+example : () ∈ positiveExposurePopulation
+    (fun i k => eventProbability fiveLaw (fun z => fiveExposure z i = k.castSucc)) := by
+  intro k
+  fin_cases k <;> norm_num [eventProbability, fiveLaw, fiveExposure, Fin.sum_univ_succ]
+
+example : eventProbability fiveLaw (fun z => fiveExposure z () = 4) = 1/5 := by
+  norm_num [eventProbability, fiveLaw, fiveExposure, Fin.sum_univ_succ]
+
+example : eventProbability fiveLaw (fun z => () ∈ analysisPopulation
+      (fun _ _ => (1/4 : ℝ)) (fun z i => fiveExposure z i = 4)
+      (fun _ _ => True) (fun _ _ => True) (fun _ _ => True) z) = 4/5 := by
+  norm_num [eventProbability, fiveLaw, fiveExposure, Fin.sum_univ_succ,
+    analysisPopulation, exposureProbabilityCutoff]
+
+example : analysisPredictionMeanW2 (fun (_ : Unit) _ => (1/4 : ℝ))
+    (fun z i => fiveExposure z i = 4) (fun _ _ => True) (fun _ _ => True)
+    (fun _ _ => True) 0 (fun _ _ => (7 : ℝ)) 0 = 7 := by
+  norm_num [analysisPredictionMeanW2, analysisFinsetW2, analysisPopulation,
+    exposureProbabilityCutoff, fiveExposure]
+
+-- A balanced schedule used with the actual legal four-block cutoff design.
+def balancedSchedule (j : Fin 10000) : Fin 5 :=
+  if j.val < 2500 then 0 else if j.val < 5000 then 1
+  else if j.val < 7500 then 2 else 3
+
+def balancedCount (k : Fin 4) : ℕ :=
+  (Finset.univ.filter (fun j : Fin 10000 => balancedSchedule j = k.castSucc)).card
+
+theorem balancedCounts : ∀ k : Fin 4, balancedCount k = 2500 := by native_decide
+
+def avoidBlock12 : CutoffBlockW2 := ⟨avoid12, by norm_num [avoid12]⟩
+def nonrefBlock12 : CutoffBlockW2 := ⟨nonref12, by norm_num [nonref12]⟩
+def referentBlock12 : CutoffBlockW2 := ⟨referent12, by norm_num [referent12]⟩
+def directBlock12 : CutoffBlockW2 := ⟨direct12, by norm_num [direct12]⟩
+
+def balancedDraw (j : Fin 10000) : CutoffAssignmentsW2 :=
+  if j.val < 2500 then (false, fun _ => avoidBlock12)
+  else if j.val < 5000 then (true, fun _ => avoidBlock12)
+  else if j.val < 7500 then (true, fun _ => nonrefBlock12)
+  else (true, fun _ => referentBlock12)
+
+theorem balancedDraw_labels (j : Fin 10000) (i : Fin 2) :
+    cutoffNetworkW2 (balancedDraw j) i = balancedSchedule j := by
+  fin_cases i <;> unfold balancedDraw balancedSchedule <;>
+    split_ifs <;> norm_num [cutoffNetworkW2, cutoffExposureW2, localTreatedLabel,
+      avoidBlock12, nonrefBlock12, referentBlock12, avoid12, nonref12, referent12,
+      Finset.disjoint_left]
+
+theorem balancedEstimates (i : Fin 2) (k : Fin 4) :
+    estimatedExposureW2 cutoffNetworkW2 balancedDraw i k = 1/4 := by
+  unfold estimatedExposureW2
+  simp_rw [balancedDraw_labels]
+  change (balancedCount k : ℝ) / 10000 = _
+  rw [balancedCounts]
+  norm_num
+
+example : 0 < iidMassW2 cutoffDesignW2.mass balancedDraw := by
+  exact Finset.prod_pos (fun j _ => cutoffDesignW2.positive (balancedDraw j))
+
+-- The same supported sequence yields a constant nonempty masked set.
+example (z : CutoffAssignmentsW2) :
+    analysisFinsetW2 (estimatedExposureW2 cutoffNetworkW2 balancedDraw)
+      (fun z i => cutoffNetworkW2 z i = 4) (fun _ i => i = 0)
+      (fun _ _ => True) (fun _ _ => True) z = {0} := by
+  ext i
+  fin_cases i
+  · simp only [analysisFinsetW2, Finset.mem_filter, Finset.mem_univ, true_and,
+      analysisPopulation, Set.mem_setOf_eq, exposureProbabilityCutoff]
+    have nd : cutoffNetworkW2 z 0 ≠ 4 := by
+      rcases z with ⟨b, s⟩
+      cases b <;> simp [cutoffNetworkW2, cutoffExposureW2, localTreatedLabel] <;>
+        split_ifs <;> norm_num
+    norm_num [balancedEstimates, nd]
+  · simp only [analysisFinsetW2, Finset.mem_filter, Finset.mem_univ, true_and]
+    simp only [analysisPopulation, Set.mem_setOf_eq, Finset.mem_singleton]
+    norm_num
+
+-- Direct and nondirect realized assignments with both availability masks true.
+example : cutoffNetworkW2 (true, fun _ => directBlock12) 1 = 4 ∧
+    cutoffNetworkW2 (true, fun _ => avoidBlock12) 1 = 1 := by
+  norm_num [cutoffNetworkW2, cutoffExposureW2, localTreatedLabel,
+    directBlock12, avoidBlock12, direct12, avoid12, Finset.disjoint_left]
+
+-- Actual assignments in the rare-exposure support realize each of its labels.
+def rareAvoid : RareBlockW1 := ⟨{5,6,7,8,9}, by norm_num⟩
+def rareNonref : RareBlockW1 := ⟨{1,6,7,8,9}, by norm_num⟩
+def rareReferent : RareBlockW1 := ⟨{0,6,7,8,9}, by norm_num⟩
+def rareControl : RareSeedAssignments := (false, fun _ => rareAvoid)
+def rareSchool : RareSeedAssignments := (true, fun _ => rareAvoid)
+def rareNI : RareSeedAssignments := (true, fun h => if h = 0 then rareNonref else rareAvoid)
+def rareI : RareSeedAssignments := (true, fun h => if h = 0 then rareReferent else rareAvoid)
+
+example : rareExposure rareControl = 0 ∧ rareExposure rareSchool = 1 ∧
+    rareExposure rareNI = 2 ∧ rareExposure rareI = 3 := by
+  norm_num [rareExposure, rareControl, rareSchool, rareNI, rareI,
+    rareAvoid, rareNonref, rareReferent, Finset.disjoint_left]
+
+example : ∀ z : RareSeedAssignments, 0 < rareAssignmentMass z := by
+  intro z
+  norm_num [rareAssignmentMass]
+
+example : 0 < iidMassW1 rareAssignmentMass (fun _ : Fin 10000 => rareSchool) := by
+  apply Finset.prod_pos
+  intro j hj
+  norm_num [rareAssignmentMass]
+
+-- Genuine supported false-negative sequence for the final existential of T30.
+example : ∃ draws : Fin 10000 → RareSeedAssignments,
+    ¬∀ k : Fin 4, 0 < ((Finset.univ.filter
+      (fun j => rareExposure (draws j) = k)).card : ℝ) / 10000 := by
+  refine ⟨fun _ => rareControl, ?_⟩
+  intro h
+  have bad := h 1
+  norm_num [rareExposure, rareControl] at bad
+
+-- Nonempty admissible data for the blocked-avoidance identity, including m>n-t.
+def peers30 (h : Fin 4) : Finset (Fin 10) :=
+  if h = 0 then {0,1,2,3,4,5} else if h = 1 then {0,1} else ∅
+
+example : (∀ h : Fin 4, (5 : ℕ) ≤ 10) ∧
+    (∀ h : Fin 4, (peers30 h).card ≤ 10) ∧
+    (∃ s : (h : Fin 4) → {s : Finset (Fin 10) // s.card = 5}, True) := by
+  refine ⟨fun _ => by norm_num, ?_, ⟨fun _ => rareAvoid, trivial⟩⟩
+  intro h
+  fin_cases h <;> norm_num [peers30]
+
+example : blockedAvoidanceProbability (fun _ : Fin 4 => 10) (fun _ => 5)
+    ![2,2,2,2] = 8/6561 ∧
+    blockedAvoidanceProbability (fun _ : Fin 4 => 10) (fun _ => 5)
+    ![5,3,0,0] = 1/6048 ∧
+    blockedAvoidanceProbability (fun _ : Fin 4 => 10) (fun _ => 5)
+    ![6,2,0,0] = 0 ∧
+    blockedAvoidanceProbability (fun _ : Fin 4 => 10) (fun _ => 5)
+    ![5,5,0,0] = 1/127008 := by
+  norm_num [blockedAvoidanceProbability, Fin.prod_univ_succ, Nat.choose]
+
+-- Nonvacuity of every hypothesis of T31's general half-marginal identity,
+-- using the actual independent two-of-four selections for eight schools.
+noncomputable def mass31 (_z : Fin 6 × Fin 6) : ℝ := 1/36
+def schools31 (z : Fin 6 × Fin 6) (i : Fin 8) : Bool :=
+  if i.val < 4 then decide (Fin.ofNat 4 i.val ∈ treatmentPair z.1)
+  else decide (Fin.ofNat 4 i.val ∈ treatmentPair z.2)
+
+example : (∀ z, 0 ≤ mass31 z) ∧ (∑ z, mass31 z) = 1 ∧
+    (∀ i, (∑ z, mass31 z * (if schools31 z i then (1 : ℝ) else 0)) = 1/2) ∧
+    0 < (4 : ℕ) := by
+  refine ⟨fun z => by norm_num [mass31], ?_, ?_, by norm_num⟩
+  · norm_num [mass31, Fintype.sum_prod_type, Fin.sum_univ_succ]
+  · intro i
+    fin_cases i <;> norm_num [mass31, schools31, treatmentPair, Fin.ofNat,
+      Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+example : ({(0,0),(0,1),(1,0),(1,1)} : Finset (Fin 2 × Fin 4)) ∈
+    blockedSchoolAssignments 2 := by
+  norm_num [blockedSchoolAssignments, Fin.forall_fin_succ, Finset.filter_insert,
+    Finset.filter_singleton]
+
+example : ({0,1,2,3} : Finset (Fin 8)) ∈ unblockedSchoolAssignments 8 4 := by
+  norm_num [unblockedSchoolAssignments]
+
+-- An interior-p, positive-tolerance, finite-J precision instance for T30.
+example : 0 < (10000 : ℕ) ∧ 0 < (1/10 : ℝ) ∧
+    0 < (1/10 : ℝ) ∧ (10000 : ℝ) ≥ 1/(4*(1/10)*(1/10)^2) := by
+  norm_num

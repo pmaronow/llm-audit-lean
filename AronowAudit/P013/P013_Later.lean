@@ -4,7 +4,7 @@ import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Fintype.BigOperators
 
 /-!
-Finite school randomization models for P013. The school labels below are invented
+Later replication materials for P013. The school labels below are invented
 positions in fourteen blocks; no data file or actual school identifier is used.
 Uniform laws are represented by finite sums over their exact supports.
 -/
@@ -15,83 +15,84 @@ noncomputable section
 attribute [local instance] Classical.propDecidable
 
 /-- "56 schools ... via block randomization", Section 10, p. 1934.
-The model has fourteen four-school blocks (P013-N016).
+The fourteen four-school blocks are established by validator N016 §1.
 School (b,r) has artificial one-based label 4b+r+1. -/
 abbrev School := Fin 14 × Fin 4
 
-/-- The six equally likely two-of-four selections in a block. P013-N016, correction P013-T26; the article states block randomization. -/
+/-- The six equally likely two-of-four selections in a block. Validator
+N016 §2, correction P013-T26; the article states block randomization. -/
 def schoolBlockChoices : Finset (Finset (Fin 4)) := univ.powersetCard 2
 
 /-- Design B: one independent uniform two-of-four selection per block,
-with all fourteen selections retained in the support. P013-N016, P013-T26. -/
+with all fourteen selections retained in the support. N016 §2, P013-T26. -/
 def schoolBSupport : Finset (Fin 14 → Finset (Fin 4)) :=
   Fintype.piFinset (fun _ => schoolBlockChoices)
 
 /-- Design C: every size-28 subset of the 56 schools, equally likely.
 This is the released school call's target law, not its 10,000-draw frequencies.
-P013-N016, P013-T25,T26. -/
+Validator N016 §2, P013-T25,T26. -/
 def schoolCSupport : Finset (Finset School) := (univ : Finset School).powersetCard 28
 
 /-- Hosting vector corresponding to a block-selection array; this embeds
-B's support into complete school assignments. P013-N016, P013-T26(a). -/
+B's support into complete school assignments. N016 §2, P013-T26(a). -/
 def blockSchoolHosts (z : Fin 14 → Finset (Fin 4)) : Finset School :=
   univ.filter (fun a => a.2 ∈ z a.1)
 
 /-- Exact expectation under a uniform finite randomization support. Only
-nonempty supports are used below. P013-N016, P013-T25,T26. -/
+nonempty supports are used below. N016 §2--3, P013-T25,T26. -/
 def uniformSchoolMean {α : Type*} (S : Finset α) (X : α → ℝ) : ℝ :=
   (∑ z ∈ S, X z) / (S.card : ℝ)
 
 /-- Exact event probability = favourable count / support count under a
-uniform finite design. P013-N016, P013-T25,T26. -/
+uniform finite design. N016 §2, P013-T25,T26. -/
 def uniformSchoolProbability {α : Type*} (S : Finset α) (A : α → Prop) [DecidablePred A] : ℝ :=
   ((S.filter A).card : ℝ) / (S.card : ℝ)
 
 /-- Exact randomization variance E[X²]−E[X]² under the uniform school law,
-expression (2), p. 1919; P013-N016, P013-T25. -/
+expression (2), p. 1919; N016 §3, P013-T25. -/
 def uniformSchoolVariance {α : Type*} (S : Finset α) (X : α → ℝ) : ℝ :=
   uniformSchoolMean S (fun z => X z ^ 2) - (uniformSchoolMean S X)^2
 
 /-- Probability is the expectation of its 0--1 event indicator. Supporting
-finite identity for P013-T25,T26, P013-N016. -/
+finite identity for P013-T25,T26, N016 §2--3. -/
 theorem uniform_school_probability_mean {α : Type*} (S : Finset α) (A : α → Prop) [DecidablePred A] :
     uniformSchoolProbability S A = uniformSchoolMean S (fun z => if A z then 1 else 0) := by
   classical
   simp [uniformSchoolProbability, uniformSchoolMean, sum_boole]
 
 /-- A uniform expectation preserves constants on a nonempty support.
-Supporting finite identity for P013-T25,T26, P013-N016. -/
+Supporting finite identity for P013-T25,T26, N016 §2--3. -/
 theorem uniform_school_mean_const {α : Type*} (S : Finset α) (hS : S.Nonempty) (c : ℝ) :
     uniformSchoolMean S (fun _ => c) = c := by
   have hn : (S.card : ℝ) ≠ 0 := by exact_mod_cast ne_of_gt (card_pos.mpr hS)
   simp [uniformSchoolMean, hn]
 
 /-- Uniform expectation distributes over addition. Supporting finite
-identity for P013-T25,T26, P013-N016. -/
+identity for P013-T25,T26, N016 §2--3. -/
 theorem uniform_school_mean_add {α : Type*} (S : Finset α) (X Y : α → ℝ) :
     uniformSchoolMean S (fun z => X z + Y z) =
       uniformSchoolMean S X + uniformSchoolMean S Y := by
   simp [uniformSchoolMean, sum_add_distrib, add_div]
 
 /-- Uniform expectation distributes over subtraction. Supporting finite
-identity for P013-T25,T26, P013-N016. -/
+identity for P013-T25,T26, N016 §2--3. -/
 theorem uniform_school_mean_sub {α : Type*} (S : Finset α) (X Y : α → ℝ) :
     uniformSchoolMean S (fun z => X z - Y z) =
       uniformSchoolMean S X - uniformSchoolMean S Y := by
   simp [uniformSchoolMean, sum_sub_distrib, sub_div]
 
 /-- A constant factor leaves uniform expectation. Supporting finite
-identity for P013-T25,T26, P013-N016. -/
+identity for P013-T25,T26, N016 §2--3. -/
 theorem uniform_school_mean_mul {α : Type*} (S : Finset α) (X : α → ℝ) (c : ℝ) :
     uniformSchoolMean S (fun z => c * X z) = c * uniformSchoolMean S X := by
   simp [uniformSchoolMean, ← mul_sum, mul_div_assoc]
 
-/-- The one-block support has six assignments. P013-T26(a), P013-N016. -/
+/-- The one-block support has six assignments. P013-T26(a), N016 §2. -/
 theorem school_block_choice_count : schoolBlockChoices.card = 6 := by
   norm_num [schoolBlockChoices, card_powersetCard, Nat.choose]
 
 /-- Exact assignment counts of B and C, without enumerating either
-large support. P013-T26(a), P013-N016. -/
+large support. P013-T26(a), validator N016 §2. -/
 theorem school_assignment_counts :
     schoolBSupport.card = 6^14 ∧ schoolBSupport.card = 78364164096 ∧
     schoolCSupport.card = Nat.choose 56 28 ∧ schoolCSupport.card = 7648690600760440 := by
@@ -105,14 +106,14 @@ theorem school_assignment_counts :
     norm_num [Nat.factorial]
 
 /-- B and C have nonempty exact supports. Supporting domain fact for
-P013-T25,T26, P013-N016. -/
+P013-T25,T26, validator N016 §2. -/
 theorem school_supports_nonempty : schoolBSupport.Nonempty ∧ schoolCSupport.Nonempty := by
   constructor
   · apply card_pos.mp; rw [school_assignment_counts.2.1]; norm_num
   · apply card_pos.mp; rw [school_assignment_counts.2.2.2]; norm_num
 
 /-- A given school is selected in three of the six assignments of its
-block. P013-T26(b), P013-N016. -/
+block. P013-T26(b), validator N016 §2. -/
 theorem school_local_marginal_count (a : Fin 4) :
     (schoolBlockChoices.filter (fun S => a ∈ S)).card = 3 := by
   have he : schoolBlockChoices.filter (fun S => a ∈ S) =
@@ -123,7 +124,7 @@ theorem school_local_marginal_count (a : Fin 4) :
   norm_num [Nat.choose]
 
 /-- A fixed pair of distinct schools of one block is selected together
-in one of the six assignments. P013-T26(c), P013-N016. -/
+in one of the six assignments. P013-T26(c), validator N016 §2. -/
 theorem school_local_joint_count (a b : Fin 4) (hab : a ≠ b) :
     (schoolBlockChoices.filter (fun S => a ∈ S ∧ b ∈ S)).card = 1 := by
   have he : schoolBlockChoices.filter (fun S => a ∈ S ∧ b ∈ S) =
@@ -134,7 +135,7 @@ theorem school_local_joint_count (a b : Fin 4) (hab : a ≠ b) :
   norm_num [hab]
 
 /-- Restricting a single block restricts just that coordinate in the exact
-product support. Supporting counting lemma for P013-T26(b,c), P013-N016. -/
+product support. Supporting counting lemma for P013-T26(b,c), N016 §2. -/
 theorem school_filter_one_block (b : Fin 14) (A : Finset (Fin 4) → Prop) [DecidablePred A] :
     schoolBSupport.filter (fun z => A (z b)) =
       Fintype.piFinset (fun t => if t = b then schoolBlockChoices.filter A else schoolBlockChoices) := by
@@ -156,7 +157,7 @@ theorem school_filter_one_block (b : Fin 14) (A : Finset (Fin 4) → Prop) [Deci
     · simpa [ht] using hz t
 
 /-- Two different block restrictions constrain their own coordinates of
-B's product support. Supporting counting lemma for P013-T26(c), P013-N016. -/
+B's product support. Supporting counting lemma for P013-T26(c), N016 §2. -/
 theorem school_filter_two_blocks (b c : Fin 14) (hbc : b ≠ c)
     (A B : Finset (Fin 4) → Prop) [DecidablePred A] [DecidablePred B] :
     schoolBSupport.filter (fun z => A (z b) ∧ B (z c)) =
@@ -186,7 +187,7 @@ theorem school_filter_two_blocks (b c : Fin 14) (hbc : b ≠ c)
       · simpa [ht, hc'] using hz t
 
 /-- One exceptional factor in fourteen independent block counts.
-Supporting finite count identity, P013-T26(b,c), P013-N016. -/
+Supporting finite count identity, P013-T26(b,c), validator N016 §2. -/
 theorem school_product_one (b : Fin 14) (m n : ℕ) :
     (∏ t : Fin 14, if t = b then m else n) = m * n^13 := by
   rw [← prod_erase_mul _ _ (mem_univ b)]
@@ -199,7 +200,7 @@ theorem school_product_one (b : Fin 14) (m n : ℕ) :
   rw [hp]; simp; ring
 
 /-- Two exceptional factors in fourteen independent block counts.
-Supporting finite count identity, P013-T26(c), P013-N016. -/
+Supporting finite count identity, P013-T26(c), validator N016 §2. -/
 theorem school_product_two (b c : Fin 14) (hbc : b ≠ c) (m n k : ℕ) :
     (∏ t : Fin 14, if t = b then m else if t = c then n else k) = m * n * k^12 := by
   rw [← prod_erase_mul _ _ (mem_univ b)]
@@ -214,7 +215,7 @@ theorem school_product_two (b c : Fin 14) (hbc : b ≠ c) (m n k : ℕ) :
   rw [hp]; simp [hbc, Ne.symm hbc]; ring
 
 /-- Exact marginal probability 1/2 under the stated blocked lottery.
-P013-T26(b), P013-N016. -/
+P013-T26(b), validator N016 §2. -/
 theorem school_B_marginal (a : School) :
     uniformSchoolProbability schoolBSupport (fun z => a.2 ∈ z a.1) = 1/2 := by
   unfold uniformSchoolProbability
@@ -224,7 +225,7 @@ theorem school_B_marginal (a : School) :
   norm_num
 
 /-- B's joint hosting probability is 1/6 in one block and 1/4 across
-blocks. P013-T26(c), P013-N016. -/
+blocks. P013-T26(c), validator N016 §2. -/
 theorem school_B_joint (a b : School) (hab : a ≠ b) :
     uniformSchoolProbability schoolBSupport
       (fun z => a.2 ∈ z a.1 ∧ b.2 ∈ z b.1) =
@@ -256,7 +257,7 @@ theorem school_B_joint (a b : School) (hab : a ≠ b) :
     norm_num
 
 /-- C's single-school hosting probability is C(55,27)/C(56,28)=1/2,
-computed by fixing the chosen school. P013-T26(b), P013-N016. -/
+computed by fixing the chosen school. P013-T26(b), validator N016 §2. -/
 theorem school_C_marginal (a : School) :
     uniformSchoolProbability schoolCSupport (fun z => a ∈ z) = 1/2 := by
   have he : schoolCSupport.filter (fun z => a ∈ z) =
@@ -272,7 +273,7 @@ theorem school_C_marginal (a : School) :
   norm_num [Nat.factorial]
 
 /-- C's distinct-school joint is C(54,26)/C(56,28)=27/110,
-computed by fixing both hosts. P013-T26(d), P013-N016. -/
+computed by fixing both hosts. P013-T26(d), validator N016 §2. -/
 theorem school_C_joint (a b : School) (hab : a ≠ b) :
     uniformSchoolProbability schoolCSupport (fun z => a ∈ z ∧ b ∈ z) = 27/110 := by
   have he : schoolCSupport.filter (fun z => a ∈ z ∧ b ∈ z) =
@@ -288,13 +289,13 @@ theorem school_C_joint (a b : School) (hab : a ≠ b) :
   norm_num [Nat.factorial]
 
 /-- The released law's exact joint differences from the stated law are
-13/165 in one block and −1/220 across blocks. P013-T26(e), P013-N016. -/
+13/165 in one block and −1/220 across blocks. P013-T26(e), N016 §2. -/
 theorem school_joint_differences :
     (27/110 : ℝ) - 1/6 = 13/165 ∧ (27/110 : ℝ) - 1/4 = -(1/220) := by norm_num
 
 
 /-- With both hosting marginals 1/2, a joint probability p determines the
-other three pair probabilities. Supporting identity for P013-T26(f), P013-N016. -/
+other three pair probabilities. Supporting identity for P013-T26(f), N016 §2. -/
 theorem uniform_school_pair_law {α : Type*} (S : Finset α) (hS : S.Nonempty)
     (A B : α → Prop) [DecidablePred A] [DecidablePred B] (p : ℝ)
     (hA : uniformSchoolProbability S A = 1/2)
@@ -325,7 +326,7 @@ theorem uniform_school_pair_law {α : Type*} (S : Finset α) (hS : S.Nonempty)
       ← uniform_school_probability_mean, ← uniform_school_probability_mean, hA, hp]
 
 /-- The full (00),(01),(10),(11) hosting pair law under B, with same-block
-p=1/6 or different-block p=1/4. P013-T26(f), P013-N016. -/
+p=1/6 or different-block p=1/4. P013-T26(f), validator N016 §2. -/
 theorem school_B_pair_distribution (a b : School) (hab : a ≠ b) :
     let p : ℝ := if a.1 = b.1 then 1/6 else 1/4
     uniformSchoolProbability schoolBSupport (fun z => a.2 ∉ z a.1 ∧ b.2 ∉ z b.1) = p ∧
@@ -345,7 +346,7 @@ theorem school_B_pair_distribution (a b : School) (hab : a ≠ b) :
     school_B_joint a b hab⟩
 
 /-- C's full pair distribution is (27/110,14/55,14/55,27/110) for
-any distinct schools. P013-T26(f), P013-N016. -/
+any distinct schools. P013-T26(f), validator N016 §2. -/
 theorem school_C_pair_distribution (a b : School) (hab : a ≠ b) :
     uniformSchoolProbability schoolCSupport (fun z => a ∉ z ∧ b ∉ z) = 27/110 ∧
     uniformSchoolProbability schoolCSupport (fun z => a ∉ z ∧ b ∈ z) = 14/55 ∧
@@ -358,7 +359,7 @@ theorem school_C_pair_distribution (a b : School) (hab : a ≠ b) :
   exact ⟨h.1,h.2.1,h.2.2,school_C_joint a b hab⟩
 
 /-- Every supported blocked assignment has 28 hosts and is supported by C.
-P013-T26(a), P013-N016. -/
+P013-T26(a), validator N016 §2. -/
 theorem school_B_embeds_C (z : Fin 14 → Finset (Fin 4)) (hz : z ∈ schoolBSupport) :
     blockSchoolHosts z ∈ schoolCSupport := by
   have hlocal : ∀ b, (z b).card = 2 := by
@@ -374,7 +375,7 @@ theorem school_B_embeds_C (z : Fin 14 → Finset (Fin 4)) (hz : z ∈ schoolBSup
   exact mem_powersetCard.mpr ⟨subset_univ _,hcard⟩
 
 /-- B's array representation does not duplicate hosting assignments.
-Supporting finite support lemma for P013-T25,T26(a), P013-N016. -/
+Supporting finite support lemma for P013-T25,T26(a), validator N016 §2. -/
 theorem block_school_hosts_injective : Function.Injective blockSchoolHosts := by
   intro z w h
   funext b
@@ -383,7 +384,7 @@ theorem block_school_hosts_injective : Function.Injective blockSchoolHosts := by
   simpa [blockSchoolHosts] using he
 
 /-- The invented assignment with schools 1--28 hosting: all four hosts
-in each of the first seven blocks and none in the last seven. P013-N016,
+in each of the first seven blocks and none in the last seven. N016 §2,
 P013-T25(a); these numbers are artificial labels, not released identifiers. -/
 def schoolBadHosts : Finset School :=
   (univ.filter (fun b : Fin 14 => b.val < 7)).product univ
@@ -434,22 +435,22 @@ theorem school_support_counterexample :
 
 /-- The artificial population on the 56 schools has outcome 1 for two
 specified schools at hosting exposure and 0 for the other 54; all control
-outcomes are 0. P013-N016, P013-T25(b). -/
+outcomes are 0. N016 §3, P013-T25(b). -/
 def schoolActiveOutcome (a b i : School) : ℝ := if i = a then 1 else if i = b then 1 else 0
 
 /-- Binary hosting indicator as a real number, used in the exact source
-formulas (1) and (7). P013-N016, P013-T25(b). -/
+formulas (1) and (7). N016 §3, P013-T25(b). -/
 def schoolHostBit {α : Type*} (hosts : α → School → Bool) (z : α) (i : School) : ℝ :=
   if hosts z i then 1 else 0
 
 /-- Expression (1) on all 56 schools, correct marginals 1/2, with the two
-nonzero hosting outcomes of the invented population. P013-N016, P013-T25(b). -/
+nonzero hosting outcomes of the invented population. N016 §3, P013-T25(b). -/
 def schoolTwoHT {α : Type*} (hosts : α → School → Bool) (a b : School) (z : α) : ℝ :=
   ∑ i : School, schoolHostBit hosts z i * (schoolActiveOutcome a b i / (1/2))
 
 /-- Expression (7) on all 56 schools with correct marginals 1/2 and supplied
 q in place of distinct-school joints. Only the two active schools can
-contribute off diagonal. P013-N016, P013-T25(b); q=27/110 is the released call. -/
+contribute off diagonal. N016 §3, P013-T25(b); q=27/110 is the released call. -/
 def schoolTwoVarianceInput {α : Type*} (hosts : α → School → Bool)
     (a b : School) (q : ℝ) (z : α) : ℝ :=
   (∑ i : School, schoolHostBit hosts z i * (1 - (1/2 : ℝ)) *
@@ -460,7 +461,7 @@ def schoolTwoVarianceInput {α : Type*} (hosts : α → School → Bool)
       (schoolActiveOutcome a b i / (1/2)) * (schoolActiveOutcome a b j / (1/2))
 
 /-- A sum with exactly two possibly nonzero terms reduces to those terms.
-Supporting finite certificate for expression (7), P013-T25(b), P013-N016. -/
+Supporting finite certificate for expression (7), P013-T25(b), N016 §3. -/
 theorem school_sum_two (a b : School) (hab : a ≠ b) (f : School → ℝ)
     (hz : ∀ i, i ≠ a → i ≠ b → f i = 0) :
     (∑ i, f i) = f a + f b := by
@@ -474,7 +475,7 @@ theorem school_sum_two (a b : School) (hab : a ≠ b) (f : School → ℝ)
     _ = f a + f b := by simp [hab,Ne.symm hab]
 
 /-- The actual 56-unit HT sum reduces to 2(S_a+S_b); the population total
-is 2. P013-T25(b), P013-N016. -/
+is 2. P013-T25(b), validator N016 §3. -/
 theorem school_two_HT_reduction {α : Type*} (hosts : α → School → Bool)
     (a b : School) (hab : a ≠ b) (z : α) :
     schoolTwoHT hosts a b z = 2 * (schoolHostBit hosts z a + schoolHostBit hosts z b) ∧
@@ -488,7 +489,7 @@ theorem school_two_HT_reduction {α : Type*} (hosts : α → School → Bool)
     norm_num [schoolActiveOutcome,hab,Ne.symm hab]
 
 /-- The actual ordered-pair expression (7) reduces to its two active
-school terms: 2(S_a+S_b)+8S_aS_b(q−1/4)/q. P013-T25(b), P013-N016. -/
+school terms: 2(S_a+S_b)+8S_aS_b(q−1/4)/q. P013-T25(b), N016 §3. -/
 theorem school_two_variance_reduction {α : Type*} (hosts : α → School → Bool)
     (a b : School) (hab : a ≠ b) (q : ℝ) (z : α) :
     schoolTwoVarianceInput hosts a b q z =
@@ -522,7 +523,7 @@ theorem school_two_variance_reduction {α : Type*} (hosts : α → School → Bo
 /-- For any actual school law with fair marginals and joint p, the HT total
 has mean 2 and variance 8p, and (7) supplied with q has mean
 2+8p(q−1/4)/q. This computes moments over the full assignment support.
-P013-T25(b), P013-N016. -/
+P013-T25(b), validator N016 §3. -/
 theorem school_two_moments {α : Type*} (S : Finset α)
     (hosts : α → School → Bool) (a b : School) (hab : a ≠ b) (p q : ℝ)
     (ha : uniformSchoolProbability S (fun z => hosts z a = true) = 1/2)
@@ -565,11 +566,11 @@ theorem school_two_moments {α : Type*} (S : Finset α)
       uniform_school_mean_mul, hma,hmb,hprod]; ring
 
 /-- B hosting indicator is membership in the appropriate block selection.
-P013-T25(b), P013-N016. -/
+P013-T25(b), validator N016 §2--3. -/
 def schoolBHosts (z : Fin 14 → Finset (Fin 4)) (a : School) : Bool := decide (a.2 ∈ z a.1)
 
 /-- C hosting indicator is membership in the uniform size-28 subset.
-P013-T25(b), P013-N016. -/
+P013-T25(b), validator N016 §2--3. -/
 def schoolCHosts (z : Finset School) (a : School) : Bool := decide (a ∈ z)
 
 /-- Explicit schools 1,2 (one block) and 1,5 (different blocks): with the
@@ -608,7 +609,7 @@ theorem school_wrong_joint_counterexample :
   rw [hd.2.1,hd.2.2]; norm_num
 
 /-- Hosting merely selects between two values of a function: a fair school
-lottery averages them equally. P013-T26(g), P013-N016. -/
+lottery averages them equally. P013-T26(g), validator N016 §4. -/
 theorem school_local_mean {α : Type*} (S : Finset α) (hS : S.Nonempty)
     (hosts : α → School → Bool) (a : School) (X : Bool → ℝ)
     (ha : uniformSchoolProbability S (fun z => hosts z a = true) = 1/2) :
@@ -633,7 +634,7 @@ def schoolHostedExposure (host : Bool) (studentCode : Fin 4) : Fin 5 :=
 
 /-- Exposure under the school lottery and an independent student lottery.
 The studentCode function and its law are identical under B and C; any
-finite student-level law is allowed. P013-N016, P013-T26(g,h). -/
+finite student-level law is allowed. N016 §4, P013-T26(g,h). -/
 def schoolStudentExposure {Ξ : Type*} {N : ℕ} {α : Type*}
     (hosts : α → School → Bool) (school : Fin N → School)
     (studentCode : Ξ → Fin N → Fin 4) (z : α) (x : Ξ) (i : Fin N) : Fin 5 :=
@@ -641,7 +642,7 @@ def schoolStudentExposure {Ξ : Type*} {N : ℕ} {α : Type*}
 
 /-- Exact joint exposure probability under the product of the uniform school
 law and the common independent student law Q. Equal labels give π_ij(d);
-unequal labels give π_ij(d,d'). P013-N016, P013-T26(g,h). -/
+unequal labels give π_ij(d,d'). N016 §4, P013-T26(g,h). -/
 def schoolStudentJoint {Ξ : Type*} [Fintype Ξ] {N : ℕ} {α : Type*}
     (S : Finset α) (hosts : α → School → Bool) (Q : Ξ → ℝ)
     (school : Fin N → School) (studentCode : Ξ → Fin N → Fin 4)
@@ -661,7 +662,7 @@ def schoolStudentMarginal {Ξ : Type*} [Fintype Ξ] {N : ℕ} {α : Type*}
 
 /-- Changing the school lottery B to C preserves every student's marginal
 and every same-school pair's same- or cross-exposure probability, for any
-common independent student law. P013-T26(g), P013-N016. -/
+common independent student law. P013-T26(g), validator N016 §4. -/
 theorem school_exposure_probabilities_unchanged {Ξ : Type*} [Fintype Ξ] {N : ℕ}
     (_hN : 0 < N) (Q : Ξ → ℝ) (_hQ : ∀ x, 0 ≤ Q x) (_htotal : ∑ x, Q x = 1)
     (school : Fin N → School) (studentCode : Ξ → Fin N → Fin 4) :
@@ -704,7 +705,7 @@ theorem school_hosted_no_exposure (host : Bool) (studentCode : Fin 4) :
 
 /-- Cross-school d000 joints inherit the school 00 probabilities exactly:
 1/6 for same-block schools, 1/4 across blocks under B, 27/110 under C.
-Individual d000 probabilities are 1/2 under both. P013-T26(g,h), P013-N016. -/
+Individual d000 probabilities are 1/2 under both. P013-T26(g,h), N016 §4. -/
 theorem school_no_exposure_probabilities {Ξ : Type*} [Fintype Ξ] {N : ℕ}
     (Q : Ξ → ℝ) (_hQ : ∀ x, 0 ≤ Q x) (htotal : ∑ x, Q x = 1)
     (school : Fin N → School) (studentCode : Ξ → Fin N → Fin 4) :
@@ -743,20 +744,20 @@ theorem school_no_exposure_probabilities {Ξ : Type*} [Fintype Ξ] {N : ℕ}
 
 /-- Complete binary-exposure potential outcomes for the invented 56-school
 example: y_i(1) is the active-school outcome, y_i(0)=0. These depend only
-on the exposure, as Condition 1 requires. P013-T25(b), P013-N016. -/
+on the exposure, as Condition 1 requires. P013-T25(b), validator N016 §3. -/
 def schoolPotentialOutcome (a b i : School) (d : Bool) : ℝ :=
   if d then schoolActiveOutcome a b i else 0
 
 /-- Condition 2 for the invented example: the observed outcome is its
-school potential outcome at the actual hosting exposure.
-P013-T25(b), P013-N016; no empirical outcome is used. -/
+wearing-free school potential outcome at the actual hosting exposure.
+P013-T25(b), validator N016 §3; no empirical outcome is used. -/
 def schoolExampleObserved {α : Type*} (hosts : α → School → Bool)
     (a b : School) (z : α) (i : School) : ℝ :=
   schoolPotentialOutcome a b i (hosts z i)
 
 /-- The example's complete potentials are binary, the hosting total is 2,
 all control outcomes are zero, and masking the observed outcome gives the
-active hosting contribution in (1) and (7). P013-T25(b), P013-N016. -/
+active hosting contribution in (1) and (7). P013-T25(b), N016 §3. -/
 theorem school_example_potential_hypotheses (a b : School) (hab : a ≠ b) :
     (∀ i d, schoolPotentialOutcome a b i d = 0 ∨ schoolPotentialOutcome a b i d = 1) ∧
     (∑ i, schoolPotentialOutcome a b i true) = 2 ∧
@@ -778,7 +779,7 @@ theorem school_example_potential_hypotheses (a b : School) (hab : a ≠ b) :
 
 /-- Supplying the actual positive joint p to (7) restores exact unbiasedness,
 as Lemma 5.1 guarantees, for the artificial 56-unit population under any
-of the actual finite school laws. P013-T25(b), p. 1921; P013-N016. -/
+of the actual finite school laws. P013-T25(b), p. 1921; N016 §3. -/
 theorem school_correct_joint_unbiased {α : Type*} (S : Finset α)
     (hosts : α → School → Bool) (a b : School) (hab : a ≠ b) (p : ℝ) (hpos : 0 < p)
     (ha : uniformSchoolProbability S (fun z => hosts z a = true) = 1/2)
@@ -792,7 +793,7 @@ theorem school_correct_joint_unbiased {α : Type*} (S : Finset α)
 
 /-- Exact wrong-input variance biases on the full 56-school block support:
 52/81 for the same-block active pair and −1/27 for the different-block
-active pair. P013-T25(c,d), P013-N016. -/
+active pair. P013-T25(c,d), validator N016 §3. -/
 theorem school_wrong_joint_biases :
     uniformSchoolMean schoolBSupport
       (schoolTwoVarianceInput schoolBHosts (0,0) (0,1) (27/110)) -
@@ -807,3 +808,40 @@ theorem school_wrong_joint_biases :
 end
 end AronowAudit.P013
 
+#print axioms AronowAudit.P013.uniform_school_probability_mean
+#print axioms AronowAudit.P013.uniform_school_mean_const
+#print axioms AronowAudit.P013.uniform_school_mean_add
+#print axioms AronowAudit.P013.uniform_school_mean_sub
+#print axioms AronowAudit.P013.uniform_school_mean_mul
+#print axioms AronowAudit.P013.school_block_choice_count
+#print axioms AronowAudit.P013.school_assignment_counts
+#print axioms AronowAudit.P013.school_supports_nonempty
+#print axioms AronowAudit.P013.school_local_marginal_count
+#print axioms AronowAudit.P013.school_local_joint_count
+#print axioms AronowAudit.P013.school_filter_one_block
+#print axioms AronowAudit.P013.school_filter_two_blocks
+#print axioms AronowAudit.P013.school_product_one
+#print axioms AronowAudit.P013.school_product_two
+#print axioms AronowAudit.P013.school_B_marginal
+#print axioms AronowAudit.P013.school_B_joint
+#print axioms AronowAudit.P013.school_C_marginal
+#print axioms AronowAudit.P013.school_C_joint
+#print axioms AronowAudit.P013.school_joint_differences
+#print axioms AronowAudit.P013.uniform_school_pair_law
+#print axioms AronowAudit.P013.school_B_pair_distribution
+#print axioms AronowAudit.P013.school_C_pair_distribution
+#print axioms AronowAudit.P013.school_B_embeds_C
+#print axioms AronowAudit.P013.block_school_hosts_injective
+#print axioms AronowAudit.P013.school_support_counterexample
+#print axioms AronowAudit.P013.school_sum_two
+#print axioms AronowAudit.P013.school_two_HT_reduction
+#print axioms AronowAudit.P013.school_two_variance_reduction
+#print axioms AronowAudit.P013.school_two_moments
+#print axioms AronowAudit.P013.school_wrong_joint_counterexample
+#print axioms AronowAudit.P013.school_local_mean
+#print axioms AronowAudit.P013.school_exposure_probabilities_unchanged
+#print axioms AronowAudit.P013.school_hosted_no_exposure
+#print axioms AronowAudit.P013.school_no_exposure_probabilities
+#print axioms AronowAudit.P013.school_example_potential_hypotheses
+#print axioms AronowAudit.P013.school_correct_joint_unbiased
+#print axioms AronowAudit.P013.school_wrong_joint_biases

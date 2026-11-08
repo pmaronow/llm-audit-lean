@@ -3,12 +3,12 @@ import AronowAudit.P053.P053_NormalQuantiles
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
 /-!
-P010-T10 and P010-T13: simulation width comparison and normal counterexample.
+Exact completions of P010-T10 and P010-T13.
 
 The simulation certificate includes zero Gaussian variance and zero stratum weights.
-Its width comparison uses concavity of trimmed spread under mixing, with strictness
-proved for the particular Gaussian mixtures being compared. The normal counterexample
-uses the actual EReal quantile and exact Gaussian truncated first moments.
+Its width comparison uses strict concavity of trimmed spread under mixing, rather
+than the separate numerical certificates in T9. The normal counterexample uses
+the actual EReal quantile and exact Gaussian truncated first moments.
 -/
 
 namespace AronowAudit.P010.Wave1
@@ -278,7 +278,7 @@ lemma t10_mixture_mean (u m : ℝ) (v : NNReal) :
     integral_smul_measure, integral_smul_measure]
   simp [integral_id_gaussianReal]
 
-/-- Correlation of the simulated passing indicators under the feasibility hypotheses. -/
+/-- Every original feasibility hypothesis is retained in the correlation contract. -/
 lemma t10_simulation_correlation (p₁ p₂ ρ lam σ : ℝ)
     (hp₁ : 0 < p₁) (hp₁' : p₁ < 1) (hp₂ : 0 < p₂) (hp₂' : p₂ < 1)
     (hσ : 0 ≤ σ)
@@ -775,8 +775,7 @@ lemma t10_mix_decomposition : normalMixture (3/20) =
     show ENNReal.ofReal (3/20:ℝ) = _ from h1.symm, add_smul, add_smul]
   abel
 
-/-- For these Gaussian mixtures, distinct quantile cutoffs and reflection symmetry
-give a strict comparison of the two spreads. -/
+/-- Strict concavity, together with reflection symmetry, separates the two spreads. -/
 lemma t10_spread_mixtures : t10_spread (normalMixture (1/10)) <
     t10_spread (normalMixture (3/20)) := by
   letI : IsProbabilityMeasure (normalMixture (1/10)) := t10_mix_probability _ (by norm_num) (by norm_num)
@@ -960,6 +959,8 @@ theorem simulation_invariance_corrected_proof (p₁ p₂ ρ lam σ : ℝ)
     exact bounds_fixed_observables_actual μ ν hμ hν a hp hF
   · intro hlam ρ' hρ
     exact simulation_mean_formula_injective p₁ p₂ ρ ρ' lam hp₁ hp₁' hp₂ hp₂' hlam hρ
+
+example : type_of% @AronowAudit.P010.simulation_invariance_corrected := simulation_invariance_corrected_proof
 
 lemma t13_diagonal_measurable (s : Bool) :
     Measurable (fun ω : ℝ × Fin 2 =>
@@ -1347,6 +1348,8 @@ theorem lower_tail_upper_bound_counterexample_proof :
     exact not_le.mpr hneg
   · rw [t13_upper_bound]
     exact div_pos (gaussianPDFReal_pos 0 1 _ (by norm_num)) (by norm_num)
+
+example : type_of% @AronowAudit.P010.lower_tail_upper_bound_counterexample := lower_tail_upper_bound_counterexample_proof
 
 end
 end AronowAudit.P010.Wave1

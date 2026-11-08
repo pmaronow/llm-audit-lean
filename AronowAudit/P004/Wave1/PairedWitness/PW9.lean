@@ -50,7 +50,7 @@ theorem mate_injective {N : ℕ} (hE : Even N) : Function.Injective (mate hE) :=
   have h := congrArg (mate hE) hij
   simpa only [mate_invol] using h
 
-/-- The sum in the paired table contains precisely its one mate term. -/
+/-- The sum in the blueprint's table contains precisely its one mate term. -/
 theorem table_eq {N : ℕ} (hE : Even N) (i : Fin N) (z : Assignment N) :
     pairedTable N i z = bit (z i) - bit (z (mate hE i)) := by
   unfold pairedTable

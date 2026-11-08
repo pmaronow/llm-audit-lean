@@ -1,0 +1,68 @@
+import SAP.P019b.Defs
+
+open scoped BigOperators
+open SAP.P019b
+
+namespace Review
+noncomputable section
+open Classical
+
+abbrev Atom := Bool × Bool × Bool
+
+def fairLaw : FiniteLaw Atom where
+  mass := fun _ => 1/8
+  nonneg := by intro a; norm_num
+  total := by norm_num [Fintype.sum_prod_type, Fintype.sum_bool]
+
+-- B,Y,Z are mutually independent fair bits; X=Y and V=B+YZ.
+def fairStudy : Study Atom where
+  law := fairLaw
+  W := fun a => if a.1 then 1 else 0
+  X := fun a => a.2.1
+  Y := fun a => a.2.1
+  Z := fun a => a.2.2
+  V := fun a => (if a.1 then 1 else 0) + (if a.2.1 && a.2.2 then 1 else 0)
+
+theorem fair_standing : fairStudy.standing := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro a ha hy
+    exact hy
+  · rintro ⟨b,y,z⟩ h
+    cases b <;> cases y <;> cases z <;>
+      norm_num [fairStudy, bitVal]
+  · intro f z
+    cases z <;>
+      simp [fairStudy, fairLaw, FiniteLaw.mean, FiniteLaw.prob,
+        Fintype.sum_prod_type] <;> ring
+  · refine ⟨?_, ?_, ?_⟩
+    · intro z y
+      cases z <;> cases y <;>
+        norm_num [fairStudy, fairLaw, Study.cell, FiniteLaw.prob,
+          FiniteLaw.mean, FiniteLaw.cv, FiniteLaw.ce,
+          Fintype.sum_prod_type, Fintype.sum_bool]
+    · norm_num [fairStudy, fairLaw, bitVal, FiniteLaw.mean,
+        FiniteLaw.variance, Fintype.sum_prod_type, Fintype.sum_bool]
+    · norm_num [fairStudy, fairLaw, bitVal, FiniteLaw.mean,
+        FiniteLaw.variance, Fintype.sum_prod_type, Fintype.sum_bool]
+
+example : ∃ (S : Study Atom), S.standing := ⟨fairStudy, fair_standing⟩
+
+example : fairStudy.mu = 1/2 ∧ fairStudy.truthRate = 1 ∧
+    fairStudy.gamma = 1/2 ∧ fairStudy.sigmaSq = 3/4 ∧
+    fairStudy.standardSigmaSq = 3/2 := by
+  norm_num [fairStudy, fairLaw, Study.mu, Study.truthRate, Study.gamma,
+    Study.sigmaSq, Study.standardSigmaSq, Study.cell, bitVal,
+    FiniteLaw.mean, FiniteLaw.prob, FiniteLaw.ce, FiniteLaw.cv,
+    Fintype.sum_prod_type, Fintype.sum_bool]
+
+-- The IID law really includes a positive-probability deficient sample.
+example : ∃ s : Fin 1 → Atom, 0 < (fairStudy.law.iid 1).mass s ∧
+    fairStudy.cellCount s true false = 0 ∧ fairStudy.cellCount s false false = 0 := by
+  refine ⟨fun _ => (false, true, false), ?_⟩
+  norm_num [FiniteLaw.iid, fairStudy, fairLaw, Study.cellCount, Study.cell,
+    Fin.prod_univ_succ, Fin.sum_univ_succ]
+
+#print axioms fair_standing
+
+end
+end Review

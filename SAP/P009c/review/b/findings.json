@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P009-T35",
+    "theorem": "SAP.P009c.T35",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=2 use independent fair bits and Y_i(z)=z_i. All four components have genuine finite laws and positive conditional probabilities; the no-interference antecedent holds. The zero-outcome version, its law, marginals, and NoInterference are compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T36",
+    "theorem": "SAP.P009c.T36",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=2 with constant-zero outcomes, I=D=identity, C1=C2=Cinf=dAvg=1. The diagonal is retained. scratch/Sequence.lean proves the identity graph, degrees, dAvg, dMax, and lambdaMax for every positive n; scratch/finite_checks.py checks all 4,165 diagonal-one graphs of sizes 1 through 4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T37",
+    "theorem": "SAP.P009c.T37",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2, P uniform on all four assignments, Q a point mass at (0,0), Y_0(z)=z_0*z_1, Y_1(z)=0, and K=1. Then EATE_P=1/4, EATE_Q=0, TV(P,Q)=3/4, and the full-cube direct-effect bound holds. The laws and effect bounds also have compiled zero-outcome witnesses in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T38",
+    "theorem": "SAP.P009c.T38",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same n=2 full-cube outcome schedule Y_0=z_0*z_1, Y_1=0 satisfies BoundedEffects with K=1. Choose r=1 (or any finite r>=1); all ordered assignment pairs are legitimate. Its outgoing counts are (1,2), and its assignment-conditional effect is z_1/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T39",
+    "theorem": "SAP.P009c.T39",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=2, fair independent P, Q concentrated at (0,0), Y_0=z_0*z_1, Y_1=0, K=1, r=1. The only coupling with this point-mass Q has expected Hamming distance 1, so the transport-cost set is nonempty and W_1=1. The EATE difference is 1/4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T40",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n_t=2(t+1), let P_t put mass 1/2 each on the all-zero and all-one assignments. All marginal probabilities are 1/2, but no supported assignment has two nonempty arms. With Y_i(z)=(1/2)*z_0*(2*z_i-1), outcomes are bounded, dAvg=n_t, EATE=1/2, and HT=Z_0. Completing Hajek by 0 or by 1/2 gives different consistency behavior. Thus its completion is material in the canonical arbitrary-design setting.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P009-T41",
+    "theorem": "SAP.P009c.T41",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let n_t=2(t+1), all bits be independent fair coins, and Y_i(z)=z_i. Regularity holds with k=2,q=4,s=1; dAvg=1 and dAvg/n_t tends to zero. The entire growing zero-outcome version is compiled in scratch/Sequence.lean, including positive sizes, growth, regularity, Bernoulli design, and Restricted.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T42",
+    "theorem": "SAP.P009c.T42",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let n_t=2(t+1), select exactly t+1 treated units uniformly, and set Y_i(z)=z_i. This is CompleteSequence with fixed p=1/2, Regular with k=2,q=4,s=1, and I=D=identity. Both required ratios tend to zero: dAvg/n_t=1/n_t and C1/sqrt(n_t)=1/sqrt(n_t). Both arms are nonempty on every supported assignment. The two-unit complete case is compiled in scratch/Check.lean.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P009-T43",
+    "theorem": "SAP.P009c.T43",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both the independent-fair-bit study and the uniformly balanced complete study with n_t=2(t+1), Y_i(z)=z_i, k=2,q=4,s=1 have dAvg=1=O(1). They realize the two design alternatives separately; complete randomization also realizes the additional Hajek antecedent.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T44",
+    "theorem": "SAP.P009c.T44",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let n_t=2(t+1), pair successive indices, independently choose one treated unit per pair with probability 1/2, and use Y_i(z)=z_i. With k=2,q=4,s=1, dAvg=1, eAvg=1, rSum=0, and every arm has n_t/2 units. Therefore all three little-o conditions hold. The two-unit pairing, paired law, and supported-arm property are compiled in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T45",
+    "theorem": "SAP.P009c.T45",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n_t=2(t+1), uniformly balanced complete randomization, and Y_i(z)=z_i. With k=2 and q=s=infinity, RegularMix and both attained global moment maxima hold. Here dAvg=1, alphaExt(1)=1/4, alphaInt(1)=0, and every supported assignment has two arms. Thus both estimator branches have jointly satisfiable premises. scratch/Sequence.lean additionally compiles RegularMix and MaximalMoments at infinity for a growing zero-outcome Bernoulli study.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P009-T46",
+    "theorem": "SAP.P009c.T46",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The balanced complete study n_t=2(t+1), Y_i(z)=z_i, k=2, q=s=infinity has the fixed-k observed maximum q=infinity, dAvg=1, alphaExt(1)=1/4, and SupportedArms. All required little-o ratios tend to zero. Both estimator branches apply; the potential exponent is admissible.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T47",
+    "theorem": "SAP.P009c.T47",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair independent-bit study n_t=2(t+1), Y_i=z_i, k=2,q=4,s=1 satisfies the common assumptions and the no-interference specialization; MSQ=1. Alternatively Y_i=z_0 for every i remains uniformly bounded and Bernoulli, with dAvg=n_t, showing that the main antecedent does not secretly require Restricted. The moving-bias expectation identity was checked exactly on 120 rational finite experiments.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T48",
+    "theorem": "SAP.P009c.T48",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n_t=2(t+1), independent fair bits and Y_i=z_i, use k=2,q=4,s=1. Then dAvg=dRMS=1, each individual HT summand has variance 1, and SDsigma=0. Thus Restricted and SDsigma=o(dAvg/dRMS) hold together. The growing zero-outcome version and SDsigma=0 are also compiled in scratch/Sequence.lean.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P009-T49",
+    "theorem": "SAP.P009c.T49",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the independent-fair-bit study with Y_i=z_i, k=2,q=4,s=1, dAvg=dMax=1 and MSQ=1. Alternative A holds because 1/sqrt(n_t) tends to zero; alternative B also holds because Restricted holds and MSQ is uniformly positive. There is no assumption of the conservative conclusion.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P009-T50",
+    "theorem": "SAP.P009c.T50",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independent-fair-bit study with Y_i=z_i has D=identity, lambdaMax=dAvg=dMax=1 and MSQ=1. Both printed alternatives are satisfied with k=2,q=4,s=1. The Rayleigh-set maximum lambdaMax=1 is also compiled for every positive zero-outcome population in scratch/Sequence.lean.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P009-T51",
+    "theorem": "SAP.P009c.T51",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For input designs use n_t=2(t+1) independent fair bits, k=2, alpha=1/2, and x=0 (any allowed alpha,x would satisfy the parameter premises). The input outcomes may be zero. The growing Bernoulli input is compiled in scratch/Sequence.lean; scratch/Check.lean compiles the mean, variance, and both Chebyshev equalities of the three-point law at alpha=1/2. The existential output schedules are a conclusion, not a premise.",
+    "confidence": 0.95
+  }
+]

@@ -1,0 +1,85 @@
+import SAP.P044.Challenge
+
+open SAP.P044 Finset MeasureTheory ProbabilityTheory
+open scoped BigOperators
+
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+namespace AuditP044
+
+noncomputable section
+
+def coin : FiniteDesign Bool where
+  mass := fun _ => 1/2
+  nonneg := by intro s; norm_num
+  total := by norm_num [Fintype.sum_bool]
+
+def productCoin : FiniteDesign (Bool × Bool) where
+  mass := fun _ => 1/4
+  nonneg := by intro s; norm_num
+  total := by norm_num [Fintype.sum_prod_type, Fintype.sum_bool]
+
+def coinExposure : Bool → Fin 1 → Bool := fun s _ => s
+def coinOutcome : Fin 1 → Bool → ℝ := fun _ d => if d then 2 else -1
+def bankWeight : Bool → Fin 1 → Bool → ℝ := fun _ _ _ => 3/4
+def bankJoint : Bool → Fin 1 → Fin 1 → Bool → Bool → ℝ :=
+  fun _ _ _ d e => if d = e then 3/4 else 0
+
+-- Every hypothesis of the exact-input T2 and support-unbiasedness T4 clauses,
+-- plus every hypothesis of W1ErrorTransfer, holds on explicit nonzero data.
+example :
+    0 < (1 : ℕ) ∧ (true : Bool) ≠ false ∧
+    (∀ i, 0 < marginal coin.mass coinExposure i true) ∧
+    (∀ i, 0 < marginal coin.mass coinExposure i false) ∧
+    (∀ s, ∑ t, productCoin.mass (t, s) = coin.mass s) ∧
+    (∀ t i d, 0 < bankWeight t i d) ∧
+    (∀ t i j d e, 0 ≤ bankJoint t i j d e) ∧
+    (∀ t i d, bankJoint t i i d d = bankWeight t i d) := by
+  norm_num [marginal, coin, coinExposure, productCoin, Fintype.sum_bool,
+    bankWeight, bankJoint]
+
+-- The common support in the preceding example is genuinely nonempty.
+example : (commonSupport coin.mass coinExposure true false).Nonempty := by
+  refine ⟨0, ?_⟩
+  norm_num [commonSupport, marginal, coin, coinExposure, Fintype.sum_bool]
+
+def singletonDesign : FiniteDesign Unit where
+  mass := fun _ => 1
+  nonneg := by intro s; norm_num
+  total := by simp
+
+def zeroSupportExposure : Unit → Fin 1 → Bool := fun _ _ => false
+def zeroSchedule : Fin 1 → Bool → ℝ := fun _ _ => 0
+def changedSchedule : Fin 1 → Bool → ℝ := fun i d =>
+  if i = 0 ∧ d = true then zeroSchedule i d + 4 else zeroSchedule i d
+
+-- T4(b): the zero-support premise is satisfiable, the changed outcome stays
+-- unobserved, and the two targets really differ by the nonzero delta/N.
+example :
+    0 < (1 : ℕ) ∧ (true : Bool) ≠ false ∧ (4 : ℝ) ≠ 0 ∧
+    marginal singletonDesign.mass zeroSupportExposure 0 true = 0 ∧
+    (∀ s i, zeroSchedule i (zeroSupportExposure s i) =
+      changedSchedule i (zeroSupportExposure s i)) ∧
+    tau changedSchedule true false - tau zeroSchedule true false = 4 := by
+  norm_num [marginal, singletonDesign, zeroSupportExposure, zeroSchedule,
+    changedSchedule, tau, Fin.sum_univ_succ]
+
+-- T5: the Gaussian product is a probability measure; the actual finite
+-- triangle data have the stated scale and an interior negative-baseline point.
+example : IsProbabilityMeasure normalPair := by
+  unfold normalPair
+  infer_instance
+
+example : ∀ i : Fin 3,
+    degree (fun i j => decide (i ≠ j)) i = 2 ∧
+    twoWalkDegree (fun i j => decide (i ≠ j)) i = 2 ∧
+    degreeScale (fun i j => decide (i ≠ j)) i = 8 := by native_decide
+
+example : (0 : ℝ) ≤ 8 ∧ |(1/64 : ℝ)| < 1 / (4 * (8+1)) ∧
+    (-1 : ℝ) < -3/4 ∧ (-3/4 : ℝ) < -1/2 ∧
+    baseline 8 (1/64) (-3/4) = -5/8 ∧ baseline 8 (1/64) (-3/4) < -1/4 := by
+  norm_num [baseline, abs_of_pos]
+
+end
+end AuditP044

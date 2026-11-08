@@ -32,6 +32,7 @@ P023: A Note on Close Elections and Regression Analysis of the Party Incumbency
 Advantage. Printed pages and PDF pages coincide. Definitions of OLS below use
 the normal equations, the exact characterization of unconstrained least squares
 over a finite real design. Empty nuisance bins cause no division by zero.
+The specific imports follow the brief's later memory instruction.
 -/
 
 namespace AronowAudit.P023
@@ -61,8 +62,8 @@ values at every observed election is zero. P023-T1(i), T2(i), and T3(b). -/
 def FullRank (X : ι → κ → ℝ) : Prop :=
   ∀ c, (∀ i, predict X c i = 0) → c = 0
 
-/-- OLS as an estimator: choose a normal-equation solution. Existence for
-full-rank designs is proved below. -/
+/-- OLS as an estimator: choose a normal-equation solution. For full-rank
+designs, existence and uniqueness are proved below, so this choice is harmless. -/
 def olsCoefficients (X : ι → κ → ℝ) (y : ι → ℝ) : κ → ℝ :=
   Classical.epsilon (fun c => IsOLS X y c)
 
@@ -119,8 +120,8 @@ def coarsenedDesign (k : ℝ) (x d : ι → ℝ) : ι → Fin (binCount k + 2) �
   fun i j => if j.val = 0 then 1 else if j.val = 1 then d i
     else binIndicator k (j.val - 1) (x i)
 
-/-- Sole reliance on close-election outcomes (pp. 3 and 7): holding margins
-fixed, agreeing on U_b implies equal estimates. -/
+/-- Sole reliance on close-election outcomes (the validator's formal reading
+of pp. 3 and 7): holding margins fixed, agreeing on U_b implies equal estimates. -/
 def Localized (k : ℝ) (x : ι → ℝ) (est : (ι → ℝ) → ℝ) : Prop :=
   ∀ y y', (∀ i ∈ close k x, y i = y' i) → est y = est y'
 
@@ -173,6 +174,38 @@ theorem ols_weight_certificate [DecidableEq κ] (X : ι → κ → ℝ)
   rw [dot_sub_right, hp] at hz
   linarith
 
+/-- Normal equations imply minimization of the actual sum of squared residuals,
+so the certificate statements refer to unconstrained OLS, equation (1), p. 5. -/
+theorem normal_equations_minimize (X : ι → κ → ℝ) (y : ι → ℝ)
+    (c : κ → ℝ) (hc : IsOLS X y c) (b : κ → ℝ) :
+    (∑ i, (y i - predict X c i)^2) ≤ ∑ i, (y i - predict X b i)^2 := by
+  have hz : dot (predict X (fun j => b j - c j))
+      (fun i => y i - predict X c i) = 0 := by
+    rw [dot_predict_left]
+    apply Finset.sum_eq_zero
+    intro j _
+    rw [hc j, mul_zero]
+  have hpred : ∀ i, predict X (fun j => b j - c j) i =
+      predict X b i - predict X c i := by
+    intro i
+    simp [predict, mul_sub, Finset.sum_sub_distrib]
+  have hexp : (∑ i, (y i - predict X b i)^2) =
+      (∑ i, (y i - predict X c i)^2) +
+      (∑ i, (predict X b i - predict X c i)^2) := by
+    have he : ∀ i, (y i - predict X b i)^2 = (y i - predict X c i)^2 +
+        (predict X b i - predict X c i)^2 -
+        2 * ((predict X b i - predict X c i) * (y i - predict X c i)) := by
+      intro i
+      ring
+    simp_rw [he, Finset.sum_sub_distrib, Finset.sum_add_distrib]
+    unfold dot at hz
+    simp_rw [hpred] at hz
+    rw [← Finset.mul_sum]
+    change _ = _ at hz
+    rw [hz]
+    ring
+  rw [hexp]
+  exact le_add_of_nonneg_right (Finset.sum_nonneg (fun i _ => sq_nonneg _))
 
 /-- Under full column rank the finite OLS normal equations have a solution for
 every real outcome vector, as used in Proposition 2's finite examples. -/
@@ -218,20 +251,20 @@ theorem chosen_ols_spec (X : ι → κ → ℝ) (hX : FullRank X) (y : ι → �
     IsOLS X y (olsCoefficients X y) := by
   exact Classical.epsilon_spec (ols_exists_of_fullRank X hX y)
 
-/-- Finite witness for P023-T1: explicit DemVot, DemWin, baseline DV,
-perturbed DV, and OLS weights. -/
+/-- Validator witness for P023-T1; derivation.md §2.
+Explicit DemVot, DemWin, baseline DV, perturbed DV, and certified OLS weights. -/
 def linearX : Fin 6 → ℝ := ![(-3 / 4 : ℝ), (-1 / 4 : ℝ), (-1 / 400 : ℝ), (1 / 400 : ℝ), (1 / 4 : ℝ), (3 / 4 : ℝ)]
-/-- P023-E001: explicit linearD for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit linearD for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def linearD : Fin 6 → ℝ := ![0, 0, 0, 1, 1, 1]
-/-- P023-E001: explicit linearY for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit linearY for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def linearY : Fin 6 → ℝ := ![(37 / 80 : ℝ), (39 / 80 : ℝ), (3999 / 8000 : ℝ), (4801 / 8000 : ℝ), (49 / 80 : ℝ), (51 / 80 : ℝ)]
-/-- P023-E001: explicit linearYprime for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit linearYprime for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def linearYprime : Fin 6 → ℝ := ![(37 / 80 : ℝ), (39 / 80 : ℝ), (3999 / 8000 : ℝ), (4801 / 8000 : ℝ), (49 / 80 : ℝ), (259 / 400 : ℝ)]
-/-- P023-E001: explicit linearW for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit linearW for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def linearW : Fin 6 → ℝ := ![(20299 / 139202 : ℝ), (-59901 / 139202 : ℝ), (-49800 / 69601 : ℝ), (49800 / 69601 : ℝ), (59901 / 139202 : ℝ), (-20299 / 139202 : ℝ)]
-/-- P023-E001: explicit linearDual for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit linearDual for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def linearDual : Fin 3 → ℝ := ![(-100001 / 139202 : ℝ), (100001 / 69601 : ℝ), (-80200 / 69601 : ℝ)]
-/-- P023-E001: explicit linearExact for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit linearExact for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def linearExact : Fin 3 → ℝ := ![(1 / 2 : ℝ), (1 / 10 : ℝ), (1 / 20 : ℝ)]
 
 /-- P023-T1(i): the design has rank 3. -/
@@ -313,20 +346,20 @@ theorem linear_nonlocal : ¬ Localized (1 / 200 : ℝ) linearX (polynomialOLS 1 
   rw [linear_coefficient_values.1, linear_coefficient_values.2.1] at he
   norm_num at he
 
-/-- Finite witness for P023-T2: explicit DemVot, DemWin, baseline DV,
-perturbed DV, and OLS weights. -/
+/-- Validator witness for P023-T2; derivation.md §3.
+Explicit DemVot, DemWin, baseline DV, perturbed DV, and certified OLS weights. -/
 def degree7X : Fin 16 → ℝ := ![-1, (-7 / 8 : ℝ), (-3 / 4 : ℝ), (-5 / 8 : ℝ), (-1 / 2 : ℝ), (-3 / 8 : ℝ), (-1 / 4 : ℝ), (-1 / 8 : ℝ), (1 / 8 : ℝ), (1 / 4 : ℝ), (3 / 8 : ℝ), (1 / 2 : ℝ), (5 / 8 : ℝ), (3 / 4 : ℝ), (7 / 8 : ℝ), 1]
-/-- P023-E001: explicit degree7D for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit degree7D for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def degree7D : Fin 16 → ℝ := ![0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1]
-/-- P023-E001: explicit degree7Y for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit degree7Y for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def degree7Y : Fin 16 → ℝ := ![(11 / 25 : ℝ), (94859017 / 209715200 : ℝ), (755573 / 1638400 : ℝ), (3929035 / 8388608 : ℝ), (6079 / 12800 : ℝ), (100923253 / 209715200 : ℝ), (798719 / 1638400 : ℝ), (103546879 / 209715200 : ℝ), (127139841 / 209715200 : ℝ), (1003521 / 1638400 : ℝ), (129763467 / 209715200 : ℝ), (8001 / 12800 : ℝ), (26492169 / 41943040 : ℝ), (1046667 / 1638400 : ℝ), (135827703 / 209715200 : ℝ), (33 / 50 : ℝ)]
-/-- P023-E001: explicit degree7Yprime for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit degree7Yprime for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def degree7Yprime : Fin 16 → ℝ := ![(11 / 25 : ℝ), (94859017 / 209715200 : ℝ), (755573 / 1638400 : ℝ), (3929035 / 8388608 : ℝ), (6079 / 12800 : ℝ), (100923253 / 209715200 : ℝ), (798719 / 1638400 : ℝ), (103546879 / 209715200 : ℝ), (127139841 / 209715200 : ℝ), (1003521 / 1638400 : ℝ), (129763467 / 209715200 : ℝ), (8001 / 12800 : ℝ), (26492169 / 41943040 : ℝ), (1046667 / 1638400 : ℝ), (135827703 / 209715200 : ℝ), (67 / 100 : ℝ)]
-/-- P023-E001: explicit degree7W for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit degree7W for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def degree7W : Fin 16 → ℝ := ![(-175 / 1607 : ℝ), (725 / 1607 : ℝ), (-685 / 1607 : ℝ), (-643 / 1607 : ℝ), (554 / 1607 : ℝ), (1289 / 1607 : ℝ), (239 / 1607 : ℝ), (-2911 / 1607 : ℝ), (2911 / 1607 : ℝ), (-239 / 1607 : ℝ), (-1289 / 1607 : ℝ), (-554 / 1607 : ℝ), (643 / 1607 : ℝ), (685 / 1607 : ℝ), (-725 / 1607 : ℝ), (175 / 1607 : ℝ)]
-/-- P023-E001: explicit degree7Dual for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit degree7Dual for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def degree7Dual : Fin 9 → ℝ := ![(-7429 / 1607 : ℝ), (14858 / 1607 : ℝ), (-1335266 / 56245 : ℝ), 0, (131424 / 1607 : ℝ), 0, (-970752 / 8035 : ℝ), 0, (655360 / 11249 : ℝ)]
-/-- P023-E001: explicit degree7Exact for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
+/-- Validator E001/v1 derivation §§2–3: explicit degree7Exact for the fixed finite witness; polynomial regression (2), p. 6, and U_b, p. 6. -/
 def degree7Exact : Fin 9 → ℝ := ![(1 / 2 : ℝ), (1 / 10 : ℝ), (1 / 20 : ℝ), 0, 0, 0, 0, 0, (1 / 100 : ℝ)]
 
 /-- P023-T2(i): the design has rank 9. -/
@@ -722,7 +755,7 @@ theorem linear_binCount : binCount (1 / 200 : ℝ) = 200 := by
     norm_num
   rw [hc]
 
-/-- Every observation has precisely the specified bin label; endpoint inequalities are those of the paper. -/
+/-- Every observation has precisely the bin label listed by the validator; endpoint inequalities are those of the paper. -/
 theorem linear_bin_labels (i : Fin 6) : (binLabel (1 / 200 : ℝ) (linearX i)).val = ![25, 75, 100, 100, 125, 175] i := by
   fin_cases i
   · change (binLabel (1 / 200 : ℝ) (linearX 0)).val = 25
@@ -844,7 +877,7 @@ theorem degree7_binCount : binCount (1 / 5 : ℝ) = 4 := by
     norm_num
   rw [hc]
 
-/-- Every observation has precisely the specified bin label; endpoint inequalities are those of the paper. -/
+/-- Every observation has precisely the bin label listed by the validator; endpoint inequalities are those of the paper. -/
 theorem degree7_bin_labels (i : Fin 16) : (binLabel (1 / 5 : ℝ) (degree7X i)).val = ![0, 0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4] i := by
   fin_cases i
   · change (binLabel (1 / 5 : ℝ) (degree7X 0)).val = 0
@@ -999,8 +1032,8 @@ theorem degree7_counterexample : TwoParty degree7X degree7D ∧ Condition1 (1 / 
     degree7_outcomes_bounded, degree7_nonlocal, degree7_all_weights_nonzero⟩
 
 /-! Population and asymptotic objects. Unlike a finite randomization design,
-the paper's Appendix B uses an i.i.d. population law. The definitions use Borel
-probability measures and Bochner integrals. -/
+the paper's Appendix B uses an i.i.d. population law. We use genuine Borel
+probability measures and Bochner integrals, never a zero or formal measure. -/
 open MeasureTheory Set Filter
 open scoped ENNReal Topology
 
@@ -1018,8 +1051,8 @@ def party (x : ℝ) : ℝ := if 0 ≤ x then 1 else 0
 /-- Population expectations of functions of DemVot in Appendix B, p. 10. -/
 def expectation (μ : Measure ℝ) (f : ℝ → ℝ) : ℝ := ∫ x, f x ∂μ
 
-/-- The polynomial projection of DemWin on span(1,X,...,X^J), P023-E002.
-Orthogonality is imposed against every power 0,...,J. -/
+/-- The polynomial projection of DemWin on span(1,X,...,X^J), as in validator
+E002, derivation §2. Orthogonality is imposed against every power 0,...,J. -/
 def IsProjection (μ : Measure ℝ) (J : ℕ) (q : Polynomial ℝ) : Prop :=
   q.natDegree ≤ J ∧ ∀ j ≤ J, expectation μ (fun x => (party x - q.eval x) * x^j) = 0
 
@@ -1029,17 +1062,17 @@ uniqueness are obligations of the population theorems, not extra assumptions. -/
 def projection (μ : Measure ℝ) (J : ℕ) : Polynomial ℝ :=
   Classical.epsilon (IsProjection μ J)
 
-/-- r_J=D-q_J, residualized party-win indicator; P023-E002. -/
+/-- r_J=D-q_J, residualized party-win indicator; validator E002 §2. -/
 def popResidual (μ : Measure ℝ) (J : ℕ) (x : ℝ) : ℝ := party x - (projection μ J).eval x
 
-/-- v_J=E[r_J²], residual treatment information; P023-E002. -/
+/-- v_J=E[r_J²], residual treatment information; validator E002 §2. -/
 def residualVariance (μ : Measure ℝ) (J : ℕ) : ℝ := expectation μ (fun x => popResidual μ J x ^ 2)
 
-/-- κ_J=E|r_J|/v_J, the amplification multiplier; P023-E002. -/
+/-- κ_J=E|r_J|/v_J, the amplification multiplier; validator E002 §2. -/
 def amplification (μ : Measure ℝ) (J : ℕ) : ℝ :=
   expectation μ (fun x => |popResidual μ J x|) / residualVariance μ J
 
-/-- T_J h=E[r_J h]/v_J; P023-E002. This is a functional, not the
+/-- T_J h=E[r_J h]/v_J; validator E002 §2. This is a functional, not the
 population OLS coefficient until the FWL identity has been established. -/
 def biasFunctional (μ : Measure ℝ) (J : ℕ) (h : ℝ → ℝ) : ℝ :=
   expectation μ (fun x => popResidual μ J x * h x) / residualVariance μ J
@@ -1062,7 +1095,7 @@ It is not defined to equal a target jump or a precomputed witness number. -/
 def populationCoefficient (μ : Measure ℝ) (J : ℕ) (m : ℝ → ℝ) : ℝ :=
   (Classical.epsilon (PopNormal μ J m)) ⟨1, by omega⟩
 
-/-- Uniform X on [-1,1], the law in P023-T3(e), T4 and T6:
+/-- Uniform X on [-1,1], the validators' law in P023-T3(e), T4 and T6:
 Lebesgue measure restricted to [-1,1], scaled by its reciprocal length. -/
 def uniformMargins : Measure ℝ := (1 / 2 : ℝ≥0∞) • (volume : Measure ℝ).restrict (Set.Icc (-1) 1)
 
@@ -1076,7 +1109,7 @@ def populationRD (μ : Measure ℝ) (m : ℝ → ℝ) (k : ℝ) : ℝ :=
 def supError (h : ℝ → ℝ) (p : Polynomial ℝ) : ℝ :=
   sSup ((fun x => |h x - p.eval x|) '' Set.Icc (-1) 1)
 
-/-- RMS error in L²(P_X), used in the correction of Appendix B (P023-E002). -/
+/-- RMS error in L²(P_X); validator E002's repair of Appendix B. -/
 def rmsError (μ : Measure ℝ) (h : ℝ → ℝ) (p : Polynomial ℝ) : ℝ :=
   Real.sqrt (expectation μ (fun x => (h x - p.eval x)^2))
 
@@ -1091,7 +1124,7 @@ def ConditionalMean (ν : Measure (ℝ × ℝ)) (m : ℝ → ℝ) : Prop :=
 /-- Marginal law of DemVot from the joint law of (DemVot,DV), p. 10. -/
 def marginLaw (ν : Measure (ℝ × ℝ)) : Measure ℝ := Measure.map Prod.fst ν
 
-/-- The two symmetric independent errors ±1/10 in witnesses T4,T5. -/
+/-- The two symmetric independent errors ±1/10 in validator witnesses T4,T5. -/
 def noiseLaw : Measure ℝ := (1 / 2 : ℝ≥0∞) • Measure.dirac (-1 / 10) +
   (1 / 2 : ℝ≥0∞) • Measure.dirac (1 / 10)
 
@@ -1100,10 +1133,10 @@ Y=1/2+h(X)+U. Product measure explicitly implements independence. -/
 def witnessLaw (μ : Measure ℝ) (h : ℝ → ℝ) : Measure (ℝ × ℝ) :=
   Measure.map (fun z : ℝ × ℝ => (z.1, 1 / 2 + h z.1 + z.2)) (μ.prod noiseLaw)
 
-/-- P023-T4, P023-E002: h_η=a clip(x/η,−1,1). -/
+/-- P023-T4, validator E002/doubt §7: h_η=a clip(x/η,−1,1). -/
 def sigmoid (a η x : ℝ) : ℝ := a * max (-1) (min 1 (x / η))
 
-/-- P023-T5, P023-E002: normalized triangular density t_{c,w}. -/
+/-- P023-T5, validator E002/v1 §2: normalized triangular density t_{c,w}. -/
 def triangular (c w x : ℝ) : ℝ := max (w - |x - c|) 0 / w^2
 
 /-- P023-T5: full-support density q/2 + (1−q)(t_{a,w}+t_{−a,w})/2 on
@@ -1117,24 +1150,22 @@ def clusteredMargins (d : ℝ) : Measure ℝ :=
 
 /-- P023-T5's odd, continuous piecewise-linear h. On the positive half its
 three slopes are −1,+1,−1 on [a−2w,a−w],[a−w,a+w],[a+w,a+2w], and it is
-zero elsewhere; P023-E002. -/
+zero elsewhere; validator E002/v1 §2, equation (E). -/
 def clusterPositive (d x : ℝ) : ℝ :=
   if x < 1 / 2 - d then 0 else if x ≤ 1 / 2 - d / 2 then 1 / 2 - d - x
   else if x ≤ 1 / 2 + d / 2 then x - 1 / 2
   else if x ≤ 1 / 2 + d then 1 / 2 + d - x else 0
 
-/-- P023-E002: odd extension of the three-piece smooth part, h(x)=−h(−x)
-for x<0; Appendix B's h, p. 10. -/
+/-- Validator E002/v1 §2: odd extension of the three-piece smooth part, h(x)=−h(−x) for x<0; Appendix B's h, p. 10. -/
 def clusterSmooth (d x : ℝ) : ℝ := if x < 0 then -clusterPositive d (-x) else clusterPositive d x
 
-/-- Projections for uniform margins (P023-E001, P023-E002). -/
+/-- Validator projections for uniform margins, E001 §5 and E002/doubt §7. -/
 def projection1 (x : ℝ) : ℝ := 1 / 2 + 3 / 4 * x
-/-- P023-E001: the degree-7 L² projection of D under uniform margins,
-with explicit polynomial coefficients. -/
+/-- Validator E001 §5: the degree-7 L² projection of D under uniform margins, quoted polynomial coefficients. -/
 def projection7 (x : ℝ) : ℝ := 1 / 2 +
   (11025*x - 40425*x^3 + 63063*x^5 - 32175*x^7) / 4096
 
-/-- The exact uniform residual variance formula, P023-E002: with
+/-- The exact uniform residual variance formula, E002/doubt §3: with
 n=⌊(J+1)/2⌋ and c_n=choose(2n,n)/4^n, v_J=c_n²/4. -/
 def centralBinomial (n : ℕ) : ℝ := (Nat.choose (2*n) n : ℝ) / 4^n
 
@@ -1159,10 +1190,150 @@ theorem appendix_smooth_zero (g f : ℝ → ℝ) (α : ℝ) :
     appendixSmooth g f α (f 0 - α) 0 = 0 := by
   simp [appendixSmooth]
 
+/-- P023-T7(a)–(f): the corrected population FWL identity, both error bounds,
+κ_J≥2, exact specification and the fixed-degree tolerance criterion. The
+joint law is a probability law and E[Y²] is finite. No common-target claim
+is inferred from a small further improvement in prediction MSE. -/
+theorem corrected_population_bias (ν : Measure (ℝ × ℝ))
+    (hprob : ProbabilityLaw ν) (hsupport : MarginSupport (marginLaw ν))
+    (hsq : Integrable (fun z => z.2^2) ν) (α β : ℝ) (h : ℝ → ℝ)
+    (hm : Measurable h) (hb : ∃ B, ∀ x ∈ Set.Icc (-1) 1, |h x| ≤ B)
+    (hmean : ConditionalMean ν (fun x => α + β * party x + h x))
+    (J : ℕ) (hJ : 1 ≤ J) (hpd : MomentPositiveDefinite (marginLaw ν) J) :
+    let μ := marginLaw ν
+    let v := residualVariance μ J
+    let b := populationCoefficient μ J (fun x => α + β * party x + h x)
+    IsProjection μ J (projection μ J) ∧ 0 < v ∧
+    (∀ p : Polynomial ℝ, p.natDegree ≤ J →
+      expectation μ (fun x => popResidual μ J x * p.eval x) = 0) ∧
+    expectation μ (popResidual μ J) = 0 ∧
+    expectation μ (fun x => popResidual μ J x * party x) = v ∧
+    b = biasFunctional μ J (fun x => α + β * party x + h x) ∧
+    (∀ p : Polynomial ℝ, p.natDegree ≤ J →
+      b - β = biasFunctional μ J h ∧
+      b - β = biasFunctional μ J (fun x => h x - p.eval x) ∧
+      |b - β| ≤ amplification μ J * supError h p ∧
+      |b - β| ≤ rmsError μ h p / Real.sqrt v) ∧
+    2 ≤ amplification μ J ∧
+    (∀ p : Polynomial ℝ, p.natDegree ≤ J →
+      (∀ᵐ x ∂μ, h x = p.eval x) → b = β) ∧
+    (∀ t > 0, (|b - β| ≤ t ↔ |expectation μ (fun x => popResidual μ J x * h x)| ≤ t * v) ∧
+      (amplification μ J * sInf {e | ∃ p : Polynomial ℝ, p.natDegree ≤ J ∧ e = supError h p} ≤ t → |b - β| ≤ t) ∧
+      (sInf {e | ∃ p : Polynomial ℝ, p.natDegree ≤ J ∧ e = rmsError μ h p} ≤ t * Real.sqrt v → |b - β| ≤ t)) := by
+  sorry
+
+/-- P023-T7(h), also the exact finite-degree inputs of T6/T8: uniform-law
+residual variances, projection formulas and rigorous amplification constants. -/
+theorem uniform_residual_constants :
+    ProbabilityLaw uniformMargins ∧ MarginSupport uniformMargins ∧
+    (∀ J, 1 ≤ J → residualVariance uniformMargins J = centralBinomial ((J + 1) / 2)^2 / 4) ∧
+    (∀ x, (projection uniformMargins 1).eval x = projection1 x) ∧
+    (∀ x, (projection uniformMargins 7).eval x = projection7 x) ∧
+    residualVariance uniformMargins 1 = 1 / 16 ∧
+    residualVariance uniformMargins 7 = 1225 / 65536 ∧
+    expectation uniformMargins (fun x => |popResidual uniformMargins 1 x|) = 5 / 24 ∧
+    amplification uniformMargins 1 = 10 / 3 ∧
+    1 / Real.sqrt (residualVariance uniformMargins 1) = 4 ∧
+    1 / Real.sqrt (residualVariance uniformMargins 7) = 256 / 35 ∧
+    (47642006857252250 / 10000000000000000 : ℝ) < amplification uniformMargins 7 ∧
+    amplification uniformMargins 7 < (47642006857252260 / 10000000000000000 : ℝ) := by
+  sorry
+
+/-- P023-T4, all population claims of the fixed-uniform-law sigmoid witness:
+continuous zero jump, exact coefficients, shrinking-window RD, outcome bounds,
+and negligible possible further prediction improvement. This is a witness to
+the Remark's fit criterion, not a failure under the repaired Lipschitz theorem. -/
+theorem sigmoid_counterexample :
+    (∀ a η : ℝ, 0 < a → 0 < η → η ≤ 1 →
+      Continuous (sigmoid a η) ∧ sigmoid a η 0 = 0 ∧
+      (∀ x, sigmoid a η (-x) = -sigmoid a η x) ∧
+      (∀ x x', |sigmoid a η x - sigmoid a η x'| ≤ (a / η) * |x - x'|) ∧
+      ConditionalMean (witnessLaw uniformMargins (sigmoid a η)) (fun x => 1 / 2 + sigmoid a η x) ∧
+      (∀ k, 0 < k → k ≤ η → populationRD uniformMargins (fun x => 1 / 2 + sigmoid a η x) k = a*k/η) ∧
+      Tendsto (populationRD uniformMargins (fun x => 1 / 2 + sigmoid a η x)) (nhdsWithin 0 (Set.Ioi 0)) (nhds 0) ∧
+      (∀ J, 1 ≤ J → populationCoefficient uniformMargins J (fun x => 1 / 2 + sigmoid a η x) =
+        2*a - (a / residualVariance uniformMargins J) *
+          (∫ x in Set.Icc 0 η, popResidual uniformMargins J x * (1 - x/η))) ∧
+      populationCoefficient uniformMargins 1 (fun x => 1 / 2 + sigmoid a η x) = 2*a*(1-η)^2 ∧
+      expectation uniformMargins (fun x => (sigmoid a η x - a*(2*party x-1))^2) = a^2*η/3 ∧
+      (∀ J, 1 ≤ J →
+        0 ≤ sInf {e | ∃ c : Fin (J+2) → ℝ, e = expectation uniformMargins
+          (fun x => (1 / 2 + sigmoid a η x - predict (polynomialDesign J (fun x : ℝ => x) party) c x)^2)} ∧
+        sInf {e | ∃ c : Fin (J+2) → ℝ, e = expectation uniformMargins
+          (fun x => (1 / 2 + sigmoid a η x - predict (polynomialDesign J (fun x : ℝ => x) party) c x)^2)} ≤ a^2*η/3)) ∧
+    populationCoefficient uniformMargins 1 (fun x => 1 / 2 + sigmoid (1 / 20) (1 / 10000) x) = 99980001 / 1000000000 ∧
+    populationCoefficient uniformMargins 7 (fun x => 1 / 2 + sigmoid (1 / 20) (1 / 10000) x) =
+      4896723787999993532000048047999857 / 49000000000000000000000000000000000 ∧
+    (∀ᵐ z ∂witnessLaw uniformMargins (sigmoid (1 / 20) (1 / 10000)), 7 / 20 ≤ z.2 ∧ z.2 ≤ 13 / 20) ∧
+    ((1 / 20 : ℝ)^2 * (1 / 10000) / 3 = 1 / 12000000) ∧
+    (∀ J a, 1 ≤ J → 0 < a →
+      Tendsto (fun η => populationCoefficient uniformMargins J (fun x => 1 / 2 + sigmoid a η x))
+        (nhdsWithin 0 (Set.Ioi 0)) (nhds (2*a))) := by
+  sorry
+
+/-- P023-T5: the explicit full-support clustered-law witness and its family.
+All hypotheses include genuine continuous normalized densities and bounded
+vote-share outcomes. The family varies the margin law; it does not refute
+fixed-law increasing-degree consistency. -/
+theorem clustered_counterexample :
+    (∀ d : ℝ, 0 < d → d ≤ 1 / 2 →
+      ProbabilityLaw (clusteredMargins d) ∧ MarginSupport (clusteredMargins d) ∧
+      clusteredMargins d {0}=0 ∧
+      (∀ a b : ℝ, -1 ≤ a → a<b → b ≤ 1 → 0 < clusteredMargins d (Set.Ioo a b)) ∧
+      Continuous (clusterDensity d) ∧ (∀ x ∈ Set.Icc (-1) 1, d^4/2 ≤ clusterDensity d x) ∧
+      Continuous (clusterSmooth d) ∧ clusterSmooth d 0 = 0 ∧
+      (∀ x, |x| ≤ 1/2-d → clusterSmooth d x=0) ∧
+      (∀ x, clusterSmooth d (-x) = -clusterSmooth d x) ∧
+      (∀ x x', |clusterSmooth d x - clusterSmooth d x'| ≤ |x-x'|) ∧
+      (∀ x, |clusterSmooth d x| ≤ d/2) ∧
+      sSup ((fun x => |clusterSmooth d x|) '' Set.Icc (-1) 1) = d/2 ∧
+      ConditionalMean (witnessLaw (clusteredMargins d) (clusterSmooth d)) (fun x => 1/2 + clusterSmooth d x) ∧
+      expectation (clusteredMargins d) (fun x => x) = 0 ∧
+      expectation (clusteredMargins d) (clusterSmooth d) = 0 ∧
+      expectation (clusteredMargins d) (fun x => (party x-1/2)*clusterSmooth d x) = 0 ∧
+      expectation (clusteredMargins d) (fun x => x * party x) = 1/4 ∧
+      expectation (clusteredMargins d) (fun x => x^2) = (1-d^4)*((1/2)^2+(d/2)^2/6)+d^4/3 ∧
+      expectation (clusteredMargins d) (fun x => x * clusterSmooth d x) = (1-d^4)*(d/2)^2/6+2*d^4*(d/2)^3 ∧
+      populationCoefficient (clusteredMargins d) 1 (fun x => 1/2 + clusterSmooth d x) =
+        -(1-d^4+6*d^5)/(1-d^4+2*d^2) ∧
+      (∀ k, 0 < k → k < 1/2-d → populationRD (clusteredMargins d) (fun x => 1/2 + clusterSmooth d x) k = 0) ∧
+      expectation (clusteredMargins d) (fun x => clusterSmooth d x^2) ≤ (d/2)^2) ∧
+    populationCoefficient (clusteredMargins (1/1000)) 1 (fun x => 1/2 + clusterSmooth (1/1000) x) =
+      -499999999999503/500000999999500 ∧
+    (∀ᵐ z ∂witnessLaw (clusteredMargins (1/1000)) (clusterSmooth (1/1000)),
+      799/2000 ≤ z.2 ∧ z.2 ≤ 1201/2000) ∧
+    Tendsto (fun d => populationCoefficient (clusteredMargins d) 1 (fun x => 1/2 + clusterSmooth d x))
+      (nhdsWithin 0 (Set.Ioi 0)) (nhds (-1)) ∧
+    ¬ (∃ C : ℝ, ∀ d, 0 < d → d ≤ 1/2 →
+      |populationCoefficient (clusteredMargins d) 1 (fun x => 1/2 + clusterSmooth d x)| ≤ C*(d/2)) := by
+  sorry
+
+/-- P023-T6: the single fixed uniform-law counterexample under continuity
+alone, including logarithmic amplification, the operator norm on continuous
+functions vanishing at zero, and one fixed bounded h with diverging coefficients
+along increasing degrees. Its h is existential, as in the validator's recursive
+construction; it never varies with J. -/
+theorem continuity_only_counterexample :
+    Tendsto (amplification uniformMargins) atTop atTop ∧
+    (∃ C : ℝ, 0 ≤ C ∧ ∃ J₀, ∀ J ≥ J₀, 1 ≤ J →
+      |amplification uniformMargins J - (4/Real.pi)*Real.log J| ≤ C) ∧
+    (∀ J, 1 ≤ J → sSup {t | ∃ h : ℝ → ℝ, ContinuousOn h (Set.Icc (-1) 1) ∧ h 0 = 0 ∧
+      (∀ x ∈ Set.Icc (-1) 1, |h x| ≤ 1) ∧ t = biasFunctional uniformMargins J h} = amplification uniformMargins J) ∧
+    (∃ h : ℝ → ℝ, ∃ degrees : ℕ → ℕ,
+      ContinuousOn h (Set.Icc (-1) 1) ∧ h 0 = 0 ∧
+      (∀ x ∈ Set.Icc (-1) 1, |h x| ≤ 1/12) ∧ StrictMono degrees ∧
+      (∀ m, 1 ≤ m → biasFunctional uniformMargins (degrees m) h ≥ (m : ℝ)/4) ∧
+      (∀ J, 1 ≤ J → populationCoefficient uniformMargins J (fun x => 1/2+h x) = biasFunctional uniformMargins J h) ∧
+      Tendsto (fun m => populationCoefficient uniformMargins (degrees m) (fun x => 1/2+h x)) atTop atTop ∧
+      ¬ Tendsto (fun J => populationCoefficient uniformMargins J (fun x => 1/2+h x)) atTop (nhds 0) ∧
+      Tendsto (populationRD uniformMargins (fun x => 1/2+h x)) (nhdsWithin 0 (Set.Ioi 0)) (nhds 0) ∧
+      (∀ x ∈ Set.Icc (-1) 1, 5/12 ≤ 1/2+h x ∧ 1/2+h x ≤ 7/12) ∧
+      ¬ (∃ L : ℝ, ∀ x ∈ Set.Icc (-1) 1, ∀ x' ∈ Set.Icc (-1) 1, |h x-h x'| ≤ L*|x-x'|)) := by
+  sorry
 
 /-- Convergence in probability is explicitly a limit of probabilities of
-absolute-error events. The notation →_p denotes this convergence; the paper's
-undefined ≈ is not interpreted as an exact finite equality. -/
+absolute-error events. This interprets the validators' →_p, never the
+paper's undefined ≈ as an exact finite equality. -/
 def ConvergesInProbability {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
     (Z : ℕ → Ω → ℝ) (z : ℝ) : Prop :=
   ∀ ε > 0, Tendsto (fun N => P {ω | ε < |Z N ω - z|}) atTop (nhds 0)
@@ -1188,12 +1359,11 @@ def sampleRD {Ω : Type*} (sample : ℕ → Ω → ℝ × ℝ) (k : ℕ → ℝ)
   rd (k N) (fun i : Fin N => (sample i ω).1)
     (fun i : Fin N => party (sample i ω).1) (fun i : Fin N => (sample i ω).2)
 
-/-- The primitive correction of Proposition 2 (P023-E002):
-a fixed probability law supported in margin on [-1,1], square-integrable
-outcomes, a lower Lebesgue-density bound only near zero, no atom at zero,
-h Lipschitz on [-1,1] with h(0)=0, and bounded local conditional variance.
-The variance inequality against all local Borel sets is the almost-sure
-integral formulation of Var(Y|X)≤σ̄². -/
+/-- The primitive repair of Proposition 2, validator E002/doubt §§4,8:
+a fixed probability law, lower Lebesgue-density bound only near zero, no
+atom at zero, globally Lipschitz h with h(0)=0, and bounded local conditional
+variance. The variance inequality against all local Borel sets is the
+almost-sure integral formulation of Var(Y|X)≤σ̄². -/
 def RepairedRegularity (ν : Measure (ℝ × ℝ)) (α β : ℝ) (h : ℝ → ℝ)
     (c δ L σ2 : ℝ) : Prop :=
   ProbabilityLaw ν ∧ MarginSupport (marginLaw ν) ∧ marginLaw ν {0} = 0 ∧
@@ -1206,7 +1376,7 @@ def RepairedRegularity (ν : Measure (ℝ × ℝ)) (α β : ℝ) (h : ℝ → �
     (∫ z in {z : ℝ × ℝ | z.1 ∈ A}, (z.2 - (α + β*party z.1 + h z.1))^2 ∂ν) ≤
       σ2 * (marginLaw ν A).toReal)
 
-/-- P023-E002: Jackson-kernel constant, deliberately nonoptimal. -/
+/-- Validator E002/doubt §4, Jackson-kernel constant, deliberately nonoptimal. -/
 def jacksonK : ℝ := 3 * (1 + Real.pi^4) / (4 * Real.pi)
 
 /-- Smallest eigenvalue λ_J of the real symmetric second-moment matrix:
@@ -1216,6 +1386,42 @@ def smallestMomentEigenvalue (μ : Measure ℝ) (J : ℕ) : ℝ :=
   sInf {r | ∃ a : Fin (J+2) → ℝ, (∑ j, a j^2) = 1 ∧
     r = expectation μ (fun x => predict (polynomialDesign J (fun x : ℝ => x) party) a x ^ 2)}
 
+/-- P023-T8(a)–(g), the corrected Proposition 2 in full. Fixed J is chosen
+for each target tolerance; simultaneous consistency additionally requires
+(J_N+2)²/(N λ_{J_N}³)→0. Neither mere continuity nor an unspecified further
+prediction gain replaces the stated smoothness and degree/sample conditions. -/
+theorem corrected_proposition2 {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) (ν : Measure (ℝ × ℝ)) (sample : ℕ → Ω → ℝ × ℝ)
+    (α β : ℝ) (h : ℝ → ℝ) (c δ L σ2 : ℝ)
+    (hr : RepairedRegularity ν α β h c δ L σ2) (hiid : IIDSample P ν sample)
+    (k : ℕ → ℝ) (hkpos : ∀ N, 0 < k N)
+    (hk0 : Tendsto k atTop (nhds 0))
+    (hnk : Tendsto (fun N : ℕ => (N : ℝ) * k N) atTop atTop) :
+    let μ := marginLaw ν
+    let m := fun x => α + β*party x + h x
+    (∀ J, 1 ≤ J → MomentPositiveDefinite μ J ∧
+      residualVariance μ J ≥ c*δ/(4*((J:ℝ)+1))) ∧
+    (∀ J, 1 ≤ J → ∃ p : Polynomial ℝ, p.natDegree ≤ J ∧ p.eval 0 = 0 ∧
+      supError h p ≤ 4*jacksonK*L/((J:ℝ)+1)) ∧
+    (∀ J, 1 ≤ J → |populationCoefficient μ J m - β| ≤
+      8*jacksonK*L / Real.sqrt (c*δ*((J:ℝ)+1))) ∧
+    Tendsto (fun J => populationCoefficient μ J m) atTop (nhds β) ∧
+    (∀ J, 1 ≤ J → ConvergesInProbability P (fun N => samplePolynomial sample N J) (populationCoefficient μ J m)) ∧
+    (∀ k', 0 < k' → k' ≤ δ → |populationRD μ m k' - β| ≤ 2*L*k') ∧
+    ConvergesInProbability P (sampleRD sample k) β ∧
+    (∀ ε > 0, ∃ J₀, ∀ J ≥ J₀, 1 ≤ J →
+      ConvergesInProbability P (fun N ω => samplePolynomial sample N J ω - sampleRD sample k N ω)
+        (populationCoefficient μ J m - β) ∧ |populationCoefficient μ J m - β| < ε) ∧
+    (∀ degrees : ℕ → ℕ, Tendsto degrees atTop atTop →
+      Tendsto (fun N => ((degrees N : ℝ)+2)^2 /
+        ((N:ℝ) * (smallestMomentEigenvalue μ (degrees N))^3)) atTop (nhds 0) →
+      ConvergesInProbability P (fun N ω => samplePolynomial sample N (degrees N) ω -
+        populationCoefficient μ (degrees N) m) 0 ∧
+      ConvergesInProbability P (fun N ω => samplePolynomial sample N (degrees N) ω - sampleRD sample k N ω) 0) ∧
+    (∃ degrees : ℕ → ℕ, (∀ N, 1 ≤ degrees N) ∧ Tendsto degrees atTop atTop ∧
+      Tendsto (fun N => ((degrees N : ℝ)+2)^2 /
+        ((N:ℝ) * (smallestMomentEigenvalue μ (degrees N))^3)) atTop (nhds 0)) := by
+  sorry
 
 /-- The "usual conditions for RD" invoked on p. 10, made explicit for the
 printed Proposition 2: no atom at zero, increasing expected counts on both
@@ -1229,6 +1435,32 @@ def UsualRDRegularity (ν : Measure (ℝ × ℝ)) (m : ℝ → ℝ) (k : ℕ →
     ∀ A : Set ℝ, MeasurableSet A → A ⊆ Set.Icc (-δ) δ →
       (∫ z in {z : ℝ × ℝ | z.1 ∈ A}, (z.2-m z.1)^2 ∂ν) ≤ σ2*(marginLaw ν A).toReal
 
+/-- P023-T12's printed Proposition 2 under the validators' precise reading:
+with Appendix B's continuous branches and a finite left limit, the limiting
+fixed-degree difference is within every requested tolerance for all sufficiently
+large J. Additional sampling and RD consistency conditions are explicit;
+Lipschitz h is not inserted into this printed statement. It is unproved and
+is refuted by the continuous fixed-law construction in P023-T6. -/
+theorem printed_proposition2 {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) (ν : Measure (ℝ × ℝ)) (sample : ℕ → Ω → ℝ × ℝ)
+    (g f : ℝ → ℝ) (α : ℝ)
+    (hprob : ProbabilityLaw ν) (hsupport : MarginSupport (marginLaw ν))
+    (hsq : Integrable (fun z => z.2^2) ν)
+    (hg : ContinuousOn g (Set.Ico (-1) 0)) (hf : ContinuousOn f (Set.Icc 0 1))
+    (hleft : Tendsto g (nhdsWithin 0 (Set.Iio 0)) (nhds α))
+    (hmean : ConditionalMean ν (appendixMean g f)) (hiid : IIDSample P ν sample)
+    (hpd : ∀ J, 1 ≤ J → MomentPositiveDefinite (marginLaw ν) J)
+    (k : ℕ → ℝ) (hkpos : ∀ N, 0 < k N) (hk0 : Tendsto k atTop (nhds 0))
+    (hnk : Tendsto (fun N : ℕ => (N:ℝ)*k N) atTop atTop)
+    (hsup : ∃ k₀ : ℝ, 0 < k₀ ∧ ∀ a b : ℝ, -k₀ ≤ a → a < b → b ≤ k₀ →
+      0 < marginLaw ν (Set.Ioo a b))
+    (hRD : UsualRDRegularity ν (appendixMean g f) k) :
+    ConvergesInProbability P (sampleRD sample k) (f 0 - α) ∧
+    ∀ ε > 0, ∃ J₀, ∀ J ≥ J₀, 1 ≤ J →
+      ConvergesInProbability P (fun N ω => samplePolynomial sample N J ω - sampleRD sample k N ω)
+        (populationCoefficient (marginLaw ν) J (appendixMean g f) - (f 0 - α)) ∧
+      |populationCoefficient (marginLaw ν) J (appendixMean g f) - (f 0 - α)| < ε := by
+  sorry
 
 /-- Condition 2 and Appendix A, pp. 5,9: convert the printed intercept and
 J bin coefficients to one intercept for each of the J+1 bins. -/
@@ -1419,6 +1651,27 @@ theorem coarsened_ols_printed_equivalence (k : ℝ) (hk : 0 < k ∧ k < 1)
     have hh := printed_coarsened_to_bins k hk x d y hdata c hc
     simpa only [hβ] using hh
 
+/-- P023-T3(e): uniform-law population illustration of a common jump target
+with strictly positive OLS influence variance from |X|≥1/2 at degrees 1 and 7.
+These are exact integrals under a normalized law, not formal moments. -/
+theorem uniform_common_target_distant_information :
+    (∀ x, (projection uniformMargins 1).eval x = projection1 x) ∧
+    (∀ x, (projection uniformMargins 7).eval x = projection7 x) ∧
+    residualVariance uniformMargins 1 = 1/16 ∧ residualVariance uniformMargins 7 = 1225/65536 ∧
+    popResidual uniformMargins 1 (9/10) / residualVariance uniformMargins 1 = -14/5 ∧
+    popResidual uniformMargins 7 (9/10) / residualVariance uniformMargins 7 = -20283449/6125000 ∧
+    expectation uniformMargins (fun x => if 1/2 ≤ |x| then popResidual uniformMargins 1 x^2 else 0) /
+      residualVariance uniformMargins 1 = 1/8 ∧
+    expectation uniformMargins (fun x => if 1/2 ≤ |x| then popResidual uniformMargins 7 x^2 else 0) /
+      residualVariance uniformMargins 7 = 572158921/10276044800 ∧
+    populationCoefficient uniformMargins 1 (fun x => 1/2 + (1/10)*party x + x/20) = 1/10 ∧
+    populationCoefficient uniformMargins 7 (fun x => 1/2 + (1/10)*party x + x/20+x^7/100) = 1/10 ∧
+    (∀ k, 0 < k → k ≤ 1 →
+      populationRD uniformMargins (fun x => 1/2 + (1/10)*party x + x/20) k = 1/10+k/20 ∧
+      populationRD uniformMargins (fun x => 1/2 + (1/10)*party x + x/20+x^7/100) k = 1/10+k/20+k^7/400) ∧
+    Tendsto (populationRD uniformMargins (fun x => 1/2 + (1/10)*party x+x/20)) (nhdsWithin 0 (Set.Ioi 0)) (nhds (1/10)) ∧
+    Tendsto (populationRD uniformMargins (fun x => 1/2 + (1/10)*party x+x/20+x^7/100)) (nhdsWithin 0 (Set.Ioi 0)) (nhds (1/10)) := by
+  sorry
 
 /-- P023-T3(a), weight form: close-window treated and untreated means have
 weights 1/n₁ and −1/n₀, and every other election has weight zero. -/
@@ -1473,7 +1726,7 @@ unique least-squares projection on the powers. P023-T3(b) and T7(g). -/
 def finiteResidual (J : ℕ) (x d : ι → ℝ) (i : ι) : ℝ :=
   d i - predict (smoothDesign J x) (olsCoefficients (smoothDesign J x) d) i
 
-/-- Finite polynomial OLS observation weights r_i/(rᵀr); P023-E001. -/
+/-- Finite polynomial OLS observation weights r_i/(rᵀr); validator E001 §1. -/
 def finiteWeight (J : ℕ) (x d : ι → ℝ) (i : ι) : ℝ :=
   finiteResidual J x d i / dot (finiteResidual J x d) (finiteResidual J x d)
 
@@ -1670,7 +1923,7 @@ theorem corrected_finite_polynomial_weights [DecidableEq ι] (J : ℕ) (hJ : 1 �
     rw [hdelta]
     ring
 
-/-- P023-T3(c), P023-E001: write the actual finite nuisance fit as a
+/-- P023-T3(c), validator E001 §6: write the actual finite nuisance fit as a
 polynomial of degree at most J, using its least-squares coefficients. -/
 def finiteFitPolynomial (J : ℕ) (x d : ι → ℝ) : Polynomial ℝ :=
   ∑ j : Fin (J+1), Polynomial.C (olsCoefficients (smoothDesign J x) d j)*Polynomial.X^j.val
@@ -2070,8 +2323,9 @@ theorem residual_uniform_error_bound (μ : Measure ℝ) (r a : ℝ → ℝ) (ε 
     _ ≤ (ε*expectation μ (fun x => |r x|)) / v := div_le_div_of_nonneg_right hi hv.le
     _ = _ := by ring
 
-/-- The integral Cauchy–Schwarz inequality used in P023-T7(c), derived
-from the nonnegative square ∫(t r−a)² with t=E[ra]/E[r²]. -/
+/-- The integral Cauchy–Schwarz inequality used in P023-T7(c), proved here
+from the nonnegative square ∫(t r−a)² with t=E[ra]/E[r²]. This avoids
+assuming the bound as an analytic axiom. -/
 theorem residual_rms_error_bound (μ : Measure ℝ) (r a : ℝ → ℝ)
     (hrr : Integrable (fun x => r x^2) μ) (haa : Integrable (fun x => a x^2) μ)
     (hra : Integrable (fun x => r x*a x) μ)
@@ -2121,7 +2375,7 @@ theorem residual_rms_error_bound (μ : Measure ℝ) (r a : ℝ → ℝ)
       have hs := Real.sq_sqrt hv.le
       nlinarith
 
-/-- P023-T7(d), P023-E002: every centered treatment residual
+/-- P023-T7(d), validator E002/doubt §2: every centered treatment residual
 with E[rD]=v>0 has amplification E|r|/v at least two. -/
 theorem residual_amplification_lower_bound (μ : Measure ℝ) (r : ℝ → ℝ) (v : ℝ)
     (hv : 0 < v) (hr : Integrable r μ)
@@ -2188,8 +2442,8 @@ theorem clustered_bias_rational_certificate :
   norm_num
 
 /-- Exact degree-1 and degree-7 sigmoid bias numbers and tiny fit-improvement
-bound in P023-T4(iv),(v). These algebraic certificates do not assert
-probability-law properties. -/
+bound in P023-T4(iv),(v). These verify the algebraic certificates, and are
+not a substitute for proving the probability-law theorem above. -/
 theorem sigmoid_rational_certificates :
     2*(1/20:ℝ)*(1-1/10000)^2 = 99980001/1000000000 ∧
     (1/10:ℝ)-(4096/6125)*(1/10000)+(6/5)*(1/10000)^2-(33/25)*(1/10000)^4+
@@ -2198,7 +2452,7 @@ theorem sigmoid_rational_certificates :
     (1/20:ℝ)^2*(1/10000)/3 = 1/12000000 := by
   norm_num
 
-/-- The uniform law has probability mass one and is
+/-- The validator's uniform law really has probability mass one and is
 supported on [-1,1]. This rules out a degenerate formal measure in T3(e),
 T4, T6 and the uniform finite lemmas of T7/T8. -/
 theorem uniform_law_normalized : ProbabilityLaw uniformMargins ∧ MarginSupport uniformMargins := by
@@ -2208,8 +2462,8 @@ theorem uniform_law_normalized : ProbabilityLaw uniformMargins ∧ MarginSupport
   · simp [MarginSupport, uniformMargins, Measure.smul_apply, Measure.restrict_apply,
       measurableSet_Icc, measurableSet_Icc.compl]
 
-/-- T6's gliding-hump lower-bound arithmetic (P023-E002): a main
-contribution κ/(2·4^m) and tail cost κ/(3·4^m) leave at least m
+/-- T6's gliding-hump lower-bound arithmetic, validator E002/doubt equation
+(19): a main contribution κ/(2·4^m) and tail cost κ/(3·4^m) leave at least m
 if κ≥6m4^m. Analytic existence of the polynomials is not assumed here. -/
 theorem gliding_hump_finite_inequality (m : ℕ) (κ : ℝ)
     (hκ : 6*(m:ℝ)*4^m ≤ κ) :
@@ -2222,6 +2476,37 @@ theorem gliding_hump_finite_inequality (m : ℕ) (κ : ℝ)
   field_simp
   nlinarith
 
+/-- With a full-rank finite design the entire coefficient vector is unique
+among normal-equation solutions, hence the paper's party-win coefficient is
+an actual OLS coefficient independent of the choice operation. -/
+theorem ols_unique (X : ι → κ → ℝ) (hfull : FullRank X) (y : ι → ℝ)
+    (a b : κ → ℝ) (ha : IsOLS X y a) (hb : IsOLS X y b) : a = b := by
+  have hpred (i : ι) : predict X (fun j => a j-b j) i = predict X a i-predict X b i := by
+    simp [predict, mul_sub, Finset.sum_sub_distrib]
+  have hmom (j : κ) : dot (fun i => X i j) (predict X (fun j => a j-b j)) = 0 := by
+    have h1 := ha j
+    have h2 := hb j
+    rw [dot_sub_right] at h1 h2
+    have he : predict X (fun j => a j-b j) = fun i => predict X a i-predict X b i := funext hpred
+    rw [he,dot_sub_right]
+    linarith
+  have hz : dot (predict X (fun j => a j-b j)) (predict X (fun j => a j-b j)) = 0 := by
+    rw [dot_predict_left]
+    simp_rw [hmom,mul_zero]
+    simp
+  have hc := hfull (fun j => a j-b j)
+    (fun i => (Finset.sum_mul_self_eq_zero_iff Finset.univ (predict X (fun j => a j-b j))).mp hz i (Finset.mem_univ i))
+  funext j
+  have he := congrFun hc j
+  exact sub_eq_zero.mp he
+
+/-- An exactly fitted outcome vector has exactly its specified coefficient
+vector under full column rank; finite equation (2), pp. 6–7. -/
+theorem ols_exact_fit (X : ι → κ → ℝ) (hfull : FullRank X) (c : κ → ℝ) :
+    olsCoefficients X (predict X c) = c := by
+  apply ols_unique X hfull _ _ c (chosen_ols_spec X hfull _)
+  intro j
+  simp [dot]
 
 /-- Fixed-margin conditional expectation commutes with the finite polynomial
 OLS estimator. Outcomes are integrable under their conditional law; no
@@ -2285,6 +2570,17 @@ theorem finite_conditional_bias {Ω : Type*} [MeasurableSpace Ω] (P : Measure �
         dot (finiteResidual J x d) (finiteResidual J x d) := by
   exact finite_ols_bias_integral P J hJ x d hdata hfull α β h Y hint hmean
 
+/-- P023-T3(d)'s unbiasedness under an exactly polynomial conditional mean:
+for every full-rank finite design, E[β̂_OLS2|margins]=β with no asymptotics. -/
+theorem finite_exact_polynomial_unbiased {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
+    (J : ℕ) (x d : ι → ℝ) (hfull : FullRank (polynomialDesign J x d))
+    (c : Fin (J+2) → ℝ) (Y : ι → Ω → ℝ) (hint : ∀ i, Integrable (Y i) P)
+    (hmean : ∀ i, (∫ ω, Y i ω ∂P) = predict (polynomialDesign J x d) c i) :
+    (∫ ω, polynomialOLS J x d (fun i => Y i ω) ∂P) = c 1 := by
+  rw [finite_ols_mean P J x d hfull Y hint]
+  have hm : (fun i => ∫ ω, Y i ω ∂P) = predict (polynomialDesign J x d) c := funext hmean
+  rw [hm]
+  exact congrFun (ols_exact_fit _ hfull c) 1
 
 /-- Every polynomial of degree at most J is annihilated by the finite
 residual, not just the individual powers. P023-T3(b), T7(g). -/
@@ -2307,8 +2603,8 @@ theorem finite_residual_polynomial (J : ℕ) (x d : ι → ℝ)
     ring
   rw [he, finite_residual_orthogonal J x d hfull ⟨j, by omega⟩, mul_zero]
 
-/-- Exact finite second-moment algebra: integrable variables with integrable
-squares and zero cross moments satisfy ∫(Σ w_i u_i)² = Σ w_i² ∫u_i².
+/-- Exact finite variance algebra: with square-integrable pairwise
+uncorrelated errors, the variance of their weighted sum is Σ w_i²σ_i².
 The product integrability is proved by domination by the two squares. -/
 theorem weighted_uncorrelated_squares [DecidableEq ι]
     {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω) (w : ι → ℝ)
@@ -2407,18 +2703,62 @@ theorem corrected_finite_conditional_moments {Ω : Type*} [MeasurableSpace Ω]
     exact mul_pos (sq_pos_of_ne_zero hi) hσ
 
 
-/-- Mean squared prediction risk under the joint election law, giving a
-precise reading of the Remark's further-fit criterion, p. 7. The predictor
-is a measurable function of DemVot. -/
+/-- Mean squared prediction risk under the joint election law; used by the
+validators to give a precise reading of the Remark's further-fit criterion,
+p. 7. The predictor is a measurable function of DemVot. -/
 def predictionRisk (ν : Measure (ℝ × ℝ)) (f : ℝ → ℝ) : ℝ :=
   ∫ z, (z.2-f z.1)^2 ∂ν
 
 /-- Minimum population prediction risk within equation (2)'s full regressor
-span, including the intercept and party indicator. P023-E002. -/
+span, including the intercept and party indicator. Validator E002/doubt §7. -/
 def fittedRisk (ν : Measure (ℝ × ℝ)) (J : ℕ) : ℝ :=
   sInf {e | ∃ c : Fin (J+2) → ℝ,
     e = predictionRisk ν (predict (polynomialDesign J (fun x : ℝ => x) party) c)}
 
+/-- P023-T4's complete fit claim and degree-7 formula: every additional
+measurable predictor can improve the fitted equation (2) risk by at most
+ a²η/3, with irreducible variance 1/100. At the explicit witness this is
+1/12000000 absolutely and at most 1/120000 of the current risk. -/
+theorem sigmoid_fit_criterion (a η : ℝ) (ha : 0 < a) (hη : 0 < η ∧ η ≤ 1) :
+    let ν := witnessLaw uniformMargins (sigmoid a η)
+    ProbabilityLaw ν ∧ marginLaw ν = uniformMargins ∧
+    predictionRisk ν (fun x => 1/2+sigmoid a η x) = 1/100 ∧
+    (∀ J, 1 ≤ J → 1/100 ≤ fittedRisk ν J ∧ fittedRisk ν J ≤ 1/100+a^2*η/3 ∧
+      (∀ f : ℝ → ℝ, Measurable f → Integrable (fun z => (z.2-f z.1)^2) ν →
+        fittedRisk ν J - predictionRisk ν f ≤ a^2*η/3) ∧
+      (fittedRisk ν J-1/100)/(fittedRisk ν J) ≤ 100*a^2*η/3) ∧
+    (a=1/20 → populationCoefficient uniformMargins 7 (fun x => 1/2+sigmoid a η x) =
+      1/10-(4096/6125)*η+(6/5)*η^2-(33/25)*η^4+(858/875)*η^6-(143/490)*η^8) := by
+  sorry
+
+/-- P023-T4's sampling consequence for the one fixed numerical example:
+degree 1 and degree 7 OLS converge to their nonzero coefficients while
+shrinking-window RD converges to the true zero jump. -/
+theorem sigmoid_sample_separation {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) (sample : ℕ → Ω → ℝ × ℝ)
+    (hiid : IIDSample P (witnessLaw uniformMargins (sigmoid (1/20) (1/10000))) sample)
+    (k : ℕ → ℝ) (hpos : ∀ N, 0 < k N) (hk : Tendsto k atTop (nhds 0))
+    (hnk : Tendsto (fun N : ℕ => (N:ℝ)*k N) atTop atTop) :
+    ConvergesInProbability P (fun N => samplePolynomial sample N 1) (99980001/1000000000) ∧
+    ConvergesInProbability P (fun N => samplePolynomial sample N 7)
+      (4896723787999993532000048047999857/49000000000000000000000000000000000) ∧
+    ConvergesInProbability P (sampleRD sample k) 0 := by
+  sorry
+
+/-- P023-T5(vi): no predictor of Y from X can improve the constant 1/2's
+risk by more than w²; both the constant and fitted polynomial regression have
+this upper bound on their possible further improvement. -/
+theorem clustered_fit_bound (d : ℝ) (hd : 0 < d ∧ d ≤ 1/2) :
+    let ν := witnessLaw (clusteredMargins d) (clusterSmooth d)
+    ProbabilityLaw ν ∧ marginLaw ν = clusteredMargins d ∧
+    predictionRisk ν (fun x => 1/2+clusterSmooth d x) = 1/100 ∧
+    predictionRisk ν (fun _ => 1/2) = 1/100+expectation (clusteredMargins d) (fun x => clusterSmooth d x^2) ∧
+    (∀ f : ℝ → ℝ, Measurable f → Integrable (fun z => (z.2-f z.1)^2) ν →
+      predictionRisk ν (fun _ => 1/2)-predictionRisk ν f ≤ (d/2)^2) ∧
+    (∀ J, 1 ≤ J → fittedRisk ν J ≤ predictionRisk ν (fun _ => 1/2) ∧
+      (∀ f : ℝ → ℝ, Measurable f → Integrable (fun z => (z.2-f z.1)^2) ν →
+        fittedRisk ν J-predictionRisk ν f ≤ (d/2)^2)) := by
+  sorry
 
 /-- Appendix B's continuity assertion, P023-T12 finite lemma (ii), explicitly
 including the finite left limit the printed definition of α presupposes. -/
@@ -2485,8 +2825,8 @@ theorem weierstrass_without_constant (h : ℝ → ℝ)
     _ < ε/2+ε/2 := add_lt_add (by simpa only [abs_sub_comm] using hq x hx) h0
     _ = ε := by ring
 
-/-- Exact central-binomial recurrence used in the uniform-law variance
-calculation: c_{n+1}(2n+2)=c_n(2n+1). -/
+/-- Exact central-binomial recurrence used by the validators' uniform-law
+variance calculation: c_{n+1}(2n+2)=c_n(2n+1). -/
 theorem central_binomial_recurrence (n : ℕ) :
     centralBinomial (n+1) * (2*(n:ℝ)+2) = centralBinomial n * (2*(n:ℝ)+1) := by
   have h1 := Nat.choose_mul_succ_eq (2*n) n
@@ -2536,14 +2876,14 @@ theorem central_binomial_lower_bound_mul (n : ℕ) (hn : 1 ≤ n) :
       simpa only [Nat.cast_add,Nat.cast_one] using (sub_nonneg.mp hfinal)
 
 /-- The exact uniform-margin lower bound used by corrected Proposition 2,
-P023-E002, P023-T8 finite lemma (2). -/
+E002/doubt §3, P023-T8 finite lemma (2). -/
 theorem central_binomial_lower_bound (n : ℕ) (hn : 1 ≤ n) :
     1/(4*(n:ℝ)) ≤ centralBinomial n^2 := by
   have hnreal : 0 < (n:ℝ) := by exact_mod_cast (show 0 < n by omega)
   apply (div_le_iff₀ (show 0 < 4*(n:ℝ) by positivity)).mpr
   nlinarith [central_binomial_lower_bound_mul n hn]
 
-/-- P023-E002: the normalized central-binomial square is the
+/-- Validator E002/doubt §3: the normalized central-binomial square is the
 reciprocal of (2n+1) times the Wallis product. This connects the literal choose
 values to Mathlib's analytic bounds without postulating the variance formula. -/
 theorem central_binomial_wallis (n : ℕ) :
@@ -2564,7 +2904,7 @@ theorem central_binomial_wallis (n : ℕ) :
         ring
       _ = 1 := ih
 
-/-- P023-T6 finite lemma (3), P023-E002: the exact two Wallis
+/-- P023-T6 finite lemma (3), validator E002/doubt §3: the exact two Wallis
 bounds 1/(pi(n+1/2))≤c_n²≤1/(pi n), for every n≥1. -/
 theorem central_binomial_wallis_bounds (n : ℕ) (hn : 1 ≤ n) :
     1/(Real.pi*((n:ℝ)+1/2)) ≤ centralBinomial n^2 ∧
@@ -2597,25 +2937,52 @@ theorem central_binomial_wallis_bounds (n : ℕ) (hn : 1 ≤ n) :
     apply (le_div_iff₀ (show 0 < Real.pi*(n:ℝ) by positivity)).mpr
     nlinarith [hcore]
 
+/-- P023-T8 finite lemma (3), validator E002/doubt §4, equation (8): the
+local density domination bounds every finite-degree polynomial's treatment
+approximation risk, and yields the chain of residual-variance lower bounds. -/
+theorem density_residual_comparison (ν : Measure (ℝ × ℝ)) (α β : ℝ)
+    (h : ℝ → ℝ) (c δ L σ2 : ℝ) (hr : RepairedRegularity ν α β h c δ L σ2)
+    (J : ℕ) (hJ : 1 ≤ J) :
+    let μ := marginLaw ν
+    let n := (J+1)/2
+    (∀ p : Polynomial ℝ, p.natDegree ≤ J →
+      expectation μ (fun x => (party x-p.eval x)^2) ≥
+        c*(∫ x in Set.Icc (-δ) δ, (party x-p.eval x)^2)) ∧
+    residualVariance μ J ≥ 2*c*δ*residualVariance uniformMargins J ∧
+    2*c*δ*residualVariance uniformMargins J = c*δ*centralBinomial n^2/2 ∧
+    c*δ*centralBinomial n^2/2 ≥ c*δ/(8*(n:ℝ)) ∧
+    c*δ/(8*(n:ℝ)) ≥ c*δ/(4*((J:ℝ)+1)) := by
+  sorry
 
-/-- P023-E002: the unnormalized Jackson kernel is
+/-- Validator E002/doubt §4: the unnormalized Jackson kernel is
 (sin(s t/2)/sin(t/2))⁴, with the removable singularities filled by s⁴. -/
 def jacksonRaw (s : ℕ) (t : ℝ) : ℝ :=
   (if Real.sin (t/2)=0 then (s:ℝ) else Real.sin ((s:ℝ)*t/2)/Real.sin (t/2))^4
 
-/-- P023-E002: for `s ≥ 1`, normalize K_s so its integral on [-pi,pi]
-is 2pi; integration is ordinary Lebesgue integration. At `s = 0`,
-total division gives the zero kernel. -/
+/-- Validator E002/doubt §4: normalize K_s so its integral on [-pi,pi]
+is 2pi; integration is ordinary Lebesgue integration. -/
 def jacksonKernel (s : ℕ) (t : ℝ) : ℝ :=
   jacksonRaw s t / ((∫ u in Set.Icc (-Real.pi) Real.pi, jacksonRaw s u)/(2*Real.pi))
 
-/-- P023-E002: convolution H*K_s with H(theta)=h(cos theta),
+/-- Validator E002/doubt §4: convolution H*K_s with H(theta)=h(cos theta),
 using the normalized 1/(2pi) circular-convolution convention. -/
 def jacksonConvolution (s : ℕ) (h : ℝ → ℝ) (θ : ℝ) : ℝ :=
   (∫ t in Set.Icc (-Real.pi) Real.pi, h (Real.cos (θ-t))*jacksonKernel s t)/(2*Real.pi)
 
+/-- P023-T8 finite lemma (4), equation (9): the normalized Jackson kernel
+has first absolute moment at most K/s. Its convolution with h(cos theta) is a
+polynomial of degree at most 2s-2, approximating h with uniform error KL/s. -/
+theorem jackson_kernel_approximation (s : ℕ) (hs : 1 ≤ s) (h : ℝ → ℝ)
+    (L : ℝ) (hL : 0 ≤ L) (hlip : ∀ x ∈ Set.Icc (-1) 1, ∀ y ∈ Set.Icc (-1) 1,
+      |h x-h y| ≤ L*|x-y|) :
+    (∫ t in Set.Icc (-Real.pi) Real.pi, jacksonKernel s t)=2*Real.pi ∧
+    (∫ t in Set.Icc (-Real.pi) Real.pi, |t| * jacksonKernel s t)/(2*Real.pi) ≤ jacksonK/(s:ℝ) ∧
+    ∃ p : Polynomial ℝ, p.natDegree ≤ 2*s-2 ∧
+      (∀ θ, jacksonConvolution s h θ=p.eval (Real.cos θ)) ∧
+      (∀ x ∈ Set.Icc (-1) 1, |h x-p.eval x| ≤ jacksonK*L/(s:ℝ)) := by
+  sorry
 
-/-- P023-T8 finite lemma (5), P023-E002: each RD window side
+/-- P023-T8 finite lemma (5), validator E002/doubt §8: each RD window side
 has probability at least ck, and the population RD difference is beta plus the
 two smooth-part conditional means, with error bounded by 2Lk. -/
 theorem repaired_rd_finite_bounds (ν : Measure (ℝ × ℝ)) (α β : ℝ)
@@ -2750,14 +3117,14 @@ theorem repaired_population_rd_limit (ν : Measure (ℝ × ℝ)) (α β : ℝ)
     (repaired_rd_finite_bounds ν α β h c δ L σ2 hreg (k N) ⟨hkpos N,hkδ⟩).2.2.2 hrate
 
 
-/-- P023-E002: the number of sampled margin values in a
+/-- Validator E002/doubt §8: the number of sampled margin values in a
 Borel window A, as a finite sum of membership indicators. -/
 def sampleWindowCount {Ω : Type*} (sample : ℕ → Ω → ℝ × ℝ) (A : Set ℝ)
     (N : ℕ) (ω : Ω) : ℝ := by
   classical
   exact ∑ i : Fin N, if (sample i ω).1 ∈ A then (1:ℝ) else 0
 
-/-- P023-T8 finite lemma (5), P023-E002: an IID window count
+/-- P023-T8 finite lemma (5), validator E002/doubt §8: an IID window count
 with mean Np has probability at most 4/(Np) of falling below Np/2. The count
 is a literal sum of sample membership indicators. -/
 theorem iid_window_count_bound {Ω : Type*} [MeasurableSpace Ω]
@@ -2843,42 +3210,293 @@ theorem iid_window_count_bound {Ω : Type*} [MeasurableSpace Ω]
         _ = _ := by field_simp [ne_of_gt hNp]; ring
 
 
-/-- P023-E002: G_J=E[z_J z_Jᵀ], z_J=(1,D,X,...,X^J). -/
+/-- Validator E002/doubt §8: G_J=E[z_J z_Jᵀ], z_J=(1,D,X,...,X^J). -/
 def populationGram (μ : Measure ℝ) (J : ℕ) (j l : Fin (J+2)) : ℝ :=
   expectation μ (fun x => polynomialDesign J (fun x : ℝ => x) party x j *
     polynomialDesign J (fun x : ℝ => x) party x l)
 
-/-- P023-E002: the sample Gram matrix Ghat=N⁻¹ sum z_i z_iᵀ. -/
+/-- Validator E002/doubt §8: the sample Gram matrix Ghat=N⁻¹ sum z_i z_iᵀ. -/
 def sampleGram {Ω : Type*} (sample : ℕ → Ω → ℝ × ℝ) (N J : ℕ)
     (ω : Ω) (j l : Fin (J+2)) : ℝ :=
   (∑ i : Fin N, polynomialDesign J (fun i => (sample i ω).1)
     (fun i => party (sample i ω).1) i j *
     polynomialDesign J (fun i => (sample i ω).1) (fun i => party (sample i ω).1) i l)/(N:ℝ)
 
-/-- P023-E002: t_J=E[z_J Y], the population cross moment. -/
+/-- Validator E002/doubt §8: t_J=E[z_J Y], the population cross moment. -/
 def populationCross (ν : Measure (ℝ × ℝ)) (J : ℕ) (j : Fin (J+2)) : ℝ :=
   ∫ z, polynomialDesign J (fun x : ℝ => x) party z.1 j*z.2 ∂ν
 
-/-- P023-E002: that=N⁻¹ sum z_i Y_i. -/
+/-- Validator E002/doubt §8: that=N⁻¹ sum z_i Y_i. -/
 def sampleCross {Ω : Type*} (sample : ℕ → Ω → ℝ × ℝ) (N J : ℕ)
     (ω : Ω) (j : Fin (J+2)) : ℝ :=
   (∑ i : Fin N, polynomialDesign J (fun i => (sample i ω).1)
     (fun i => party (sample i ω).1) i j * (sample i ω).2)/(N:ℝ)
 
-/-- P023-E002: the square of the Euclidean coefficient norm. -/
+/-- Validator E002/doubt §8: the square of the Euclidean coefficient norm. -/
 def vectorSquared (J : ℕ) (v : Fin (J+2) → ℝ) : ℝ := ∑ j, v j^2
 
-/-- P023-E002: squared Frobenius matrix norm, sum of squares
+/-- Validator E002/doubt §8: squared Frobenius matrix norm, sum of squares
 of every entry, not a bound assumed for the matrix error. -/
 def frobeniusSquared (J : ℕ) (A : Fin (J+2) → Fin (J+2) → ℝ) : ℝ := ∑ j, ∑ l, A j l^2
 
-/-- P023-E002: the induced Euclidean operator norm of a finite
+/-- Validator E002/doubt §8: the induced Euclidean operator norm of a finite
 matrix, defined as the supremum of ||Av|| over unit Euclidean vectors. -/
 def matrixOperatorNorm (J : ℕ) (A : Fin (J+2) → Fin (J+2) → ℝ) : ℝ :=
   sSup {r | ∃ v : Fin (J+2) → ℝ, vectorSquared J v=1 ∧
     r=Real.sqrt (∑ j, (∑ l, A j l*v l)^2)}
 
+/-- P023-T8 finite lemma (6), validator E002/doubt §8 before equation (24):
+IID sample Gram and cross-moment MSE bounds, the population coefficient norm
+bound, and the finite inverse-matrix perturbation bound on the good Gram event. -/
+theorem iid_regression_matrix_bounds {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) (ν : Measure (ℝ × ℝ)) (sample : ℕ → Ω → ℝ × ℝ)
+    (hiid : IIDSample P ν sample) (hprob : ProbabilityLaw ν)
+    (hsupport : MarginSupport (marginLaw ν)) (hsq : Integrable (fun z => z.2^2) ν)
+    (m : ℝ → ℝ) (hmean : ConditionalMean ν m) (J : ℕ) (hJ : 1 ≤ J)
+    (hpd : MomentPositiveDefinite (marginLaw ν) J) (N : ℕ) (hN : 1 ≤ N) :
+    let μ := marginLaw ν
+    let M := ∫ z, z.2^2 ∂ν
+    let ell := smallestMomentEigenvalue μ J
+    let c := Classical.epsilon (PopNormal μ J m)
+    let ΔG := fun ω j l => sampleGram sample N J ω j l-populationGram μ J j l
+    let Δt := fun ω j => sampleCross sample N J ω j-populationCross ν J j
+    0 < ell ∧
+    (∫ ω, frobeniusSquared J (ΔG ω) ∂P) ≤ ((J:ℝ)+2)^2/(N:ℝ) ∧
+    (∫ ω, vectorSquared J (Δt ω) ∂P) ≤ ((J:ℝ)+2)*M/(N:ℝ) ∧
+    ell*vectorSquared J c ≤ M ∧
+    (∀ ω, matrixOperatorNorm J (ΔG ω) ≤ ell/2 →
+      Real.sqrt (vectorSquared J (fun j =>
+        olsCoefficients (polynomialDesign J (fun i : Fin N => (sample i ω).1)
+          (fun i => party (sample i ω).1)) (fun i => (sample i ω).2) j-c j)) ≤
+      (2/ell)*(Real.sqrt (vectorSquared J (Δt ω))+
+        matrixOperatorNorm J (ΔG ω)*Real.sqrt (M/ell))) := by
+  sorry
+
+/-- P023-T4(iii), validator E002/doubt §7: the uniform-law residual is odd
+away from zero, and its positive-side degree-1 and degree-7 formulas are exact. -/
+theorem uniform_residual_symmetry :
+    (∀ J, 1 ≤ J → ∀ x, x ≠ 0 → popResidual uniformMargins J (-x) = -popResidual uniformMargins J x) ∧
+    (∀ x, 0<x → popResidual uniformMargins 1 x=1/2-(3/4)*x ∧
+      popResidual uniformMargins 7 x=1/2-(11025*x-40425*x^3+63063*x^5-32175*x^7)/4096) := by
+  sorry
+
+/-- Repair certificate for P023-T7(g): the six-election T1 design has a
+normalized conditional point law, the specified tie convention, full rank,
+and conditional means equal to the exactly specified linear model. -/
+theorem finite_conditional_bias_probability_instance :
+    ProbabilityLaw (Measure.dirac (0:ℝ)) ∧
+    (∀ i, linearD i=party (linearX i)) ∧
+    0 < dot (finiteResidual 1 linearX linearD) (finiteResidual 1 linearX linearD) ∧
+    (∫ _ω : ℝ, polynomialOLS 1 linearX linearD linearY ∂Measure.dirac 0)-1/10 =
+      dot (finiteResidual 1 linearX linearD) (fun i => linearX i/20) /
+        dot (finiteResidual 1 linearX linearD) (finiteResidual 1 linearX linearD) := by
+  have hprob : ProbabilityLaw (Measure.dirac (0:ℝ)) := by simp [ProbabilityLaw]
+  have hd : ∀ i, linearD i=party (linearX i) := by
+    intro i; fin_cases i <;> norm_num [linearD,linearX,party]
+  refine ⟨hprob,hd,?_⟩
+  exact finite_conditional_bias (Measure.dirac (0:ℝ)) hprob 1 (by norm_num)
+    linearX linearD linear_hypotheses.1 hd linear_fullRank (1/2) (1/10)
+    (fun x => x/20) (fun i _ => linearY i)
+    (by intro i; exact integrable_dirac (by simp))
+    (by intro i; fin_cases i <;> norm_num [linearY,linearD,linearX])
+
+/-- Repair certificate for P023-T3(a)/T10: two close observations at 0 and k
+have positive winner and loser counts and a coarsened least-squares fit, although
+Condition 1 fails. Thus the repaired localization theorem includes the endpoint
+and tie cases that the earlier statement excluded. -/
+theorem coarsened_localization_endpoint_instance :
+    let k : ℝ := 1/2
+    let x : Fin 2 → ℝ := ![0,1/2]
+    let d : Fin 2 → ℝ := ![0,1]
+    let y : Fin 2 → ℝ := ![1/3,2/3]
+    TwoParty x d ∧ ¬ Condition1 k x ∧
+    0 < ∑ i ∈ close k x, d i ∧ 0 < ∑ i ∈ close k x, (1-d i) ∧
+    CoarsenedOLS k x d y (1/3) ∧
+    (∀ y' : Fin 2 → ℝ, (∀ i ∈ close k x, y i=y' i) →
+      ∀ β β', CoarsenedOLS k x d y β → CoarsenedOLS k x d y' β' → β=β') := by
+  dsimp only
+  let k : ℝ := 1/2
+  let x : Fin 2 → ℝ := ![0,1/2]
+  let d : Fin 2 → ℝ := ![0,1]
+  let y : Fin 2 → ℝ := ![1/3,2/3]
+  have hdata : TwoParty x d := by
+    refine ⟨?_,?_,?_,?_⟩
+    all_goals intro i; fin_cases i <;> norm_num [x,d]
+  have hnot : ¬ Condition1 k x := by
+    rintro ⟨_,⟨i,hi⟩⟩
+    fin_cases i <;> norm_num [k,x] at hi
+  have hclose : close k x=Finset.univ := by
+    ext i; fin_cases i <;> norm_num [close,k,x]
+  have hn1 : 0 < ∑ i ∈ close k x, d i := by rw [hclose]; norm_num [d,Fin.sum_univ_succ]
+  have hn0 : 0 < ∑ i ∈ close k x, (1-d i) := by rw [hclose]; norm_num [d,Fin.sum_univ_succ]
+  have hfit : CoarsenedOLS k x d y (1/3) := by
+    refine ⟨fun _ => 1/3,?_,?_⟩
+    · intro j; norm_num [d,y,Fin.sum_univ_succ]
+    · norm_num [d,y,Fin.sum_univ_succ]
+  refine ⟨hdata,hnot,hn1,hn0,hfit,?_⟩
+  intro y' hag β β' hβ hβ'
+  exact coarsened_localization k (by norm_num [k]) x d y y' hdata hn1 hn0 hag β β' hβ hβ'
 
 end
 end AronowAudit.P023
 
+#print axioms AronowAudit.P023.dot_sub_right
+#print axioms AronowAudit.P023.dot_predict_left
+#print axioms AronowAudit.P023.dot_predict_right
+#print axioms AronowAudit.P023.ols_weight_certificate
+#print axioms AronowAudit.P023.normal_equations_minimize
+#print axioms AronowAudit.P023.ols_exists_of_fullRank
+#print axioms AronowAudit.P023.chosen_ols_spec
+
+#print axioms AronowAudit.P023.linear_fullRank
+#print axioms AronowAudit.P023.linear_dual_span
+#print axioms AronowAudit.P023.linear_dual_moments
+#print axioms AronowAudit.P023.linear_weights
+#print axioms AronowAudit.P023.linear_exact_model
+#print axioms AronowAudit.P023.linear_window
+#print axioms AronowAudit.P023.linear_hypotheses
+#print axioms AronowAudit.P023.linear_outcomes_bounded
+#print axioms AronowAudit.P023.linear_agrees_on_close
+#print axioms AronowAudit.P023.linear_coefficient_values
+#print axioms AronowAudit.P023.linear_rd_values
+#print axioms AronowAudit.P023.linear_nonlocal
+#print axioms AronowAudit.P023.degree7_fullRank
+#print axioms AronowAudit.P023.degree7_dual_span
+#print axioms AronowAudit.P023.degree7_dual_moments
+#print axioms AronowAudit.P023.degree7_weights
+#print axioms AronowAudit.P023.degree7_exact_model
+#print axioms AronowAudit.P023.degree7_window
+#print axioms AronowAudit.P023.degree7_hypotheses
+#print axioms AronowAudit.P023.degree7_outcomes_bounded
+#print axioms AronowAudit.P023.degree7_agrees_on_close
+#print axioms AronowAudit.P023.degree7_coefficient_values
+#print axioms AronowAudit.P023.degree7_rd_values
+#print axioms AronowAudit.P023.degree7_nonlocal
+#print axioms AronowAudit.P023.degree7_all_weights_nonzero
+
+#print axioms AronowAudit.P023.binned_ols_identity
+#print axioms AronowAudit.P023.paper_bin_geometry
+#print axioms AronowAudit.P023.close_counts_positive
+#print axioms AronowAudit.P023.proposition1
+#print axioms AronowAudit.P023.coarsened_localization
+#print axioms AronowAudit.P023.printed_polynomial_localization_refuted
+
+#print axioms AronowAudit.P023.bin_scalar_geometry
+
+#print axioms AronowAudit.P023.appendix_rewriting
+#print axioms AronowAudit.P023.appendix_smooth_zero
+#print axioms AronowAudit.P023.corrected_population_bias
+#print axioms AronowAudit.P023.uniform_residual_constants
+#print axioms AronowAudit.P023.sigmoid_counterexample
+#print axioms AronowAudit.P023.clustered_counterexample
+#print axioms AronowAudit.P023.continuity_only_counterexample
+#print axioms AronowAudit.P023.corrected_proposition2
+#print axioms AronowAudit.P023.printed_proposition2
+#print axioms AronowAudit.P023.uniform_common_target_distant_information
+
+#print axioms AronowAudit.P023.linear_binCount
+#print axioms AronowAudit.P023.linear_bin_labels
+#print axioms AronowAudit.P023.linear_bin_fit
+#print axioms AronowAudit.P023.linear_bin_fitprime
+#print axioms AronowAudit.P023.linear_coarsened_values
+#print axioms AronowAudit.P023.linear_perturbation
+#print axioms AronowAudit.P023.linear_counterexample
+#print axioms AronowAudit.P023.degree7_binCount
+#print axioms AronowAudit.P023.degree7_bin_labels
+#print axioms AronowAudit.P023.degree7_bin_fit
+#print axioms AronowAudit.P023.degree7_bin_fitprime
+#print axioms AronowAudit.P023.degree7_coarsened_values
+#print axioms AronowAudit.P023.degree7_perturbation
+#print axioms AronowAudit.P023.degree7_counterexample
+
+#print axioms AronowAudit.P023.rd_weights
+#print axioms AronowAudit.P023.corrected_coarsened_weights
+#print axioms AronowAudit.P023.corrected_finite_polynomial_weights
+#print axioms AronowAudit.P023.corrected_finite_nonlocality
+#print axioms AronowAudit.P023.corrected_finite_conditional_moments
+#print axioms AronowAudit.P023.corrected_appendix_pairs
+
+#print axioms AronowAudit.P023.liftSmooth_predict
+#print axioms AronowAudit.P023.smooth_fullRank
+#print axioms AronowAudit.P023.dot_comm
+#print axioms AronowAudit.P023.ols_residual_certificate
+#print axioms AronowAudit.P023.finite_residual_orthogonal
+#print axioms AronowAudit.P023.finite_residual_denominator
+#print axioms AronowAudit.P023.finite_residual_span
+#print axioms AronowAudit.P023.finite_residual_positive
+#print axioms AronowAudit.P023.finite_ols_fwl
+#print axioms AronowAudit.P023.finite_fwl_weights
+
+#print axioms AronowAudit.P023.residual_bias_integral_identity
+#print axioms AronowAudit.P023.residual_uniform_error_bound
+#print axioms AronowAudit.P023.residual_rms_error_bound
+#print axioms AronowAudit.P023.repaired_rate_from_finite_bounds
+#print axioms AronowAudit.P023.clustered_bias_rational_certificate
+#print axioms AronowAudit.P023.sigmoid_rational_certificates
+
+#print axioms AronowAudit.P023.central_bin_fwl
+
+#print axioms AronowAudit.P023.uniform_law_normalized
+#print axioms AronowAudit.P023.gliding_hump_finite_inequality
+
+#print axioms AronowAudit.P023.ols_unique
+#print axioms AronowAudit.P023.ols_exact_fit
+#print axioms AronowAudit.P023.finite_ols_mean
+#print axioms AronowAudit.P023.finite_conditional_bias
+#print axioms AronowAudit.P023.finite_exact_polynomial_unbiased
+
+#print axioms AronowAudit.P023.finite_residual_polynomial
+#print axioms AronowAudit.P023.weighted_uncorrelated_squares
+
+#print axioms AronowAudit.P023.sigmoid_fit_criterion
+#print axioms AronowAudit.P023.sigmoid_sample_separation
+#print axioms AronowAudit.P023.clustered_fit_bound
+#print axioms AronowAudit.P023.appendix_smooth_continuous
+#print axioms AronowAudit.P023.weierstrass_without_constant
+#print axioms AronowAudit.P023.central_binomial_lower_bound
+
+#print axioms AronowAudit.P023.central_binomial_recurrence
+#print axioms AronowAudit.P023.central_binomial_lower_bound_mul
+
+#print axioms AronowAudit.P023.printed_coarsened_prediction
+#print axioms AronowAudit.P023.printed_coarsened_to_bins
+#print axioms AronowAudit.P023.printed_coarsened_proposition1
+
+#print axioms AronowAudit.P023.central_binomial_wallis
+
+#print axioms AronowAudit.P023.central_binomial_wallis_bounds
+
+#print axioms AronowAudit.P023.density_residual_comparison
+
+#print axioms AronowAudit.P023.jackson_kernel_approximation
+
+#print axioms AronowAudit.P023.repaired_rd_finite_bounds
+
+#print axioms AronowAudit.P023.iid_window_count_bound
+
+#print axioms AronowAudit.P023.iid_regression_matrix_bounds
+
+#print axioms AronowAudit.P023.coarsened_intercepts_from_bins
+
+#print axioms AronowAudit.P023.bins_to_printed_coarsened
+
+#print axioms AronowAudit.P023.coarsened_ols_printed_equivalence
+
+#print axioms AronowAudit.P023.finite_fit_polynomial_eval
+
+#print axioms AronowAudit.P023.finite_fit_polynomial_degree
+
+#print axioms AronowAudit.P023.finite_fit_polynomial_nontrivial
+
+#print axioms AronowAudit.P023.finite_polynomial_zero_weight_counts
+
+#print axioms AronowAudit.P023.uniform_residual_symmetry
+
+#print axioms AronowAudit.P023.finite_ols_bias_integral
+
+#print axioms AronowAudit.P023.residual_amplification_lower_bound
+
+#print axioms AronowAudit.P023.finite_conditional_bias_probability_instance
+#print axioms AronowAudit.P023.coarsened_localization_endpoint_instance
+
+#print axioms AronowAudit.P023.repaired_population_rd_limit

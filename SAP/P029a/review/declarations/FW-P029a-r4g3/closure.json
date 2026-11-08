@@ -1,0 +1,831 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P029a.T11",
+   "target_id": "P029-T11",
+   "fingerprint": "ebb0b54e534be16e0caff6688769f15c71e30fca8697f40ca89e98c44ce04bca",
+   "module": "SAP.P029a.Challenge.Part1",
+   "line": 100,
+   "closure": [
+    {
+     "line": 56,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.FiniteIndependent"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.IsFiniteLaw"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.d0"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.d1"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.isDefier"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.mk"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.observedOutcome"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.receivedTreatment"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.treatmentEffect"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.x"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.y0"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.y1"
+    },
+    {
+     "line": 131,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_5"
+    },
+    {
+     "line": 153,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDependenceFacts"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDependenceFacts._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDependenceFacts._proof_2"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans._proof_3"
+    },
+    {
+     "line": 140,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.T11Statement"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.bernoulliProductMass"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteConditionalMean"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteCorrelation"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteCovariance"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteExpectation"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteProbability"
+    },
+    {
+     "line": 51,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteVariance"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.indicatorValue"
+    },
+    {
+     "line": 96,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semComplianceMass"
+    },
+    {
+     "line": 103,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDefierResidual"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDefierResponse"
+    },
+    {
+     "line": 101,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDefierWitnessMass"
+    },
+    {
+     "line": 110,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDependentAssignment"
+    },
+    {
+     "line": 112,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDependentResidual"
+    },
+    {
+     "line": 106,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDependentResponse"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.specifiedInsideLogRates._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.specifiedUnweightedScores._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.specifiedUnweightedScores._proof_2"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P029a.T12",
+   "target_id": "P029-T12",
+   "fingerprint": "754fdb8de66c06318b700d4e66fa9b538fb460ad73d147425a95ce6bdef670b5",
+   "module": "SAP.P029a.Challenge.Part1",
+   "line": 105,
+   "closure": [
+    {
+     "line": 91,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.FiniteIVConditions"
+    },
+    {
+     "line": 56,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.FiniteIndependent"
+    },
+    {
+     "line": 170,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.HeterogeneousIVFacts"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.HeterogeneousWitnessMeans"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.IsFiniteLaw"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.d0"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.d1"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.isComplier"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.isDefier"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.mk"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.observedOutcome"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.receivedTreatment"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.treatmentEffect"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.x"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.y0"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.y1"
+    },
+    {
+     "line": 178,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMConstantEffect"
+    },
+    {
+     "line": 131,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_5"
+    },
+    {
+     "line": 153,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDependenceFacts"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDependenceFacts._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDependenceFacts._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans._proof_3"
+    },
+    {
+     "line": 143,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.T12Statement"
+    },
+    {
+     "line": 113,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.assignResponse"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.bernoulliProductMass"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteConditionalMean"
+    },
+    {
+     "line": 53,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteCorrelation"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteCovariance"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteExpectation"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteProbability"
+    },
+    {
+     "line": 51,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteVariance"
+    },
+    {
+     "line": 63,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteWald"
+    },
+    {
+     "line": 115,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.heterogeneousResponse"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.indicatorValue"
+    },
+    {
+     "line": 96,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semComplianceMass"
+    },
+    {
+     "line": 103,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDefierResidual"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDefierResponse"
+    },
+    {
+     "line": 101,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDefierWitnessMass"
+    },
+    {
+     "line": 110,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDependentAssignment"
+    },
+    {
+     "line": 112,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDependentResidual"
+    },
+    {
+     "line": 106,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.semDependentResponse"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.specifiedInsideLogRates._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.specifiedUnweightedScores._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.specifiedUnweightedScores._proof_2"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P029a.T13",
+   "target_id": "P029-T13",
+   "fingerprint": "0549308c70bcc42f084cdae1a2bd1f6a49daf66793ebcc84096324dd85601681",
+   "module": "SAP.P029a.Challenge.Part1",
+   "line": 110,
+   "closure": [
+    {
+     "line": 68,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.ClosedFitValues"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.ClosedFitValues._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.ClosedFitValues._proof_2"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.ClosedLikelihoodCertificates"
+    },
+    {
+     "line": 91,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.FiniteIVConditions"
+    },
+    {
+     "line": 56,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.FiniteIndependent"
+    },
+    {
+     "line": 78,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.FiniteLatentIgnorability"
+    },
+    {
+     "line": 193,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.FivePerArmBiasFacts"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.FivePerArmBiasFacts._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.FivePerArmBiasFacts._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.FivePerArmBiasFacts._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.FivePerArmBiasFacts._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.FivePerArmBiasFacts._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.FivePerArmBiasFacts._proof_6"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.IsFiniteLaw"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.d0"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.d1"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.isComplier"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.isDefier"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.mk"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.receivedTreatment"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.treatmentEffect"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.x"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.y0"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.PotentialResponse.y1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDefierFacts._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SEMDependenceFacts._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.SEMWitnessMeans._proof_3"
+    },
+    {
+     "line": 198,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SaturatedBiasWitnessFacts"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SaturatedBiasWitnessFacts._proof_1"
+    },
+    {
+     "line": 212,
+     "module": "SAP.P029a.Defs.Part4",
+     "name": "SAP.P029a.SaturatedScoreBiasFacts"
+    },
+    {
+     "line": 148,
+     "module": "SAP.P029a.Defs.Part6",
+     "name": "SAP.P029a.T13Statement"
+    },
+    {
+     "line": 113,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.assignResponse"
+    },
+    {
+     "line": 195,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.bernoulliContribution"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.bernoulliProductMass"
+    },
+    {
+     "line": 132,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.binomialCountMass"
+    },
+    {
+     "line": 118,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.closedReceiptTriangle"
+    },
+    {
+     "line": 99,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.complianceTypeMass"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.complianceTypeMass._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.complianceTypeMass._proof_2"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.constantResponse"
+    },
+    {
+     "line": 138,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.empiricalPositiveScore"
+    },
+    {
+     "line": 74,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteComplianceScore"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteConditionalMean"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteExpectation"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.finiteProbability"
+    },
+    {
+     "line": 135,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.independentArmCountMass"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.indicatorValue"
+    },
+    {
+     "line": 198,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.nestedReceiptProbability"
+    },
+    {
+     "line": 120,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.positiveComplianceDifference"
+    },
+    {
+     "line": 111,
+     "module": "SAP.P029a.Defs.Part1",
+     "name": "SAP.P029a.sixAtomMass"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.specifiedInsideLogRates._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.specifiedUnweightedScores._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.specifiedUnweightedScores._proof_2"
+    },
+    {
+     "line": 122,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.twoReceiptFit"
+    },
+    {
+     "line": 129,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.twoReceiptLikelihood"
+    },
+    {
+     "line": 126,
+     "module": "SAP.P029a.Defs.Part2",
+     "name": "SAP.P029a.twoReceiptMass"
+    }
+   ]
+  }
+ ]
+}

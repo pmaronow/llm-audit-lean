@@ -1,0 +1,162 @@
+[
+ {
+  "target_id": "P045-T1",
+  "decision": "whole",
+  "theorem": "SAP.P045a.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.bernoulli_count_counterexample",
+   "AronowAudit.P045.bernoulli_direct_failure",
+   "AronowAudit.P045.bernoulli_direct_failure_means",
+   "AronowAudit.P045.bernoulli_ratio_counterexample",
+   "SAP.P045a.WH.W1.T1_whole",
+   "SAP.P045a.WH.W1.T1_assembly",
+   "SAP.P045a.WH.W1.T1_L1_proof",
+   "SAP.P045a.WH.W1.retained_T1",
+   "AronowAudit.P045.expect_finset_sum",
+   "AronowAudit.P045.bernoulli_coordinate_expect",
+   "AronowAudit.P045.co_members_marginal_four",
+   "AronowAudit.P045.four_arm_domains",
+   "AronowAudit.P045.co_members_arm_mean",
+   "AronowAudit.P045.bernoulli4_count_law",
+   "AronowAudit.P045.bernoulli_arm_count_conditional",
+   "AronowAudit.P045.witness_high_expect",
+   "AronowAudit.P045.witness_low_expect"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P045a.T1WholeStatement"
+ },
+ {
+  "target_id": "P045-T2",
+  "decision": "whole",
+  "theorem": "SAP.P045a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.bernoulli_group_ht_unbiased",
+   "AronowAudit.P045.co_members_group_ht_expectation",
+   "AronowAudit.P045.co_members_group_ht_formula",
+   "AronowAudit.P045.cr_group_arm_unbiased",
+   "AronowAudit.P045.marginal_estimator_correction",
+   "SAP.P045a.WH.W1.T2_whole",
+   "SAP.P045a.WH.W1.T2_assembly",
+   "SAP.P045a.WH.W1.T2_L1_proof",
+   "SAP.P045a.WH.W1.retained_T1",
+   "SAP.P045a.WH.W1.retained_T2",
+   "SAP.P045a.WH.W1.ratio_failure",
+   "SAP.P045a.WH.W1.contrasts_of_means",
+   "SAP.P045a.WH.W1.coupled_cr_domains",
+   "SAP.P045a.WH.W1.coupled_cr_support",
+   "SAP.P045a.WH.W1.cr_arm_denominator",
+   "SAP.P045a.WH.W1.sap_expect_sub",
+   "AronowAudit.P045.bernoulli_count_counterexample",
+   "AronowAudit.P045.bernoulli_direct_failure",
+   "AronowAudit.P045.bernoulli_direct_failure_means",
+   "AronowAudit.P045.bernoulli_ratio_counterexample",
+   "AronowAudit.P045.co_members_marginal_four",
+   "AronowAudit.P045.four_arm_domains",
+   "AronowAudit.P045.bernoulli_count_event_probability",
+   "AronowAudit.P045.expect_sub",
+   "AronowAudit.P045.witness_high_expect",
+   "AronowAudit.P045.witness_low_expect",
+   "AronowAudit.P045.uniform_first_stage_mean",
+   "AronowAudit.P045.Wave1.dvc_complement_average"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P045.overall_group_unbiased",
+    "reason": "The aggregate correction supplies the one-group overall identity used in the Solution."
+   },
+   {
+    "lean_name": "AronowAudit.P045.selected_mean_expect",
+    "reason": "The aggregate correction supplies the uniform selection identity specialized in the Solution."
+   }
+  ],
+  "statement_definition": "SAP.P045a.T2WholeStatement"
+ },
+ {
+  "target_id": "P045-T3",
+  "decision": "whole",
+  "theorem": "SAP.P045a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.singleton_group_finite_moments",
+   "AronowAudit.P045.singleton_variance_counterexample",
+   "SAP.P045a.WH.W1.T3_whole",
+   "SAP.P045a.WH.W1.T3_assembly",
+   "SAP.P045a.WH.W1.T3_L1_proof",
+   "SAP.P045a.WH.W1.T3_L2_proof",
+   "SAP.P045a.WH.W1.retained_T3",
+   "SAP.P045a.WH.W1.toy_local",
+   "SAP.P045a.WH.W1.toy_sample_variance",
+   "AronowAudit.P045.fixed_three_supports",
+   "AronowAudit.P045.cr_expect_average",
+   "AronowAudit.P045.cr_mass_probability",
+   "AronowAudit.P045.Wave1.dvc_selected_sample_variance"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P045.identical_group_selected_moments",
+    "reason": "The selected six-group counterexample already exports the estimator moments; this general identical-group calculation is a helper."
+   },
+   {
+    "lean_name": "AronowAudit.P045.three_unit_affine_moments",
+    "reason": "The additive local and full counterexample rows already export the retained moments; the general affine formulas are not part of the retained statement."
+   }
+  ],
+  "statement_definition": "SAP.P045a.T3WholeStatement"
+ },
+ {
+  "target_id": "P045-T4",
+  "decision": "restricted",
+  "theorem": "SAP.P045a.T4",
+  "restriction": "Retains mathematical parts (a)-(d), including the exact bias, nonnegativity, equality if and only if within-group effects are constant, both general singleton-drop biases, both dilated biases and their strict negativity criterion, and undefined corrected toy variance on every admissible toy assignment. Omits execution of an R implementation that propagates undefined arm variances to NA and emits a warning, and replacement of the reported toy output entries by NA. The optional regenerated six-by-six toy is not asserted.",
+  "rows_used": [
+   "AronowAudit.P045.Wave1.direct_variance_correction_proof",
+   "AronowAudit.P045.Wave1.singleton_drop_bias_proof",
+   "AronowAudit.P045.Wave1.singleton_drop_dilated_bias_proof",
+   "AronowAudit.P045.toy_required_direct_variance_undefined"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P045.direct_group_cr_unbiased",
+    "reason": "Its mean identity is included in the complete direct-variance correction row."
+   },
+   {
+    "lean_name": "AronowAudit.P045.pop_var_nonnegative",
+    "reason": "Nonnegativity is already exported by the correction and singleton bias rows."
+   },
+   {
+    "lean_name": "AronowAudit.P045.pop_var_scale",
+    "reason": "The selected dilated-bias row already exports the scaled variance calculations."
+   },
+   {
+    "lean_name": "AronowAudit.P045.pop_var_zero_iff_constant",
+    "reason": "The correction row already exports the equality characterization."
+   },
+   {
+    "lean_name": "AronowAudit.P045.selected_direct_cr_unbiased",
+    "reason": "Its selected mean identity is included in the complete direct-variance correction row."
+   },
+   {
+    "lean_name": "AronowAudit.P045.singleton_sample_variance_undefined",
+    "reason": "The retained toy theorem directly states undefined required variance on every admissible toy assignment."
+   }
+  ]
+ },
+ {
+  "target_id": "P045-T5",
+  "decision": "whole",
+  "theorem": "SAP.P045a.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.full_neighborhood_counterexample",
+   "SAP.P045a.WH.W1.T5_whole",
+   "SAP.P045a.WH.W1.T5_assembly",
+   "SAP.P045a.WH.W1.retained_T5",
+   "AronowAudit.P045.full_neighborhood_events",
+   "AronowAudit.P045.sum_tuple_succ"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P045a.T5WholeStatement"
+ }
+]

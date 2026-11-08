@@ -1,0 +1,17 @@
+import SAP.P010.Defs
+
+open SAP.P010
+
+#eval (List.finRange 3).map fun a => (passers a, failureShare a, trimShare a, keptLower a, keptUpper a)
+#eval (List.finRange 3).map fun a => sampleBounds preferCount a
+#eval (List.finRange 3).map fun a => sampleBounds approveCount a
+#eval (List.finRange 3).map fun a => fractionalPreference a
+#eval minAlwaysShare
+-- symmetric (quantile-rule) counts for comparison
+#eval (List.finRange 3).map fun a => (⌈(passers a : ℚ) * (1 - trimShare a)⌉, (passers a : ℚ) * (1 - trimShare a), (passers a : ℚ) * trimShare a)
+
+#print SAP.P010.T1Statement._proof_1
+#print SAP.P010.T2Statement._proof_1
+#print SAP.P010.meanOn
+#print SAP.P010.leftQuantile
+#check @SAP.P010.compatiblePopulations

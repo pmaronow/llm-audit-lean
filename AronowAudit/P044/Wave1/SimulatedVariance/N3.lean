@@ -17,7 +17,7 @@ theorem n3_proof : N3 := by
     jointCount cliqueF i j a b =
       cliqueJointTable (decide (i = j)) (decide (i.val / 4 = j.val / 4)) a b
   intro i j
-  -- Each fixed unit pair includes all 16 exposure-label pairs.
+  -- Keep all 16 label pairs in each kernel check so their reductions are shared.
   -- The 144 checks include the diagonal and every zero entry of the table.
   fin_cases i <;> fin_cases j <;> decide +kernel
 

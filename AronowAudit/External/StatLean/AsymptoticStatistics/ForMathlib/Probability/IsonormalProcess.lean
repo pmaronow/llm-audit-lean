@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.Probability.ProductMeasure
 import Mathlib.Probability.Independence.InfinitePi
 import Mathlib.Probability.Independence.Integration
@@ -209,6 +205,10 @@ theorem integrable_coord_sq (n : ℕ) :
     Integrable (fun ω => coord n ω * coord n ω) iidStdGaussian :=
   (memLp_coord n).integrable_mul (memLp_coord n)
 
+/-- The product of two distinct coordinates is integrable. -/
+theorem integrable_coord_mul {m n : ℕ} :
+    Integrable (fun ω => coord m ω * coord n ω) iidStdGaussian :=
+  (memLp_coord m).integrable_mul (memLp_coord n)
 
 /-! ## The orthonormal family `(eₙ)` in `L²(Ω)` -/
 
@@ -293,6 +293,10 @@ theorem isonormal_norm (b : HilbertBasis ℕ ℝ H) (h : H) :
     ‖isonormal b h‖ = ‖h‖ := by
   rw [isonormal, LinearIsometry.norm_map]
 
+/-- **Isometry of the isonormal process (squared form)**: `‖W h‖²_{L²} = ‖h‖²_H`. -/
+theorem isonormal_isometry_norm (b : HilbertBasis ℕ ℝ H) (h : H) :
+    ‖isonormal b h‖ ^ 2 = ‖h‖ ^ 2 := by
+  rw [isonormal_norm]
 
 /-- **Covariance of the isonormal process**: `E[(W h)(W h')] = ⟪h, h'⟫_H`.
 
@@ -309,6 +313,14 @@ theorem isonormal_cov (b : HilbertBasis ℕ ℝ H) (h h' : H) :
   change (isonormal b h ω) * (isonormal b h' ω) = (isonormal b h' ω) * (isonormal b h ω)
   ring
 
+/-- **Series formula**: `W h = ∑' n, ⟪bₙ, h⟫ • eₙ`, the series converging in
+`L²(Ω)`. -/
+theorem isonormal_eq_tsum (b : HilbertBasis ℕ ℝ H) (h : H) :
+    isonormal b h = ∑' n, b.repr h n • e n := by
+  rw [isonormal, LinearIsometry.coe_comp, Function.comp_apply,
+    LinearIsometryEquiv.coe_toLinearIsometry, fromCoeffs,
+    OrthogonalFamily.linearIsometry_apply]
+  simp only [LinearIsometry.toSpanSingleton_apply]
 
 /-- **Convergence of the defining series** (`HasSum` form): the partial sums of
 `∑ ⟪bₙ, h⟫ • eₙ` converge to `W h` in `L²(Ω)`. This is exactly Cauchy-ness of
@@ -439,6 +451,16 @@ theorem lp_norm_sq_eq_integral_mul (f : Lp ℝ 2 iidStdGaussian) :
     ‖f‖ ^ 2 = ∫ ω, (f : (ℕ → ℝ) → ℝ) ω * (f : (ℕ → ℝ) → ℝ) ω ∂iidStdGaussian := by
   rw [← real_inner_self_eq_norm_sq, L2.inner_def]; rfl
 
+/-- The integral of a real `L²` function is its inner product with the constant `1`. -/
+theorem integral_eq_inner_one (f : Lp ℝ 2 iidStdGaussian) :
+    (∫ ω, (f : (ℕ → ℝ) → ℝ) ω ∂iidStdGaussian)
+      = ⟪(indicatorConstLp 2 MeasurableSet.univ
+          (by simp) (1 : ℝ)), f⟫_ℝ := by
+  rw [L2.inner_indicatorConstLp_eq_setIntegral_inner]
+  simp only [Measure.restrict_univ]
+  refine integral_congr_ae (Filter.Eventually.of_forall (fun ω => ?_))
+  change (f : (ℕ → ℝ) → ℝ) ω = (f : (ℕ → ℝ) → ℝ) ω * 1
+  rw [mul_one]
 
 /-- **Characteristic function of the isonormal image.**  For every `t`, the
 characteristic function of the pushforward law `iidStdGaussian.map (W h)` is the

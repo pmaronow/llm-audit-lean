@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P006-T11",
+    "theorem": "SAP.P006a.T11",
+    "fingerprint": "ed3dd4d278a12d4855b6c6c53705f7c65ca693f6cc6edb592c48cd77470e1524",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:12 constructs C=Unit, P={constant 0,constant 1}, constant-zero reward, and a Dirac finite-outcome law, proving together every universal-branch hypothesis: all policies admissible, zero feasible, positive-treatment reward best response, and treated-data invariance. The same file independently computes welfare 0 and -3 for the two policies on the B=3 shifted Dirac example. No reviewed Challenge theorem is used.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P006-T12",
+    "theorem": "SAP.P006a.T12",
+    "fingerprint": "f12923ad9f919c00c46eedaf035de52652b3fc89605e6e2580648c60cf22c9e5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Density.lean independently proves that intervalLaw and referenceWithAtom are probability measures, the atom masses are 0 and 1/2, intervalLaw is absolutely continuous with respect to referenceWithAtom, reverse absolute continuity fails, and no representing density exists. It also computes both oracle mean functions, effect 1 and estimator 0. The closed theorem has no antecedent that could make it vacuous. Common support and the remaining stochastic completion were checked analytically: each oracle uses the genuine product nu x uniform[0,1], a measurable fixed-policy threshold of its independent seed, one unit, bounded constant potential outcomes and oracle estimator; the two agents admit the displayed independent product coupling. All printed-reading conditions are checked separately in claim-analysis.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P006-T13",
+    "theorem": "SAP.P006a.T13",
+    "fingerprint": "58af88dada168dbc6f256d4523ebe1fe7b2d94683784721b241797f79cac5109",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteModel.lean constructs a one-unit experiment on Bool with covariate Unit, population/reference Dirac measure, potential outcomes 0 and 1, zero oracle estimator, and a policy-dependent genuine Bernoulli law. It proves every OutcomeStanding field, including Bernoulli conditional means and ignorability for every admissible policy, then instantiates two agents and proves all remaining hypotheses jointly: common baseline, reference probability and absolute continuity, effect integrability, treated-residual integrability, treated conditional unbiasedness and individual weighted-reward integrability. No reviewed Challenge theorem is invoked.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P006-T14",
+    "theorem": "SAP.P006a.T14",
+    "fingerprint": "954e27797b838f91f31a7f0459d26e85f9ab16f1f28e28bf2ec6404a659e7236",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:35 gives the reference probability Dirac() and constant effects 1 and 2, proving positive-part integrability and the real comparison. The example at line 42 verifies that extendedPositiveMean of the constant effect 1 under counting measure on Nat is genuinely infinity. Thus both the ordinary finite domain and the extended infinite domain are populated without Bochner-integral defaults.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P006-T15",
+    "theorem": "SAP.P006a.T15",
+    "fingerprint": "218e2e1ab9a33471b3515fa9fe28f084d2708f832ad076f93545f13ef0cb15a8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:46 proves both complete observed-mass-function equalities. The example at line 56 verifies that binary joint weights are nonnegative and normalized, treatment probabilities lie in (0,1], the untreated means 0 and 2 differ, the false stratum has zero untreated mass, and marginal untreated mass is 1/4. The example at line 65 proves pointwise maximumDeviation=0 and its integral=0 for every singleton-private-covariate model. Deterministic potential outcomes on these finite spaces supply measurable finite-mean, ignorable one-unit completions; singleton feasible classes satisfy the printed all-policy positivity premise. The conditions checked against the printed identification reading are listed in claim-analysis.md.",
+    "confidence": 0.98
+  }
+]

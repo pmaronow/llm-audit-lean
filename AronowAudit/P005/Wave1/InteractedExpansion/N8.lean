@@ -19,7 +19,7 @@ theorem mean_abs_le_bound {n : ℕ} (A : Finset (Fin n)) (hA : A.Nonempty)
         mean_mono A _ _ (fun i hi => (abs_le.mp (hf i hi)).2)
       _ = c := mean_const A hA _
 
-/-- A raw-sum proof using Cauchy--Schwarz.
+/-- A raw-sum proof: Cauchy--Schwarz replaces the pairwise-sum expansion.
 Set B=A\{z}, k=|B|, t=k+1, U=sum_B v, V=sum_B v², e=n⁻².
 Then t² Cov(a,v)=e(tV-U²)-U and t² Var(a)=k-2eU+e²(tV-U²). -/
 theorem n8_proof : N8 := by

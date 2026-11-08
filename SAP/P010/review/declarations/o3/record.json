@@ -1,0 +1,111 @@
+[
+ {
+  "target_id": "P010-T11",
+  "decision": "whole",
+  "theorem": "SAP.P010.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.transport_logistic_certificate",
+   "AronowAudit.P010.transport_odds_counterexample"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T11_correspondence",
+  "statement_definition": "SAP.P010.T11Statement",
+  "declaration_review_round_2": {
+   "finding": "label_wrong/minor: the refuted label and docstring opening overstated a counterexample to an explicit formal reading of the printed weighting guidance.",
+   "resolution": "Relabelled whole and named the exact-distribution-matching reading with replication membership coded 1; all counterexample facts, formal statement, proof and row credits unchanged.",
+   "source": "fw/round2/T11/r3g2/findings.json",
+   "status": "resolved"
+  }
+ },
+ {
+  "target_id": "P010-T12",
+  "decision": "whole",
+  "theorem": "SAP.P010.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.transport_bayes",
+   "AronowAudit.P010.transport_corrected_density",
+   "AronowAudit.P010.transport_mass_factors",
+   "AronowAudit.P010.square_density_normalization"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P010.transport_corrected_finite",
+    "reason": "Finite-support specialization adds nothing to the general dominating-measure statement."
+   },
+   {
+    "lean_name": "AronowAudit.P010.transport_printed_finite",
+    "reason": "Finite-support specialization adds nothing to the general dominating-measure statement."
+   }
+  ],
+  "bridge": "SAP.P010.Bridge.T12_correspondence",
+  "statement_definition": "SAP.P010.T12WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P010.transport_mass_factors",
+   "AronowAudit.P010.square_density_normalization"
+  ]
+ },
+ {
+  "target_id": "P010-T13",
+  "decision": "refuted",
+  "theorem": "SAP.P010.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.Wave1.lower_tail_upper_bound_counterexample_proof"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T13_correspondence",
+  "statement_definition": "SAP.P010.T13Statement"
+ },
+ {
+  "target_id": "P010-T14",
+  "decision": "whole",
+  "theorem": "SAP.P010.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.Wave1.upper_tail_proof_corrected_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P010.other_arm_conditional_union_bound",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P010.upper_tail_fixed_mass",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   }
+  ],
+  "bridge": "SAP.P010.Bridge.T14_correspondence",
+  "statement_definition": "SAP.P010.T14Statement"
+ },
+ {
+  "target_id": "P010-T15",
+  "decision": "whole",
+  "theorem": "SAP.P010.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.Wave1.observable_upper_bound_corrected_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P010.conditional_law_consistency",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P010.eventMean_eventLaw",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P010.passer_tail_mean_formula",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P010.potential_trim_consistency",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   }
+  ],
+  "bridge": "SAP.P010.Bridge.T15_correspondence",
+  "statement_definition": "SAP.P010.T15Statement"
+ }
+]

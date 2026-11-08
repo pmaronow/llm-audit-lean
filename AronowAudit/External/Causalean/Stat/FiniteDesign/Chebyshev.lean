@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -70,6 +69,24 @@ theorem chebyshev (X : Ω → ℝ) {ε : ℝ} (hε : 0 < ε) :
   rw [le_div_iff₀ hε2, mul_comm]
   exact hcore
 
+open Classical in
+/-- **Zero-hitting bound for a nonzero-mean statistic.** In a finite design, a statistic whose
+design mean is nonzero equals zero with probability at most its design variance divided by the
+square of its mean. This is the Chebyshev corollary that controls degeneracy of a random
+Horvitz–Thompson / Hájek denominator: a zero value is exactly a deviation from the mean of size
+equal to the mean, so it is `Var / mean²`-rare. -/
+lemma Pr_eq_zero_le (X : Ω → ℝ) (h : D.E X ≠ 0) :
+    D.Pr (fun z => X z = 0) ≤ D.Var X / (D.E X) ^ 2 := by
+  have hpos : (0 : ℝ) < |D.E X| := abs_pos.mpr h
+  have hmono : D.Pr (fun z => X z = 0) ≤ D.Pr (fun z => |D.E X| ≤ |X z - D.E X|) := by
+    apply D.Pr_mono
+    intro z hz
+    have habs : |X z - D.E X| = |D.E X| := by rw [hz, zero_sub, abs_neg]
+    exact le_of_eq habs.symm
+  have hcheb : D.Pr (fun z => |D.E X| ≤ |X z - D.E X|) ≤ D.Var X / |D.E X| ^ 2 :=
+    D.chebyshev X hpos
+  rw [sq_abs] at hcheb
+  exact hmono.trans hcheb
 
 end FiniteDesign
 end DesignBased

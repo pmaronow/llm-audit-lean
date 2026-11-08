@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P045-T17",
+    "theorem": "SAP.P045b.T17",
+    "fingerprint": "8bd063b6ae059d364e06eabea0945e8e51ab1ecbd55f0b6814bfac0bbe69bd13",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Instances.lean:9 constructs a normalized fair design on Assignment 1. With Bool labels, D(z,i)=z(i), k=true, l=false, and y(i,true)=20, both individual exposure probabilities equal 1/2. The example at line 37 satisfies all top-level hypotheses and all conditional-discrepancy hypotheses, including positive empty/nonempty event probabilities and nonzero total. The examples at lines 56 and 61 check zero empty-cell HT total, undefined Hajek/sample mean, and conditional HT mean 40.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T18",
+    "theorem": "SAP.P045b.T18",
+    "fingerprint": "4af0980f73f8cfd0a31e07c8e4829cb62a318d9b9a349a6e2ab2fb0fa5f04ad8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Instances.lean:71 and line 74 check ordered deletion at both endpoints of a four-coordinate vector; line 77 checks the N=1 boundary. Line 82 independently constructs and proves uniqueness of f(a,u)=if a then 20 else 0 for y(z)=if z(2) then 20 else 0, using Fin.insertNth to reach every product argument. The only input requirements are a positive vector length and a valid index; these instances supply both.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T19",
+    "theorem": "SAP.P045b.T19",
+    "fingerprint": "d20c0092c9ffa60ef4db4223e51af3d82dfd5a4a9b1921b075eb95737b42ea6a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Instances.lean:92 supplies n=3, K=2, psi=2/3 and z=![true,true,false], checking n>=2, 0<psi<1, K=psi*n and treatedCount(z)=K together. It also checks treated individual's peer count 1 and control individual's peer count 2, so neither treatment branch is vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T20",
+    "theorem": "SAP.P045b.T20",
+    "fingerprint": "83c0653e3618932fc86d2c18f94b98827993040943637eb874a3ddcee53fc01a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Instances.lean:102 checks the genuine nonempty corrected witness S={1,6} on Fin 9 with epsilon=3; line 104 checks it fails pairwise-within-three and line 108 checks covering. Lines 110 and 112 exclude an empty-set artifact. Independently, python3 scratch/Enumerate.py checks all 512 subsets (511 nonempty), finding no W+C set and exactly the thirteen canonical P+C sets. The graph, hop distance, epsilon and set conditions all match the canonical counterexample; the item proves that assertion rather than refuting it.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P045-T21",
+    "theorem": "SAP.P045b.T21",
+    "fingerprint": "70b9f339d6efd7d130296c63adab89bb7f918adc5420a084ae2168f829bfc71f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Instances.lean:115 checks epsilon=3 and the terminal greedy list [0,1] on the edgeless two-vertex SimpleGraph: its centres mark all vertices and form an epsilon-net, correctly using infinite intercomponent distances. Line 121 checks the empty-graph boundary at epsilon=1. Line 102 supplies a nonempty nine-path net, and scratch/Enumerate.py independently confirms the exact thirteen-net count/list. Separation is not assumed to imply covering: the theorem separately characterizes maximality and proves existence of terminal legal runs.",
+    "confidence": 0.99
+  }
+]

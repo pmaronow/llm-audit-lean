@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P008-T6",
+    "theorem": "SAP.P008a.T6",
+    "fingerprint": "9da1bcf843f82fef8747eeff6e2104f8031dab696121b1b0623f53a042150680",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/CheckRegression.lean and scratch/CheckSpatial.lean with sap-lean (exit 0). Regression: N=4, z=(0,0,1,1), M=(0,2,4,6), D_ij=|2i-2j|, c=2/5, both counts 2 and nonzero actual OLS residuals. Additive-support branch: N=3, nodes at 0,1,4, c=1 and a_ij=1 on the first two indices, zero otherwise; reciprocal coefficients are nonzero for a retained pair and zero for excluded pairs. Geometric branch: two distinct nodes, a sum of their Dirac masses, field R^2, d=r=c=0, and coefficient integrands that indicate the source-node singleton. All circle masses are 1, the support premise holds, and an excluded pair exists. The uniform assignment law is nonempty, normalized and independent fair Bernoulli.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T7",
+    "theorem": "SAP.P008a.T7",
+    "fingerprint": "b8181c8678fa419b62b229018dd53a83f8c820382fa99a41f6cc9b1f4f5c4200",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed, explicit construction, not an implication with potentially inconsistent assumptions. Compiled scratch/CheckRisk.lean (exit 0): symbolically counts all threshold means on Fin 40000, verifies binary outcomes and B_i>=321, the positive 1/16 mass of z=(1,1,0,0), its actual label-mean Hajek value -321/40000, companion AMR sum -4, positive geometry denominators and centre membership. The full large planar construction is checked by the rational unit-direction/inverse-slope identities, positive distinct radii and 20-unit centre separation, as detailed in claim-checks.md. They establish an injective embedding, 640004 field points, 40000 points per counting circle, positive finite masses and measurable binary schedules. Thus the actual spatial witnesses satisfy all printed conditions; no nonmeasurability, undefined statistic or dependent design drives the contradiction.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T8",
+    "theorem": "SAP.P008a.T8",
+    "fingerprint": "18f77b5ae08dee2435b537f6b63ddef64791b5fc24ef919dd50062271e5033bf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/CheckSpatial.lean (exit 0): N=1, node 0, field R^2, Dirac measure at 0, d=0, uniform Boolean assignment and Y(x,z)=bit(z_0) satisfy every spatial premise and give actual circle outcomes 1 and 0. A two-radius instance w=(1/2,1/2), q0=(1/4,3/4), q1=(1/2,1/2), L=-1/4, U=1/4 satisfies every mixture premise; J=2 supplies nonempty equal/constant-weight instances. The sorted sample (-1,0,2), q=1/2 and divisor 4 satisfy every rescaling premise. The companion -4 calculation also compiles independently in scratch/CheckRisk.lean. No empty-index or zero-mass convention is needed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T9",
+    "theorem": "SAP.P008a.T9",
+    "fingerprint": "e5e7b8ecd45e378c4d2f96c2b3cae30f5dbace8d39de0b98920388cdd464a708",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/CheckRegression.lean (exit 0): constructs the Gram inverse for z=(0,0,1,1), responses (0,2,4,6), then verifies the actual OLS coefficient, residual and score vectors and the archived variances 1 and 1/2. The spatial definition uses the printed disc-constant field and sixteen atoms; at each required radius each node circle contains exactly its own radius atom, of mass 1, so its actual means are the stated responses (geometric check in claim-checks.md). The generic box branch has the distinct-node instance p_i=(i,0) in [0,4]^2 with both arms present; this is compiled too. Full rank, finite integrals and the same-radius/same-data conditions hold. The all-pairs cancellation is tested with nonzero actual scores, not only zero outcomes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T10",
+    "theorem": "SAP.P008a.T10",
+    "fingerprint": "b36273e52c8db4240176f125f56bbd0b3e0f1cba6307678433afdbe0694919ef",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/CheckRegression.lean (exit 0): both present-arm hypotheses hold for z=(0,0,1,1), the matrix inverse independently gives actual OLS residuals (-1,1,-1,1) and scores (1/2,-1/2,-1/2,1/2), and the corrected physical variances are 1 at both positions. An all-pairs cutoff gives HAC 0 for these nonzero scores. A constant response vector supplies the zero-residual alternative. The exact toy-node separation and positive residual characterization are unconditional/general conclusions with these satisfiable arm-count hypotheses, rather than premises assuming positivity or the claimed variance.",
+    "confidence": 0.98
+  }
+]

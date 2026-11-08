@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P007-T6",
+    "theorem": "SAP.P007.T6",
+    "fingerprint": "2ac5c74c27070d23460ffc52df31cb8db5c8865813e2b4d75d605206863753dc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:146 constructs an equalModel with n=1,h=2,q=3/4, including a normalized nonnegative Law, row independence, observationBound and allDeleted=7/16. Line 248 constructs the admissible q=0 endpoint with allDeleted=1. Positive integer/cardinality hypotheses are instantiated by n=2,h=2; no limit hypothesis is required by the canonical finite target.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T7",
+    "theorem": "SAP.P007.T7",
+    "fingerprint": "8c05ee4defa8ef3f14e88960a5f03e01b698286c931decf1bc33a68733c281ff",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:146 and :171 independently construct the n=1,k=2 equal and unequal laws, with every model assumption, and check probabilities 7/16 and >1/2 respectively. Generic productLaw at :14 proves normalization/nonnegativity for arbitrary cell chances in [0,1], and productRowsIndependent at :136 proves row independence. Thus all large and k=16 witnesses are genuine: product masses imply mutual cell independence; their positive prefix products give the specified observationBound. Exact rational enumeration and 90-digit numerical worked-value checks are in scratch/numeric-evidence.json. Large outcomes were not enumerated.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T8",
+    "theorem": "SAP.P007.T8",
+    "fingerprint": "7fbfb8baf677c89d16d9fe8026a16f650d173c1bd1a9954d693c35480cbcbdf3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:146 gives an attaining admissible law at n=1,k=2,q=3/4, and :171 gives the upper-guarantee counterexample, all without importing Challenge. Taking a=1/2 satisfies every inverse-domain hypothesis. The generic normalization and row-independence construction at :14 and :136 applies to the claimed positive n,k and 0<q<1; ordinary prefix products show observationBound and attainment. The logarithm, floor and ceiling domains are nonempty and the worked thresholds were independently checked numerically.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T9",
+    "theorem": "SAP.P007.T9",
+    "fingerprint": "e0ad945f9d8438ac79749d3d7514e33f01ce5ec1aedcff519327a507676535f5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:211 proves the entire T9Statement directly from Defs, with the explicit figureLaw, normalized product masses, full row independence, observationBound and its least q, all survivals, both expectations, 7/16<5/8, 49/256!=7/16, and allDeleted=25/64. No Challenge theorem or sorry is used. The 16 states were also enumerated independently with exact Fractions in scratch/check_numeric.py.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T10",
+    "theorem": "SAP.P007.T10",
+    "fingerprint": "7c70b10d74dd04664d6a32041d133442f0f8876770277dd72c09bc495cb54df4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:272 constructs the probability measure dirac(0) on Fin 1 and the measurable constant-missing 2x2 array. It verifies full mutual cell independence, every cell observation probability q=0, observationBoundOnW2, integrability of deletedFraction, and its integral equal to 1. Thus both arbitrary-space hypothesis packages have instances and the integral is not a nonintegrability default. The generic finite product-law construction at :14 and :136 and the positive-q equal model at :146 also show nonvacuity of the finite attaining-law setting. For arbitrary q in [0,1), normalization and independence follow from the product factors; at positive prefixes the next observed probability is q.",
+    "confidence": "high"
+  }
+]

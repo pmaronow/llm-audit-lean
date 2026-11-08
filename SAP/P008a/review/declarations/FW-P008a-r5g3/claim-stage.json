@@ -1,0 +1,26 @@
+[
+  {
+    "theorem": "SAP.P008a.T11",
+    "target_id": "P008-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part8.lean:40-54 states all of formal parts (a), (b), and (c), using exact rationals and strict half-unit rounding margins. The canonical statement also identifies the actual reconstructed cumulative effect as 7.99649, its corrected display as 8.00, and the retained empirical permutation percentiles as -7.97 and 7.97. None of those empirical identifications occurs in the elaborated statement. Challenge/Part1.lean:136-141 discloses these limits. The compiled lower-envelope witness in scratch/Check.lean satisfies every rounding hypothesis and has total 7.9935, more than 0.005 below 8, confirming that the envelope alone does not prove the actual 8.00 display. The retained clauses and their definitions are correct and nonvacuous."
+  },
+  {
+    "theorem": "SAP.P008a.T12",
+    "target_id": "P008-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part8.lean:57-66 states the canonical grid/output incompatibility: the five exact printed grid values all miss the closed test window, every real array therefore has zero selected sum, every nonempty finite sample of those sums has type-7 quantile zero for every q in [0,1], and all three reported constants are nonzero. It also checks the next grid value exceeds the endpoint. The zero sample is sorted, so quantile7's absence of a general sorting operation does not alter any quantile here. Empty sums are the claimed ordinary finite sums, with no undefined averages. scratch/Check.lean independently proves the filter empty and verifies the zero sums and interpolated quantile on a three-sample array whose every entry is strictly positive. This theorem establishes the canonical counterexample itself; it does not contradict that canonical counterexample."
+  },
+  {
+    "theorem": "SAP.P008a.T13",
+    "target_id": "P008-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part8.lean:69-77, with correctedGrid(k)=k/222 and the closed interval predicate, covers the 41 indices, starting value zero by definition, endpoint 20/111, consecutive spacing and its equality to 0.5/111, exact selection of indices 2 through 5, their kilometre values 1, 1.5, 2, 2.5, and the sum identity for every estimate array. The sequence definition is explicit rather than an assumption about outputs of R. All casts, denominators and Fin numeral indices are in their ordinary domains. scratch/Check.lean independently computes the selected set {2,3,4,5}, proves its cardinality four, and evaluates a nonzero example sum. No empirical outputs mentioned only in audit history are added as clauses."
+  },
+  {
+    "theorem": "SAP.P008a.T14",
+    "target_id": "P008-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part8.lean:80-86 covers the canonical algebraic content for every positive finite node count: pointwise node differences imply the corrected average identity, and the literally multiplied averages agree with the corrected value precisely at 0 and 1, by the universal real identity for A. The final constants encode the specified two-node example. Arbitrary real arrays specialize to the usual well-defined circle means without imposing substantive additional hypotheses. The absence of spatial data does not remove a clause of this algebraic correction. scratch/Check.lean constructs N=2 and arrays mu1=(3,7), mu0=(0,2), tau=(3,5), checking every premise, both averages equal to 4, the product equal to 16, and the inequality 16 != 4. The assertion diagnoses the literal product reading; it does not declare the corrected canonical identity false."
+  }
+]

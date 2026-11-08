@@ -1,0 +1,57 @@
+[
+ {
+  "target_id": "P014-T2",
+  "theorem": "SAP.P014.T2",
+  "fingerprint": "c6798c26438407a0c03e9484445c4e316e0e4b78b91b0d9018e71f0d498ce844",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Compiled. scratch/NV1.lean: Omega = Bool, mu = 1/2 (dirac true + dirac false), Z w = ![w, !w], S = univ (Fin 2), m = 1; Measurable Z, a.s. count 1 and P(Z_i = 1) = 1/2 discharged, and SAP.P014.T2.1 yields WeightedIdentity for every y. scratch/NV2.lean and scratch/NV4.lean: CorrectedLocalConditions proved for X w = (1,-1) / (-1,1), v = (1,-1), b = 2 (and for N = 3 with an outside subject at score -5), and SAP.P014.T2.2 is applied with all hypotheses discharged.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P014-T8",
+  "theorem": "SAP.P014.T8",
+  "fingerprint": "f896e2c8389bb11420a52c3ab082e94bb3d659effafe563606a192422c8d5772",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Compiled (scratch/NV5.lean): S = {0} : Finset (Fin 1), f i b = if b then 2 else 1; S.Nonempty discharged by simp and SAP.P014.T8 applied.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P014-T3",
+  "theorem": "SAP.P014.T3",
+  "fingerprint": "9cf490d67c26d72704d77bb90298eb5b47794e271f8e91c3064d4c135673982b",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Compiled for all five conjuncts. scratch/NV3.lean: L = uniform on {(1,0),(0,1)} in {0,1}^2, S = univ, m = 1; IsDistribution, fixed count, propensity 1/2, ConditionallyUniform, uniform weights, own-treatment-only outcomes (Noninterfering), positive arm probability and agreement of support/conditional averages for every y proved; T3 parts (a), (b), (d), (e) applied. scratch/NV4.lean: N = 3, S = {0,1}, subject 2 fixed outside the window (score -5, so always control, c = (0,0,0)), X w = (1,-1,-5) / (-1,1,-5) under mu = 1/2 dirac true + 1/2 dirac false, v = (1,-1), b = 2, A = uniform on {(1,0,0),(0,1,0)}; CorrectedLocalConditions, the law equation and the a.s. fixed outside treatment proved; T3 part (c) applied.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P014-T7",
+  "theorem": "SAP.P014.T7",
+  "fingerprint": "c370295ea334bb3399922be1e334d01b82c2e2b5298d7e3a0b0d1a804a2c3ec7",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Compiled. General part needs only a probability measure: scratch/NV5.lean applies it to dirac () with X = (0,1), S = {0,1}, m = 1. Local part: scratch/NV2.lean (N = 2) and scratch/NV4.lean (N = 3, with an outside subject) discharge 0 < b, 2 <= |S|, injective in-window v, 0 < m < |S|, #{v >= 0} = m and CorrectedLocalConditions, then apply SAP.P014.T7.2.1. The three finite-design conjuncts are closed propositions.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P014-T4",
+  "theorem": "SAP.P014.T4",
+  "fingerprint": "e3ea2cfba9578ac6350a1dced9c43d712c9c32fdb28aa30338bc85450d469002",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Closed proposition: the explicit witness is certified by the proof. Printed reading: for every population, potential outcomes (interference allowed) and law of X satisfying the p.130 local randomization assumption (common window CDF on Supp(X); P(X_i in W0) in {0,1}; P(X=x) = 1/N0! on Supp(X); no ties for distinct subjects (R6); 0 < sum_W Z < N0; and the prose consequence that window permutations are equiprobable, R5), with Z_i = I(X_i >= 0), E[tau_hat] = (1/N0)[sum Ybar_i(1) - sum Ybar_i(0)], where Ybar is the unweighted average over distinct supported vectors (R2). I checked the witness (uniformSix, scores1, b = 2, S = {0,1,2}, outcomes1) against each condition. The window equals S on all rows; the window values are always {-2,-1,1}; the six full vectors are distinct with mass 1/6 = 1/3!; there are no distinct-subject ties; each row has exactly one treated subject; each of the 6 window permutations has mass 1/6; Z = threshold(X); outcomes are fixed functions of z. It gives E[tau_hat] = 0 but printed RHS = -1/18. An independent exact recomputation in Python agrees and also gives weighted tau = 0.",
+  "confidence": "high"
+ }
+]

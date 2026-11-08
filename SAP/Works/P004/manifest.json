@@ -1,0 +1,1592 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.ipw_linearization_counterexample_nat",
+      "AronowAudit.P004.ipw_witness_variance_constants",
+      "SAP.P004a.WH.W1.T1_whole",
+      "SAP.P004a.WH.W1.T1_assembly",
+      "SAP.P004a.WH.W1.T1_L1_proof",
+      "SAP.P004a.WH.W1.T1_L2_proof",
+      "SAP.P004a.WH.W1.T1_L3_proof",
+      "SAP.P004a.WH.W1.T1_L4_proof",
+      "SAP.P004a.WH.W1.T1_L5_proof",
+      "SAP.P004a.WH.W1.T1_L6_proof",
+      "AronowAudit.P004.CLTCompletion.designMeasure_apply",
+      "AronowAudit.P004.CLTCompletion.designMeasure_integral",
+      "AronowAudit.P004.CLTCompletion.designMeasure_probability",
+      "AronowAudit.P004.CLTCompletion.finiteGraph_to_measureGraph",
+      "AronowAudit.P004.Wave1.DecideP004T1_augmented",
+      "AronowAudit.P004.Wave1.DecideP004T1_beta",
+      "AronowAudit.P004.Wave1.DecideP004T1_bound",
+      "AronowAudit.P004.Wave1.DecideP004T1_cycle_average",
+      "AronowAudit.P004.Wave1.DecideP004T1_gamma",
+      "AronowAudit.P004.Wave1.DecideP004T1_information",
+      "AronowAudit.P004.Wave1.DecideP004T1_interior",
+      "AronowAudit.P004.Wave1.DecideP004T1_marginal",
+      "AronowAudit.P004.Wave1.DecideP004T1_mle_exists",
+      "AronowAudit.P004.Wave1.DecideP004T1_p._proof_1",
+      "AronowAudit.P004.Wave1.DecideP004T1_p._proof_2",
+      "AronowAudit.P004.Wave1.DecideP004T1_prob",
+      "AronowAudit.P004.Wave1.DecideP004T1_propensities",
+      "AronowAudit.P004.Wave1.DecideP004T1_q._proof_1",
+      "AronowAudit.P004.Wave1.DecideP004T1_q._proof_2",
+      "AronowAudit.P004.Wave1.DecideP004T1_sum_variance",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.cdf_left",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.cdf_right",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.normalCDF_mono",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_closed_interval",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_congr",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_le_add",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_mono",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_nonneg",
+      "AronowAudit.P004.Wave1.DesignLimits.NF._proof_1",
+      "AronowAudit.P004.Wave1.DesignLimits.nf_proof",
+      "AronowAudit.P004.Wave1.DesignLimits.prob_le_add_of_imp_finite",
+      "AronowAudit.P004.Wave1.DesignLimits.prob_nonneg_finite",
+      "AronowAudit.P004.Wave1.FiniteConditioning.fc7_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.N1._proof_1",
+      "AronowAudit.P004.Wave1.LinePopulation.line_zero_ball",
+      "AronowAudit.P004.Wave1.LinePopulation.n1_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n3_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n4_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n5_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n6_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.own_expect",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.own_finiteDependencyGraph",
+      "AronowAudit.P004.Wave1.T2_ipw_expansion",
+      "AronowAudit.P004.Wave1.TailBIpw_spatial",
+      "AronowAudit.P004.adjustmentNu._proof_1",
+      "AronowAudit.P004.corrected_dependency_clt",
+      "AronowAudit.P004.cov.eq_1",
+      "AronowAudit.P004.expect_add",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.expect_mono",
+      "AronowAudit.P004.expect_sum",
+      "AronowAudit.P004.normalQuantile.eq_1",
+      "AronowAudit.P004.variance.eq_1"
+    ],
+    "statement_definition": "SAP.P004a.T1WholeStatement",
+    "target_id": "P004-T1",
+    "theorem": "SAP.P004a.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "declaration_review_round3": {
+      "change_kind": "docstring_only",
+      "definition_expressions_changed": false,
+      "finding": "T2 omitted the notice that the usual measure-theoretic conditions are assumed.",
+      "resolution": "The Challenge docstring now states that the usual measure-theoretic conditions are assumed; eventual WellDefined and all other existing hypotheses are unchanged.",
+      "reviewer": "r5g1",
+      "status": "addressed",
+      "theorem_statement_changed": false
+    },
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.augmented_unbiased",
+        "reason": "Unbiasedness is already supplied by corrected_ipw_finite; this helper is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P004.corrected_score_identity",
+        "reason": "The summand identity is used inside corrected_ipw_finite, which supplies the exact estimator representation."
+      },
+      {
+        "lean_name": "AronowAudit.P004.residualContrast_mean",
+        "reason": "The corrected residual mean is already supplied by corrected_ipw_finite."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.corrected_ipw_asymptotics_proof",
+      "AronowAudit.P004.augmented_variance",
+      "AronowAudit.P004.corrected_fits",
+      "AronowAudit.P004.corrected_ipw_finite",
+      "AronowAudit.P004.corrected_ipw_oracle"
+    ],
+    "target_id": "P004-T2",
+    "theorem": "SAP.P004a.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "declaration_review_round2": {
+      "change_kind": "docstring_only",
+      "definition_expressions_changed": false,
+      "finding": "Both summaries omitted normalization of the residual sum in its probability limit.",
+      "resolution": "Both docstrings now specify the pooled fraction N₁/N and normalized residual sum R/N, with probability limits 1/5 and 1/8.",
+      "reviewer": "r4g1",
+      "status": "addressed",
+      "theorem_statement_changed": false
+    },
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.sah_witness_constants",
+        "reason": "Entered rational comparisons do not identify the actual estimator expectations or variances."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.observational_sah_counterexample_proof",
+      "SAP.P004a.WH.W1.T3_whole",
+      "SAP.P004a.WH.W1.T3_assembly",
+      "SAP.P004a.WH.W1.T3_L1_proof",
+      "SAP.P004a.WH.W1.T3_L2_proof",
+      "SAP.P004a.WH.W1.T3_L3_proof",
+      "SAP.P004a.WH.W1.T3_L4_proof",
+      "SAP.P004a.WH.W1.T3_L5_proof",
+      "SAP.P004a.WH.W1.T3_L6_proof",
+      "SAP.P004a.WH.W1.T3_L7_proof",
+      "SAP.P004a.WH.W1.T3_L8_proof",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.cdf_left",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.cdf_right",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.normalCDF_mono",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.normalCDF_neg",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_closed_interval",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_congr",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_le_add",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_le_sum",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_mono",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_nonneg",
+      "AronowAudit.P004.Wave1.DesignLimits.NF._proof_1",
+      "AronowAudit.P004.Wave1.DesignLimits.dl4_proof",
+      "AronowAudit.P004.Wave1.DesignLimits.dl9_proof",
+      "AronowAudit.P004.Wave1.DesignLimits.nf_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.line_zero_ball",
+      "AronowAudit.P004.Wave1.LinePopulation.n3_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n4_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n6_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n7_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.O1._proof_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.O10._proof_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.O10._proof_2",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.O10._proof_3",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.O8._proof_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.Target._proof_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.activeMLE._proof_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.activeSign_of_not_group",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.activeTable_eq_sign",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_count_formula",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_fitted_beta",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_fitted_propensities",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_information",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_marginal",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_population_beta",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_true_admissible",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_zero_neighborhood",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.clip._proof_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.clip._proof_2",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.clip_bounds",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.nH.eq_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.nH_pos",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.nL_pos",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.o10_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.o11_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.o12_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.o1_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.o3_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.o4_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.o6_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.o7_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_RAct_expansion",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_S_mean",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_S_second",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_admissible",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_armCount_true",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_clip_bounds",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_inProb_congr",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_nH_pos",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.pHatH_mem",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.pHatL_mem",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.prob_congr",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.sAct_formula",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.sum_activeSign_sq",
+      "AronowAudit.P004.Wave1.T2_ipw_expansion",
+      "AronowAudit.P004.Wave1.T3_actual_variance_limit",
+      "AronowAudit.P004.Wave1.T3_interior",
+      "AronowAudit.P004.Wave1.T3_overlap",
+      "AronowAudit.P004.Wave1.T3_spatial",
+      "AronowAudit.P004.cov_centered",
+      "AronowAudit.P004.design_weight_nonneg",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.variance_div",
+      "AronowAudit.P004.variance_nonneg"
+    ],
+    "statement_definition": "SAP.P004a.T3WholeStatement",
+    "target_id": "P004-T3",
+    "theorem": "SAP.P004a.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.raw_sah_bound",
+      "AronowAudit.P004.sah_weighting_identity",
+      "SAP.P004a.WH.W1.T4_whole",
+      "SAP.P004a.WH.W1.T4_assembly",
+      "SAP.P004a.WH.W1.T3_L3_proof",
+      "SAP.P004a.WH.W1.T4_L1_proof",
+      "SAP.P004a.WH.W1.T4_L2_proof",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_congr",
+      "AronowAudit.P004.Wave1.DesignLimits.dl4_proof",
+      "AronowAudit.P004.Wave1.DesignLimits.dl9_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n3_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.O10._proof_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.O10._proof_2",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.O10._proof_3",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.O8._proof_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.Target._proof_1",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_fitted_fit",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.active_fitted_propensities",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.o10_proof",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_RAct_expansion",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_admissible",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_nH_pos",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.oc_sign_eq_zero",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.pHatH_mem",
+      "AronowAudit.P004.Wave1.T3_actual_variance_limit"
+    ],
+    "statement_definition": "SAP.P004a.T4WholeStatement",
+    "target_id": "P004-T4",
+    "theorem": "SAP.P004a.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "declaration_review_round1": {
+      "change_kind": "docstring_only",
+      "definition_expressions_changed": false,
+      "finding": "Identify the interpretation refuted; do not assert a corrected empirical area effect.",
+      "resolution": "Both docstrings specify the unweighted-sum versus normalized union-area interpretation and disclaim an empirical correction.",
+      "reviewer": "r3g1",
+      "status": "addressed",
+      "theorem_statement_changed": false
+    },
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.Wave1.area_sum_counterexample_proof",
+        "reason": "This projection is contained in the stronger all-assignment spatial Case B row."
+      },
+      {
+        "lean_name": "AronowAudit.P004.Wave1.spatial_area_sum_counterexample_proof",
+        "reason": "This duplicate projection is contained in the stronger all-assignment spatial Case B row."
+      },
+      {
+        "lean_name": "AronowAudit.P004.area_witness_realized",
+        "reason": "Finite-table arithmetic is subsumed by the actual spatial Case B row."
+      },
+      {
+        "lean_name": "AronowAudit.P004.assignment_two_univ",
+        "reason": "The all-assignment spatial row already supplies the required design witness; assignment enumeration is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.area_sum_spatial_caseB",
+      "SAP.P004a.WH.W1.T5_whole",
+      "SAP.P004a.WH.W1.T5_assembly",
+      "SAP.P004a.WH.W1.T5_L1_proof",
+      "SAP.P004a.WH.W1.T5_L2_proof",
+      "SAP.P004a.WH.W1.T5_L3_proof",
+      "SAP.P004a.WH.W1.T5_L4_proof",
+      "AronowAudit.P004.Wave1.AreaSum.Target._proof_1",
+      "AronowAudit.P004.Wave1.AreaSum.Target._proof_2",
+      "AronowAudit.P004.Wave1.AreaSum.Target._proof_3",
+      "AronowAudit.P004.Wave1.AreaSum.Target._proof_4",
+      "AronowAudit.P004.Wave1.AreaSum.a1_proof",
+      "AronowAudit.P004.Wave1.AreaSum.a2_proof",
+      "AronowAudit.P004.Wave1.AreaSum.a3_proof",
+      "AronowAudit.P004.Wave1.AreaSum.a4_proof",
+      "AronowAudit.P004.Wave1.AreaSum.a5_proof",
+      "AronowAudit.P004.Wave1.AreaSum.a6_proof",
+      "AronowAudit.P004.Wave1.AreaSum.angularFraction_measurable",
+      "AronowAudit.P004.Wave1.AreaSum.bin_dist_le_six",
+      "AronowAudit.P004.Wave1.AreaSum.measurableSet_bin",
+      "AronowAudit.P004.adjustmentNu._proof_1",
+      "AronowAudit.P004.area_partition_identity",
+      "AronowAudit.P004.designMatrix._proof_1",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.marginal_is_marginalization"
+    ],
+    "statement_definition": "SAP.P004a.T5WholeStatement",
+    "target_id": "P004-T5",
+    "theorem": "SAP.P004a.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retain the actual integral union identity, marginal means, node effects, node-average area effect, range bounds, equal-mass mean formula, and positive-scale comparison and exact p-value invariance. Omit the two negative assertions in (b): an unweighted sum outside the bin-effect range, and non-identifiability from bin AMEs when node masses differ. Do not assert the application numbers, reported Monte Carlo p-value or substantive beneficial-effects conclusion.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.area_partition_identity",
+      "AronowAudit.P004.bin_effect_aggregation",
+      "AronowAudit.P004.marginal_bin_average",
+      "AronowAudit.P004.randomization_scaling",
+      "AronowAudit.P004.weighted_effect_bounds"
+    ],
+    "target_id": "P004-T6",
+    "theorem": "SAP.P004a.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retain the full finite twenty-node adjusted-order reversal and spatial, homophily, nondegeneracy, cutoff-kernel and exact linearized-variance guards for the repeated-star witness. Replace the exact limiting coverage equality by an eventual upper bound with the same explicit value, strictly below 19/20, counting only realizations with positive treatment and control counts, positive adjustment trace and positive trace-square parameter. Omit the separate W1 spectral eigenvalue/trace/diagonal certificates, W2 block moments, W3 raw-variance, trace, variance-ratio and degrees-of-freedom limits, and the fitted-estimator Gaussian law. The guarded upper bound is not a conditional-on-validity coverage probability.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.adjusted_pd_asymptotic_counterexample_proof",
+      "AronowAudit.P004.adjusted_pd_constants",
+      "AronowAudit.P004.adjusted_pd_finite_counterexample"
+    ],
+    "target_id": "P004-T7",
+    "theorem": "SAP.P004a.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.capped_variance_ge",
+        "reason": "The scalar cap inequality is incorporated in capped_pd_interval."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.capped_pd_coverage_proof",
+      "AronowAudit.P004.capped_pd_interval",
+      "SAP.P004a.WH.W2.T8_whole",
+      "SAP.P004a.WH.W2.T8_assembly",
+      "SAP.P004a.WH.W2.T8_L1_proof",
+      "SAP.P004a.WH.W2.T8_L2_proof",
+      "SAP.P004a.WH.W2.T8_L3_proof",
+      "SAP.P004a.WH.W2.T8_L4_proof",
+      "SAP.P004a.WH.W2.T8_L5_proof",
+      "SAP.P004a.WH.W2.T8_L6_proof",
+      "SAP.P004a.WH.W2.T8_L7_proof",
+      "AronowAudit.P004.CLTCompletion.nodeSeparation_symm",
+      "AronowAudit.P004.MatrixCompletion.sandwich_treatment",
+      "AronowAudit.P004.Wave1.DesignLimits.NF._proof_1",
+      "AronowAudit.P004.Wave1.DesignLimits.nf_proof",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_normalCDF_neg",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_difference",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_mono",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_nonneg",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_two_upper",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_quantile",
+      "AronowAudit.P004.Wave1.adjusted_pd_asymptotic_counterexample_proof",
+      "AronowAudit.P004.Wave1.t7_Converges._proof_1",
+      "AronowAudit.P004.Wave1.t7_block_kernel_symmetric",
+      "AronowAudit.P004.Wave1.t7_coverage_limit",
+      "AronowAudit.P004.Wave1.t7_fixed_marginal",
+      "AronowAudit.P004.Wave1.t7_good_counts",
+      "AronowAudit.P004.Wave1.t7_good_probability",
+      "AronowAudit.P004.Wave1.t7_mu_limit",
+      "AronowAudit.P004.Wave1.t7_nu_pos",
+      "AronowAudit.P004.Wave1.t7_oracle._proof_1",
+      "AronowAudit.P004.Wave1.t7_star_circleAverage",
+      "AronowAudit.P004.Wave1.t7_star_kernel",
+      "AronowAudit.P004.Wave1.t7_star_local",
+      "AronowAudit.P004.Wave1.t7_star_wellDefined",
+      "AronowAudit.P004.Wave1.t7_student_prefactor_pos",
+      "AronowAudit.P004.adjustmentNu._proof_1",
+      "AronowAudit.P004.studentDensity.eq_1",
+      "AronowAudit.P053.NormalCompletion.cdf_continuousAt"
+    ],
+    "statement_definition": "SAP.P004a.T8WholeStatement",
+    "statement_universe_parameters": [
+      "u"
+    ],
+    "target_id": "P004-T8",
+    "theorem": "SAP.P004a.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "declaration_review_round1": {
+      "change_kind": "docstring_only",
+      "definition_expressions_changed": false,
+      "finding": "The existing finite tail lower bounds are not claimed or proved optimal.",
+      "resolution": "Both docstrings now say exact moments and explicit finite tail lower bounds.",
+      "reviewer": "r3g2",
+      "status": "addressed",
+      "theorem_statement_changed": false
+    },
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.boundary_mle_counterexample_proof",
+      "SAP.P004a.WH.W2.T9_whole",
+      "SAP.P004a.WH.W2.T9_assembly",
+      "SAP.P004a.WH.W2.T9_L1_proof",
+      "SAP.P004a.WH.W2.T9_L2_proof",
+      "SAP.P004a.WH.W2.T9_L3_proof",
+      "SAP.P004a.WH.W2.T9_L4_proof",
+      "AronowAudit.P004.CLTCompletion.designMeasure.congr_simp",
+      "AronowAudit.P004.CLTCompletion.designMeasure_apply",
+      "AronowAudit.P004.CLTCompletion.designMeasure_integral",
+      "AronowAudit.P004.CLTCompletion.designMeasure_probability",
+      "AronowAudit.P004.CLTCompletion.finiteGraph_to_measureGraph",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_mono",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.own_expect",
+      "AronowAudit.P004.Wave1.ObservationalCoverage.own_finiteDependencyGraph",
+      "AronowAudit.P004.Wave1.corrected_mle_proof",
+      "AronowAudit.P004.Wave1.t9b6_choice._proof_1",
+      "AronowAudit.P004.Wave1.t9b6_choice_bounds",
+      "AronowAudit.P004.Wave1.t9b6_choice_max",
+      "AronowAudit.P004.Wave1.t9b6_conditions",
+      "AronowAudit.P004.Wave1.t9b6_count_eq",
+      "AronowAudit.P004.Wave1.t9b6_likelihood_deriv",
+      "AronowAudit.P004.Wave1.t9b6_likelihood_sum",
+      "AronowAudit.P004.Wave1.t9b6_logistic_logit",
+      "AronowAudit.P004.Wave1.t9b6_logistic_lt_one",
+      "AronowAudit.P004.Wave1.t9b6_logit_bounds",
+      "AronowAudit.P004.Wave1.t9b6_moments",
+      "AronowAudit.P004.Wave1.t9b6_not_littleOp",
+      "AronowAudit.P004.Wave1.t9b6_prob_flip",
+      "AronowAudit.P004.Wave1.t9b6_signsum_count",
+      "AronowAudit.P004.Wave1.t9b6_signsum_flip",
+      "AronowAudit.P004.Wave1.t9b6_tail_inclusion",
+      "AronowAudit.P004.corrected_dependency_clt",
+      "AronowAudit.P004.design_weight_nonneg",
+      "AronowAudit.P004.expect_add",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.expect_mono"
+    ],
+    "statement_definition": "SAP.P004a.T9WholeStatement",
+    "target_id": "P004-T9",
+    "theorem": "SAP.P004a.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.corrected_mle_proof"
+    ],
+    "target_id": "P004-T10",
+    "theorem": "SAP.P004a.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.ht_unbiased",
+      "AronowAudit.P004.printed_obs_ht_expectation"
+    ],
+    "target_id": "P004-T11",
+    "theorem": "SAP.P004a.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retain the specific eight-node sharp-null Witness A and its exact positive-probability draw array, printed proportion, absolute exceedance count and corrected p-value, and Witness B with its exact rejection sum greater than 1/20. Omit the separate universal negative-observation rule, the signed-statistic size s/2 and decimal size approximations, and all of the seventeen-node, P=10000 Witness C and its exact lower bound. Witness B uses the permitted nonnegative statistic absolute HT; no failure for every finite P or for all sufficiently large P on one fixed design is asserted.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.mc_size_counterexample",
+        "reason": "The actual spatial rejection-size row already includes this exact size inequality."
+      },
+      {
+        "lean_name": "AronowAudit.P004.negative_observed_comparison",
+        "reason": "The retained explicit draw-array witness already demonstrates the signed-comparison defect; the separate universal assertion is not included."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.mc_level_spatial_counterexample_proof",
+      "AronowAudit.P004.Wave1.mc_signed_spatial_counterexample_proof"
+    ],
+    "target_id": "P004-T12",
+    "theorem": "SAP.P004a.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.mc_exact_level",
+      "AronowAudit.P004.mc_plus_one_identity"
+    ],
+    "target_id": "P004-T13",
+    "theorem": "SAP.P004a.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.shell_counterexample",
+        "reason": "The two names have the same exact spatial Witness 2 statement; only spatial_shell_counterexample is invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.spatial_shell_counterexample",
+      "SAP.P004a.WH.W2.T14_whole",
+      "SAP.P004a.WH.W2.T14_assembly",
+      "SAP.P004a.WH.W2.T14_L1_proof",
+      "SAP.P004a.WH.W2.T14_L2_proof",
+      "SAP.P004a.WH.W2.T14_L3_proof",
+      "AronowAudit.P004.Wave1.annulus_radial_measure_proof",
+      "AronowAudit.P004.areaWitnessOutcome._proof_1",
+      "AronowAudit.P004.assignment_two_univ",
+      "AronowAudit.P004.band_effect_identity",
+      "AronowAudit.P004.designMatrix._proof_1",
+      "AronowAudit.P004.shellWitnessDistance._proof_1",
+      "AronowAudit.P004.shellWitnessDistance._proof_2",
+      "AronowAudit.P004.shell_atom_distances",
+      "AronowAudit.P004.shell_spatial_mass",
+      "AronowAudit.P004.shell_spatial_table"
+    ],
+    "statement_definition": "SAP.P004a.T14WholeStatement",
+    "target_id": "P004-T14",
+    "theorem": "SAP.P004a.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "declaration_review_round2": {
+      "change_kind": "docstring_only",
+      "definition_expressions_changed": false,
+      "finding": "Both summaries omitted acknowledgment of the usual measure-theoretic conditions already explicit in the statement.",
+      "resolution": "Both docstrings now state that the usual measure-theoretic conditions are assumed; the whole decision and existing hypotheses are unchanged.",
+      "reviewer": "r4g3",
+      "status": "addressed",
+      "theorem_statement_changed": false
+    },
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.Wave1.shell_mass_identity",
+        "reason": "This is a duplicate of supported_shell_identity with the same node-specific contract."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.annulus_radial_measure_proof",
+      "AronowAudit.P004.Wave1.supported_shell_identity",
+      "AronowAudit.P004.band_effect_identity",
+      "SAP.P004a.WH.W1.T15_whole",
+      "SAP.P004a.WH.W1.T15_assembly",
+      "SAP.P004a.WH.W1.T15_L1_proof",
+      "SAP.P004a.WH.W1.T15_L2_proof",
+      "SAP.P004a.WH.W1.T15_L3_proof",
+      "AronowAudit.P004.AlgebraCompletion.expect_integral",
+      "AronowAudit.P004.areaWitnessOutcome._proof_1",
+      "AronowAudit.P004.designMatrix._proof_1",
+      "AronowAudit.P004.expect_div",
+      "AronowAudit.P004.marginal_is_marginalization",
+      "AronowAudit.P004.shellWitnessDistance._proof_1",
+      "AronowAudit.P004.shellWitnessDistance._proof_2",
+      "AronowAudit.P004.shell_spatial_mass",
+      "AronowAudit.P004.spatial_shell_counterexample"
+    ],
+    "statement_definition": "SAP.P004a.T15WholeStatement",
+    "statement_universe_parameters": [
+      "u",
+      "v"
+    ],
+    "target_id": "P004-T15",
+    "theorem": "SAP.P004a.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.no_polygon_cutoff_from_range_alone_proof",
+      "AronowAudit.P004.Wave1.polygon_range_counterexample_proof",
+      "AronowAudit.P004.Wave1.polygon_spacing_counterexample_proof",
+      "SAP.P004b.WH.W2.T16_whole",
+      "SAP.P004b.WH.W2.T16_assembly",
+      "SAP.P004b.WH.W2.T16_L1_proof",
+      "SAP.P004b.WH.W2.T16_L2_proof",
+      "SAP.P004b.WH.W2.T16_L3_proof",
+      "SAP.P004b.WH.W2.T16_L4_proof",
+      "SAP.P004b.WH.W2.T16_L5_proof",
+      "SAP.P004b.WH.W2.T16_L6_proof",
+      "SAP.P004b.WH.W2.T16_L7_proof",
+      "AronowAudit.P004.Wave1.spacing_dist_sq",
+      "AronowAudit.P004.Wave1.spacing_rectangle_volume",
+      "AronowAudit.P004.Wave1.t18_expect_coordinate",
+      "AronowAudit.P004.bit",
+      "AronowAudit.P004.cov",
+      "AronowAudit.P004.rectangle",
+      "SAP.P004b.Bridge.thin_count"
+    ],
+    "statement_definition": "SAP.P004b.T16WholeStatement",
+    "target_id": "P004-T16",
+    "theorem": "SAP.P004b.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.diameter_interference_cutoff_proof",
+      "AronowAudit.P004.Wave1.no_polygon_cutoff_from_range_alone_proof",
+      "AronowAudit.P004.Wave1.polygon_count_bound_proof",
+      "AronowAudit.P004.Wave1.polygon_spacing_counterexample_proof",
+      "AronowAudit.P004.diameter_chain"
+    ],
+    "target_id": "P004-T17",
+    "theorem": "SAP.P004b.T17"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.hajek_linearization_proof",
+      "AronowAudit.P004.hajek_ratio_identity",
+      "SAP.P004b.WH.W2.T18_whole",
+      "SAP.P004b.WH.W2.T18_assembly",
+      "SAP.P004b.WH.W2.T18_L1_proof",
+      "SAP.P004b.WH.W2.T18_L2_proof",
+      "AronowAudit.P004.GraphCompletion.depends_of_update",
+      "AronowAudit.P004.GraphCompletion.expect_mul_of_disjoint_depends",
+      "AronowAudit.P004.SpatialLocalConditions",
+      "AronowAudit.P004.SpatialPopulation",
+      "AronowAudit.P004.Wave1.LinePopulation.n3_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n4_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n5_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n6_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.n7_proof",
+      "AronowAudit.P004.Wave1.LinePopulation.spatialLocal_of",
+      "AronowAudit.P004.Wave1.TailBIpw_centered_mean",
+      "AronowAudit.P004.Wave1.TailBIpw_centered_moments",
+      "AronowAudit.P004.Wave1.TailBIpw_expect_finset",
+      "AronowAudit.P004.Wave1.TailBIpw_factor_coordinate",
+      "AronowAudit.P004.Wave1.t18_expect_coordinate",
+      "AronowAudit.P004.Wave1.t18_prob_nonneg",
+      "AronowAudit.P004.bit",
+      "AronowAudit.P004.coin",
+      "AronowAudit.P004.expect",
+      "AronowAudit.P004.expect_add",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.expect_mono",
+      "AronowAudit.P004.expect_mul",
+      "AronowAudit.P004.expect_sub",
+      "AronowAudit.P004.linePopulation",
+      "AronowAudit.P004.marginal",
+      "AronowAudit.P004.marginal_is_marginalization",
+      "AronowAudit.P004.prob",
+      "SAP.P004b.Bridge.linearFormula_eq",
+      "SAP.P004b.Bridge.sequence"
+    ],
+    "statement_definition": "SAP.P004b.T18WholeStatement",
+    "target_id": "P004-T18",
+    "theorem": "SAP.P004b.T18"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.dependency_clt_counterexample_proof",
+      "SAP.P004b.WH.W2.T19_whole",
+      "SAP.P004b.WH.W2.T19_assembly",
+      "SAP.P004b.WH.W2.T19_L1_proof",
+      "SAP.P004b.WH.W2.T19_L2_proof",
+      "AronowAudit.P004.GraphCompletion.depends_of_update",
+      "AronowAudit.P004.GraphCompletion.expect_mul_of_disjoint_depends",
+      "AronowAudit.P004.Wave1.t18_expect_coordinate",
+      "AronowAudit.P004.Wave1.t19_cdf",
+      "AronowAudit.P004.Wave1.t19_sum",
+      "AronowAudit.P004.Wave1.t19_variance",
+      "AronowAudit.P004.expect_const"
+    ],
+    "statement_definition": "SAP.P004b.T19WholeStatement",
+    "target_id": "P004-T19",
+    "theorem": "SAP.P004b.T19"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.corrected_dependency_clt",
+      "SAP.P004b.WH.W2.T20_whole",
+      "SAP.P004b.WH.W2.T20_assembly",
+      "SAP.P004b.WH.W2.T20_L1_proof",
+      "SAP.P004b.WH.W2.T20_L2_proof",
+      "AronowAudit.P004.CLTCompletion.circleAverage_abs_le",
+      "AronowAudit.P004.FiniteDependencyGraph",
+      "AronowAudit.P004.GraphCompletion.variance_add_const",
+      "AronowAudit.P004.Wave1.T42_barMu_bound",
+      "AronowAudit.P004.Wave1.T42_linear_clt",
+      "AronowAudit.P004.Wave1.t18_expect_abs_le",
+      "AronowAudit.P004.barMu_difference",
+      "AronowAudit.P004.cov",
+      "AronowAudit.P004.design_dependency_graph",
+      "AronowAudit.P004.expect",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.expect_mul",
+      "AronowAudit.P004.expect_sub",
+      "AronowAudit.P004.ht_central_limit",
+      "AronowAudit.P004.residualContrast",
+      "AronowAudit.P004.residualContrast_mean",
+      "AronowAudit.P004.variance",
+      "SAP.P004b.Bridge.linearFormula_eq",
+      "SAP.P004b.Bridge.population",
+      "SAP.P004b.Bridge.sequence"
+    ],
+    "statement_definition": "SAP.P004b.T20WholeStatement",
+    "target_id": "P004-T20",
+    "theorem": "SAP.P004b.T20"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.hajek_sah_bound",
+      "AronowAudit.P004.node_variance_identity",
+      "SAP.P004b.WH.W2.T21_whole",
+      "SAP.P004b.WH.W2.T21_assembly",
+      "AronowAudit.P004.CLTCompletion.nodeSeparation_self",
+      "AronowAudit.P004.CLTCompletion.nodeSeparation_symm",
+      "AronowAudit.P004.assignment_two_univ",
+      "AronowAudit.P004.barMu",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.expect_sub",
+      "AronowAudit.P004.marginal",
+      "AronowAudit.P004.marginal_is_marginalization",
+      "SAP.P004b.Bridge.population"
+    ],
+    "statement_definition": "SAP.P004b.T21WholeStatement",
+    "target_id": "P004-T21",
+    "theorem": "SAP.P004b.T21"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.augmented_unbiased",
+        "reason": "Unbiasedness is a helper, not an additional variance claim."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.augmented_homophily_bound",
+      "AronowAudit.P004.augmented_variance",
+      "AronowAudit.P004.residualContrast_mean",
+      "SAP.P004b.WH.W1.T22_whole",
+      "SAP.P004b.WH.W1.T22_assembly",
+      "SAP.P004b.WH.W1.T22_L1_proof"
+    ],
+    "statement_definition": "SAP.P004b.T22WholeStatement",
+    "target_id": "P004-T22",
+    "theorem": "SAP.P004b.T22"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.symmetric_critical_event",
+        "reason": "Only a scalar statement under an assumed sign; it does not establish the Gaussian quantile assertions."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.observational_sandwich_identity",
+      "SAP.P004b.WH.W1.T23_whole",
+      "SAP.P004b.WH.W1.T23_assembly",
+      "AronowAudit.P004.MatrixCompletion.sandwich_treatment",
+      "AronowAudit.P004.MatrixCompletion.treatment_row",
+      "AronowAudit.P004.Wave1.DesignLimits.nf_proof",
+      "AronowAudit.P004.symmetric_critical_event"
+    ],
+    "statement_definition": "SAP.P004b.T23WholeStatement",
+    "target_id": "P004-T23",
+    "theorem": "SAP.P004b.T23"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.regression_matrix_identities",
+      "SAP.P004b.WH.W1.T24_whole",
+      "SAP.P004b.WH.W1.T24_assembly",
+      "AronowAudit.P004.MatrixCompletion.counts_total",
+      "AronowAudit.P004.MatrixCompletion.sandwich_treatment"
+    ],
+    "statement_definition": "SAP.P004b.T24WholeStatement",
+    "target_id": "P004-T24",
+    "theorem": "SAP.P004b.T24"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.centered_summand_identity",
+      "SAP.P004b.WH.W1.T25_whole",
+      "SAP.P004b.WH.W1.T25_assembly",
+      "SAP.P004b.WH.W1.T25_L1_proof",
+      "AronowAudit.P004.Wave1.FiniteConditioning.conditionOn_of_depends",
+      "AronowAudit.P004.Wave1.FiniteConditioning.fc2_proof",
+      "AronowAudit.P004.Wave1.FiniteConditioning.fc8_proof",
+      "AronowAudit.P004.ball",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.marginal_is_marginalization"
+    ],
+    "statement_definition": "SAP.P004b.T25WholeStatement",
+    "target_id": "P004-T25",
+    "theorem": "SAP.P004b.T25"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.tail_homophily_correction_proof",
+      "SAP.P004b.WH.W1.T26_whole",
+      "SAP.P004b.WH.W1.T26_assembly",
+      "SAP.P004b.WH.W1.T26_L1_proof",
+      "SAP.P004b.WH.W1.T26_L2_proof",
+      "AronowAudit.P004.CLTCompletion.circleAverage_abs_le",
+      "AronowAudit.P004.design_normalized",
+      "AronowAudit.P004.marginal_is_marginalization",
+      "SAP.P004b.Bridge.population"
+    ],
+    "statement_definition": "SAP.P004b.T26WholeStatement",
+    "target_id": "P004-T26",
+    "theorem": "SAP.P004b.T26"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.ned_coverage_counterexample_proof",
+      "SAP.P004b.WH.W3.T27_whole",
+      "SAP.P004b.WH.W3.T27_assembly",
+      "SAP.P004b.WH.W3.T27_L1_proof",
+      "SAP.P004b.WH.W3.T27_L10_proof",
+      "SAP.P004b.WH.W3.T27_L11_proof",
+      "SAP.P004b.WH.W3.T27_L2_proof",
+      "SAP.P004b.WH.W3.T27_L3_proof",
+      "SAP.P004b.WH.W3.T27_L4_proof",
+      "SAP.P004b.WH.W3.T27_L5_proof",
+      "SAP.P004b.WH.W3.T27_L6_proof",
+      "SAP.P004b.WH.W3.T27_L7_proof",
+      "SAP.P004b.WH.W3.T27_L8_proof",
+      "SAP.P004b.WH.W3.T27_L9_proof",
+      "AronowAudit.P004.GraphCompletion.variance_add_const",
+      "AronowAudit.P004.InProb",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_le_add",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_mono",
+      "AronowAudit.P004.Wave1.DesignLimits.DLbSupport.prob_nonneg",
+      "AronowAudit.P004.Wave1.DesignLimits.dl3_proof",
+      "AronowAudit.P004.Wave1.DesignLimits.nf_proof",
+      "AronowAudit.P004.Wave1.FiniteConditioning.Admissible",
+      "AronowAudit.P004.Wave1.FiniteConditioning.conditionOn_of_depends",
+      "AronowAudit.P004.Wave1.FiniteConditioning.fc6_proof",
+      "AronowAudit.P004.Wave1.FiniteConditioning.fc7_proof",
+      "AronowAudit.P004.Wave1.T27_ame",
+      "AronowAudit.P004.Wave1.T27_armMean",
+      "AronowAudit.P004.Wave1.T27_bad_limit",
+      "AronowAudit.P004.Wave1.T27_ball_small",
+      "AronowAudit.P004.Wave1.T27_bandwidth_bounds",
+      "AronowAudit.P004.Wave1.T27_barMu",
+      "AronowAudit.P004.Wave1.T27_circle",
+      "AronowAudit.P004.Wave1.T27_count_complement",
+      "AronowAudit.P004.Wave1.T27_count_moments",
+      "AronowAudit.P004.Wave1.T27_effect",
+      "AronowAudit.P004.Wave1.T27_first_probability",
+      "AronowAudit.P004.Wave1.T27_good",
+      "AronowAudit.P004.Wave1.T27_good_coverage",
+      "AronowAudit.P004.Wave1.T27_kernel_eq",
+      "AronowAudit.P004.Wave1.T27_linear_identity",
+      "AronowAudit.P004.Wave1.T27_outcome_bound",
+      "AronowAudit.P004.Wave1.T27_point_injective",
+      "AronowAudit.P004.Wave1.T27_selected_update",
+      "AronowAudit.P004.Wave1.T27_separation_self",
+      "AronowAudit.P004.Wave1.T27_spike_variance",
+      "AronowAudit.P004.Wave1.T27_sum_zero",
+      "AronowAudit.P004.armCount",
+      "AronowAudit.P004.armMean",
+      "AronowAudit.P004.barMu",
+      "AronowAudit.P004.bit",
+      "AronowAudit.P004.circleAverage",
+      "AronowAudit.P004.coin",
+      "AronowAudit.P004.conditionOn",
+      "AronowAudit.P004.cov",
+      "AronowAudit.P004.cov_centered",
+      "AronowAudit.P004.designWeight",
+      "AronowAudit.P004.distanceKernel",
+      "AronowAudit.P004.expect",
+      "AronowAudit.P004.expect_add",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.expect_div",
+      "AronowAudit.P004.expect_mono",
+      "AronowAudit.P004.expect_mul",
+      "AronowAudit.P004.expect_sub",
+      "AronowAudit.P004.expect_sum",
+      "AronowAudit.P004.ht",
+      "AronowAudit.P004.joinAssignment",
+      "AronowAudit.P004.kernelVariance",
+      "AronowAudit.P004.l2Norm",
+      "AronowAudit.P004.linearHajek",
+      "AronowAudit.P004.nodeSeparation",
+      "AronowAudit.P004.normalCDF",
+      "AronowAudit.P004.normalQuantile",
+      "AronowAudit.P004.planePoint",
+      "AronowAudit.P004.prob",
+      "AronowAudit.P004.residual",
+      "AronowAudit.P004.sparseBandwidth",
+      "AronowAudit.P004.sparsePopulation",
+      "AronowAudit.P004.sparseTable",
+      "AronowAudit.P004.splitAssignment",
+      "AronowAudit.P004.uniformKernel",
+      "AronowAudit.P004.variance",
+      "AronowAudit.P004.variance_div",
+      "AronowAudit.P004.variance_le_second",
+      "AronowAudit.P053.NormalCompletion.normal_cdf_zero",
+      "SAP.P004b.Bridge.circleAverage_eq",
+      "SAP.P004b.Bridge.population",
+      "SAP.P004b.Bridge.sequence",
+      "SAP.P004b.Bridge.sparsePopulation_eq",
+      "SAP.P004b.Bridge.sparse_validInterval"
+    ],
+    "statement_definition": "SAP.P004b.T27WholeStatement",
+    "target_id": "P004-T27",
+    "theorem": "SAP.P004b.T27"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.TailB_ned_hac_correction",
+      "SAP.P004b.WH.W3.T28_whole",
+      "SAP.P004b.WH.W3.T28_assembly",
+      "SAP.P004b.WH.W3.T28_L1_proof",
+      "SAP.P004b.WH.W3.T28_L2_proof",
+      "SAP.P004b.WH.W3.T28_L3_proof",
+      "AronowAudit.P004.HACCompletion.split_diagonal",
+      "AronowAudit.P004.Wave1.DesignLimits.AdmissibleSeq",
+      "AronowAudit.P004.Wave1.DesignLimits.dl4_proof",
+      "AronowAudit.P004.Wave1.DesignLimits.nf_proof",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_one_sided_wald",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_difference",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_mono",
+      "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_nonneg",
+      "AronowAudit.P004.Wave1.TailB_Ned_form",
+      "AronowAudit.P004.Wave1.TailB_Ned_kernel_support",
+      "AronowAudit.P004.Wave1.TailB_Ned_rows_form",
+      "AronowAudit.P004.Wave1.ned_headline_under_uniform_spacing",
+      "AronowAudit.P004.bit",
+      "AronowAudit.P004.expect",
+      "AronowAudit.P004.nedVRow",
+      "AronowAudit.P004.normalQuantile",
+      "AronowAudit.P004.prob",
+      "AronowAudit.P004.residualContrast",
+      "SAP.P004b.Bridge.sequence"
+    ],
+    "statement_definition": "SAP.P004b.T28WholeStatement",
+    "target_id": "P004-T28",
+    "theorem": "SAP.P004b.T28"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "The far-pair covariance bound is asserted only under the exported stronger uniform quadratic spacing, metric distances, well-defined averages at every sample size, and bandwidth at least one at every sample size. Retains the corrected five-term HAC expansion, cross-arm epsilon-product prefactors, and corrected epsilon means and N^-2 mean-product scale. Omits the equality between the independent five-term V1 formula and the random row sum, a separate V2 definition clause, and both numerical checks of the misprinted displays. The far-pair covariance bound is specialized to the deterministic population arm centers (barMu true, barMu false) at each sample size; the bound for arbitrary bounded deterministic centers is not asserted.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.ned_far_covariance_under_uniform_spacing",
+      "AronowAudit.P004.epsilon_product_difference",
+      "AronowAudit.P004.hac_expansion",
+      "AronowAudit.P004.ned_epsilon_means"
+    ],
+    "target_id": "P004-T29",
+    "theorem": "SAP.P004b.T29"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.barMu_difference",
+      "AronowAudit.P004.complete_randomization_conditioning",
+      "AronowAudit.P004.linear_hajek_class_identity",
+      "AronowAudit.P004.marginal_is_marginalization",
+      "AronowAudit.P004.wrong_hajek_class_difference",
+      "SAP.P004b.WH.W3.T30_whole",
+      "SAP.P004b.WH.W3.T30_assembly",
+      "SAP.P004b.WH.W3.T30_L1_proof",
+      "SAP.P004b.WH.W3.T30_L2_proof",
+      "SAP.P004b.WH.W3.T30_L3_proof",
+      "AronowAudit.P004.ComponentCompletion.selected_update",
+      "AronowAudit.P004.ConditioningCompletion.join_treated_count",
+      "AronowAudit.P004.Wave1.T34_count_moments",
+      "AronowAudit.P004.Wave1.T34_fraction_moments",
+      "AronowAudit.P004.armCount",
+      "AronowAudit.P004.coin",
+      "AronowAudit.P004.cov",
+      "AronowAudit.P004.expect",
+      "AronowAudit.P004.expect_const",
+      "AronowAudit.P004.expect_div",
+      "AronowAudit.P004.expect_mul",
+      "AronowAudit.P004.expect_sub",
+      "AronowAudit.P004.expect_sum",
+      "AronowAudit.P004.joinAssignment",
+      "AronowAudit.P004.join_design_weight",
+      "AronowAudit.P004.variance",
+      "SAP.P004b.Bridge.linearFormula_eq"
+    ],
+    "statement_definition": "SAP.P004b.T30WholeStatement",
+    "target_id": "P004-T30",
+    "theorem": "SAP.P004b.T30"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.hajek_ols",
+      "AronowAudit.P004.sandwich_sum_identity",
+      "AronowAudit.P004.spectral_psd_order"
+    ],
+    "statement_definition": "SAP.P004c.T31Statement",
+    "supporting_declarations": [
+      "AronowAudit.P004.MatrixCompletion.counts_total",
+      "AronowAudit.P004.MatrixCompletion.sum_bit",
+      "AronowAudit.P004.MatrixCompletion.sandwich_treatment",
+      "AronowAudit.P004.MatrixCompletion.PSD_iff_posSemidef"
+    ],
+    "target_id": "P004-T31",
+    "theorem": "SAP.P004c.T31"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.ht_variance_bound",
+      "AronowAudit.P004.ht_variance_components",
+      "AronowAudit.P004.ht_variance_order"
+    ],
+    "statement_definition": "SAP.P004c.T32Statement",
+    "supporting_declarations": [
+      "AronowAudit.P004.augmented_variance"
+    ],
+    "target_id": "P004-T32",
+    "theorem": "SAP.P004c.T32"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.hajek_homophily_identity",
+      "AronowAudit.P004.hajek_variance_identity",
+      "AronowAudit.P004.ht_standardized_summands"
+    ],
+    "statement_definition": "SAP.P004c.T33Statement",
+    "supporting_declarations": [
+      "AronowAudit.P004.barMu_difference"
+    ],
+    "target_id": "P004-T33",
+    "theorem": "SAP.P004c.T33"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the exact absolute-value identities, finite kernel cross-sum bound, Bernoulli denominator O_p(N^(-1/2)) rate, and scalar witness arithmetic. Drops the composed bandwidth conclusion O_p(N^(-1/2)*b_N^2)=o_p(1) and the certified realization of the N=8 assignment, arm-centred residuals, all-pairs kernel and S=-1/4. Requires positive sample size and bandwidth in the finite kernel bound. The denominator error is evaluated only on nonempty treated arms and extended by zero on empty arms.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.bernoulli_denominator_rate_proof",
+      "AronowAudit.P004.denominator_absolute_identity",
+      "AronowAudit.P004.kernel_cross_sum_bound",
+      "AronowAudit.P004.missing_absolute_witness"
+    ],
+    "statement_definition": "SAP.P004c.T34Statement",
+    "supporting_declarations": [
+      "AronowAudit.P004.Wave1.T34_prob_mono"
+    ],
+    "target_id": "P004-T34",
+    "theorem": "SAP.P004c.T34"
+  },
+  {
+    "axioms": null,
+    "decision": "omitted",
+    "proof_plan": null,
+    "proof_status": null,
+    "restriction": "Both usable narrower rows negate conjunctions universally quantified over arbitrary metric measurable spatial spaces. Neither exported type restricts the counterexample to the canonical two-dimensional spatial domain. Their weaker larger-domain negations do not refute the printed proposition, and no positive component of that proposition is established by these rows.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.Wave1.printed_ipw_bound_and_literal_coverage_refuted",
+        "reason": "Both usable narrower rows negate conjunctions universally quantified over arbitrary metric measurable spatial spaces. Neither exported type restricts the counterexample to the canonical two-dimensional spatial domain. Their weaker larger-domain negations do not refute the printed proposition, and no positive component of that proposition is established by these rows."
+      },
+      {
+        "lean_name": "AronowAudit.P004.Wave1.printed_ipw_proposition_refuted",
+        "reason": "Both usable narrower rows negate conjunctions universally quantified over arbitrary metric measurable spatial spaces. Neither exported type restricts the counterexample to the canonical two-dimensional spatial domain. Their weaker larger-domain negations do not refute the printed proposition, and no positive component of that proposition is established by these rows."
+      }
+    ],
+    "rows_used": [],
+    "target_id": "P004-T35",
+    "theorem": null
+  },
+  {
+    "axioms": null,
+    "decision": "omitted",
+    "proof_plan": null,
+    "proof_status": null,
+    "restriction": "The only row has final status wrong_credit: its numerator is fitted IPW, whereas the corrected canonical as-printed assertion retains the distinct Hajek numerator. It proves neither that coverage assertion nor its refutation.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.Wave1.printed_observational_coverage_refuted",
+        "reason": "The only row has final status wrong_credit: its numerator is fitted IPW, whereas the corrected canonical as-printed assertion retains the distinct Hajek numerator. It proves neither that coverage assertion nor its refutation."
+      }
+    ],
+    "rows_used": [],
+    "target_id": "P004-T36",
+    "theorem": null
+  },
+  {
+    "axioms": null,
+    "decision": "omitted",
+    "proof_plan": null,
+    "proof_status": null,
+    "restriction": "The narrower row negates an equality for arbitrary real circle tables and positive bin weights. It exports no binary spatial population, common outcome field, ordered distance bins or regional partition satisfying the canonical domain. The empirical estimate and p-value are not mathematical targets.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.ConfidenceFollowup02.printed_area_sum_refuted",
+        "reason": "The narrower row negates an equality for arbitrary real circle tables and positive bin weights. It exports no binary spatial population, common outcome field, ordered distance bins or regional partition satisfying the canonical domain. The empirical estimate and p-value are not mathematical targets."
+      }
+    ],
+    "rows_used": [],
+    "target_id": "P004-T37",
+    "theorem": null
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.bernoulli_pair_positive_powers",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.bernoulli_positive_power",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.bernoulli_selection",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.design_normalized",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.expect_add",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.expect_const",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.expect_div",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.expect_mul",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.expect_split",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.expect_sub",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.expect_sum",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.join_design_weight",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.ht_unbiased",
+      "AronowAudit.P004.marginal_is_marginalization"
+    ],
+    "statement_definition": "SAP.P004c.T39Statement",
+    "target_id": "P004-T39",
+    "theorem": "SAP.P004c.T39"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.additive_design_invariance",
+        "reason": "Final status wrong_credit: the finite-outcome version omits the canonical general spatial-integral cases; the credited integral theorem is used instead."
+      },
+      {
+        "lean_name": "AronowAudit.P004.additive_potential_shift",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.marginal_law_shift",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.additive_spatial_design_invariance"
+    ],
+    "statement_definition": "SAP.P004c.T40Statement",
+    "target_id": "P004-T40",
+    "theorem": "SAP.P004c.T40"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.design_dependency_graph",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.ht_central_limit",
+      "AronowAudit.P004.ht_variance_order"
+    ],
+    "statement_definition": "SAP.P004c.T41Statement",
+    "target_id": "P004-T41",
+    "theorem": "SAP.P004c.T41"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.design_dependency_graph",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.hajek_ratio_identity",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.hajek_central_limit_proof"
+    ],
+    "statement_definition": "SAP.P004c.T42Statement",
+    "target_id": "P004-T42",
+    "theorem": "SAP.P004c.T42"
+  },
+  {
+    "axioms": null,
+    "decision": "omitted",
+    "proof_plan": null,
+    "proof_status": null,
+    "restriction": "The narrower negative row ranges over arbitrary metric measurable spaces and does not export a refutation in the canonical two-dimensional spatial domain. The other two rows prove finite oracle variance bounds; those are auxiliaries and establish neither printed ordinary-limit coverage conclusion. A package of these helper facts would not state the canonical coverage claim.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.Wave1.experimental_wald_coverage_printed_false",
+        "reason": "The narrower negative row ranges over arbitrary metric measurable spaces and does not export a refutation in the canonical two-dimensional spatial domain. The other two rows prove finite oracle variance bounds; those are auxiliaries and establish neither printed ordinary-limit coverage conclusion. A package of these helper facts would not state the canonical coverage claim."
+      },
+      {
+        "lean_name": "AronowAudit.P004.hajek_homophily_identity",
+        "reason": "Finite oracle variance identity or bound only; it does not establish the canonical coverage limit."
+      },
+      {
+        "lean_name": "AronowAudit.P004.hajek_sah_bound",
+        "reason": "Finite oracle variance identity or bound only; it does not establish the canonical coverage limit."
+      }
+    ],
+    "rows_used": [],
+    "target_id": "P004-T43",
+    "theorem": null
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Uses the actual credited uniform QuadraticSpacing premise: one positive C_b and one eventual sample-size threshold valid simultaneously for all radii, with count bound C_b*(1+s^2). This replaces the canonical printed radiuswise-eventual C_b*s^2 premise; it does not establish the conclusions under the weaker radiuswise nonvacuous reading. Finite unbiasedness is asserted only for positive sample sizes with well-defined spatial averages. Eventual spatial regularity and the Appendix C metric node-distance premise are explicit. All four headline conclusions are retained under these premises.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P004.ht_unbiased",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      },
+      {
+        "lean_name": "AronowAudit.P004.ned_exact_linear_variance",
+        "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P004.Wave1.ned_headline_under_uniform_spacing"
+    ],
+    "statement_definition": "SAP.P004c.T44Statement",
+    "target_id": "P004-T44",
+    "theorem": "SAP.P004c.T44"
+  }
+]

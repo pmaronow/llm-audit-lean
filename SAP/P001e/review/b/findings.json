@@ -1,0 +1,192 @@
+[
+  {
+    "target_id": "P001-T77",
+    "theorem": "SAP.P001e.T77",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Ω a singleton, K=τ=1, Θ=all real parameter vectors, X=0, Y=0, and g(y,x,t)=1 if y=0 and 0 otherwise (a point-mass PMF). Θ is nonempty and the likelihood at the data is constantly 1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T78",
+    "theorem": "SAP.P001e.T78",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: n=2, K=0, X the single intercept column (1,1), Y=(-1,1), and b*=0. Q(b)=2+2b², so b* is a global minimizer and Q(b*)=2>0; fitted scale sqrt(Q/n)=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T79",
+    "theorem": "SAP.P001e.T79",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=2, K=1, X_0=0, X_1=1, ν_0=δ_0 and ν_1=δ_1. The fitted law has mass 1/2 at (0,0) and (1,1); both component measures are genuine probability measures and n is positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T80",
+    "theorem": "SAP.P001e.T80",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Ω=Bool with weights 1/2, R(b)=1_{b=true}, Y=1/2, a=0, b=1. Both response states have positive mass, all variables are pointwise bounded/measurable, and [L,U]=[1/4,3/4]. For any c in this interval, leave the respondent value 1/2 and set the missing value to 2c-1/2. The finite six-unit calculation was also compiled.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T81",
+    "theorem": "SAP.P001e.T81",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A fixed assertion without hypotheses. All six indices are inhabited; respondent candidates {0,2,3,4} are nonempty. Exact rational distances and donor choices were recomputed in scratch/arithmetic.json; completion is (2,2,3,10,12,3), with sum 32.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T82",
+    "theorem": "SAP.P001e.T82",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled fair probability measure on Bool, X constant in Unit, and Boolean response R(b)=b. The response probability is exactly 1/2. Take p=1/2 and κ(x)=the fair Bool measure for all x. The kernel disintegration and conditional-mean identities hold; the equivalent numerical-response conditional mean was compiled in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T83",
+    "theorem": "SAP.P001e.T83",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the fair Bool probability measure, X constant in Unit, R=1_{true}, p=1/2, ε=1/4, and Y=2. Conditional independence holds because Y is constant; both outcomes and inverse-response weights are integrable. The recorded-response weighted outcome is 4 on response and 0 otherwise, with mean 2. The measure, propensity conditional mean and general constant-variable conditional-independence lemma were compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T84",
+    "theorem": "SAP.P001e.T84",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The canonical twelve-unit sample realizes N=(4,4,4), r=(2,3,2), S=(3/4,3/2,3/4). It has positive probability under iid X uniform on {-1,0,1}, R independent Bernoulli(7/12), and independent Y uniform on {1/4,1/2,3/4}; this is MAR with a correctly specified constant logit propensity. Both score coordinates vanish at the proposed fit. Positive cell information and full-rank intercept/slope design give strict concavity. Rational IPW=3/7 and plug-in=5/12 were recomputed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T85",
+    "theorem": "SAP.P001e.T85",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled: E=Fin 2, N=(4,4), r=(2,3), q=(1/2,3/4), n=8. All hypotheses, including positive total, positive cell quantities and saturation, hold jointly. Any real S is permitted, and these counts also arise from an actual eight-unit binary-response sample.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T86",
+    "theorem": "SAP.P001e.T86",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the fair Bool measure, X constant, R=1_{true}, p=1/2, ε=1/4. Then R/p takes values 0,2 with mean 1, whereas 1/p=2. The equality case is also satisfiable in the allowed generalized statement: singleton Ω, R=p=1, ε=1/2. The fair-measure and propensity checks were compiled.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T87",
+    "theorem": "SAP.P001e.T87",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For both components use fair Bool Ω, constant X, R=1_{true}, Y=2, p=1/2, m=2 and ε=1/4. Both response-event masses are 1/2. The respondent conditional mean m is supplied and integrable under both the respondent and population measures; Y is conditionally independent of R. The full recorded conditional mean equals 2 on response and -99 on nonresponse.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T88",
+    "theorem": "SAP.P001e.T88",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Ω=({0,1}×{0,1})^ℕ with the product of uniform four-point laws. Let D_i and V_i be its two independent fair-bit coordinates, Y0_i=Y1_i=V_i, a=0 and b=1. Every support condition holds pointwise, P(D_0=1)=1/2, and observed pairs (V_i,D_i) are iid. L_i is a nonconstant fair {−1,0} variable and U_i=L_i+1; endpoints are −1/2 and 1/2, with true ATE 0. This is a mathematical product-space witness; the infinite product instance was not compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T89",
+    "theorem": "SAP.P001e.T89",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six states each have weight 1/6, a normalized strictly positive finite distribution. The paired D=0/D=1 latent states have identical (Y,Y,X1,X0) values, proving randomization. Every (X,D) conditioning cell has positive mass. The observable PMF, including the repeated cell of mass 1/3, was independently recomputed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T90",
+    "theorem": "SAP.P001e.T90",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The displayed measure is Lebesgue measure restricted to [0,1], of total mass 1. D is its identity coordinate, X=0, and the two bounded potential processes are deterministic zero and deterministic 1_{d=1/2}; hence both processes are independent of D. The spike map is Borel measurable and differs from zero only on a null set of observed doses. The target pair (1/4,1/2) is interior to the positive-density support, and the effect means are 0 and 1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T91",
+    "theorem": "SAP.P001e.T91",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use fair Bool Ω, E=Unit, X constant, D(b)=1_{true}, Y(t,b)=t for every real t, d=0 and d′=1. The entire process is a constant random element and is independent of D. Every fixed real-dose outcome is a finite integrable constant, and the observed diagonal is the measurable integrable D. Both target-dose cells have mass 1/2. Standardized means are 0 and 1 and their contrast is 1. The fair measure, cell masses and general constant-process independence lemma were compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T92",
+    "theorem": "SAP.P001e.T92",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual six-by-four design is explicit and nonempty. Independent rational elimination gave det(XᵀX)=7311 and β=(13563,6178,−759,−1778)/2437. The two estimates evaluated with the printed 9 are 12103/4874 and 6178/2437. Both estimate computations were also compiled in Lean; their gap is −253/4874.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T93",
+    "theorem": "SAP.P001e.T93",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the universal part take n=4, D=(0,0,1,1), g=0, β=2, Y=(−1,1,1,3). Residuals are (−1,1,−1,1), so both normal equations hold, with nonzero residuals and both arms nonempty. Each imputation mean is 2. The fixed six-unit design has determinant 7311; exact arithmetic and Lean confirm both corrected estimates 6178/2437.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T94",
+    "theorem": "SAP.P001e.T94",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take independent fair bits X0,D and U uniform on [0,1], put X=(X0), Y0=Y1=X0+U, p=1/2 and ε=1/4. Use the genuine normalized conditional density g(y,d,x,θ)=1_{x_0≤y≤x_0+1}, with mean m(d,x)=x_0+1/2. All population hypotheses hold, including overlap, process independence, finite inner moments, correct observed conditional mean and armwise integrability. For the estimator part take n=2 and covariates 0,1: the corrected mean is 1, while the printed free-covariate expression at x=0 is 1/2.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T95",
+    "theorem": "SAP.P001e.T95",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed six-unit sample has four treated units and two controls. Every opposite-arm candidate set is nonempty, every selected nearest distance is strictly smallest, and the completed columns are (5,5,0,5,0,0) and (2,2,3,10,2,3). Their sums are 15 and 22. All donor choices were independently recomputed with exact rational scores.",
+    "confidence": 0.99
+  }
+]

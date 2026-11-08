@@ -1,0 +1,380 @@
+import SAP.P013a.Challenge
+
+open scoped BigOperators Topology
+open Filter Finset SAP.P013a
+noncomputable section
+
+namespace Review
+
+-- These sum checks and block-index checks use definitions and Mathlib only.
+lemma exp_const {Ω : Type*} [Fintype Ω] (P : Design Ω) (c : ℝ) :
+    expectation P (fun _ => c) = c := by
+  unfold expectation
+  rw [← Finset.sum_mul, P.total, one_mul]
+
+lemma var_const {Ω : Type*} [Fintype Ω] (P : Design Ω) (c : ℝ) :
+    variance P (fun _ => c) = 0 := by
+  simp [variance, covariance, exp_const]
+
+lemma first_block (i : ℕ) (_hi : 1 ≤ i) (hi4 : i ≤ 4) : blockIndex i = 1 := by
+  unfold blockIndex
+  apply IsLeast.csInf_eq
+  constructor
+  · norm_num [blockEnd, hi4]
+  · intro r hr
+    exact hr.1
+
+lemma second_block (i : ℕ) (hi : 5 ≤ i) (hi16 : i ≤ 16) : blockIndex i = 2 := by
+  unfold blockIndex
+  apply IsLeast.csInf_eq
+  constructor
+  · norm_num [blockEnd, hi16]
+  · intro r hr
+    by_contra h
+    have hrpos : 1 ≤ r := hr.1
+    have hr1 : r = 1 := by omega
+    subst r
+    have hbad : i ≤ 4 := by simpa [blockEnd] using hr.2
+    omega
+
+-- The natural infimum is never using its empty-set default.
+example (i : ℕ) : ∃ r : ℕ, 1 ≤ r ∧ i ≤ blockEnd r := by
+  refine ⟨i+1, by omega, ?_⟩
+  have h1 : i < 2^(i+1) := lt_trans (Nat.lt_succ_self i) Nat.lt_two_pow_self
+  have h2 : 2^(i+1) < 2^(2^(i+1)) := Nat.lt_two_pow_self
+  simpa [blockEnd] using (le_trans h1.le h2.le)
+
+example : blockOutcome 1 1 = 1 ∧ blockOutcome 4 0 = 1 ∧
+    blockOutcome 5 1 = 2 ∧ blockOutcome 5 0 = 0 ∧
+    blockOutcome 6 1 = 0 ∧ blockOutcome 6 0 = 2 := by
+  norm_num [blockOutcome, first_block 1 (by omega) (by omega),
+    first_block 4 (by omega) (by omega), second_block 5 (by omega) (by omega),
+    second_block 6 (by omega) (by omega), blockEnd]
+
+-- Finite graph premises are instantiated by a real independent-coordinate law.
+-- The vector-independence certificate is a finite assertion of the trusted T7.
+example : GenuineDependency (blockDesign 2) (blockPopulation 2).exposure
+      (fun i j => decide (i=j)) ∧
+    RowBound (fun i j : Fin 2 => decide (i=j)) 1 := by
+  have h := SAP.P013a.T7.1 2 (by omega)
+  exact ⟨h.2.2.1, h.2.2.2.1⟩
+
+abbrev P (n : ℕ) := blockDesign (n+1)
+abbrev est (n : ℕ) := htEffect (blockPopulation (n+1)) 1 0
+abbrev target (n : ℕ) := causalEffect (blockPopulation (n+1)) 1 0
+abbrev V (n : ℕ) := variance (P n) (est n)
+abbrev W (n : ℕ) (z : Fin (n+1) → Fin 2) :=
+    (n+1 : ℝ) * effectVariance (blockPopulation (n+1)) 1 0 z
+
+lemma V_eq (n : ℕ) : V n = 4/(n+1 : ℝ) := by
+  simpa only [Nat.cast_add, Nat.cast_one] using
+    (SAP.P013a.T7.1 (n+1) (by omega)).2.2.2.2.2.2.1
+
+lemma V_pos (n : ℕ) : 0 < V n := by
+  rw [V_eq]
+  positivity
+
+lemma scaled_V (n : ℕ) : (n+1 : ℝ)*V n = 4 := by
+  exact (SAP.P013a.T7.2.2.2.1 n).1
+
+lemma scaled_limit : Tendsto (fun n : ℕ => (n+1 : ℝ)*V n) atTop (𝓝 4) := by
+  simpa only [scaled_V] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (4 : ℝ)) atTop (𝓝 4))
+
+lemma normal_limit : TendsNormal P (fun n z => (est n z-target n)/Real.sqrt (V n)) 0 1 := by
+  exact SAP.P013a.T7.2.2.2.2.2.1
+
+-- Every T8 antecedent, including the finite-expectation-limit branch, is inhabited.
+-- Vhat is chosen as the deterministic true variance for this abstract instance.
+example : ∃ (Vhat : ∀ n, (Fin (n+1) → Fin 2) → ℝ) (c s : ℝ),
+    (∀ n, V n = variance (P n) (est n) ∧ 0 < V n) ∧
+    0 < c ∧
+    Tendsto (fun n : ℕ => (n+1 : ℝ)*V n) atTop (𝓝 c) ∧
+    TendsNormal P (fun n z => (est n z-target n)/Real.sqrt (V n)) 0 1 ∧
+    (∀ n : ℕ, (n+1 : ℝ)*V n ≤ expectation (P n) (fun z => (n+1 : ℝ)*Vhat n z)) ∧
+    Tendsto (fun n => variance (P n) (fun z => (n+1 : ℝ)*Vhat n z)) atTop (𝓝 0) ∧
+    c ≤ s ∧
+    Tendsto (fun n => expectation (P n) (fun z => (n+1 : ℝ)*Vhat n z)) atTop (𝓝 s) := by
+  refine ⟨fun n _ => V n, 4, 4, ?_, by norm_num, scaled_limit, normal_limit, ?_, ?_, le_rfl, ?_⟩
+  · intro n
+    exact ⟨rfl, V_pos n⟩
+  · intro n
+    rw [exp_const]
+  · simpa only [var_const] using
+      (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+  · simpa only [exp_const] using scaled_limit
+
+-- The counterexample itself meets the stronger variance-concentration premise,
+-- with positive estimated variance at every point, not only almost surely.
+example : (∀ n, 0 < V n) ∧
+    (∀ n : ℕ, (n+1 : ℝ)*V n ≤ expectation (P n) (W n)) ∧
+    Tendsto (fun n => variance (P n) (W n)) atTop (𝓝 0) ∧
+    TendsNormal P (fun n z => (est n z-target n)/Real.sqrt (V n)) 0 1 ∧
+    (∀ n z, 0 < effectVariance (blockPopulation (n+1)) 1 0 z) := by
+  refine ⟨V_pos, ?_, SAP.P013a.T7.2.2.2.2.1, normal_limit, ?_⟩
+  · intro n
+    rw [scaled_V]
+    exact (SAP.P013a.T7.2.2.2.1 n).2
+  · intro n z
+    exact SAP.P013a.T7.2.1 (n+1) (by omega) z
+
+-- T9's algebraic branch has ordinary positive inputs.
+example : ∃ estimate target V Vhat : ℝ,
+    0 < V ∧ 0 < Vhat ∧ estimate ≠ target := by
+  exact ⟨1,0,1,4,by norm_num,by norm_num,by norm_num⟩
+
+-- T9's simulation branch: positive probabilities, attained minimum, nonzero total,
+-- independent draws, the common-sign domain inhabited.
+def onePopulation : Population sharedDesign 1 2 where
+  exposure z _ := z
+  outcome _ d := if d = 1 then 2 else 0
+
+example : Positivity onePopulation 1 ∧ IsMinimumPi onePopulation 1 (1/2) ∧
+    potentialTotal onePopulation 1 = 2 ∧
+    (∀ i, 0 ≤ onePopulation.outcome i 1) := by
+  norm_num [Positivity, IsMinimumPi, SAP.P013a.pi, expectation, indicator, sharedDesign,
+    onePopulation, potentialTotal, Fin.sum_univ_succ]
+
+-- Direct evaluation of the actual independent experimental/simulation product law.
+example : expectation (independentProduct sharedDesign (replicateDesign sharedDesign 1))
+    (simulatedHTTotal onePopulation 1 1) = 3/2 := by
+  classical
+  have sum_one (f : Fin 2 → ℝ) :
+      (∑ zs : Fin 1 → Fin 2, f (zs 0)) = f 0 + f 1 := by
+    simpa [Equiv.funUnique, Equiv.piUnique, Fin.sum_univ_succ] using
+      (Equiv.funUnique (Fin 1) (Fin 2)).sum_comp f
+  norm_num [expectation, independentProduct, replicateDesign, simulatedHTTotal,
+    simulatedPi, replicateCount, indicator, observed, sharedDesign, onePopulation,
+    Fintype.sum_prod_type, Fin.sum_univ_succ]
+  change (∑ x : Fin 1 → Fin 2,
+    (1/4 : ℝ) * (2/(((if x 0 = 1 then 1 else 0)+1)/2))) = 3/2
+  rw [sum_one (fun a : Fin 2 => (1/4 : ℝ) * (2/(((if a = 1 then 1 else 0)+1)/2)))]
+  norm_num
+
+def signedPopulation : Population sharedDesign 2 2 where
+  exposure z _ := z
+  outcome i d := if d = 0 then 0 else if i = 0 then 2 else -1
+
+example : Positivity signedPopulation 1 ∧ IsMinimumPi signedPopulation 1 (1/2) ∧
+    potentialTotal signedPopulation 1 = 1 ∧ cancellationFactor signedPopulation 1 = 3 ∧
+    signedPopulation.outcome 0 1 = 2 ∧ signedPopulation.outcome 1 1 = -1 := by
+  norm_num [Positivity, IsMinimumPi, SAP.P013a.pi, expectation, indicator, sharedDesign,
+    signedPopulation, potentialTotal, cancellationFactor, Fin.sum_univ_succ, Fin.forall_fin_two]
+
+-- The rounded inputs in T10 are individually compatible; symmetry alone fails.
+example : Displays3 (295/1000) (295/1000) ∧
+    Displays3 (50/1000) (50/1000) ∧ Displays3 (536/1000) (536/1000) := by
+  norm_num [Displays3]
+
+example : Displays3 (306/1000) (306/1000) ∧
+    Displays3 (212/1000) (212/1000) ∧ Displays3 (404/1000) (404/1000) := by
+  norm_num [Displays3]
+
+example : (536/1000+50/1000 : ℝ)+1/1000 < 2*(295/1000) ∧
+    2*(306/1000 : ℝ)+1/1000 < 212/1000+404/1000 := by norm_num
+
+
+-- Reindexing the actual product sample space by Fin(card Ω) changes no law.
+def reindexDesign {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    (P : Design Ω) (e : Ξ ≃ Ω) : Design Ξ where
+  weight z := P.weight (e z)
+  positive z := P.positive (e z)
+  total := (e.sum_comp P.weight).trans P.total
+
+def reindexPopulation {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    {P : Design Ω} {N K : ℕ} (F : Population P N K) (e : Ξ ≃ Ω) :
+    Population (reindexDesign P e) N K where
+  exposure z i := F.exposure (e z) i
+  outcome := F.outcome
+
+lemma exp_reindex {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    (P : Design Ω) (e : Ξ ≃ Ω) (X : Ω → ℝ) :
+    expectation (reindexDesign P e) (fun z => X (e z)) = expectation P X := by
+  exact e.sum_comp (fun z => P.weight z * X z)
+
+lemma prob_reindex {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    (P : Design Ω) (e : Ξ ≃ Ω) (A : Ω → Prop) :
+    probability (reindexDesign P e) (fun z => A (e z)) = probability P A := by
+  classical
+  exact e.sum_comp (fun z => if A z then P.weight z else 0)
+
+lemma var_reindex {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    (P : Design Ω) (e : Ξ ≃ Ω) (X : Ω → ℝ) :
+    variance (reindexDesign P e) (fun z => X (e z)) = variance P X := by
+  unfold variance covariance
+  rw [exp_reindex P e X, exp_reindex P e (fun z => X z * X z)]
+
+lemma pi_reindex {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    {P : Design Ω} {N K : ℕ} (F : Population P N K) (e : Ξ ≃ Ω)
+    (i : Fin N) (d : Fin K) :
+    SAP.P013a.pi (reindexPopulation F e) i d = SAP.P013a.pi F i d := by
+  exact exp_reindex P e (indicator F.exposure i d)
+
+lemma joint_reindex {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    {P : Design Ω} {N K : ℕ} (F : Population P N K) (e : Ξ ≃ Ω)
+    (i j : Fin N) (d a : Fin K) :
+    jointPi (reindexPopulation F e) i j d a = jointPi F i j d a := by
+  exact exp_reindex P e (fun z => indicator F.exposure i d z * indicator F.exposure j a z)
+
+lemma ht_reindex {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    {P : Design Ω} {N K : ℕ} (F : Population P N K) (e : Ξ ≃ Ω)
+    (d a : Fin K) (z : Ξ) :
+    htEffect (reindexPopulation F e) d a z = htEffect F d a (e z) := by
+  simp only [htEffect, htTotal, pi_reindex]
+  rfl
+
+lemma vhat_reindex {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    {P : Design Ω} {N K : ℕ} (F : Population P N K) (e : Ξ ≃ Ω)
+    (d a : Fin K) (z : Ξ) :
+    effectVariance (reindexPopulation F e) d a z = effectVariance F d a (e z) := by
+  classical
+  simp only [effectVariance, varianceHT, correctionA2, covarianceA, pairTerm,
+    pi_reindex, joint_reindex]
+  rfl
+
+lemma genuine_reindex {Ω Ξ : Type} [Fintype Ω] [Fintype Ξ]
+    {P : Design Ω} {N K : ℕ} (F : Population P N K) (e : Ξ ≃ Ω)
+    (h : Fin N → Fin N → Bool) (hgen : GenuineDependency P F.exposure h) :
+    GenuineDependency (reindexDesign P e) (reindexPopulation F e).exposure h := by
+  intro A B hd hn a b
+  change probability (reindexDesign P e)
+      (fun z => (∀ i ∈ A, F.exposure (e z) i = a i) ∧ (∀ j ∈ B, F.exposure (e z) j = b j)) =
+    probability (reindexDesign P e) (fun z => ∀ i ∈ A, F.exposure (e z) i = a i) *
+    probability (reindexDesign P e) (fun z => ∀ j ∈ B, F.exposure (e z) j = b j)
+  rw [prob_reindex P e (fun z => (∀ i ∈ A, F.exposure z i = a i) ∧
+    (∀ j ∈ B, F.exposure z j = b j)),
+    prob_reindex P e (fun z => ∀ i ∈ A, F.exposure z i = a i),
+    prob_reindex P e (fun z => ∀ j ∈ B, F.exposure z j = b j)]
+  exact hgen A B hd hn a b
+
+abbrev blockEquiv (n : ℕ) := (Fintype.equivFin (Fin (n+1) → Fin 2)).symm
+
+def S : ExperimentSequence where
+  experiment n := {
+    supportSize := Fintype.card (Fin (n+1) → Fin 2)
+    exposureSize := 2
+    design := reindexDesign (P n) (blockEquiv n)
+    population := reindexPopulation (blockPopulation (n+1)) (blockEquiv n) }
+  treated _ := 1
+  control _ := 0
+  distinct _ := by change (1 : Fin 2) ≠ 0; norm_num
+  positiveTreated n := by
+    intro i
+    change 0 < SAP.P013a.pi (reindexPopulation (blockPopulation (n+1)) (blockEquiv n)) i 1 ∧
+      SAP.P013a.pi (reindexPopulation (blockPopulation (n+1)) (blockEquiv n)) i 1 < 1
+    rw [pi_reindex, (SAP.P013a.T7.1 (n+1) (by omega)).1 i 1 |>.1]
+    norm_num
+  positiveControl n := by
+    intro i
+    change 0 < SAP.P013a.pi (reindexPopulation (blockPopulation (n+1)) (blockEquiv n)) i 0 ∧
+      SAP.P013a.pi (reindexPopulation (blockPopulation (n+1)) (blockEquiv n)) i 0 < 1
+    rw [pi_reindex, (SAP.P013a.T7.1 (n+1) (by omega)).1 i 0 |>.1]
+    norm_num
+
+lemma S_positive : StandingPositivity S := by
+  intro n d i
+  change Fin 2 at d
+  change 0 < SAP.P013a.pi (reindexPopulation (blockPopulation (n+1)) (blockEquiv n)) i d ∧
+    SAP.P013a.pi (reindexPopulation (blockPopulation (n+1)) (blockEquiv n)) i d < 1
+  rw [pi_reindex, (SAP.P013a.T7.1 (n+1) (by omega)).1 i d |>.1]
+  norm_num
+
+lemma S_bounded : Condition3 S := by
+  refine ⟨2,2,by norm_num,by norm_num,?_⟩
+  intro n i d
+  change Fin 2 at d
+  change |(blockPopulation (n+1)).outcome i d| ≤ 2 ∧
+    |1 / SAP.P013a.pi (reindexPopulation (blockPopulation (n+1)) (blockEquiv n)) i d| ≤ 2
+  rw [pi_reindex, (SAP.P013a.T7.1 (n+1) (by omega)).1 i d |>.1]
+  exact ⟨(SAP.P013a.T7.1 (n+1) (by omega)).1 i d |>.2, by norm_num⟩
+
+lemma S_genuine : Condition5Genuine S := by
+  refine ⟨1, fun _ i j => decide (i=j), ?_⟩
+  intro n
+  refine ⟨?_, ?_, (SAP.P013a.T7.1 (n+1) (by omega)).2.2.2.1⟩
+  · intro i j
+    simp only [eq_comm]
+  · exact genuine_reindex (blockPopulation (n+1)) (blockEquiv n) _
+      (SAP.P013a.T7.1 (n+1) (by omega)).2.2.1
+
+lemma S_directed : Condition5CorrectedDirected S := by
+  rcases S_genuine with ⟨m,h,hh⟩
+  exact ⟨m,h,fun n => ⟨(hh n).2.1,(hh n).2.2⟩⟩
+
+example : ∃ S : ExperimentSequence, Condition5CorrectedDirected S := ⟨S,S_directed⟩
+
+lemma S_pair_sparse : Condition4 S := SAP.P013a.T6.{0}.2.2 S S_directed
+
+lemma S_comparison : ComparisonBounded S := by
+  rcases S_bounded with ⟨c1,c2,h1,h2,h⟩
+  exact ⟨c1,c2,h1,h2,fun n i =>
+    ⟨(h n i (S.treated n)).1,(h n i (S.control n)).1,
+     (h n i (S.treated n)).2,(h n i (S.control n)).2⟩⟩
+
+lemma seq_V (n : ℕ) : seqTrueVariance S n = V n := by
+  change variance (reindexDesign (P n) (blockEquiv n))
+    (fun z => htEffect (reindexPopulation (blockPopulation (n+1)) (blockEquiv n)) 1 0 z) = V n
+  simp only [ht_reindex]
+  exact var_reindex (P n) (blockEquiv n) (est n)
+
+lemma S_nonzero : Condition6 S := by
+  refine ⟨4,by norm_num,?_⟩
+  simpa only [seq_V] using scaled_limit
+
+lemma seq_prob_lt (n : ℕ) (a : ℝ) :
+    probability (seqLaw S n) (fun z => (n+1 : ℝ)*seqVarianceEstimate S n z < a) =
+      probability (P n) (fun z => W n z < a) := by
+  change probability (reindexDesign (P n) (blockEquiv n))
+      (fun z => (n+1 : ℝ)*effectVariance
+        (reindexPopulation (blockPopulation (n+1)) (blockEquiv n)) 1 0 z < a) = _
+  simp only [vhat_reindex]
+  exact prob_reindex (P n) (blockEquiv n) (fun z => W n z < a)
+
+lemma prob_nonneg {Ω : Type} [Fintype Ω] (P : Design Ω) (A : Ω → Prop) :
+    0 ≤ probability P A := by
+  classical
+  apply Finset.sum_nonneg
+  intro z _
+  split_ifs
+  · exact (P.positive z).le
+  · exact le_rfl
+
+lemma prob_mono {Ω : Type} [Fintype Ω] (P : Design Ω) (A B : Ω → Prop)
+    (h : ∀ z, A z → B z) : probability P A ≤ probability P B := by
+  classical
+  apply Finset.sum_le_sum
+  intro z _
+  by_cases ha : A z
+  · simp [ha, h z ha]
+  · simp only [ha, ite_false]
+    split_ifs
+    · exact (P.positive z).le
+    · exact le_rfl
+
+lemma S_lower_tail : LowerTailCondition S := by
+  have h8 := SAP.P013a.T8 P est
+    (fun n => effectVariance (blockPopulation (n+1)) 1 0) target V
+    (fun n => ⟨rfl,V_pos n⟩) 4 (by norm_num) scaled_limit normal_limit
+    (fun n => by rw [scaled_V]; exact (SAP.P013a.T7.2.2.2.1 n).2)
+    SAP.P013a.T7.2.2.2.2.1
+  intro δ hδ
+  simp_rw [seq_V, scaled_V, seq_prob_lt]
+  let ε := min (δ/4) (1/2 : ℝ)
+  have he0 : 0 < ε := lt_min (by positivity) (by norm_num)
+  have he1 : ε < 1 := lt_of_le_of_lt (min_le_right _ _) (by norm_num)
+  have hed : 4*ε ≤ δ := by
+    have h := min_le_left (δ/4) (1/2 : ℝ)
+    dsimp only [ε]
+    linarith
+  have heLimit : Tendsto (fun n => probability (P n) (fun z => W n z < (1-ε)*4))
+      atTop (𝓝 0) := by
+    simpa only [scaled_V] using (h8.2.1 ε he0 he1).2
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds heLimit
+    (Eventually.of_forall fun n => prob_nonneg (P n) _)
+    (Eventually.of_forall fun n => prob_mono (P n) _ _ (fun z hz => by linarith))
+
+-- All sequence hypotheses in both T9's consistency and coverage clauses hold together.
+example : ∃ S : ExperimentSequence, StandingPositivity S ∧ Condition3 S ∧ Condition4 S ∧
+    ComparisonBounded S ∧ Condition5Genuine S ∧ Condition6 S ∧ LowerTailCondition S := by
+  exact ⟨S,S_positive,S_bounded,S_pair_sparse,S_comparison,S_genuine,S_nonzero,S_lower_tail⟩
+
+end Review

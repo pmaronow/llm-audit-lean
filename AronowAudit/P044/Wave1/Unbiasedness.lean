@@ -16,6 +16,8 @@ theorem printed_unbiasedness_claim_refuted : ¬ PrintedUnbiasedness :=
     AronowAudit.P044.Wave1.Unbiasedness.n1_proof
     AronowAudit.P044.Wave1.Unbiasedness.n2_proof
 
+example : AronowAudit.P044.Wave1.Unbiasedness.Target := printed_unbiasedness_claim_refuted
+
 end
 
 end AronowAudit.P044.Wave1

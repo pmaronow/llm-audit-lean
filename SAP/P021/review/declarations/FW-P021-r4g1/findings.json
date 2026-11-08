@@ -1,0 +1,31 @@
+[
+  {
+    "target_id": "P021-T1",
+    "theorem": "SAP.P021.T1",
+    "fingerprint": "71508f7ed3a516e8c950d9064e1ba0c08fb6c39891a194e4c632aa4258ac6d91",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with /home/ubuntu/sap/tools/sap-lean (exit 0; transcript scratch/nonvacuity.log). ReviewP021.t1_nonvacuity at scratch/Nonvacuity.lean:77 constructs B=2, K=3, and a probability law with masses 3/8, 1/8, 1/8, 3/8 respectively at (Y,D,S)=(0,1,0),(0,1,1),(2,3,0),(2,3,1). Its mean is 1 and sampling fraction is 1/2. Ignorability holds, with sampling probabilities 1/4 and 3/4 on the two supported degrees. KnownSampling holds for c=-1/4 and profile f(1)=-1, f(2)=0, f(3)=-3. Thus every hypothesis is jointly satisfied, including a genuine unsupported degree with a zero profile value and a negative scale/profile pair. The support is explicitly checked to be Fin labels {0,2}. These proofs import definitions and Mathlib only and use no Challenge theorem; the printed witness axiom list is exactly propext, Classical.choice, Quot.sound.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P021-T2",
+    "theorem": "SAP.P021.T2",
+    "fingerprint": "21a3f154dd6453b6a6327261e844aed60a67d7f655d9065e76ab7cd1e57b7dd0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with /home/ubuntu/sap/tools/sap-lean (exit 0; transcript scratch/nonvacuity.log). ReviewP021.deterministic_hypotheses at scratch/Nonvacuity.lean:129 and ReviewP021.random_hypotheses at scratch/Nonvacuity.lean:190 construct all hypotheses of the two conjuncts, with B=2, K=3, N_r=8, c=-1/4, a=-1, and the same nonconstant-outcome limit law used for T1 (population mean 1). An eight-unit population realizes that law exactly and has VH estimator 1, as proved by population_average and population_estimator. The deterministic sequence has an empty sample and estimator 0 at stage 0, then this population at every later stage. The random sequence uses a fair Boolean probability space; both branches start empty, at stage 1 only the true branch is empty, and from stage 2 both branches realize the limit law. All coordinates are measurable and empirical weak convergence is proved. The empty samples and the two distinct stage-1 branches are checked explicitly. Both consistency conclusions are also proved directly for these witnesses. None of these proofs invokes either Challenge theorem; all five printed axiom lists contain only propext, Classical.choice, Quot.sound.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json, round 3: the dependent vhEstimator docstring incorrectly said the consistency statement required nonempty samples almost surely.",
+        "status": "fixed",
+        "reason": "SAP/P021/Defs/Part2.lean:24 now describes Eq. (1) as extended by zero on an empty sample, and line 25 says that the T2 consistency statement allows empty samples at finite stages. This agrees with the active random and deterministic hypotheses at SAP/P021/Defs/WholeW1.lean:19 and SAP/P021/Defs/WholeW1.lean:31, and with the target docstring at SAP/P021/Challenge/Part1.lean:18. The current text no longer imposes or describes a nonempty-sample guard. The compiled deterministic and nondegenerate random witnesses verify that finite-stage empty samples are genuinely admitted. The architect's stated repair is therefore complete."
+      }
+    ]
+  }
+]

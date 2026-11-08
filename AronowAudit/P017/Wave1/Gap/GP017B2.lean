@@ -3,7 +3,9 @@ import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Probability.Independence.InfinitePi
 
-
+/-! Draft dd-GP017B2. Source inspection only; no Lean process was run.
+The four held declarations are used only by the final type checks.
+-/
 
 namespace AronowAudit.P017.Wave1
 
@@ -106,6 +108,9 @@ theorem normal_plus_remainder_failure_bound_proof {Ξ : Type*} [MeasurableSpace 
     <;> ring
   rw [harg] at htail
   simpa only [htail] using sum_failure_union_bound P tilde u μ c
+
+example : type_of% @AronowAudit.P017.normal_plus_remainder_failure_bound :=
+  normal_plus_remainder_failure_bound_proof
 
 /-- Polynomial Gaussian densities are integrable. This also covers odd powers. -/
 private theorem t15_density_pow_integrable (v : ℝ≥0) (hv : 0 < v) (k : ℕ) :
@@ -316,6 +321,8 @@ theorem proposition4_proof {Ω Ξ : Type*} [MeasurableSpace Ω] [MeasurableSpace
       rw [halg] at hb
       exact hb
     simpa only [SmallMSE, clipTarget, htop, ↓reduceIte, residual, c] using hlimit
+
+example : type_of% @AronowAudit.P017.proposition4 := proposition4_proof
 
 /-- Representation is exactly strict support interior or an atomic endpoint. -/
 private theorem t3_representation_iff {Ω : Type*} [MeasurableSpace Ω]
@@ -530,6 +537,8 @@ theorem corrected_proposition1_proof {Ω Ξ : Type*} [MeasurableSpace Ω] [Measu
           (clipTarget (populationMean G τ) (effectRadius G τ) (hat n ω))})
         (measure_ne_top P _)
       simpa only [pr, probReal_univ] using hu
+
+example : type_of% @AronowAudit.P017.corrected_proposition1 := corrected_proposition1_proof
 
 /-- The effect coordinate has the actual fair two-point law. -/
 private theorem t6_effect_law :
@@ -936,6 +945,9 @@ theorem normal_shift_mse_counterexample_proof :
   · rw [h6val] at htailBound
     linarith
   · norm_num
+
+example : type_of% @AronowAudit.P017.normal_shift_mse_counterexample :=
+  normal_shift_mse_counterexample_proof
 
 end
 end AronowAudit.P017.Wave1

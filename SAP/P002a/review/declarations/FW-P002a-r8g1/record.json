@@ -1,0 +1,92 @@
+[
+ {
+  "target_id": "P002-T2",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.corrected_E10_proof",
+   "AronowAudit.P002.Wave1.corrected_lemma5_proof",
+   "SAP.P002a.WH.W2.T2_whole",
+   "SAP.P002a.WH.W2.T2_assembly",
+   "SAP.P002a.WH.W2.T2_L1_proof",
+   "SAP.P002a.WH.W2.T2_L2_proof",
+   "SAP.P002a.WH.W2.T2_L3_proof",
+   "SAP.P002a.WH.W2.restrictedT2",
+   "SAP.P002a.WH.W2.t2_inclusions",
+   "AronowAudit.P002.corrected_variance_algebra",
+   "AronowAudit.P002.mean_w_equal_at_late",
+   "AronowAudit.P002.square_centering",
+   "AronowAudit.P002.Wave1.T2C_residual_centered",
+   "AronowAudit.P002.Wave1.T2C_Xi_residual_score"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.group_variance_second_moment",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   }
+  ],
+  "statement_definition": "SAP.P002a.T2WholeStatement"
+ },
+ {
+  "target_id": "P002-T7",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.corrected_lemma20_proof",
+   "SAP.P002a.WH.W4.T7_whole",
+   "SAP.P002a.WH.W4.T7_assembly"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.Wave1.oracle_variances_proof",
+    "reason": "Finite (D.5)-(D.6) oracle-variance identities; already internal to the four-limit row, so no separate invocation is needed and it supplies no target limit."
+   },
+   {
+    "lean_name": "AronowAudit.P002.ols_minimizer_exists",
+    "reason": "Finite least-squares existence helper; already internal to the four-limit row, so no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P002.ols_minimizer_fullrank",
+    "reason": "Finite full-rank least-squares helper; already internal to the four-limit row, so no separate invocation is needed."
+   }
+  ],
+  "statement_definition": "SAP.P002a.T7WholeStatement_W4",
+  "row_use_note": "The proof row establishes the four limits under strictly positive population OLS residual variances in both arms. That premise is explicitly part of the corrected canonical P002-T7 claim dated 2026-11-04. SAP.P002a.T7 therefore states that claim wholly, with no additional restriction. The earlier wrong-credit assessment concerned the superseded unqualified claim."
+ },
+ {
+  "target_id": "P002-T9",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.corrected_E61_eigenvalue_paper",
+   "AronowAudit.P002.corrected_augmented_gram",
+   "AronowAudit.P002.corrected_min_eigenvalue",
+   "SAP.P002a.WH.W1.T9_whole",
+   "SAP.P002a.WH.W1.T9_assembly",
+   "SAP.P002a.WH.W1.gram_quadratic",
+   "AronowAudit.P002.leastRayleigh_lower",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n1_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n2_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n3_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n4_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n5_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n6_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n7_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n8_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n9_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n10_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n11_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n12_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.corrected_gram_perturbation",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   }
+  ],
+  "statement_definition": "SAP.P002a.T9WholeStatement"
+ }
+]

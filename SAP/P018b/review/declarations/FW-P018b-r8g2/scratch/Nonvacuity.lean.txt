@@ -1,0 +1,224 @@
+import SAP.P018b.Defs.WholeW1
+import SAP.P018b.Defs.WholeW2
+set_option autoImplicit false
+noncomputable section
+open Finset Matrix MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Topology Matrix.Norms.Elementwise ENNReal
+namespace Audit
+open SAP.P018b
+
+def R : RepeatedKernel Unit 1 :=
+  ⟨Measure.dirac (), fun _ _ => 1, fun _ _ _ _ _ => ![1], fun _ _ _ _ _ => 0⟩
+def K : Kernel Unit 1 := ⟨Measure.dirac (), fun _ _ => ![1], fun _ _ => 0⟩
+
+instance : IsProbabilityMeasure R.μ := by
+  change IsProbabilityMeasure (Measure.dirac ())
+  infer_instance
+instance : IsProbabilityMeasure K.μ := by
+  change IsProbabilityMeasure (Measure.dirac ())
+  infer_instance
+
+lemma R_standing : RepeatedStanding R := by
+  refine ⟨inferInstance, ?_, ?_, ?_, ?_⟩
+  · intro N hN d; norm_num [R]
+  · intro N d t; exact ⟨measurable_const, measurable_const⟩
+  · refine ⟨1, by norm_num, ?_⟩
+    intro N d t
+    filter_upwards [] with uv
+    change ‖(![1] : Vec 1)‖ ≤ (1 : ℝ) ∧ |(0 : ℝ)| ≤ 1
+    norm_num [Vec, Pi.norm_def]
+  · exact ⟨0, fun _ _ _ _ _ => rfl⟩
+
+lemma R_size (N : ℕ) : wholeRepeatedAtSize R N := by
+  refine ⟨inferInstance, ?_, ?_, ?_⟩
+  · intro d; norm_num [R]
+  · intro d t; exact ⟨measurable_const, measurable_const⟩
+  · refine ⟨1, by norm_num, ?_⟩
+    intro d t
+    filter_upwards [] with uv
+    change ‖(![1] : Vec 1)‖ ≤ (1 : ℝ) ∧ |(0 : ℝ)| ≤ 1
+    norm_num [Vec, Pi.norm_def]
+
+lemma K_standing : Standing K := by
+  refine ⟨inferInstance, measurable_const, measurable_const, ?_, ?_, ?_, ?_⟩
+  · intro u v; exact ⟨rfl, rfl⟩
+  · refine ⟨1, by norm_num, ?_⟩
+    filter_upwards [] with uv
+    change ‖(![1] : Vec 1)‖ ≤ (1 : ℝ) ∧ |(0 : ℝ)| ≤ 1
+    norm_num [Vec, Pi.norm_def]
+  · exact ⟨0, fun _ _ => rfl⟩
+  · norm_num [populationGram, meanMat, outer, K, Matrix.det_fin_one]
+
+-- Product-standard-normal coordinates satisfy every T22 input premise.
+example (N T : ℕ) :
+    let μ : Measure (SimulationIndex N T → ℝ) := Measure.pi (fun _ => gaussianReal 0 1)
+    Measurable (id : (SimulationIndex N T → ℝ) → (SimulationIndex N T → ℝ)) ∧
+    (∀ a, HasLaw (fun ω : SimulationIndex N T → ℝ => ω a) (gaussianReal 0 1) μ) ∧
+    iIndepFun (fun a (ω : SimulationIndex N T → ℝ) => ω a) μ := by
+  dsimp
+  refine ⟨measurable_id, ?_, ?_⟩
+  · intro a
+    exact ⟨(measurable_pi_apply a).aemeasurable, (measurePreserving_eval (fun _ => gaussianReal 0 1) a).map_eq⟩
+  · exact iIndepFun_pi (X := fun _ => id) (fun _ => aemeasurable_id)
+
+-- A nonzero, two-coordinate score with an ordinary finite expected product.
+example : ∀ a : Fin 2, MemLp (fun _ : Unit => (![1,2] : Vec 2) a) 2 (Measure.dirac ()) := by
+  intro a
+  exact memLp_const _
+
+example : genericScoreMeat (Measure.dirac ())
+    (fun (_ : Unit) (_ : Unit) => (![1,2] : Vec 2)) () = !![1,2;2,4] := by
+  ext a b
+  fin_cases a <;> fin_cases b <;> norm_num [genericScoreMeat, meanMat, outer]
+
+example : tableExactFacts := by norm_num [tableExactFacts, tableSE]
+
+example : |(-11/1000 : ℝ)| ≤ 23/2000 ∧ (15/2000 : ℝ) ≤ 8/1000 ∧
+    (21/2000 : ℝ) ≤ |(-11/1000 : ℝ)| ∧ (0 : ℝ) < 2/1000 ∧ (2/1000 : ℝ) ≤ 5/2000 := by
+  norm_num
+
+@[simp] lemma dyads_card (N : ℕ) : (dyads N).card = N.choose 2 := by
+  simp [dyads]
+
+lemma dyad_card (N : ℕ) : Fintype.card (Dyad N) = N.choose 2 := by
+  change Fintype.card ↥(Finset.univ.powersetCard 2 : Finset (Finset (Fin N))) = _
+  rw [Fintype.card_coe, Finset.card_powersetCard]
+  simp
+
+lemma R_L (N : ℕ) : repeatedL R N = (N.choose 2 : ℝ) := by
+  simp [repeatedL, R, dyads_card]
+
+lemma R_L_pos (N : ℕ) (hN : 2 ≤ N) : 0 < repeatedL R N := by
+  have hcard : repeatedL R N = (N.choose 2 : ℝ) := by
+    simp [repeatedL, R, dyads_card]
+  rw [hcard]
+  exact_mod_cast Nat.choose_pos hN
+
+lemma R_H (N : ℕ) (hN : 2 ≤ N) : wholeRepeatedH R N = (1 : Mat 1) := by
+  have hpos : (N.choose 2 : ℝ) ≠ 0 := by exact_mod_cast (Nat.choose_pos hN).ne'
+  ext a b
+  fin_cases a
+  fin_cases b
+  simp [wholeRepeatedH, meanMat, repeatedGram, repeatedX, repeatedL, R,
+    outer, repeatedLaw, dyads_card, hpos]
+
+
+lemma R_H_limit : Tendsto (wholeRepeatedH R) atTop (𝓝 (1 : Mat 1)) := by
+  apply Filter.Tendsto.congr' (f₁ := fun _ : ℕ => (1 : Mat 1)) _ tendsto_const_nhds
+  filter_upwards [eventually_ge_atTop 2] with N hN
+  exact (R_H N hN).symm
+
+lemma R_beta_zero (N : ℕ) : repeatedBeta R N = 0 := by
+  unfold repeatedBeta
+  have hxy : meanVec (repeatedLaw R N) (fun ω => ∑ d : Dyad N, ∑ t,
+      score (repeatedX R ω d t) (repeatedY R ω d t)) = 0 := by
+    ext a
+    simp [meanVec, repeatedX, repeatedY, R, score]
+  rw [hxy, Matrix.mulVec_zero]
+
+lemma R_score_zero (N : ℕ) (d : Dyad N) :
+    meanVec (repeatedLaw R N) (fun ω => repeatedBlockScore R (repeatedBeta R N) ω d) = 0 := by
+  rw [R_beta_zero]
+  ext a
+  simp [meanVec, repeatedBlockScore, repeatedX, repeatedY, dot, R, score]
+
+lemma meat_zero (N : ℕ) : meat members (fun _ : Dyad N => (0 : Vec 1)) = 0 := by
+  have houter : outer (0 : Vec 1) 0 = (0 : Mat 1) := by
+    ext a b
+    simp [outer]
+  unfold meat
+  simp only [houter, ite_self, Finset.sum_const_zero]
+
+example :
+    (∃ fX : ℕ → Unit → Unit → Vec 1, ∃ fY : ℕ → Unit → Unit → ℝ,
+      ∀ N d (t : Fin (R.T N d)) u v, R.X N d t u v = fX t.val u v ∧ R.Y N d t u v = fY t.val u v) ∧
+    (∃ T0 : ℕ, ∀ N d, R.T N d ≤ T0) ∧ (1 : Mat 1).PosDef ∧
+    Tendsto (wholeRepeatedH R) atTop (𝓝 1) ∧
+    Tendsto (fun N : ℕ => ((N : ℝ)/(repeatedL R N)^2) • meat members
+      (fun d : Dyad N => meanVec (repeatedLaw R N) (fun ω => repeatedBlockScore R (repeatedBeta R N) ω d))) atTop (𝓝 0) := by
+  refine ⟨⟨fun _ _ _ => ![1], fun _ _ _ => 0, fun _ _ _ _ _ => ⟨rfl, rfl⟩⟩,
+    ⟨1, fun _ _ => le_rfl⟩, Matrix.PosDef.one, R_H_limit, ?_⟩
+  simp only [R_score_zero, meat_zero, smul_zero]
+  exact tendsto_const_nhds
+
+-- All UI and weak-limit hypotheses for a concrete one-dimensional zero error.
+example :
+    let μ : ∀ _ : ℕ, Measure Unit := fun _ => Measure.dirac ()
+    let e : ∀ _ : ℕ, Unit → Vec 1 := fun _ _ => 0
+    let ξ : ∀ _ : ℕ, Unit → Vec 1 := fun N ω => Real.sqrt N • e N ω
+    let ν : Measure (Vec 1) := Measure.dirac 0
+    (∀ N a, MemLp (fun ω => e N ω a) 2 (μ N)) ∧
+    weakLimit μ ξ ν ∧ uiSquares μ ξ ∧
+    (∀ a, MemLp (fun x : Vec 1 => x a) 2 ν) ∧ meanVec ν id = 0 := by
+  dsimp
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro N a; simpa using (memLp_const (0 : ℝ) (μ := Measure.dirac ()))
+  · refine ⟨fun _ => (by fun_prop), inferInstance, ?_⟩
+    intro g
+    simpa using (tendsto_const_nhds : Tendsto (fun _ : ℕ => g 0) atTop (𝓝 (g 0)))
+  · refine ⟨?_, ?_⟩
+    · intro N a; simpa using (memLp_const (0 : ℝ) (μ := Measure.dirac ()))
+    · intro ε hε
+      refine ⟨1, by norm_num, ?_⟩
+      intro N
+      simpa using hε
+  · intro a
+    apply MemLp.of_bound (measurable_pi_apply a).aestronglyMeasurable 0
+    simp
+  · ext a
+    simp [meanVec]
+
+lemma R_weighted_H (N : ℕ) (hN : 2 ≤ N) :
+    wholeWeightedH R (fun (_ : Dyad N) _ => 1) = (1 : Mat 1) := by
+  have hpos : (N.choose 2 : ℝ) ≠ 0 := by exact_mod_cast (Nat.choose_pos hN).ne'
+  have hD : Dreal N = (N.choose 2 : ℝ) := by simp [Dreal, Nat.cast_choose_two]
+  ext a b
+  fin_cases a
+  fin_cases b
+  simp [wholeWeightedH, wholeWeightedGram, meanMat, repeatedX, R, outer,
+    repeatedLaw, dyads_card, hD, hpos]
+
+-- Finite covariance identities have nonempty positive-rank instances.
+example : wholeRepeatedAtSize R 2 ∧ 2 ≤ (2 : ℕ) ∧
+    (wholeRepeatedH R 2).det ≠ 0 ∧ (wholeWeightedH R (fun (_ : Dyad 2) _ => 1)).det ≠ 0 := by
+  refine ⟨R_size 2, by norm_num, ?_, ?_⟩
+  · rw [R_H 2 (by norm_num)]; norm_num
+  · rw [R_weighted_H 2 (by norm_num)]; norm_num
+
+-- Every directed consistency premise is simultaneously satisfiable.
+example :
+    RepeatedStanding R ∧ (∀ N d, R.T N d ≤ 2) ∧
+    (∃ (X : Unit → Unit → Vec 1) (Y : Unit → Unit → ℝ)
+      (dir : ∀ N, (d : Dyad N) → Fin (R.T N d) → Bool),
+      (∀ N d, Function.Injective (dir N d)) ∧
+      (∀ N d t u v, R.X N d t u v = (if dir N d t then X v u else X u v) ∧
+        R.Y N d t u v = (if dir N d t then Y v u else Y u v))) ∧
+    (∀ N : ℕ, (0 : ℝ) < 1) ∧
+    (∃ C : ℝ, ∀ N (d : Dyad N) (t : Fin (R.T N d)), 0 < (1 : ℝ)/1 ∧ (1 : ℝ)/1 ≤ C) ∧
+    (1 : Mat 1).PosDef ∧
+    Tendsto (fun N => wholeWeightedH R (fun (_ : Dyad N) _ => (1 : ℝ)/1)) atTop (𝓝 1) := by
+  refine ⟨R_standing, (by intros; norm_num [R]), ?_, (by intro; norm_num), ?_, Matrix.PosDef.one, ?_⟩
+  · refine ⟨fun _ _ => ![1], fun _ _ => 0, fun _ _ _ => false, ?_, ?_⟩
+    · intro N d a b hab
+      change Fin 1 at a b
+      exact Subsingleton.elim a b
+    · intros; exact ⟨rfl, rfl⟩
+  · exact ⟨1, by intros; norm_num⟩
+  · apply Filter.Tendsto.congr' (f₁ := fun _ : ℕ => (1 : Mat 1)) _ tendsto_const_nhds
+    filter_upwards [eventually_ge_atTop 2] with N hN
+    simpa using (R_weighted_H N hN).symm
+
+example : logisticScore (![1,2] : Vec 2) 1 0 = ![1/2,1] := by
+  ext a
+  fin_cases a <;> norm_num [logisticScore, score, expit, dot]
+
+-- Full one-sided significance domains, independently of the audited theorem.
+example (b se : ℝ) (hb : |b| ≤ 23/2000) (hs : 15/2000 ≤ se) : |b|/se ≤ 23/15 := by
+  have hp : 0 < se := lt_of_lt_of_le (by norm_num) hs
+  apply (div_le_iff₀ hp).2
+  nlinarith
+
+example (b se : ℝ) (hb : 21/2000 ≤ |b|) (hp : 0 < se) (hs : se ≤ 5/2000) : 21/5 ≤ |b|/se := by
+  apply (le_div_iff₀ hp).2
+  nlinarith
+end Audit

@@ -162,34 +162,8 @@ theorem tc10_uniform_open_positive (a b : ℝ) (ha : -1 ≤ a) (hab : a < b) (hb
     inter_eq_left.mpr hs, Real.volume_Ioo, smul_eq_mul]
   exact ENNReal.mul_pos_iff.mpr ⟨by norm_num, ENNReal.ofReal_pos.mpr (sub_pos.mpr hab)⟩
 
-/-- Negation of printed Proposition 2, with the same universe parameter. -/
-theorem printed_proposition2_refuted : ¬ ((∀ {Ω : Type u}
-      [MeasurableSpace Ω]
-      (P : Measure Ω)
-      (ν : Measure (ℝ × ℝ))
-      (sample : ℕ → Ω → ℝ × ℝ)
-      (g f : ℝ → ℝ)
-      (α : ℝ)
-      (hprob : ProbabilityLaw ν)
-      (hsupport : MarginSupport (marginLaw ν))
-      (hsq : Integrable (fun z => z.2^2) ν)
-      (hg : ContinuousOn g (Set.Ico (-1) 0))
-      (hf : ContinuousOn f (Set.Icc 0 1))
-      (hleft : Tendsto g (nhdsWithin 0 (Set.Iio 0)) (nhds α))
-      (hmean : ConditionalMean ν (appendixMean g f))
-      (hiid : IIDSample P ν sample)
-      (hpd : ∀ J, 1 ≤ J → MomentPositiveDefinite (marginLaw ν) J)
-      (k : ℕ → ℝ)
-      (hkpos : ∀ N, 0 < k N)
-      (hk0 : Tendsto k atTop (nhds 0))
-      (hnk : Tendsto (fun N : ℕ => (N:ℝ)*k N) atTop atTop)
-      (hsup : ∃ k₀ : ℝ, 0 < k₀ ∧ ∀ a b : ℝ, -k₀ ≤ a → a < b → b ≤ k₀ → 0 < marginLaw ν (Set.Ioo a b))
-      (hRD : UsualRDRegularity ν (appendixMean g f) k),
-      ConvergesInProbability P (sampleRD sample k) (f 0 - α) ∧
-    ∀ ε > 0, ∃ J₀, ∀ J ≥ J₀, 1 ≤ J →
-      ConvergesInProbability P (fun N ω => samplePolynomial sample N J ω - sampleRD sample k N ω)
-        (populationCoefficient (marginLaw ν) J (appendixMean g f) - (f 0 - α)) ∧
-      |populationCoefficient (marginLaw ν) J (appendixMean g f) - (f 0 - α)| < ε)) := by
+/-- The exact negation of the complete held universal type, at the same universe. -/
+theorem printed_proposition2_refuted : ¬ (type_of% @AronowAudit.P023.printed_proposition2.{u}) := by
   intro H
   obtain ⟨h,degrees,hc,h0,hb,hmono,hgrow,hfwl⟩ := fixed_bad_mean_unconditional
   let ν := witnessLaw uniformMargins h
@@ -237,6 +211,10 @@ theorem printed_proposition2_refuted : ¬ ((∀ {Ω : Type u}
   have hi8r : (8:ℝ) ≤ index := by exact_mod_cast hi8
   have habs := le_abs_self (biasFunctional uniformMargins (degrees index) h)
   linarith
+
+example : ¬ (type_of% @AronowAudit.P023.printed_proposition2.{u}) := printed_proposition2_refuted.{u}
+
+example : ¬ (type_of% @AronowAudit.P023.printed_proposition2) := AronowAudit.P023.Wave1.printed_proposition2_refuted
 
 end
 end AronowAudit.P023.Wave1

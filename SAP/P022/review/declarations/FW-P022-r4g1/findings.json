@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P022-T11",
+    "theorem": "SAP.P022.T11",
+    "fingerprint": "65649c6760330d7076376b713c4781766fb1dc8cf6236962860563ec2f5151fd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:9 constructs positive Va=(437/980)^2, VH=(423/980)^2 and z=49/25, with L=-3111/2000, U=385/2000, LH=-3055/2000, UH=329/2000. It proves every Wald-width and endpoint-display premise and both additional variance-display premises together. The upper bound is attained under the explicitly allowed closed-bin tie convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T12",
+    "theorem": "SAP.P022.T12",
+    "fingerprint": "daca33be7a9372ec4b9262165df28fc94f878fa2094ae4490ebcdf9b7096d097",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:22 constructs N=4,m=k=2 and nonconstant identical potential outcomes y(i)=i. Further examples construct a nonempty two-element collection with variances 0 and 1, c=3,q=1/4,d=3/2 for the multiplier hypotheses, the equality instance w=3447/2000,v=11881809/61465600 for the fixed-multiplier width hypotheses, and V=399/2000,b=-13/2000 for the final upper bound. Canonical part (d) intentionally asserts that its full scalar premise list is inconsistent, so no nonvacuity instance of that list should exist; this is the requested incompatibility result, not an empty experiment assumption.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T2",
+    "theorem": "SAP.P022.T2",
+    "fingerprint": "d13a66f761ef3aa9614c73a950b5b4c12f4ecf59356bfe6383602d4c439465d0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:147 constructs auditZero: fixed zero outcomes, N=q+4, m=floor(N/2), k=N-m, H=Dirac(0,0), theta=1,rho=1/2. The file independently proves both allocation limits, weak population convergence, CDF convergence at atoms, and AtomLeftConvergence, then constructs all theorem hypotheses together. The atom-left condition is tested at a genuine limiting atom rather than bypassed by a continuous limit law.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T18",
+    "theorem": "SAP.P022.T18",
+    "fingerprint": "fd68890544a1cbae3170dd907769f9fcc059441cd67a2de812726801e35af353",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:282 constructs the existential refutation from reciprocalWitness and originLaw, theta=1,rho=1/2, without importing Challenge. Independently compiled lemmas prove every Conditions123 hypothesis, population CDF distance exactly one for every row and arm, and failure of Lemma2Conclusions. The negative-reciprocal outcomes are bounded and nested. refutation-check.md gives the printed reading and checks every condition, including uniform without-replacement assignment; the witness violates only the added condition of corrected T2, which original T18 does not assume.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T3",
+    "theorem": "SAP.P022.T3",
+    "fingerprint": "c1906eb07832b9e0cf938454b3a3148b76d48f2dc98f8c89d39bfb1e0152b390",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:46 constructs N=4,m=k=2, y1(i)=i,y0(i)=-i,C=3,c=1/2, with nonconstant bounded outcomes and every outer finite hypothesis. The additional finite-tail threshold premise is satisfiable by epsilon=144 (16*C^2/(c^2*epsilon)=4). scratch/Check.lean:153 separately constructs all asymptotic hypotheses using auditZero, theta=1,rho=1/2,C=1,epsilon=1,c=1/4, including both allocation limits and the strict admissible-c inequality. Both bound sides are genuine constructors with no further antecedents.",
+    "confidence": 0.99
+  }
+]

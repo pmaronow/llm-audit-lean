@@ -1,0 +1,150 @@
+import SAP.P032.Defs
+import SAP.P032.Defs.WholeW1
+
+open scoped BigOperators
+open MeasureTheory ProbabilityTheory Matrix Filter
+open SAP.P032
+
+noncomputable section
+set_option maxRecDepth 4096
+set_option maxHeartbeats 800000
+set_option backward.isDefEq.respectTransparency false
+
+-- These checks use definitions and Mathlib only, never the Challenge stubs.
+
+lemma law_probability {S : Type} [Fintype S] [MeasurableSpace S]
+    (w : FiniteDistribution S) : IsProbabilityMeasure (distributionMeasure w) := by
+  constructor
+  simp only [distributionMeasure, Measure.finsetSum_apply, Measure.smul_apply,
+    Measure.dirac_apply_of_mem (Set.mem_univ _), smul_eq_mul, mul_one]
+  rw [← ENNReal.ofReal_sum_of_nonneg (fun s _ => w.nonneg s), w.total]
+  norm_num
+
+lemma law_atom {S : Type} [Fintype S] [DecidableEq S] [MeasurableSpace S]
+    [MeasurableSingletonClass S] (w : FiniteDistribution S) (a : S) :
+    distributionMeasure w {a} = ENNReal.ofReal (w.weight a) := by
+  simp [distributionMeasure, Measure.finsetSum_apply, Measure.smul_apply,
+    Measure.dirac_apply, Set.indicator_apply, eq_comm]
+
+lemma law_iid {S : Type} [Fintype S] [DecidableEq S] [MeasurableSpace S]
+    [MeasurableSingletonClass S] (w : FiniteDistribution S) :
+    iidRealizationExists w.weight := by
+  letI := law_probability w
+  refine ⟨ℕ → S, inferInstance, Measure.infinitePi (fun _ : ℕ => distributionMeasure w),
+    fun b ω => ω b, inferInstance, ?_, ?_, ?_⟩
+  · intro b
+    fun_prop
+  · exact iIndepFun_infinitePi (X := fun _ x => x) (fun _ => measurable_id)
+  · intro b a
+    have h := (measurePreserving_eval_infinitePi (fun _ : ℕ => distributionMeasure w) b).map_eq
+    have ha := congrArg (fun ν : Measure S => ν {a}) h
+    rw [Measure.map_apply (by fun_prop) (measurableSet_singleton a)] at ha
+    exact ha.trans (law_atom w a)
+
+-- T1: both complete infinite independent realizations satisfy every block hypothesis.
+example : iidRealizationExists fourDistribution.weight := law_iid fourDistribution
+example : iidRealizationExists sixSignDistribution.weight := law_iid sixSignDistribution
+
+-- T1: the finite two-record and four-record laws are actual nondegenerate laws.
+example : (∀ a, 0 < negativePairDistribution.weight a) ∧
+    (∀ a, 0 < fourDistribution.weight a) ∧
+    (∀ a, 0 < sixSignDistribution.weight a) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro a
+    fin_cases a <;> norm_num [negativePairDistribution]
+  · intro a
+    simp only [fourDistribution]
+    split_ifs <;> norm_num
+  · intro a
+    norm_num [sixSignDistribution]
+
+-- T5: a genuine full-rank, positive-definite, nonincident covariance witness.
+lemma pair_psd : (pairCovariance (-1)).PosSemidef := by
+  rw [Matrix.posSemidef_iff_dotProduct_mulVec]
+  constructor
+  · ext i j
+    fin_cases i <;> fin_cases j <;> norm_num [pairCovariance, Matrix.IsHermitian]
+  · intro v
+    simp [pairCovariance, dotProduct, Matrix.mulVec, Fin.sum_univ_two, star_trivial]
+    nlinarith [sq_nonneg (v 0 - v 1), sq_nonneg (v 0 + v 1)]
+
+lemma pair_bread : olsBread pairIntercept = (fun _ _ => (1/2 : ℝ)) := by
+  unfold olsBread
+  apply Matrix.inv_eq_left_inv
+  ext i j
+  fin_cases i
+  fin_cases j
+  norm_num [Matrix.mul_apply, Matrix.transpose_apply, pairIntercept, Fin.sum_univ_succ]
+
+example : (pairIntercept.transpose * pairIntercept).det ≠ 0 ∧
+    (pairCovariance (-1)).PosSemidef ∧
+    (∃ r s, ¬((pairDyads r).members ∩ (pairDyads s).members).Nonempty ∧
+      pairCovariance (-1) r s ≠ 0) ∧
+    quadForm (pairCovariance (-1)) ![1/2,1/2] <
+      quadForm (dyadicRestriction pairDyads (pairCovariance (-1))) ![1/2,1/2] := by
+  refine ⟨?_, pair_psd, ⟨0,1,by decide,by norm_num [pairCovariance]⟩, ?_⟩
+  · norm_num [pairIntercept, Matrix.mul_apply, Fin.sum_univ_two, Matrix.det_fin_one]
+  · norm_num [quadForm, dyadicRestriction, dyadicMask, pairDyads, pairCovariance,
+      Fin.sum_univ_two]
+
+-- T3: the complete risk-set input, finite score and components are checked directly.
+example : survivalRiskSetsStatement := by
+  constructor <;> decide
+
+example : survivalComponentsStatement ∧ survivalPartitionStatement ∧
+    (∀ r, survivalEfficientScore r = survivalScores r) := by
+  refine ⟨?_, ?_, ?_⟩
+  · norm_num [survivalComponentsStatement, recordScalarCovariance,
+      clusterScalarCovariance, memberScalarCovariance, survivalInfluence,
+      survivalScores, survivalRecords, sixDyadData, Fin.sum_univ_succ]
+    ext i
+    fin_cases i <;> norm_num
+  · unfold survivalPartitionStatement
+    funext r s
+    fin_cases r <;> fin_cases s <;>
+      norm_num [subjectMask, repeatedMask, survivalRecords, sixDyadData,
+        Finset.ext_iff, Fin.forall_fin_succ]
+  · have hc1 : survivalRiskCount 1 = 6 := by
+      unfold survivalRiskCount
+      simp only [Fin.sum_univ_succ]
+      norm_num [survivalAtRisk, survivalRecords]
+    have hc2 : survivalRiskCount 2 = 4 := by
+      unfold survivalRiskCount
+      simp only [Fin.sum_univ_succ]
+      norm_num [survivalAtRisk, survivalRecords]
+    have he1 : survivalEventCount 1 = 2 := by
+      unfold survivalEventCount
+      simp only [Fin.sum_univ_succ]
+      norm_num [survivalEvent, survivalRecords]
+    have he2 : survivalEventCount 2 = 2 := by
+      unfold survivalEventCount
+      simp only [Fin.sum_univ_succ]
+      norm_num [survivalEvent, survivalRecords]
+    have hm1 : survivalRiskMean 1 = 0 := by
+      unfold survivalRiskMean
+      simp only [hc1, Fin.sum_univ_succ]
+      norm_num [survivalAtRisk, survivalRecords]
+    have hm2 : survivalRiskMean 2 = 0 := by
+      unfold survivalRiskMean
+      simp only [hc2, Fin.sum_univ_succ]
+      norm_num [survivalAtRisk, survivalRecords]
+    intro r
+    unfold survivalEfficientScore
+    simp only [Fin.sum_univ_succ]
+    fin_cases r <;>
+      norm_num [hc1, hc2, he1, he2, hm1, hm2, survivalAtRisk,
+        survivalEvent, survivalRecords, survivalScores]
+
+-- T9: all hypotheses, a nonzero between-imputation term, and a nonzero gap.
+example : ∃ (m : ℕ) (a : Fin 1 → ℝ)
+    (U : Fin 1 → Fin m → Matrix (Fin 1) (Fin 1) ℝ) (b : Fin m → Fin 1 → ℝ),
+    2 ≤ m ∧ (∀ j, a j ≠ 0) ∧ (∀ j t, (U j t).transpose = U j t) ∧
+    rubinContribution b 0 0 = 3 ∧
+    poolBeforeCombining (fun _ => 1) a U b 0 0 -
+      combineBeforePooling (fun _ => 1) U b 0 0 = -3/2 := by
+  refine ⟨2, (fun _ => 1/2), (fun _ _ _ _ => 0), (fun t _ => if t = 0 then 0 else 2),
+    by norm_num, (fun _ => by norm_num), (fun _ _ => rfl), ?_, ?_⟩
+  all_goals norm_num [rubinContribution, betweenCovariance, estimateAverage,
+    poolBeforeCombining, combineBeforePooling, componentAverage,
+    Fin.sum_univ_succ, Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply,
+    Matrix.sum_apply, Matrix.mul_apply, Pi.mul_apply, Pi.smul_apply, smul_eq_mul]

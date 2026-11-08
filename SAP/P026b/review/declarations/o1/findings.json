@@ -1,0 +1,57 @@
+[
+ {
+  "target_id": "P026-T13",
+  "theorem": "SAP.P026b.T13",
+  "fingerprint": "6db577ddd0d02e201302a8fc7edf7fda59f7fce29133f4b48bc8e019f4615164",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "scratch/Check.lean: noncomputable def Scratch.uniform1 : UnitExperiment (Fin 1) (weight 1/2 on both allocations; nonnegative, normalized and positive proved) compiles, so the domain of the universal statement is nonempty. The statement has no hypotheses beyond the data (UnitExperiment already encodes the standing assumptions: law on {0,1}^N, pi_1i > 0, pi_0i > 0); Nonempty I only excludes N = 0.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P026-T14",
+  "theorem": "SAP.P026b.T14",
+  "fingerprint": "6abf6933f9ea6f152c6bdd3ad9c5d62a02ccf21c56ef676c2ace5c996ba3c045",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Closed proposition without hypotheses: existence and uniqueness of both maximizers are asserted inside it (logitCoreFacts, Defs/Part4.lean:35), so the choice default (0,0) of logitCoefficients (Defs/Part2.lean:100) is never used. My float recomputation from the Lean data (scratch/table.py) gives the coefficients (-1.1201076, 0.5657586) and (1.0843223, 0.2280259), SD 0.2470918, Var 0.0610543 and SD(Vhat) 0.0125667, matching the claim's point values. Fitting within each block instead would give 0.2478/0.0614/0.0155 and a pooled fit 0.2497/0.0623/0.0140. No reading gives the printed 0.170/0.029/0.007.",
+  "confidence": "medium-high (the paper's page images were unreachable from this sandbox, so Table 1 was checked only through the claim's data facts and its high-precision values)"
+ },
+ {
+  "target_id": "P026-T15",
+  "theorem": "SAP.P026b.T15",
+  "fingerprint": "f01548ddcd55366e20e6b464430434d6fc2ba57a370daac764cf5e25537e9df2",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Closed, concrete proposition with no hypotheses. The design conditions (probabilityDesign, positiveMarginals, marginals 1/3 and 2/3) are proved conjuncts, and packageLeastSquares ties packageFit to the unique OLS fit on [1, x] with x = (0,1,2). I checked the fitted values, the estimates 1/4, 1, 1/4, the covariances (1/6,0,1/6), E = 1/2 and HT = 1 by hand.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P026-T16",
+  "theorem": "SAP.P026b.T16",
+  "fingerprint": "82827b54d8a1c2f14a14fa63d8fb165b65cd8ec357a44709e08edc6ee3a1b6e7",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "scratch/Check.lean: noncomputable def Scratch.uniform1 : UnitExperiment (Fin 1) (weight 1/2 on both allocations; nonnegative, normalized and positive proved) compiles, so the domain of the universal statement is nonempty. scratch/Check.lean also proves, for every UnitExperiment, that Cov(1{W_i=1}, c) = 0 for a constant prediction c. So the zero-covariance hypothesis of conjunct (c) is satisfiable and that conjunct is not vacuous. Conjunct (e) is the concrete T15 example.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P026-T17",
+  "theorem": "SAP.P026b.T17",
+  "fingerprint": "4a647e260e2711d1efe6f6a5d09fede3cdda2a27a42df15bf12df841edffbd6e",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "scratch/T17.lean compiles three facts. (1) realAsymmetricTwo satisfies the hypotheses of the first conjunct: probabilityDesign, positiveMarginals and positive disagreement. (2) It has no cross support: pi_{1,0}(0,1) = 0. (3) At x = z = 1 its variance estimator is anticonservative: E Vhat = 2.875 < Var HT = 3.375. The second conjunct is concrete, and its witness satisfies every condition of footnote 9's printed reading: a law on {0,1}^2 with positive marginals and distinct indicators, pi_11 > 0 and pi_00 > 0 for all pairs (the diagonal being the marginals), the sharp null Y1 = Y0 = 1, and the constant f = 0, so U = Y. The epsilon term for the zero cross joint is inert, because its indicator product vanishes at every allocation.",
+  "confidence": "high"
+ }
+]

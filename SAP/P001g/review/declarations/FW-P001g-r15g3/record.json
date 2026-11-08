@@ -1,0 +1,57 @@
+[
+ {
+  "target_id": "P001-T128",
+  "decision": "restricted",
+  "theorem": "SAP.P001g.T128",
+  "restriction": "Proves limiting coverage at least 1-alpha for the displayed open sets under the stated nonnegative variance-estimator and n-scale consistency assumptions. Omits footnote 34's requirement that the two endpoints be strictly ordered almost surely at every positive sample size; the displayed sets may be empty at finite sample sizes.",
+  "rows_used": [
+   "AronowAudit.P001.normal_approximation_confidence_interval"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.studentization_finite_identity_and_coverage",
+    "reason": "Supplies deterministic identities when the variance estimate is positive, not an almost-sure endpoint-order guarantee under the retained nonnegative-variance premises."
+   }
+  ],
+  "statement_definition": "SAP.P001g.T128Statement",
+  "proof_transport": "Direct application of the existing positive coverage row through Bridge.t128. Establishes limiting coverage only; no all-positive-sample-size endpoint-order conclusion is asserted."
+ },
+ {
+  "target_id": "P001-T129",
+  "decision": "restricted",
+  "theorem": "SAP.P001g.T129",
+  "restriction": "Retains actual-product MLE consistency under compactness, finite observed logs, parameterwise almost-sure observed-density positivity, continuity and unique maximization of the expected log likelihood, and an additional finite error envelope dominating the empirical-log error for every sample size, sample point and parameter, converging in probability to zero. The expected-log maximum and density-equality characterization have an independent domain requiring only a true normalized model, support domination and finite observed logs. Omits the separate product-log/sample-average identity, the unique sample-maximizer assertion, the pointwise WLLN assertion as a separate conclusion, and any derivation of the uniform error-envelope premise from the printed informal regularities.",
+  "rows_used": [
+   "AronowAudit.P001.product_maximum_likelihood_consistency",
+   "AronowAudit.P001.Wave1.true_model_expected_log_maximum_with_support_zeros"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.sample_product_mle_consistent",
+    "reason": "Duplicate or auxiliary consistency route; the selected product-consistency and expected-log-maximum rows supply the retained conclusions."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.true_model_log_likelihood_lemma_with_zeros_proof",
+    "reason": "Duplicate or auxiliary consistency route; the selected product-consistency and expected-log-maximum rows supply the retained conclusions."
+   },
+   {
+    "lean_name": "AronowAudit.P001.maximum_likelihood_consistency_correct_model",
+    "reason": "Duplicate or auxiliary consistency route; the selected product-consistency and expected-log-maximum rows supply the retained conclusions."
+   },
+   {
+    "lean_name": "AronowAudit.P001.ml_consistency_explicit_uniform_regularities",
+    "reason": "Duplicate or auxiliary consistency route; the selected product-consistency and expected-log-maximum rows supply the retained conclusions."
+   }
+  ]
+ },
+ {
+  "target_id": "P001-T130",
+  "decision": "whole",
+  "theorem": "SAP.P001g.T130",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.expected_value_bounds_paper_contract"
+  ],
+  "rows_not_used": []
+ }
+]

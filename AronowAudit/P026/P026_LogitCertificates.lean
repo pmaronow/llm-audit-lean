@@ -1,6 +1,5 @@
 import Mathlib
-/-! Exact rational Taylor bounds for twelve logistic predictors at rational
-coefficient centers, with certified small score residuals. -/
+/-! Exact rational Taylor bounds for twelve actual logistic predictors, with certified small score residuals. -/
 namespace AronowAudit.P026.LogitCertificates
 noncomputable section
 set_option maxHeartbeats 0
@@ -49,6 +48,7 @@ def center (b:Bool):ℝ×ℝ:=
   if b then ((-1120107551952095111/1000000000000000000:ℝ),(565758555764892319/1000000000000000000:ℝ))
   else ((1084322295119421469/1000000000000000000:ℝ),(22802594530809253/100000000000000000:ℝ))
 
+def centerLinear (b:Bool) (x:ℕ):ℝ:=(center b).1+(center b).2*x
 
 lemma exp_false_0_bounds:
     (295743487138859249033/100000000000000000000:ℝ)≤Real.exp (1084322295119421469/1000000000000000000:ℝ)∧Real.exp (1084322295119421469/1000000000000000000:ℝ)≤(147871743569429624517/50000000000000000000:ℝ):=by
@@ -189,5 +189,9 @@ lemma score_true_bounds:
   have h5:=probability_true_5_bounds
   constructor <;>rw [abs_le] <;>constructor <;>linarith [h1.1,h1.2,h2.1,h2.2,h3.1,h3.2,h4.1,h4.2,h5.1,h5.2]
 
+#print axioms probability_false_0_bounds
+#print axioms probability_true_5_bounds
+#print axioms score_false_bounds
+#print axioms score_true_bounds
 end
 end AronowAudit.P026.LogitCertificates

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P014-T1",
+    "theorem": "SAP.P014.T1",
+    "fingerprint": "e56f497b935c1600ef0329fdb6064b43df38dd4720a9a8814213f8014b05f626",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteAudit.lean independently checks the positive normalized row and assignment laws, the four distinct assignment masses, positive own-arm probabilities, estimator expectation 0, printed contrast -1/18 and weighted contrast 0. scratch/LocalAudit.lean independently checks all PrintedLocalConditions, six distinct full-score atoms, and probability 1/6 for every one of the six local rows. These exhaust the permutations of (-2,-1,1). This is a closed canonical counterexample with finite outcomes and strictly positive denominators.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P014-T9",
+    "theorem": "SAP.P014.T9",
+    "fingerprint": "9bbe5ef41456007d34aacdc104f761a8e718e375f417ce0552c460aa1b074cbc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/LocalAudit.lean independently checks every printed-local hypothesis, six full-score atoms, and probability 1/6 for each of the six local arrangements of (-1,-1/2,1/2). scratch/FiniteAudit.lean checks the shared valid assignment law and positive arms, unweighted control mean 1/3 versus weighted 1/4, printed contrast -1/9, weighted contrast -1/12 and expectation -1/12. The other-subject conditional sum equals the weighted mean by the insert/remove bijection; hence the control-minus-treatment direct-effect average is 1/12 and the bias is 1/36.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P014-T5",
+    "theorem": "SAP.P014.T5",
+    "fingerprint": "906b40ece610b62fec6e2c7f98ac7ad7acd3de69db6bc2348b8a7fbb75cccc2c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/LocalAudit.lean independently verifies all PrintedLocalConditions and six distinct full-score atoms, while the offending local arrangement has probability 2/3 and an absent permutation has probability 0. scratch/FiniteAudit.lean constructs the valid induced assignment law, checks positive own-arm probabilities and Noninterfering for the full outcome schedule, and computes estimator expectation 1/6 and printed target 1/3. Thus the witness genuinely refutes the formal-clauses-to-uniform-arrangements implication.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P014-T10",
+    "theorem": "SAP.P014.T10",
+    "fingerprint": "1134b558dc2e8edecf961770dd0e784151dda0cb8287a161e84db815674bd434",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteAudit.lean constructs twoLaw on the two assignments (true,false) and (false,true), each of mass 1/2, with N=2, S=Finset.univ and m=1. It verifies normalization, nonempty S, every interior propensity, the fixed treated count, 0<m<|S| and the common-propensity equation. Any real outcome schedule, for example y_i(z)=binaryValue(z_i), completes all hypotheses. The same file checks the nonzero T9 discrepancy underlying the failure part. Finiteness of the binary assignment space is inherent in the canonical claim and does not restrict the random-vector law.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P014-T6",
+    "theorem": "SAP.P014.T6",
+    "fingerprint": "62720a1971e037327e1f5af9f936020c444e345184e3f4ec452854b36c2aee1d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/MeasureAudit.lean constructs coin=(1/2) times (dirac false + dirac true) and proves it is a probability measure. With N=2, S=Finset.univ, b=2, v=(-1,1), m=1 and X taking (-1,1) and (1,-1) according to the coin, it independently satisfies every general hypothesis, CorrectedLocalConditions, DiscreteScoreLaw, the full positive-atom mass condition, and the almost-sure outside-function premise. Thus both general implications and the converse are nonvacuous. scratch/LocalAudit.lean also checks the twelve-state outside example has positive normalized weights and outside probabilities 1/3 and 2/3; its product weights are (1/6)(1/3) and (1/6)(2/3), and its distinct local rows and distinct outside signs give twelve distinct full vectors.",
+    "confidence": 0.99
+  }
+]

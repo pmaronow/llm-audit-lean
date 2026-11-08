@@ -21,6 +21,8 @@ theorem unused_mixture_attained_mle_inconsistent :
      ¬ FiniteMixtureConsistent T (![1, 1/3, 3/4] : Fin 3 → ℝ)) :=
   UnusedMixtureMle.assemble UnusedMixtureMle.n1_proof
 
+example : UnusedMixtureMle.Target := unused_mixture_attained_mle_inconsistent
+
 end
 
 end AronowAudit.P001.Wave1

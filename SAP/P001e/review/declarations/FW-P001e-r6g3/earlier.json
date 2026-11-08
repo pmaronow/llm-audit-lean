@@ -1,0 +1,14 @@
+[
+ {
+  "theorem": "SAP.P001e.T91",
+  "target_id": "P001-T91",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P001e/Defs/WholeW3.lean:52: T91RegularProcess asks for independence only of the supported-dose function in Mathlib's product/cylinder measurable space. The separate field-measurability clause at SAP/P001e/Defs/WholeW3.lean:48 is on (t,omega), not evaluation from an independent measurable curve state. The registered scope in claims.json:81 explicitly requires the measurable-state evaluation/independence contract and expressly excludes cylinder independence alone as sufficient. The diagonal witness therefore does not satisfy the canonical continuous-dose hypotheses.",
+   "SAP/P001e/Challenge/Part1.lean:113: 'The printed claim is false' and the claim of refuting clause (b) at SAP/P001e/Challenge/Part1.lean:122 misdescribe the canonical assertion. The same overstatement occurs at SAP/P001e/Defs/WholeW3.lean:61 and SAP/P001e/Defs/WholeW3.lean:70. The proved statement refutes a weaker cylinder-only interpretation, not the registered evaluation-ready theorem; the canonical claim itself distinguishes these formulations.",
+   "record.json:68: The decision 'refuted' is unsupported relative to the canonical registered scope. record.json:80 dismisses the measurable-state contract as stronger than the canonical claim, although claims.json:81 explicitly includes that contract in the statement's scope. This record cannot supply or remove a canonical clause."
+  ]
+ }
+]

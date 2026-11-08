@@ -3,7 +3,9 @@ import Mathlib.Probability.Independence.Integration
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 /-!
-P029-T4: corrected weighted covariance identities and joint-independence alternatives.
+Drafts for corrected T4, records 14 and 15 of the worker brief (records 15 and
+16 of map.json). No invocation of Lean was used to prepare this file.
+The held declarations are used only in the two final `type_of%` checks.
 -/
 namespace AronowAudit.P029.Wave1
 
@@ -16,7 +18,7 @@ set_option maxRecDepth 4096
 set_option maxHeartbeats 2000000
 set_option backward.isDefEq.respectTransparency false
 
-/- Finite partitions, including null cells. -/
+/- Record 14: finite partitions, including null cells. -/
 
 private theorem cwl_profile_mul_integrable {Ω X : Type*}
     [MeasurableSpace Ω] [Fintype X] [MeasurableSpace X]
@@ -368,7 +370,8 @@ private theorem cwl_inverse_cancellation {X : Type*} [Fintype X]
   · simpa only [hc] using hf.2
   · simp only [hc]
 
-/- The seven finite-profile weighted covariance identities. -/
+/- All seven conclusions of record 14. The statement is copied verbatim
+from the held declaration, with only the theorem name changed. -/
 theorem corrected_weighted_limits_proof {Ω X : Type*} [MeasurableSpace Ω]
     [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
@@ -484,7 +487,9 @@ theorem corrected_weighted_limits_proof {Ω X : Type*} [MeasurableSpace Ω]
       change mCE μ (fun ω => (U ω).tau) {ω | (U ω).x = x} = a x at h
       rw [h]
 
-/- The two joint-independence alternatives. -/
+example : type_of% @AronowAudit.P029.corrected_weighted_limits := corrected_weighted_limits_proof
+
+/- Record 15: the two genuine joint-independence alternatives. -/
 
 private theorem jis_complier_mass_pos {Ω X : Type*} [MeasurableSpace Ω]
     [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X]
@@ -645,6 +650,8 @@ theorem joint_independence_suffices_proof {Ω X : Type*} [MeasurableSpace Ω]
     (fun _ => zero_lt_one)
   exact ⟨hmeans.1, hmeans.2, hlimits.2.2.2.2.2.1 hmeans.1,
     hlimits.2.2.2.2.2.2 hmeans.2⟩
+
+example : type_of% @AronowAudit.P029.joint_independence_suffices := joint_independence_suffices_proof
 
 end
 end AronowAudit.P029.Wave1

@@ -3,11 +3,12 @@ import AronowAudit.P001.Wave1.MarSelection.N1
 import AronowAudit.P001.Wave1.MarSelection.N2
 import AronowAudit.P001.Wave1.MarSelection.N3
 
-/-! P001-T18: binary CEF augmentation and uniqueness of regression coefficients.
+/-! Unconditional proofs of P001-T18, records 7 and 8 of gap-P001-2.
 
-Binary conditional independence preserves the conditional mean when covariates
-are added on an arbitrary measurable sample space. The augmented CEF yields
-the L² risk identity, and a nonsingular Gram matrix yields uniqueness.
+The proved MarSelection rectangle and pi-system lemmas supply binary CEF
+augmentation on an arbitrary measurable sample space. The unconditional
+regression helpers in CondP001bProofs supply the L2 risk identity and Gram
+uniqueness; no literature proposition or conditional final theorem is used.
 -/
 
 namespace AronowAudit.P001.Wave1
@@ -154,6 +155,8 @@ theorem placebo_linear_cef_correction_proof {Ω : Type*} [MeasurableSpace Ω] (�
        a=γ 0 ∧ (∀ k,b k=γ k.succ) ∧ (∀ k,c k=0) := by
   exact placebo_linear_cef_correction_support_free μ X W D hX hW hD hbinary hX2 hW2 hCI γ hcef hRank
 
+example : type_of% @AronowAudit.P001.placebo_linear_cef_correction := placebo_linear_cef_correction_proof
+
 theorem placebo_zero_coefficients_unique_proof {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
    {K L : ℕ} (X : Ω → Fin K → ℝ) (W : Ω → Fin L → ℝ) (D : Ω → ℝ)
    (hX : Measurable X) (hW : Measurable W) (hD : Measurable D)
@@ -168,6 +171,8 @@ theorem placebo_zero_coefficients_unique_proof {Ω : Type*} [MeasurableSpace Ω]
        mean μ (fun ω => (D ω-linearPredictor γ (X ω))^2)) ↔
        a=γ 0 ∧ (∀ k,b k=γ k.succ) ∧ (∀ k,c k=0) := by
   exact (placebo_linear_cef_correction_support_free μ X W D hX hW hD hbinary hX2 hW2 hCI γ hcef hRank).2.2
+
+example : type_of% @AronowAudit.P001.placebo_zero_coefficients_unique := placebo_zero_coefficients_unique_proof
 
 end
 end AronowAudit.P001.Wave1

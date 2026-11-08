@@ -1,0 +1,72 @@
+import SAP.P006a.Challenge
+
+open MeasureTheory ProbabilityTheory
+open scoped ENNReal BigOperators
+open SAP.P006a
+
+noncomputable section
+
+-- T11: all hypotheses hold simultaneously, without using a Challenge theorem.
+def twoPolicies : Set (Unit → ℝ) := {fun _ => 0, fun _ => 1}
+
+example :
+    (∀ π ∈ twoPolicies, Admissible π) ∧
+    (fun _ => 0) ∈ twoPolicies ∧
+    NondegenerateReward twoPolicies (fun _ _ => 0) ∧
+    TreatedDataInvariant twoPolicies (fun _ _ => 0) := by
+  have hp : ∀ π ∈ twoPolicies, Admissible π := by
+    intro π hπ
+    simp only [twoPolicies, Set.mem_insert_iff, Set.mem_singleton_iff] at hπ
+    rcases hπ with rfl | rfl <;> exact ⟨measurable_const, by intro x; norm_num⟩
+  refine ⟨hp, by simp [twoPolicies], ?_, ?_⟩
+  · refine ⟨Measure.dirac ((), ((1 : ℝ), (0 : ℝ))), fun _ => 1, ?_, ?_, ?_⟩
+    · exact ⟨inferInstance, integrable_dirac (by simp), integrable_dirac (by simp)⟩
+    · simp [IsBest, twoPolicies]
+    · norm_num
+  · intro D D' hD hD' hm π hπ
+    rfl
+
+example :
+    outcomeWelfare (Measure.dirac ((), ((4 : ℝ), (1 : ℝ)))) (fun _ => 0) = 0 ∧
+    outcomeWelfare (Measure.dirac ((), ((4 : ℝ), (1 : ℝ)))) (fun _ => 1) = -3 := by
+  norm_num [outcomeWelfare]
+
+-- T14: the finite real and legitimately infinite extended domains are both populated.
+example :
+    Integrable (fun _ : Unit => positivePart (2 : ℝ)) (Measure.dirac ()) ∧
+    Integrable (fun _ : Unit => positivePart (1 : ℝ)) (Measure.dirac ()) ∧
+    (∫ _ : Unit, positivePart (1 : ℝ) ∂Measure.dirac ()) ≤
+      (∫ _ : Unit, positivePart (2 : ℝ) ∂Measure.dirac ()) := by
+  norm_num [positivePart]
+
+example : extendedPositiveMean (Measure.count : Measure ℕ) (fun _ => (1 : ℝ)) = ∞ := by
+  simp [extendedPositiveMean, positivePart]
+
+-- T15: complete observed-mass equality, different untreated means, and genuine probabilities.
+example :
+    (∀ r, singletonObservedMass 0 1 r = singletonObservedMass 2 1 r) ∧
+    (∀ r, binaryObservedMass (fun _ => 0) (fun _ => 1) (1,1/2) r =
+      binaryObservedMass (fun x => if x then 0 else 2) (fun _ => 1) (1,1/2) r) := by
+  constructor
+  · intro r
+    simp [singletonObservedMass, coinMass]
+  · intro r
+    simp [binaryObservedMass, deterministicObserved, binaryRule, coinMass]
+
+example :
+    (∑ x : Bool, ∑ t : Bool, (1/2 : ℝ) * coinMass (binaryRule (1,1/2) x) t) = 1 ∧
+    (∀ x t, 0 ≤ (1/2 : ℝ) * coinMass (binaryRule (1,1/2) x) t) ∧
+    (∀ x, 0 < binaryRule (1,1/2) x ∧ binaryRule (1,1/2) x ≤ 1) ∧
+    (0 : ℝ) ≠ 2 ∧
+    coinMass (binaryRule (1,1/2) false) false = 0 ∧
+    (∑ x : Bool, (1/2 : ℝ) * coinMass (binaryRule (1,1/2) x) false) = 1/4 := by
+  norm_num [binaryRule, coinMass, Fintype.sum_bool, Bool.forall_bool]
+
+example {X : Type*} [MeasurableSpace X] (μ0 : X × Unit → ℝ)
+    (PX : Measure (X × Unit)) :
+    (∀ c, maximumDeviation μ0 c = 0) ∧ (∫ c, maximumDeviation μ0 c ∂PX) = 0 := by
+  have h : ∀ c, maximumDeviation μ0 c = 0 := by
+    intro ⟨x,u⟩
+    cases u
+    simp [maximumDeviation, Set.range_const]
+  exact ⟨h, by simp_rw [h]; simp⟩

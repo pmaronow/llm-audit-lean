@@ -660,6 +660,9 @@ theorem placebo_linear_test_counterexample_proof {Ω : Type*} [MeasurableSpace �
   · rw [hRF]; norm_num
   · rw [hRR,hRF]; norm_num
 
+example : type_of% @AronowAudit.P001.placebo_linear_test_counterexample := placebo_linear_test_counterexample_proof
+
+
 lemma placeboFTest_sq_fiber_finite (a : ℝ) : {x : ℝ | x^2 = a}.Finite := by
   by_cases h : ∃ x : ℝ, x^2 = a
   · obtain ⟨x,hx⟩ := h
@@ -993,6 +996,9 @@ theorem printed_placebo_f_test_size_refuted :
   change Filter.limsup (fun n => prob μ {ω | critical n < placeboSampleF Z n ω}) atTop ≤ (1/2 : ℝ) at hsize
   rw [hrej.limsup_eq] at hsize
   norm_num at hsize
+
+example : ¬ type_of% @AronowAudit.P001.printed_placebo_f_test_size.{0} := printed_placebo_f_test_size_refuted
+
 
 end
 end AronowAudit.P001.Wave1

@@ -1,0 +1,147 @@
+import SAP.P001a.Challenge
+open MeasureTheory ProbabilityTheory Filter
+open scoped ENNReal NNReal BigOperators Matrix Topology Classical
+noncomputable section
+namespace NullReview
+open SAP.P001a
+
+def ν : Measure (Fin 4) := (1/4 : ℝ≥0∞) • Measure.count
+instance : IsProbabilityMeasure ν := by
+  constructor
+  norm_num [ν, Measure.smul_apply]
+  exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+lemma integrate (f : Fin 4 → ℝ) : ∫ i, f i ∂ν = ∑ i, (1/4 : ℝ)*f i := by
+  rw [integral_fintype Integrable.of_finite]
+  apply Finset.sum_congr rfl
+  intro i _
+  simp [ν, measureReal_def, Measure.smul_apply]
+
+lemma probability (A : Set (Fin 4)) : prob ν A = ∑ i, if i ∈ A then (1/4 : ℝ) else 0 := by
+  have hν : ν = ∑ i : Fin 4, (1/4 : ℝ≥0∞) • Measure.dirac i := by
+    rw [ν, ← Measure.sum_smul_dirac (Measure.count : Measure (Fin 4))]
+    simp [Measure.sum_fintype, Finset.smul_sum]
+  rw [prob, hν, Measure.finset_sum_apply]
+  rw [ENNReal.toReal_sum (fun i _ => by
+    by_cases hi : i ∈ A <;>
+      simp [Measure.smul_apply, Measure.dirac_apply' _ (Set.toFinite A).measurableSet, hi])]
+  apply Finset.sum_congr rfl
+  intro i _
+  by_cases hi : i ∈ A <;>
+    simp [Measure.smul_apply, Measure.dirac_apply' _ (Set.toFinite A).measurableSet,
+      Set.indicator_apply, hi]
+
+def X (_i : Fin 4) : Fin 0 → ℝ := 0
+def W (i : Fin 4) : Fin 1 → ℝ := fun _ => if i.val < 2 then -1 else 1
+def D (i : Fin 4) : ℝ := if i.val%2=1 then 1 else 0
+def γ : Fin 1 → ℝ := fun _ => 1/2
+
+lemma ci : CI ν X (Measurable.of_discrete) W D := by
+  intro A B hA hB
+  unfold X
+  simp only [MeasurableSpace.comap_const, condExp_bot]
+  apply Filter.Eventually.of_forall
+  intro i
+  have hw0 : W 0 = fun _ => (-1 : ℝ) := rfl
+  have hw1 : W 1 = fun _ => (-1 : ℝ) := rfl
+  have hw2 : W 2 = fun _ => (1 : ℝ) := rfl
+  have hw3 : W 3 = fun _ => (1 : ℝ) := rfl
+  by_cases hm : (fun _ : Fin 1 => (-1 : ℝ)) ∈ A <;>
+  by_cases hp : (fun _ : Fin 1 => (1 : ℝ)) ∈ A <;>
+  by_cases h0 : (0 : ℝ) ∈ B <;> by_cases h1 : (1 : ℝ) ∈ B <;>
+    norm_num [integrate, Fin.sum_univ_succ, hw0, hw1, hw2, hw3, D, hm, hp, h0, h1]
+
+lemma cef : IsCEF ν X D (linearPredictor γ) := by
+  refine ⟨by fun_prop, Integrable.of_finite, Integrable.of_finite, ?_⟩
+  intro A hA
+  by_cases h : (0 : Fin 0 → ℝ) ∈ A
+  · have hp : X ⁻¹' A = Set.univ := by
+      ext i
+      change (0 : Fin 0 → ℝ) ∈ A ↔ True
+      exact iff_true_intro h
+    rw [hp]
+    simp only [Measure.restrict_univ, integrate]
+    norm_num [Fin.sum_univ_succ, D, X, linearPredictor, γ]
+  · have hp : X ⁻¹' A = ∅ := by
+      ext i
+      change (0 : Fin 0 → ℝ) ∈ A ↔ False
+      exact iff_false_intro h
+    simp [hp]
+
+lemma design (i : Fin 4) : wholeDesign (X i) (W i) =
+    ![1, if i.val < 2 then -1 else 1] := by
+  ext j
+  fin_cases j <;> rfl
+
+-- This has a nonempty placebo block and a nonsingular 2-by-2 Gram matrix.
+lemma full_null : WholePlaceboNull ν X W D γ := by
+  refine { measurableX := Measurable.of_discrete
+           measurableW := Measurable.of_discrete
+           measurableD := Measurable.of_discrete
+           binary := ?_
+           supportD := ?_
+           secondX := ?_
+           secondW := ?_
+           rank := ?_
+           ci := ci
+           cef := cef }
+  · apply Filter.Eventually.of_forall
+    intro i
+    dsimp [D]
+    split_ifs <;> simp
+  · norm_num [probability, D, Fin.sum_univ_succ]
+  · intro k; exact Fin.elim0 k
+  · intro k
+    apply memLp_of_bounded (a := -1) (b := 1) ?_ (Measurable.of_discrete.aestronglyMeasurable) 2
+    apply Filter.Eventually.of_forall
+    intro i
+    simp [W]
+    split_ifs <;> norm_num
+  · have hQ : wholeQ ν (fun i => wholeDesign (X i) (W i)) =
+        (1 : Matrix (Fin 2) (Fin 2) ℝ) := by
+      ext j k
+      fin_cases j <;> fin_cases k <;>
+        norm_num [wholeQ, integrate, design, Fin.sum_univ_succ]
+    rw [hQ]
+    simp
+
+-- Independent replication of the same nondegenerate null experiment.
+def μ : Measure (ℕ → Fin 4) := Measure.infinitePi (fun _ : ℕ => ν)
+instance : IsProbabilityMeasure μ := by unfold μ; infer_instance
+lemma joint_iid : IID μ (fun n ω => (X (ω n), W (ω n), D (ω n))) := by
+  have hf : Measurable (fun i : Fin 4 => (X i, W i, D i)) := Measurable.of_discrete
+  refine ⟨fun n => hf.comp (measurable_pi_apply n), ?_, ?_⟩
+  · exact iIndepFun_infinitePi (P := fun _ : ℕ => ν) (X := fun _ i => (X i,W i,D i)) (fun _ => hf)
+  · intro n
+    refine ⟨(hf.comp (measurable_pi_apply n)).aemeasurable,
+      (hf.comp (measurable_pi_apply 0)).aemeasurable, ?_⟩
+    change (μ.map ((fun i : Fin 4 => (X i,W i,D i)) ∘ (fun ω => ω n))) =
+      (μ.map ((fun i : Fin 4 => (X i,W i,D i)) ∘ (fun ω => ω 0)))
+    rw [← Measure.map_map hf (measurable_pi_apply n),
+      ← Measure.map_map hf (measurable_pi_apply 0)]
+    simp only [μ, Measure.infinitePi_map_eval]
+
+-- The covariance rank condition for testing the placebo is also nonvacuous.
+lemma sandwich : wholeSandwich ν (fun i => wholeDesign (X i) (W i)) D
+    (wholeNullCoef (L := 1) γ) = (1/4 : ℝ) • (1 : Matrix (Fin 2) (Fin 2) ℝ) := by
+  have hQ : wholeQ ν (fun i => wholeDesign (X i) (W i)) =
+      (1 : Matrix (Fin 2) (Fin 2) ℝ) := by
+    ext j k
+    fin_cases j <;> fin_cases k <;> norm_num [wholeQ, integrate, design, Fin.sum_univ_succ]
+  have hb : wholeNullCoef (L := 1) γ = ![1/2,0] := by
+    ext j
+    fin_cases j <;> rfl
+  have hΩ : wholeOmega ν (fun i => wholeDesign (X i) (W i)) D
+      (wholeNullCoef (L := 1) γ) = (1/4 : ℝ) • (1 : Matrix (Fin 2) (Fin 2) ℝ) := by
+    ext j k
+    fin_cases j <;> fin_cases k <;>
+      norm_num [wholeOmega, wholeResidual, hb, integrate, design, dotProduct, Fin.sum_univ_succ, D]
+  simp [wholeSandwich, hQ, hΩ]
+
+example : IsUnit ((wholePlaceboSelector 0 1 *
+    wholeSandwich ν (fun i => wholeDesign (X i) (W i)) D (wholeNullCoef (L := 1) γ) *
+    (wholePlaceboSelector 0 1).transpose).det) := by
+  rw [sandwich]
+  norm_num [Matrix.det_fin_one, Matrix.mul_apply, wholePlaceboSelector, Fin.sum_univ_succ]
+
+end NullReview

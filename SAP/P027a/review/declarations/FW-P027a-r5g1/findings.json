@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P027-T1",
+    "theorem": "SAP.P027a.T1",
+    "fingerprint": "6886cb0bf67bd6af3b785318087a61b392a37ebfba406edd4c1894f101c7c06a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: Audit.t1_design constructs the concrete valid, positive eight-unit design. All four samplewise values, ordered zero-pair count, A, A-star, variances, expectations and relative bias were independently recomputed by python3 scratch/exact_checks.py in exact rational arithmetic. The family uses r,m>0, e.g. r=m=2, so q=4,N=8 are nonempty and every denominator is positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T2",
+    "theorem": "SAP.P027a.T2",
+    "fingerprint": "620e14571508972daa8c3d334c93530f43d8b777e82d51a3ca2e6c10a481676a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: Audit.t2_finite_hypotheses gives r=m=1, a valid positive design, centered outcomes and positive total variance. Audit.t2_noise and Audit.t2_model_nonvacuity construct two independent Rademacher errors on the uniform four-point probability space with beta=1, sigma2=1 and M>0, activating the ratio guards. Audit.t2_calibration_noise gives rho=4/5 and errors scaled by 18, with common variance 324=900(1-rho^2), so calibration and the nonzero-rho branch are also nonvacuous. Independent exact outcome enumeration verifies the ratio of averaged quantities.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T3",
+    "theorem": "SAP.P027a.T3",
+    "fingerprint": "6dd58b63a657744de57f88fcac1cfac08457dbb152223151d3f0fd53251e03de",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: Audit.t3_design establishes validity, positive marginals and genuine within-cluster agreement for both concrete designs. Independent exact enumeration in scratch/exact_checks.py verifies the positive and mixed witnesses, including samplewise total and uncorrected-estimator preservation, zero-pair counts 4 and 2, and C2 bias changes 8 to 9 and 9/8 to 49/16.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T4",
+    "theorem": "SAP.P027a.T4",
+    "fingerprint": "3c69536a0e7d2d7a2bdeb34862d68c2b23ac64a914669016bfa99a37851a4269",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: Audit.t4_hypotheses supplies a nonempty two-member cluster and a valid positive design whose members disagree on a zero-weight atom but agree almost surely, exercising the exact support convention. Audit.t4_unequal_link supplies nonempty groups of sizes 2 and 1 with a zero-joint edge, so the strict constant-outcome branch applies with v=1. Exact finite enumeration independently confirms the 20-to-0 reduction and the 8-to-9 increase.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T5",
+    "theorem": "SAP.P027a.T5",
+    "fingerprint": "2dd063cd3ad51b11d8def2401774bb0ef7a24d3866107c3764a8be4253bd0de6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: Audit.t5_rounding_hypotheses constructs the rounding antecedents at the printed central values for every row; Audit.t5_design verifies the genuine valid positive 120-unit design; Audit.t5_group_totals computes all four phase totals as -120,120,-120,120. Independent exact enumeration confirms all original/grouped moments, both relative biases and all four rounding-robust inequalities. All ratios use positive variances.",
+    "confidence": 0.99
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P045b.T17",
+    "target_id": "P045-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "Under exactly the finite-population, correctly specified exposure-map, normalized-design, distinct-label and positive-individual-probability setting in S1-S7 and T17, the statement gives every clause (a)-(d): real HT totals and contrasts by their types, zero total and the contrast formula for an empty cell, unconditional expectations over all assignments, the positive-probability conditional formula and its nonzero-total discrepancy, and zero Hájek numerator/denominator with an explicit undefined result. The ordinary sample mean is also explicitly undefined on an empty realized cell. The displayed 20/(20/45)=45 identity is present. The toy decimal output and code modification are explicitly contextual and are not formal targets in definitions_needed. All variable denominators in asserted identities are protected; no extra substantive assumption or encoded conclusion occurs. The fair one-person own-treatment design supplies positive probabilities for both labels and positive probabilities of empty and nonempty cells, with nonzero target total, so even the conditional-discrepancy hypotheses are satisfiable."
+  },
+  {
+    "theorem": "SAP.P045b.T18",
+    "target_id": "P045-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "The Mathlib removeNth implementation is the ordered deletion in clause (i); the statement includes nondependence on the removed coordinate, the bijection, unique reexpression for every real outcome function, and the four-coordinate example, covering (ii)-(iv). Taking N=n+1 represents every positive N, including N=1. Fin index 2 is exactly the paper's one-based i=3. The statement has no extra data assumptions, and no partial operation or junk value supplies any clause."
+  },
+  {
+    "theorem": "SAP.P045b.T19",
+    "target_id": "P045-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "The peer sum is literally the number of true coordinates excluding the individual, as a real finite sum. The general assertion assumes precisely n>=2, 0<psi<1, integral K=psi*n, and a binary assignment with treated count K, and gives K-z_i, both branches, the error 1-psi and its positivity via strict inequality. The n=3,K=2 example and erroneous printed numerical value 4/3 are included. No distribution is required to assert a deterministic identity holding for every assignment of the specified fixed count; uniform complete random assignment is therefore covered. The example with two treated and one control satisfies all hypotheses. All subtractions in the displayed formulas are real subtractions."
+  },
+  {
+    "theorem": "SAP.P045b.T20",
+    "target_id": "P045-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "Printed reading tested: on the path 0,...,8 with hop distance |i-j| and epsilon=3, a nonempty centre set must have every pair within three hops and every outside vertex within two hops of a centre. Conditions are the stated graph, hop distance, epsilon=3, nonempty S, the upper-bound pairwise clause W and covering clause C. The formal impossibility is exactly W and C on this graph; it quantifies also over the empty set, which fails C, so this adds no competing reading. The corrected predicate is precisely P and C, and both count 13 and the full thirteen-set list match the canonical assertion. The set {1,6} is a genuine nonempty corrected witness and fails W. This proves the canonical counterexample assertion; it does not refute that assertion."
+  },
+  {
+    "theorem": "SAP.P045b.T21",
+    "target_id": "P045-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The corrected definition has separation >=epsilon and outside covering <=epsilon-1 for positive integer epsilon on arbitrary finite undirected graphs, with infinity between components supplied by Mathlib edist. Fin n represents any finite vertex set after relabeling. Clause (i) is the no-one-point-extension characterization of maximal separated sets plus existence. The greedy predicate is exactly selection of an unmarked vertex at each prefix; all legal lists are shown distinct, bounded by n, separated, and nets on termination, and a terminating run exists. This expresses clause (ii), including its bound, without imposing a random output law. Clause (iii) has exactly the required count and list; on the nine-vertex path covering excludes the empty set. The epsilon>=1 guard prevents a truncated-subtraction defect. Empty graphs are handled consistently, and a nonempty disconnected graph has genuine valid terminal runs."
+  }
+]

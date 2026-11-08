@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P025-T17",
+    "theorem": "SAP.P025b.T17",
+    "fingerprint": "8e71e7531706e8fe1941e264abfdcb6ff44c274eb2250c37b935ec976b38d5c2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional exact arithmetic, so there are no premises that could be inconsistent. scratch/AuditChecks.lean compiles independent proofs of both final-rounding conditions for every one of the 42 literal cells, table length 42, and exactly six differences. The list and comparison grid are explicitly nonempty; all denominators are positive.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T18",
+    "theorem": "SAP.P025b.T18",
+    "fingerprint": "4913e1e63fa24126ebbc4ca108298467ae6f70d0448707455e023ae4323ad4ae",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/AuditChecks.lean: n=2, y=(0,1), (alpha,beta)=(1/4,1/2), (alpha_prime,beta_prime)=(1/2,1). Every bound hypothesis holds and both ratios equal 2. The feasible physical vector (4,2) has a positive denominator and attains 1/3, so the attainable set is genuine and nonempty. The singleton-box case is also admissible for any alpha=beta in (0,1].",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T19",
+    "theorem": "SAP.P025b.T19",
+    "fingerprint": "7353bff4c2f039592c3646f6ce6ed6b353a984c49a7392448bc58e43c8710a08",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/AuditChecks.lean: n=4, y=(0,0,1,1) is monotone, 0<alpha=1/4<=beta=1/2<=1, and both least cuts are exactly prefix length 2. Thus the hypotheses hold on a nonconstant sample with two actual adjacent ties and gamma=2. Neither cut separates a tied pair. The constant sample and alpha=beta cases are also permitted by the hypotheses and have ordinary positive denominators.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T20",
+    "theorem": "SAP.P025b.T20",
+    "fingerprint": "5c6ca7df86ccd604544dd429e7ceff750b1991e2e75e8c180b203526e60f12aa",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/AuditChecks.lean: mixed sample (0,1) at alpha=1/4,beta=1/2 satisfies all premises; physical vectors (4,2) and (2,4) genuinely attain 1/3 and 2/3. Separate compiled examples satisfy every premise for a one-observation all-zero sample with equal bounds alpha=beta=1/2 and for an all-one sample with alpha=1/4,beta=1/2. Empty binary classes therefore cause no vacuity or division by zero.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T21",
+    "theorem": "SAP.P025b.T21",
+    "fingerprint": "f0b7eb081571e3c9e2bb4f12cbe73ce227d18068f1a3693dde666aa2b12cad1e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/AuditChecks.lean: N=J=2, cls=id, class outcomes (0,1), and coinDesign independently samples one of the two singleton subsets with probabilities 1/2. All inclusion probabilities and class totals equal 1/2. Bounds alpha=1/4,beta=1/2, surjectivity, strict outcome ordering, and both separation inequalities at each valid cut are proved together. The independent product law is separately checked to be an IsProbabilityMeasure, to have total mass one, and to have independent coordinate draws. This is a random iid design satisfying all premises, not a zero-measure or dependent-replication witness.",
+    "confidence": "high"
+  }
+]

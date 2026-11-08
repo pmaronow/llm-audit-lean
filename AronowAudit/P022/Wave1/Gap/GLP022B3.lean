@@ -13,10 +13,11 @@ noncomputable section
 
 /-
 The following generalized inverse and its specification are adapted from
-`StatLean.AsymptoticStatistics.EmpiricalProcess.HalfLineQuantile`.
+StatLean/AsymptoticStatistics/EmpiricalProcess/HalfLineQuantile.lean,
+commit e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2.
 Copyright (c) 2026. All rights reserved. Released under Apache 2.0 license.
 Modifications: local names and only the two quantile facts needed here.
-See NOTICE at the repository root.
+See AronowAudit/External/StatLean/LICENSE.
 -/
 open ProbabilityTheory Set
 
@@ -680,6 +681,9 @@ theorem lemma2_corrected_explicit_proof (S : ExperimentSequence) (H : JointLaw) 
     rw [hfun]
     exact hh
 
+example : type_of% @AronowAudit.P022.lemma2_corrected_explicit := lemma2_corrected_explicit_proof
+
+
 private lemma bounded_direct_finite_allocation_bound (N s : ℕ) (hs : 0 < s) (hsN : s ≤ N)
     (hN : 4 ≤ N) (c : ℝ) (hc : 0 < c) (hm : c * N ≤ s) (C : ℝ) :
     C ^ 2 * ((N : ℝ) - s) / (((N : ℝ) - 1) * s) ≤ C ^ 2 / (c * N) := by
@@ -763,6 +767,8 @@ theorem bounded_direct_finite_proof (d : Design) (y1 y0 : Fin d.N → ℝ) (C c 
   · exact GP022B1b_deterministic d y1 y0 C c hC hy hc hm hk
   · intro ε hε hT B
     exact GP022B1b_finite_rate d y1 y0 C c hC hy hc hm hk ε hε hT B
+
+example : type_of% @AronowAudit.P022.bounded_direct_finite := bounded_direct_finite_proof
 
 end
 end AronowAudit.P022.Wave1

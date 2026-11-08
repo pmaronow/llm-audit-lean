@@ -1,0 +1,60 @@
+[
+  {
+    "target_id": "P015-T8",
+    "theorem": "SAP.P015a.T8",
+    "fingerprint": "6d6a7b215df755adc1a80c4aa7003ffcec6560e6d58cc85521f52b5793790b6b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean, importing definitions only: a two-row binary logistic instance satisfies the open-domain, admissibility, probability, and second-derivative hypotheses; its multiplier at zero is nonzero. A constant-half link also realizes the nested maximization premise. The normalized canonical-family hypotheses hold for nu=dirac(0), kappa=0, s=1, carrier=0, I=R, support={0}, with differentiability. The Cox event belongs to its nonempty risk set and yields the stated risk-set-dependent score. The included T6 and T7 fixed examples were checked separately as described below. No conclusion is assumed in these checks.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P015-T5",
+    "theorem": "SAP.P015a.T5",
+    "fingerprint": "94ba055aaf5ed26f13e02f6b8b2f31456ae7a9fa6c2ee550b27555f6a193e27d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no outer hypotheses: this asserts facts about fixed data. Compiled scratch/Check.lean constructs the 72-observation index set, verifies the exact success counts, positive predictors and interior means, both outcomes in each cell, the zero substituted residual equation, and det(W'W)=36. These grouped sums exactly equal the individual-observation likelihood, residual, and score sums. The data can occur with positive probability under independent Bernoulli sampling at the displayed interior model probabilities. Nonzero genuine score and nonmaximality are conclusions of the certified theorem, not premises added to the example.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P015-T6",
+    "theorem": "SAP.P015a.T6",
+    "fingerprint": "1dd08a907ab04356baa3e2d33b7eeb6fea42396790b6aa78ef40e495a87af2b9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no outer hypotheses. Compiled scratch/Check.lean constructs the 48-observation index set, verifies exact integer success counts with both outcomes in every cell, and checks det(8 W'W)=18432. An independent argument from Mathlib's standard-normal CDF limits and monotonicity proves that the quantile's defining set is nonempty and bounded below. Thus the sInf is not a junk value. The theorem additionally certifies its quantile values, strict score bound, genuine directional derivatives, and nonmaximality. The fixed sample is possible under independent Bernoulli sampling with the indicated interior probit probabilities.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P015-T7",
+    "theorem": "SAP.P015a.T7",
+    "fingerprint": "967c16d31373461328395ec98f1dce4ca8f1bcce8fca25bc559a547f2b68d9f2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean independently verifies the six positive atom weights sum to one, computes the nonsingular population Gram matrix diag(1,5/24,2/3), constructs the admissible center (1/2,0,0), and proves every true response probability is strictly between zero and one for both allowed baselines and all |epsilon|<=1/16. The explicit latent-uniform product law supplies measurable bounded potential outcomes and the required conditional independence; no unsupported conditioning cell is used. The certified theorem supplies the genuine unique maximizing branches on positive-radius neighborhoods, rather than taking their existence as a premise. A further independent Lean example proves that no admissible square-link coefficient vector reproduces the a=1/16 baseline, confirming the disclosed restriction.",
+    "confidence": "high",
+    "resolved": [
+      "Fixed: the single round-6 issue in earlier.json correctly identified that the a=1/16 witness violates correct conditional-mean specification and does not approach the displayed correctly specified model as epsilon tends to zero. That mathematical limitation remains, as independently checked in scratch/Check.lean. It is no longer an undisclosed refutation claim: SAP/P015a/Challenge/Part1.lean:94-100 and record.json's P015-T7 entry explicitly restrict the result to working-model expected-likelihood projections and omit a refutation under the correctly specified reading. The current opening describes only the actual maximizing branches and derivative comparison. This accurately retains the specified example without claiming a counterexample satisfying the violated condition."
+    ]
+  },
+  {
+    "target_id": "P015-T16",
+    "theorem": "SAP.P015a.T16",
+    "fingerprint": "42224f14e409a2a09abf93d2fc33e566ea1cd115febb9007b7e6939698e73fc2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean independently verifies the fixed four-observation design has Gram determinant 4, all logarithm arguments are positive, the two arithmetic spending means are 1 and 3/2, and the actual inverse-matrix OLS treatment coefficient is zero by computing W'Y=0 with the real logarithms. For the universal fitted-ratio identity the exponential denominator is positive for every real parameter choice. No singular inverse or invalid logarithm accounts for the example.",
+    "confidence": "high"
+  }
+]

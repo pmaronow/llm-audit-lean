@@ -82,5 +82,6 @@ theorem kernel_cross_sum_bound {N : ℕ} (z : Assignment N) (e : Fin N → ℝ)
   exact bounded_neighbor_sum (fun i=>(B i).erase i) (maxDegree B) C hN hC hdeg F (fun i j _=>hF i j)
 
 
+#print axioms kernel_cross_sum_bound
 end
 end AronowAudit.P004

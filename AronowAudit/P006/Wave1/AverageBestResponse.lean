@@ -12,7 +12,7 @@ open AronowAudit.P006 MeasureTheory ProbabilityTheory
 open scoped BigOperators ENNReal NNReal
 noncomputable section
 
-/-- P006-T26: counterexample to the printed average-reward best-response claim. -/
+/-- Wave 1 completion of AverageBestResponse; the statement is written out in full. -/
 theorem printed_average_best_response_refuted :
   ¬ ∀ {Ω C : Type} [MeasurableSpace Ω] [MeasurableSpace C] [Countable C]
       [MeasurableSingletonClass C] {n : ℕ} (E : Experiment Ω C n),
@@ -22,6 +22,12 @@ theorem printed_average_best_response_refuted :
   AverageBestResponse.assemble
     BinaryExperiment.n1_proof BinaryExperiment.n2_proof BinaryExperiment.n3_proof BinaryExperiment.n4_proof BinaryExperiment.n5_proof AverageBestResponse.n1_proof
 
+example : AverageBestResponse.Target := printed_average_best_response_refuted
+
+/-- The explicit finite witness used by the universal refutation. -/
+theorem printed_average_best_response_witness : AverageBestResponse.Witness :=
+  AverageBestResponse.assemble_witness
+    BinaryExperiment.n1_proof BinaryExperiment.n2_proof BinaryExperiment.n3_proof BinaryExperiment.n4_proof BinaryExperiment.n5_proof AverageBestResponse.n1_proof
 
 end
 end AronowAudit.P006.Wave1

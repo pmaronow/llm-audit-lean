@@ -1,0 +1,75 @@
+import SAP.P001a.Defs
+import SAP.P001a.Defs.WholeW1
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped ENNReal NNReal BigOperators Topology
+noncomputable section
+
+namespace AuditT4
+
+abbrev V := Fin 1 → ℝ
+def e : V ≃ᵐ ℝ := MeasurableEquiv.piUnique (fun _ : Fin 1 => ℝ)
+def f (x : V) : ℝ := gaussianPDFReal 0 1 (e x)
+def μ : Measure V := volume.withDensity (fun x => ENNReal.ofReal (f x))
+
+lemma e_preserving : MeasurePreserving e volume volume :=
+  volume_preserving_piUnique (fun _ : Fin 1 => ℝ)
+
+lemma f_meas : Measurable f := (measurable_gaussianPDFReal 0 1).comp e.measurable
+lemma f_nonneg (x : V) : 0 ≤ f x := gaussianPDFReal_nonneg _ _ _
+lemma f_integrable : Integrable f volume :=
+  e_preserving.integrable_comp_of_integrable (integrable_gaussianPDFReal 0 1)
+
+instance : IsProbabilityMeasure μ where
+  measure_univ := by
+    rw [μ, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+    change (∫⁻ x : V, ENNReal.ofReal (gaussianPDFReal 0 1 (e x))) = 1
+    rw [e_preserving.lintegral_comp ((measurable_gaussianPDFReal 0 1).ennreal_ofReal)]
+    exact lintegral_gaussianPDFReal_eq_one 0 (by norm_num)
+
+lemma coordinates_integrable (k : Fin 1) : Integrable (fun x : V => x k) μ := by
+  have hscalar : Integrable id (gaussianReal 0 1) :=
+    memLp_one_iff_integrable.mp (memLp_id_gaussianReal' 1 (by norm_num))
+  have hscalar' : Integrable id
+      (volume.withDensity (fun z : ℝ => ENNReal.ofReal (gaussianPDFReal 0 1 z))) := by
+    rw [gaussianReal_of_var_ne_zero 0 (by norm_num)] at hscalar
+    exact hscalar
+  have hd : Measurable (fun z : ℝ => ENNReal.ofReal (gaussianPDFReal 0 1 z)) :=
+    (measurable_gaussianPDFReal 0 1).ennreal_ofReal
+  have hs := (integrable_withDensity_iff_integrable_smul' hd
+    (ae_of_all _ (fun _ => ENNReal.ofReal_lt_top))).mp hscalar'
+  apply (integrable_withDensity_iff_integrable_smul' f_meas.ennreal_ofReal
+    (ae_of_all _ (fun _ => ENNReal.ofReal_lt_top))).mpr
+  have h := e_preserving.integrable_comp_of_integrable hs
+  have hk : k = default := Subsingleton.elim _ _
+  subst k
+  simpa [Function.comp_def, f, e, MeasurableEquiv.piUnique_apply] using h
+
+lemma cef : SAP.P001a.IsCEF μ id (fun _ => 0) (fun _ => 0) := by
+  refine ⟨measurable_const, integrable_zero _ _ _, integrable_zero _ _ _, ?_⟩
+  intro A hA
+  simp
+
+-- All hypotheses of T4's probability/CEF block hold in dimension one,
+-- with a positive density on a nonempty open neighborhood and an existing derivative.
+example : IsProbabilityMeasure μ ∧
+    Measurable (id : V → V) ∧
+    (∀ k : Fin 1, Integrable (fun x : V => x k) μ) ∧
+    SAP.P001a.HasVectorPDF (μ.map id) f ∧
+    IsOpen (Set.univ : Set V) ∧
+    (fun k : Fin 1 => SAP.P001a.mean μ (fun x : V => x k)) ∈ (Set.univ : Set V) ∧
+    (∀ x ∈ (Set.univ : Set V), 0 < f x) ∧
+    SAP.P001a.IsCEF μ id (fun _ => 0) (fun _ => 0) ∧
+    SAP.P001a.IsCEF μ id (fun _ => 0) (fun _ => 0) ∧
+    ContinuousOn (fun _ : V => (0 : ℝ)) Set.univ ∧
+    ContinuousOn (fun _ : V => (0 : ℝ)) Set.univ ∧
+    HasDerivAt (fun _ : ℝ => (0 : ℝ)) 0 0 := by
+  refine ⟨inferInstance, measurable_id, coordinates_integrable,
+    ⟨f_meas.aemeasurable, f_nonneg, f_integrable, ?_⟩,
+    isOpen_univ, Set.mem_univ _, ?_, cef, cef,
+    continuous_const.continuousOn, continuous_const.continuousOn, hasDerivAt_const _ _⟩
+  · simp [μ]
+  · intro x hx
+    exact gaussianPDFReal_pos _ _ _ (by norm_num)
+
+end AuditT4
